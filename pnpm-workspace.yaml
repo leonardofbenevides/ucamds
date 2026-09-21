@@ -1,6 +1,12 @@
+# O `ui` está aqui por causa da publicação: o build da Vercel roda `pnpm dist`,
+# que chama `pnpm lib` (`ng build` dentro de ui/) e depois `pnpm pacotes`, que exige
+# ui/dist/ui. Fora do workspace, `pnpm install --frozen-lockfile` não instala nada em
+# ui/ e o `ng` não existe no clone limpo — aqui passava só porque node_modules sobrara
+# de antes. O lockfile nunca perdeu o importer `ui:`, então nada mais muda.
 packages:
   - site
   - elements
+  - ui
 
 # esbuild precisa do script de instalação para baixar o binário da plataforma.
 # Os demais são aceleradores nativos opcionais do Nx (que entra como peer do
