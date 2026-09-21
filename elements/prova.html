@@ -92,6 +92,26 @@
       <div id="saida">nada escolhido ainda</div>
     </div>
 
+    <div class="caixa">
+      <h2>Diálogo — a retenção de foco</h2>
+      <p style="font-size: 12px; color: #6b6666">
+        O legado reimplementa diálogo com <code>div</code> e não devolve o foco ao fechar. Quem
+        navega por teclado volta ao topo da página e perde o lugar.
+      </p>
+      <button id="abrir" type="button">Abrir diálogo</button>
+      <ucam-dialog id="dlg"></ucam-dialog>
+    </div>
+
+    <div class="caixa">
+      <h2>Paginação — o nome acessível</h2>
+      <p style="font-size: 12px; color: #6b6666">
+        No legado são âncoras com o número dentro e nada mais: o leitor de tela anuncia "2", sem
+        dizer do quê.
+      </p>
+      <ucam-pagination id="pg"></ucam-pagination>
+      <div id="saida-pg">página 1</div>
+    </div>
+
     <script type="module" src="/dist/elements/ucam-elements.js"></script>
 
     <script type="module">
@@ -117,6 +137,31 @@
 
       document.querySelector('#b1').addEventListener('click', () => {
         saida.textContent += '\nbotão Salvar clicado';
+      });
+
+      // O diálogo e a paginação, pela mesma porta: dado estruturado e estado
+      // two-way chegam por PROPRIEDADE. `open` e `page` são model(), então o
+      // componente devolve a mudança pelo evento `openChange` / `pageChange`.
+      await customElements.whenDefined('ucam-dialog');
+      const dlg = document.querySelector('#dlg');
+      dlg.title = 'Excluir setor';
+      dlg.open = false;
+
+      const abrir = document.querySelector('#abrir');
+      abrir.addEventListener('click', () => (dlg.open = true));
+      dlg.addEventListener('openChange', (e) => (dlg.open = e.detail));
+
+      await customElements.whenDefined('ucam-pagination');
+      const pg = document.querySelector('#pg');
+      pg.total = 137;
+      pg.pageSize = 25;
+      pg.itemLabel = 'requerimentos';
+      pg.page = 1;
+
+      const saidaPg = document.querySelector('#saida-pg');
+      pg.addEventListener('pageChange', (e) => {
+        pg.page = e.detail;
+        saidaPg.textContent = 'página ' + e.detail;
       });
     </script>
   </body>

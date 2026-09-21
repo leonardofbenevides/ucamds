@@ -59,6 +59,7 @@ APPSUCAM/           prints do Protocolo e do SigFin — a evidência bruta
 dist/               tokens, CSS, ícones, fontes, kit de agentes
 docs/               catálogo legado (exceto docs/superpowers/, escrito à mão)
 site/src/assets/t/  as 23 telas autônomas
+site/src/assets/tokens/  o CSS de tokens que o site serve em /tokens
 site/src/generated/ dados que o site consome
 site/dist/          o site construído, que é o que a Vercel publica
 ```
@@ -79,8 +80,8 @@ passava por lugar nenhum.
 
 ## Os portões
 
-O `pnpm build` não é só geração — são dez verificações encadeadas, e qualquer uma
-derruba o build inteiro:
+O `pnpm build` não é só geração — são verificações encadeadas, e qualquer uma
+derruba o build inteiro (a última delas roda no `pnpm dist`, depois do site):
 
 | Portão | Pergunta que ele faz |
 |---|---|
@@ -94,15 +95,29 @@ derruba o build inteiro:
 | `check-obrigatoriedade` | Todo asterisco tem `required`/`aria-required` no controle? |
 | `check-regra-anexo` | A frase do anexo diz o que o campo realmente aceita? |
 | `check-agentes` | O kit em `dist/agentes/` ainda corresponde à spec? |
+| `build-publicacao` | Toda URL que a documentação ensina existe mesmo na saída publicada? |
 
 Cada um nasceu de um defeito real que passou despercebido. Se um portão te barrar,
 ele está descrevendo um bug de verdade — o comentário no topo do arquivo conta qual.
 
 ## Publicação
 
-A Vercel constrói a partir deste repositório: roda `pnpm build` e publica
-`site/dist/analog/public`. A configuração está em `vercel.json`. Só o site vai ao
-ar — `APPSUCAM/`, `spec/` e o resto ficam no repositório.
+A Vercel constrói a partir deste repositório: roda `pnpm dist` e publica
+`site/dist/analog/public`. A configuração está em `vercel.json`. `APPSUCAM/`,
+`spec/` e o resto ficam no repositório.
+
+Vai ao ar o site e mais duas coisas, porque a documentação as promete:
+
+- **`/tokens/`** — o CSS de tokens que o `<link>` do Trilho A carrega. Enquanto
+  não existia, a primeira linha que um dev do parque legado copiava dava 404.
+- **`/pacotes/`** — os tarballs das quatro bibliotecas, que são o artefato
+  instalável enquanto não houver registro privado.
+
+O `build-publicacao` confere as duas coisas: toda URL ensinada em
+`spec/resources.json` tem de existir como arquivo na saída, e todo pacote
+marcado `gerado` tem de ter tarball baixável. Por isso o comando da Vercel é
+`pnpm dist` e não `pnpm build` — é o `dist` que constrói a biblioteca Angular
+e empacota.
 
 ## Para agentes de IA
 

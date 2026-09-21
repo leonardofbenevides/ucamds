@@ -50,7 +50,7 @@ import { recursos } from '../../spec/spec';
           <span class="card-ic" aria-hidden="true"><svg><use href="#i-archive" /></svg></span>
           <h3>Skills e pacotes</h3>
           <p class="small muted">
-            {{ r.skills.itens.length }} skills e {{ r.pacotes.itens.length }} pacotes previstos.
+            {{ r.skills.itens.length }} skills e {{ gerados.length }} pacotes baixáveis.
           </p>
         </a>
       </div>
@@ -66,11 +66,20 @@ import { recursos } from '../../spec/spec';
     <div class="prose">
       <h2>O que já é instalável</h2>
       <p>
-        Só os tokens estão gerados e prontos para consumo. Os demais pacotes estão planejados e
-        não têm versão instalável — a tabela em
-        <a routerLink="/comecar/skills">Skills e pacotes</a> diz o estado de cada um. Enquanto um
-        pacote não estiver marcado como gerado, o contrato correspondente vale como especificação,
-        não como dependência.
+        {{ gerados.length }} dos {{ r.pacotes.itens.length }} pacotes já saem do build como tarball
+        e podem ser baixados em <a routerLink="/comecar/skills">Skills e pacotes</a>:
+        @for (p of gerados; track p.nome) {<code>{{ p.nome }}</code>@if (!$last) {<span>, </span>}}.
+        @if (planejados.length) {
+          <span>
+            Os outros {{ planejados.length }} estão planejados: enquanto um pacote não estiver
+            marcado como gerado, o contrato correspondente vale como especificação, não como
+            dependência.
+          </span>
+        }
+      </p>
+      <p class="small muted">
+        Ainda não há registro privado — <code>pnpm add @ucam/…</code> não resolve. O artefato é o
+        tarball, e a página de <a routerLink="/comecar/instalacao">Instalação</a> mostra o comando.
       </p>
     </div>
   `,
@@ -143,4 +152,6 @@ import { recursos } from '../../spec/spec';
 })
 export default class ComecarPage {
   protected readonly r = recursos;
+  protected readonly gerados = recursos.pacotes.itens.filter((p) => p.estado === 'gerado');
+  protected readonly planejados = recursos.pacotes.itens.filter((p) => p.estado !== 'gerado');
 }

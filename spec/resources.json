@@ -1,28 +1,35 @@
 {
   "$description": "Distribuição do design system: pacotes, formatos de token, servidor MCP, skills e Figma.",
   "pacotes": {
-    "$description": "Distribuídos em registro privado. A coluna de estado diz o que já é instalável; o que está planejado não tem versão publicada.",
+    "$description": "Ainda não há registro privado, então a instalação é por URL: o tarball é servido em /pacotes e o pnpm o resolve como qualquer dependência, gravando a URL no package.json do seu app. A coluna de estado diz o que já existe; o que está planejado vale como especificação, não como dependência.",
     "itens": [
       {
         "nome": "@ucam/tokens",
         "conteudo": "CSS custom properties, SCSS e JSON, gerados de spec/tokens.",
         "consumidores": "Todos os apps, inclusive AngularJS",
         "estado": "gerado",
-        "nota": "Tarball em dist/pacotes/ (pnpm run pacotes). Falta o registro privado."
+        "nota": "Tarball em /pacotes. É também o que o <link> do Trilho A serve, em /tokens."
       },
       {
         "nome": "@ucam/css",
         "conteudo": "Primitivos sem framework, escopados sob .ucam, sem preflight.",
         "consumidores": "Trilho A — legado",
         "estado": "gerado",
-        "nota": "Tarball em dist/pacotes/. Traz tokens, sprite e fontes junto."
+        "nota": "Tarball em /pacotes. Traz tokens, sprite e fontes junto."
       },
       {
         "nome": "@ucam/ui",
         "conteudo": "Componentes Angular sobre ZardUI adaptada.",
         "consumidores": "Trilho B — apps novos e migrados",
         "estado": "gerado",
-        "nota": "Tarball em dist/pacotes/, a partir do build do ng-packagr (pnpm run lib)."
+        "nota": "Tarball em /pacotes, a partir do build do ng-packagr. Exige Angular 21 ou 22."
+      },
+      {
+        "nome": "@ucam/elements",
+        "conteudo": "Trilho A+ (ADR-010): os seis componentes que precisam de JavaScript, como custom elements. Uma tag script, uma tag link.",
+        "consumidores": "Trilho A — telas legadas que precisam de comportamento",
+        "estado": "gerado",
+        "nota": "Tarball em /pacotes. Não carregue junto com a biblioteca Angular: o registro do custom element é global e a segunda definição lança."
       },
       {
         "nome": "@ucam/patterns",
@@ -35,7 +42,7 @@
         "conteudo": "Servidor MCP, CLI ucam-ds (instalar, checar), skills, AGENTS.md e os contratos em JSON.",
         "consumidores": "Ferramentas de desenvolvimento: Claude Code, VS Code/Copilot e CI",
         "estado": "gerado",
-        "nota": "Tarball em dist/pacotes/. Instalar com pnpm add -D e rodar npx ucam-ds instalar."
+        "nota": "Tarball em /pacotes. Instalar com pnpm add -D e rodar npx ucam-ds instalar."
       }
     ]
   },
@@ -114,6 +121,11 @@
         "estado": "disponível"
       },
       {
+        "nome": "ucam_get_states",
+        "faz": "Devolve o modelo de estados: o estado por interação (hover, focus-visible, active, disabled, loading) ou um termo do vocabulário (open, empty, invalid, readonly, selected). Sem recorte, devolve o modelo inteiro.",
+        "estado": "disponível"
+      },
+      {
         "nome": "ucam_migrate_from_legacy",
         "faz": "Recebe um trecho de AngularJS, Angular Material, PrimeFaces ou HTML legado e devolve o equivalente na API da UCAM pelos mapas de migração dos contratos, com a ordem de migração e os erros que sobrevivem à conversão literal.",
         "estado": "disponível"
@@ -146,28 +158,34 @@
     ]
   },
   "instalacao": {
-    "$description": "Dois trilhos de consumo. Escolha pelo que a aplicação consegue receber hoje: tokens em CSS, ou a biblioteca Angular.",
+    "$description": "Dois trilhos de consumo. Escolha pelo que a aplicação consegue receber hoje: um <link> para os tokens em CSS, ou os pacotes da biblioteca Angular.",
     "trilhos": [
       {
         "id": "a",
         "nome": "Trilho A — legado",
         "alvo": "AngularJS e Angular 14 ou anterior, sem pipeline de build moderno.",
-        "como": "Um <link> para o CSS de tokens. Nenhuma dependência, nenhum passo de build, nenhum reset global.",
-        "codigo": "<link rel=\"stylesheet\" href=\"https://ds.ucam.br/tokens/ucam-tokens.css\">",
-        "limite": "Dá acesso aos tokens, não aos componentes. Serve para alinhar cor, espaçamento e tipografia sem tocar na arquitetura do app."
+        "como": "Um <link> para o CSS de tokens, servido pelo próprio site do design system. Nenhuma dependência, nenhum passo de build, nenhum reset global.",
+        "codigo": "<link rel=\"stylesheet\" href=\"https://dsucam.vercel.app/tokens/ucam-tokens.css\">",
+        "limite": "Dá acesso aos tokens, não aos componentes. Serve para alinhar cor, espaçamento e tipografia sem tocar na arquitetura do app. Máquina sem saída para a internet: baixe o arquivo e sirva do próprio app — é o mesmo CSS, sem dependência de rede externa."
       },
       {
         "id": "b",
         "nome": "Trilho B — apps novos e migrados",
         "alvo": "Angular moderno com Tailwind v4.",
-        "como": "Instalar a biblioteca e importar o bloco @theme.",
-        "codigo": "pnpm add @ucam/ui @ucam/tokens\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@ucam/tokens/ucam-theme.css\";",
-        "limite": "Aplicações importam <ucam-*>. Nunca <z-*>: o ZardUI é matéria-prima do design system, não dependência das aplicações."
+        "como": "Instale os pacotes direto da URL e importe o bloco @theme. Não é preciso baixar arquivo à mão: o pnpm resolve o tarball, grava a URL no package.json e um clone do seu app reinstala sozinho.",
+        "codigo": "pnpm add https://dsucam.vercel.app/pacotes/ucam-tokens-{versao}.tgz \\\n         https://dsucam.vercel.app/pacotes/ucam-ui-{versao}.tgz\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@ucam/tokens/ucam-theme.css\";",
+        "limite": "Aplicações importam <ucam-*>. Nunca <z-*>: o ZardUI é matéria-prima do design system, não dependência das aplicações. Sem registro, a URL fixa a versão — não há faixa semver nem pnpm update, e subir de versão é trocar o número."
       }
     ]
   },
   "figma": {
     "$description": "A biblioteca do Figma espelha spec/tokens como variáveis, com Code Connect ligando cada componente ao seu contrato. Direção única: a spec gera as variáveis, não o contrário.",
     "estado": "planejado"
+  },
+  "publicacao": {
+    "$description": "Onde o design system é servido. Uma fonte só: o sitemap do site, os exemplos de instalação e o portão de publicação leem este host. Enquanto não existir registro privado, os tarballs também saem daqui.",
+    "host": "https://dsucam.vercel.app",
+    "tokens": "/tokens",
+    "pacotes": "/pacotes"
   }
 }

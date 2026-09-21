@@ -501,7 +501,38 @@ const EXECUTORES = {
 export function executar(nome, args = {}) {
   const f = EXECUTORES[nome];
   if (!f) throw Object.assign(new Error(`Ferramenta desconhecida: ${nome}`), { code: -32602 });
+  exigirObrigatorios(nome, args ?? {});
   return f(args ?? {});
+}
+
+// POR QUE ISTO EXISTE: o `required` do inputSchema era decoração. Cada executor
+// tem default (`{ codigo = '' } = {}`), então chamada sem argumento não quebrava
+// — devolvia resposta vazia. Em `ucam_check_usage` isso virava o pior resultado
+// possível: `{ erros: 0, aprovado: true }` sobre código que ninguém auditou.
+//
+// E a chamada errada é fácil de fazer: os nomes das ferramentas são em inglês e
+// os parâmetros em português, então o agente que chuta `code` em vez de
+// `codigo` recebia sinal verde. A regra de ouro do AGENTS.md manda rodar
+// `ucam_check_usage` antes de concluir; um portão que aprova em silêncio é
+// pior que portão nenhum.
+function exigirObrigatorios(nome, args) {
+  const esquema = FERRAMENTAS.find((t) => t.name === nome)?.inputSchema ?? {};
+  const faltando = (esquema.required ?? []).filter(
+    (k) => args[k] === undefined || args[k] === null || args[k] === '',
+  );
+  if (!faltando.length) return;
+
+  const aceitos = Object.keys(esquema.properties ?? {});
+  const recebidos = Object.keys(args);
+  const pista = recebidos.length
+    ? ` Recebi ${recebidos.join(', ')}; esta ferramenta aceita ${aceitos.join(', ')}.`
+    : '';
+  throw Object.assign(
+    new Error(
+      `${nome} exige ${faltando.join(', ')} e veio sem.${pista} Nada foi verificado — não trate isto como aprovação.`,
+    ),
+    { code: -32602 },
+  );
 }
 
 /* -------------------------------------------------------------- recursos --- */

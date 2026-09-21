@@ -63,10 +63,11 @@ const LB = `document.querySelector('[role=listbox]')`;
 const VIS = `[...(document.querySelector('[role=listbox]')?.querySelectorAll('[role=option]') ?? [])].filter(o => !o.hasAttribute('hidden'))`;
 
 // 1. registro
+const TAGS = ['ucam-button', 'ucam-text-field', 'ucam-select', 'ucam-combobox', 'ucam-dialog', 'ucam-pagination'];
 const reg = await evalJs(
-  `JSON.stringify(['ucam-button','ucam-text-field','ucam-select','ucam-combobox'].map(n => [n, !!customElements.get(n)]))`,
+  `JSON.stringify(${JSON.stringify(TAGS)}.map(n => [n, !!customElements.get(n)]))`,
 );
-checa('os 4 custom elements se registram', !JSON.parse(reg).some(([, v]) => !v), reg);
+checa(`os ${TAGS.length} custom elements se registram`, !JSON.parse(reg).some(([, v]) => !v), reg);
 
 // 2. preflight não vazou para a cromagem legada
 const leg = await evalJs(`
@@ -133,6 +134,49 @@ const vazio = await evalJs(`
   (() => { const p = ${LB}; if (!p) return 'sem painel';
     return ${VIS}.length + ' | visíveis'; })()`);
 checa('busca sem resultado mostra o estado vazio', /0 \|/.test(vazio), vazio);
+
+// 9. o diálogo devolve o foco a quem o abriu.
+//
+// É a razão de o Dialog estar no Trilho A+ e não no CSS: o legado reimplementa
+// com <div>, o foco fica no corpo da página e quem navega por teclado volta ao
+// topo. Não basta abrir e fechar — o que se verifica é ONDE o foco parou.
+await evalJs(`document.querySelector('#abrir').focus()`);
+await evalJs(`document.querySelector('#abrir').click()`);
+const abriuDlg = await ate(`document.querySelector('#dlg dialog')?.open`);
+const focoDentro = await evalJs(
+  `!!document.querySelector('#dlg dialog')?.contains(document.activeElement)`,
+);
+checa('o diálogo abre como modal', abriuDlg);
+checa('ao abrir, o foco entra no diálogo', focoDentro);
+
+await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', windowsVirtualKeyCode: 27, key: 'Escape', code: 'Escape' });
+await send('Input.dispatchKeyEvent', { type: 'keyUp', windowsVirtualKeyCode: 27, key: 'Escape', code: 'Escape' });
+await ate(`!document.querySelector('#dlg dialog')?.open`);
+const voltou = await evalJs(`document.activeElement?.id`);
+checa('ao fechar por Esc, o foco volta ao gatilho', voltou === 'abrir', `foco em #${voltou}`);
+
+// 10. a paginação diz do que é cada número.
+//
+// No legado são âncoras com o algarismo dentro: o leitor de tela anuncia "2".
+// O contrato promete nome acessível em cada controle e o intervalo em texto.
+const pag = await evalJs(`
+  (() => { const raiz = document.querySelector('#pg'); if (!raiz) return 'sem paginacao';
+    const nav = raiz.querySelector('nav');
+    const botoes = [...raiz.querySelectorAll('button')];
+    const semNome = botoes.filter(b => !(b.getAttribute('aria-label') || b.textContent).trim());
+    return JSON.stringify({
+      nav: nav ? (nav.getAttribute('aria-label') || '') : null,
+      botoes: botoes.length,
+      semNome: semNome.length,
+      texto: raiz.textContent.replace(/\\s+/g, ' ').trim().slice(0, 80) }); })()`);
+const pp = JSON.parse(pag);
+checa('a paginação desenha seus controles', pp.botoes > 0, pag);
+checa('todo controle da paginação tem nome acessível', pp.semNome === 0, `${pp.semNome} sem nome`);
+checa(
+  'o intervalo é dito em texto, com o substantivo do domínio',
+  /requerimentos/.test(pp.texto),
+  pp.texto,
+);
 
 console.log('\n== PASSOU ==');
 ok.forEach((s) => console.log('  ✓ ' + s));

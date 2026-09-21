@@ -84,13 +84,13 @@ Até existir registro privado, os pacotes saem como tarball de \`dist/pacotes/\`
 
 \`\`\`bash
 # Trilho A — legado (traz tokens, ícones e fontes junto)
-pnpm add ./ucam-css-${VERSAO}.tgz
+pnpm add ${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-css-${VERSAO}.tgz
 
 # Trilho B — Angular moderno
-pnpm add ./ucam-ui-${VERSAO}.tgz ./ucam-tokens-${VERSAO}.tgz
+pnpm add ${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-ui-${VERSAO}.tgz ${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-tokens-${VERSAO}.tgz
 
 # Agentes, em qualquer trilho
-pnpm add -D ./ucam-ds-mcp-${VERSAO}.tgz
+pnpm add -D ${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-ds-mcp-${VERSAO}.tgz
 npx ucam-ds instalar
 \`\`\``;
 };
@@ -106,7 +106,7 @@ const REGRAS_DE_OURO = [
   'Antes de concluir, rode `ucam_check_usage` (ou `npx ucam-ds checar <arquivo>`) e corrija todo erro.',
 ];
 
-const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042']);
+const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042', 'ADR-044']);
 
 
 const secaoEstados = () => {
@@ -411,8 +411,10 @@ Kit do Design System da UCAM para agentes de IA e para quem os usa: servidor MCP
 
 ## Instalar num app
 
+Não há registro privado, então o pacote se instala pela URL do tarball — \`pnpm add @ucam/ds-mcp\` não resolve.
+
 \`\`\`bash
-pnpm add -D ./ucam-ds-mcp-${VERSAO}.tgz     # o tarball de dist/pacotes/
+pnpm add -D ${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-ds-mcp-${VERSAO}.tgz
 npx ucam-ds instalar
 \`\`\`
 

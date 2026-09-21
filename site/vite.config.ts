@@ -68,6 +68,11 @@ function rotasDePaginas(dir = join(import.meta.dirname, 'src', 'app', 'pages'), 
 
 const fixas = rotasDePaginas().sort();
 
+// O host mora na spec, não aqui. Ele aparece em três lugares — o sitemap, os
+// exemplos de instalação e o portão de publicação — e quando morava só neste
+// arquivo os exemplos apontavam para outro domínio sem que nada percebesse.
+const { host: HOST } = readSpec('resources.json').publicacao;
+
 export default defineConfig(() => ({
   root: import.meta.dirname,
   publicDir: 'src/assets',
@@ -129,7 +134,7 @@ export default defineConfig(() => ({
       prerender: {
         routes: async () => [...fixas, ...specRoutes()],
         sitemap: {
-          host: 'https://dsucam.vercel.app/',
+          host: `${HOST}/`,
         },
       },
     }),

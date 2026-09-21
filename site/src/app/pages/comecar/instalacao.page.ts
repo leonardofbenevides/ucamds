@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, computed } from '@angular/core';
 
-import { recursos } from '../../spec/spec';
+import { recursos, meta } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
 
@@ -24,7 +24,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           <h2>{{ t.nome }}</h2>
           <p class="small muted"><strong class="k">Para quem.</strong> {{ t.alvo }}</p>
           <p>{{ t.como }}</p>
-          <pre class="code"><code>{{ t.codigo }}</code></pre>
+          <pre class="code"><code>{{ codigo(t.codigo) }}</code></pre>
           <div class="callout callout-limit">
             <p><strong class="k">Limite.</strong> {{ t.limite }}</p>
           </div>
@@ -80,6 +80,16 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 })
 export default class InstalacaoPage {
   protected readonly r = recursos;
+
+  /**
+   * A versão não é escrita na spec: o exemplo traz o marcador {versao} e ele é
+   * resolvido aqui, com o número que vem do package.json da raiz. Escrever
+   * "0.1.0" dentro do exemplo criaria uma segunda fonte para a versão, que
+   * envelheceria calada no primeiro bump.
+   */
+  protected codigo(trecho: string): string {
+    return trecho.replaceAll('{versao}', meta.versao);
+  }
 
   /**
    * Os trilhos vêm da spec, então a lista é computada — escrever os dois à mão

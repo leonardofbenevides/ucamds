@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
-import { recursos } from '../../spec/spec';
+import { recursos, meta } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 
 @Component({
@@ -55,7 +55,15 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
             <tbody>
               @for (p of r.pacotes.itens; track p.nome) {
                 <tr>
-                  <td><code>{{ p.nome }}</code></td>
+                  <td>
+                    @if (p.estado === 'gerado') {
+                      <a [href]="tarball(p.nome)" download>
+                        <code>{{ p.nome }}</code>
+                      </a>
+                    } @else {
+                      <code>{{ p.nome }}</code>
+                    }
+                  </td>
                   <td class="small">
                     {{ p.conteudo }}
                     @if (p.nota) {
@@ -89,4 +97,13 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
 })
 export default class SkillsPage {
   protected readonly r = recursos;
+
+  /** O nome do tarball é derivado, não digitado: @ucam/ds-mcp na versão 0.1.0
+   *  é ucam-ds-mcp-0.1.0.tgz, a mesma regra que o npm pack usa e que
+   *  tools/build-publicacao.mjs confere na saída. Assim a versão continua
+   *  tendo uma fonte só — o package.json da raiz, que chega aqui em meta. */
+  protected tarball(nome: string): string {
+    const arquivo = `${nome.replace(/^@/, '').replace('/', '-')}-${meta.versao}.tgz`;
+    return `${recursos.publicacao.pacotes}/${arquivo}`;
+  }
 }

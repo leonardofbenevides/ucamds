@@ -19,7 +19,14 @@ import { createCustomElement } from '@angular/elements';
 import { createApplication } from '@angular/platform-browser';
 import { provideZonelessChangeDetection, type Type } from '@angular/core';
 
-import { UcamButton, UcamCombobox, UcamSelect, UcamTextField } from '@ucam/ui';
+import {
+  UcamButton,
+  UcamCombobox,
+  UcamDialog,
+  UcamPagination,
+  UcamSelect,
+  UcamTextField,
+} from '@ucam/ui';
 
 import './styles.css';
 
@@ -38,6 +45,12 @@ const REGISTRO: [string, Type<unknown>][] = [
   ['ucam-text-field', UcamTextField],
   ['ucam-select', UcamSelect],
   ['ucam-combobox', UcamCombobox],
+  // Os dois que a ADR-010 cita como motivo e o protótipo não registrava: o
+  // diálogo, pela retenção de foco, e a paginação, pelo nome acessível. Eram
+  // justamente os casos que o legado reimplementava errado — deixá-los de fora
+  // era entregar o trilho sem as peças que o justificam.
+  ['ucam-dialog', UcamDialog],
+  ['ucam-pagination', UcamPagination],
 ];
 
 createApplication({ providers: [provideZonelessChangeDetection()] })

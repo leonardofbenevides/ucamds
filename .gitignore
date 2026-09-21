@@ -16,6 +16,7 @@ site/out-tsc/
 # `pnpm build` devolve todas idênticas.
 site/src/assets/t/
 site/src/assets/fonts/
+site/src/assets/tokens/
 docs/*
 !docs/superpowers/
 

@@ -13,6 +13,14 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SPEC = join(ROOT, 'spec', 'tokens');
 const OUT = join(ROOT, 'dist', 'tokens');
+
+// O SEGUNDO DESTINO É O QUE O TRILHO A CONSOME. A página de instalação ensina
+// um <link> para `{host}/tokens/ucam-tokens.css` — e durante meses esse link
+// deu 404, porque os tokens só existiam em dist/, que não é publicado. O site
+// serve `site/src/assets/` na raiz (publicDir do vite), então escrever aqui é
+// o que põe o arquivo no ar. Sem isto, a primeira linha que um dev do parque
+// legado copia não funciona.
+const OUT_SITE = join(ROOT, 'site', 'src', 'assets', 'tokens');
 const read = (f) => JSON.parse(readFileSync(join(SPEC, f), 'utf8'));
 
 const primitive = read('primitive.json');
@@ -409,15 +417,21 @@ ${['sm', 'md', 'lg', 'xl'].map((d) => `  --radius-${d}: var(--${P}-radius-${d});
 }
 `;
 
-if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
-writeFileSync(join(OUT, 'ucam-zard-bridge.css'), ponte, 'utf8');
-writeFileSync(join(OUT, 'ucam-tokens.css'), css, 'utf8');
-writeFileSync(join(OUT, '_ucam-tokens.scss'), scss, 'utf8');
-writeFileSync(join(OUT, 'ucam-tokens.json'), JSON.stringify(json, null, 2), 'utf8');
-writeFileSync(join(OUT, 'ucam-theme.css'), tw, 'utf8');
+const arquivos = [
+  ['ucam-zard-bridge.css', ponte],
+  ['ucam-tokens.css', css],
+  ['_ucam-tokens.scss', scss],
+  ['ucam-tokens.json', JSON.stringify(json, null, 2)],
+  ['ucam-theme.css', tw],
+];
+
+for (const destino of [OUT, OUT_SITE]) {
+  if (!existsSync(destino)) mkdirSync(destino, { recursive: true });
+  for (const [nome, conteudo] of arquivos) writeFileSync(join(destino, nome), conteudo, 'utf8');
+}
 
 const kb = (s) => (s.length / 1024).toFixed(1) + ' KB';
-console.log('@ucam/tokens → dist/tokens/');
+console.log('@ucam/tokens → dist/tokens/ e site/src/assets/tokens/ (servido em /tokens)');
 console.log(`  ucam-tokens.css    ${kb(css)}   ${primFlat.length} primitivos + ${semFlat.length} semânticos + ${darkFlat.length} no escuro`);
 console.log(`  _ucam-tokens.scss  ${kb(scss)}`);
 console.log(`  ucam-tokens.json   ${kb(JSON.stringify(json, null, 2))}`);

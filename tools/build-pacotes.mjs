@@ -197,9 +197,10 @@ O sprite fica em \`icons/sprite.svg\`:
 ## O que este pacote NÃO entrega
 
 Comportamento. Combobox com busca, retenção de foco de diálogo e paginação
-acessível precisam de JavaScript — estão no \`@ucam/ui\`, e para o legado no
-protótipo de custom elements (ADR-010). Gráfico também não: a folha não desenha
-gráfico, e a tela estática mostra a tabela equivalente.
+acessível precisam de JavaScript — estão no \`@ucam/ui\` e, para o legado, no
+\`@ucam/elements\` (Trilho A+, ADR-010), que os entrega como custom elements sem
+framework. Gráfico também não: a folha não desenha gráfico, e a tela estática
+mostra a tabela equivalente.
 `,
     'utf8',
   );
@@ -294,6 +295,99 @@ function agentes() {
   return dir;
 }
 
+/* ---------------------------------------------------------- @ucam/elements --- */
+// Trilho A+ (ADR-010): os componentes cujo contrato depende de comportamento,
+// entregues ao parque legado como custom elements. Uma tag <script>, uma tag
+// <link>, e <ucam-combobox> passa a existir numa página AngularJS.
+//
+// POR QUE ISTO VIROU PACOTE: a decisão está aceita desde 30/08/2026 e o bundle
+// já era construído e provado por elements/prova.mjs — só não era distribuído.
+// Enquanto ficou "protótipo", o legado seguiu reimplementando à mão o combobox
+// com busca, a retenção de foco do diálogo e a paginação acessível, que é
+// exatamente o que a evidência de cada contrato registra como feito errado.
+
+function elements() {
+  const origem = join(DIST, 'elements');
+  if (!exigir(join(origem, 'ucam-elements.js'), 'rode: pnpm run elements')) return null;
+  if (!exigir(join(origem, 'ucam-elements.css'), 'rode: pnpm run elements')) return null;
+
+  const dir = join(SAIDA, 'elements');
+  mkdirSync(dir, { recursive: true });
+  // Só o par distribuível. O medicao.js da ADR-010 é instrumento de medida e
+  // não pode viajar: registra um componente só e daria a impressão de um
+  // bundle quebrado a quem o carregasse por engano.
+  for (const f of ['ucam-elements.js', 'ucam-elements.css']) {
+    cpSync(join(origem, f), join(dir, f));
+  }
+
+  const pkg = {
+    name: '@ucam/elements',
+    version: VERSAO,
+    description:
+      'Trilho A+ do DSUCAM: os componentes que precisam de JavaScript, empacotados como custom elements para o parque legado.',
+    license: 'UNLICENSED',
+    sideEffects: true,
+    exports: {
+      './ucam-elements.js': './ucam-elements.js',
+      './ucam-elements.css': './ucam-elements.css',
+      './package.json': './package.json',
+    },
+  };
+  writeFileSync(join(dir, 'package.json'), JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+  writeFileSync(join(dir, 'LICENSE'), LICENCA, 'utf8');
+  writeFileSync(
+    join(dir, 'README.md'),
+    `# @ucam/elements
+
+Trilho A+ do Design System da UCAM (ADR-010): os componentes cujo contrato
+depende de comportamento, entregues ao legado como custom elements. Sem
+framework, sem import, sem passo de build.
+
+\`\`\`html
+<link rel="stylesheet" href="ucam-elements.css">
+<script type="module" src="ucam-elements.js"></script>
+
+<ucam-combobox label="Setor"></ucam-combobox>
+<ucam-dialog></ucam-dialog>
+\`\`\`
+
+Os nomes de tag são os do contrato: \`<ucam-button>\` aqui é o mesmo
+\`<ucam-button>\` que uma aplicação Angular importa.
+
+## Quando usar, e quando não
+
+O Trilho A (\`@ucam/css\`) continua sendo a entrega padrão para o legado: ele
+resolve tudo que é aparência e estado declarável em classe, e custa um
+\`<link>\`. O A+ é para as telas que precisam de um componente cujo contrato não
+cabe em CSS — combobox com busca, retenção de foco de diálogo, paginação com
+nome acessível.
+
+A diferença é de ordem de grandeza: o A+ carrega o runtime do Angular. Os seis
+componentes deste bundle custam quase o mesmo que um, porque o piso domina o
+custo marginal.
+
+## Duas regras que quebram a página se ignoradas
+
+1. **Não carregue este bundle e a biblioteca Angular na mesma página.** O
+   registro do custom element é global no documento, e a segunda definição do
+   mesmo nome lança.
+2. **A folha não traz preflight.** É de propósito: o preflight do Tailwind
+   zeraria margin, padding e estilo de lista em \`*\` e \`body\`, repintando a
+   aplicação legada inteira.
+
+Change detection é zoneless por obrigação: o AngularJS tem o próprio ciclo de
+digest, e zone.js sobre ele seriam dois laços disputando a mesma página.
+
+## Componentes registrados
+
+\`ucam-button\`, \`ucam-text-field\`, \`ucam-select\`, \`ucam-combobox\`,
+\`ucam-dialog\`, \`ucam-pagination\`.
+`,
+    'utf8',
+  );
+  return dir;
+}
+
 /* ------------------------------------------------------------------ tarball --- */
 
 function empacotar(dir) {
@@ -321,7 +415,7 @@ function empacotar(dir) {
 rmSync(SAIDA, { recursive: true, force: true });
 mkdirSync(SAIDA, { recursive: true });
 
-for (const montar of [tokens, css, ui, agentes]) {
+for (const montar of [tokens, css, ui, elements, agentes]) {
   const dir = montar();
   if (!dir) continue;
   // O AGENTS.md viaja em TODO pacote: quem instala só o @ucam/css também

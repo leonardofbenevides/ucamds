@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { releases, meta } from '../spec/spec';
+import { releases, meta, recursos } from '../spec/spec';
 import { PageHeaderComponent } from '../docs/page-header.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { PageHeaderComponent } from '../docs/page-header.component';
     <ucam-page-header
       secao="Projeto"
       [titulo]="'Releases'"
-      [lede]="'Versão e estado de cada contrato. Nenhum pacote publicado: as versões abaixo são as do contrato, não de artefato instalável.'"
+      [lede]="lede"
     />
 
     <div class="callout">
@@ -53,6 +53,14 @@ import { PageHeaderComponent } from '../docs/page-header.component';
 })
 export default class ReleasesPage {
   protected readonly lista = releases;
+
+  /** A lede dizia "nenhum pacote publicado" mesmo depois de quatro deles
+   *  passarem a sair do build como tarball. Agora ela conta o que a spec diz,
+   *  e a frase envelhece junto com o dado em vez de contra ele. */
+  protected readonly lede = (() => {
+    const gerados = recursos.pacotes.itens.filter((p) => p.estado === 'gerado').length;
+    return `Versão e estado de cada contrato. As versões abaixo são as do contrato; ${gerados} pacotes já existem como tarball baixável, na versão ${meta.versao} do design system.`;
+  })();
   protected readonly m = meta;
   protected readonly geradoEm = new Date(meta.geradoEm).toLocaleDateString('pt-BR', {
     day: '2-digit',

@@ -28,13 +28,14 @@
     "lib": "pnpm --dir ui run build",
     "pacotes": "node tools/check-agentes.mjs && node tools/build-pacotes.mjs",
     "indice": "node tools/build-index.mjs",
-    "dist": "pnpm run build && pnpm run lib && pnpm run pacotes",
+    "dist": "pnpm run build && pnpm run lib && pnpm run elements && pnpm run pacotes && pnpm run publicar",
     "adaptador": "node tools/build-adapters.mjs",
     "agentes": "node tools/build-agentes.mjs && node tools/check-agentes.mjs",
     "faixa": "node tools/check-faixa.mjs",
     "obrigatoriedade": "node tools/check-obrigatoriedade.mjs",
     "regra-anexo": "node tools/check-regra-anexo.mjs",
-    "subpaleta": "node tools/check-subpaleta.mjs"
+    "subpaleta": "node tools/check-subpaleta.mjs",
+    "publicar": "node tools/build-publicacao.mjs"
   },
   "devDependencies": {
     "@ng-icons/lucide": "^35.1.0",
