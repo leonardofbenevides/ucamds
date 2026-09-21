@@ -32,17 +32,11 @@
         "nota": "Tarball em /pacotes. Não carregue junto com a biblioteca Angular: o registro do custom element é global e a segunda definição lança."
       },
       {
-        "nome": "@ucam/patterns",
-        "conteudo": "Composições: listagem CRUD, formulário de entidade, shell.",
-        "consumidores": "Trilho B",
-        "estado": "planejado"
-      },
-      {
         "nome": "@ucam/ds-mcp",
         "conteudo": "Servidor MCP, CLI ucam-ds (instalar, checar), skills, AGENTS.md e os contratos em JSON.",
         "consumidores": "Ferramentas de desenvolvimento: Claude Code, VS Code/Copilot e CI",
         "estado": "gerado",
-        "nota": "Tarball em /pacotes. Instalar com pnpm add -D e rodar npx ucam-ds instalar."
+        "nota": "Tarball em /pacotes. Instalar com pnpm add -D e rodar npx ucam-ds instalar. É também onde os PADRÕES vão sair: a decisão de 21/09/2026 trocou o pacote @ucam/patterns por um gerador de código (ucam-ds gerar), porque padrão registra inconsistência, não repetição — um componente configurável resolveria a doença errada, e a oitava tela sempre precisa do que a API não previu. O subcomando ainda não existe."
       }
     ]
   },
@@ -164,9 +158,9 @@
         "id": "a",
         "nome": "Trilho A — legado",
         "alvo": "AngularJS, JSF/PrimeFaces, Angular 14 ou anterior — qualquer aplicação que aceite um <link>.",
-        "como": "Duas tags no <head>, e nada mais: sem instalar pacote, sem passo de build, sem reset global. A folha traz os tokens junto — nenhum terceiro <link> é preciso — e desenha os componentes sob um ancestral .ucam. Os ícones ficam num sprite à parte, em {host}/icons/sprite.svg, referenciado por <use href=\"…#nome\">.",
+        "como": "Duas tags no <head>, e nada mais: sem instalar pacote, sem passo de build, sem reset global. A folha traz os tokens junto — nenhum terceiro <link> é preciso — e desenha os componentes sob um ancestral .ucam. Os ícones são a única peça que a URL não entrega pronta: <use href=\"{host}/icons/sprite.svg#nome\"> é BLOQUEADO quando a página mora noutro domínio, porque referência externa de <use> é same-origin e CORS não levanta esse bloqueio. Sirva o sprite da PRÓPRIA origem do app — baixe {host}/icons/sprite.svg para junto das suas estáticas, ou instale o tarball @ucam/css, que o traz —, ou injete-o uma vez no documento por fetch e referencie por <use href=\"#nome\">, que é o que o próprio site do design system faz.",
         "codigo": "<link rel=\"stylesheet\" href=\"{host}/css/ucam-fonts.css\">\n<link rel=\"stylesheet\" href=\"{host}/css/ucam.css\">\n\n<div class=\"ucam\">\n  <button class=\"ucam-btn ucam-btn--primary\">Salvar</button>\n</div>",
-        "limite": "Aparência e estado que cabem em classe. Comportamento — combobox com busca, diálogo que retém foco, paginação acessível — não vem aqui: é o Trilho A+. A URL não tem versão, de propósito: uma correção de contraste chega ao parque inteiro no deploy seguinte, sem ninguém tocar em aplicação nenhuma. Quem precisa congelar instala o tarball @ucam/css em /pacotes. Máquina sem saída para a internet: baixe os arquivos e sirva do próprio app, mantendo css/ ao lado de tokens/ e fonts/ — os caminhos dentro da folha são relativos. E quem só quer as variáveis, sem componente, carrega {host}/tokens/ucam-tokens.css."
+        "limite": "Aparência e estado que cabem em classe. Comportamento — combobox com busca, diálogo que retém foco, paginação acessível — não vem aqui: é o Trilho A+. A URL não tem versão, de propósito: uma correção de contraste chega ao parque inteiro no deploy seguinte, sem ninguém tocar em aplicação nenhuma. Quem precisa congelar instala o tarball @ucam/css em /pacotes. Máquina sem saída para a internet: baixe os arquivos e sirva do próprio app, mantendo css/ ao lado de tokens/ e fonts/ — os caminhos dentro da folha são relativos. E quem só quer as variáveis, sem componente, carrega {host}/tokens/ucam-tokens.css. Medido em 21/09/2026 numa página servida de outra origem: a folha pinta o botão no bordô da marca e a Geist carrega (o woff2 sai com Access-Control-Allow-Origin: *), e só o <use> externo cai, calado — sem erro na tela, uma linha no console."
       },
       {
         "id": "a-mais",

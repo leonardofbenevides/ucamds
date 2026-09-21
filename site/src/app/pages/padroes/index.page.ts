@@ -12,7 +12,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     <ucam-page-header
       secao="Padrões"
       [titulo]="'Composições recorrentes'"
-      [lede]="'Um padrão resolve uma tarefa inteira, não um controle. Vira código em @ucam/patterns quando aparece em três ou mais telas.'"
+      [lede]="'Um padrão resolve uma tarefa inteira, não um controle. Vira código gerado quando aparece em três ou mais telas.'"
     />
 
     <div class="grade-cartoes">
