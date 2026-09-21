@@ -24,7 +24,7 @@ type Fundo = { id: string; nome: string; token: string };
         <h2>Duas marcas, dois donos</h2>
         <p>
           A <strong>logo da UCAM</strong> é da universidade e vem do arquivo de marca. O
-          <strong>símbolo do DSUCAM</strong> — placa sólida com um quadrado vazado perto do canto
+          <strong>símbolo do UCAMDS</strong> — placa sólida com um quadrado vazado perto do canto
           inferior direito — é do design system: a placa é o componente, o vazado é o token, e o
           fundo aparece pelo buraco. No header do site as duas aparecem lado a lado, separadas por
           um filete, justamente porque não são a mesma coisa.

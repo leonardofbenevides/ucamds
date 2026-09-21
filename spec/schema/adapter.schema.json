@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dsucam/spec/schema/adapter.schema.json",
+  "$id": "https://ucamds/spec/schema/adapter.schema.json",
   "title": "Adaptador de trilho legado",
   "description": "Contrato de um adaptador que reveste um sistema com CSS próprio (o tema Aristo do PrimeFaces, o main.css do Relatórios Acadêmicos) com os tokens semânticos do DS, sem tocar no código do sistema. Gera uma folha CSS de override em dist/css/ucam-<id>.css, uma por arquivo deste diretório.",
   "type": "object",

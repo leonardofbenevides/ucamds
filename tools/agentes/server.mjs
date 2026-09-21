@@ -24,7 +24,7 @@ function tratar(msg) {
       return responder(id, {
         protocolVersion: VERSOES.includes(pedida) ? pedida : VERSOES[0],
         capabilities: { tools: {}, resources: {} },
-        serverInfo: { name: 'dsucam', title: 'Design System da UCAM', version: dados().versao },
+        serverInfo: { name: 'ucamds', title: 'Design System da UCAM', version: dados().versao },
         instructions:
           'Contratos do Design System da UCAM. Antes de escrever interface: ucam_list_templates e ucam_get_pattern para achar a tela parecida; ucam_get_component para a API exata de cada <ucam-*>; ucam_get_tokens para cor e espaço; ucam_get_states para qualquer estado — desabilitado, carregando, somente leitura, selecionado —, porque essas regras valem para TODO componente e não estão em contrato nenhum. Antes de concluir: ucam_check_usage. Prop, componente, token ou nome de estado que as ferramentas não devolvem não existe.',
       });
@@ -68,9 +68,9 @@ linhas.on('line', (linha) => {
     try {
       tratar(m);
     } catch (e) {
-      process.stderr.write(`[dsucam] ${e.stack}\n`);
+      process.stderr.write(`[ucamds] ${e.stack}\n`);
       if (m.id !== undefined) falhar(m.id, -32603, e.message);
     }
   }
 });
-process.stderr.write(`[dsucam] MCP pronto · spec ${dados().versao} · ${dados().componentes.length} contratos\n`);
+process.stderr.write(`[ucamds] MCP pronto · spec ${dados().versao} · ${dados().componentes.length} contratos\n`);

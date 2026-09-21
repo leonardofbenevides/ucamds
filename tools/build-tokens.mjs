@@ -385,7 +385,7 @@ ${PONTE.map(([shad, ucam]) => `  --${shad}: var(--${P}-${ucam});`).join('\n')}
    *
    * O tema do shadcn DERIVA os outros degraus por aritmética
    * (sm = radius - 4px, md = radius - 2px, xl = radius + 4px). Com --radius em
-   * 0.625rem isso dá sm=6px e md=8px, enquanto a spec do DSUCAM declara
+   * 0.625rem isso dá sm=6px e md=8px, enquanto a spec do UCAMDS declara
    * sm=4px e md=6px: DOIS dos quatro degraus ficavam errados, em silêncio, em
    * todo componente da base. Foi assim que o checkbox saiu com 6px de raio
    * onde o mesmo checkbox em CSS puro tinha 4px.

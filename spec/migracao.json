@@ -1,5 +1,5 @@
 {
-  "$description": "Guia de migração: a ordem das operações para levar uma tela ou um app do parque legado ao DSUCAM. O mapa legado→novo de cada componente vive no contrato dele. Se uma regra aparece aqui e num contrato, a do contrato vale.",
+  "$description": "Guia de migração: a ordem das operações para levar uma tela ou um app do parque legado ao UCAMDS. O mapa legado→novo de cada componente vive no contrato dele. Se uma regra aparece aqui e num contrato, a do contrato vale.",
   "_meta": {
     "publico": "Desenvolvedor de aplicação, não mantenedor do design system.",
     "regra": "Todo passo deste guia tem de ser verificável por quem executa. Passo que termina em 'use o bom senso' é passo mal escrito."
@@ -119,7 +119,7 @@
   },
 
   "anatomiaDeTela": {
-    "$descricao": "Uma tela do DSUCAM tem quatro camadas, e confundi-las é a causa mais comum de tela que fica quase certa. De fora para dentro:",
+    "$descricao": "Uma tela do UCAMDS tem quatro camadas, e confundi-las é a causa mais comum de tela que fica quase certa. De fora para dentro:",
     "camadas": [
       {
         "camada": "Moldura",

@@ -76,7 +76,7 @@
     "$description": "Servidor MCP que entrega os contratos do design system a agentes de IA: a API exata de cada componente, os tokens resolvidos por tema, os padrões, as telas de referência, as decisões e os mapas de migração — dados, não prosa. Vem no pacote @ucam/ds-mcp, roda em stdio e não tem dependência: sobe em qualquer máquina com Node 18 ou mais novo, sem alcançar o registro público.",
     "config": {
       "mcpServers": {
-        "dsucam": {
+        "ucamds": {
           "command": "node",
           "args": [
             "node_modules/@ucam/ds-mcp/mcp/server.mjs"
@@ -158,22 +158,30 @@
     ]
   },
   "instalacao": {
-    "$description": "Dois trilhos de consumo. Escolha pelo que a aplicação consegue receber hoje: um <link> para os tokens em CSS, ou os pacotes da biblioteca Angular.",
+    "$description": "Três caminhos de consumo. Escolha pelo que a aplicação consegue receber hoje: o primeiro não pede instalação nenhuma — duas tags no <head> e a aparência da UCAM aparece.",
     "trilhos": [
       {
         "id": "a",
         "nome": "Trilho A — legado",
-        "alvo": "AngularJS e Angular 14 ou anterior, sem pipeline de build moderno.",
-        "como": "Um <link> para o CSS de tokens, servido pelo próprio site do design system. Nenhuma dependência, nenhum passo de build, nenhum reset global.",
-        "codigo": "<link rel=\"stylesheet\" href=\"https://dsucam.vercel.app/tokens/ucam-tokens.css\">",
-        "limite": "Dá acesso aos tokens, não aos componentes. Serve para alinhar cor, espaçamento e tipografia sem tocar na arquitetura do app. Máquina sem saída para a internet: baixe o arquivo e sirva do próprio app — é o mesmo CSS, sem dependência de rede externa."
+        "alvo": "AngularJS, JSF/PrimeFaces, Angular 14 ou anterior — qualquer aplicação que aceite um <link>.",
+        "como": "Duas tags no <head>, e nada mais: sem instalar pacote, sem passo de build, sem reset global. A folha traz os tokens junto — nenhum terceiro <link> é preciso — e desenha os componentes sob um ancestral .ucam. Os ícones ficam num sprite à parte, em {host}/icons/sprite.svg, referenciado por <use href=\"…#nome\">.",
+        "codigo": "<link rel=\"stylesheet\" href=\"{host}/css/ucam-fonts.css\">\n<link rel=\"stylesheet\" href=\"{host}/css/ucam.css\">\n\n<div class=\"ucam\">\n  <button class=\"ucam-btn ucam-btn--primary\">Salvar</button>\n</div>",
+        "limite": "Aparência e estado que cabem em classe. Comportamento — combobox com busca, diálogo que retém foco, paginação acessível — não vem aqui: é o Trilho A+. A URL não tem versão, de propósito: uma correção de contraste chega ao parque inteiro no deploy seguinte, sem ninguém tocar em aplicação nenhuma. Quem precisa congelar instala o tarball @ucam/css em /pacotes. Máquina sem saída para a internet: baixe os arquivos e sirva do próprio app, mantendo css/ ao lado de tokens/ e fonts/ — os caminhos dentro da folha são relativos. E quem só quer as variáveis, sem componente, carrega {host}/tokens/ucam-tokens.css."
+      },
+      {
+        "id": "a-mais",
+        "nome": "Trilho A+ — legado com comportamento",
+        "alvo": "As telas do parque legado que precisam de um componente que CSS não desenha (ADR-010).",
+        "como": "Um <link> e um <script type=\"module\">, e <ucam-combobox> passa a existir numa página AngularJS. O bundle é autocontido: não depende do Trilho A ao lado, nem de framework, nem de passo de build.",
+        "codigo": "<link rel=\"stylesheet\" href=\"{host}/elements/ucam-elements.css\">\n<script type=\"module\" src=\"{host}/elements/ucam-elements.js\"></script>\n\n<ucam-combobox label=\"Setor\"></ucam-combobox>\n<ucam-dialog></ucam-dialog>",
+        "limite": "Seis componentes: ucam-button, ucam-text-field, ucam-select, ucam-combobox, ucam-dialog, ucam-pagination. Não carregue este bundle junto com a biblioteca Angular: o registro do custom element é global no documento e a segunda definição do mesmo nome lança. Ele carrega o runtime do Angular, então continue no Trilho A para tudo que for só aparência."
       },
       {
         "id": "b",
         "nome": "Trilho B — apps novos e migrados",
         "alvo": "Angular moderno com Tailwind v4.",
         "como": "Instale os pacotes direto da URL e importe o bloco @theme. Não é preciso baixar arquivo à mão: o pnpm resolve o tarball, grava a URL no package.json e um clone do seu app reinstala sozinho.",
-        "codigo": "pnpm add https://dsucam.vercel.app/pacotes/ucam-tokens-{versao}.tgz \\\n         https://dsucam.vercel.app/pacotes/ucam-ui-{versao}.tgz\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@ucam/tokens/ucam-theme.css\";",
+        "codigo": "pnpm add {host}/pacotes/ucam-tokens-{versao}.tgz          {host}/pacotes/ucam-ui-{versao}.tgz\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@ucam/tokens/ucam-theme.css\";",
         "limite": "Aplicações importam <ucam-*>. Nunca <z-*>: o ZardUI é matéria-prima do design system, não dependência das aplicações. Sem registro, a URL fixa a versão — não há faixa semver nem pnpm update, e subir de versão é trocar o número."
       }
     ]
@@ -183,9 +191,13 @@
     "estado": "planejado"
   },
   "publicacao": {
-    "$description": "Onde o design system é servido. Uma fonte só: o sitemap do site, os exemplos de instalação e o portão de publicação leem este host. Enquanto não existir registro privado, os tarballs também saem daqui.",
-    "host": "https://dsucam.vercel.app",
+    "$description": "Onde o design system é servido. Uma fonte só: o sitemap do site, os exemplos de instalação e o portão de publicação leem este host. O Trilho A inteiro vai ao ar como URL — folha, fontes e sprite —, e enquanto não existir registro privado os tarballs também saem daqui.",
+    "host": "https://ucam-ds.vercel.app",
     "tokens": "/tokens",
+    "css": "/css",
+    "icones": "/icons",
+    "fontes": "/fonts",
+    "elements": "/elements",
     "pacotes": "/pacotes"
   }
 }

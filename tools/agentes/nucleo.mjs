@@ -538,7 +538,7 @@ function exigirObrigatorios(nome, args) {
 /* -------------------------------------------------------------- recursos --- */
 
 export function recursos() {
-  const lista = [{ uri: 'ucam://agents', name: 'AGENTS.md — como trabalhar com o DSUCAM', mimeType: 'text/markdown', arquivo: 'AGENTS.md' }];
+  const lista = [{ uri: 'ucam://agents', name: 'AGENTS.md — como trabalhar com o UCAMDS', mimeType: 'text/markdown', arquivo: 'AGENTS.md' }];
   const dir = join(RAIZ, 'skills');
   if (existsSync(dir)) {
     for (const s of readdirSync(dir)) {

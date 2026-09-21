@@ -269,7 +269,7 @@
         "nota": "Elimina as imagens quebradas em produção. Exige inventário e redesenho dos ícones de módulo."
       },
       {
-        "legado": "ucam-icon-button variant=\"danger\" (DSUCAM antes da ADR-015)",
+        "legado": "ucam-icon-button variant=\"danger\" (UCAMDS antes da ADR-015)",
         "novo": "tone=\"danger\"",
         "nota": "Não é conversão literal: o antigo era preenchimento vermelho sólido e o novo é ghost com ícone vermelho. É a correção deliberada da ADR-015 — o exemplo 'Ação de linha' deste contrato pintava de vermelho sólido um botão que se repete em cada linha da tabela."
       }

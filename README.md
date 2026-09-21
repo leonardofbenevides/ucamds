@@ -1,4 +1,4 @@
-# DSUCAM — Design System da Universidade Candido Mendes
+# UCAMDS — Design System da Universidade Candido Mendes
 
 Um contrato em JSON, muitos consumidores gerados a partir dele: CSS puro para os
 sistemas legados, componentes Angular para os novos, o site de documentação, e um

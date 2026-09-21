@@ -1,4 +1,4 @@
-// Monta os pacotes distribuíveis do DSUCAM a partir do que já existe em dist/.
+// Monta os pacotes distribuíveis do UCAMDS a partir do que já existe em dist/.
 //
 //   node tools/build-pacotes.mjs
 //
@@ -147,7 +147,7 @@ function css() {
     name: '@ucam/css',
     version: VERSAO,
     description:
-      'Primitivos visuais do DSUCAM sem framework, escopados sob .ucam. Trilho A: aplicações legadas.',
+      'Primitivos visuais do UCAMDS sem framework, escopados sob .ucam. Trilho A: aplicações legadas.',
     license: 'UNLICENSED',
     sideEffects: ['*.css'],
     exports: {
@@ -278,7 +278,7 @@ function agentes() {
     name: '@ucam/ds-mcp',
     version: VERSAO,
     description:
-      'Kit do DSUCAM para agentes de IA: servidor MCP (stdio, sem dependência), skills ucam-ds/ucam-migrate/ucam-audit, AGENTS.md e os contratos em JSON.',
+      'Kit do UCAMDS para agentes de IA: servidor MCP (stdio, sem dependência), skills ucam-ds/ucam-migrate/ucam-audit, AGENTS.md e os contratos em JSON.',
     license: 'UNLICENSED',
     type: 'module',
     engines: { node: '>=18' },
@@ -324,7 +324,7 @@ function elements() {
     name: '@ucam/elements',
     version: VERSAO,
     description:
-      'Trilho A+ do DSUCAM: os componentes que precisam de JavaScript, empacotados como custom elements para o parque legado.',
+      'Trilho A+ do UCAMDS: os componentes que precisam de JavaScript, empacotados como custom elements para o parque legado.',
     license: 'UNLICENSED',
     sideEffects: true,
     exports: {

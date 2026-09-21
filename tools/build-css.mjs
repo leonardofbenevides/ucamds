@@ -11149,7 +11149,7 @@ ${acima('nav-fixa')} {
  * barra móvel, rodapé, ações da barra de visão, paginação, barra de lote,
  * ações de formulário, dica de teclado. Vem do Relatórios Acadêmicos, que
  * já fazia isto em 74 templates e foi o primeiro sistema do parque a ter
- * regra de impressão; o DSUCAM não tinha nenhuma.
+ * regra de impressão; o UCAMDS não tinha nenhuma.
  *
  * A moldura lateral é uma grade de altura EXATA (block-size: var(--ucam-vh))
  * com os painéis rolando por dentro (overflow: auto/hidden). No papel isso

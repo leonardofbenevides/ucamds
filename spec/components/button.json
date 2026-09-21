@@ -247,7 +247,7 @@
     }
   },
   "migracao": {
-    "de": "AngularJS / Angular Material (md-button), e o próprio DSUCAM antes da ADR-015",
+    "de": "AngularJS / Angular Material (md-button), e o próprio UCAMDS antes da ADR-015",
     "mapa": [
       {
         "legado": "md-button.md-raised com cor preta (SALVAR)",
@@ -276,7 +276,7 @@
         "nota": "Passa a exigir diálogo de confirmação."
       },
       {
-        "legado": "ucam-button variant=\"danger\" (DSUCAM antes da ADR-015)",
+        "legado": "ucam-button variant=\"danger\" (UCAMDS antes da ADR-015)",
         "novo": "variant=\"primary\" tone=\"danger\"",
         "nota": "Conversão literal, mesma aparência. Vale reconsiderar: se o botão está numa linha de tabela ou numa lista, o certo agora é variant=\"secondary\" tone=\"danger\", que não existia antes."
       },

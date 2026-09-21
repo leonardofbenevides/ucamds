@@ -909,7 +909,7 @@
             }
           ]
         },
-        "railMarca": "../marca/dsucam-simbolo-inverso.svg",
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
         "navRodape": [
           {
             "rotulo": "Configurações",
@@ -1252,7 +1252,7 @@
             "As duas saídas secundárias não têm o mesmo peso. \"Esqueci minha senha\" vive na linha do rótulo da senha, porque é ali que a dúvida acontece; \"Primeiro acesso\" é o rodapé do bloco, precedido da pergunta que o justifica.",
             "A senha tem \"Mostrar senha\": ação do grupo de campo (input-group), interruptor com aria-pressed e rótulo que troca para \"Ocultar senha\". Quem digita uma senha longa num teclado desconhecido precisa conferir o que escreveu antes de gastar uma tentativa — e o erro de senha é o primeiro motivo de chamado no suporte.",
             "A janela é FIGURA (aria-hidden inteira) e por isso é feita só de <span>: figura não pode ter link nem botão dentro, ou o teclado alcança o que o leitor de tela não anuncia. A estrela cheia é o mesmo desenho do interruptor da grade, sem ser interruptor.",
-            "O símbolo do DSUCAM saiu do canto do painel: é a marca do design system, não do Portal — quem entra aqui é aluno e funcionário da universidade, e a única marca que lhes pertence é a da UCAM, que já está no formulário. O topo do painel ficou para a frase.",
+            "O símbolo do UCAMDS saiu do canto do painel: é a marca do design system, não do Portal — quem entra aqui é aluno e funcionário da universidade, e a única marca que lhes pertence é a da UCAM, que já está no formulário. O topo do painel ficou para a frase.",
             "Ritmo de 8: painel com recuo de 40, frase de 22/28, apoio de 13/20, janela a 32 da frase, grade com vão de 12 e cartões de 16 de recuo. A terceira coluna da grade é cortada pela sangria de 80px à direita — a grade continua além do quadro, que é o argumento da coluna.",
             "Ritmo de 8: painel com recuo de 40, frase de 22/28, apoio de 13/20, janela a 32 da frase, grade com vão de 12 e cartões de 16 de recuo. A quarta coluna da grade é cortada pela sangria de 80px à direita — a grade continua além do quadro, que é o argumento da coluna.",
             "O que a coluna da direita mostra é o que a pessoa vê DEPOIS de entrar: a grade de módulos do Portal, com os mesmos cartões, ícones e estrelas da tela \"Meus sistemas\". Antes era uma caixa de entrada do Protocolo — um sistema só, e a frase ao lado promete todos. A ilustração agora diz o mesmo que a frase: oito módulos de três unidades, três deles fixados.",
@@ -1399,7 +1399,7 @@
             }
           ]
         },
-        "railMarca": "../marca/dsucam-simbolo-inverso.svg",
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
         "navRodape": [
           {
             "rotulo": "Configurações",
@@ -1716,7 +1716,7 @@
             }
           ]
         },
-        "railMarca": "../marca/dsucam-simbolo-inverso.svg",
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
         "navRodape": [
           {
             "rotulo": "Configurações",
@@ -1821,7 +1821,7 @@
       "icone": "chartColumn",
       "categoria": "academico",
       "descricao": "Consultas e relatórios da vida acadêmica: matrícula, histórico, avaliação, grade, processo seletivo, turma e professor. 37 relatórios, cada um com uma tela de filtros e uma de resultado, com saída em tela, PDF, Excel e Word.",
-      "stack_atual": "Spring Boot + Thymeleaf, CSS próprio (main.css, 3.077 linhas) com tema claro e escuro, JS vanilla. Redesenhado por conta própria em 09/2026; entra no DSUCAM por adaptador (ADR-025).",
+      "stack_atual": "Spring Boot + Thymeleaf, CSS próprio (main.css, 3.077 linhas) com tema claro e escuro, JS vanilla. Redesenhado por conta própria em 09/2026; entra no UCAMDS por adaptador (ADR-025).",
       "templates": [
         {
           "id": "catalogo",
@@ -2148,7 +2148,7 @@
             }
           ]
         },
-        "railMarca": "../marca/dsucam-simbolo-inverso.svg",
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
         "navRodape": [
           {
             "rotulo": "Configurações",
@@ -2788,7 +2788,7 @@
             }
           ]
         },
-        "railMarca": "../marca/dsucam-simbolo-inverso.svg",
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
         "navRodape": [
           {
             "rotulo": "Configurações",

@@ -19,7 +19,7 @@
 - Toast não existe no catálogo: feedback é o próprio controle ou um `.ucam-alert`.
 - ADR-030 e ADR-031 estão reservadas pela spec paralela; este plano usa ADR-032 e ADR-033.
 - Outra sessão pode estar editando `tools/build-css.mjs` e `tools/lib/shell.mjs`: só Edit pontual, nunca reescrever o arquivo; antes de acusar regressão, `ls -la --time-style=full-iso`.
-- Servidores de prova: Chrome `--remote-debugging-port=9391`, telas em `:5214` (`scratchpad/servidor-docs.mjs`), site em `:5213` (`scratchpad/servidor3.mjs`). Se a porta estiver ocupada, é outra sessão — usar outra porta e ajustar `CDP`/`SITE` nos scripts do scratchpad desta sessão (`C:\Users\Leonardo\AppData\Local\Temp\claude\c--Users-Leonardo-Documents-DSUCAM\1d0e1997-0344-469c-b951-f2c73638ed92\scratchpad\`).
+- Servidores de prova: Chrome `--remote-debugging-port=9391`, telas em `:5214` (`scratchpad/servidor-docs.mjs`), site em `:5213` (`scratchpad/servidor3.mjs`). Se a porta estiver ocupada, é outra sessão — usar outra porta e ajustar `CDP`/`SITE` nos scripts do scratchpad desta sessão (`C:\Users\Leonardo\AppData\Local\Temp\claude\c--Users-Leonardo-Documents-UCAMDS\1d0e1997-0344-469c-b951-f2c73638ed92\scratchpad\`).
 
 ---
 
@@ -211,7 +211,7 @@ Expected: os três passam; `grep -c "ucam-stat--warning" dist/css/ucam.css` ≥ 
 
 ```js
 import { readFileSync, writeFileSync } from 'node:fs';
-const P = 'C:/Users/Leonardo/Documents/DSUCAM/spec/templates.json';
+const P = 'C:/Users/Leonardo/Documents/UCAMDS/spec/templates.json';
 const t = JSON.parse(readFileSync(P, 'utf8'));
 const tela = (pid, tid) => t.projetos.find((p) => p.id === pid).templates.find((x) => x.id === tid);
 const tom = (pid, tid, rotulo, classe) => {
@@ -457,7 +457,7 @@ Expected: zero falhas na saída do script; `pnpm run site` passa e `/telas/` mos
 **Files:**
 - Modify: `spec/decisions/adr.json` (ADR-032, ADR-033)
 - Modify: `spec/components/app-shell.json` (anatomia da marca e do campus), `spec/patterns/patterns.json` se o shell-aplicacao descreve a faixa
-- Modify: `C:\Users\Leonardo\.claude\projects\c--Users-Leonardo-Documents-DSUCAM\memory\` (memória de projeto nova)
+- Modify: `C:\Users\Leonardo\.claude\projects\c--Users-Leonardo-Documents-UCAMDS\memory\` (memória de projeto nova)
 
 - [ ] **Step 1: ADR-032** (cor onde há dado): contexto = pedido de 13/09 e as regras 022/023/027 que limitavam a cor; decisão = tom pinta o ladrilho quando há julgamento, `marca` um por painel, categoria discrimina irmãos por seis papéis apontando para primitivos existentes; consequências = contratos do stat e icon-tile, portão de daltonismo com categorias, 21 KPIs e 62 cartões reclassificados; afeta `stat`, `icon-tile`, `chart`.
 - [ ] **Step 2: ADR-033** (a faixa identifica o módulo): contexto = lockup em toda tela pesava e estourava a 320/480; chip de campus era menu disfarçado; login com cinco textos soltos; 168 botões sem gancho nas 15 telas; decisão = marquinha (ícone + categoria + nome), lockup no Portal/login/gaveta/rodapé, campus é `.ucam-select`, ação sem destino é `aria-disabled` com motivo, ação in-page tem eco no próprio controle; afeta `app-shell`, `select`, `button`, `stepper`, `badge`, `timeline`, `chip`.
@@ -471,4 +471,4 @@ Expected: passa de ponta a ponta (inclui `site`).
 Run: `MOBILE=0 node sonda-resp.mjs all 320,480,768,1024,1440 final 1440` e `node sonda-resp.mjs all 390 toque-final`; `node prova-campus.mjs`; `node prova-fluxos.mjs`; `pnpm run tokens` (daltonismo com categorias) — anotar os desvios que o portão relatar.
 Expected: `pag+` ≤ 0 em todas; campo < 16px = 0 sob toque; provas verdes.
 
-- [ ] **Step 5: Memória.** Atualizar `dsucam-responsividade.md` com o que a marquinha mudou na faixa, e criar `dsucam-cor-e-fluxos.md` (tipo project) com: onde a cor entra e onde não, a convenção `data-fluxo`/`data-acao`, e as armadilhas encontradas. Ponteiro no `MEMORY.md`.
+- [ ] **Step 5: Memória.** Atualizar `ucamds-responsividade.md` com o que a marquinha mudou na faixa, e criar `ucamds-cor-e-fluxos.md` (tipo project) com: onde a cor entra e onde não, a convenção `data-fluxo`/`data-acao`, e as armadilhas encontradas. Ponteiro no `MEMORY.md`.

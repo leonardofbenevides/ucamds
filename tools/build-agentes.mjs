@@ -80,7 +80,7 @@ const trilhos = () => {
 
 ${itens}
 
-Até existir registro privado, os pacotes saem como tarball de \`dist/pacotes/\` (\`pnpm run dist\` no repositório do DSUCAM):
+Até existir registro privado, os pacotes saem como tarball de \`dist/pacotes/\` (\`pnpm run dist\` no repositório do UCAMDS):
 
 \`\`\`bash
 # Trilho A — legado (traz tokens, ícones e fontes junto)
@@ -162,9 +162,9 @@ const secaoTelas = projetos
 
 const agentsMd = `# Design System da UCAM — instruções para agentes e desenvolvedores
 
-> Gerado de \`spec/\` pelo DSUCAM ${VERSAO} (\`tools/build-agentes.mjs\`). Não editar à mão: a próxima versão do pacote sobrescreve.
+> Gerado de \`spec/\` pelo UCAMDS ${VERSAO} (\`tools/build-agentes.mjs\`). Não editar à mão: a próxima versão do pacote sobrescreve.
 
-Este projeto segue o **DSUCAM**. A fonte da verdade são os contratos em JSON que vêm neste pacote (\`spec/\`) e o servidor MCP \`dsucam\`, que responde a partir deles. Quando este texto e um contrato divergirem, **vale o contrato**.
+Este projeto segue o **UCAMDS**. A fonte da verdade são os contratos em JSON que vêm neste pacote (\`spec/\`) e o servidor MCP \`ucamds\`, que responde a partir deles. Quando este texto e um contrato divergirem, **vale o contrato**.
 
 ## Regras de ouro
 
@@ -234,7 +234,7 @@ ${secaoTelas}
 
 /* ------------------------------------------------------------- llms.txt --- */
 
-const llms = `# DSUCAM — Design System da Universidade Candido Mendes
+const llms = `# UCAMDS — Design System da Universidade Candido Mendes
 
 > Contratos em JSON (componentes, tokens, padrões, telas de referência, decisões) e servidor MCP para agentes. Versão ${VERSAO}.
 
@@ -264,15 +264,15 @@ const cabecalhoSkill = (nome, descricao) => `---\nname: ${nome}\ndescription: ${
 
 const fonteDeDados = `## Onde estão os dados
 
-Com o servidor MCP \`dsucam\` ligado, use as ferramentas \`ucam_*\`. Sem ele, os mesmos dados estão em \`node_modules/@ucam/ds-mcp/spec/\` e a regra geral em \`AGENTS.ucam.md\` (ou \`node_modules/@ucam/ds-mcp/AGENTS.md\`). Nunca responda de memória sobre props, tokens ou regras — a spec muda a cada versão.`;
+Com o servidor MCP \`ucamds\` ligado, use as ferramentas \`ucam_*\`. Sem ele, os mesmos dados estão em \`node_modules/@ucam/ds-mcp/spec/\` e a regra geral em \`AGENTS.ucam.md\` (ou \`node_modules/@ucam/ds-mcp/AGENTS.md\`). Nunca responda de memória sobre props, tokens ou regras — a spec muda a cada versão.`;
 
 const skillDs =
   cabecalhoSkill(
     'ucam-ds',
-    'Constrói ou altera telas e componentes de aplicações da Universidade Candido Mendes usando o Design System da UCAM (DSUCAM): componentes <ucam-*> ou classes .ucam-*, tokens semânticos, padrões de tela e telas de referência. Use sempre que a tarefa for criar, montar, redesenhar ou ajustar interface num app da UCAM (SIGU, Módulo Gerencial, Protocolo, Portal, SigFin), escolher cor, espaçamento, botão, tabela ou formulário. Nunca emite hex cru, token primitivo, <z-*> nem prop fora do contrato.',
+    'Constrói ou altera telas e componentes de aplicações da Universidade Candido Mendes usando o Design System da UCAM (UCAMDS): componentes <ucam-*> ou classes .ucam-*, tokens semânticos, padrões de tela e telas de referência. Use sempre que a tarefa for criar, montar, redesenhar ou ajustar interface num app da UCAM (SIGU, Módulo Gerencial, Protocolo, Portal, SigFin), escolher cor, espaçamento, botão, tabela ou formulário. Nunca emite hex cru, token primitivo, <z-*> nem prop fora do contrato.',
   ) +
   `
-# Construir com o DSUCAM
+# Construir com o UCAMDS
 
 ${fonteDeDados}
 
@@ -305,7 +305,7 @@ const skillMigrate =
     'Migra telas do parque legado da UCAM (AngularJS, Angular Material, Angular até 14, JSF/PrimeFaces do SIGU, HTML com CSS próprio) para o Design System da UCAM, aplicando os mapas de migração dos contratos e a ordem de operações do guia. Use quando a tarefa for converter, reescrever ou modernizar uma tela existente, ou quando o código tiver md-*, p:*, mat-*, ui-* ou classes visuais próprias.',
   ) +
   `
-# Migrar para o DSUCAM
+# Migrar para o UCAMDS
 
 ${fonteDeDados}
 
@@ -336,7 +336,7 @@ const skillAudit =
     'Audita uma tela ou componente de aplicação da UCAM contra os contratos do Design System: uso de token, componente e prop existentes, limites de uso, um primário por tela, contraste, nome acessível, alvo de toque, caixa natural e as decisões registradas. Use em revisão de código, antes de abrir PR de interface, ou quando pedirem para revisar, conferir ou validar uma tela.',
   ) +
   `
-# Auditar contra o DSUCAM
+# Auditar contra o UCAMDS
 
 ${fonteDeDados}
 
@@ -394,12 +394,12 @@ copyFileSync(join(ROOT, 'tools/agentes/ucam-ds.mjs'), join(SAIDA, 'bin/ucam-ds.m
 mkdirSync(join(SAIDA, 'exemplos', '.vscode'), { recursive: true });
 writeFileSync(
   join(SAIDA, 'exemplos', '.mcp.json'),
-  JSON.stringify({ mcpServers: { dsucam: { command: 'node', args: ['node_modules/@ucam/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
+  JSON.stringify({ mcpServers: { ucamds: { command: 'node', args: ['node_modules/@ucam/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
   'utf8',
 );
 writeFileSync(
   join(SAIDA, 'exemplos', '.vscode', 'mcp.json'),
-  JSON.stringify({ servers: { dsucam: { type: 'stdio', command: 'node', args: ['${workspaceFolder}/node_modules/@ucam/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
+  JSON.stringify({ servers: { ucamds: { type: 'stdio', command: 'node', args: ['${workspaceFolder}/node_modules/@ucam/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
   'utf8',
 );
 
@@ -420,7 +420,7 @@ npx ucam-ds instalar
 
 \`instalar\` faz quatro coisas, sem apagar o que já existe:
 
-1. registra o servidor \`dsucam\` em \`.mcp.json\` (Claude Code) e em \`.vscode/mcp.json\` (VS Code / Copilot);
+1. registra o servidor \`ucamds\` em \`.mcp.json\` (Claude Code) e em \`.vscode/mcp.json\` (VS Code / Copilot);
 2. copia as skills \`ucam-ds\`, \`ucam-migrate\` e \`ucam-audit\` para \`.claude/skills/\` e \`.agents/skills/\`;
 3. grava \`AGENTS.ucam.md\` com as regras e o catálogo;
 4. acrescenta a referência a ele em \`AGENTS.md\` e \`CLAUDE.md\`.

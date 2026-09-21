@@ -1,6 +1,6 @@
 // Gera o site LEGADO de documentação (docs/index.html).
 //
-// NÃO é o site publicado. O site do DSUCAM é o app Analog em site/ — cabeçalho
+// NÃO é o site publicado. O site do UCAMDS é o app Analog em site/ — cabeçalho
 // com as áreas no topo, segundo andar de abas, uma rota por página — e é ele
 // que a Vercel publica (vercel.json aponta para site/dist/analog/public).
 // Este arquivo segue no `pnpm build` só para docs/ não apodrecer; roda sozinho
@@ -700,7 +700,7 @@ function pageTokens() {
 }
 
 function pageMcp() {
-  const cfg = JSON.stringify({ mcpServers: { dsucam: { command: 'npx', args: ['-y', '@ucam/ds-mcp@latest'] } } }, null, 2);
+  const cfg = JSON.stringify({ mcpServers: { ucamds: { command: 'npx', args: ['-y', '@ucam/ds-mcp@latest'] } } }, null, 2);
   return `<article class="page" id="/comecar/mcp">
   <header class="page-head"><div class="page-head-row"><h1>Servidor MCP</h1>${pill('draft')}</div>
   <p class="lede">Serve os contratos dos componentes a agentes de IA, para que eles usem a API real em vez de inventar props.</p></header>
@@ -1474,7 +1474,7 @@ const html = `<!doctype html>
 <html lang="pt-BR">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DSUCAM</title>
+<title>UCAMDS</title>
 <style>
 ${CSS}
 </style>
@@ -1493,12 +1493,12 @@ ${sprite}
 <div class="shell">
   <div class="topbar">
     <button class="burger" aria-label="Abrir navegação">&#9776;</button>
-    <span class="topbar-marca">${simbolo()}<strong>DSUCAM</strong></span>
+    <span class="topbar-marca">${simbolo()}<strong>UCAMDS</strong></span>
   </div>
 
   <nav class="side" aria-label="Documentação">
     <div class="mark">
-      <a href="#/">${simbolo()}<span class="mark-txt"><strong>DSUCAM</strong><span>Design System UCAM</span></span></a>
+      <a href="#/">${simbolo()}<span class="mark-txt"><strong>UCAMDS</strong><span>Design System UCAM</span></span></a>
       <button class="theme-toggle" type="button" aria-label="Tema claro. Alternar." title="Alternar tema"><svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M3 12h2M19 12h2M5.6 18.4 7 17M17 7l1.4-1.4"/></svg><svg class="lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg></button>
     </div>
     <button class="search-trigger" type="button" aria-label="Buscar na documentação">

@@ -1,12 +1,12 @@
-// O símbolo do DSUCAM, num lugar só.
+// O símbolo do UCAMDS, num lugar só.
 //
 // Desenho: PLACA sólida — o componente — com o TOKEN vazado nela, perto do
 // canto inferior direito. Mesma geometria de
-// site/src/assets/marca/dsucam-simbolo.svg, aqui em currentColor.
+// site/src/assets/marca/ucamds-simbolo.svg, aqui em currentColor.
 //
 // Este arquivo já emitiu, entre 06 e 07/09/2026, um desenho que o site havia
 // abandonado — a moldura aberta no canto —, enquanto o comentário desta mesma
-// linha afirmava "mesma geometria de dsucam-simbolo.svg". As telas geradas em
+// linha afirmava "mesma geometria de ucamds-simbolo.svg". As telas geradas em
 // site/src/assets/t/ mostravam uma marca que o cabeçalho do site não
 // reconhecia. Se a geometria mudar de novo, os CINCO lugares mudam juntos:
 // este, o componente Angular, os dois SVGs e o favicon de site/index.html.

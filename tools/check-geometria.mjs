@@ -1,5 +1,5 @@
 /**
- * Portão: a base ZardUI obedece à geometria que a spec do DSUCAM declara?
+ * Portão: a base ZardUI obedece à geometria que a spec do UCAMDS declara?
  *
  * O design system promete, em toda página do catálogo, que o componente
  * Angular (base ZardUI) e o preview em CSS puro são "a mesma marca, os mesmos
@@ -143,7 +143,7 @@ const ponte = fs.readFileSync(path.join(ROOT, 'ui/projects/ui/src/tokens/ucam-za
 const declarados = new Set([...ponte.matchAll(/^\s+--([a-z0-9-]+):/gm)].map((m) => m[1]));
 
 // `sidebar-width-icon` é constante de layout do sidebar da base, não cor: não
-// tem token correspondente no DSUCAM e não deve ter.
+// tem token correspondente no UCAMDS e não deve ter.
 const IGNORADOS = new Set(['sidebar-width-icon']);
 
 const semPonte = [...lidos].filter((n) => !declarados.has(n) && !IGNORADOS.has(n)).sort();
@@ -152,7 +152,7 @@ for (const n of semPonte) {
 }
 
 if (problemas.length) {
-  console.error('\n✗ geometria: a base ZardUI diverge da spec do DSUCAM.\n');
+  console.error('\n✗ geometria: a base ZardUI diverge da spec do UCAMDS.\n');
   console.error(problemas.join('\n'));
   console.error(
     '\n  Os dois trilhos precisam desenhar o mesmo controle. Ajuste a base ' +

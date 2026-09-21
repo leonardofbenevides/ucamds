@@ -82,13 +82,21 @@ export default class InstalacaoPage {
   protected readonly r = recursos;
 
   /**
-   * A versão não é escrita na spec: o exemplo traz o marcador {versao} e ele é
-   * resolvido aqui, com o número que vem do package.json da raiz. Escrever
-   * "0.1.0" dentro do exemplo criaria uma segunda fonte para a versão, que
-   * envelheceria calada no primeiro bump.
+   * Nem a versão nem o host são escritos na spec: o exemplo traz os marcadores
+   * {versao} e {host}, resolvidos aqui com o número do package.json da raiz e
+   * com o host de recursos.publicacao. Escrevê-los por extenso no exemplo
+   * criaria uma segunda fonte para cada um, que envelheceria calada no
+   * primeiro bump de versão ou na primeira troca de domínio.
+   *
+   * Os mesmos dois marcadores são resolvidos por tools/build-publicacao.mjs,
+   * que confere se a URL resultante existe na saída publicada. Marcador novo
+   * precisa entrar nos dois lugares — se entrar só aqui, o portão reprova em
+   * vez de deixar passar, que é o lado certo para errar.
    */
   protected codigo(trecho: string): string {
-    return trecho.replaceAll('{versao}', meta.versao);
+    return trecho
+      .replaceAll('{versao}', meta.versao)
+      .replaceAll('{host}', this.r.publicacao.host);
   }
 
   /**

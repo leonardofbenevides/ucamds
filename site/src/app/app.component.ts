@@ -149,7 +149,7 @@ const normaliza = (s: string) =>
         </svg>
       </button>
 
-      <!-- A assinatura: símbolo do DSUCAM, o nome, e a logo da universidade
+      <!-- A assinatura: símbolo do UCAMDS, o nome, e a logo da universidade
            como endosso depois do filete.
 
            Três objetos, e uma hierarquia que agora existe no CSS e não só
@@ -174,13 +174,13 @@ const normaliza = (s: string) =>
         <!-- aria-hidden no nome VISÍVEL, não só no filete e na logo. O link
              tem um nome acessível só, montado no .sr-only abaixo; sem o
              aria-hidden aqui o leitor de tela anunciava o nome duas vezes —
-             "DSUCAM Design System DSUCAM — Design System da Universidade
+             "UCAMDS Design System UCAMDS — Design System da Universidade
              Candido Mendes" —, que é o que este comentário já afirmava estar
              resolvido enquanto o <strong> seguia exposto. -->
-        <strong class="marca-nome" aria-hidden="true">DSUCAM</strong>
+        <strong class="marca-nome" aria-hidden="true">UCAMDS</strong>
         <span class="marca-divisor" aria-hidden="true"></span>
         <span class="marca-ucam" aria-hidden="true"></span>
-        <span class="sr-only">DSUCAM — Design System da Universidade Candido Mendes</span>
+        <span class="sr-only">UCAMDS — Design System da Universidade Candido Mendes</span>
       </a>
 
       <!-- Primeiro andar: as três ÁREAS. Seis abas aqui era o que havia antes,
@@ -444,7 +444,7 @@ const normaliza = (s: string) =>
 
       <div class="rodape-fila">
         <p class="rodape-assinatura">
-          Universidade Candido Mendes © {{ ano }} · DSUCAM {{ versao }}
+          Universidade Candido Mendes © {{ ano }} · UCAMDS {{ versao }}
         </p>
       </div>
     </footer>
@@ -681,7 +681,7 @@ const normaliza = (s: string) =>
         /* As três áreas passam a flutuar no VÃO entre a marca e as ações, em
            vez de encostadas na marca. É o arranjo da referência, e resolve uma
            leitura errada que o encosto produzia: coladas na assinatura, as
-           áreas liam como parte do lockup — "DSUCAM Docs Catálogo Projeto" —
+           áreas liam como parte do lockup — "UCAMDS Docs Catálogo Projeto" —
            em vez de como a navegação primária que são.
 
            As duas margens automáticas só distribuem o vão se NINGUÉM MAIS na
