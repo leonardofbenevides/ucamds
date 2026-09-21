@@ -1,0 +1,173 @@
+{
+  "$description": "Distribuição do design system: pacotes, formatos de token, servidor MCP, skills e Figma.",
+  "pacotes": {
+    "$description": "Distribuídos em registro privado. A coluna de estado diz o que já é instalável; o que está planejado não tem versão publicada.",
+    "itens": [
+      {
+        "nome": "@ucam/tokens",
+        "conteudo": "CSS custom properties, SCSS e JSON, gerados de spec/tokens.",
+        "consumidores": "Todos os apps, inclusive AngularJS",
+        "estado": "gerado",
+        "nota": "Tarball em dist/pacotes/ (pnpm run pacotes). Falta o registro privado."
+      },
+      {
+        "nome": "@ucam/css",
+        "conteudo": "Primitivos sem framework, escopados sob .ucam, sem preflight.",
+        "consumidores": "Trilho A — legado",
+        "estado": "gerado",
+        "nota": "Tarball em dist/pacotes/. Traz tokens, sprite e fontes junto."
+      },
+      {
+        "nome": "@ucam/ui",
+        "conteudo": "Componentes Angular sobre ZardUI adaptada.",
+        "consumidores": "Trilho B — apps novos e migrados",
+        "estado": "gerado",
+        "nota": "Tarball em dist/pacotes/, a partir do build do ng-packagr (pnpm run lib)."
+      },
+      {
+        "nome": "@ucam/patterns",
+        "conteudo": "Composições: listagem CRUD, formulário de entidade, shell.",
+        "consumidores": "Trilho B",
+        "estado": "planejado"
+      },
+      {
+        "nome": "@ucam/ds-mcp",
+        "conteudo": "Servidor MCP, CLI ucam-ds (instalar, checar), skills, AGENTS.md e os contratos em JSON.",
+        "consumidores": "Ferramentas de desenvolvimento: Claude Code, VS Code/Copilot e CI",
+        "estado": "gerado",
+        "nota": "Tarball em dist/pacotes/. Instalar com pnpm add -D e rodar npx ucam-ds instalar."
+      }
+    ]
+  },
+  "formatosToken": {
+    "$description": "Formato DTCG / W3C Design Tokens — padrão aberto, consumido por Style Dictionary v4+, Tokens Studio e pelo Figma. A fonte é spec/tokens/; os formatos abaixo são gerados por tools/build-tokens.mjs.",
+    "referencia": "https://tr.designtokens.org/format/",
+    "itens": [
+      {
+        "formato": "CSS",
+        "arquivo": "ucam-tokens.css",
+        "para": "Custom properties. É o que o legado consome com um <link>."
+      },
+      {
+        "formato": "SCSS",
+        "arquivo": "_ucam-tokens.scss",
+        "para": "Variáveis e mapas para apps com pipeline Sass."
+      },
+      {
+        "formato": "JSON",
+        "arquivo": "ucam-tokens.json",
+        "para": "Consumo programático e importação no Figma."
+      },
+      {
+        "formato": "Tailwind",
+        "arquivo": "ucam-theme.css",
+        "para": "Bloco @theme para Tailwind v4."
+      }
+    ]
+  },
+  "mcp": {
+    "$description": "Servidor MCP que entrega os contratos do design system a agentes de IA: a API exata de cada componente, os tokens resolvidos por tema, os padrões, as telas de referência, as decisões e os mapas de migração — dados, não prosa. Vem no pacote @ucam/ds-mcp, roda em stdio e não tem dependência: sobe em qualquer máquina com Node 18 ou mais novo, sem alcançar o registro público.",
+    "config": {
+      "mcpServers": {
+        "dsucam": {
+          "command": "node",
+          "args": [
+            "node_modules/@ucam/ds-mcp/mcp/server.mjs"
+          ]
+        }
+      }
+    },
+    "ferramentas": [
+      {
+        "nome": "ucam_list_components",
+        "faz": "Lista o catálogo com id, seletor, maturidade, categoria e descrição curta.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_get_component",
+        "faz": "Devolve o contrato completo de um componente: props com valores válidos, estados, acessibilidade, limites de uso, migração e exemplos. Aceita recorte por seção.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_get_tokens",
+        "faz": "Devolve os tokens semânticos resolvidos por tema, com a custom property e o papel de cada um.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_get_pattern",
+        "faz": "Devolve um padrão de tela (estrutura, regras, componentes) ou lista todos.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_list_templates",
+        "faz": "Lista as telas de referência por sistema, com o padrão que cada uma implementa.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_get_template",
+        "faz": "Devolve uma tela de referência: problemas do legado, notas de decisão, código Angular de partida, fluxos e, se pedido, o HTML do Trilho A.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_get_decisions",
+        "faz": "Devolve uma ADR ou busca nas decisões registradas.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_migrate_from_legacy",
+        "faz": "Recebe um trecho de AngularJS, Angular Material, PrimeFaces ou HTML legado e devolve o equivalente na API da UCAM pelos mapas de migração dos contratos, com a ordem de migração e os erros que sobrevivem à conversão literal.",
+        "estado": "disponível"
+      },
+      {
+        "nome": "ucam_check_usage",
+        "faz": "Audita um trecho de código: cor crua, token primitivo, <z-*>, componente ou prop inexistente, valor fora do enum, classe que o Trilho A não desenha, mais de um primário, select nativo, caixa alta. Também na linha de comando: npx ucam-ds checar.",
+        "estado": "disponível"
+      }
+    ]
+  },
+  "skills": {
+    "$description": "Skills empacotam o uso do design system para agentes. O MCP entrega os dados; a skill entrega o método. As três vêm no @ucam/ds-mcp, geradas da spec, e npx ucam-ds instalar as copia para o projeto.",
+    "itens": [
+      {
+        "nome": "ucam-ds",
+        "faz": "Gera interfaces usando os tokens e componentes oficiais. Nunca emite hex cru nem valor arbitrário.",
+        "onde": "Claude Code (.claude/skills), Copilot e demais agentes (.agents/skills)"
+      },
+      {
+        "nome": "ucam-migrate",
+        "faz": "Converte telas AngularJS / Angular Material para a API da UCAM, aplicando os mapas de migração.",
+        "onde": "Claude Code (.claude/skills), Copilot e demais agentes (.agents/skills)"
+      },
+      {
+        "nome": "ucam-audit",
+        "faz": "Audita uma tela contra os contratos: contraste, alvo de toque, nome acessível, uso de token e limites de componente.",
+        "onde": "Claude Code (.claude/skills), Copilot e demais agentes (.agents/skills)"
+      }
+    ]
+  },
+  "instalacao": {
+    "$description": "Dois trilhos de consumo. Escolha pelo que a aplicação consegue receber hoje: tokens em CSS, ou a biblioteca Angular.",
+    "trilhos": [
+      {
+        "id": "a",
+        "nome": "Trilho A — legado",
+        "alvo": "AngularJS e Angular 14 ou anterior, sem pipeline de build moderno.",
+        "como": "Um <link> para o CSS de tokens. Nenhuma dependência, nenhum passo de build, nenhum reset global.",
+        "codigo": "<link rel=\"stylesheet\" href=\"https://ds.ucam.br/tokens/ucam-tokens.css\">",
+        "limite": "Dá acesso aos tokens, não aos componentes. Serve para alinhar cor, espaçamento e tipografia sem tocar na arquitetura do app."
+      },
+      {
+        "id": "b",
+        "nome": "Trilho B — apps novos e migrados",
+        "alvo": "Angular moderno com Tailwind v4.",
+        "como": "Instalar a biblioteca e importar o bloco @theme.",
+        "codigo": "pnpm add @ucam/ui @ucam/tokens\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@ucam/tokens/ucam-theme.css\";",
+        "limite": "Aplicações importam <ucam-*>. Nunca <z-*>: o ZardUI é matéria-prima do design system, não dependência das aplicações."
+      }
+    ]
+  },
+  "figma": {
+    "$description": "A biblioteca do Figma espelha spec/tokens como variáveis, com Code Connect ligando cada componente ao seu contrato. Direção única: a spec gera as variáveis, não o contrário.",
+    "estado": "planejado"
+  }
+}

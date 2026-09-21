@@ -1,0 +1,340 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "icon-button",
+  "name": "IconButton",
+  "selector": "ucam-icon-button",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "acao",
+  "description": "Botão apenas com ícone, para ações repetidas em espaço restrito: fechar diálogo, navegar entre páginas, agir sobre uma linha de tabela. Existe separado do Button porque o nome acessível deixa de ser opcional.",
+  "quando_usar": [
+    "Uma ação se repete em cada linha de uma tabela e não cabe um rótulo por linha.",
+    "A ação é universalmente reconhecida pelo símbolo: fechar, avançar, recuar, menu.",
+    "O espaço é a barra de um diálogo, de uma gaveta ou de um campo, onde texto não entra."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 7, 14 (diálogos)",
+        "rotulo": "×",
+        "problema": "botão fechar sem nome acessível; o caractere × é lido como sinal de multiplicação"
+      },
+      {
+        "tela": "image 9, 10, 11 (paginação)",
+        "rotulo": "|< << >> >|",
+        "problema": "quatro botões anônimos — mesma falha, repetida quatro vezes por tabela"
+      },
+      {
+        "tela": "image 3 (portal)",
+        "problema": "ícones dos módulos quebrados em produção (MEMORIAL, MOBILE, PROCESSO SELETIVO aparecem como texto alternativo) — não há sistema de ícones"
+      },
+      {
+        "tela": "image 9, 11",
+        "rotulo": "SALVAR / EXCLUIR",
+        "problema": "ícones bitmap misturados com glifos de fontes diferentes, sem grade nem tamanho comum"
+      },
+      {
+        "tela": "SIGU — Meus sistemas (redesenho interno, 09/2026)",
+        "rotulo": "★",
+        "problema": "a estrela que fixa um sistema nos acessos frequentes é um button cujo único sinal de estado é o preenchimento do SVG; o aria-label troca de \"Adicionar aos favoritos\" para \"Remover dos favoritos\", mas nada anuncia que o controle TEM estado — para quem navega por leitor de tela, cada clique parece uma ação nova sobre um botão diferente"
+      }
+    ],
+    "conclusao": "Todo botão de ícone do sistema hoje é anônimo para leitor de tela. Este contrato torna o nome acessível obrigatório em nível de build — e, com pressed, torna o ESTADO anunciável em vez de apenas visível."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento button."
+    },
+    {
+      "parte": "icone",
+      "obrigatorio": true,
+      "descricao": "SVG do conjunto oficial, aria-hidden=true."
+    },
+    {
+      "parte": "tooltip",
+      "obrigatorio": false,
+      "descricao": "Dica visual no hover e no foco. Não substitui o nome acessível."
+    }
+  ],
+  "props": [
+    {
+      "nome": "icon",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome do ícone no conjunto oficial. Nome inexistente é erro de build, não ícone vazio — foi o que produziu as imagens quebradas do portal."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome acessível. Sem default e sem valor vazio permitido: o build falha."
+    },
+    {
+      "nome": "variant",
+      "tipo": "'ghost' | 'secondary'",
+      "default": "'ghost'",
+      "descricao": "Peso na hierarquia. ghost é o padrão em barras de ferramentas e linhas de tabela. Não existe primary aqui: a ação principal de uma tela leva rótulo em texto, e isso é Button (ADR-015)."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'danger'",
+      "default": "'neutral'",
+      "descricao": "Natureza da ação, eixo separado do peso (ADR-015). Mesmo truncamento do Button: não existe botão de ícone 'de sucesso' ou 'de aviso'.",
+      "valores": {
+        "neutral": {
+          "uso": "O padrão: fechar, editar, navegar, buscar."
+        },
+        "danger": {
+          "uso": "Excluir a linha, remover o anexo. Combinado com ghost em listagem, com secondary quando o botão precisa de contorno para se separar do fundo.",
+          "tokens": {
+            "text": "color.action.danger.default",
+            "hover": "color.action.danger.subtle",
+            "border": "color.action.danger.default"
+          },
+          "limite": "Exige confirmação em diálogo. E o label precisa nomear o alvo — 'Excluir setor Biblioteca', nunca 'Excluir' —, porque um ícone vermelho anônimo é a pior combinação possível: sinaliza perigo e não diz de quê."
+        }
+      }
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md'",
+      "default": "'md'",
+      "descricao": "sm apenas em linha de tabela densa, respeitando o alvo mínimo de 24px."
+    },
+    {
+      "nome": "pressed",
+      "tipo": "boolean | null",
+      "default": "null",
+      "descricao": "Torna o botão um INTERRUPTOR de dois estados. null — o padrão — é o botão comum, que dispara e não guarda nada. true ou false emitem aria-pressed, e o leitor de tela passa a anunciar \"pressionado\" junto com o nome. É a diferença entre uma ação e um estado que a pessoa liga e desliga, e ela não pode ficar só no preenchimento do ícone.",
+      "valores": {
+        "null": {
+          "uso": "Fechar, excluir, navegar, buscar — tudo que acontece e termina."
+        },
+        "true/false": {
+          "uso": "Fixar nos favoritos, silenciar as notificações de um requerimento, ligar um filtro que continua ligado.",
+          "limite": "Só quando o estado tem eco em outro lugar da tela. A estrela que fixa um sistema é legível porque o sistema aparece na seção de favoritos; interruptor cujo único vestígio é o próprio ícone é adivinhação com nome de recurso.",
+          "tokens": {
+            "icone": "color.action.primary.default",
+            "fundo": "color.interaction.selected"
+          }
+        }
+      }
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "loading",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "tooltip",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Mostra o label como dica visual. Desligar apenas quando o contexto já é evidente."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "active",
+    "pressed",
+    "focus-visible",
+    "disabled",
+    "loading"
+  ],
+  "limites": {
+    "regras": [
+      "Só para ações cujo ícone é universalmente compreendido: fechar, buscar, excluir, editar, navegar. Ação de negócio específica leva rótulo em texto.",
+      "Nunca para a ação principal de uma tela ou diálogo — essa é Button com texto.",
+      "tone=\"danger\" aqui é sempre ghost ou secondary, nunca preenchimento sólido: o botão de ícone vive repetido em linha de tabela, e vermelho sólido vinte vezes vira textura em vez de aviso. O preenchimento vermelho pertence ao Button do diálogo que confirma.",
+      "tone não aceita info, success nem warning — é o truncamento da ADR-015, igual ao do Button.",
+      "Máximo de três em sequência; acima disso, agrupe em menu.",
+      "Ícone sem tooltip e sem rótulo adjacente exige que a ação seja convencional. Na dúvida, use Button com texto.",
+      "pressed é para o estado que o botão guarda SOBRE SI MESMO. Mostrar e esconder outra região é aria-expanded — e é outro componente (Section-bar recolhível, Drawer, Menu). Escolher entre duas alternativas excludentes é Segmented, que mantém as duas visíveis.",
+      "Um botão nunca leva aria-pressed e aria-expanded ao mesmo tempo: são duas perguntas diferentes sobre o mesmo controle, e o leitor de tela anuncia as duas em sequência sem dizer qual se refere a quê.",
+      "O ícone do interruptor muda de FORMA entre os dois estados — traçado quando solto, preenchido quando pressionado —, não só de cor. Cor sozinha não distingue (WCAG 1.4.1), e num campo de vinte estrelas iguais a diferença de matiz some."
+    ],
+    "motivo": "Ícone sozinho é adivinhação para o usuário e vazio para o leitor de tela. O custo de errar é alto e recorrente."
+  },
+  "acessibilidade": {
+    "papel": "button (nativo)",
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Recebe foco."
+      },
+      {
+        "tecla": "Enter",
+        "comportamento": "Aciona."
+      },
+      {
+        "tecla": "Space",
+        "comportamento": "Aciona."
+      }
+    ],
+    "requisitos": [
+      "label obrigatório, aplicado como aria-label. Ausente ou vazio é erro de build — é a falha mais repetida do parque atual.",
+      "O SVG é aria-hidden=true e focusable=false; sem isso o Internet Explorer legado e alguns leitores anunciam o ícone.",
+      "Alvo de clique mínimo 24x24px mesmo em size=sm, com espaçamento adequado entre botões vizinhos (WCAG 2.5.8).",
+      "Tooltip aparece no hover E no foco por teclado; permanece visível enquanto o ponteiro estiver sobre ela e some com Esc (WCAG 1.4.13).",
+      "A tooltip nunca é o único meio de nomear a ação — o aria-label é independente dela.",
+      "Anel de foco visível, contraste mínimo 3:1 (WCAG 1.4.11).",
+      "Contraste do ícone contra o fundo mínimo 3:1, por ser elemento gráfico essencial (WCAG 1.4.11).",
+      "loading define aria-busy e aria-disabled, nunca o atributo disabled, que tiraria o botão do foco.",
+      "pressed não-nulo vira aria-pressed no elemento button. aria-pressed, aria-checked e aria-expanded não coexistem no mesmo botão.",
+      "Com pressed, o label acompanha a AÇÃO e troca com o estado: \"Fixar Financeiro nos favoritos\" quando solto, \"Remover Financeiro dos favoritos\" quando pressionado. Label que descreve o estado — \"Fixado\" — colide com o que o aria-pressed já anuncia, e label fixo obriga a pessoa a cruzar duas informações para saber o que o clique vai fazer.",
+      "O estado pressionado sobrevive à re-renderização da lista: filtrar ou reordenar a grade não pode devolver o botão ao estado solto, porque quem usa leitor de tela não tem como conferir de relance que os vinte outros continuam certos."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "1.4.11",
+      "1.4.13",
+      "2.1.1",
+      "2.4.7",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O label é a ação por extenso, como se fosse texto do botão: Fechar, Excluir setor, Próxima página.",
+      "Em linha de tabela, o label identifica o alvo: Excluir setor Biblioteca. Sem isso, dez botões Excluir são indistinguíveis por leitor de tela.",
+      "Nunca nomear pelo ícone: Lixeira, X, Seta.",
+      "No interruptor, o label é o VERBO do próximo clique, com o alvo nomeado: \"Fixar Protocolo nos favoritos\". Nunca o substantivo do estado atual."
+    ],
+    "exemplos": {
+      "bom": [
+        "Fechar",
+        "Próxima página",
+        "Excluir setor Biblioteca",
+        "Editar requerimento 2024-0031",
+        "Fixar Protocolo nos favoritos",
+        "Remover Protocolo dos favoritos"
+      ],
+      "ruim": [
+        "×",
+        "Lixeira",
+        "Botão",
+        "Clique",
+        "",
+        "Favorito",
+        "Fixado"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "ucam-alert",
+      "ucam-anexo",
+      "ucam-app-shell",
+      "ucam-chip",
+      "ucam-data-table",
+      "ucam-date-field",
+      "ucam-dialog",
+      "ucam-drawer",
+      "ucam-file-field",
+      "ucam-input-group",
+      "ucam-page-header",
+      "ucam-pagination"
+    ],
+    "usa": [
+      "[ucamTooltip]",
+      "ucam-icon"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / Angular Material (md-icon-button) e glifos soltos",
+    "mapa": [
+      {
+        "legado": "botão × de diálogo",
+        "novo": "ucam-icon-button icon=close label=Fechar"
+      },
+      {
+        "legado": "glifos |< << >> >| de paginação",
+        "novo": "ucam-icon-button dentro de ucam-pagination",
+        "nota": "Cada um ganha label próprio."
+      },
+      {
+        "legado": "ícones bitmap dos módulos do portal",
+        "novo": "conjunto oficial de ícones SVG",
+        "nota": "Elimina as imagens quebradas em produção. Exige inventário e redesenho dos ícones de módulo."
+      },
+      {
+        "legado": "ucam-icon-button variant=\"danger\" (DSUCAM antes da ADR-015)",
+        "novo": "tone=\"danger\"",
+        "nota": "Não é conversão literal: o antigo era preenchimento vermelho sólido e o novo é ghost com ícone vermelho. É a correção deliberada da ADR-015 — o exemplo 'Ação de linha' deste contrato pintava de vermelho sólido um botão que se repete em cada linha da tabela."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Fechar diálogo",
+      "codigo": "<ucam-icon-button icon=\"close\" label=\"Fechar\" (click)=\"fechar()\" />"
+    },
+    {
+      "titulo": "Ação de linha",
+      "codigo": "<ucam-icon-button icon=\"trash\" tone=\"danger\" size=\"sm\" [label]=\"'Excluir setor ' + linha.descricao\" />"
+    },
+    {
+      "titulo": "Paginação",
+      "codigo": "<ucam-icon-button icon=\"chevron-right\" label=\"Próxima página\" [disabled]=\"ultimaPagina()\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Escrever no label a ação por extenso, como se fosse texto do botão: Fechar, Próxima página.",
+      "evite": "Nomear pelo desenho — Lixeira, X, Seta — ou deixar o label vazio.",
+      "porque": "O caractere × é anunciado como sinal de multiplicação. Todo botão de ícone do parque hoje é anônimo para leitor de tela."
+    },
+    {
+      "faca": "Identificar o alvo no label quando o botão está numa linha de tabela: Excluir setor Biblioteca.",
+      "evite": "Dez botões 'Excluir' idênticos na mesma tabela.",
+      "porque": "Sem o alvo no nome acessível, a lista de botões do leitor de tela vira dez entradas indistinguíveis."
+    },
+    {
+      "faca": "Reservar o ícone sozinho para ações convencionais: fechar, buscar, editar, excluir, navegar.",
+      "evite": "Ícone sozinho para ação de negócio específica, e mais de três em sequência.",
+      "porque": "Ícone não convencional é adivinhação. Acima de três, a fileira vira ruído — agrupe em menu."
+    },
+    {
+      "faca": "Usar Button com texto para a ação principal da tela ou do diálogo.",
+      "evite": "IconButton como ação primária.",
+      "porque": "A ação mais importante da tela é a que menos pode depender de reconhecimento de ícone."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "button",
+      "diferenca": "Button nomeia a ação em texto; icon-button conta com que o desenho seja convencional e move o nome para o rótulo acessível.",
+      "escolha": "Fechar, editar, excluir, navegar — repetidos em espaço apertado e com ícone que todo mundo reconhece: icon-button."
+    },
+    {
+      "componente": "tooltip",
+      "diferenca": "O Tooltip torna VISÍVEL o nome que o IconButton já carrega no ariaLabel — ele não cria esse nome. Botão de ícone sem ariaLabel continua mudo para o leitor de tela mesmo com tooltip.",
+      "escolha": "Você precisa da ação em si; o nome acessível é obrigatório e vem no próprio componente."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "click",
+      "payload": "MouseEvent",
+      "descricao": "Emitido ao acionar."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "O botão comum com o modificador de ícone, que iguala largura e altura e centra o desenho.",
+      "raiz": ".ucam-btn--icon",
+      "nota": "Não tem classe de raiz própria: é .ucam-btn mais o modificador. O aria-label é obrigatório e é do markup — sem ele o botão fica sem nome acessível, que é o defeito mais comum do parque legado."
+    }
+  }
+}

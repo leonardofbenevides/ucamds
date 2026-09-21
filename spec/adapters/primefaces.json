@@ -1,0 +1,186 @@
+{
+  "$schema": "../schema/adapter.schema.json",
+  "id": "primefaces",
+  "name": "PrimeFaces — tema Aristo",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "description": "Reveste o PrimeFaces 6.2 (tema Aristo) do SIGU com a identidade UCAM sem recompilar o Java nem editar os .xhtml. Remapeia as famílias de classe do ThemeRoller (ui-*) para os tokens semânticos do DS. Carregar depois do theme.css do Aristo.",
+  "alvo": {
+    "framework": "PrimeFaces",
+    "versao": "6.2",
+    "tema": "aristo",
+    "plataforma": "JSF / javax.faces (Java EE, pré-Jakarta)",
+    "carregar_apos": "javax.faces.resource/theme.css.jsf?ln=primefaces-aristo"
+  },
+  "evidencia": {
+    "origem": "login.ucam-campos.br/login.jsf — prova pública, 2026-09-09",
+    "achados": [
+      "primária azul-aço #85b2cb, sem relação com a marca (28 ocorrências no theme.css)",
+      "51 gradientes lineares no chrome dos widgets",
+      "16 sprites PNG para ícones e estados (ui-icon)",
+      "tipografia Arial em todo .ui-widget"
+    ],
+    "conclusao": "Reskin é override do tema ThemeRoller inteiro. Nenhum seletor novo: só remapeia ui-* para tokens semânticos."
+  },
+  "principios": [
+    "Achatar todo degradê para cor sólida de token (background-image: none).",
+    "Sprite PNG não recolore por CSS: neutralizar .ui-icon e deixar o glifo Font Awesome, que a página já carrega, assumir o desenho.",
+    "Só referenciar token semântico — nunca hex cru. O gerador valida cada var(--ucam-*) contra os tokens publicados.",
+    "Não inventar seletor: a folha ataca exatamente as classes que o Aristo pinta."
+  ],
+  "regras": [
+    {
+      "seletor": ".ui-widget, .ui-widget .ui-widget",
+      "nota": "Troca Arial pela fonte do DS em todo widget.",
+      "props": {
+        "font-family": { "token": "font-body" },
+        "font-size": { "literal": "0.875rem" },
+        "color": { "token": "color-text-primary" }
+      }
+    },
+    {
+      "seletor": ".ui-widget-content",
+      "nota": "Superfície de conteúdo.",
+      "props": {
+        "background": { "token": "color-surface-default" },
+        "border-color": { "token": "color-border-default" },
+        "color": { "token": "color-text-primary" }
+      }
+    },
+    {
+      "seletor": ".ui-widget-header",
+      "nota": "Faixa de cabeçalho: bordô sólido no lugar do degradê azul.",
+      "props": {
+        "background": { "token": "color-surface-brand" },
+        "background-image": { "literal": "none" },
+        "color": { "token": "color-text-on-brand" },
+        "border-color": { "token": "color-surface-brand" },
+        "border-radius": { "literal": "var(--ucam-radius-surface) var(--ucam-radius-surface) 0 0" }
+      }
+    },
+    {
+      "seletor": ".ui-button, .ui-state-default",
+      "nota": "Botão e estado padrão: superfície plana, sem degradê nem text-shadow.",
+      "props": {
+        "background": { "token": "color-surface-default" },
+        "background-image": { "literal": "none" },
+        "border-color": { "token": "color-border-default" },
+        "color": { "token": "color-text-primary" },
+        "border-radius": { "token": "radius-control" },
+        "text-shadow": { "literal": "none" }
+      }
+    },
+    {
+      "seletor": ".ui-button:hover, .ui-state-hover",
+      "nota": "Hover em bordô suave, não azul.",
+      "props": {
+        "background": { "token": "color-action-primary-subtle" },
+        "background-image": { "literal": "none" },
+        "border-color": { "token": "color-action-primary-default" },
+        "color": { "token": "color-action-primary-default" }
+      }
+    },
+    {
+      "seletor": ".ui-state-active, .ui-state-highlight",
+      "nota": "Estado ativo/selecionado em bordô cheio.",
+      "props": {
+        "background": { "token": "color-action-primary-default" },
+        "background-image": { "literal": "none" },
+        "border-color": { "token": "color-action-primary-default" },
+        "color": { "token": "color-text-on-brand" },
+        "text-shadow": { "literal": "none" }
+      }
+    },
+    {
+      "seletor": ".ui-state-focus, .ui-button:focus-visible",
+      "nota": "Anel de foco do DS.",
+      "props": {
+        "outline": { "literal": "var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus)" },
+        "outline-offset": { "token": "focus-ring-offset" }
+      }
+    },
+    {
+      "seletor": ".ui-inputfield, .ui-inputtext",
+      "nota": "Campo de entrada: sem o inset shadow do Aristo.",
+      "props": {
+        "background": { "token": "color-surface-default" },
+        "border-color": { "token": "color-border-default" },
+        "color": { "token": "color-text-primary" },
+        "border-radius": { "token": "radius-control" },
+        "box-shadow": { "literal": "none" }
+      }
+    },
+    {
+      "seletor": ".ui-inputfield:focus, .ui-inputtext:focus",
+      "nota": "Foco de campo: anel bordô no lugar do glow azul.",
+      "props": {
+        "outline": { "literal": "none" },
+        "border-color": { "token": "color-border-focus" },
+        "box-shadow": { "literal": "0 0 0 3px var(--ucam-color-action-primary-subtle)" }
+      }
+    },
+    {
+      "seletor": ".ui-datatable thead th",
+      "nota": "Cabeçalho de tabela: faixa bordô, sem bordas cheias.",
+      "props": {
+        "background": { "token": "color-surface-brand" },
+        "background-image": { "literal": "none" },
+        "color": { "token": "color-text-on-brand" },
+        "border": { "literal": "none" },
+        "border-bottom": { "literal": "1px solid var(--ucam-color-surface-brand)" },
+        "font-weight": { "literal": "600" }
+      }
+    },
+    {
+      "seletor": ".ui-datatable tbody td",
+      "nota": "Célula: só linha inferior, sem grade cheia.",
+      "props": {
+        "background": { "token": "color-surface-default" },
+        "border": { "literal": "none" },
+        "border-bottom": { "literal": "1px solid var(--ucam-color-border-default)" }
+      }
+    },
+    {
+      "seletor": ".ui-datatable tbody tr.ui-datatable-odd td",
+      "nota": "Zebra sutil.",
+      "props": {
+        "background": { "token": "color-surface-subtle" }
+      }
+    },
+    {
+      "seletor": ".ui-messages-error, .ui-message-error",
+      "nota": "Mensagem de erro nos tokens de feedback destrutivo.",
+      "props": {
+        "background": { "token": "color-feedback-danger-background" },
+        "border-color": { "token": "color-feedback-danger-border" },
+        "color": { "token": "color-feedback-danger-foreground" },
+        "border-radius": { "token": "radius-control" }
+      }
+    },
+    {
+      "seletor": ".ui-icon",
+      "nota": "Neutraliza o sprite PNG; o glifo Font Awesome ao lado assume o ícone.",
+      "props": {
+        "background": { "literal": "none" },
+        "text-indent": { "literal": "0" }
+      }
+    },
+    {
+      "seletor": ".ui-corner-all",
+      "nota": "Raio de token em vez do ui-corner do jQuery UI.",
+      "props": {
+        "border-radius": { "token": "radius-control" }
+      }
+    }
+  ],
+  "pendentes": [
+    "ui-menu / ui-menubar",
+    "ui-dialog",
+    "ui-paginator",
+    "ui-tabview",
+    "ui-selectonemenu",
+    "ui-calendar",
+    "ui-fileupload"
+  ]
+}

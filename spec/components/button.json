@@ -1,0 +1,421 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "button",
+  "name": "Button",
+  "selector": "ucam-button",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "acao",
+  "description": "Dispara uma ação imediata na página atual. Para navegação entre páginas, use Link — um botão que navega quebra o clique do meio, o abrir-em-nova-aba e o anúncio do leitor de tela.",
+  "quando_usar": [
+    "Uma ação acontece na página atual: salvar, deferir, indeferir, enviar, cancelar, excluir.",
+    "Um diálogo ou uma gaveta precisa ser aberto.",
+    "O estado vazio de uma listagem oferece a saída — criar o primeiro registro, limpar o filtro."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 4 (login)",
+        "rotulo": "ENTRAR",
+        "problema": "azul #2196F3 sem relação com a marca"
+      },
+      {
+        "tela": "image 4 (login)",
+        "rotulo": "REDEFINIR / CADASTRAR SENHA",
+        "problema": "vermelho para ação não-destrutiva"
+      },
+      {
+        "tela": "image 4 (login)",
+        "rotulo": "PRIMEIRO ACESSO?",
+        "problema": "verde; três ações de peso visual idêntico, sem hierarquia"
+      },
+      {
+        "tela": "image 7, 9, 11",
+        "rotulo": "SALVAR",
+        "problema": "preto sólido, quarta cor para a mesma intenção"
+      },
+      {
+        "tela": "image 9, 11",
+        "rotulo": "EXCLUIR (desabilitado)",
+        "problema": "contraste insuficiente, estado ilegível"
+      },
+      {
+        "tela": "image 6",
+        "rotulo": "NOVO REQUERIMENTO",
+        "problema": "cinza sobre cinza, não se lê como ação"
+      }
+    ],
+    "conclusao": "Quatro cores para a mesma intenção em um único sistema. A variante resolve isso por hierarquia, não por cor arbitrária."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento <button>. Nunca <div> ou <a> com handler de clique."
+    },
+    {
+      "parte": "icone-inicio",
+      "obrigatorio": false,
+      "descricao": "Ícone decorativo à esquerda do rótulo. aria-hidden=true."
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": true,
+      "descricao": "Texto da ação. Ver diretrizes de conteúdo."
+    },
+    {
+      "parte": "icone-fim",
+      "obrigatorio": false,
+      "descricao": "Indicador de desdobramento (menu, link externo)."
+    },
+    {
+      "parte": "spinner",
+      "obrigatorio": false,
+      "descricao": "Substitui o ícone-inicio quando loading=true. O rótulo permanece visível — o botão não pode mudar de largura."
+    }
+  ],
+  "props": [
+    {
+      "nome": "variant",
+      "tipo": "'primary' | 'secondary' | 'ghost'",
+      "default": "'secondary'",
+      "descricao": "Peso na hierarquia da tela. Diz QUANTO a ação pesa, nunca o que ela faz — a natureza é do tone (ADR-015).",
+      "valores": {
+        "primary": {
+          "uso": "A ação principal da tela ou do diálogo.",
+          "tokens": {
+            "background": "color.action.primary.default",
+            "text": "color.text.on-action"
+          },
+          "limite": "No máximo uma por tela. Duas primárias significam que a tela não decidiu o que é importante."
+        },
+        "secondary": {
+          "uso": "Ações de apoio. O padrão.",
+          "tokens": {
+            "background": "color.action.secondary.default",
+            "text": "color.text.primary",
+            "border": "color.action.secondary.border"
+          }
+        },
+        "ghost": {
+          "uso": "Ação terciária em barra de ferramentas ou linha de tabela.",
+          "tokens": {
+            "background": "transparent",
+            "text": "color.text.secondary"
+          }
+        }
+      }
+    },
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'danger'",
+      "default": "'neutral'",
+      "descricao": "Natureza da ação. Eixo separado do peso: o tom pinta a variante escolhida, não a substitui (ADR-015). Truncado a dois valores DE PROPÓSITO — nos outros nove componentes tone aceita info, success e warning; num botão não existe ação 'de sucesso' nem 'de aviso', e um botão verde seria decoração com aparência de regra.",
+      "valores": {
+        "neutral": {
+          "uso": "O padrão. Toda ação que não destrói nada — salvar, enviar, filtrar, cancelar um formulário.",
+          "limite": "Cancelar um formulário é neutral, não danger: fechar sem salvar não destrói registro."
+        },
+        "danger": {
+          "uso": "Destruição irreversível: excluir registro, cancelar processo já em curso.",
+          "tokens": {
+            "background": "color.action.danger.default",
+            "hover": "color.action.danger.hover",
+            "active": "color.action.danger.active",
+            "subtle": "color.action.danger.subtle",
+            "text": "color.text.on-action"
+          },
+          "limite": "Exige confirmação em diálogo em QUALQUER variante — a regra da ADR-002 está presa ao tom, não ao peso. Nunca usar para 'redefinir senha', 'limpar filtro' ou 'sair'."
+        }
+      }
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "Altura via size.control-*. sm apenas dentro de linha de tabela."
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Ação indisponível. Exige tooltip ou texto adjacente explicando o motivo — botão desabilitado sem explicação é um beco sem saída."
+    },
+    {
+      "nome": "loading",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Ação em andamento. Bloqueia cliques repetidos. Substitui o overlay 'CARREGANDO' de tela cheia para operações originadas em botão."
+    },
+    {
+      "nome": "iconOnly",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Sem rótulo visível. EXIGE ariaLabel."
+    },
+    {
+      "nome": "ariaLabel",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome acessível quando iconOnly=true."
+    },
+    {
+      "nome": "type",
+      "tipo": "'button' | 'submit' | 'reset'",
+      "default": "'button'",
+      "descricao": "Default explícito 'button' — o default do HTML é 'submit' e causa envio acidental de formulário."
+    },
+    {
+      "nome": "iconStart",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Ícone à esquerda do rótulo. Decorativo: recebe aria-hidden. Quem nomeia a ação é o texto."
+    },
+    {
+      "nome": "iconEnd",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Ícone à direita, para indicar desdobramento (menu, link externo)."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "loading"
+  ],
+  "acessibilidade": {
+    "papel": "button (nativo)",
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Recebe foco. Botão desabilitado é removido da ordem de tabulação."
+      },
+      {
+        "tecla": "Enter",
+        "comportamento": "Aciona."
+      },
+      {
+        "tecla": "Space",
+        "comportamento": "Aciona."
+      }
+    ],
+    "requisitos": [
+      "Anel de foco visível com 2px e offset 2px, contraste mínimo 3:1 (WCAG 1.4.11).",
+      "Alvo de clique mínimo 24x24px (WCAG 2.5.8 AA); 44x44px onde houver espaço.",
+      "loading=true define aria-busy=true e aria-disabled=true — NÃO o atributo disabled, que remove o botão do foco e faz o leitor de tela perder o contexto.",
+      "iconOnly sem ariaLabel é erro de build, não aviso.",
+      "Contraste do rótulo mínimo 4.5:1 em toda combinação de variant × tone e nos dois temas, INCLUSIVE sobre o fundo de hover. Verificado (ADR-026): claro red.600 sobre branco 5,54:1 e sobre o hover red.100 4,76:1; escuro red.200 sobre superfície 7,77:1 e sobre o hover red.900 7,23:1.",
+      "A borda de secondary+danger é portadora de significado e precisa de 3:1 (WCAG 1.4.11) — red.600 sobre branco dá 5,54:1.",
+      "O tom NUNCA é o único portador da natureza destrutiva (WCAG 1.4.1): o rótulo nomeia o que será destruído — 'Excluir setor', não 'Excluir'.",
+      "Respeitar prefers-reduced-motion na animação do spinner."
+    ],
+    "criterios_wcag": [
+      "1.4.3",
+      "1.4.11",
+      "2.1.1",
+      "2.4.7",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Verbo no infinitivo dizendo exatamente o que acontece: 'Salvar', 'Enviar requerimento', 'Excluir setor'.",
+      "Sem caixa alta forçada. 'Salvar', não 'SALVAR' — ver ADR-003.",
+      "Máximo 3 palavras.",
+      "Nunca 'OK', 'Sim', 'Confirmar' isolado em diálogo: o rótulo deve repetir a ação para quem chega direto ao botão pelo leitor de tela."
+    ],
+    "exemplos": {
+      "bom": [
+        "Salvar",
+        "Novo requerimento",
+        "Excluir setor",
+        "Adicionar funcionário"
+      ],
+      "ruim": [
+        "SALVAR",
+        "OK",
+        "Clique aqui",
+        "Confirmar",
+        "SUBMETER DADOS DO FORMULÁRIO"
+      ]
+    }
+  },
+  "migracao": {
+    "de": "AngularJS / Angular Material (md-button), e o próprio DSUCAM antes da ADR-015",
+    "mapa": [
+      {
+        "legado": "md-button.md-raised com cor preta (SALVAR)",
+        "novo": "variant=\"primary\""
+      },
+      {
+        "legado": "md-button azul (ENTRAR)",
+        "novo": "variant=\"primary\""
+      },
+      {
+        "legado": "md-button vermelho (REDEFINIR SENHA)",
+        "novo": "variant=\"secondary\"",
+        "nota": "Não é destrutiva. Vermelho era uso incorreto."
+      },
+      {
+        "legado": "md-button verde (PRIMEIRO ACESSO)",
+        "novo": "variant=\"ghost\""
+      },
+      {
+        "legado": "md-button cinza (NOVO REQUERIMENTO)",
+        "novo": "variant=\"secondary\""
+      },
+      {
+        "legado": "md-button com ícone lixeira (EXCLUIR)",
+        "novo": "variant=\"primary\" tone=\"danger\"",
+        "nota": "Passa a exigir diálogo de confirmação."
+      },
+      {
+        "legado": "ucam-button variant=\"danger\" (DSUCAM antes da ADR-015)",
+        "novo": "variant=\"primary\" tone=\"danger\"",
+        "nota": "Conversão literal, mesma aparência. Vale reconsiderar: se o botão está numa linha de tabela ou numa lista, o certo agora é variant=\"secondary\" tone=\"danger\", que não existia antes."
+      },
+      {
+        "legado": "ucam-button variant=\"ghost\" com ícone de lixeira",
+        "novo": "variant=\"ghost\" tone=\"danger\"",
+        "nota": "Era a gambiarra que o próprio exemplo do contrato fazia: cinza para ação destrutiva, porque não havia como dizer destrutivo e leve."
+      },
+      {
+        "legado": "class=\"ucam-btn ucam-btn--danger\" (Trilho A)",
+        "novo": "class=\"ucam-btn ucam-btn--primary\" data-tone=\"danger\"",
+        "nota": "A classe antiga segue funcionando como apelido depreciado até 0.2.0. Não é urgência; é dívida com data."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Ação principal de formulário",
+      "codigo": "<ucam-button variant=\"primary\" (click)=\"salvar()\">Salvar</ucam-button>"
+    },
+    {
+      "titulo": "Com ícone",
+      "codigo": "<ucam-button variant=\"secondary\" iconStart=\"plus\">Novo requerimento</ucam-button>"
+    },
+    {
+      "titulo": "Enquanto salva",
+      "codigo": "<ucam-button variant=\"primary\" [loading]=\"salvando()\">Salvar</ucam-button>"
+    },
+    {
+      "titulo": "Excluir — a ação principal de um diálogo de confirmação",
+      "codigo": "<ucam-button variant=\"primary\" tone=\"danger\" (click)=\"excluir()\">Excluir setor</ucam-button>"
+    },
+    {
+      "titulo": "Excluir numa linha de tabela",
+      "codigo": "<ucam-button variant=\"secondary\" tone=\"danger\" size=\"sm\" (click)=\"confirmar(linha)\">Excluir</ucam-button>"
+    },
+    {
+      "titulo": "Excluir dentro de um menu ou barra densa",
+      "codigo": "<ucam-button variant=\"ghost\" tone=\"danger\" iconStart=\"trash\">Excluir</ucam-button>"
+    },
+    {
+      "titulo": "Apenas ícone",
+      "codigo": "<ucam-button variant=\"ghost\" tone=\"danger\" iconOnly iconStart=\"trash\" ariaLabel=\"Excluir requerimento 2026/00841\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Escolher a variante pelo peso da ação na hierarquia da tela.",
+      "evite": "Escolher a variante pela cor que se quer ver ali.",
+      "porque": "No Protocolo a mesma intenção aparece em azul #2196F3, vermelho, verde e preto — quatro cores, nenhuma hierarquia."
+    },
+    {
+      "faca": "Uma única ação primária por tela ou diálogo.",
+      "evite": "Duas ou três ações com o mesmo peso visual lado a lado.",
+      "porque": "Três ações de peso idêntico não dizem ao usuário por onde começar."
+    },
+    {
+      "faca": "Reservar tone=\"danger\" para destruição irreversível, sempre com confirmação em diálogo.",
+      "evite": "Vermelho em 'Redefinir senha', 'Limpar filtro' ou 'Sair'.",
+      "porque": "Vermelho para ação não-destrutiva gasta o único sinal que resta para o que é de fato perigoso."
+    },
+    {
+      "faca": "Escolher o peso pelo lugar: primary+danger no diálogo que confirma, secondary+danger na linha da tabela, ghost+danger dentro de menu.",
+      "evite": "Preenchimento vermelho repetido em cada linha de uma listagem.",
+      "porque": "Vinte botões vermelhos numa tabela não avisam de nada — viram textura. O vermelho sólido precisa estar guardado para o momento em que a pessoa de fato decide."
+    },
+    {
+      "faca": "Usar tone=\"neutral\" no botão que apenas fecha ou cancela um formulário.",
+      "evite": "tone=\"danger\" em 'Cancelar'.",
+      "porque": "Cancelar não destrói registro: sai sem salvar. Pintar de vermelho ensina a pessoa a ignorar o vermelho — e a próxima tela vermelha é a que apaga de verdade."
+    },
+    {
+      "faca": "Verbo no infinitivo nomeando o objeto: Excluir setor, Enviar requerimento.",
+      "evite": "'OK', 'Confirmar', 'Clique aqui' e rótulo em caixa alta.",
+      "porque": "Quem chega ao botão pelo leitor de tela ouve só o rótulo, sem o texto ao redor. Caixa alta é a ADR-003."
+    },
+    {
+      "faca": "Usar Link quando a ação leva para outra página.",
+      "evite": "Botão que navega.",
+      "porque": "Botão que navega quebra o clique do meio, o abrir-em-nova-aba e o anúncio de destino do leitor de tela."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "icon-button",
+      "diferenca": "Button nomeia a ação em texto; icon-button conta com que o desenho seja convencional e move o nome para o rótulo acessível.",
+      "escolha": "Ação principal, ação de negócio específica, qualquer coisa que precise ser lida: button com texto."
+    },
+    {
+      "componente": "link",
+      "diferenca": "Link muda de ENDEREÇO; Button executa uma ação na página atual. A diferença não é de aparência, é de promessa — e é ela que decide se o clique do meio abre em outra aba.",
+      "escolha": "Salvar, deferir, excluir, abrir um diálogo: nada disso tem endereço."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "click",
+      "payload": "MouseEvent",
+      "descricao": "Emitido ao acionar. Não dispara quando disabled ou loading."
+    }
+  ],
+  "limites": {
+    "regras": [
+      "tone não aceita 'info', 'success' nem 'warning'. O truncamento é da ADR-015 e vale para todo componente de ação — ler tone por analogia com alert ou badge leva ao valor errado.",
+      "tone não altera o peso. Se a ação destrutiva precisa de menos presença, o que muda é variant, nunca o tom.",
+      "Nenhuma combinação com tone=\"danger\" dispensa a confirmação em diálogo. A regra da ADR-002 está presa ao tom, e ghost+danger é tão irreversível quanto primary+danger.",
+      "Uma só primary por tela, contando as de tom danger: um diálogo de exclusão tem 'Excluir' como primary+danger e 'Cancelar' como secondary+neutral, não duas primárias."
+    ],
+    "motivo": "O eixo tone existe em onze componentes com dois significados diferentes de propósito, e essa é exatamente a classe de coisa que se aprende errado por semelhança. Escrever o limite custa uma linha; descobri-lo em produção custa uma tela."
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-confirmacao-destrutiva",
+      "padrao-consulta-relatorio",
+      "padrao-formulario-entidade",
+      "padrao-listagem-crud",
+      "padrao-listagem-inspetor",
+      "padrao-shell-aplicacao",
+      "padrao-triagem-lista-detalhe",
+      "ucam-alert",
+      "ucam-data-table",
+      "ucam-dialog",
+      "ucam-drawer",
+      "ucam-empty-state",
+      "ucam-file-field",
+      "ucam-page-header",
+      "ucam-section-bar",
+      "ucam-compositor"
+    ],
+    "usa": [
+      "ucam-icon"
+    ]
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe de base mais uma de variante. Tamanho e forma de ícone entram por modificador.",
+      "raiz": ".ucam-btn",
+      "nota": "A classe é .ucam-btn, abreviada, enquanto o componente do Trilho B é <ucam-button>. Os dois nomes convivem de propósito, mas quem migra escrevendo class=\"ucam-button\" não recebe estilo nem aviso.",
+      "estado": "loading: aria-busy=true e aria-disabled=true, nunca disabled; um svg.ic.ucam-spinner (ícone loaderCircle) no lugar do ícone inicial, com o rótulo mantido para a largura não mudar."
+    }
+  }
+}

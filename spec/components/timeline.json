@@ -1,0 +1,491 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "timeline",
+  "name": "Timeline",
+  "selector": "ucam-timeline",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "dados",
+  "description": "Histórico de um registro em ordem cronológica, distinguindo mudança de estado de mensagem trocada com uma pessoa. Não é log técnico: cada item é escrito para quem atende, não para quem depura.",
+  "quando_usar": [
+    "O histórico de um requerimento: quem mudou o quê, quando, e as mensagens trocadas no caminho.",
+    "É preciso distinguir mudança de estado de mensagem trocada com uma pessoa.",
+    "A ordem é cronológica e as entradas não são etapas previstas — se fossem, seria stepper."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "problema": "o histórico do requerimento é uma tabela de três colunas com data, usuário e texto; a resposta ao aluno e a mudança de situação aparecem idênticas, e é preciso ler o texto inteiro para saber qual é qual"
+      },
+      {
+        "tela": "image 6",
+        "problema": "a ordem é a do banco, sem indicação de qual ponta é a mais recente"
+      },
+      {
+        "tela": "image 7 (Novo Requerimento)",
+        "problema": "o texto do requerente é o primeiro item do histórico, mas aparece num campo de formulário acima da tabela, fora da linha do tempo a que pertence"
+      }
+    ],
+    "conclusao": "Duas naturezas de item, marcadas por forma e não só por texto: fala de gente e mudança de estado."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<ol> — a ordem faz parte do significado.",
+      "classe": "ucam-timeline"
+    },
+    {
+      "parte": "filtro",
+      "obrigatorio": false,
+      "classe": "ucam-timeline__filtro",
+      "descricao": "Um .ucam-segmented acima da lista — Todos, Mensagens, Tramitação — com data-timeline-filtro e aria-controls no <ol>. No Trilho A cada item traz data-tipo (mensagem, evento) e o linhaDoTempoScript esconde o que não casa, esconde a fase que ficou vazia e marca data-fim no último item visível para o fio não descer até o nada. No Trilho B o controle é do consumidor e o componente recebe filter."
+    },
+    {
+      "parte": "grupo",
+      "obrigatorio": false,
+      "classe": "ucam-timeline__grupo",
+      "descricao": "O corte de período — \"2025\", \"Hoje\" — que separa os acontecimentos quando a lista atravessa dias ou anos. É <li> de verdade, com o texto do período em .ucam-timeline__periodo, e não separador aria-hidden: quem ouve a página também precisa do corte. O trilho atravessa o grupo sem nó, para a linha não quebrar a cada ano. Aparece com groupBy diferente de none. Com groupBy=phase vira a FASE (.ucam-timeline__grupo--fase): o rótulo é a situação do registro, e o trilho ganha um marco (.ucam-timeline__marco) com fio antes e depois, porque a fase é um trecho do caminho e o marco diz onde ele começa. O texto leva \"Fase: \" em sr-only."
+    },
+    {
+      "parte": "periodo",
+      "obrigatorio": false,
+      "descricao": "O rótulo do grupo: \"Hoje\", o ano, ou a fase em que o registro estava. Legenda em caixa alta e tinta secundária — é divisória, não acontecimento.",
+      "classe": "ucam-timeline__periodo"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<li>. Um acontecimento.",
+      "classe": "ucam-timeline__item"
+    },
+    {
+      "parte": "trilho",
+      "obrigatorio": true,
+      "descricao": "Coluna com o nó e a linha que liga ao próximo. Decorativa, aria-hidden — a sequência já está no <ol>.",
+      "classe": "ucam-timeline__trilho"
+    },
+    {
+      "parte": "marco",
+      "obrigatorio": false,
+      "descricao": "O disco pequeno que abre uma fase no trilho, quando groupBy é phase. Menor que o nó e sem ícone, de propósito: a fase é um trecho do caminho, não mais um acontecimento. A primeira fase da lista esconde o trecho de linha acima dele — nada vem antes.",
+      "classe": "ucam-timeline__marco"
+    },
+    {
+      "parte": "no",
+      "obrigatorio": true,
+      "descricao": "Marcador do item. Ícone quando é mensagem, ponto quando é mudança de estado. O tom do item pinta o disco: .ucam-timeline__no--info, .ucam-timeline__no--success, .ucam-timeline__no--warning e .ucam-timeline__no--danger, do mesmo vocabulário de feedback do selo de situação.",
+      "classe": "ucam-timeline__no"
+    },
+    {
+      "parte": "linha",
+      "obrigatorio": false,
+      "descricao": "O fio de 1px que liga um nó ao próximo, dentro do trilho. Some no último item VISÍVEL (data-fim, que o filtro recalcula) — sem isso o fio desce do último item para o nada, porque :last-child não enxerga o que está escondido.",
+      "classe": "ucam-timeline__linha"
+    },
+    {
+      "parte": "conteudo",
+      "obrigatorio": true,
+      "descricao": "A coluna à direita do trilho: tudo o que o acontecimento diz. O último item zera o vão de baixo, para a lista não terminar em ar.",
+      "classe": "ucam-timeline__conteudo"
+    },
+    {
+      "parte": "cabecalho",
+      "obrigatorio": true,
+      "descricao": "Autor, papel e horário.",
+      "classe": "ucam-timeline__cabecalho"
+    },
+    {
+      "parte": "autor",
+      "obrigatorio": false,
+      "descricao": "Quem fez. Em peso de rótulo e tinta primária — é o sujeito da frase do evento.",
+      "classe": "ucam-timeline__autor"
+    },
+    {
+      "parte": "papel",
+      "obrigatorio": false,
+      "descricao": "Aluno, atendente, sistema. Texto em tinta secundária colado ao nome, depois de um ponto médio decorativo — sem pastilha nem fundo (ADR-036).",
+      "classe": "ucam-timeline__papel"
+    },
+    {
+      "parte": "tempo",
+      "obrigatorio": false,
+      "descricao": "A hora, empurrada para o fim do cabeçalho. Sempre com <time datetime>: \"há 4h\" sozinho não é data para quem lê a tela depois.",
+      "classe": "ucam-timeline__tempo"
+    },
+    {
+      "parte": "transicao",
+      "obrigatorio": false,
+      "descricao": "O par de situações, DE e PARA, com uma seta entre eles. A seta é aria-hidden e a relação é dita em texto no nome do item — seta sozinha não é palavra.",
+      "classe": "ucam-timeline__transicao"
+    },
+    {
+      "parte": "seta",
+      "obrigatorio": false,
+      "descricao": "O span que embrulha a seta entre o valor antigo e o novo — na transição de situação e na mudança de campo. Decorativa: quem ouve a página recebe a frase, não o desenho. Viaja colada ao destino para nunca sobrar órfã no fim da linha.",
+      "classe": "ucam-timeline__seta"
+    },
+    {
+      "parte": "corpo",
+      "obrigatorio": false,
+      "descricao": "O texto do acontecimento. Em mensagem, ganha o filete de citação à esquerda e tinta primária, nas duas densidades; evento fica em tinta secundária e sem filete (ADR-036 — antes era balão cinza). A mensagem se distingue por .ucam-timeline__corpo--mensagem — é a forma que separa fala de registro, nunca só a cor.",
+      "classe": "ucam-timeline__corpo"
+    },
+    {
+      "parte": "etapas",
+      "obrigatorio": false,
+      "classe": "ucam-timeline__etapas",
+      "descricao": "Os passos de um acontecimento que ainda está em curso — o parecer pedido à coordenação: enviado, parecer, resposta. <ul> de .ucam-timeline__etapa, cada uma com a marca (.ucam-timeline__etapa-marca, aria-hidden) e o estado dito em sr-only. Três formas: --feita (✓ em tinta de sucesso), --atual (ponto cheio em tinta de informação, texto em peso de rótulo — a trinca é semântica e cinza, nunca a cor da marca: essa é da ação principal da tela — ADR-041), --pendente (ponto vazado). Feita não é riscada — riscado lê como cancelado. Só em kind=event."
+    },
+    {
+      "parte": "etapa",
+      "obrigatorio": false,
+      "descricao": "Um passo do trâmite aberto pelo acontecimento. Três estados, cada um com forma própria — feita, atual, pendente — e o estado dito em texto para quem ouve. Feita não é riscada: riscado lê como cancelado. Os três estados saem de .ucam-timeline__etapa--feita, .ucam-timeline__etapa--atual e .ucam-timeline__etapa--pendente.",
+      "classe": "ucam-timeline__etapa"
+    },
+    {
+      "parte": "etapa-marca",
+      "obrigatorio": false,
+      "descricao": "A marca do passo: visto na feita, ponto cheio na atual, ponto vazado na pendente. A tinta é semântica e não a da marca — o bordô é do que se clica, e aqui competia com o botão principal a três dedos de distância (ADR-036).",
+      "classe": "ucam-timeline__etapa-marca"
+    },
+    {
+      "parte": "mudancas",
+      "obrigatorio": false,
+      "classe": "ucam-timeline__mudancas",
+      "descricao": "A lista de campos alterados por UM evento que mexeu em vários — editar o requerimento troca setor, prazo e prioridade no mesmo clique. Um <dl>: cada mudança é dt com o nome do campo (.ucam-timeline__campo) e dd com o valor novo (.ucam-timeline__novo), o valor antigo apagado antes da seta quando importa (.ucam-timeline__anterior). Como três eventos seriam três linhas com o mesmo autor e a mesma hora, escondendo que foi uma ação só. Só em kind=event, e exclui from/to: ou o evento é uma transição, ou é uma edição."
+    },
+    {
+      "parte": "mudanca",
+      "obrigatorio": false,
+      "descricao": "Um par de campo e valor dentro de mudancas. É display:contents — quem faz as duas colunas é a grade de mudancas, e o par existe para agrupar <dt> e <dd> no DOM sem virar caixa.",
+      "classe": "ucam-timeline__mudanca"
+    },
+    {
+      "parte": "campo",
+      "obrigatorio": false,
+      "descricao": "O rótulo do campo que mudou (o <dt>), em legenda com ícone de apoio. Na densidade compacta ele sobe para a linha de cima e ganha dois-pontos.",
+      "classe": "ucam-timeline__campo"
+    },
+    {
+      "parte": "novo",
+      "obrigatorio": false,
+      "descricao": "O valor que passou a valer (o <dd>), em tinta primária.",
+      "classe": "ucam-timeline__novo"
+    },
+    {
+      "parte": "anterior",
+      "obrigatorio": false,
+      "descricao": "O valor que valia antes, quando ele importa. Apagado, nunca riscado: riscar um valor ainda legível confunde com cancelado.",
+      "classe": "ucam-timeline__anterior"
+    },
+    {
+      "parte": "destino",
+      "obrigatorio": false,
+      "descricao": "Seta e valor novo numa peça só, para o par quebrar junto. Sem ele a coluna de 20rem do requerimento deixava \"Coordenação de Curso →\" apontando para o nada no fim da linha.",
+      "classe": "ucam-timeline__destino"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "TimelineItem[]",
+      "obrigatorio": true,
+      "descricao": "Os acontecimentos, do mais recente para o mais antigo."
+    },
+    {
+      "nome": "order",
+      "tipo": "'desc' | 'asc'",
+      "default": "'desc'",
+      "descricao": "Sentido da leitura.",
+      "valores": {
+        "desc": {
+          "uso": "Padrão. Atendimento em curso: o que acabou de acontecer fica no topo, ao alcance da resposta.",
+          "limite": "—"
+        },
+        "asc": {
+          "uso": "Auditoria e impressão, onde se lê a história do começo.",
+          "limite": "Não usar na tela de atendimento: obriga a rolar até o fim para ver o que mudou agora."
+        }
+      }
+    },
+    {
+      "nome": "density",
+      "tipo": "'default' | 'compact'",
+      "default": "'default'",
+      "descricao": "compact remove o balão e reduz o vão. Para histórico longo em painel lateral.",
+      "valores": {
+        "compact": {
+          "uso": "Histórico longo em painel lateral de ~20rem: o par de mudança empilha em vez de abrir duas colunas, e o vão entre eventos encolhe.",
+          "limite": "Não usar na coluna principal — o que ela economiza em altura custa em linha quebrada onde havia largura de sobra.",
+          "classe": ".ucam-timeline--compacta"
+        }
+      }
+    },
+    {
+      "nome": "groupBy",
+      "tipo": "'none' | 'day' | 'year' | 'phase'",
+      "default": "'none'",
+      "descricao": "Corta a lista por período ou por fase, com o rótulo entre os itens (parte grupo).",
+      "valores": {
+        "none": {
+          "uso": "Padrão. Atendimento em curso, onde tudo aconteceu nesta semana e o relativo basta.",
+          "limite": "—"
+        },
+        "day": {
+          "uso": "Histórico de dias: \"Hoje\", \"Ontem\", depois a data por extenso. É o corte da caixa de entrada.",
+          "limite": "Com um item por dia, cada corte rotula um item só e a lista dobra de altura — voltar a none."
+        },
+        "year": {
+          "uso": "Histórico longo, de meses ou anos: o registro de um aluno, o processo que atravessou dois semestres.",
+          "limite": "Só faz sentido quando há mais de um ano na lista; senão é um rótulo que não separa nada."
+        },
+        "phase": {
+          "uso": "Registro que atravessa situações — o requerimento aberto, em análise, concluído. O rótulo é a situação em que o registro estava quando cada item aconteceu (item.phase), e a pergunta que ele responde é \"o que aconteceu desde que entrou em análise?\".",
+          "limite": "Itens sem phase herdam a fase do item anterior na ordem de leitura. Com uma fase só, o rótulo não separa nada — voltar a none."
+        }
+      }
+    },
+    {
+      "nome": "filter",
+      "tipo": "'all' | 'message' | 'event'",
+      "default": "'all'",
+      "descricao": "Mostra só uma natureza de item. O controle que escolhe (o segmented Todos · Mensagens · Tramitação) é de quem consome; a lista obedece, esconde a fase que ficou vazia e fecha o fio no último item visível (ADR-036)."
+    },
+    {
+      "nome": "state",
+      "tipo": "'idle' | 'loading' | 'empty' | 'error'",
+      "default": "'idle'",
+      "descricao": "O mesmo vocabulário da DataTable. loading desenha três linhas de esqueleto no lugar da lista; empty e error, o EmptyState pequeno — o de erro com \"Tentar novamente\", que emite retry. Antes de 13/09/2026 o contrato declarava loading e empty sem prop que os ligasse."
+    }
+  ],
+  "schemas": {
+    "TimelineItem": {
+      "kind": {
+        "tipo": "'message' | 'event'",
+        "obrigatorio": true,
+        "descricao": "message é fala de uma pessoa e ganha balão; event é mudança de estado e é uma linha só."
+      },
+      "author": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Quem fez. Em evento automático, o nome do sistema — nunca 'admin' ou um id."
+      },
+      "role": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Papel de quem fez: Aluno, Atendente, Sistema."
+      },
+      "at": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Data ISO. O relativo é derivado dela na renderização."
+      },
+      "text": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Conteúdo. Em event, descreve a mudança: 'Encaminhado para Secretaria Acadêmica'."
+      },
+      "icon": {
+        "tipo": "UcamIconName | null",
+        "default": "null",
+        "descricao": "Ícone do nó. Decorativo — o significado está no texto do item."
+      },
+      "tone": {
+        "tipo": "'neutral' | 'info' | 'success' | 'warning' | 'danger'",
+        "default": "'neutral'",
+        "descricao": "Tinta do nó. Reforça a natureza da mudança, nunca a informa sozinha."
+      },
+      "from": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Situação DE onde o registro saiu. Só em kind=event. Vem em par com to: um sem o outro é meia informação e não é desenhado."
+      },
+      "to": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Situação PARA onde o registro foi. Só em kind=event, sempre em par com from."
+      },
+      "changes": {
+        "tipo": "Array<{ field: string; to: string; from?: string | null; icon?: UcamIconName | null }> | null",
+        "default": "null",
+        "descricao": "Os campos alterados por um evento de edição, um por linha (parte mudancas). Só em kind=event e exclui from/to. field é o nome do campo como aparece no formulário — \"Setor responsável\", não \"setor_id\"."
+      },
+      "phase": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "A situação do registro quando o item aconteceu, com o nome da coluna Situação da listagem. Usado por groupBy=phase."
+      },
+      "steps": {
+        "tipo": "Array<{ label: string; state: 'done' | 'current' | 'pending' }> | null",
+        "default": "null",
+        "descricao": "Os passos de um acontecimento em curso (parte etapas). Só em kind=event. Passo previsto de um trâmite aberto por este item, não etapa do registro inteiro — essa é do stepper."
+      }
+    }
+  },
+  "estados": [
+    "default",
+    "loading",
+    "empty",
+    "error"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para log técnico. Item que só faz sentido para quem mantém o sistema não entra na tela de quem atende.",
+      "Não usar quando os acontecimentos não têm ordem — isso é lista, não linha do tempo.",
+      "Não paginar a linha do tempo por número de página: histórico se lê continuando, com 'ver acontecimentos anteriores'.",
+      "Não usar from/to em kind=message: fala de gente não muda situação, e o par ali sugere um efeito que a mensagem não teve.",
+      "Não usar steps para as etapas do registro inteiro (aberto, em análise, concluído): isso é stepper, ou groupBy=phase. steps são os passos de UM acontecimento que ainda não terminou."
+    ],
+    "motivo": "O histórico da Análise de Requerimento hoje mistura resposta ao aluno com mudança de situação e chama tudo de registro."
+  },
+  "acessibilidade": {
+    "papel": "list",
+    "requisitos": [
+      "É <ol>: a ordem é significado e precisa existir na marcação.",
+      "O trilho e o nó são decorativos, com aria-hidden — a sequência já é anunciada pela lista.",
+      "Cada item declara <time datetime> com o valor absoluto, mesmo quando exibe o relativo.",
+      "A distinção entre mensagem e evento aparece em texto (o papel de quem fez), não só na forma do nó.",
+      "O tom do nó nunca é o único sinal do que aconteceu (WCAG 1.4.1).",
+      "Item novo acrescentado depois de uma resposta é anunciado por região live no container que o recebe, não pela linha do tempo inteira.",
+      "A transição é lida como frase, não como dois selos soltos: o item anuncia \"de Em análise para Deferido\". A seta desenhada entre eles é decorativa.",
+      "Em loading a região declara aria-busy=true e o esqueleto é aria-hidden, com o texto \"Carregando\" para quem ouve. O erro diz em palavra que a carga falhou, e tentar de novo é um <button> de verdade. A mensagem de vazio só aparece com a carga concluída — dizer \"nada\" enquanto os dados não chegaram é afirmar o que ainda não se sabe.",
+      "Cada etapa diz o estado em texto (\", concluída\", \", em curso\", \", pendente\") — a marca é aria-hidden e a forma não chega a quem ouve."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Evento é escrito no particípio, nomeando o destino: 'Encaminhado para Secretaria Acadêmica'.",
+      "Mensagem preserva o texto de quem escreveu, sem reescrita nem corte silencioso.",
+      "O primeiro item da história é sempre a abertura do protocolo, mesmo quando não há texto.",
+      "Quando há transição, os selos carregam os nomes de situação do sistema, tal como aparecem na coluna Situação da listagem — inventar sinônimo aqui faz o histórico divergir da lista."
+    ],
+    "exemplos": {
+      "bom": [
+        "Rafael Augusto Cordeiro · Aluno · há 4h — Solicito revisão da nota da AV2 de Cálculo III.",
+        "Sistema · há 4h — Protocolo aberto e distribuído para CPD · Nível 1."
+      ],
+      "ruim": [
+        "UPDATE status 2 → 3 por USR_00412",
+        "Registro alterado."
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-avatar"
+    ],
+    "usada_por": [
+      "padrao-triagem-lista-detalhe",
+      "ucam-drawer"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / tabela de histórico",
+    "mapa": [
+      {
+        "legado": "coluna Data",
+        "novo": "at",
+        "nota": "Passa a ser ISO no atributo, com o relativo exibido."
+      },
+      {
+        "legado": "coluna Usuário",
+        "novo": "author + role",
+        "nota": "O papel deixa de ser inferido pelo nome."
+      },
+      {
+        "legado": "coluna Descrição",
+        "novo": "kind + text",
+        "nota": "Separa a fala do aluno da mudança de situação, que hoje têm a mesma aparência."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Atividade do requerimento",
+      "codigo": "<ucam-timeline [items]=\"atividade()\" />"
+    },
+    {
+      "titulo": "Histórico em painel lateral",
+      "codigo": "<ucam-timeline density=\"compact\" order=\"asc\" [items]=\"historico()\" />"
+    },
+    {
+      "titulo": "Edição de vários campos",
+      "codigo": "<ucam-timeline\n  groupBy=\"day\"\n  [items]=\"[\n    { kind: 'event', author: 'Marina Duarte', role: 'Atendente', at: '2026-09-03T12:40', icon: 'pencil', tone: 'neutral',\n      text: 'Editou o requerimento',\n      changes: [\n        { field: 'Setor responsável', from: 'Coordenação de Curso', to: 'Secretaria Acadêmica' },\n        { field: 'Prazo', from: '10/09/2026', to: '04/09/2026' },\n        { field: 'Prioridade', to: 'Urgente' }\n      ] },\n    { kind: 'message', author: 'Rafael Augusto Cordeiro', role: 'Aluno', at: '2026-09-02T09:10', text: 'Solicito revisão da nota da AV2.' }\n  ]\" />"
+    },
+    {
+      "titulo": "Fases, etapas e filtro",
+      "codigo": "<ucam-segmented size=\"sm\" ariaLabel=\"Mostrar na atividade\" [(value)]=\"natureza\" [items]=\"[{ id: 'all', label: 'Todos' }, { id: 'message', label: 'Mensagens' }, { id: 'event', label: 'Tramitação' }]\" />\n<ucam-timeline\n  density=\"compact\"\n  groupBy=\"phase\"\n  [filter]=\"natureza()\"\n  [items]=\"[\n    { kind: 'event', author: 'Marina Duarte', role: 'Atendente', at: '2026-09-03T13:10', phase: 'Em análise', icon: 'send', tone: 'info',\n      text: 'Pediu parecer ao professor da disciplina',\n      steps: [\n        { label: 'Enviado ao professor', state: 'done' },\n        { label: 'Parecer sobre a questão 4', state: 'current' },\n        { label: 'Resposta ao aluno', state: 'pending' }\n      ] },\n    { kind: 'message', author: 'Rafael Augusto Cordeiro', role: 'Aluno', at: '2026-09-03T09:10', phase: 'Aguardando análise', text: 'Solicito revisão da nota da AV2.' }\n  ]\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Separar mensagem de mudança de estado por forma e por papel escrito.",
+      "evite": "Uma linha igual para 'o aluno respondeu' e 'a situação mudou'.",
+      "porque": "Na tabela de histórico atual é preciso ler o texto inteiro para descobrir qual dos dois aconteceu."
+    },
+    {
+      "faca": "Escrever o evento nomeando o destino ou o efeito.",
+      "evite": "'Registro alterado'.",
+      "porque": "Um histórico que não diz o que mudou obriga a abrir o registro anterior para descobrir."
+    },
+    {
+      "faca": "Manter o relativo na tela e o absoluto no datetime.",
+      "evite": "Só 'há 4h'.",
+      "porque": "O relativo envelhece; uma captura de tela de ontem passa a mentir."
+    },
+    {
+      "faca": "Começar pelo mais recente na tela de atendimento.",
+      "evite": "Ordem crescente onde se responde.",
+      "porque": "Quem atende precisa do último acontecimento ao alcance do campo de resposta, não no fim da rolagem."
+    },
+    {
+      "faca": "Nomear o sistema como autor de evento automático.",
+      "evite": "Mostrar o id do usuário técnico que executou a rotina.",
+      "porque": "Id de serviço no histórico faz quem atende procurar uma pessoa que não existe."
+    },
+    {
+      "faca": "Gravar a transição em from e to, além do texto do evento.",
+      "evite": "Só a prosa: \"Situação alterada\".",
+      "porque": "A prosa é escrita por quem grava o evento e erra; o par vem do dado. E é o par que permite varrer o histórico procurando quando algo entrou em análise."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "timeline.json",
+      "raiz": "<ol class=\"ucam-timeline\">",
+      "nota": "O trilho e o nó são aria-hidden; a sequência já é anunciada pela lista.",
+      "estado": "loading, empty e error: no lugar do <ol>, um .ucam-skeleton por linha dentro de uma região com aria-busy=true, ou um .ucam-empty.ucam-empty--sm — o de erro com um .ucam-btn.ucam-btn--secondary \"Tentar novamente\"."
+    },
+    "trilho_b": "Ordena por at e aplica order antes de renderizar, então a ordem visual e a do DOM são sempre a mesma. O relativo é derivado do ISO na renderização — relativo até sete dias, data absoluta depois disso, porque \"há 18 dias\" já não ajuda ninguém a agir. NÃO entrega: região live para item novo; quem anuncia a resposta enviada é o container que a recebe, não a linha do tempo inteira. Com groupBy, o rótulo do período é derivado do at: day dá \"Hoje\", \"Ontem\" e a data por extenso; year dá o ano. changes é renderizado como dl dentro do item, e ganha da transição se as duas vierem. groupBy=phase corta a cada troca de item.phase na ordem de leitura. filter esconde por kind, some com a fase vazia e fecha o trilho no último item visível. steps vira <ul> abaixo do texto do item."
+  },
+  "vs": [
+    {
+      "componente": "citacao",
+      "diferenca": "A mensagem da linha do tempo é uma fala dentro do histórico, com autor e hora no cabeçalho do evento. A citação é a fala solta no corpo do registro — o pedido do requerente. Vestem a mesma forma, o filete de citação à esquerda (ADR-036), porque dizem o mesmo fato, alguém falando, e cada uma tem a sua classe.",
+      "escolha": "A fala é um evento do histórico, com autor e hora."
+    },
+    {
+      "componente": "stepper",
+      "diferenca": "Timeline conta o que JÁ aconteceu, em ordem cronológica e sem etapas previstas; Stepper mostra onde a pessoa está numa tarefa cujas etapas são conhecidas de antemão e quanto ainda falta. As etapas de UM item (steps) não fazem da timeline um stepper: são o trâmite aberto por aquele acontecimento, e a lista continua contando o que já aconteceu.",
+      "escolha": "O histórico do requerimento: quem mudou o quê, quando, e as mensagens trocadas."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "retry",
+      "payload": "void",
+      "descricao": "Pedido de nova carga, do botão \"Tentar novamente\" do estado de erro. O componente não busca dados: quem consome decide o que refazer."
+    }
+  ]
+}

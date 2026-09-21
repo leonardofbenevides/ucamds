@@ -1,0 +1,314 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "command",
+  "name": "Command",
+  "selector": "ucam-command",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "navegacao",
+  "description": "Paleta de comando: uma caixa sobreposta que abre por atalho de teclado e leva a qualquer tela ou ação do sistema pelo NOME. Serve a quem já sabe para onde vai e não quer percorrer menu — é atalho, nunca o único caminho.",
+  "quando_usar": [
+    "O sistema tem muitas telas e quem já o conhece quer chegar direto pelo nome.",
+    "Uma ação frequente está a três cliques de distância e merece um atalho de teclado.",
+    "Há um caminho de menu para tudo que a paleta oferece — ela acelera, nunca é a única via."
+  ],
+  "evidencia": {
+    "origem": "Shell do próprio design system, APPSUCAM/Protocolo e APPSUCAM/SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "testeira do app-shell, nas 11 telas de referência",
+        "problema": "a busca exibe o selo 'Ctrl K' e o campo declara aria-keyshortcuts=\"Control+K\" para leitor de tela — e não existe nada que responda ao atalho. O sistema anuncia uma tecla que não faz coisa alguma, e o anúncio chega inclusive a quem não pode conferir na tela se ela funcionou."
+      },
+      {
+        "tela": "APPSUCAM/Protocolo, image 11 (Setor)",
+        "problema": "chegar a qualquer cadastro exige abrir o menu de hambúrguer e percorrer a lista; não há forma de ir a uma tela digitando o nome dela"
+      },
+      {
+        "tela": "APPSUCAM/SIGFIN, Arquivo remessa diário",
+        "problema": "a troca de tela passa sempre pelo menu lateral, e as telas do sistema não aparecem em lugar nenhum como lista pesquisável"
+      },
+      {
+        "tela": "portal universitário",
+        "problema": "são ~25 módulos agrupados por campus; encontrar um pelo nome significa varrer a grade visualmente"
+      }
+    ],
+    "conclusao": "O atalho já está prometido na interface e no ARIA. Ou a promessa é cumprida, ou o selo e o aria-keyshortcuts saem do shell — deixar como está é mentir para o leitor de tela."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Diálogo modal sobreposto, ancorado no alto e centrado na horizontal. Não é centrado na vertical: a lista cresce para baixo e centrar faria a caixa pular a cada tecla digitada.",
+      "classe": "ucam-command"
+    },
+    {
+      "parte": "cortina",
+      "obrigatorio": true,
+      "classe": "ucam-command__cortina",
+      "descricao": "A sobreposição atrás do diálogo. Existe no wrapper e não estava na anatomia — o contrato descrevia cinco partes e a camada emitia esta, que é justamente a que separa a paleta do resto da tela e recebe o clique que a fecha."
+    },
+    {
+      "parte": "campo",
+      "obrigatorio": true,
+      "descricao": "Entrada de busca, com foco assim que a paleta abre. É o único controle que recebe foco na abertura. Desenhado por utilitárias no wrapper, sem classe nomeada."
+    },
+    {
+      "parte": "lista",
+      "obrigatorio": true,
+      "descricao": "Resultados em listbox, percorridos pelas setas. O item ativo é apontado por aria-activedescendant — o foco nunca sai do campo. Desenhada por utilitárias no wrapper, sem classe nomeada."
+    },
+    {
+      "parte": "grupo",
+      "obrigatorio": false,
+      "descricao": "Título de seção dentro da lista: 'Ir para', 'Ações', 'Recentes'. Sem ele, vinte itens leem como uma pilha só. Desenhado por utilitárias no wrapper, sem classe nomeada."
+    },
+    {
+      "parte": "atalho",
+      "obrigatorio": false,
+      "descricao": "A tecla do item, alinhada à direita. Ensina o atalho no lugar onde a pessoa já está procurando a ação. Desenhado por utilitárias no wrapper, sem classe nomeada."
+    },
+    {
+      "parte": "vazio",
+      "obrigatorio": true,
+      "descricao": "Estado sem resultado, dizendo o termo procurado. Nunca uma lista em branco. A classe estava ausente aqui e nomeada em quatro irmãs que não existem.",
+      "classe": "ucam-command__vazio"
+    }
+  ],
+  "props": [
+    {
+      "nome": "open",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Abre e fecha. É model: a paleta fecha sozinha ao escolher, e o valor volta para quem a abriu."
+    },
+    {
+      "nome": "groups",
+      "tipo": "CommandGroup[]",
+      "obrigatorio": true,
+      "descricao": "Os grupos de itens, na ordem de exibição. A ordem é a de PROVÁVEL uso, não a alfabética: quem digita nada e aperta Enter deve acertar o destino mais comum."
+    },
+    {
+      "nome": "shortcut",
+      "tipo": "string | null",
+      "default": "'Control+K'",
+      "descricao": "A tecla que abre. O componente registra o ouvinte ele mesmo — é o que impede o shell de anunciar um atalho que ninguém implementou. Passar null quando a aplicação já tem um gerenciador de atalhos próprio."
+    },
+    {
+      "nome": "placeholder",
+      "tipo": "string",
+      "default": "'Ir para uma tela ou executar uma ação'",
+      "descricao": "Diz o que a paleta faz, não 'Buscar'. É a única instrução que a pessoa recebe."
+    },
+    {
+      "nome": "emptyText",
+      "tipo": "string",
+      "default": "'Nada encontrado'",
+      "descricao": "Cabeçalho do estado vazio. O termo procurado é acrescentado pelo componente."
+    },
+    {
+      "nome": "loading",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Os itens vêm de uma busca remota em curso. Troca o \"nada encontrado\" por \"Buscando…\": sem isso a paleta afirma que não existe o que só ainda não chegou."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "default": "'Paleta de comando'",
+      "descricao": "Nome acessível do diálogo."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "openChange",
+      "payload": "boolean",
+      "descricao": "Emitido pelo model de open. A paleta se fecha sozinha ao escolher um item e ao apertar Esc, e o estado volta para quem a abriu — sem isto o gatilho ficaria achando que ela ainda está aberta."
+    },
+    {
+      "nome": "escolher",
+      "payload": "CommandItem",
+      "descricao": "O item escolhido. Quem executa é a aplicação — a paleta encontra e devolve, não navega por conta própria. NÃO se chama select: select é evento do DOM, disparado ao selecionar texto num campo, e a paleta tem um campo de busca dentro (ADR-018). É o mesmo nome que o menu usa para o mesmo papel."
+    }
+  ],
+  "schemas": {
+    "CommandGroup": {
+      "titulo": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Título da seção: 'Ir para', 'Ações'. Verbo no infinitivo, porque descreve o que os itens fazem."
+      },
+      "itens": {
+        "tipo": "CommandItem[]",
+        "obrigatorio": true,
+        "descricao": "Os itens do grupo."
+      }
+    },
+    "CommandItem": {
+      "id": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Identidade estável do item, devolvida no evento."
+      },
+      "label": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "O nome pelo qual a pessoa procura. É o texto que o filtro percorre."
+      },
+      "icone": {
+        "tipo": "IconName",
+        "descricao": "Ícone do item. Decorativo: o rótulo já nomeia."
+      },
+      "atalho": {
+        "tipo": "string",
+        "descricao": "Tecla do item, exibida à direita: 'N', 'Ctrl+S'. Só quando o atalho existir de verdade."
+      },
+      "descricao": {
+        "tipo": "string",
+        "descricao": "Uma linha de apoio, quando o rótulo sozinho é ambíguo entre dois destinos parecidos."
+      }
+    }
+  },
+  "estados": [
+    "default",
+    "filtrando",
+    "loading",
+    "empty"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar a paleta como ÚNICO caminho para nenhuma ação ou tela. Atalho de teclado é aceleração para quem já sabe; quem não sabe precisa achar pelo menu.",
+      "Não colocar na paleta ação destrutiva sem confirmação. Digitar três letras e apertar Enter é rápido demais para excluir alguma coisa.",
+      "Não usar para busca de DADO (aluno, requerimento, lançamento). A paleta encontra telas e ações do sistema; procurar registro é a busca da testeira, que tem outro resultado e outra permissão.",
+      "Não passar de uns quarenta itens sem grupos: sem seção, a lista vira uma pilha e o filtro passa a ser obrigatório em vez de opcional."
+    ],
+    "motivo": "A paleta é atalho. Quando ela vira o caminho principal, o sistema fica utilizável só para quem o decorou."
+  },
+  "acessibilidade": {
+    "papel": "dialog",
+    "requisitos": [
+      "O contêiner é role=dialog com aria-modal=true e nome acessível.",
+      "O foco vai para o campo de busca na abertura e VOLTA para o elemento que abriu quando fecha — inclusive quando fecha por Escape.",
+      "O foco fica preso no diálogo enquanto ele estiver aberto.",
+      "A lista é role=listbox e os itens role=option; a seta move aria-activedescendant e o foco NUNCA sai do campo, senão a pessoa perde o que digitou.",
+      "O número de resultados é anunciado por região aria-live=polite a cada mudança do filtro.",
+      "Escape fecha; Enter escolhe o item ativo; Home e End vão ao primeiro e ao último.",
+      "O atalho de abertura é declarado em aria-keyshortcuts no gatilho, e só pode ser declarado porque agora existe.",
+      "O atalho não sequestra a tecla dentro de campo de texto de terceiro: se o foco está num editor, a tecla é dele.",
+      "Sem animação de entrada quando prefers-reduced-motion está ativo.",
+      "Em loading, a lista declara aria-busy=true e a linha \"Buscando…\" tem role=status. A mensagem de vazio só aparece com a busca concluída."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.1.2",
+      "2.4.3",
+      "2.4.7",
+      "2.4.11",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O rótulo do item é o nome da TELA ou da AÇÃO como ela aparece na interface. Se o menu diz 'Naturezas', a paleta não pode dizer 'Cadastro de naturezas'.",
+      "Título de grupo diz o que os itens fazem: 'Ir para', 'Criar', 'Ações do requerimento'.",
+      "O texto do campo diz o que a paleta faz. 'Buscar' não diz — buscar o quê, e para quê.",
+      "O estado vazio repete o termo procurado: sem ele a pessoa não sabe se errou a digitação ou se o destino não existe."
+    ],
+    "exemplos": {
+      "bom": [
+        "Ir para · Caixa de entrada",
+        "Criar · Novo requerimento",
+        "Nada encontrado para “naturza”"
+      ],
+      "ruim": [
+        "Buscar…",
+        "Nenhum resultado",
+        "Menu principal"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon",
+      "ucam-kbd",
+      "ucam-realce"
+    ],
+    "usada_por": [
+      "ucam-app-shell"
+    ]
+  },
+  "migracao": {
+    "de": "Menu de hambúrguer como único caminho",
+    "mapa": [
+      {
+        "legado": "abrir o menu lateral e percorrer a lista até achar a tela",
+        "novo": "Ctrl+K e digitar o nome",
+        "nota": "O menu continua existindo. A paleta é o segundo caminho, para quem já sabe o destino."
+      },
+      {
+        "legado": "selo 'Ctrl K' na busca sem nada por trás",
+        "novo": "ucam-command com shortcut='Control+K'",
+        "nota": "O selo deixa de ser decoração. Se a paleta não for montada, o selo e o aria-keyshortcuts têm de sair do shell."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Paleta do Protocolo",
+      "codigo": "<ucam-command\n  [(open)]=\"paletaAberta\"\n  [groups]=\"comandos()\"\n  (escolher)=\"executar($event)\" />\n\n<!-- comandos() devolve, na ordem de uso provável:\n[\n  { titulo: 'Ir para', itens: [\n    { id: 'caixa', label: 'Caixa de entrada', icone: 'inbox' },\n    { id: 'gerencial', label: 'Gerencial', icone: 'layoutGrid' },\n  ]},\n  { titulo: 'Criar', itens: [\n    { id: 'novo', label: 'Novo requerimento', icone: 'plus', atalho: 'N' },\n  ]},\n] -->"
+    },
+    {
+      "titulo": "Sem o ouvinte de teclado, quando a aplicação já tem o seu",
+      "codigo": "<ucam-command [(open)]=\"aberta\" [shortcut]=\"null\" [groups]=\"comandos()\" (escolher)=\"executar($event)\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Cumprir o atalho que a interface anuncia.",
+      "evite": "Selo 'Ctrl K' na busca sem paleta por trás.",
+      "porque": "O selo e o aria-keyshortcuts são uma promessa dita também a quem usa leitor de tela, que não tem como conferir na tela se ela foi cumprida."
+    },
+    {
+      "faca": "Ordenar os itens por uso provável.",
+      "evite": "Ordem alfabética.",
+      "porque": "Abrir a paleta e apertar Enter sem digitar nada tem de acertar o destino mais comum. Em ordem alfabética esse gesto vira sorteio."
+    },
+    {
+      "faca": "Manter o foco no campo e mover só o aria-activedescendant.",
+      "evite": "Mover o foco para o item da lista com a seta.",
+      "porque": "Se o foco sai do campo, a próxima letra digitada não filtra mais nada — e a pessoa não vê por quê."
+    },
+    {
+      "faca": "Dizer o termo procurado no estado vazio.",
+      "evite": "'Nenhum resultado'.",
+      "porque": "Sem o termo, não dá para distinguir erro de digitação de destino inexistente."
+    },
+    {
+      "faca": "Deixar a busca de DADO na testeira e a de TELA na paleta.",
+      "evite": "Misturar aluno, requerimento e tela na mesma lista.",
+      "porque": "São resultados de natureza e permissão diferentes; misturados, o mesmo termo devolve coisas que a pessoa pode e não pode ver."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "combobox",
+      "diferenca": "Combobox é campo de FORMULÁRIO: filtra uma lista e devolve um valor. Command é paleta de AÇÕES: filtra o que o sistema faz e executa.",
+      "escolha": "Se o resultado é ir a algum lugar ou disparar um comando, é command."
+    },
+    {
+      "componente": "kbd",
+      "diferenca": "Kbd DESENHA a tecla; Command é a paleta que a tecla abre. O Kbd anuncia um atalho que já existe — desenhar a tecla não cria o atalho, e atalho sem paleta por trás não leva a lugar nenhum.",
+      "escolha": "Você precisa do destino do atalho: a caixa que leva a qualquer tela pelo nome."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "command.json",
+      "raiz": "não entrega",
+      "nota": "Sem versão em CSS puro: a paleta é filtro, teclado e sobreposição — não existe sem JavaScript. O legado continua no menu, que segue sendo o caminho principal em qualquer um dos dois trilhos."
+    },
+    "trilho_b": "Envelope sobre o z-command do ZardUI, que entrega o filtro, a lista, o percurso por setas e a região aria-live. O que a base NÃO tem e o wrapper acrescenta: a sobreposição (o z-command é painel em fluxo, não diálogo), o ouvinte do atalho, a devolução do foco ao gatilho, e o estado vazio com o termo procurado. NÃO entrega: histórico de recentes, execução direta da ação e busca de dado — os três são da aplicação, não do componente."
+  }
+}

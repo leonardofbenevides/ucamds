@@ -1,0 +1,326 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "dialog",
+  "name": "Dialog",
+  "selector": "ucam-dialog",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "sobreposicao",
+  "description": "Janela modal para uma tarefa curta que precisa do contexto da página por trás. Construída sobre o elemento dialog nativo com showModal — que entrega retenção de foco, inert no restante da página e fechamento por Esc sem reimplementação.",
+  "quando_usar": [
+    "Uma decisão precisa ser tomada antes de qualquer outra coisa: confirmar exclusão, confirmar indeferimento.",
+    "Uma tarefa curta exige o contexto da página atrás e não vale uma tela nova.",
+    "A ação é destrutiva e a confirmação precisa custar um gesto deliberado."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 7 (Novo Requerimento)",
+        "problema": "formulário de 7 campos com texto longo dentro de modal — tarefa grande demais para diálogo, ver limites"
+      },
+      {
+        "tela": "image 7",
+        "problema": "rolagem aninhada: o textarea tem barra própria E o corpo do diálogo tem outra, lado a lado"
+      },
+      {
+        "tela": "image 7",
+        "problema": "só existe SALVAR; não há botão de cancelar rotulado — a única saída visível é o × no canto"
+      },
+      {
+        "tela": "image 7, 14",
+        "problema": "botão × sem nome acessível"
+      },
+      {
+        "tela": "image 7",
+        "problema": "largura fixa; o diálogo não se adapta a viewport estreita"
+      },
+      {
+        "tela": "image 6, 8 (CARREGANDO)",
+        "problema": "carregamento implementado como diálogo modal — bloqueia a tela inteira para uma operação de lista; ver limites"
+      },
+      {
+        "tela": "image 14 (Funcionário)",
+        "problema": "campo Nível usa 3 estrelas para hierarquia de permissão — semântica de avaliação aplicada a nível de acesso"
+      },
+      {
+        "tela": "image 7",
+        "problema": "área de texto rotulada Do que se trata esta solicitação parece cabeçalho de seção, não rótulo de campo"
+      }
+    ],
+    "conclusao": "Dois dos usos observados não deveriam ser diálogo: o carregamento vira estado inline e o formulário de requerimento vira página. Ver limites."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "classe": "ucam-dialog",
+      "descricao": "<dialog>, aberto por showModal(). Coluna de três partes com altura máxima: cabeçalho e rodapé fixos, só o corpo rola. Um <div class=\"ucam-dialog\"> tem o visual certo e NENHUM dos comportamentos — foco preso, inert atrás e Escape vêm do elemento nativo."
+    },
+    {
+      "parte": "backdrop",
+      "obrigatorio": true,
+      "descricao": "O fundo escurecido. No <dialog> nativo é o pseudo-elemento ::backdrop, não um elemento, então não tem classe própria — mesma tinta do scrim da gaveta, para as duas sobreposições pesarem igual."
+    },
+    {
+      "parte": "form",
+      "obrigatorio": false,
+      "classe": "ucam-dialog__form",
+      "descricao": "<form method=\"dialog\"> quando o diálogo devolve um valor: é o que faz o botão fechar sozinho e entregar o returnValue. É mecanismo, não caixa — daí display:contents, senão o form vira o único filho flex e a coluna de três partes desaba numa só."
+    },
+    {
+      "parte": "header",
+      "obrigatorio": true,
+      "classe": "ucam-dialog__header",
+      "descricao": "Título de um lado, fechar do outro, com filete embaixo. Centra pelo EIXO e não pela linha de base: o botão de fechar só contém um <svg> e não tem base de texto, então o navegador usa a borda de baixo da caixa e empurra o título 24px para baixo — o vão aparecia acima do título, onde ninguém o lê como vão."
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "classe": "ucam-dialog__title",
+      "descricao": "O título, no degrau de título de seção. Vai no aria-labelledby do <dialog>."
+    },
+    {
+      "parte": "close",
+      "obrigatorio": true,
+      "descricao": "O × do cabeçalho. É um .ucam-btn--icon comum com nome acessível — não tem classe própria no diálogo."
+    },
+    {
+      "parte": "body",
+      "obrigatorio": true,
+      "classe": "ucam-dialog__body",
+      "descricao": "A ÚNICA área rolável: nada dentro dela pode ter overflow próprio, senão o legado volta a ter duas barras de rolagem no mesmo modal. Enquanto uma listbox ou um menu está aberto ali dentro, o corpo para de recortar — sem isso a lista de um Select crescia por baixo do rodapé (15 de 25 pontos medidos em 10/09/2026)."
+    },
+    {
+      "parte": "texto",
+      "obrigatorio": false,
+      "classe": "ucam-dialog__texto",
+      "descricao": "Parágrafo do corpo, no degrau de corpo pequeno e em tinta primária — é o que se lê para decidir, não apoio."
+    },
+    {
+      "parte": "footer",
+      "obrigatorio": false,
+      "classe": "ucam-dialog__footer",
+      "descricao": "As ações, encostadas no fim e com filete em cima. O primário é o último da fileira."
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "sm 400px, md 560px, lg 760px — sempre com max-inline-size de 100vw menos margem."
+    },
+    {
+      "nome": "variant",
+      "tipo": "'default' | 'confirm' | 'destructive'",
+      "default": "'default'",
+      "descricao": "confirm e destructive trazem layout e foco inicial próprios."
+    },
+    {
+      "nome": "dismissible",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Permite fechar por Esc, clique no backdrop e botão fechar. Só desligar quando houver perda de dado — e nesse caso oferecer confirmação, nunca prender o usuário sem saída."
+    },
+    {
+      "nome": "loading",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "A ação do rodapé está em curso — enviar, excluir. O diálogo declara aria-busy e deixa de fechar por Esc, pelo fundo e pelo ×: fechar no meio da operação esconde o resultado dela, e a pessoa não sabe se o requerimento foi ou não enviado. O indicador fica no botão primário (loading do ucam-button), não no diálogo."
+    },
+    {
+      "nome": "initialFocus",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Seletor do elemento que recebe foco ao abrir. Ver foco."
+    },
+    {
+      "nome": "open",
+      "tipo": "boolean",
+      "obrigatorio": true,
+      "descricao": "Modelo de abertura. Chama showModal/close no elemento nativo."
+    }
+  ],
+  "estados": [
+    "closed",
+    "opening",
+    "open",
+    "loading",
+    "closing"
+  ],
+  "limites": {
+    "$descricao": "Quando NÃO usar diálogo. Esta seção existe porque metade dos usos observados no Protocolo é uso indevido.",
+    "regras": [
+      "Carregamento NÃO é diálogo. O overlay CARREGANDO vira estado inline: skeleton na tabela, loading no botão que disparou a ação. Bloquear a tela inteira para carregar uma lista impede o usuário de cancelar, navegar ou entender o que está acontecendo.",
+      "Formulário longo NÃO é diálogo. Acima de 5 campos ou com campo de texto livre extenso, use página dedicada. O Novo Requerimento tem 7 campos mais texto livre — é página. Diálogo espremendo formulário produz a rolagem aninhada observada.",
+      "Diálogo não abre diálogo. Empilhar modais quebra o retorno de foco e desorienta.",
+      "Mensagem sem decisão NÃO é diálogo. Erro de formulário é mensagem inline no campo; confirmação de sucesso é o próprio controle voltando do estado de carregando, e vira Alert só quando a confirmação carrega informação que sobrevive à tela — o número do protocolo gerado, por exemplo. Toast NÃO é a saída: está fora do catálogo por decisão registrada no contrato do Alert, porque mensagem que some sozinha não pode carregar informação necessária."
+    ],
+    "criterio": "Diálogo serve para tarefa curta, focada e interruptível, que precisa do contexto de trás. Se a tarefa merece URL própria, é página."
+  },
+  "foco": {
+    "ao_abrir": [
+      "initialFocus quando definido.",
+      "Senão, o primeiro campo interativo do corpo.",
+      "Senão, o botão fechar.",
+      "NUNCA focar automaticamente uma ação destrutiva."
+    ],
+    "durante": "O elemento dialog nativo com showModal já retém o foco e aplica inert ao resto da página. Não reimplementar armadilha de foco manualmente.",
+    "ao_fechar": "Foco retorna ao elemento que abriu o diálogo. Se ele não existir mais (linha excluída), foco vai para o cabeçalho da região equivalente e a mudança é anunciada."
+  },
+  "rolagem": {
+    "regra": "Header e footer fixos; apenas o body rola. Nenhum descendente do body pode ter overflow próprio.",
+    "motivo": "O modal Novo Requerimento tem duas barras de rolagem adjacentes — o usuário não sabe qual manipular e o conteúdo se perde entre elas.",
+    "extra": "Ao abrir, a página de trás recebe travamento de rolagem sem deslocamento de layout (compensar a largura da barra de rolagem)."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Elemento dialog nativo com showModal. Entrega retenção de foco, inert e Esc de graça — e correto.",
+      "aria-labelledby apontando para o título. Diálogo sem nome acessível é erro de build.",
+      "aria-describedby quando houver texto explicativo essencial à decisão.",
+      "Esc fecha quando dismissible. Não interceptar Esc para outra coisa.",
+      "Botão fechar com nome acessível Fechar — não apenas o glifo ×, que é lido como multiplicação.",
+      "Ordem do rodapé: ação secundária antes da primária no DOM e na tela.",
+      "variant destructive não recebe foco inicial na ação destrutiva e exige rótulo específico no botão (Excluir setor, não Confirmar).",
+      "Respeitar prefers-reduced-motion na animação de entrada e saída.",
+      "Largura máxima responsiva; o diálogo permanece utilizável em 320px e com zoom de 200% (WCAG 1.4.10).",
+      "Em loading, aria-busy=true no <dialog>, o × com aria-disabled=true e o cancel do Esc impedido. O foco não se move: continua no botão que disparou a ação, que anuncia o próprio aria-busy."
+    ],
+    "criterios_wcag": [
+      "1.4.10",
+      "2.1.1",
+      "2.1.2",
+      "2.4.3",
+      "2.4.7",
+      "3.2.1",
+      "4.1.2"
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-alert",
+      "ucam-button",
+      "ucam-icon-button"
+    ],
+    "usada_por": [
+      "padrao-confirmacao-destrutiva",
+      "padrao-formulario-entidade",
+      "padrao-listagem-crud"
+    ]
+  },
+  "conteudo": {
+    "titulo": [
+      "Substantivo ou ação curta em caixa natural: Novo requerimento, Excluir setor."
+    ],
+    "acoes": [
+      "O botão primário repete a ação do título: Adicionar funcionário, não Adicionar nem OK.",
+      "O botão secundário é Cancelar.",
+      "Em destructive, o primário nomeia o que será destruído: Excluir setor."
+    ],
+    "confirmacao_destrutiva": [
+      "Diz o que será perdido e se é reversível.",
+      "Bom: 'Excluir o setor Biblioteca? Os 12 requerimentos vinculados ficarão sem setor. Esta ação não pode ser desfeita.'",
+      "Ruim: 'Tem certeza?'"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / Angular Material ($mdDialog)",
+    "mapa": [
+      {
+        "legado": "$mdDialog do Novo Requerimento",
+        "novo": "página dedicada",
+        "nota": "NÃO migra para diálogo. Ver limites."
+      },
+      {
+        "legado": "$mdDialog do Funcionário",
+        "novo": "ucam-dialog size=sm",
+        "nota": "Tarefa curta — permanece diálogo. O campo Nível troca estrelas por select."
+      },
+      {
+        "legado": "overlay CARREGANDO",
+        "novo": "estado inline",
+        "nota": "Removido como componente. Vira state=loading na DataTable e loading no Button."
+      },
+      {
+        "legado": "botão × sem rótulo",
+        "novo": "parte close com nome acessível"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Tarefa curta",
+      "codigo": "<ucam-dialog title=\"Funcionário\" size=\"sm\" [(open)]=\"aberto\">\n  <ucam-text-field label=\"Nome ou CPF\" />\n  <ucam-select label=\"Nível de acesso\" [options]=\"niveis\" />\n  <footer>\n    <ucam-button variant=\"secondary\" (click)=\"fechar()\">Cancelar</ucam-button>\n    <ucam-button variant=\"primary\" (click)=\"adicionar()\">Adicionar funcionário</ucam-button>\n  </footer>\n</ucam-dialog>"
+    },
+    {
+      "titulo": "Confirmação destrutiva",
+      "codigo": "<ucam-dialog title=\"Excluir setor\" variant=\"destructive\" size=\"sm\" [(open)]=\"confirmando\">\n  <p>Excluir o setor Biblioteca? Os 12 requerimentos vinculados ficarão sem setor. Esta ação não pode ser desfeita.</p>\n  <footer>\n    <ucam-button variant=\"secondary\">Cancelar</ucam-button>\n    <ucam-button variant=\"danger\">Excluir setor</ucam-button>\n  </footer>\n</ucam-dialog>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Reservar o diálogo para tarefa curta que precisa do contexto atrás.",
+      "evite": "Formulário acima de cinco campos, ou com campo de texto longo, dentro de modal.",
+      "porque": "O formulário de requerimento tem sete campos e produz rolagem aninhada. É página, não diálogo."
+    },
+    {
+      "faca": "Tratar carregamento como estado inline: skeleton na tabela, loading no botão.",
+      "evite": "Diálogo modal de carregamento.",
+      "porque": "Bloquear a tela inteira para carregar uma lista impede cancelar, navegar ou entender o que acontece."
+    },
+    {
+      "faca": "Oferecer Cancelar rotulado, além do fechar do canto.",
+      "evite": "Ter o × como única saída visível.",
+      "porque": "No Protocolo só existe SALVAR — e o × não tem nome acessível, então para o leitor de tela não há saída nenhuma."
+    },
+    {
+      "faca": "Nomear no botão primário a ação do título: Excluir setor.",
+      "evite": "'OK', 'Confirmar', 'Sim'.",
+      "porque": "Em confirmação destrutiva o rótulo é a última chance de dizer o que será destruído."
+    },
+    {
+      "faca": "Dizer o que se perde e se é reversível.",
+      "evite": "'Tem certeza?'",
+      "porque": "'Os 12 requerimentos vinculados ficarão sem setor' é a informação que muda a decisão."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "alert",
+      "diferenca": "Alert informa dentro do fluxo da página e não exige nada; dialog bloqueia a página e exige decisão.",
+      "escolha": "Só é dialog se houver uma escolha que o sistema não pode tomar sozinho. Mensagem sem decisão em diálogo é interrupção sem motivo."
+    },
+    {
+      "componente": "drawer",
+      "diferenca": "Dialog interrompe para obter uma decisão curta e sai; drawer abre um painel lateral para trabalho que continua ao lado do contexto.",
+      "escolha": "Se a tela precisa de uma resposta antes de seguir — confirmar exclusão, escolher entre duas rotas —, é dialog."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "openChange",
+      "payload": "boolean",
+      "descricao": "Abertura alterada. Permite o two-way binding [(open)]."
+    },
+    {
+      "nome": "dismissed",
+      "payload": "\"esc\" | \"backdrop\" | \"close\"",
+      "descricao": "Como o diálogo foi fechado sem confirmar. Útil para distinguir desistência de conclusão."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Superfície e sobreposição. O <dialog> nativo carrega o resto.",
+      "raiz": ".ucam-dialog",
+      "nota": "Foco preso, inert atrás e fechamento por Escape vêm do elemento <dialog> nativo, não do CSS. Um <div class=\"ucam-dialog\"> tem o visual certo e nenhum dos comportamentos.",
+      "estado": "loading: aria-busy=true no <dialog>, aria-disabled=true no botão de fechar e o cancel do Esc impedido em script; o botão primário leva aria-busy, aria-disabled e o svg.ic.ucam-spinner no lugar do ícone."
+    }
+  }
+}

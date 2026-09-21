@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prova do Trilho A+ — custom elements da UCAM</title>
+
+    <!--
+      Esta página imita uma tela LEGADA: CSS próprio, sem empacotador, sem
+      framework. É o teste real do Trilho A+ — se os componentes só funcionam
+      dentro de um projeto Angular, o trilho não existe.
+
+      Duas coisas estão sob prova:
+      1. As tags funcionam com um <script type="module"> e nada mais.
+      2. A folha do Trilho A+ NÃO repinta a página. Os elementos "legado"
+         abaixo têm estilo próprio e precisam sair intactos — é por isso que
+         src/styles.css importa theme+utilities e nunca o preflight.
+    -->
+    <style>
+      /* Cromagem "legada", deliberadamente feia e deliberadamente opinativa. */
+      body {
+        margin: 0;
+        padding: 2rem;
+        font-family: Verdana, sans-serif;
+        background: #eceaea;
+        color: #222;
+      }
+      h1 {
+        font-size: 22px;
+        border-bottom: 3px solid #6c1e2b;
+        padding-bottom: 6px;
+      }
+      ul.legado {
+        list-style: square;
+        padding-left: 28px;
+      }
+      ul.legado li {
+        margin-bottom: 4px;
+      }
+      .caixa {
+        background: #fff;
+        border: 1px solid #b9b4b4;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        max-width: 34rem;
+      }
+      .caixa h2 {
+        margin-top: 0;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6b6666;
+      }
+      #saida {
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+      }
+    </style>
+
+    <link rel="stylesheet" href="/dist/elements/ucam-elements.css" />
+  </head>
+
+  <body>
+    <h1>Tela legada com componentes do design system</h1>
+
+    <ul class="legado">
+      <li>Este marcador precisa continuar quadrado.</li>
+      <li>Este recuo precisa continuar existindo.</li>
+      <li>Se sumirem, o preflight do Tailwind vazou e o trilho está errado.</li>
+    </ul>
+
+    <div class="caixa">
+      <h2>Ações</h2>
+      <ucam-button variant="primary" id="b1">Salvar</ucam-button>
+      <ucam-button variant="secondary">Cancelar</ucam-button>
+      <ucam-button variant="danger">Excluir setor</ucam-button>
+    </div>
+
+    <div class="caixa">
+      <h2>Campo de texto</h2>
+      <ucam-text-field label="Nome completo" hint="Como consta no documento." id="tf"></ucam-text-field>
+    </div>
+
+    <div class="caixa">
+      <h2>Combobox — o componente que justifica o trilho</h2>
+      <p style="font-size: 12px; color: #6b6666">
+        O <code>&lt;select&gt;</code> nativo do legado tem 58 setores sem busca. Aqui a lista é do
+        design system.
+      </p>
+      <ucam-combobox id="cb" label="Setor" clearable></ucam-combobox>
+      <div id="saida">nada escolhido ainda</div>
+    </div>
+
+    <script type="module" src="/dist/elements/ucam-elements.js"></script>
+
+    <script type="module">
+      // `options` é ARRAY: não cabe em atributo HTML. Custom element recebe
+      // dado estruturado por PROPRIEDADE. Esta é a fricção real do trilho
+      // para quem escreve template AngularJS, e está registrada na ADR-010.
+      await customElements.whenDefined('ucam-combobox');
+
+      const cb = document.querySelector('#cb');
+      cb.options = [
+        { value: 'biblioteca', label: 'Biblioteca' },
+        { value: 'cenpre', label: 'CENPRE' },
+        { value: 'centro-informatica', label: 'Centro de Informática' },
+        { value: 'colegiado-direito', label: 'Colegiado de Direito' },
+        { value: 'colegiado-medicina', label: 'Colegiado de Medicina' },
+        { value: 'secretaria', label: 'Secretaria Acadêmica' },
+      ];
+
+      const saida = document.querySelector('#saida');
+      cb.addEventListener('valueChange', (e) => {
+        saida.textContent = 'valor no formulário: ' + JSON.stringify(e.detail);
+      });
+
+      document.querySelector('#b1').addEventListener('click', () => {
+        saida.textContent += '\nbotão Salvar clicado';
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": ["vite/client", "node"]
+  },
+  // É este arquivo que o @analogjs/vite-plugin-angular procura para montar o
+  // programa do compilador Angular. Sem ele o plugin avisa "Unable to resolve
+  // tsconfig", cai para JIT em silêncio, e todo input de sinal para de receber
+  // valor — as páginas renderizam com títulos vazios e o build passa.
+  // Não incluir a fonte da lib por glob: isso mandaria o compilador
+  // checar a biblioteca inteira, inclusive componentes que o site nunca
+  // importa. A resolução por import já traz o que é usado.
+  "include": ["src/**/*.ts", "../ui/projects/ui/src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
+}

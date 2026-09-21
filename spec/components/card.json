@@ -1,0 +1,338 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "card",
+  "name": "Card",
+  "selector": "ucam-card",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "layout",
+  "description": "Superfície que separa um bloco de conteúdo do fundo da página. É o recipiente mais genérico do sistema e, por isso, o mais fácil de usar errado: cartão não organiza conteúdo, só o delimita. Quem organiza é o que está dentro. Não é cartão clicável, não é cartão de escolha (choice-card) e não é ladrilho de indicador (stat).",
+  "quando_usar": [
+    "Um bloco de conteúdo precisa se destacar do fundo da página e ter borda própria: o resumo do requerimento, o painel lateral de um indicador.",
+    "Vários blocos de mesmo peso convivem numa grade e cada um precisa de limite visível.",
+    "O conteúdo dentro do bloco já está organizado por outra coisa — o cartão só o delimita."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Portal e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "Portal — Login",
+        "problema": "o formulário de entrada flutua sobre o fundo sem nenhuma superfície que o contenha; os campos ficam soltos no meio da tela e a caixa de foco é a única coisa que delimita a área de trabalho"
+      },
+      {
+        "tela": "Protocolo — Gerencial",
+        "problema": "os blocos do painel eram desenhados a cada tela com style inline: fundo branco, borda cinza e raio escritos à mão, com valores diferentes entre módulos"
+      },
+      {
+        "tela": "SIGFIN — Cálculo de mensalidade",
+        "problema": "cartão dentro de cartão dentro de painel: três molduras aninhadas para separar o que já estava separado pelo espaço"
+      },
+      {
+        "tela": "SIGU — Meus sistemas (redesenho interno, 09/2026)",
+        "problema": "o ladrilho de módulo precisa levar a um sistema E carregar a estrela que o fixa nos acessos frequentes. Como botão dentro de âncora é inválido, o redesenho trocou a âncora por div com role=\"button\" e tabindex=\"0\" — e perdeu o href junto: não abre em nova aba, não tem menu de contexto, não vai para a barra de favoritos do navegador, e reimplementa Enter e Espaço à mão em cada um dos 58 ladrilhos"
+      }
+    ],
+    "conclusao": "A superfície existia em toda tela e em nenhum contrato, o que produziu uma moldura ligeiramente diferente por módulo. O contrato fixa uma superfície só e, mais importante, diz quando não usá-la."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "A superfície: fundo, filete de 1px, raio e recuo interno. Declara color explicitamente porque o cartão também é usado como elemento âncora — sem isso, um cartão dentro de <a> herda o azul de link do navegador.",
+      "classe": "ucam-card"
+    },
+    {
+      "parte": "cabecalho",
+      "obrigatorio": false,
+      "classe": "ucam-card__cabecalho",
+      "descricao": "A fileira do alto: ladrilho de ícone, título e apoio empilhados (.ucam-card__cabecalho-texto), e o que sobra à direita — selo de período, ação, estrela. É a receita que as telas montavam com ucam-cluster e style inline, com o vão decidido a cada vez. A ÚNICA parte com margem própria, de propósito: o cabeçalho não é conteúdo, é o que separa o conteúdo da moldura, e essa distância tem de ser a mesma em todo cartão, tenha o corpo um gráfico ou três linhas de texto. O texto encolhe com reticência; o ícone e a ação não."
+    },
+    {
+      "parte": "cabecalho-texto",
+      "obrigatorio": false,
+      "descricao": "A coluna de título e apoio dentro do cabeçalho, quando há selo ou ação ao lado. Só ela encolhe: título longo vira reticência em vez de empurrar o selo para fora do cartão.",
+      "classe": "ucam-card__cabecalho-texto"
+    },
+    {
+      "parte": "conteudo",
+      "obrigatorio": true,
+      "descricao": "O que o cartão delimita. O cartão não impõe ritmo interno: quem espaça os filhos é um bloco de arranjo, não a superfície."
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": false,
+      "descricao": "Nome do que o cartão representa, na escala de rótulo. Sem margem: o ritmo continua vindo do bloco de arranjo, não daqui. Existe porque a alternativa estava escrita nas telas — peso 600 cravado em style inline, que não acompanha a escala tipográfica e diverge a cada tela que o repete.",
+      "classe": "ucam-card__titulo"
+    },
+    {
+      "parte": "apoio",
+      "obrigatorio": false,
+      "descricao": "Uma linha dizendo o que cai neste cartão, em caption e tinta secundária. Sem margem, pelo mesmo motivo do título. Substitui o ucam-field__hint que as telas emprestavam para descrever um setor ou um módulo — um rótulo de formulário fora de qualquer formulário.",
+      "classe": "ucam-card__apoio"
+    },
+    {
+      "parte": "rodape",
+      "obrigatorio": false,
+      "descricao": "Faixa separada por filete no pé do cartão, em corpo menor e tinta secundária. Serve à saída secundária que não é ação primária — Esqueci minha senha, Primeiro acesso — e não a botões.",
+      "classe": "ucam-card__rodape"
+    },
+    {
+      "parte": "link",
+      "obrigatorio": false,
+      "descricao": "O destino do cartão, quando ele tem um. Fica no TÍTULO e estica sobre a superfície inteira por pseudo-elemento: o alvo de clique é o cartão todo, e o nome acessível do link é só o título — não a superfície inteira lida em voz alta. Substitui o cartão-âncora sempre que existir algum controle dentro.",
+      "classe": "ucam-card__link"
+    },
+    {
+      "parte": "acao",
+      "obrigatorio": false,
+      "descricao": "Um controle próprio do cartão — fixar, arquivar, abrir o menu do item. Sobe uma camada para ficar acima do link esticado; sem isso o pseudo-elemento cobre o botão e o clique nunca chega nele.",
+      "classe": "ucam-card__acao"
+    }
+  ],
+  "props": [
+    {
+      "nome": "elevation",
+      "tipo": "'flat' | 'raised' | 'sticky'",
+      "default": "'flat'",
+      "descricao": "Altura da superfície. flat é o repouso desde a ADR-019: o cartão está NO plano do conteúdo e quem o separa do painel é o fio de 1px, não a sombra. raised existe para o cartão que precisa se descolar de um fundo sem fio — sobre uma superfície tinta, dentro de outro cartão. sticky é para o cartão que acompanha a rolagem ou paira sobre outro conteúdo.",
+      "valores": {
+        "flat": {
+          "uso": "Todo cartão em fluxo normal. Numa tela com oito cartões, oito sombras iguais não hierarquizam nada — só somam ruído sobre o painel, que já flutua.",
+          "tokens": {
+            "sombra": "elevation.flat"
+          }
+        },
+        "raised": {
+          "uso": "Cartão sobre superfície sem fio — dentro de um bloco tinto, ou aninhado em outro cartão, onde a borda não separa.",
+          "limite": "Não usar para dar destaque a um cartão entre iguais. Isso é trabalho da borda, do tom ou da ordem.",
+          "tokens": {
+            "sombra": "elevation.raised"
+          }
+        },
+        "sticky": {
+          "uso": "Cartão fixo na rolagem — barra de ações de formulário longo, painel que sobrepõe a lista.",
+          "limite": "Não usar para dar destaque. Sombra é distância do fundo, não importância.",
+          "tokens": {
+            "sombra": "elevation.sticky"
+          },
+          "classe": "ucam-card--elevado"
+        }
+      }
+    },
+    {
+      "nome": "padding",
+      "tipo": "'lg' | 'md' | 'none'",
+      "default": "'lg'",
+      "descricao": "Recuo interno. none existe para o único caso legítimo de cartão sem respiro: conteúdo que precisa encostar na borda — tabela de largura total, imagem sangrada, lista cujos itens têm o próprio recuo. Fora disso, none é gambiarra para compensar recuo duplicado."
+    },
+    {
+      "nome": "as",
+      "tipo": "'div' | 'section' | 'article' | 'a'",
+      "default": "'div'",
+      "descricao": "Elemento da raiz. section quando o cartão tem um título que o nomeia — e nesse caso o título precisa estar ligado por aria-labelledby, senão o marco não tem nome e atrapalha em vez de ajudar. a apenas no cartão que é um destino inteiro e NÃO tem controle nenhum dentro; havendo controle, a raiz continua div e quem vira link é o título (ver a prop acionavel e os limites)."
+    },
+    {
+      "nome": "acionavel",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "O cartão leva a um destino sem ser ele próprio a âncora: o título vira link e estica sobre a superfície. É o que permite ter destino E controle no mesmo cartão sem produzir alvo aninhado. Traz junto os estados que o cartão-âncora nunca teve — realce sob o ponteiro e anel de foco em volta da superfície, não em volta do texto do título.",
+      "valores": {
+        "true": {
+          "uso": "Ladrilho de módulo com estrela de acesso frequente; cartão de requerimento com menu de ações.",
+          "limite": "Um link por cartão. Dois destinos dentro da mesma superfície esticada é o mesmo alvo ambíguo que a regra evita, agora escondido.",
+          "tokens": {
+            "hover": "color.border.default",
+            "sombra": "elevation.sticky",
+            "foco": "color.border.focus"
+          }
+        }
+      }
+    },
+    {
+      "nome": "titulo",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome do que o cartão representa (parte titulo). Com acionavel e href, é o texto do link que estica sobre a superfície. Já existia no Trilho B e faltava no contrato."
+    },
+    {
+      "nome": "apoio",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Uma linha dizendo o que cai neste cartão (parte apoio). Idem: existia no componente e não no contrato."
+    },
+    {
+      "nome": "icone",
+      "tipo": "UcamIconName | null",
+      "default": "null",
+      "descricao": "Ícone do ladrilho no cabeçalho. Com titulo, monta a parte cabecalho: ladrilho à esquerda, título e apoio à direita. Sem titulo é ignorado — ladrilho sem nome não diz nada."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "$descricao": "O cartão é o componente que mais aparece onde não deveria. Estas regras existem porque a superfície é barata de aplicar e cara de remover depois.",
+    "regras": [
+      "Não aninhar cartões. Duas molduras concêntricas não separam duas vezes melhor — elas competem, e a interna sempre parece defeito de espaçamento. Para separar dentro de um cartão, use espaço ou filete.",
+      "Não usar cartão como contêiner da página inteira. A página já tem uma superfície: a do conteúdo, dada pelo app-shell.",
+      "Cartão clicável só quando o cartão INTEIRO é um <a> com um destino único e nada interativo dentro — é o caso do ladrilho de módulo na grade do Portal, e ali é legítimo porque o alvo do teclado é um só e o nome acessível é o rótulo do módulo. Fora disso: click na raiz de um div não anuncia onde o clique cai, some da ordem de tabulação e impede selecionar o texto de dentro. Se a coisa é escolhível, o componente é o choice-card; se é um registro de fila, é o list-item.",
+      "Cartão com destino E controle dentro não é cartão-âncora: é acionavel. Botão dentro de âncora é markup inválido e produz alvos aninhados — o clique cai num dos dois por acidente e o teclado tabula para os dois. E a saída de trocar a âncora por div com role=\"button\" é pior: joga fora o href, que é o que dá abrir em nova aba, menu de contexto e navegação por teclado sem uma linha de JavaScript.",
+      "Não usar cartão para um único número — isso é stat, que traz a hierarquia rótulo/valor pronta.",
+      "Não usar cartão para agrupar campos de um formulário longo. Isso é section-bar mais espaço: uma moldura por grupo transforma o formulário numa escada de molduras.",
+      "Cartão em lista com mais de dez itens vira ruído. Acima disso, o certo é list-item ou data-table.",
+      "Com acionavel, o link é o TÍTULO — nunca um \"Abrir\" no rodapé nem o ícone. O nome acessível do link é o texto que ele envolve, e uma lista de vinte links chamados \"Abrir\" é indistinguível na lista de links do leitor de tela."
+    ],
+    "criterio": "Antes de aplicar um cartão, tirar a moldura e olhar. Se o conteúdo continua legível e agrupado, o cartão era decoração."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O cartão é decoração estrutural: por padrão não tem papel ARIA nenhum, e não deve receber role=region ou role=group sem nome acessível — marco anônimo aparece na lista de marcos do leitor de tela como Region, sem dizer qual.",
+      "Quando o cartão for section com título, ligar o título à raiz por aria-labelledby.",
+      "O contraste do filete contra a superfície da página não precisa atingir 3:1, porque o filete não carrega informação — mas o cartão não pode ser o ÚNICO meio de agrupar: a ordem do DOM e os títulos precisam agrupar sozinhos (WCAG 1.3.1).",
+      "Nenhum foco na raiz. Cartão não é interativo; se recebeu tabindex, o componente errado foi escolhido.",
+      "O conteúdo dentro do cartão mantém suas próprias exigências de contraste — a superfície não as altera, mas o build verifica os pares texto/superfície do cartão.",
+      "Com acionavel, o anel de foco é da SUPERFÍCIE e não do texto do link: contorno em volta do título, dentro de um cartão que já tem borda, lê como campo de formulário. O link perde o outline próprio e o cartão ganha o dele.",
+      "O link esticado impede selecionar o texto do cartão com o ponteiro — é o preço do alvo grande, e por isso vale só onde o texto é um rótulo curto (nome de módulo, número de requerimento) e não conteúdo para copiar."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.4.6"
+    ]
+  },
+  "conteudo": {
+    "titulo": [
+      "Cartão com título usa o nível de heading que a hierarquia da página pede, não o que parece do tamanho certo.",
+      "Título em caixa natural (ADR-003).",
+      "Cartão sem título é legítimo quando o conteúdo se explica — o formulário de login não precisa de um heading escrito Login em cima dele."
+    ],
+    "rodape": {
+      "bom": [
+        "Esqueci minha senha",
+        "Primeiro acesso? Ative sua conta"
+      ],
+      "ruim": [
+        "CLIQUE AQUI",
+        "Salvar",
+        "Voltar"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-formulario-entidade",
+      "padrao-painel-indicadores",
+      "ucam-page-header"
+    ],
+    "usa": [
+      "ucam-icon-tile",
+      "ucam-link",
+      "ucam-realce"
+    ]
+  },
+  "migracao": {
+    "de": "md-card do Angular Material, panel do Bootstrap e div com style inline",
+    "mapa": [
+      {
+        "legado": "<md-card>",
+        "novo": "<ucam-card>",
+        "nota": "A conversão não é 1:1: md-card traz md-card-title, md-card-content e md-card-actions, que aqui são conteúdo comum. Título vira heading e ações viram uma linha de botões no fim do conteúdo."
+      },
+      {
+        "legado": "div com background, border e border-radius inline",
+        "novo": "class=\"ucam-card\"",
+        "nota": "Remover também a cor e a fonte declaradas junto — o cartão só entrega superfície."
+      },
+      {
+        "legado": "cartão dentro de cartão",
+        "novo": "um cartão só, com espaço ou filete separando por dentro",
+        "nota": "Não é troca de classe: é remoção de moldura. Ver limites."
+      },
+      {
+        "legado": "cartão clicável abrindo o detalhe",
+        "novo": "ucam-list-item ou ucam-choice-card",
+        "nota": "Escolha pelo papel: item de fila abre um registro; cartão de escolha seleciona uma opção de formulário."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Formulário de entrada",
+      "codigo": "<ucam-card as=\"section\" aria-labelledby=\"t-entrar\">\n  <h1 id=\"t-entrar\">Entrar</h1>\n  <div class=\"ucam-stack\">\n    <ucam-text-field label=\"Matrícula\" />\n    <ucam-text-field label=\"Senha\" type=\"password\" />\n    <ucam-button variant=\"primary\">Entrar</ucam-button>\n  </div>\n</ucam-card>"
+    },
+    {
+      "titulo": "Com rodapé de saída secundária",
+      "codigo": "<ucam-card>\n  <ng-content />\n  <p class=\"ucam-card__rodape\">\n    <a class=\"ucam-link ucam-link--apoio\" href=\"/senha\">Esqueci minha senha</a>\n  </p>\n</ucam-card>"
+    },
+    {
+      "titulo": "Sem recuo, para tabela de largura total",
+      "codigo": "<ucam-card padding=\"none\">\n  <ucam-data-table [columns]=\"colunas\" [rows]=\"linhas\" />\n</ucam-card>"
+    },
+    {
+      "titulo": "Cartão de painel",
+      "codigo": "<ucam-card icone=\"chartColumn\" titulo=\"Volume de requerimentos\" apoio=\"Abertos contra concluídos, mês a mês\">\n  <ucam-badge ucamCardCabecalho tone=\"neutral\">Fev a set · 2026</ucam-badge>\n  <ucam-chart [series]=\"series\" />\n</ucam-card>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Usar um cartão só, e separar por dentro com espaço.",
+      "evite": "Aninhar cartões para separar subgrupos.",
+      "porque": "Duas molduras concêntricas competem, e a interna lê como erro de espaçamento — é o que a tela de cálculo de mensalidade do SIGFIN faz hoje com três níveis."
+    },
+    {
+      "faca": "Deixar o ritmo interno com um bloco de arranjo.",
+      "evite": "Fazer o cartão espaçar os próprios filhos.",
+      "porque": "Superfície e ritmo são responsabilidades diferentes; juntas, qualquer conteúdo que precise de outro ritmo obriga a sobrescrever a superfície."
+    },
+    {
+      "faca": "Usar <a class=\"ucam-card\"> quando o cartão inteiro for um destino único, como o ladrilho de módulo do Portal.",
+      "evite": "(click) na raiz de um div, ou um botão dentro de um cartão que já é âncora.",
+      "porque": "A âncora entrega alvo de teclado e nome acessível de graça; o div com click não entrega nenhum dos dois, e o botão dentro da âncora produz dois alvos aninhados no mesmo pixel."
+    },
+    {
+      "faca": "Testar a tela sem os cartões antes de aplicá-los.",
+      "evite": "Aplicar cartão porque o bloco parecia solto.",
+      "porque": "Se o conteúdo continua agrupado sem a moldura, o cartão era decoração — e decoração cobra atenção como se fosse informação."
+    },
+    {
+      "faca": "Ligar o título à raiz por aria-labelledby quando usar as=section.",
+      "evite": "section sem nome acessível.",
+      "porque": "Marco anônimo entra na lista de marcos do leitor de tela como Region, sem dizer qual — ruído em vez de atalho."
+    },
+    {
+      "faca": "Cartão div, título como link esticado, controle acima dele.",
+      "evite": "Cartão como âncora com um botão dentro — ou como div com role=\"button\".",
+      "porque": "A primeira forma é inválida e produz dois alvos sobrepostos; a segunda joga fora o href e obriga a reimplementar teclado em cada ladrilho. A grade de 58 módulos do SIGU faz a segunda, 58 vezes."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "list-item",
+      "diferenca": "Card é um bloco autônomo que se lê sozinho; list-item é uma linha, e só faz sentido dentro da lista que lhe dá o eixo de comparação.",
+      "escolha": "Se o conteúdo se sustenta fora da lista — um resumo, um painel, um número —, é card."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz. Recuo e superfície vêm dela; ritmo interno é do bloco de arranjo que o conteúdo usar.",
+      "raiz": ".ucam-card",
+      "estado": "Sem estado no cartão comum. Com o modificador acionavel, hover e focus-visible são disparados pelo link e aplicados na SUPERFÍCIE, por :has() — é o que faz o realce alcançar os 11rem do ladrilho em vez de parar no texto do título.",
+      "variaveis": [
+        "--ucam-color-surface-default",
+        "--ucam-color-border-subtle",
+        "--ucam-color-text-primary",
+        "--ucam-space-inset-lg",
+        "--ucam-elevation-flat",
+        "--ucam-elevation-raised",
+        "--ucam-color-border-default",
+        "--ucam-color-border-focus",
+        "--ucam-elevation-sticky"
+      ],
+      "nota": "O CSS declara color na raiz de propósito: sem isso, um cartão usado como âncora herda o azul de link do navegador e o texto inteiro vira azul."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/card/ucam-card.ts — a prop elevation entra por classe (.ucam-card--raised, .ucam-card--elevado) e o repouso plano é a ausência das duas, igual ao Trilho A. Com icone e titulo, o componente monta .ucam-card__cabecalho; o slot [ucamCardCabecalho] projeta o que fica à direita."
+  }
+}

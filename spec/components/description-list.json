@@ -1,0 +1,322 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "description-list",
+  "name": "DescriptionList",
+  "selector": "ucam-description-list",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "dados",
+  "description": "Grade de pares rótulo e valor para exibir um registro em modo leitura. Não é formulário desabilitado: não tem campo, borda de controle nem foco, porque nada ali é editável.",
+  "quando_usar": [
+    "A tela é o detalhe de UM registro e mostra seus campos em modo leitura: dados do aluno, cabeçalho do requerimento.",
+    "O formulário foi enviado e o mesmo conteúdo passa a ser consultado, não editado.",
+    "Um painel lateral resume o registro que a lista selecionou."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e APPSUCAM/SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "problema": "os dados do requerimento são campos de formulário desabilitados — caixa cinza, borda de input e cursor bloqueado para informação que ninguém pretende editar"
+      },
+      {
+        "tela": "SIGFIN, cálculo de mensalidade",
+        "rotulo": "summary-list",
+        "problema": "o mesmo arranjo aparece como lista de rótulo e valor com marcação própria, sem relação declarada com a tela de requerimento que resolve o mesmo problema"
+      },
+      {
+        "tela": "image 6",
+        "problema": "rótulo e valor têm o mesmo peso tipográfico, então o olho não separa o que é pergunta do que é resposta"
+      }
+    ],
+    "conclusao": "Campo desabilitado deixa de ser a forma de mostrar dado. O par vira <dt>/<dd>, com o rótulo em peso menor que o valor."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<dl> real. A relação entre rótulo e valor existe na marcação, não só no desenho.",
+      "classe": "ucam-descricao"
+    },
+    {
+      "parte": "par",
+      "obrigatorio": true,
+      "descricao": "Envolve um <dt> e o seu <dd>. É ele o item da grade — sem o embrulho, uma grade de três colunas distribui dt, dd, dt, dd na ordem do documento e o rótulo de um par cai ao lado do valor do outro. Válido em HTML desde a 5.2 e sem efeito na associação semântica. ESPAÇAMENTO (20/09/2026): o vão entre pares é 16px na vertical e 20px na horizontal, contra os 2px que separam rótulo de valor — proximidade, não decoração: com 8px entre pares e 2px dentro deles a grade lia como um bloco de texto. No arranjo painel o respiro vem do próprio par (recuo em cima e embaixo, piso de 36px, antes 28px cravados) e um fio de 1px separa uma propriedade da seguinte: assim a linha que recebe valor de duas linhas cresce sem descolar as vizinhas.",
+      "classe": "ucam-descricao__par"
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": true,
+      "descricao": "<dt>. Tinta secundária, tamanho de legenda.",
+      "classe": "ucam-descricao__rotulo"
+    },
+    {
+      "parte": "valor",
+      "obrigatorio": true,
+      "descricao": "<dd>. Tinta primária. Vazio vira travessão, nunca espaço em branco.",
+      "classe": "ucam-descricao__valor"
+    },
+    {
+      "parte": "icone",
+      "obrigatorio": false,
+      "classe": "ucam-descricao__icone",
+      "descricao": "Ícone antes do rótulo, só no layout painel. Decorativo e aria-hidden: o dt é o que o leitor de tela lê, e ícone sem rótulo aqui é adivinhação. Existe porque é o que faz a varredura vertical achar \"Prazo\" entre doze pares sem ler os doze."
+    },
+    {
+      "parte": "mais",
+      "obrigatorio": false,
+      "classe": "ucam-descricao__mais",
+      "descricao": "O botão \"Mostrar todos os N valores\" no fim da lista, quando visibleCount corta a lista. O número faz parte do rótulo: é a única pista de quanto está escondido, e \"mostrar mais\" sem número obriga a abrir para descobrir se vale a pena. Aberto, vira \"Mostrar menos\"; o estado mora em aria-expanded e os pares escondidos levam hidden."
+    }
+  ],
+  "props": [
+    {
+      "nome": "columns",
+      "tipo": "'auto' | 1 | 2 | 3",
+      "default": "'auto'",
+      "descricao": "Número de colunas da grade. auto acomoda por largura mínima de 12rem. O número é TETO, não contagem: cada coluna tem piso de 12rem, então painel largo dá exatamente N e painel estreito dá quantas couberem, com os pares que sobram descendo de linha. A fatia de 1/N desconta o vão que a grade realmente aplica — subtrair um espaço diferente do aplicado fez --3 devolver duas colunas numa lista de 747px, com folga para três (medido em 20/09/2026), e é por isso que o vão vive numa variável só (--ucam-descricao-vao), usada no gap e na conta.",
+      "valores": {
+        "1": {
+          "uso": "Painel lateral estreito, gaveta.",
+          "limite": "Em página inteira desperdiça largura e alonga a rolagem."
+        },
+        "2": {
+          "uso": "Detalhe dentro de um painel de conteúdo.",
+          "limite": "—"
+        },
+        "3": {
+          "uso": "Cabeçalho de registro em largura cheia.",
+          "limite": "Acima de três colunas o olho perde o par: o valor de uma coluna encosta no rótulo da seguinte."
+        },
+        "auto": {
+          "uso": "Padrão. A grade decide quantas cabem.",
+          "limite": "Com dois pares apenas, auto pode deixar um órfão numa segunda linha — nesse caso fixar em 2."
+        }
+      }
+    },
+    {
+      "nome": "layout",
+      "tipo": "'stacked' | 'inline' | 'painel'",
+      "default": "'stacked'",
+      "descricao": "stacked põe o rótulo acima do valor; inline põe lado a lado, com os valores alinhados pelo maior rótulo; painel põe lado a lado com a coluna do rótulo em largura DECLARADA e um ícone por par.",
+      "valores": {
+        "stacked": {
+          "uso": "Padrão. Funciona em qualquer largura e não depende do tamanho do maior rótulo.",
+          "limite": "—"
+        },
+        "inline": {
+          "uso": "Resumo curto de até seis pares, com rótulos de comprimento parecido.",
+          "limite": "Rótulo longo empurra a coluna de valores e o alinhamento se perde. Acima de seis pares, voltar para stacked."
+        },
+        "painel": {
+          "uso": "A coluna lateral de um registro — os dados do requerimento ao lado da atividade. Uma linha por par, ícone e rótulo em 9rem (ajustável por --ucam-descricao-rotulo), valor no resto. Com visibleCount, corta a lista e mostra o botão \"Mostrar todos\".",
+          "limite": "Só em coluna de até ~24rem. Em largura cheia a coluna do valor fica com 60% de vazio, e o stacked em três colunas usa melhor a tela.",
+          "classe": "ucam-descricao--painel"
+        }
+      }
+    },
+    {
+      "nome": "items",
+      "tipo": "DescriptionItem[]",
+      "obrigatorio": true,
+      "descricao": "Os pares. Ver o schema DescriptionItem."
+    },
+    {
+      "nome": "emptyValue",
+      "tipo": "string",
+      "default": "'—'",
+      "descricao": "O que aparece quando o valor é nulo. Travessão, não string vazia: campo em branco lê como falha de carregamento."
+    },
+    {
+      "nome": "visibleCount",
+      "tipo": "number | null",
+      "default": "null",
+      "descricao": "Quantos pares ficam à vista antes do botão \"Mostrar todos os N valores\". null mostra todos. Só faz sentido no layout painel, onde a lista é longa e a coluna é estreita; nos outros layouts é ignorado. Os pares além do corte recebem hidden, não display:none em CSS — o estado tem de ser legível na marcação."
+    },
+    {
+      "nome": "state",
+      "tipo": "'idle' | 'loading' | 'empty' | 'error'",
+      "default": "'idle'",
+      "descricao": "O mesmo vocabulário da DataTable. loading mantém os rótulos e troca cada valor por uma linha de esqueleto — os rótulos já dizem o que vai chegar. empty e error trocam a lista pelo EmptyState pequeno, o de erro com \"Tentar novamente\", que emite retry. Valor ausente de UM par continua sendo o travessão, não empty."
+    }
+  ],
+  "schemas": {
+    "DescriptionItem": {
+      "label": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "O rótulo. Substantivo, sem dois-pontos."
+      },
+      "value": {
+        "tipo": "string | null",
+        "obrigatorio": true,
+        "descricao": "O valor já formatado. Formatação de data e moeda é responsabilidade de quem chama."
+      },
+      "tone": {
+        "tipo": "'default' | 'warning' | 'danger'",
+        "default": "'default'",
+        "descricao": "Tinta do valor. Só para prazo vencido ou a vencer, e sempre com a palavra dizendo o mesmo."
+      },
+      "span": {
+        "tipo": "boolean",
+        "default": "false",
+        "descricao": "O par ocupa a largura inteira da grade. Para valor longo — endereço, justificativa curta."
+      },
+      "icon": {
+        "tipo": "UcamIconName | null",
+        "default": "null",
+        "descricao": "Ícone do rótulo, só no layout painel. Decorativo: o significado está no rótulo."
+      }
+    }
+  },
+  "estados": [
+    "default",
+    "loading",
+    "empty",
+    "error"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para dado editável. Se existe caminho de edição, o certo é campo de formulário de verdade, não este componente com um lápis ao lado.",
+      "Não usar para mais de doze pares: acima disso o registro precisa de seções com título, não de uma grade mais longa.",
+      "Não usar tone para categorizar (natureza, setor). Tom aqui é prazo, e só."
+    ],
+    "motivo": "O legado transformou leitura em formulário desabilitado, e é isso que este componente existe para acabar."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "A marcação é <dl> com <dt> e <dd>. A associação entre rótulo e valor não pode depender de posição na grade.",
+      "Valor ausente vira travessão visível, não <dd> vazio: leitor de tela anuncia o rótulo e o silêncio seguinte não distingue 'não informado' de erro.",
+      "Contraste do rótulo mínimo 4.5:1 — ele é conteúdo, não decoração.",
+      "Tom de prazo acompanha sempre a palavra: 'vence em 1 dia', nunca só o valor pintado.",
+      "Em carregamento, o esqueleto preserva a grade e o container declara aria-busy.",
+      "Em loading a região declara aria-busy=true e o esqueleto é aria-hidden, com o texto \"Carregando\" para quem ouve. O erro diz em palavra que a carga falhou, e tentar de novo é um <button> de verdade. A mensagem de vazio só aparece com a carga concluída — dizer \"nada\" enquanto os dados não chegaram é afirmar o que ainda não se sabe."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Rótulo é substantivo curto, sem dois-pontos e sem verbo: Natureza, Prazo, Polo.",
+      "Valor já vem formatado para leitura humana: 20/07/2026, não 2026-07-20T00:00:00Z.",
+      "Prazo é escrito em relação ao agora: 'vence em 1 dia', 'venceu há 18 dias'."
+    ],
+    "exemplos": {
+      "bom": [
+        "Natureza — Acadêmico",
+        "Prazo — vence em 1 dia",
+        "Polo — Campos"
+      ],
+      "ruim": [
+        "Natureza: — ACADEMICO",
+        "DT_VENCIMENTO — 2026-07-20",
+        "Polo —"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-link",
+      "ucam-skeleton"
+    ],
+    "usada_por": [
+      "padrao-triagem-lista-detalhe",
+      "ucam-drawer"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / md-input-container com ng-disabled",
+    "mapa": [
+      {
+        "legado": "<input disabled> com label flutuante",
+        "novo": "item de DescriptionList",
+        "nota": "Some a borda de controle. Quem lê deixa de tentar clicar no campo."
+      },
+      {
+        "legado": "summary-list do SIGFIN",
+        "novo": "layout=inline",
+        "nota": "Mesmo arranjo, agora com um contrato só para os dois sistemas."
+      },
+      {
+        "legado": "valor em branco",
+        "novo": "emptyValue",
+        "nota": "Passa a distinguir 'não informado' de falha de carga."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Cabeçalho do requerimento",
+      "codigo": "<ucam-description-list\n  [columns]=\"3\"\n  [items]=\"[\n    { label: 'Natureza', value: 'Acadêmico' },\n    { label: 'Tipo', value: 'Revisão de nota' },\n    { label: 'Prazo', value: 'vence em 1 dia', tone: 'warning' }\n  ]\" />"
+    },
+    {
+      "titulo": "Resumo em painel estreito",
+      "codigo": "<ucam-description-list layout=\"inline\" [columns]=\"1\" [items]=\"resumo()\" />"
+    },
+    {
+      "titulo": "Coluna lateral do registro",
+      "codigo": "<ucam-description-list\n  layout=\"painel\"\n  [visibleCount]=\"5\"\n  [items]=\"[\n    { label: 'Natureza', value: 'Acadêmico', icon: 'tag' },\n    { label: 'Tipo', value: 'Revisão de nota', icon: 'fileText' },\n    { label: 'Setor responsável', value: 'Secretaria Acadêmica', icon: 'building2' },\n    { label: 'Polo', value: 'Campos', icon: 'mapPin' },\n    { label: 'Prazo', value: 'vence em 1 dia', tone: 'warning', icon: 'clock' },\n    { label: 'Modalidade', value: 'Graduação EAD', icon: 'graduationCap' },\n    { label: 'Aberto em', value: '03/09/2026 09:08', icon: 'calendar' }\n  ]\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Mostrar dado de leitura em <dl>.",
+      "evite": "Campo de formulário desabilitado.",
+      "porque": "A caixa cinza com borda de input convida ao clique e não responde — é a queixa registrada na Análise de Requerimento."
+    },
+    {
+      "faca": "Dar ao valor mais peso que ao rótulo.",
+      "evite": "Rótulo e valor no mesmo tamanho e na mesma tinta.",
+      "porque": "Sem contraste de peso o olho não separa a pergunta da resposta e lê a grade como texto corrido."
+    },
+    {
+      "faca": "Preencher ausência com travessão.",
+      "evite": "Deixar o <dd> vazio.",
+      "porque": "Silêncio depois do rótulo não distingue 'não informado' de erro de carregamento."
+    },
+    {
+      "faca": "Reservar o tom para prazo, sempre com a palavra ao lado.",
+      "evite": "Pintar o valor de vermelho para dizer que é importante.",
+      "porque": "Cor como único portador de significado reprova na 1.4.1, e o vermelho de destaque compete com o vermelho de vencido."
+    },
+    {
+      "faca": "Quebrar em seções com título acima de doze pares.",
+      "evite": "Uma grade única com trinta pares.",
+      "porque": "Grade longa sem título obriga a varrer tudo para achar um dado — a tela que o legado já entrega."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "description-list.json",
+      "raiz": "<dl class=\"ucam-descricao\"> com um .ucam-descricao__par por item",
+      "nota": "O par embrulhado é o item da grade; sem ele, três colunas distribuem dt, dd, dt, dd na ordem do documento e o rótulo de um par cai ao lado do valor do outro. No layout painel, o ícone vai dentro do dt (svg.ic aria-hidden antes do texto) e os pares além do corte levam hidden; o botão .ucam-descricao__mais alterna o hidden e o próprio aria-expanded.",
+      "variaveis": [],
+      "estado": "loading: os pares com um .ucam-skeleton no lugar de cada .ucam-descricao__valor e aria-busy=true no <dl>. empty e error: no lugar do <dl>, um .ucam-empty.ucam-empty--sm — o de erro com um .ucam-btn.ucam-btn--secondary \"Tentar novamente\"."
+    },
+    "trilho_b": "O host usa display:contents e renderiza um <dl> real — uma caixa a mais entre quem chama e o dl quebraria a grade de quem nos coloca dentro de um flex. Valor nulo, indefinido ou vazio vira o emptyValue. NÃO entrega: formatação de data, moeda ou número, que é responsabilidade de quem chama."
+  },
+  "vs": [
+    {
+      "componente": "stat",
+      "diferenca": "Os dois são pares rótulo e valor, e é aí que se confundem: o Stat destaca um número que responde a uma PERGUNTA de acompanhamento; a DescriptionList lista os campos de UM registro em modo leitura.",
+      "escolha": "O valor é atributo do registro aberto: nome, matrícula, curso, data de abertura."
+    },
+    {
+      "componente": "data-table",
+      "diferenca": "DescriptionList mostra UM registro por inteiro, um par por linha; DataTable mostra MUITOS registros, um por linha, com os mesmos campos em colunas. A escolha é a cardinalidade.",
+      "escolha": "A tela é o detalhe de um requerimento."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "retry",
+      "payload": "void",
+      "descricao": "Pedido de nova carga, do botão \"Tentar novamente\" do estado de erro. O componente não busca dados: quem consome decide o que refazer."
+    }
+  ]
+}

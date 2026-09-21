@@ -1,0 +1,194 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "realce",
+  "name": "Realce",
+  "selector": "ucam-realce",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "conteudo",
+  "description": "O trecho de um texto que casou com o termo buscado, pintado dentro da própria frase. Responde a uma pergunta que a lista filtrada não responde sozinha: POR QUE este item ficou. Existe onde há busca que filtra em vez de navegar — a grade de módulos, a paleta de comando, o combobox, a coluna filtrada de uma tabela.",
+  "quando_usar": [
+    "Uma busca filtrou uma lista e cada item precisa mostrar POR QUE ficou.",
+    "A paleta de comando, o combobox ou a grade de módulos devolvem resultados de um termo digitado.",
+    "Uma coluna de tabela foi filtrada por texto e o trecho que casou está no meio da célula."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Portal, APPSUCAM/SIGFIN e o redesenho interno do SIGU",
+    "ocorrencias": [
+      {
+        "tela": "Portal — grade de módulos",
+        "problema": "não há busca. Com mais de 25 módulos, achar um é varredura visual — e é a razão de o realce entrar no sistema antes de existir tela que o use"
+      },
+      {
+        "tela": "SIGFIN — busca de menus",
+        "problema": "a busca existe e filtra a lista, mas devolve os itens inteiros sem nenhuma marca; com termo curto, metade do menu continua na tela e não há como saber o que sobreviveu ao filtro nem por quê"
+      },
+      {
+        "tela": "SIGU — Meus sistemas (redesenho interno, 09/2026)",
+        "problema": "o realce existe, e traz três defeitos juntos: reescreve o innerHTML de TODOS os cartões a cada tecla digitada, inclusive os que estão escondidos; casa apenas a primeira ocorrência e apenas de um trecho contíguo, então \"acad pos\" não acha ACADÊMICO PÓS-GRADUAÇÃO; e fatia a string ORIGINAL com índices medidos na string sem acento, o que só não quebra porque as acentuações latinas voltam ao mesmo comprimento depois da decomposição"
+      }
+    ],
+    "conclusao": "Duas telas com busca, uma sem marca nenhuma e outra com marca frágil. O realce vira contrato para que a comparação — como se normaliza, o que casa, o que se pinta — seja uma decisão do sistema e não um trecho de JavaScript reescrito por tela."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O elemento mark nativo, envolvendo APENAS os caracteres que casaram. Nativo e não span com classe: mark é o elemento que existe na linguagem para isto, e ele carrega a semântica mesmo com o CSS do sistema ausente — o que importa quando a tela é impressa, colada num e-mail ou lida num leitor com folha de estilo própria.",
+      "classe": "ucam-realce"
+    }
+  ],
+  "props": [
+    {
+      "nome": "texto",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O texto completo, como ele deve aparecer — com acento, com caixa, com pontuação. O realce nunca reescreve o texto que exibe: ele só decide onde abrir e fechar a marca."
+    },
+    {
+      "nome": "termo",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O que a pessoa digitou. null e string vazia devolvem o texto intacto, sem marca alguma — condição que precisa ser explícita, porque campo de busca vazio percorrendo a lista inteira era a origem do custo por tecla no redesenho do SIGU."
+    },
+    {
+      "nome": "modo",
+      "tipo": "'trecho' | 'palavras'",
+      "default": "'palavras'",
+      "descricao": "Como o termo casa com o texto. trecho procura a sequência inteira, contígua. palavras quebra o termo nos espaços e procura cada pedaço, o que faz \"acad pos\" achar ACADÊMICO PÓS-GRADUAÇÃO — e é o padrão porque quem busca digita o que lembra, não o que está escrito.",
+      "valores": {
+        "trecho": {
+          "uso": "Código, matrícula, número de requerimento: identificadores em que um espaço é parte do valor, não separador."
+        },
+        "palavras": {
+          "uso": "Nome de módulo, de setor, de pessoa — tudo que a pessoa busca de memória."
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Marca só o que casou. Pintar a palavra inteira quando o termo casou com três letras dela devolve uma informação falsa sobre o que a busca fez.",
+      "Não usar fora de busca. mark é o rastro de uma consulta; para chamar atenção para um trecho por decisão editorial existe ênfase tipográfica, e para estado do sistema existe o selo.",
+      "A comparação ignora acento e caixa; o texto exibido, não. Normalizar para comparar é obrigatório num parque em que ACADÊMICO convive com Academico — mas quem aparece na tela é o nome como ele é.",
+      "O índice do casamento vale sobre o texto ORIGINAL. Medir a posição na string normalizada e fatiar a original só funciona enquanto normalizar preserva o comprimento; um ligado tipográfico ou um caractere fora do latim quebra o alinhamento e a marca escorrega.",
+      "Nada de innerHTML. O realce produz nós de texto e elementos mark; montar a string com concatenação exige escapar HTML à mão em cada ponto, e um nome de setor com & ou < vira marcação.",
+      "Item escondido não é realçado. Recalcular a marca de tudo a cada tecla é o custo que aparece com 58 cartões e some com 12 — e o parque tem telas dos dois tamanhos.",
+      "A lavagem é REFORÇO. Quem responde \"este item casou\" é a lista filtrada; se a única evidência do casamento for a cor, a busca já está errada antes do realce."
+    ],
+    "motivo": "Busca que filtra sem dizer o que casou obriga a pessoa a reconstruir o critério de cabeça, item por item."
+  },
+  "acessibilidade": {
+    "papel": "mark (nativo)",
+    "requisitos": [
+      "Não altera o nome acessível de nada. O realce mora dentro do texto de um link, de um botão ou de um título, e o nome acessível desses elementos continua sendo o texto inteiro — o Safari com VoiceOver anuncia a entrada e a saída da marca, e é por isso que ela nunca pode ser a única portadora do sentido.",
+      "Contraste do texto sobre o preenchimento de 12,30:1 no claro e 11,30:1 no escuro; a tinta do texto não muda de família ao ser realçada (WCAG 1.4.3).",
+      "O preenchimento carrega degrau de LUMINÂNCIA além da matiz — 1,46 contra o cartão branco, 1,34 contra o painel escuro —, então continua visível para quem não distingue o vermelho (WCAG 1.4.1).",
+      "A contagem de resultados é anunciada por região viva junto com o filtro; o realce é a evidência visual do mesmo fato, não o substituto dela (WCAG 4.1.3).",
+      "Nenhuma marca com o campo de busca vazio: mark em toda a lista é ruído que o leitor de tela lê item a item."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O texto exibido é o nome real do item, com acento e caixa natural — o realce não é lugar de corrigir nomenclatura.",
+      "Termo com uma letra só não realça: uma tela em que cada nome tem uma letra pintada não informa nada e parece defeito. O piso é duas."
+    ],
+    "exemplos": {
+      "bom": [
+        "Acadêmico pós-graduação — termo \"pos\", marca sobre \"pós\"",
+        "Registro de diplomas — termo \"dipl\", marca sobre \"dipl\""
+      ],
+      "ruim": [
+        "ACADÊMICO PÓS-GRADUAÇÃO — marca sobre a palavra inteira porque três letras casaram",
+        "Financeiro — termo \"f\", marca sobre uma letra em cada item da lista"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-card",
+      "ucam-combobox",
+      "ucam-command",
+      "ucam-data-table",
+      "ucam-list-item"
+    ]
+  },
+  "migracao": {
+    "de": "Nenhum precedente no parque — busca sem marca (SIGFIN) ou sem busca (Portal)",
+    "mapa": [
+      {
+        "legado": "lista filtrada sem indicação do casamento",
+        "novo": "ucam-realce no nome de cada resultado",
+        "nota": "A migração começa pela busca, não pelo realce: onde não há filtro, não há o que marcar."
+      },
+      {
+        "legado": "innerHTML montado com concatenação e escape à mão",
+        "novo": "ucam-realce",
+        "nota": "O ganho não é visual: é parar de escapar HTML em cada tela que busca."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Nome de módulo numa grade filtrada",
+      "codigo": "<strong class=\"ucam-card__titulo\">\n  <ucam-realce [texto]=\"modulo.nome\" [termo]=\"busca()\" />\n</strong>"
+    },
+    {
+      "titulo": "Identificador, onde o espaço é parte do valor",
+      "codigo": "<ucam-realce [texto]=\"req.numero\" [termo]=\"busca()\" modo=\"trecho\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Marcar só os caracteres que casaram.",
+      "evite": "Pintar a palavra ou o item inteiro.",
+      "porque": "A marca é a resposta a \"por que este item ficou\"; item inteiro pintado devolve a pergunta."
+    },
+    {
+      "faca": "Normalizar para comparar e exibir o texto como ele é.",
+      "evite": "Exibir o texto sem acento porque foi ele que entrou na comparação.",
+      "porque": "O parque escreve o mesmo nome de quatro jeitos; a normalização existe para absorver isso, não para propagá-lo à tela."
+    },
+    {
+      "faca": "Quebrar o termo em palavras.",
+      "evite": "Exigir a sequência contígua em nome de módulo.",
+      "porque": "Quem busca digita o que lembra. \"acad pos\" precisa achar ACADÊMICO PÓS-GRADUAÇÃO/EXTENSÃO — que é o nome mais buscado e o mais longo da grade."
+    },
+    {
+      "faca": "Tratar o realce como reforço.",
+      "evite": "Depender dele para comunicar quantos resultados sobraram.",
+      "porque": "A contagem é texto e região viva. A cor confirma; ela não conta."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe no elemento mark. Quem fatia o texto é a aplicação; o CSS só pinta.",
+      "raiz": ".ucam-realce",
+      "estado": "Sem estado — a marca não é controle.",
+      "variaveis": [
+        "--ucam-color-realce-background",
+        "--ucam-color-realce-foreground",
+        "--ucam-radius-control"
+      ],
+      "nota": "A classe também redefine o mark NU dentro do escopo do sistema, porque o padrão do navegador é amarelo com tinta preta — que no tema escuro é a única superfície da tela que não segue o tema. A TINTA É A DO SISTEMA (21/09/2026): realce.background entrou na subpaleta da ADR-037, então dentro de um app o que a busca marca — e o que a ação acende, que usa o mesmo token — sai na cor daquele app. Antes ficava no rosa da marca em todos, e clicar \"Calcular mensalidade\" no SigFin piscava rosa num sistema verde. As alturas saem do realce da marca, medidas: L 88 no claro e L 36 no escuro, o que mantém o texto do tema por cima entre 10,5:1 e 12,9:1 nos seis sistemas."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/realce/ucam-realce.ts — pronto. Não é pipe, de propósito: a fatia vira nós de TEXTO por interpolação, e o conteúdo do banco nunca chega a ser markup. Compara sem acento e sem caixa, mas recorta o texto original — normalizar para exibir seria reescrever o dado."
+  },
+  "vs": [
+    {
+      "componente": "badge",
+      "diferenca": "Realce pinta um trecho DENTRO da frase para dizer por que aquele item casou com a busca; Badge é um rótulo à parte que diz a situação do registro. Um é sobre a busca, o outro é sobre o dado.",
+      "escolha": "Há um termo buscado e a lista filtrou: o realce mostra onde ele bateu."
+    }
+  ]
+}

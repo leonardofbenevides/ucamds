@@ -1,0 +1,425 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "file-field",
+  "name": "FileField",
+  "selector": "ucam-file-field",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "O campo de anexo: o controle que escolhe arquivos e a lista do que foi escolhido, no mesmo componente. Existe porque em todo o parque o arquivo é invisível depois de selecionado — não se sabe o nome do que foi anexado, nem o tamanho, nem se subiu, nem por que foi recusado. A regra do formato e do limite de tamanho não é texto que alguém digita no apoio: sai de accept e maxSize, para que o que a tela promete e o que o campo aceita não possam divergir.",
+  "quando_usar": [
+    "O requerimento exige anexo e a pessoa precisa ver o que anexou: nome, tamanho, se subiu.",
+    "Há regra de formato ou de tamanho, e ela precisa sair do próprio campo em vez de ser texto que alguém digitou no apoio.",
+    "Vários arquivos podem ser enviados e cada um precisa poder ser removido sozinho."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/SIGFIN, APPSUCAM/Protocolo e as telas de referência do próprio DSUCAM",
+    "ocorrencias": [
+      {
+        "tela": "SIGFIN — Processar Acordo",
+        "problema": "a seção Arquivo tem um botão Upload desabilitado ao lado do select Empresa de cobrança. Nada na tela diz que o botão depende do select, e nada aparece depois de escolher o arquivo: sem nome, sem tamanho, sem progresso. O único sinal de que algo aconteceu é o bloco Resultado mais abaixo mudar de zero para outro número."
+      },
+      {
+        "tela": "SIGFIN — Arquivo Remessa Diário",
+        "problema": "a seção Arquivo traz Processar e Salvar desabilitados sobre um painel preto vazio. O painel é o conteúdo do arquivo gerado, não um arquivo anexado — mas ocupa o mesmo lugar e tem o mesmo rótulo, e as duas coisas se confundem."
+      },
+      {
+        "tela": "Protocolo — Análise de Requerimento",
+        "problema": "o botão Anexar aparece na barra de resposta, ao lado de Enviar resposta. Não há lista: quem anexa dois arquivos por engano não descobre antes de enviar."
+      },
+      {
+        "tela": "Telas de referência do DSUCAM — Novo requerimento",
+        "problema": "a própria tela de referência desenha um fieldset Anexos com o botão Anexar arquivo e o apoio 'PDF, JPG ou PNG de até 10 MB', sem contrato nenhum por trás — e o campo codigo do template, que é o exemplo que o desenvolvedor copia, omite o fieldset inteiro. O portão 4c do validador só olha o codigo, então a divergência atravessou em silêncio."
+      }
+    ],
+    "conclusao": "O arquivo é o único dado de formulário que o parque aceita sem nunca mostrar. O campo devolve as três respostas que faltam — o que anexei, em que estado está, e por que este aqui foi recusado — e tira a regra de formato e tamanho da prosa escrita à mão, onde ela envelhece sem que ninguém perceba."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Um fieldset, não um label: com multiple há mais de um controle nomeado por um rótulo só, e label não nomeia grupo. Veste ucam-field por baixo, então rótulo, obrigatoriedade, apoio e erro se comportam como em qualquer outro campo.",
+      "classe": "ucam-file-field"
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": true,
+      "descricao": "A legend do fieldset. Nomeia o que se anexa — Anexos, Comprovante de pagamento, Arquivo de retorno —, nunca a ação de anexar.",
+      "classe": "ucam-field__label"
+    },
+    {
+      "parte": "gatilho",
+      "obrigatorio": true,
+      "descricao": "O botão que abre o seletor do sistema, secundário, com o ícone paperclip. É um button de verdade que aciona um input type=file visualmente oculto — nunca o input nu estilizado, que não tem nome acessível estável e cujo texto o navegador escolhe em inglês.",
+      "classe": "ucam-file-field__gatilho"
+    },
+    {
+      "parte": "regra",
+      "obrigatorio": true,
+      "descricao": "A frase de formato e limite, no lugar do apoio do campo: 'PDF ou JPG de até 10 MB.' É GERADA de accept e maxSize e não se escreve à mão. Obrigatória porque accept sozinho filtra o seletor do sistema em silêncio: quem tem um .docx não descobre que o campo não o quer, descobre que o arquivo sumiu da lista. Numa tela de Trilho A a frase é escrita no markup — ela precisa existir sem JavaScript nosso —, e quem garante que ela não diverge do data-accept/data-max-size ao lado é o portão tools/check-regra-anexo.mjs, que gera a frase pelo mesmo módulo do Trilho B e compara (20/09/2026).",
+      "classe": "ucam-field__hint"
+    },
+    {
+      "parte": "lista",
+      "obrigatorio": false,
+      "descricao": "A grade de anexos (ver Anexo), um item por arquivo escolhido. Só existe depois da primeira escolha — grade vazia com moldura é ruído. Não vira empty-state: o campo já diz o que fazer pelo gatilho.",
+      "classe": "ucam-anexos"
+    },
+    {
+      "parte": "arquivo",
+      "obrigatorio": false,
+      "descricao": "Cada arquivo é um Anexo com removable: figura do formato, nome, formato e tamanho, e a ação de remover. É a mesma peça que o detalhe do requerimento mostra depois do envio — o arquivo tem uma cara só dos dois lados.",
+      "classe": "ucam-anexo"
+    },
+    {
+      "parte": "progresso",
+      "obrigatorio": false,
+      "descricao": "A barra fina dentro da linha do arquivo, presente só enquanto aquele arquivo está subindo. Fica na linha, e não no rodapé do campo, porque com multiple cada arquivo sobe por conta própria e uma barra só mentiria sobre qual.",
+      "classe": "ucam-anexo__progresso"
+    },
+    {
+      "parte": "recusa",
+      "obrigatorio": false,
+      "descricao": "A linha do arquivo recusado, em tom de erro, com o motivo em texto ao lado do nome: 'tem 14,2 MB — o limite é 10 MB'. Fica na lista, não some. Arquivo recusado que desaparece do campo é o comportamento do parque hoje, e é a razão de o usuário tentar o mesmo arquivo três vezes.",
+      "classe": "ucam-anexo--recusado"
+    },
+    {
+      "parte": "remover",
+      "obrigatorio": false,
+      "descricao": "Botão de ícone por linha, com nome acessível que inclui o nome do arquivo — Remover anexo boleto-092026.pdf. Cinco botões chamados Remover são cinco alvos indistinguíveis no leitor de tela, pelo mesmo motivo já registrado no Chip."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O rótulo do grupo. Nomeia o documento esperado, não a ação: Comprovante de pagamento, não Upload."
+    },
+    {
+      "nome": "accept",
+      "tipo": "string",
+      "default": "''",
+      "descricao": "Formatos aceitos, na sintaxe do atributo accept: extensões (.pdf), tipos MIME (application/pdf) ou família (image/*). Alimenta ao mesmo tempo o filtro do seletor do sistema, a validação de quem chega por arrasto — que o accept não filtra — e a frase de regra. Vazio significa qualquer formato, e nesse caso a frase de regra fala só do tamanho."
+    },
+    {
+      "nome": "maxSize",
+      "tipo": "number | null",
+      "default": "null",
+      "descricao": "Limite por arquivo, em bytes. Validado no cliente antes de qualquer envio: recusar 14 MB depois de 14 MB de upload é gastar a banda do usuário para dizer não. Nulo remove o limite do campo — não o do servidor, que continua existindo e passa a ser a única defesa."
+    },
+    {
+      "nome": "multiple",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Aceita mais de um arquivo. Falso por padrão porque o caso dominante no parque é um documento por campo — o arquivo de retorno do SIGFIN é um só, e dois seria erro operacional."
+    },
+    {
+      "nome": "max",
+      "tipo": "number | null",
+      "default": "null",
+      "descricao": "Teto de quantidade quando multiple. Ao ser atingido o gatilho fica desabilitado e a regra passa a dizer o teto — o gatilho não some, porque controle que desaparece parece defeito."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Apoio adicional, se houver o que dizer além do formato e do tamanho: 'Frente e verso no mesmo PDF.' Some ao lado da regra gerada, nunca no lugar dela."
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Marca o grupo como obrigatório na legend, na hora do preenchimento — e não na submissão."
+    },
+    {
+      "nome": "readonly",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Mostra a lista sem o gatilho e sem remover: os anexos de um requerimento já enviado. É o modo de leitura do mesmo componente, e não um segundo contrato, porque a linha do arquivo é idêntica nos dois casos."
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Bloqueia gatilho e remoção. Quando o bloqueio vem de outro campo — o Upload do SIGFIN, que só liga depois da Empresa de cobrança — o motivo tem de estar escrito no campo, do mesmo jeito que no campo dependente do Select."
+    },
+    {
+      "nome": "disabledReason",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Por que o campo está bloqueado, dito no lugar da regra: 'Escolha a empresa de cobrança para enviar o arquivo.' Existe por causa do Processar Acordo, onde um botão cinza sem explicação é a tela inteira."
+    },
+    {
+      "nome": "files",
+      "tipo": "UcamFile[]",
+      "default": "[]",
+      "descricao": "Os arquivos do campo, com estado. É two-way: o componente escolhe e remove, e quem envia devolve a mesma lista com progresso, sucesso ou erro por item. Ver schemas."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "filesChange",
+      "payload": "UcamFile[]",
+      "descricao": "A lista inteira depois de cada escolha ou remoção, já sem os recusados."
+    },
+    {
+      "nome": "rejected",
+      "payload": "{ file: File; motivo: 'formato' | 'tamanho' | 'quantidade' }[]",
+      "descricao": "O que foi recusado e por quê. Emitido em lote, porque o usuário escolhe vários de uma vez e três avisos seguidos são três interrupções. Quem escuta não precisa fazer nada: o campo já mostra a recusa na lista — o evento existe para quem quer registrar o caso."
+    },
+    {
+      "nome": "remove",
+      "payload": "UcamFile",
+      "descricao": "O arquivo retirado da lista. Necessário para o que já subiu: tirar da tela não apaga do servidor."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "disabled",
+    "readonly",
+    "filled",
+    "invalid",
+    "loading",
+    "sobre-o-alvo"
+  ],
+  "schemas": {
+    "UcamFile": {
+      "id": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Chave estável da linha. Nome não serve: dois arquivos podem se chamar documento.pdf."
+      },
+      "nome": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "O nome exibido, com extensão."
+      },
+      "tamanho": {
+        "tipo": "number | null",
+        "descricao": "Bytes. Nulo no arquivo que veio do servidor sem essa informação — nesse caso a linha não mostra tamanho, em vez de mostrar zero."
+      },
+      "tipo": {
+        "tipo": "string | null",
+        "descricao": "O MIME, quando conhecido."
+      },
+      "estado": {
+        "tipo": "'pendente' | 'enviando' | 'enviado' | 'erro' | 'recusado'",
+        "obrigatorio": true,
+        "descricao": "pendente é escolhido e ainda não enviado; recusado é barrado pelo próprio campo antes de sair; erro é falha do envio."
+      },
+      "progresso": {
+        "tipo": "number | null",
+        "default": "null",
+        "descricao": "0 a 100, só em enviando. Nulo quando o envio não reporta progresso: aí a linha usa o giro do loading, que não mente sobre quanto falta."
+      },
+      "mensagem": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "O motivo. Obrigatório em erro e em recusado — estado de falha sem frase é a falha do parque que este campo existe para corrigir."
+      },
+      "url": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Onde o arquivo já enviado pode ser aberto. Presente, o nome vira link."
+      }
+    }
+  },
+  "limites": {
+    "$descricao": "O que este contrato deliberadamente não entrega em 0.1.0.",
+    "regras": [
+      "Não faz o upload. O campo escolhe, valida, mostra e remove; quem sobe é a aplicação, que devolve o estado pela lista. Um componente de design system que fala com o servidor carrega a autenticação e a rota de outro time para dentro do design system.",
+      "Sem área tracejada de arrastar-e-soltar. O arrasto é aceito sobre o campo inteiro e é adicional, mas a área grande e pontilhada não tem tela no parque que a peça, e prop sem evidência é especulação. Quando aparecer a primeira, entra como variação — não como padrão.",
+      "Sem miniatura de imagem. O parque anexa comprovante e declaração, que são PDF; a miniatura resolveria um problema que ainda não existe aqui.",
+      "Sem reordenar a lista. A ordem é a da escolha.",
+      "Sem retomar envio interrompido. Falhou, o arquivo fica na lista em erro com o botão de tentar de novo, e o envio recomeça do zero."
+    ],
+    "motivo": "O campo tem de ser adotável por um app AngularJS de 2016 sem trazer junto uma decisão de infraestrutura."
+  },
+  "acessibilidade": {
+    "papel": "group (fieldset/legend), com uma lista de arquivos.",
+    "requisitos": [
+      "fieldset com legend, não label: um rótulo que nomeia gatilho e lista ao mesmo tempo nomeia um grupo (WCAG 1.3.1).",
+      "O input type=file é encanamento, não controle: visualmente oculto pelo recorte, fora da ordem de foco (tabindex=-1) e fora da árvore de acessibilidade (aria-hidden). Quem responde pelo campo é o botão. A regra anterior pedia o input FOCÁVEL, para que o campo não ficasse inalcançável pelo teclado — o motivo está certo e o remédio não: com um button de verdade acionando o input, o campo já é alcançável, e o input na ordem de foco vira um segundo ponto de parada invisível, com rótulo escolhido pelo navegador e em inglês. Continua sendo recorte e nunca display:none, porque um input recortado responde a .click() em todo navegador do parque (decidido em 20/09/2026, ao escrever o Trilho B).",
+      "O gatilho é um button com texto visível — Anexar arquivo. Nunca o input nu estilizado: o rótulo dele é escolhido pelo navegador, sai em inglês e não pode ser traduzido.",
+      "Arrastar-e-soltar é sempre alternativa, nunca o único caminho: o botão faz a mesma coisa sem gesto de arrasto (WCAG 2.5.7).",
+      "A regra de formato e tamanho é ligada ao campo por aria-describedby, junto com o hint e o erro quando existirem.",
+      "A lista de arquivos é ul/li de verdade — a contagem anunciada pelo leitor de tela é a resposta para 'quantos anexei'.",
+      "Cada botão de remover tem nome acessível com o nome do arquivo: Remover anexo boleto-092026.pdf (WCAG 2.4.6).",
+      "Arquivo adicionado, concluído ou recusado é anunciado em região aria-live polite (WCAG 4.1.3). O anúncio diz o nome e o que houve, não só 'concluído'.",
+      "O progresso de cada arquivo tem role=progressbar com aria-valuenow, e o percentual em texto — não só a barra (WCAG 1.4.1).",
+      "A recusa é identificada por texto e por ícone, não apenas pelo tom vermelho da linha (WCAG 1.4.1).",
+      "aria-invalid no campo quando required e a lista está vazia na submissão.",
+      "Foco vai para a linha do arquivo recusado quando a recusa acontece por escolha do teclado; não vai quando a recusa vem de arrasto, para não roubar o ponteiro do meio do gesto."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "2.1.1",
+      "2.4.6",
+      "2.5.7",
+      "3.3.1",
+      "3.3.3",
+      "4.1.2",
+      "4.1.3"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Chega ao gatilho, depois a cada botão de remover na ordem da lista."
+      },
+      {
+        "tecla": "Enter ou Espaço no gatilho",
+        "comportamento": "Abre o seletor de arquivos do sistema."
+      },
+      {
+        "tecla": "Enter ou Espaço em remover",
+        "comportamento": "Tira a linha e devolve o foco à linha seguinte; se a lista esvaziar, ao gatilho. Nunca ao topo da página."
+      }
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Nomeia o documento, não a ação: Comprovante de pagamento, Arquivo de retorno, Anexos.",
+      "Upload não é rótulo, é o nome do que o sistema faz. É o que o SIGFIN escreve no botão e é o que o campo deixa de escrever."
+    ],
+    "regra": [
+      "Gerada, nunca digitada. Formato em nome comum e maiúsculo — PDF, JPG —, não em MIME.",
+      "Um formato: 'PDF de até 10 MB.' Dois: 'PDF ou JPG de até 10 MB.' Três ou mais: 'PDF, JPG, PNG ou DOCX de até 10 MB.'",
+      "Sem accept: 'Arquivo de até 10 MB.' Sem maxSize e sem accept: a regra não aparece."
+    ],
+    "recusa": [
+      "Diz qual arquivo, o que houve e o número que o usuário precisa: 'contrato.pdf tem 14,2 MB. O limite é 10 MB.'",
+      "'boleto.docx não é PDF nem JPG.' — o formato recusado nomeado, e os aceitos ao lado.",
+      "Ruim: 'Arquivo inválido.', 'Erro no upload.', 'Formato não suportado.'"
+    ],
+    "tamanho": [
+      "Formatado em pt-BR, com vírgula decimal e uma casa: 1,2 MB, 940 KB, 14,2 MB.",
+      "Abaixo de 1 KB, arredondar para 1 KB — o usuário não precisa saber que o arquivo tem 312 bytes."
+    ]
+  },
+  "vs": [
+    {
+      "componente": "progress",
+      "diferenca": "O Progress é a barra de uma operação da página: o cálculo de mensalidade avançando, a fila sendo processada. A barra do File Field vive dentro da linha de um arquivo e fala só daquele arquivo.",
+      "escolha": "Se a barra responde 'quanto falta para esta tela terminar', é Progress. Se responde 'quanto falta para ESTE arquivo subir', já está no File Field e não se usa Progress solto ao lado — com multiple, uma barra só não sabe de quem está falando."
+    },
+    {
+      "componente": "anexo",
+      "diferenca": "O Anexo é o ARQUIVO: a peça com figura, nome, formato e tamanho. O File Field é o CAMPO que escolhe, valida e diz a regra — e mostra cada arquivo escolhido como um Anexo.",
+      "escolha": "Para receber arquivo, File Field. Para mostrar arquivo que já existe — o detalhe do requerimento, a mensagem da atividade —, Anexo solto numa grade."
+    }
+  ],
+  "composicao": {
+    "usa": [
+      "ucam-anexo",
+      "ucam-button",
+      "ucam-field",
+      "ucam-icon",
+      "ucam-icon-button"
+    ]
+  },
+  "migracao": {
+    "de": "input type=file nu, botão Upload do SIGFIN e botão Anexar do Protocolo",
+    "mapa": [
+      {
+        "legado": "input type=file solto, com o texto do navegador",
+        "novo": "ucam-file-field label=... accept=... [maxSize]=...",
+        "nota": "O texto 'Escolher arquivo / Nenhum arquivo escolhido' some junto: ele é do navegador, sai em inglês em parte do parque e não é traduzível."
+      },
+      {
+        "legado": "botão Upload desabilitado sem explicação (SIGFIN, Processar Acordo)",
+        "novo": "[disabled]=true + disabledReason",
+        "nota": "A dependência do select Empresa de cobrança passa a estar escrita no campo."
+      },
+      {
+        "legado": "regra de formato e tamanho digitada no texto de apoio",
+        "novo": "accept + maxSize",
+        "nota": "A frase passa a ser gerada. O 'PDF, JPG ou PNG de até 10 MB' escrito à mão na tela de Novo requerimento é exatamente o caso: prosa que ninguém garante que o campo cumpre."
+      },
+      {
+        "legado": "botão Anexar na barra de ações, sem lista (Protocolo, Análise)",
+        "novo": "campo com multiple e a lista visível antes do envio",
+        "nota": "Anexar deixa de ser ação da barra e vira campo do formulário. A barra fica só com Enviar resposta."
+      },
+      {
+        "legado": "arquivo recusado que some do campo",
+        "novo": "linha em recusado com o motivo",
+        "nota": "Mudança de comportamento perceptível, e é o ponto do componente."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Um documento, formato e limite declarados",
+      "codigo": "<ucam-file-field label=\"Comprovante de pagamento\" accept=\".pdf,.jpg\" [maxSize]=\"10485760\" [(files)]=\"comprovante\" required />"
+    },
+    {
+      "titulo": "Vários anexos, com teto",
+      "codigo": "<ucam-file-field label=\"Anexos\" accept=\".pdf,.jpg,.png\" [maxSize]=\"10485760\" multiple [max]=\"5\" [(files)]=\"anexos\" hint=\"Frente e verso no mesmo PDF.\" />"
+    },
+    {
+      "titulo": "Bloqueado por outro campo, com o motivo dito",
+      "codigo": "<ucam-file-field label=\"Arquivo de retorno\" accept=\".ret,.txt\" [disabled]=\"!empresa()\" disabledReason=\"Escolha a empresa de cobrança para enviar o arquivo.\" [(files)]=\"retorno\" />"
+    },
+    {
+      "titulo": "Leitura: anexos de um requerimento já enviado",
+      "codigo": "<ucam-file-field label=\"Anexos\" readonly [files]=\"requerimento().anexos\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Declarar accept e maxSize e deixar a frase de regra ser gerada.",
+      "evite": "Escrever a regra no apoio à mão.",
+      "porque": "Prosa e validação divergem sem que ninguém perceba — a tela promete 10 MB e o servidor recusa em 5. A regra escrita à mão na tela de referência do próprio design system é o caso demonstrado."
+    },
+    {
+      "faca": "Manter o arquivo recusado visível na lista, com o motivo.",
+      "evite": "Descartar o arquivo em silêncio.",
+      "porque": "É o que o parque faz hoje, e é a razão de o usuário tentar o mesmo arquivo três vezes achando que foi falha de clique."
+    },
+    {
+      "faca": "Validar tamanho e formato antes de enviar.",
+      "evite": "Deixar o servidor recusar depois do upload inteiro.",
+      "porque": "Quem está numa conexão ruim paga 14 MB para receber um não que era previsível no primeiro byte."
+    },
+    {
+      "faca": "Explicar por que o campo está bloqueado, no próprio campo.",
+      "evite": "Botão cinza sem motivo.",
+      "porque": "No Processar Acordo o Upload depende do select ao lado, e nada na tela diz isso — descobre-se por tentativa."
+    },
+    {
+      "faca": "Chamar o rótulo pelo documento esperado.",
+      "evite": "Upload, Enviar arquivo, Escolher.",
+      "porque": "O rótulo nomeia o dado, como em todo campo do design system; a ação já está escrita no botão."
+    },
+    {
+      "faca": "Aceitar arrasto como atalho, com o botão sempre presente.",
+      "evite": "Zona de arrastar como único caminho.",
+      "porque": "Arrastar exige apontador e movimento contínuo, e WCAG 2.5.7 pede alternativa de clique — além do que boa parte do parque roda em máquina de guichê."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Aparência do campo, do gatilho e da linha do arquivo, incluindo o tom da linha recusada. O CSS não escolhe arquivo, não valida e não desenha lista sozinho: entrega as classes de um markup que a aplicação escreve.",
+      "raiz": ".ucam-file-field",
+      "estado": "Estado por arquivo no tile do Anexo: modificadores --recusado e --erro, e a barra de progresso enquanto sobe; data-estado continua no li para quem quiser ler. O campo inteiro tem data-sobre-o-alvo enquanto há arrasto por cima.",
+      "variaveis": [
+        "--ucam-color-surface-subtle",
+        "--ucam-color-border-subtle",
+        "--ucam-color-text-primary",
+        "--ucam-color-text-secondary",
+        "--ucam-color-feedback-danger-foreground",
+        "--ucam-color-feedback-danger-border",
+        "--ucam-space-inset-sm",
+        "--ucam-space-stack-sm",
+        "--ucam-space-inline-sm"
+      ],
+      "nota": "O Trilho A NÃO entrega a validação de accept e maxSize, nem a frase de regra gerada, nem o anúncio em aria-live. Um app legado que só pegar o CSS ganha a aparência e continua com o comportamento antigo — inclusive o de descartar arquivo em silêncio. Está dito aqui para não ser descoberto na tela. O Trilho A entrega APARÊNCIA e nada mais: não escolhe arquivo, não valida accept nem maxSize, não gera a frase de regra e não anuncia. Quem valida é o Trilho B; numa tela de Trilho A puro, a validação é da aplicação, e as telas de exemplo a fazem no script do gerador (data-accept e data-max-size no gatilho) para que a linha recusada exista em algum lugar demonstrável."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/file-field/ucam-file-field.ts — pronto (20/09/2026). É o dono da VALIDAÇÃO: accept nas três sintaxes (extensão, MIME e família), maxSize por arquivo e max de quantidade, tudo antes de qualquer envio. Gera a frase de regra a partir de accept e maxSize, monta a lista com ucam-anexo, mantém a linha recusada com o motivo e o número, e anuncia cada entrada e cada recusa em região role=status própria. Arrasto sobre o campo inteiro; sem área tracejada, conforme limites. Não sobe arquivo."
+  }
+}

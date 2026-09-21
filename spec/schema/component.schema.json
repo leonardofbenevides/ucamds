@@ -1,0 +1,606 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ds.ucam.br/schema/component.schema.json",
+  "title": "Contrato de componente do Design System UCAM",
+  "description": "Valida o núcleo obrigatório e as extensões opcionais tipadas. additionalProperties=false no raiz é deliberado: pega seção escrita com nome errado, que de outro modo seria silenciosamente ignorada pelo gerador.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "selector",
+    "status",
+    "version",
+    "category",
+    "description",
+    "anatomia",
+    "props",
+    "estados",
+    "acessibilidade",
+    "conteudo",
+    "exemplos"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+      "description": "kebab-case. Igual ao nome do arquivo sem extensão."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Za-z]+$",
+      "description": "PascalCase. Nome da classe Angular sem prefixo."
+    },
+    "selector": {
+      "type": "string",
+      "pattern": "^(ucam-[a-z][a-z0-9-]*|\\[ucam[A-Z][A-Za-z0-9]*\\])$",
+      "description": "Elemento (ucam-x) ou DIRETIVA de atributo ([ucamX]). A diretiva foi admitida em 06/09/2026 para o tooltip: dica não é caixa no arranjo, é comportamento colado a um controle que já existe, e transformá-la em elemento obrigaria todo controle com dica a ganhar um invólucro que muda o fluxo. A fronteira da ADR-006 continua valendo — o prefixo ucam é obrigatório nas duas formas, e nenhum z-* aparece na API pública."
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "review",
+        "stable",
+        "deprecated"
+      ],
+      "description": "Maturidade do CONTRATO, não do código. Até 09/09/2026 só o degrau `stable` tinha critério escrito,\ne o resultado é que os 46 contratos ficaram em `draft` — um rótulo idêntico em toda parte não\ninforma nada, e quem consultava o catálogo não tinha como saber o que já dava para usar.\nAtlassian resolve isso com quatro degraus rotulados (Generally available, Beta, Caution,\nDeprecated) e Carbon com o par status + resultado dos testes de acessibilidade. A escada abaixo\né a mesma ideia com os sinais que ESTE repositório sabe medir sozinho.\n\ndraft — o contrato existe e pode mudar sem aviso. É o degrau de partida e não promete nada.\n\nreview — o contrato está completo e implementado nos dois trilhos, e falta o uso real dizer se\nele está certo. Quatro condições, todas verificadas por tools/validate-spec.mjs: (1) os treze\ncampos de conteúdo preenchidos — evidencia, quando_usar, anatomia, props, estados, limites,\nacessibilidade, conteudo, composicao, migracao, exemplos, boas_praticas e vs; (2) existe wrapper\ndo Trilho B em ui/projects/ui/src/lib/ucam/<id>; (3) nenhum aviso de divergência entre trilhos —\ntoda variante declarada tem tinta no Trilho A e nome no Trilho B; (4) o componente aparece em\npelo menos uma tela de templates.json.\n\nstable — dois consumidores reais EM PRODUÇÃO. Tela de templates.json é demonstração e NÃO conta:\nela prova que o componente desenha, não que alguém dependeu dele e sobreviveu. É por isso que\nnenhum contrato está stable hoje, e o degrau continua vazio de propósito até o parque migrar.\n\ndeprecated — substituído. Exige deprecatedBy apontando o sucessor."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "since": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "deprecatedBy": {
+      "type": "string",
+      "description": "id do componente que substitui este. Obrigatório quando status=deprecated."
+    },
+    "category": {
+      "enum": [
+        "acao",
+        "formulario",
+        "dados",
+        "navegacao",
+        "sobreposicao",
+        "feedback",
+        "layout",
+        "conteudo"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 40,
+      "description": "Diz o que o componente faz e, quando relevante, o que ele não faz."
+    },
+    "quando_usar": {
+      "type": "array",
+      "minItems": 1,
+      "description": "EXTENSÃO. A metade que faltava. O contrato já dizia quando NÃO usar (`limites`) e nunca dizia quando usar — assimetria herdada de o catálogo ter nascido como resposta a uso indevido. Ant Design (\"When To Use\"), Carbon (\"When to use\"), Atlassian e VibeDS (`whenUse`) têm os dois lados, e por um motivo prático: quem chega ao contrato ainda não escolheu o componente, e uma lista de proibições não escolhe por ele. Cada item é UMA situação concreta do parque da UCAM, não uma categoria abstrata — \"a coluna SITUAÇÃO de uma tabela de requerimentos\", não \"exibir status\".",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evidencia": {
+      "type": "object",
+      "description": "Rastreabilidade: de qual tela do legado veio cada decisão. Ausente apenas em componentes sem precedente no parque atual.",
+      "additionalProperties": false,
+      "required": [
+        "origem",
+        "ocorrencias"
+      ],
+      "properties": {
+        "origem": {
+          "type": "string"
+        },
+        "ocorrencias": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tela",
+              "problema"
+            ],
+            "properties": {
+              "tela": {
+                "type": "string"
+              },
+              "problema": {
+                "type": "string"
+              },
+              "rotulo": {
+                "type": "string"
+              },
+              "campo": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "conclusao": {
+          "type": "string"
+        }
+      }
+    },
+    "anatomia": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "parte"
+        ],
+        "properties": {
+          "parte": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "obrigatorio": {
+            "type": "boolean"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "classe": {
+            "type": "string",
+            "pattern": "^ucam-[a-z0-9-]+(__[a-z0-9-]+)?$",
+            "description": "Classe do @ucam/css que realiza esta parte. Opcional: parte que só existe no Trilho B não tem classe."
+          }
+        }
+      }
+    },
+    "props": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "tipo"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9]*$"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "default": {
+            "type": "string"
+          },
+          "obrigatorio": {
+            "type": "boolean"
+          },
+          "descricao": {
+            "type": "string"
+          },
+          "valores": {
+            "type": "object",
+            "description": "Detalhe por valor de uma prop enumerada: uso, tokens aplicados e limite de uso.",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "uso": {
+                  "type": "string"
+                },
+                "limite": {
+                  "type": "string"
+                },
+                "tokens": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "quando": {
+                  "type": "string"
+                },
+                "como": {
+                  "type": "string"
+                },
+                "classe": {
+                  "type": "string",
+                  "description": "A classe do Trilho A que implementa este valor, quando ela foge da convenção .ucam-<id>--<valor>. O portão de vocabulário em tools/validate-spec.mjs lê este campo antes de cobrar a convenção — é como o contrato declara que o ponto do badge mora em .ucam-badge__ponto e não em .ucam-badge--dot."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "eventos": {
+      "type": "array",
+      "description": "Saídas do componente (Angular outputs). Sem esta seção, o contrato descreve só metade da API e as demos usam eventos que ninguém declarou.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "nome",
+          "payload",
+          "descricao"
+        ],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9]*$"
+          },
+          "payload": {
+            "type": "string",
+            "description": "Tipo emitido. void quando não há dado."
+          },
+          "descricao": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "estados": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "acessibilidade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requisitos",
+        "criterios_wcag"
+      ],
+      "properties": {
+        "papel": {
+          "type": "string"
+        },
+        "requisitos": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "criterios_wcag": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          },
+          "description": "Critérios WCAG 2.1 aplicáveis. Alimentam a matriz de conformidade do site de documentação."
+        },
+        "teclado": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tecla",
+              "comportamento"
+            ],
+            "properties": {
+              "tecla": {
+                "type": "string"
+              },
+              "comportamento": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "conteudo": {
+      "type": "object",
+      "description": "Diretrizes de texto. As chaves variam por componente (rotulo, erro, acoes, vazio...); o valor é sempre lista de regras ou objeto bom/ruim.",
+      "minProperties": 1,
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "bom": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ruim": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "migracao": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "de",
+        "mapa"
+      ],
+      "description": "Alimenta a ferramenta MCP ucam_migrate_from_legacy.",
+      "properties": {
+        "de": {
+          "type": "string"
+        },
+        "mapa": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "legado",
+              "novo"
+            ],
+            "properties": {
+              "legado": {
+                "type": "string"
+              },
+              "novo": {
+                "type": "string"
+              },
+              "nota": {
+                "type": "string",
+                "description": "Obrigatória quando a conversão não é 1:1."
+              }
+            }
+          }
+        }
+      }
+    },
+    "exemplos": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "titulo",
+          "codigo"
+        ],
+        "properties": {
+          "titulo": {
+            "type": "string"
+          },
+          "codigo": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "vs": {
+      "type": "array",
+      "minItems": 1,
+      "description": "EXTENSÃO. Desambiguação contra os componentes com que este é confundido na hora de escolher. Responde a pergunta que o catálogo hoje não responde — 'qual dos dois eu uso?' —, e responde nos DOIS lados: tools/validate-spec.mjs falha se A declarar B sem que B declare A. A simetria não é capricho: a dúvida é simétrica, e quem abre o contrato do Dialog primeiro precisa descobrir o Drawer ali, não no contrato do Drawer. Alimenta a ferramenta MCP de escolha de componente, que sem isto devolveria prosa.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "componente",
+          "diferenca"
+        ],
+        "properties": {
+          "componente": {
+            "type": "string",
+            "description": "id de um contrato existente."
+          },
+          "diferenca": {
+            "type": "string",
+            "description": "A regra que separa os dois, em uma frase, dita pelos dois lados de uma vez: 'skeleton é enquanto carrega; empty-state é quando não há o que carregar.'"
+          },
+          "escolha": {
+            "type": "string",
+            "description": "O critério prático de decisão, quando a diferença sozinha não basta para escolher."
+          }
+        }
+      }
+    },
+    "boas_praticas": {
+      "type": "array",
+      "minItems": 1,
+      "description": "EXTENSÃO. Pares faça/evite. O par é obrigatório de propósito: um 'faça' sem o 'evite' correspondente vira conselho vago, que ninguém consegue aplicar nem revisar. O 'porque' liga a regra à evidência do parque legado ou ao critério WCAG que a sustenta.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "faca",
+          "evite"
+        ],
+        "properties": {
+          "faca": {
+            "type": "string"
+          },
+          "evite": {
+            "type": "string"
+          },
+          "porque": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "limites": {
+      "type": "object",
+      "description": "EXTENSÃO. Quando NÃO usar o componente. Recomendada sempre que houver risco de uso indevido.",
+      "additionalProperties": true,
+      "properties": {
+        "$descricao": {
+          "type": "string"
+        },
+        "regra": {
+          "type": "string"
+        },
+        "regras": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "motivo": {
+          "type": "string"
+        },
+        "criterio": {
+          "type": "string"
+        },
+        "excecao": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "type": "object",
+      "description": "EXTENSÃO. Tipos aninhados que a lista plana de props não descreve (ex: ColumnDef).",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "tipo": {
+              "type": "string"
+            },
+            "default": {
+              "type": "string"
+            },
+            "obrigatorio": {
+              "type": "boolean"
+            },
+            "descricao": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "composicao": {
+      "type": "object",
+      "description": "EXTENSÃO. Grafo de dependência entre componentes. O linter usa isto para bloquear release de componente cujas dependências ainda são draft.",
+      "additionalProperties": false,
+      "properties": {
+        "$descricao": {
+          "type": "string"
+        },
+        "usa": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(ucam-[a-z][a-z0-9-]*|\\[ucam[A-Z][A-Za-z0-9]*\\])$"
+          },
+          "description": "Selectors dos componentes que este monta por dentro. Elemento (ucam-x) ou diretiva ([ucamX]), o mesmo alfabeto de `selector`."
+        },
+        "usada_por": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Selectors de quem monta este, mais os ids de padrao no formato padrao-<id>. E o lado espelhado de `usa` — validate-spec.mjs falha se um lado existir sem o outro."
+        }
+      }
+    },
+    "responsividade": {
+      "type": "object",
+      "description": "EXTENSÃO. Estratégia de adaptação a viewport.",
+      "additionalProperties": true
+    },
+    "foco": {
+      "type": "object",
+      "description": "EXTENSÃO. Gestão de foco em sobreposições.",
+      "additionalProperties": true
+    },
+    "rolagem": {
+      "type": "object",
+      "description": "EXTENSÃO. Regras de rolagem e travamento.",
+      "additionalProperties": true
+    },
+    "dependencia": {
+      "type": "object",
+      "description": "EXTENSÃO. Comportamento de campos encadeados.",
+      "additionalProperties": true
+    },
+    "obrigatoriedade": {
+      "type": "object",
+      "description": "EXTENSÃO. Política de marcação de campo obrigatório.",
+      "additionalProperties": true
+    },
+    "formatacao": {
+      "type": "object",
+      "description": "EXTENSÃO. Regras de formatação de valor (data, moeda, número).",
+      "additionalProperties": true
+    },
+    "implementacao": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Onde o contrato vira código, por trilho. Serve para o contrato dizer também o que NÃO entrega — comportamento, foco, atributo ARIA em dia — em vez de deixar a aplicação descobrir na tela.",
+      "properties": {
+        "trilho_a": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "contrato": {
+              "type": "string"
+            },
+            "raiz": {
+              "type": "string"
+            },
+            "estado": {
+              "type": "string"
+            },
+            "variaveis": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^--ucam-[a-z0-9-]+$"
+              }
+            },
+            "nota": {
+              "type": "string"
+            }
+          }
+        },
+        "trilho_b": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "deprecated"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "deprecatedBy"
+        ]
+      }
+    }
+  ]
+}

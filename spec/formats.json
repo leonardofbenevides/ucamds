@@ -1,0 +1,233 @@
+{
+  "$description": "Como um dado vira texto na tela. Data, hora, dinheiro, número, percentual, documento e identificador têm uma forma só em todo o parque — a de quem lê, em português do Brasil — e uma forma só no modelo, que quase nunca é a mesma. Esta fundação declara as duas e a fronteira entre elas.",
+  "_meta": {
+    "regra": "Formatar é decisão de DOMÍNIO, não de apresentação. O componente recebe o texto pronto: um componente que escolhe R$ impõe a moeda a quem exibe percentual, e um que escolhe duas casas impõe o arredondamento a quem exibe dias.",
+    "origem": "As regras existiam, mas espalhadas por seis contratos e por quatro arquivos da biblioteca — cada um decidindo seu Intl. O levantamento que juntou tudo achou o mesmo tipo de dado com duas aparências dentro do MESMO sistema: no SIGFIN, 'Data de alteração' aparece como campo com botão de calendário encostado na borda, e 'início / fim' das baixas parciais aparecem como caixas de texto secas, sem calendário e sem dica de formato.",
+    "divergencia": "O contrato do Prazo declara 'venceu ontem' entre os exemplos bons, e o wrapper Angular nunca emite essa frase: para um dia de atraso ele escreve 'venceu há 1 dia'. A forma declarada aqui é a do contrato; a implementação está atrás dela.",
+    "escopo": "O parque é pt-BR e só. Nada aqui prevê troca de idioma, e a fundação não finge prever: quando houver interface em outro idioma, isto vira tabela por locale — não uma camada de abstração escrita antes de existir o segundo caso."
+  },
+  "fronteira": {
+    "modelo": "ISO 8601 para data e hora (aaaa-mm-dd), número puro para valor, string sem máscara para documento. É o que trafega, o que se compara e o que se ordena.",
+    "tela": "pt-BR, com separador de milhar, vírgula decimal e máscara. É o que se lê e o que se digita.",
+    "regra": "A conversão acontece na borda, uma vez. Máscara é apresentação: o modelo nunca recebe dd/mm/aaaa, e o campo aceita a digitação sem separador — a máscara insere as barras."
+  },
+  "formatos": [
+    {
+      "id": "data-curta",
+      "nome": "Data curta",
+      "forma": "dd/mm/aaaa",
+      "exemplo": "03/09/2026",
+      "modelo": "2026-09-03",
+      "onde": "Coluna de tabela, campo de entrada, metadado de cabeçalho, data absoluta ao lado de um prazo.",
+      "regra": "Sempre com quatro dígitos no ano e zero à esquerda no dia e no mês, para que a coluna alinhe. É o formato PADRÃO: na dúvida, é este."
+    },
+    {
+      "id": "data-extensa",
+      "nome": "Data por extenso",
+      "forma": "d de mmmm de aaaa",
+      "exemplo": "3 de setembro de 2026",
+      "modelo": "2026-09-03",
+      "onde": "Tela de detalhe, documento gerado, confirmação que a pessoa vai ler uma vez.",
+      "regra": "Nunca em coluna de tabela: o comprimento varia com o mês e destrói a varredura vertical."
+    },
+    {
+      "id": "data-hora",
+      "nome": "Data e hora",
+      "forma": "dd/mm/aaaa às HH:mm",
+      "exemplo": "03/09/2026 às 14:37",
+      "modelo": "2026-09-03T14:37:00-03:00",
+      "onde": "Registro de acontecimento: linha do tempo, histórico do requerimento, log de lançamento.",
+      "regra": "Relógio de 24 horas, sempre. Segundos só quando a ordem de dois eventos no mesmo minuto importa."
+    },
+    {
+      "id": "mes-ano",
+      "nome": "Mês e ano",
+      "forma": "mm/aaaa",
+      "exemplo": "09/2026",
+      "modelo": "2026-09",
+      "onde": "Competência financeira, período de mensalidade, eixo de gráfico mensal.",
+      "regra": "É uma precisão declarada do campo de data, não uma data curta cortada."
+    },
+    {
+      "id": "intervalo",
+      "nome": "Intervalo de datas",
+      "forma": "dd/mm/aaaa a dd/mm/aaaa",
+      "exemplo": "01/09/2026 a 30/09/2026",
+      "modelo": "duas datas ISO",
+      "onde": "Filtro de período, recorte de relatório, legenda de gráfico.",
+      "regra": "A preposição é 'a', escrita por extenso. Travessão entre datas se confunde com sinal de menos ao lado de valores."
+    },
+    {
+      "id": "prazo-relativo",
+      "nome": "Prazo relativo",
+      "forma": "vence hoje · vence em N dias · venceu ontem · venceu há N dias",
+      "exemplo": "vence em 3 dias · 06/09/2026",
+      "modelo": "data ISO do limite",
+      "onde": "Marcador de prazo na fila de triagem e no detalhe do requerimento.",
+      "regra": "O verbo carrega o tempo antes da cor: 'venceu' já diz que passou, mesmo em preto e branco. Singular e plural certos, e unidade única dentro da mesma lista — ou tudo em dias, ou tudo em horas. A data absoluta acompanha quando a pessoa precisa anotá-la."
+    },
+    {
+      "id": "moeda",
+      "nome": "Moeda",
+      "forma": "R$ 0.000,00",
+      "exemplo": "R$ 12.890,45",
+      "modelo": "12890.45",
+      "onde": "Saldo, mensalidade, lançamento, ladrilho de indicador.",
+      "regra": "Duas casas decimais SEMPRE, inclusive no zero: R$ 0,00, nunca R$ 0. O símbolo fica junto do valor e o espaço entre eles é fino e fixo. Negativo leva o sinal antes do símbolo e uma palavra junto — cor não carrega o sinal sozinha."
+    },
+    {
+      "id": "numero",
+      "nome": "Número",
+      "forma": "0.000,00",
+      "exemplo": "1.284 · 3,5",
+      "modelo": "1284 · 3.5",
+      "onde": "Contagem, quantidade, valor de série em gráfico.",
+      "regra": "Contagem é inteira e não recebe casa decimal. Medida recebe a MESMA quantidade de casas em toda a coluna — casa decimal irregular destrói a varredura vertical, que é a única razão de alinhar à direita."
+    },
+    {
+      "id": "percentual",
+      "nome": "Percentual",
+      "forma": "0,0%",
+      "exemplo": "12,4%",
+      "modelo": "0.124 ou 12.4, declarado pelo domínio",
+      "onde": "Proporção em painel, variação entre períodos, ocupação de limite.",
+      "regra": "Uma casa decimal como padrão; zero casas quando o número vem de uma contagem pequena, onde a casa inventa precisão que o dado não tem. O símbolo cola no número."
+    },
+    {
+      "id": "cpf",
+      "nome": "CPF",
+      "forma": "000.000.000-00",
+      "exemplo": "123.456.789-09",
+      "modelo": "12345678909",
+      "onde": "Cadastro de pessoa, busca por documento, detalhe do requerente.",
+      "regra": "Máscara visível no campo e no dado exibido. O campo aceita digitação sem pontuação e insere a máscara; o modelo guarda só os dígitos."
+    },
+    {
+      "id": "cnpj",
+      "nome": "CNPJ",
+      "forma": "00.000.000/0000-00",
+      "exemplo": "33.041.260/0652-90",
+      "modelo": "33041260065290",
+      "onde": "Cadastro de fornecedor e convênio no SIGFIN.",
+      "regra": "Mesma regra do CPF."
+    },
+    {
+      "id": "cep",
+      "nome": "CEP",
+      "forma": "00000-000",
+      "exemplo": "28035-581",
+      "modelo": "28035581",
+      "onde": "Endereço em cadastro de pessoa.",
+      "regra": "Mesma regra do CPF."
+    },
+    {
+      "id": "telefone",
+      "nome": "Telefone",
+      "forma": "(00) 00000-0000",
+      "exemplo": "(22) 99876-5432",
+      "modelo": "22998765432",
+      "onde": "Contato em cadastro de pessoa.",
+      "regra": "A máscara acomoda oito e nove dígitos sem trocar de campo."
+    },
+    {
+      "id": "matricula",
+      "nome": "Matrícula",
+      "forma": "os dígitos como estão, sem separador",
+      "exemplo": "20261234567",
+      "modelo": "20261234567",
+      "onde": "Identificação do aluno em toda tela do parque.",
+      "regra": "Não recebe separador de milhar — é identificador, não quantidade. Pela mesma razão nunca alinha à direita nem recebe tabular-nums por ser 'número'."
+    },
+    {
+      "id": "protocolo",
+      "nome": "Número de protocolo",
+      "forma": "o identificador como o domínio o emite, sem reformatação",
+      "exemplo": "2026/0004821",
+      "modelo": "idêntico",
+      "onde": "Fila de triagem, detalhe do requerimento, confirmação de envio.",
+      "regra": "É o número que a pessoa anota e usa para cobrar. Não se abrevia, não se trunca na coluna e não muda de forma entre módulos."
+    },
+    {
+      "id": "tamanho-de-arquivo",
+      "nome": "Tamanho de arquivo",
+      "forma": "0,0 MB",
+      "exemplo": "2,4 MB",
+      "modelo": "2516582 (bytes)",
+      "onde": "Anexo em requerimento, arquivo de remessa no SIGFIN.",
+      "regra": "Unidade que dê um número entre 1 e 999, com uma casa decimal. Bytes crus não dizem nada a quem está anexando um comprovante."
+    }
+  ],
+  "regras_gerais": [
+    {
+      "id": "tabular",
+      "regra": "Todo número que aparece numa coluna, ou empilhado com outro número, usa tabular-nums.",
+      "porque": "Sem largura fixa de dígito, o 1 é mais estreito que o 8 e a coluna deixa de conferir à vista. Não é requisito WCAG — é a legibilidade que justifica alinhar à direita."
+    },
+    {
+      "id": "alinhamento",
+      "regra": "Número e moeda alinham ao FIM da célula; data e texto alinham ao INÍCIO.",
+      "porque": "Número se compara pela ordem de grandeza, que fica à direita. Data em pt-BR começa pelo dia, e é por ele que se procura."
+    },
+    {
+      "id": "casas-por-coluna",
+      "regra": "A quantidade de casas decimais é da COLUNA, não do valor.",
+      "porque": "O formatador de eixo de gráfico faz o contrário de propósito — corta o zero à direita para o rótulo não crescer — e é justamente por isso que a regra de coluna precisa estar escrita em algum lugar."
+    },
+    {
+      "id": "zero-nao-e-vazio",
+      "regra": "Zero é um valor e se escreve por extenso na forma da unidade: R$ 0,00, 0 requerimentos. Ausência de valor se escreve em palavras: Sem responsável, Não se aplica.",
+      "porque": "Célula em branco é lida como falha de carregamento. E zero costuma ser a resposta que a tela existe para dar — um caixa com saldo zero foi conferido, não é um caixa sem dado."
+    },
+    {
+      "id": "formato-visivel",
+      "regra": "Todo campo que espera um formato DIZ o formato, em texto de apoio persistente ligado por aria-describedby. Nunca no placeholder.",
+      "porque": "Nenhum campo de data do parque diz o formato que espera. O placeholder some ao primeiro caractere, que é exatamente quando a dica passaria a ser útil."
+    },
+    {
+      "id": "largura-pelo-dado",
+      "regra": "A largura do campo sai do tamanho esperado do dado — CPF, CEP e data são campos curtos, nome é campo longo.",
+      "porque": "As larguras arbitrárias do legado ensinam o formato errado: um CPF em campo menor que o do Nome, sem relação com o conteúdo, sugere que cabe menos do que cabe."
+    },
+    {
+      "id": "erro-diz-o-esperado",
+      "regra": "Mensagem de erro de formato repete o formato esperado.",
+      "porque": "'Campo inválido' devolve a pessoa ao mesmo ponto. 'Data inválida. Use dd/mm/aaaa.' resolve na primeira leitura."
+    },
+    {
+      "id": "sem-reformatar-identificador",
+      "regra": "Identificador não é quantidade: matrícula, protocolo e código não recebem separador de milhar nem arredondamento.",
+      "porque": "É a confusão que transforma a matrícula 20261234567 em 20.261.234.567 na primeira vez que alguém aplica o formatador de número à coluna errada."
+    }
+  ],
+  "onde_formata": {
+    "regra": "A aplicação formata. O componente recebe pronto.",
+    "excecoes": [
+      {
+        "componente": "prazo",
+        "o_que_faz": "Calcula a frase relativa a partir da data ISO do limite, porque a frase depende de HOJE e mudaria a cada leitura se viesse pronta.",
+        "limite": "É a única transformação que sobra dentro de um componente por depender do relógio."
+      },
+      {
+        "componente": "chart",
+        "o_que_faz": "Formata os rótulos de eixo, a dica e a tabela equivalente com o mesmo formatador, para que os três digam o mesmo número.",
+        "limite": "Formata rótulo de eixo, não o dado: a série chega com números puros."
+      },
+      {
+        "componente": "date-field",
+        "o_que_faz": "Aplica a máscara na digitação e devolve ISO ao modelo.",
+        "limite": "A máscara é apresentação; o modelo nunca recebe dd/mm/aaaa."
+      }
+    ]
+  },
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e APPSUCAM/SIGFIN",
+    "ocorrencias": [
+      { "tela": "SIGFIN — Arquivo remessa diário", "campo": "Data de alteração", "problema": "campo de texto com botão de calendário encostado na borda direita, montado à mão" },
+      { "tela": "SIGFIN — Baixas parciais", "campo": "início / fim", "problema": "os mesmos dois campos de data como caixas de texto secas, sem calendário e sem dica de formato: o mesmo tipo de dado com duas aparências no mesmo sistema" },
+      { "tela": "Protocolo — Novo Requerimento", "campo": "Nascido em", "problema": "sem indicação de formato, sem máscara e sem seletor" },
+      { "tela": "Protocolo — Novo Requerimento", "campo": "CPF", "problema": "sem máscara visível, sem dica de formato, largura arbitrária menor que a do Nome" },
+      { "tela": "SIGFIN — Movimento de Caixa", "campo": "Saldo do dia", "problema": "valor monetário com o mesmo corpo e peso do número de lançamentos ao lado, sem tabular-nums" }
+    ],
+    "conclusao": "Nenhuma das cinco ocorrências é falha de componente: são cinco decisões de formato tomadas tela a tela, por falta de um lugar onde a decisão estivesse escrita."
+  }
+}

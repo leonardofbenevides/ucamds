@@ -1,0 +1,296 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "pagination",
+  "name": "Pagination",
+  "selector": "ucam-pagination",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "navegacao",
+  "description": "Navegação entre páginas de um conjunto de resultados. Padrão único para todo o sistema, substituindo as duas paginações incompatíveis que hoje convivem no Protocolo.",
+  "quando_usar": [
+    "Uma listagem devolve mais resultados do que cabe numa tela.",
+    "A pessoa precisa saber em que página está, quantas existem e poder pular para uma delas.",
+    "O tamanho da página é escolha de quem consulta, não do sistema."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 9 (Natureza), image 10 (Pesquisa), image 11 (Setor)",
+        "rotulo": "|< << >> >|",
+        "problema": "BLOQUEANTE: quatro botões apenas com glifo, sem nome acessível. O leitor de tela anuncia botões anônimos e a navegação fica inutilizável"
+      },
+      {
+        "tela": "image 12 (Setor, listagem)",
+        "rotulo": "1 2 3 4 5 6",
+        "problema": "segunda paginação, numerada, com aparência e comportamento diferentes — no mesmo sistema, para a mesma tarefa"
+      },
+      {
+        "tela": "image 9, 11",
+        "problema": "a paginação aparece mesmo com a tabela vazia, oferecendo navegação para lugar nenhum"
+      },
+      {
+        "tela": "todas",
+        "problema": "não informa em que página se está nem quantas existem; os glifos não têm estado desabilitado perceptível na primeira e na última página"
+      },
+      {
+        "tela": "image 12",
+        "problema": "não há escolha de itens por página nem indicação do intervalo exibido"
+      }
+    ],
+    "conclusao": "As duas paginações convergem para este contrato. O ganho maior não é visual: é tornar navegável por teclado e leitor de tela algo que hoje simplesmente não é."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento nav com aria-label. Não é uma lista de links soltos.",
+      "classe": "ucam-pagination"
+    },
+    {
+      "parte": "intervalo",
+      "obrigatorio": true,
+      "descricao": "Texto do tipo 11–20 de 340. Substitui o TOTAL DE REQUERIMENTOS solto. É também a região que ANUNCIA (role=\"status\") e que recebe o foco quando a página troca — daí o tabindex=\"-1\". Com filtro de pé ela diz as duas contas: 11–20 de 12 requerimentos filtrados (340 no total).",
+      "classe": "ucam-pagination__range"
+    },
+    {
+      "parte": "primeira",
+      "obrigatorio": false,
+      "descricao": "Só aparece acima de 5 páginas. Mesma forma rotulada das outras pontas. Na marcação ela leva as DUAS classes: .ucam-pagination__page dá a caixa do botão, o alvo de 44px sob ponteiro grosso e o aria-disabled; .ucam-pagination__salto acrescenta o vão entre o ícone e a palavra."
+    },
+    {
+      "parte": "anterior",
+      "obrigatorio": true,
+      "classe": "ucam-pagination__salto",
+      "descricao": "A ponta de voltar, ROTULADA: a palavra escrita com o ícone ao lado, nunca um chevron sozinho. Chevron pelado num rodapé de tabela divide o mesmo desenho com ordenar, expandir e abrir — quatro significados para a mesma seta, e aria-label não conserta para quem enxerga. Na marcação ela leva as DUAS classes: .ucam-pagination__page dá a caixa do botão, o alvo de 44px sob ponteiro grosso e o aria-disabled; .ucam-pagination__salto acrescenta o vão entre o ícone e a palavra."
+    },
+    {
+      "parte": "paginas",
+      "obrigatorio": true,
+      "descricao": "Os números, com elipse quando o total excede a janela. As duas pontas não entram aqui: elas têm parte própria."
+    },
+    {
+      "parte": "pagina",
+      "obrigatorio": true,
+      "descricao": "Um botão de número. A página atual sai de aria-current=\"page\", não de classe — quem esquecer o atributo perde o realce.",
+      "classe": "ucam-pagination__page"
+    },
+    {
+      "parte": "elipse",
+      "obrigatorio": false,
+      "descricao": "O buraco entre a janela de páginas e a última. É <span aria-hidden=\"true\">…</span> — decorativo, sem alvo e sem extensor, porque não há o que tocar. Tinta dos números, largura de um deles: sem classe própria ela herdava a tinta primária e virava o glifo mais escuro da fileira. Nunca leva a classe das pontas.",
+      "classe": "ucam-pagination__elipse"
+    },
+    {
+      "parte": "proxima",
+      "obrigatorio": true,
+      "classe": "ucam-pagination__salto",
+      "descricao": "A ponta de avançar, ROTULADA: a palavra escrita com o ícone ao lado, nunca um chevron sozinho. Chevron pelado num rodapé de tabela divide o mesmo desenho com ordenar, expandir e abrir — quatro significados para a mesma seta, e aria-label não conserta para quem enxerga. Na marcação ela leva as DUAS classes: .ucam-pagination__page dá a caixa do botão, o alvo de 44px sob ponteiro grosso e o aria-disabled; .ucam-pagination__salto acrescenta o vão entre o ícone e a palavra."
+    },
+    {
+      "parte": "ultima",
+      "obrigatorio": false,
+      "descricao": "Só aparece acima de 5 páginas. Mesma forma rotulada das outras pontas. Na marcação ela leva as DUAS classes: .ucam-pagination__page dá a caixa do botão, o alvo de 44px sob ponteiro grosso e o aria-disabled; .ucam-pagination__salto acrescenta o vão entre o ícone e a palavra."
+    },
+    {
+      "parte": "itens-por-pagina",
+      "obrigatorio": false,
+      "descricao": "Select com 10, 25, 50, 100."
+    }
+  ],
+  "props": [
+    {
+      "nome": "page",
+      "tipo": "number",
+      "obrigatorio": true,
+      "descricao": "Página atual, base 1."
+    },
+    {
+      "nome": "pageSize",
+      "tipo": "number",
+      "default": "25"
+    },
+    {
+      "nome": "total",
+      "tipo": "number",
+      "obrigatorio": true,
+      "descricao": "Total de itens, não de páginas."
+    },
+    {
+      "nome": "itemLabel",
+      "tipo": "string",
+      "default": "'itens'",
+      "descricao": "Substantivo no plural usado no intervalo e nos nomes acessíveis: requerimentos, setores."
+    },
+    {
+      "nome": "showPageSize",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "windowSize",
+      "tipo": "number",
+      "default": "5",
+      "descricao": "Quantos números aparecem antes de elidir."
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Durante carregamento, para impedir disparo duplo."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "current",
+    "primeira-pagina",
+    "ultima-pagina",
+    "pagina-unica",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Com uma única página, o componente não renderiza controles — apenas o intervalo. Botões que não levam a lugar nenhum são ruído.",
+      "Com zero resultados, não renderiza nada: quem trata o vazio é o EmptyState.",
+      "Acima de ~10 mil itens, paginação numerada perde sentido; use carregamento incremental com filtro.",
+      "Paginar o que não existe é a versão silenciosa do mesmo defeito: em 21/09/2026 duas telas prometiam 312 registros em 32 páginas com dez linhas no fixture, e os dez botões não agiam. Ou os dados existem, ou o número diz o tamanho do que existe."
+    ],
+    "motivo": "No Protocolo a paginação aparece sob tabelas vazias, o que é navegação para lugar nenhum."
+  },
+  "acessibilidade": {
+    "papel": "navigation",
+    "requisitos": [
+      "nav com aria-label descritivo: Paginação de requerimentos. Distingue de outras navegações da página.",
+      "BLOQUEANTE do legado: cada controle tem nome acessível explícito — Primeira página, Página anterior, Próxima página, Última página. O glifo é aria-hidden.",
+      "Números de página têm nome do tipo Página 3 de 14, não apenas o dígito.",
+      "A página atual é marcada com aria-current=page, além da distinção visual.",
+      "Primeira e última páginas desabilitam os controles correspondentes com aria-disabled, mantendo-os focáveis para não sumirem da ordem de tabulação.",
+      "Mudança de página anuncia o novo intervalo por aria-live polite e move o foco para o resumo de resultados, não para o topo da página.",
+      "Alvo de clique mínimo 24x24px, com espaçamento suficiente entre números adjacentes (WCAG 2.5.8).",
+      "A elipse entre números é decorativa e não focável."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.4.4",
+      "2.4.7",
+      "2.4.8",
+      "2.5.8",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "intervalo": [
+      "Formato: 11–20 de 340 requerimentos.",
+      "Quando filtrado: 11–20 de 12 requerimentos filtrados (340 no total).",
+      "Nunca TOTAL DE REQUERIMENTOS: 340 em caixa alta."
+    ],
+    "exemplos": {
+      "bom": [
+        "Primeira página",
+        "Página anterior",
+        "Página 3 de 14",
+        "11–20 de 340 requerimentos"
+      ],
+      "ruim": [
+        "|<",
+        "<<",
+        "Anterior",
+        "Página 3"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon-button",
+      "ucam-select"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-listagem-crud",
+      "ucam-data-table"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / paginação customizada",
+    "mapa": [
+      {
+        "legado": "paginação por glifos |< << >> >|",
+        "novo": "ucam-pagination",
+        "nota": "Ganha nome acessível em cada controle. É a correção de acessibilidade mais urgente do parque."
+      },
+      {
+        "legado": "paginação numerada 1..6",
+        "novo": "ucam-pagination",
+        "nota": "Mesmo componente; a numeração vira a apresentação padrão."
+      },
+      {
+        "legado": "TOTAL DE REQUERIMENTOS: n",
+        "novo": "parte intervalo",
+        "nota": "Passa a informar o intervalo exibido, não só o total."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Uso direto",
+      "codigo": "<ucam-pagination [page]=\"pagina()\" [total]=\"total()\" [pageSize]=\"25\" itemLabel=\"requerimentos\" (pageChange)=\"carregar($event)\" />"
+    },
+    {
+      "titulo": "Com escolha de itens por página",
+      "codigo": "<ucam-pagination [page]=\"pagina()\" [total]=\"total()\" itemLabel=\"setores\" showPageSize />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Dar nome acessível a cada controle: Primeira página, Página anterior.",
+      "evite": "Botões só com glifo |< << >> >|.",
+      "porque": "É a falha bloqueante do Protocolo: o leitor de tela anuncia quatro botões anônimos e a navegação fica inutilizável."
+    },
+    {
+      "faca": "Informar o intervalo e o total: 11–20 de 340 requerimentos.",
+      "evite": "Só as setas, sem dizer em que página se está nem quantas existem.",
+      "porque": "Sem posição, os controles não dizem se ainda vale a pena avançar."
+    },
+    {
+      "faca": "Não renderizar controle nenhum com zero resultados — o vazio é do EmptyState.",
+      "evite": "Paginação sob tabela vazia.",
+      "porque": "É navegação para lugar nenhum, e hoje acontece em todas as listagens."
+    },
+    {
+      "faca": "Usar este componente em todo o sistema.",
+      "evite": "Uma paginação por tela.",
+      "porque": "O Protocolo tem duas paginações incompatíveis, com aparência e comportamento diferentes, para a mesma tarefa."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "tabs",
+      "diferenca": "Tabs troca de SEÇÃO dentro da mesma tela; pagination troca de PÁGINA do mesmo conjunto de dados.",
+      "escolha": "Se mostram mais do mesmo — os próximos 20 requerimentos —, é pagination. Numerar abas é o erro que faz a pessoa procurar o requerimento na aba errada."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "pageChange",
+      "payload": "number",
+      "descricao": "Nova página, base 1. O componente não busca dados — quem consome decide o que fazer."
+    },
+    {
+      "nome": "pageSizeChange",
+      "payload": "number",
+      "descricao": "Novo tamanho de página. Emitido só quando showPageSize está ligado; volta para a página 1."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "A fileira de páginas, com a atual marcada por aria-current.",
+      "raiz": ".ucam-pagination",
+      "nota": "O destaque da página atual sai de aria-current=\"page\", não de uma classe. Quem esquecer o atributo perde o realce — é o mesmo acoplamento deliberado que a navegação do shell usa. As pontas usam .ucam-pagination__page e .ucam-pagination__salto juntas (palavra + ícone); os números, só .ucam-pagination__page. Em 20/09/2026 duas telas faziam o contrário — chevron pelado nas pontas e __salto gasto na elipse — e foram corrigidas no mesmo passo. A tela LIGA o comportamento declarando data-paginacao=\"<tamanho da página>\" na nav, e o script (filtroScript) faz o resto: esconde as linhas de fora da página, reescreve o intervalo, refaz a fileira de números com a elipse quando passa de cinco páginas, marca as pontas com aria-disabled e leva o foco para o intervalo. Sem o atributo nada é ligado — paginação é contrato da TELA, e a nav de uma tabela que cabe inteira numa página traz só o intervalo. O substantivo e o total saem do texto que a tela escreveu (a nav os guarda em data-paginacao-nome e data-paginacao-total); o particípio da forma filtrada é declarado em data-paginacao-participio quando o substantivo é feminino, pela mesma razão do data-lote-singular da barra de lote. Filtrar ou reordenar devolve a fila para a primeira página, e a cabeça de seleção e a barra de lote passam a falar só da página visível."
+    }
+  }
+}

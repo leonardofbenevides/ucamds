@@ -1,0 +1,253 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "checkbox",
+  "name": "Checkbox",
+  "selector": "ucam-checkbox",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Caixa de seleção para escolhas independentes e para seleção de linhas em tabela. Suporta o estado indeterminado, exigido pelo cabeçalho de seleção da DataTable.",
+  "quando_usar": [
+    "Escolhas independentes num formulário, em que marcar uma não desmarca as outras.",
+    "Seleção de linhas de uma DataTable, incluindo o cabeçalho com estado indeterminado.",
+    "Aceite de termo ou declaração, que só vale quando o formulário for enviado."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 6, 7 (Análise de Requerimento)",
+        "rotulo": "Mostrar requerimentos de nível abaixo do meu — NÃO",
+        "problema": "escolha booleana implementada como botão alternando SIM/NÃO; o usuário não sabe se NÃO é o estado atual ou a ação de mudar para não"
+      },
+      {
+        "tela": "todas as listagens",
+        "problema": "nenhuma tabela oferece seleção de linhas, o que inviabiliza qualquer ação em massa"
+      }
+    ],
+    "conclusao": "O botão SIM/NÃO é ambíguo por construção. Vira Switch quando o efeito é imediato, ou Checkbox quando faz parte de um formulário submetido."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento input type=checkbox nativo, visualmente substituído mas nunca removido do DOM."
+    },
+    {
+      "parte": "indicador",
+      "obrigatorio": true,
+      "descricao": "Caixa desenhada. Recebe marca de verificação ou traço no estado indeterminado."
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Texto clicável associado. Só pode ser omitido em seleção de linha, onde vira sr-only."
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": false,
+      "descricao": "Explicação abaixo do rótulo."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Obrigatório sempre. Em seleção de linha, é aplicado como texto acessível oculto."
+    },
+    {
+      "nome": "labelHidden",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Oculta visualmente mantendo o nome acessível. Uso típico: coluna de seleção em tabela."
+    },
+    {
+      "nome": "checked",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "indeterminate",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Parte das linhas selecionadas. Estado visual e de acessibilidade próprio — não é um terceiro valor do modelo."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "errorMessage",
+      "tipo": "string | null",
+      "default": "null"
+    }
+  ],
+  "estados": [
+    "unchecked",
+    "checked",
+    "indeterminate",
+    "hover",
+    "focus-visible",
+    "disabled",
+    "invalid"
+  ],
+  "limites": {
+    "regras": [
+      "Efeito imediato e reversível, sem submissão: use Switch. Ex: Mostrar requerimentos de nível abaixo do meu.",
+      "Escolha entre opções mutuamente exclusivas: use RadioGroup.",
+      "Uma única escolha obrigatória do tipo aceito os termos: Checkbox é correto.",
+      "Nunca usar par de botões SIM/NÃO para booleano — foi o que produziu a ambiguidade do legado."
+    ],
+    "criterio": "Se a mudança tem efeito imediato, é Switch. Se entra num formulário submetido, é Checkbox."
+  },
+  "acessibilidade": {
+    "papel": "checkbox (nativo)",
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Recebe foco."
+      },
+      {
+        "tecla": "Space",
+        "comportamento": "Alterna o estado."
+      }
+    ],
+    "requisitos": [
+      "input type=checkbox nativo. A caixa desenhada é decoração sobre o controle real, nunca substituição dele.",
+      "O estado indeterminado é definido pela propriedade indeterminate do elemento, que produz aria-checked=mixed automaticamente. Não simular com atributo manual.",
+      "Rótulo sempre associado; labelHidden usa técnica sr-only, jamais display:none, que remove do leitor de tela.",
+      "Área clicável cobre indicador e rótulo, com alvo mínimo de 24x24px (WCAG 2.5.8).",
+      "Anel de foco visível no indicador, com contraste mínimo 3:1 (WCAG 1.4.11).",
+      "Contraste da borda do indicador não marcado mínimo 3:1 contra o fundo — caixa sem preenchimento é o caso mais comum de falha.",
+      "Em seleção de linha, o rótulo oculto identifica a linha: Selecionar requerimento 2024-0031. Não apenas Selecionar.",
+      "O checkbox de cabeçalho tem nome próprio: Selecionar todas as linhas desta página — o escopo precisa ser explícito."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.7",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Frase afirmativa. Nunca negativa: Receber notificações, não Não receber notificações — dupla negação ao desmarcar.",
+      "O rótulo descreve o que acontece quando marcado.",
+      "Em seleção de linha, o nome acessível identifica o registro, não a coluna."
+    ],
+    "exemplos": {
+      "bom": [
+        "Receber notificações por e-mail",
+        "Selecionar requerimento 2024-0031",
+        "Selecionar todas as linhas desta página"
+      ],
+      "ruim": [
+        "Não desativar alertas",
+        "Selecionar",
+        "SIM",
+        "Marque aqui"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-choice-card",
+      "ucam-data-table"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / Angular Material (md-checkbox) e botões SIM/NÃO",
+    "mapa": [
+      {
+        "legado": "botão alternando SIM/NÃO",
+        "novo": "ucam-switch",
+        "nota": "Não migra para Checkbox: o efeito é imediato sobre a lista. Ver limites."
+      },
+      {
+        "legado": "md-checkbox",
+        "novo": "ucam-checkbox"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Em formulário",
+      "codigo": "<ucam-checkbox label=\"Receber notificações por e-mail\" [(ngModel)]=\"notificar\" />"
+    },
+    {
+      "titulo": "Seleção de linha",
+      "codigo": "<ucam-checkbox [label]=\"'Selecionar requerimento ' + linha.numero\" labelHidden [checked]=\"selecionada(linha)\" />"
+    },
+    {
+      "titulo": "Cabeçalho de seleção",
+      "codigo": "<ucam-checkbox label=\"Selecionar todas as linhas desta página\" labelHidden [checked]=\"todasSelecionadas()\" [indeterminate]=\"algumasSelecionadas()\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Rótulo em frase afirmativa: Receber notificações por e-mail.",
+      "evite": "Rótulo negativo ('Não desativar alertas').",
+      "porque": "Desmarcar um rótulo negativo vira dupla negação — ninguém resolve isso de cabeça."
+    },
+    {
+      "faca": "Usar Switch quando o efeito é imediato e não passa por submissão.",
+      "evite": "Checkbox para alternar algo que já valeu no clique.",
+      "porque": "O critério é único: entra em formulário submetido, é Checkbox; vale ao soltar o dedo, é Switch."
+    },
+    {
+      "faca": "Nomear o registro no rótulo acessível da seleção de linha: Selecionar requerimento 2024-0031.",
+      "evite": "Rótulo 'Selecionar' repetido em todas as linhas.",
+      "porque": "Sem o registro no nome, a seleção por leitor de tela é impossível — e hoje nenhuma tabela do parque oferece seleção."
+    },
+    {
+      "faca": "Usar o estado indeterminado no cabeçalho quando parte das linhas está selecionada.",
+      "evite": "Cabeçalho que mostra marcado ou desmarcado com seleção parcial.",
+      "porque": "Marcado com seleção parcial mente sobre quantas linhas a ação em massa vai atingir."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "choice-card",
+      "diferenca": "Checkbox marca opções independentes, e nenhuma exclui a outra; choice-card escolhe UMA entre alternativas excludentes.",
+      "escolha": "Se marcar duas ao mesmo tempo faz sentido, é checkbox."
+    },
+    {
+      "componente": "radio-group",
+      "diferenca": "checkbox marca cada item por si e admite nenhum ou vários; radio-group escolhe UMA alternativa entre as da mesma pergunta."
+    },
+    {
+      "componente": "switch",
+      "diferenca": "Switch tem efeito IMEDIATO e não espera submissão; Checkbox é um valor que só vale quando o formulário for enviado. A pergunta não é a forma do controle, é quando a mudança acontece.",
+      "escolha": "Aceitar o termo, marcar as linhas da tabela, escolher opções independentes de um formulário."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "checkedChange",
+      "payload": "boolean",
+      "descricao": "Novo estado. indeterminate nunca é emitido: é estado visual, não um terceiro valor."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<label class=\"ucam-check\"> envolvendo o <input type=\"checkbox\">. O rótulo é o alvo, não só o quadrado.",
+      "raiz": ".ucam-check",
+      "nota": "O <label> é obrigatório mesmo quando não há texto: é dele que sai a área de toque de 24px que a WCAG 2.5.8 exige, e a seleção de linha de tabela — que nomeia o controle por aria-label — depende só disso."
+    }
+  }
+}

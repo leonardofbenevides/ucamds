@@ -1,0 +1,400 @@
+{
+  "$description": "Blocos de layout: o vocabulário de ARRANJO do design system. Um componente resolve um controle; um bloco resolve onde as coisas ficam. Existem porque a alternativa está escrita nos templates antigos deste próprio repositório — flex, gap e max-inline-size decididos por tela, em style inline, com um valor diferente a cada vez. Quatro camadas, do maior para o menor: o shell (a moldura da aplicação), as regiões dentro dele, os blocos de composição e os templates de tela em spec/templates.json.",
+  "_meta": {
+    "regra": "Bloco de layout NÃO carrega cor de conteúdo, borda decorativa nem tipografia de corpo. Ele posiciona. No instante em que um bloco precisa pintar algo para funcionar, ou virou componente ou está resolvendo o problema errado.",
+    "prefixo": "Toda variável de ajuste leva o prefixo --ucam- para não colidir com o CSS da aplicação hospedeira, mesmo não sendo token do design system. O portão da ADR-007 em tools/build-css.mjs distingue as duas coisas: token é lido, variável de bloco é declarada pela própria folha.",
+    "taxonomia": "Confirmada contra o catálogo Storybook do CENPRE (cenpre-ui-angular-scss-storybook.vercel.app), que separa Fundações · Componentes · Layout · Páginas. A camada Layout entre componente e página não é invenção deste projeto — é como a própria UCAM já organizou um catálogo."
+  },
+  "shell": {
+    "id": "shell",
+    "nome": "Shell da aplicação",
+    "classe": "ucam-shell",
+    "componente": "app-shell",
+    "papel": "A moldura de toda aplicação da UCAM: skip-link, faixa de marca, navegação, conteúdo e rodapé numa grade só.",
+    "grade": "A faixa atravessa o topo, a navegação e o conteúdo dividem a linha do meio, o rodapé atravessa a base. Abaixo de 64rem a navegação sai da grade e vira painel sobreposto — e só abaixo de 64rem.",
+    "evidencia": "Toda tela do sistema repete a mesma moldura: skip-link, cabeçalho, navegação, main e contêiner. Sem um bloco único que a resolva, cada tela remonta a moldura à mão e reintroduz os defeitos que app-shell.json condena — drawer sobreposto em desktop, conteúdo espremido, campus sem contraste.",
+    "areas": [
+      {
+        "area": "skip-link",
+        "classe": "ucam-skip",
+        "obrigatorio": true,
+        "descricao": "Primeiro elemento focável do documento. Sai da tela por deslocamento, nunca por display:none nem visibility:hidden — os dois tiram o elemento da ordem de foco, e o atalho deixa de existir para quem precisa dele.",
+        "wcag": "2.4.1"
+      },
+      {
+        "area": "appbar",
+        "classe": "ucam-appbar",
+        "obrigatorio": true,
+        "descricao": "Elemento banner. Gruda no topo (position: sticky): em listagem longa a marca, o campus e o sair some ao rolar, e o campus é o que diz QUAIS dados estão na tela.",
+        "partes": [
+          {
+            "classe": "ucam-appbar__menu",
+            "descricao": "Abre a navegação sobreposta. Exige nome acessível e aria-expanded. Sai da faixa a partir de 64rem, onde não há o que abrir."
+          },
+          {
+            "classe": "ucam-appbar__brand",
+            "descricao": "Logo mais nome do sistema, ligando à raiz. Não repete a universidade: o logo já diz."
+          },
+          {
+            "classe": "ucam-appbar__system",
+            "descricao": "O nome do sistema — Protocolo, SigFin, Portal."
+          },
+          {
+            "classe": "ucam-appbar__divider",
+            "descricao": "Filete entre grupos da faixa. 3,24:1 sobre a faixa — o piso da WCAG 1.4.11 para limite não textual."
+          },
+          {
+            "classe": "ucam-appbar__spacer",
+            "descricao": "Empurra o que vem depois para o fim da faixa."
+          },
+          {
+            "classe": "ucam-appbar__search",
+            "descricao": "Busca global, centrada na faixa e com teto de largura próprio: campo que se estica até a borda lê como barra de endereço, não como busca. Sai da faixa abaixo de 64rem, onde o botão de menu e o campus já disputam a linha."
+          },
+          {
+            "classe": "ucam-kbd",
+            "descricao": "Tecla de atalho desenhada como tecla, dentro do campo de busca. Anuncia o atalho sem tooltip e sem prosa; é aria-hidden, porque para quem ouve o atalho vive em aria-keyshortcuts do campo, não numa sigla solta."
+          },
+          {
+            "classe": "ucam-campus",
+            "descricao": "Campus ou unidade ativa, como select: o mesmo gatilho e a mesma lista de todo formulário (ADR-033)."
+          },
+          {
+            "classe": "ucam-appbar__user",
+            "descricao": "Avatar mais nome. O nome some antes do avatar em tela estreita — o avatar identifica, o nome confirma."
+          }
+        ]
+      },
+      {
+        "area": "nav",
+        "classe": "ucam-nav",
+        "obrigatorio": false,
+        "descricao": "Navegação primária. Abaixo de 64rem é painel sobreposto, com escurecimento, retenção de foco e fechamento por Esc; a partir de 64rem é coluna da grade, persistente, sem escurecimento e sem retenção de foco.",
+        "partes": [
+          {
+            "classe": "ucam-nav__search",
+            "descricao": "Busca no menu. Obrigatória acima de 20 itens. Fica FORA da área de rolagem: buscar num menu longo exige o campo sempre à mão."
+          },
+          {
+            "classe": "ucam-nav__scroll",
+            "descricao": "A parte que rola. Rola por DENTRO da navegação — um menu de 19 grupos não pode obrigar a rolar a página inteira para chegar ao fim dele."
+          },
+          {
+            "classe": "ucam-nav__group",
+            "descricao": "Agrupamento de itens."
+          },
+          {
+            "classe": "ucam-nav__group-title",
+            "descricao": "Rótulo do grupo. Caixa alta SÓ aqui — no SIGFIN os mais de cem ITENS estão em caixa alta, o que apaga a distinção entre título e destino navegável."
+          },
+          {
+            "classe": "ucam-nav__item",
+            "descricao": "Destino. O estado ativo é selecionado por aria-current=page, não por classe: quem não marcar o atributo não ganha o destaque, e a falha aparece no olho em vez de só no leitor de tela."
+          },
+          {
+            "classe": "ucam-nav__count",
+            "descricao": "Contador à direita do item — pendências, por exemplo."
+          },
+          {
+            "classe": "ucam-nav__footer",
+            "descricao": "Rodapé fixo da navegação: sair, ajuda, versão."
+          }
+        ]
+      },
+      {
+        "area": "scrim",
+        "classe": "ucam-nav-scrim",
+        "obrigatorio": false,
+        "descricao": "Escurecimento sob a navegação sobreposta. Existe SÓ no modo sobreposto — em desktop, escurecer a tela para mostrar a navegação é aplicar padrão de modal à navegação primária, que é o defeito do Protocolo em 2518px."
+      },
+      {
+        "area": "main",
+        "classe": "ucam-main",
+        "obrigatorio": true,
+        "descricao": "Alvo do skip-link. Exige id fixo e tabindex=\"-1\": sem o tabindex o foco não pousa no destino e o atalho move só a rolagem, deixando o teclado onde estava — a falha mais comum de skip-link implementado pela metade."
+      },
+      {
+        "area": "footer",
+        "classe": "ucam-shell__footer",
+        "obrigatorio": false,
+        "descricao": "Rodapé da aplicação. E, quando existe, não carrega faixa amarela recomendando navegador: em 2026 isso é ruído, não informação."
+      }
+    ],
+    "variantes": [
+      {
+        "classe": "ucam-shell--sem-nav",
+        "quando": "Login, tela de erro, impressão. O shell continua valendo: skip-link, faixa, main e rodapé."
+      }
+    ],
+    "estado": {
+      "atributo": "data-nav",
+      "valores": [
+        "open",
+        "closed"
+      ],
+      "descricao": "Alternado pela aplicação. Só tem efeito no modo sobreposto; a partir de 64rem a navegação é coluna da grade e ignora o atributo."
+    },
+    "variaveis": [
+      {
+        "nome": "--ucam-nav-width",
+        "default": "17rem",
+        "descricao": "Largura da navegação. É por onde a prop navWidth do contrato chega ao CSS."
+      },
+      {
+        "nome": "--ucam-content-max",
+        "default": "88rem",
+        "descricao": "Teto do conteúdo. A prop maxContentWidth."
+      },
+      {
+        "nome": "--ucam-gutter",
+        "default": "space.inset-lg",
+        "descricao": "Respiro entre o conteúdo e as bordas do main."
+      },
+      {
+        "nome": "--ucam-appbar-height",
+        "default": "3.5rem",
+        "descricao": "Alto da faixa. A navegação fixa usa este valor para grudar logo abaixo dela — mudar um sem o outro descola os dois."
+      }
+    ],
+    "acessibilidade": [
+      "Ordem de foco: skip-link, marca, navegação, conteúdo, usuário.",
+      "header como banner, nav com aria-label, main com id e tabindex=-1, footer como contentinfo.",
+      "Em modo sobreposto a navegação retém o foco e fecha com Esc; em modo fixo NÃO retém.",
+      "O item ativo usa aria-current=page — é também o seletor do destaque visual.",
+      "O botão de menu tem nome acessível e aria-expanded refletindo data-nav."
+    ]
+  },
+  "blocos": [
+    {
+      "id": "stack",
+      "nome": "Empilha",
+      "classe": "ucam-stack",
+      "papel": "Ritmo vertical entre irmãos.",
+      "quando": "Sempre que dois elementos se empilham. É o bloco mais usado, e o que mais aparecia como style='display:flex;flex-direction:column;gap:1rem' nos templates antigos.",
+      "variantes": [
+        {
+          "classe": "ucam-stack--sm",
+          "quando": "Rótulo e campo, título e apoio."
+        },
+        {
+          "classe": "ucam-stack--lg",
+          "quando": "Entre seções da página."
+        }
+      ],
+      "variaveis": [
+        {
+          "nome": "--ucam-stack-gap",
+          "default": "space.stack-md",
+          "descricao": "Para a seção que precisa respirar mais — nunca para inventar valor fora da escala."
+        }
+      ],
+      "exemplo": "<div class=\"ucam-stack ucam-stack--lg\">\n  <section class=\"ucam-section\">…</section>\n  <section class=\"ucam-section\">…</section>\n</div>"
+    },
+    {
+      "id": "cluster",
+      "nome": "Fileira",
+      "classe": "ucam-cluster",
+      "papel": "Itens lado a lado que QUEBRAM em vez de espremer.",
+      "quando": "Grupo de botões, chips de filtro, metadados de cabeçalho. A diferença entre um grupo que desce uma linha e um que corta o rótulo.",
+      "variantes": [
+        {
+          "classe": "ucam-cluster--entre",
+          "quando": "Título de um lado, ações do outro."
+        },
+        {
+          "classe": "ucam-cluster--fim",
+          "quando": "Rodapé de formulário e de diálogo."
+        },
+        {
+          "classe": "ucam-cluster--base",
+          "quando": "Título com contagem ao lado: alinha as linhas de base, não as caixas."
+        },
+        {
+          "classe": "ucam-cluster--md",
+          "quando": "Grupos distintos na mesma linha, que precisam de mais folga entre si."
+        }
+      ],
+      "partes": [
+        {
+          "classe": "ucam-cluster__spacer",
+          "descricao": "Empurra o que vem depois para o fim da linha."
+        }
+      ],
+      "variaveis": [
+        {
+          "nome": "--ucam-cluster-gap",
+          "default": "space.inline-sm"
+        }
+      ],
+      "exemplo": "<div class=\"ucam-cluster ucam-cluster--entre\">\n  <h2>Setores</h2>\n  <div class=\"ucam-cluster\">\n    <button class=\"ucam-btn ucam-btn--secondary\">Exportar</button>\n    <button class=\"ucam-btn ucam-btn--primary\">Novo setor</button>\n  </div>\n</div>"
+    },
+    {
+      "id": "grid",
+      "nome": "Grade",
+      "classe": "ucam-grid",
+      "papel": "Cartões que se acomodam sozinhos conforme a largura.",
+      "quando": "Grade de módulos do portal, cartões de resumo, atalhos.",
+      "decisao": "auto-fill, não auto-fit. Com auto-fit uma grade de dois itens estica os dois até a largura da tela, e a grade de módulos ficaria com dois cartões gigantes na primeira linha.",
+      "variantes": [
+        {
+          "classe": "ucam-grid--sm",
+          "quando": "Atalhos e ícones — coluna mínima de 11rem."
+        },
+        {
+          "classe": "ucam-grid--lg",
+          "quando": "Cartões com texto de apoio — 22rem."
+        }
+      ],
+      "variaveis": [
+        {
+          "nome": "--ucam-grid-min",
+          "default": "16rem",
+          "descricao": "Largura mínima da coluna. É ela que decide quantas colunas cabem."
+        }
+      ],
+      "exemplo": "<div class=\"ucam-grid\">\n  <a class=\"ucam-card\" href=\"…\">…</a>\n  <a class=\"ucam-card\" href=\"…\">…</a>\n</div>"
+    },
+    {
+      "id": "split",
+      "nome": "Divide",
+      "classe": "ucam-split",
+      "papel": "Conteúdo principal com painel de apoio ao lado.",
+      "quando": "Formulário longo com resumo, detalhe de requerimento com histórico, cálculo com memória de cálculo.",
+      "substitui": ".ucam-form-layout, que resolvia só o caso do formulário — o arranjo é o mesmo em detalhe de requerimento, análise e cálculo de mensalidade.",
+      "decisao": "Uma coluna enquanto o CONTÊINER (.ucam-corpo, contêiner nomeado 'corpo') tem menos de container.duas-colunas (52rem): painel de apoio espremido em 12rem não apoia nada, e tabela em 24rem esconde a última coluna. Pergunta ao contêiner, não à janela, porque a partir de nav-fixa a coluna de navegação leva 20rem que a janela não desconta — a 1024px o bloco punha o apoio ao lado num painel de 666px (ADR-028).",
+      "variantes": [
+        {
+          "classe": "ucam-split--apoio-inicio",
+          "quando": "Apoio à esquerda — navegação de etapas, filtros persistentes.",
+          "nota": "A ordem do DOM NÃO muda: o apoio continua depois do conteúdo na leitura e na tabulação, e só a pintura inverte. Inverter no DOM colocaria o painel secundário antes do principal para quem usa teclado e leitor de tela."
+        }
+      ],
+      "variaveis": [
+        {
+          "nome": "--ucam-split-aside",
+          "default": "18rem",
+          "descricao": "Largura do painel de apoio."
+        }
+      ],
+      "exemplo": "<div class=\"ucam-split\">\n  <form class=\"ucam-stack\">…</form>\n  <aside class=\"ucam-aside\">…</aside>\n</div>"
+    },
+    {
+      "id": "section",
+      "nome": "Seção",
+      "classe": "ucam-section",
+      "papel": "Bloco titulado dentro da página.",
+      "quando": "Sempre que a página tem mais de um assunto.",
+      "decisao": "Dá ao conteúdo a hierarquia que o legado tenta dar com cartão cinza dentro de cartão branco — que é o desenho do Material de 2016 e o que fez surface.canvas voltar a ser branco neste design system.",
+      "partes": [
+        {
+          "classe": "ucam-section__title",
+          "descricao": "Título da seção. Um <h2> ou <h3> real: o nível vem da estrutura do documento, não da aparência."
+        },
+        {
+          "classe": "ucam-section__hint",
+          "descricao": "Uma linha de apoio abaixo do título."
+        }
+      ],
+      "exemplo": "<section class=\"ucam-section\">\n  <h2 class=\"ucam-section__title\">Dados do requerente</h2>\n  <p class=\"ucam-section__hint\">Preenchidos a partir da matrícula.</p>\n  …\n</section>"
+    },
+    {
+      "id": "content",
+      "nome": "Conteúdo",
+      "classe": "ucam-content",
+      "papel": "O teto de largura do que está dentro do main.",
+      "quando": "Envolve o conteúdo de toda tela.",
+      "decisao": "O legado põe tudo num container estreito centralizado que deixa metade de um monitor largo vazio. O teto aqui é generoso e, mais importante, é uma variável: a tabela larga levanta o teto sem sair do padrão.",
+      "variantes": [
+        {
+          "classe": "ucam-content--larga",
+          "quando": "Tabela larga, painel de comparação, dashboard: usa o monitor inteiro."
+        },
+        {
+          "classe": "ucam-content--estreita",
+          "quando": "Formulário e texto corrido. Linha longa demais custa a leitura tanto quanto a coluna estreita demais."
+        }
+      ],
+      "exemplo": "<main class=\"ucam-main\" id=\"conteudo\" tabindex=\"-1\">\n  <div class=\"ucam-content ucam-content--larga\">…</div>\n</main>"
+    },
+    {
+      "id": "inbox",
+      "nome": "Lista e detalhe",
+      "classe": "ucam-inbox",
+      "papel": "Lista de registros e o detalhe do registro escolhido, lado a lado, cada um com a própria rolagem.",
+      "quando": "Fila de triagem em que se abre um registro atrás do outro: caixa de entrada do Protocolo, setores com seus integrantes, inadimplência com o extrato do aluno.",
+      "substitui": "A ida e volta entre listagem e tela de detalhe. No Protocolo atual, abrir um requerimento troca de tela e perde a posição da lista; voltar recarrega a consulta e devolve a pessoa ao topo.",
+      "decisao": "Cada painel rola por dentro, e a página não rola. É o que permite responder um requerimento e passar ao seguinte sem reencontrar a lista. O custo assumido: a altura do bloco depende da janela, então nada aqui pode ser mais alto que a viewport.",
+      "variantes": [
+        {
+          "classe": "ucam-inbox--lista-larga",
+          "quando": "A lista é o trabalho e o detalhe é referência — listagem de setores com o quadro de integrantes ao lado.",
+          "nota": "Inverte a proporção: a lista passa a 24rem e o detalhe fica com o resto."
+        }
+      ],
+      "variaveis": [
+        {
+          "nome": "--ucam-inbox-lista",
+          "default": "20rem",
+          "descricao": "Largura da coluna da lista."
+        },
+        {
+          "nome": "--ucam-inbox-alt",
+          "default": "calc(100dvh - 14rem)",
+          "descricao": "Altura útil do bloco. O desconto cobre a faixa da aplicação, o cabeçalho da página e o rodapé; a tela que muda essa moldura ajusta aqui, em vez de reinventar a conta em cada painel."
+        }
+      ],
+      "responsividade": "Abaixo de 64rem some a coluna dupla: a lista ocupa a largura inteira e o detalhe vira uma segunda tela, com voltar. Detalhe de 12rem ao lado de lista de 12rem não é lista e detalhe, é duas colunas ilegíveis.",
+      "acessibilidade": [
+        "A lista é <ul> real e o item aberto declara aria-current=true — sem isso, quem usa leitor de tela não sabe qual registro o painel ao lado está mostrando.",
+        "O painel de detalhe é uma região rotulada (aria-labelledby apontando o título do registro), para dar como alcançar direto.",
+        "Trocar de registro move o foco para o título do detalhe. Sem isso, quem navega por teclado escolhe na lista e o foco fica na lista, lendo o painel novo do começo a cada seta.",
+        "Os dois painéis rolam por dentro; nenhum deles esconde conteúdo sem barra de rolagem própria."
+      ],
+      "exemplo": "<div class=\"ucam-inbox\">\n  <div class=\"ucam-inbox__lista\">\n    <ul class=\"ucam-list\">…</ul>\n  </div>\n  <section class=\"ucam-inbox__detalhe\" aria-labelledby=\"req-titulo\">…</section>\n</div>"
+    },
+    {
+      "id": "stats",
+      "nome": "Faixa de indicadores",
+      "classe": "ucam-stats",
+      "papel": "Fileira de ladrilhos de indicador, com quebra e última linha sempre cheia.",
+      "quando": "Topo de painel ou de listagem, com três a seis números que se leem juntos. O ladrilho é o componente stat; isto é o arranjo dele.",
+      "decisao": "Flex com quebra, e NÃO grade de auto-fit. Auto-fit escolhe quantas colunas cabem sem olhar quantos ladrilhos existem: quatro métricas numa faixa que comporta três viram 3 + 1, e a fileira de baixo fica com um ladrilho e dois vãos — o arranjo mais comum em notebook, não um caso de canto. Em flex os itens da última linha crescem e a ocupam inteira: 4, 3 + 1 cheio, 2 + 2, sempre um retângulo. A base de 11rem continua decidindo quantos cabem; o que muda é o que acontece com a sobra.",
+      "variantes": [
+        {
+          "classe": "ucam-stats--cartoes",
+          "quando": "Os números NÃO se somam: quatro contagens de estados diferentes, quatro leituras independentes.",
+          "nota": "Troca a grade contínua de 1px por cartões separados com vão. A linha contínua afirma que os ladrilhos formam um todo — o que é verdade no caixa do dia e falso numa fila por estado."
+        }
+      ],
+      "variaveis": [],
+      "exemplo": "<div class=\"ucam-stats ucam-stats--cartoes\">\n  <ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />\n  <ucam-stat label=\"Atrasados\" [value]=\"19\" meta=\"22% da fila\" />\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Compor a tela com blocos nomeados.",
+      "evite": "style=\"display:flex;gap:.5rem\" no elemento.",
+      "porque": "O style inline não tem nome, não aparece em revisão e não pode ser mudado em todas as telas de uma vez. Era como as 7 telas deste repositório estavam escritas."
+    },
+    {
+      "faca": "Levantar o teto com ucam-content--larga quando a tabela pede.",
+      "evite": "Trocar o max-inline-size no style da tela.",
+      "porque": "A exceção precisa ser declarada e contável. Um valor cravado numa tela vira outro valor cravado na próxima."
+    },
+    {
+      "faca": "Marcar aria-current=page no item de navegação ativo.",
+      "evite": "Uma classe .ativo que só pinta.",
+      "porque": "O destaque visual do design system SAI do aria-current. Esquecer o atributo deixa a falha visível, em vez de escondida no leitor de tela."
+    },
+    {
+      "faca": "Navegação fixa a partir de 64rem.",
+      "evite": "Drawer sobreposto com escurecimento em monitor largo.",
+      "porque": "É padrão de modal aplicado à navegação primária, e no Protocolo acontece até em viewport de 2518px."
+    },
+    {
+      "faca": "Skip-link como primeiro elemento focável, escondido por deslocamento.",
+      "evite": "display:none, visibility:hidden, ou nenhum skip-link.",
+      "porque": "As duas primeiras tiram o elemento da ordem de foco. Sem ele o teclado atravessa os mais de cem itens do menu do SIGFIN a cada página."
+    }
+  ]
+}

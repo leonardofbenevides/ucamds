@@ -1,0 +1,257 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "input-group",
+  "name": "InputGroup",
+  "selector": "ucam-input-group",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Um campo e o que está GRUDADO nele: ícone, unidade, prefixo, ou um botão que age sobre o próprio valor. Tudo dentro de um contorno só, para que o conjunto leia como um controle e não como três peças vizinhas.",
+  "quando_usar": [
+    "Uma unidade acompanha o valor e pertence a ele: R$ antes do montante, % depois da alíquota.",
+    "Um botão age sobre o próprio valor digitado: revelar a senha, buscar o CEP, limpar o campo.",
+    "Um ícone identifica o campo dentro do contorno — a lupa da busca da listagem."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/SIGFIN, APPSUCAM/Protocolo e a testeira do próprio design system",
+    "ocorrencias": [
+      {
+        "tela": "APPSUCAM/SIGFIN, Arquivo remessa diário",
+        "campo": "Data de alteração",
+        "problema": "campo de texto com um botão de calendário encostado na borda direita, dividindo o contorno — montado à mão, sem componente que garanta o alinhamento, o raio dos cantos internos e o anel de foco do conjunto"
+      },
+      {
+        "tela": "APPSUCAM/SIGFIN, Baixas parciais",
+        "campo": "início / fim",
+        "problema": "os mesmos dois campos de data aparecem como caixas de texto secas, sem botão de calendário e sem dica de formato: o mesmo tipo de dado tem duas aparências no mesmo sistema"
+      },
+      {
+        "tela": "APPSUCAM/Protocolo, image 11 (Setor)",
+        "problema": "a busca é um link 'PESQUISAR' com lupa SEPARADO do campo, no canto oposto do cabeçalho — a ação que opera sobre o campo não tem relação visual nenhuma com ele"
+      },
+      {
+        "tela": "testeira do próprio DSUCAM, nas 11 telas de referência",
+        "problema": "a busca do shell é um grupo montado à mão em .ucam-appbar__search — lupa, campo e selo de tecla dentro de uma caixa com borda. Medido no navegador, o <input> tinha 20px de altura dentro de um invólucro de 32: sobravam 6px em cima e 6 embaixo onde o clique não focava nada. É o defeito que um componente de grupo existe para tornar impossível."
+      }
+    ],
+    "conclusao": "Grupo de campo já é montado à mão em três lugares e errado em pelo menos um deles. Ele existe no parque — o que não existe é o contrato."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O contorno do conjunto. É ELE que carrega borda, raio e anel de foco — nunca o campo de dentro, senão aparecem dois contornos aninhados.",
+      "classe": "ucam-input-group"
+    },
+    {
+      "parte": "controle",
+      "obrigatorio": true,
+      "descricao": "O campo. Sem borda e sem fundo próprios: quem desenha o poço é o root. Ocupa a ALTURA INTEIRA do grupo, para não sobrar faixa morta onde o clique não foca.",
+      "classe": "ucam-input-group__controle"
+    },
+    {
+      "parte": "adorno",
+      "obrigatorio": false,
+      "descricao": "Ícone, unidade ou texto fixo, antes ou depois do campo. É decoração ou rótulo — não recebe foco e não é clicável.",
+      "classe": "ucam-input-group__adorno"
+    },
+    {
+      "parte": "acao",
+      "obrigatorio": false,
+      "descricao": "Botão grudado ao campo, que age sobre o VALOR dele: abrir o calendário, limpar, copiar, mostrar a senha. Tem nome acessível próprio e entra na tabulação depois do campo.",
+      "classe": "ucam-input-group__acao"
+    }
+  ],
+  "props": [
+    {
+      "nome": "prefix",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto fixo antes do campo: 'R$', 'https://', '+55'. É o valor que a pessoa NÃO precisa digitar, e por isso ele não pode estar dentro do campo como placeholder — placeholder some ao digitar, prefixo não."
+    },
+    {
+      "nome": "suffix",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Unidade depois do campo: 'dias', 'MB', '%'. A unidade é do dado, não do rótulo: 'Prazo' com sufixo 'dias' diz mais que 'Prazo em dias' com o campo seco."
+    },
+    {
+      "nome": "icon",
+      "tipo": "IconName | null",
+      "default": "null",
+      "descricao": "Ícone antes do campo. Decorativo — se ele é a única coisa que explica o campo, o que falta é rótulo, não ícone."
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "Altura do conjunto, na mesma escala dos demais controles: sm 28px, md 32px, lg 40px."
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Apaga o conjunto INTEIRO, incluindo adornos e ação. Grupo com campo desabilitado e botão vivo promete uma ação que não tem sobre o que agir."
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Estado de erro do conjunto. A borda é do root, então o erro se vê no grupo todo — marcar só o campo deixaria metade do controle sem sinal."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "disabled",
+    "invalid"
+  ],
+  "limites": {
+    "regras": [
+      "Não pôr mais de UMA ação por grupo. Dois botões grudados no mesmo campo viram uma barra de ferramentas, e a pessoa deixa de saber qual age sobre o quê.",
+      "Não usar a ação para NAVEGAR nem para enviar o formulário: ela age sobre o valor do campo. Enviar é botão fora do grupo.",
+      "Não usar adorno como substituto de rótulo. O adorno diz a unidade; quem diz o que o campo quer é o rótulo, que continua obrigatório (ADR-004).",
+      "Não pôr borda no controle de dentro: a borda é do grupo. Dois contornos aninhados é o defeito visual mais comum deste componente.",
+      "Não usar para juntar dois campos DIFERENTES (início e fim de um período). São dois controles com dois rótulos; grudá-los diz que são um só."
+    ],
+    "motivo": "O grupo existe para o conjunto ler como UM controle. Cada peça a mais desfaz exatamente isso."
+  },
+  "acessibilidade": {
+    "papel": "group",
+    "requisitos": [
+      "O rótulo continua sendo do CAMPO, não do grupo: é o <label for> que nomeia o controle que recebe o valor.",
+      "Adorno de texto e ícone são aria-hidden — o leitor de tela recebe a unidade pela descrição do campo, não como um pedaço solto de texto entre o rótulo e o valor.",
+      "Quando o prefixo ou o sufixo carregam significado que o rótulo não dá, eles entram em aria-describedby do campo.",
+      "A ação é um <button> com nome acessível próprio que diz o que faz E sobre o quê: 'Abrir calendário de Data de alteração', não 'Abrir'.",
+      "O anel de foco é do GRUPO quando o campo recebe foco, e da AÇÃO quando é ela que recebe: dois focos distintos, porque são dois destinos de tabulação.",
+      "A área clicável do campo cobre toda a altura do grupo — faixa morta em cima e embaixo é alvo perdido (WCAG 2.5.8).",
+      "Contraste do adorno mínimo 4.5:1: unidade e prefixo são conteúdo, não moldura."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.4.7",
+      "2.5.8",
+      "3.3.2",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Prefixo e sufixo são curtos: um símbolo, uma unidade, no máximo duas palavras. Texto longo grudado no campo empurra o campo para fora da tela.",
+      "A unidade vai no sufixo, não no rótulo, quando o dado tem unidade fixa: 'Prazo' + 'dias' lê melhor que 'Prazo (dias)' com campo seco.",
+      "O nome acessível da ação nomeia o campo: 'Limpar Pesquisar natureza'."
+    ],
+    "exemplos": {
+      "bom": [
+        "R$ | 1.250,00",
+        "Prazo | 15 | dias",
+        "Data de alteração | 28/08/2026 | [abrir calendário]"
+      ],
+      "ruim": [
+        "campo com placeholder 'R$ 0,00' e nada mais",
+        "botão 'Salvar' grudado no campo",
+        "campo com borda dentro de grupo com borda"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon",
+      "ucam-icon-button"
+    ],
+    "usada_por": [
+      "ucam-app-shell",
+      "ucam-field"
+    ]
+  },
+  "migracao": {
+    "de": "Campo e botão soltos, lado a lado",
+    "mapa": [
+      {
+        "legado": "input + botão de calendário como dois elementos vizinhos",
+        "novo": "ucam-input-group com acao",
+        "nota": "O contorno passa a ser um só, e o anel de foco deixa de aparecer duas vezes."
+      },
+      {
+        "legado": "placeholder 'R$ 0,00' fazendo as vezes de prefixo",
+        "novo": "prefix=\"R$\"",
+        "nota": "Placeholder some ao digitar; prefixo fica. Era por isso que o valor digitado perdia a unidade."
+      },
+      {
+        "legado": "link 'PESQUISAR' no canto oposto ao campo",
+        "novo": "acao dentro do grupo",
+        "nota": "A ação passa a ficar onde ela age."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Valor em reais",
+      "codigo": "<ucam-field label=\"Valor da mensalidade\">\n  <ucam-input-group prefix=\"R$\">\n    <input ucam-input type=\"text\" inputmode=\"decimal\" [(ngModel)]=\"valor\" />\n  </ucam-input-group>\n</ucam-field>"
+    },
+    {
+      "titulo": "Prazo com unidade",
+      "codigo": "<ucam-input-group suffix=\"dias\">\n  <input ucam-input type=\"number\" [(ngModel)]=\"prazo\" />\n</ucam-input-group>"
+    },
+    {
+      "titulo": "Busca com ícone e ação de limpar",
+      "codigo": "<ucam-input-group icon=\"search\">\n  <input ucam-input type=\"search\" [(ngModel)]=\"termo\" />\n  <ucam-icon-button acao icon=\"x\" variant=\"ghost\" label=\"Limpar Pesquisar natureza\" (click)=\"termo.set('')\" />\n</ucam-input-group>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Deixar a borda e o anel de foco no GRUPO.",
+      "evite": "Manter a borda do campo dentro do grupo.",
+      "porque": "Dois contornos aninhados fazem o conjunto ler como uma caixa dentro de outra, e o que ele precisa dizer é o contrário: isto é um controle só."
+    },
+    {
+      "faca": "Dar ao campo a altura inteira do grupo.",
+      "evite": "Deixar o campo com a altura do texto dentro de um invólucro mais alto.",
+      "porque": "A diferença vira faixa morta: foi medido 6px em cima e 6 embaixo na busca da testeira, onde o clique não focava nada."
+    },
+    {
+      "faca": "Usar prefixo para o que a pessoa não precisa digitar.",
+      "evite": "Placeholder fazendo as vezes de prefixo.",
+      "porque": "Placeholder some na primeira tecla; a unidade tem de continuar visível ao lado do valor digitado."
+    },
+    {
+      "faca": "Nomear a ação dizendo sobre qual campo ela age.",
+      "evite": "'Abrir', 'Limpar', 'Buscar' sem complemento.",
+      "porque": "Numa tela com quatro grupos, quem navega por lista de botões ouve quatro vezes 'Limpar' e não sabe qual é qual."
+    },
+    {
+      "faca": "Uma ação por grupo.",
+      "evite": "Calendário, limpar e copiar grudados no mesmo campo.",
+      "porque": "Três botões idênticos em sequência viram barra de ferramentas, e o alvo de cada um encolhe abaixo do piso de 24px."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "input-group.json",
+      "raiz": ".ucam-input-group, com .ucam-input-group__controle dentro",
+      "estado": "data-invalid e :focus-within no root",
+      "nota": "O poço é do root: o controle entra com border:0 e background:none. O foco é :focus-within, e não :focus, porque quem recebe o foco é o campo de dentro enquanto quem desenha o anel é o grupo."
+    },
+    "trilho_b": "Envelope sobre o z-input-group do ZardUI, que já resolve a geometria do conjunto — cantos internos, divisórias e as variantes de addon. O wrapper acrescenta o que o contrato exige e a base não impõe: adorno sempre aria-hidden, ação obrigada a ter nome acessível, e o controle esticado à altura do grupo. NÃO entrega: mais de uma ação por grupo, nem junção de dois campos distintos — as duas são recusadas de propósito e o motivo está em limites."
+  },
+  "vs": [
+    {
+      "componente": "text-field",
+      "diferenca": "TextField é o campo sozinho; InputGroup é o campo mais o que está GRUDADO nele dentro do mesmo contorno — ícone, unidade, prefixo ou botão que age sobre o próprio valor.",
+      "escolha": "R$ antes do valor, o olho que revela a senha, a lupa que busca o que está digitado ali."
+    },
+    {
+      "componente": "field",
+      "diferenca": "Field é o que fica FORA do contorno do controle (rótulo em cima, apoio e erro embaixo); InputGroup é o que fica DENTRO do mesmo contorno, colado ao valor. Os dois convivem no mesmo campo.",
+      "escolha": "A informação é sobre o VALOR: a unidade em que ele está, ou uma ação que o transforma."
+    },
+    {
+      "componente": "compositor",
+      "diferenca": "O input-group é um campo de UMA linha com adorno ou botão colado — busca, filtro, valor com unidade. O Compositor é texto de várias linhas com barra de ações própria.",
+      "escolha": "Pesquisar setor, com a lupa dentro do campo."
+    }
+  ]
+}

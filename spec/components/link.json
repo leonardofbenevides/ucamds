@@ -1,0 +1,251 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "link",
+  "name": "Link",
+  "selector": "ucam-link",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "navegacao",
+  "description": "Texto que leva a outro lugar. Sublinhado em repouso, não só no hover — cor sozinha não distingue link de texto corrido. Não é botão: link muda de endereço, botão executa. A distinção não é de aparência, é de promessa, e é o que decide se o clique do meio abre em outra aba.",
+  "quando_usar": [
+    "O destino tem endereço próprio e a pessoa poderia querer abri-lo em outra aba.",
+    "Uma célula de tabela leva ao detalhe do registro daquela linha.",
+    "Um texto corrido cita outra tela, um documento ou uma norma."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Portal e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "Portal — Login",
+        "rotulo": "REDEFINIR / CADASTRAR SENHA",
+        "problema": "saída secundária desenhada como botão vermelho, com o mesmo peso da ação de entrar. Vermelho gasto onde não há destruição nenhuma, e uma navegação vestida de ação"
+      },
+      {
+        "tela": "Protocolo — todas",
+        "problema": "cada tela repetia style=\"color:var(--ucam-color-text-link)\" nos links, sem sublinhado, sem estado visitado e sem foco próprio. O @ucam/css não estiliza elemento nu por decisão de arquitetura, e ninguém tinha criado a classe"
+      },
+      {
+        "tela": "Protocolo — listagens",
+        "rotulo": "Ver detalhes",
+        "problema": "links e botões de ação misturados na mesma fileira, indistinguíveis: metade abre página, metade dispara ação, e não há como saber qual é qual antes de clicar"
+      }
+    ],
+    "conclusao": "Sem classe de link, cada tela inventou a sua com style inline — e o que se perdeu foi justamente o que faz um link ser link: sublinhado, estado e a promessa de que abrir em nova aba funciona."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento âncora. Sempre com href real: <a> sem href não é focável nem anunciado como link, e um span com click é a forma mais rápida de tirar a navegação do teclado.",
+      "classe": "ucam-link"
+    },
+    {
+      "parte": "indicador-externo",
+      "obrigatorio": false,
+      "descricao": "Ícone arrowUpRight ao fim do rótulo quando o destino sai do sistema ou abre em nova aba. Não é decoração: é o aviso de que o botão voltar não trará a pessoa de volta."
+    }
+  ],
+  "props": [
+    {
+      "nome": "href",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O destino. Obrigatório sem exceção — se não há destino, o componente é botão."
+    },
+    {
+      "nome": "variant",
+      "tipo": "'default' | 'apoio'",
+      "default": "'default'",
+      "descricao": "apoio é o mesmo link em corpo menor, para a saída secundária que acompanha um rótulo de campo. O que desce é o tamanho, nunca o contraste.",
+      "valores": {
+        "default": {
+          "uso": "Link em texto corrido e em navegação de conteúdo.",
+          "tokens": {
+            "texto": "color.text.link"
+          }
+        },
+        "apoio": {
+          "uso": "Esqueci minha senha na linha do campo Senha; Ver todos ao lado de um título de bloco.",
+          "limite": "Não usar para encolher um link que ficou grande demais no corpo do texto — ali o tamanho é o do texto que o contém.",
+          "tokens": {
+            "texto": "color.text.link"
+          }
+        }
+      }
+    },
+    {
+      "nome": "external",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Marca o destino como fora do sistema: acrescenta o ícone, o rel de segurança e o aviso no nome acessível. Não abre em nova aba por conta própria — quem decide isso é target, e abrir sem avisar é o que a WCAG 3.2.5 desaconselha."
+    },
+    {
+      "nome": "target",
+      "tipo": "'_self' | '_blank'",
+      "default": "'_self'",
+      "descricao": "_blank exige external verdadeiro. Abrir uma aba sem dizer que vai abrir é mudança de contexto sem pedir, e quem usa ampliação de tela costuma nem perceber que a janela trocou."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "active",
+    "visitado"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar link para executar ação. Salvar, excluir e enviar são botões — e um link que faz isso quebra o clique do meio, o abrir em nova aba e o histórico do navegador.",
+      "Não usar botão para navegar. É o outro lado da mesma regra, e é o que o REDEFINIR SENHA do login faz hoje.",
+      "Não usar link como ação primária da tela. A ação primária é um botão, com o peso que a hierarquia da tela lhe dá.",
+      "Não empilhar links soltos como se fossem menu. Lista de destinos é navegação e tem componente próprio.",
+      "Link sem sublinhado só dentro de bloco que já é evidentemente navegável — item de menu, trilha, aba. Em texto corrido o sublinhado é obrigatório."
+    ],
+    "criterio": "Se a pessoa pode querer abrir aquilo numa segunda aba, é link. Se abrir em outra aba não faz sentido, é botão."
+  },
+  "acessibilidade": {
+    "papel": "link",
+    "requisitos": [
+      "O sublinhado é obrigatório em repouso, não só no hover: cor sozinha não distingue link de texto corrido (WCAG 1.4.1). O deslocamento do sublinhado tira a linha de cima das hastes descendentes, que é o que faz sublinhado parecer sujeira tipográfica.",
+      "O rótulo faz sentido fora do contexto. Leitores de tela oferecem a lista de links da página: quinze links chamados Ver detalhes são quinze destinos indistinguíveis (WCAG 2.4.4).",
+      "Destino externo ou em nova aba é avisado no nome acessível, não só pelo ícone (WCAG 3.2.5).",
+      "target=_blank acompanha rel=noopener; com noreferrer quando o destino não é da universidade.",
+      "O anel de foco é o mesmo do resto do sistema e não é removido — link é frequentemente o único elemento focável de um parágrafo.",
+      "Contraste do texto do link contra o fundo mínimo 4.5:1, e contra o texto vizinho o suficiente para não depender só de matiz.",
+      "Rótulo em caixa natural (ADR-003)."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "1.4.3",
+      "2.1.1",
+      "2.4.4",
+      "2.4.7",
+      "3.2.5"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Recebe foco na ordem do documento."
+      },
+      {
+        "tecla": "Enter",
+        "comportamento": "Navega. Espaço NÃO ativa link — é a diferença de teclado que distingue link de botão, e implementá-la com click no span a destrói."
+      }
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O rótulo diz o destino, não a ação de clicar: Política de privacidade, não Clique aqui.",
+      "O rótulo funciona sozinho, fora da frase — é assim que ele aparece na lista de links do leitor de tela.",
+      "Não incluir a palavra link no rótulo: o leitor de tela já anuncia o papel.",
+      "Sublinhar só o rótulo, nunca a pontuação em volta.",
+      "Caixa natural (ADR-003)."
+    ],
+    "exemplos": {
+      "bom": [
+        "Esqueci minha senha",
+        "Ver os 4 protocolos anteriores deste aluno",
+        "Manual do sistema de protocolo"
+      ],
+      "ruim": [
+        "CLIQUE AQUI",
+        "Ver detalhes",
+        "Saiba mais",
+        "REDEFINIR / CADASTRAR SENHA"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon"
+    ],
+    "usada_por": [
+      "ucam-card",
+      "ucam-description-list",
+      "ucam-empty-state",
+      "ucam-page-header"
+    ]
+  },
+  "migracao": {
+    "de": "Âncora nua, style inline de cor e botão usado como navegação",
+    "mapa": [
+      {
+        "legado": "<a style=\"color:var(--ucam-color-text-link)\">",
+        "novo": "class=\"ucam-link\"",
+        "nota": "A conversão traz o que o style inline não tinha: sublinhado, hover, visitado e anel de foco."
+      },
+      {
+        "legado": "botão vermelho REDEFINIR / CADASTRAR SENHA",
+        "novo": "<a class=\"ucam-link ucam-link--apoio\">Esqueci minha senha</a>",
+        "nota": "Três mudanças de uma vez: deixa de ser botão porque navega, deixa de ser vermelho porque não destrói nada (ADR-002) e sai da caixa alta (ADR-003)."
+      },
+      {
+        "legado": "<span ng-click=\"irPara(...)\">",
+        "novo": "<a href> com href real",
+        "nota": "Não é troca cosmética: o span não é focável, não é anunciado como link e não responde ao Enter. A rota precisa existir como endereço."
+      },
+      {
+        "legado": "link Ver detalhes repetido por linha da tabela",
+        "novo": "rótulo que nomeia o objeto, ou botão de ícone com ariaLabel",
+        "nota": "Quinze Ver detalhes são quinze destinos indistinguíveis na lista de links."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Em texto corrido",
+      "codigo": "<p>O prazo segue o <a class=\"ucam-link\" href=\"/calendario\">calendário acadêmico</a>.</p>"
+    },
+    {
+      "titulo": "Saída secundária de formulário",
+      "codigo": "<a class=\"ucam-link ucam-link--apoio\" href=\"/senha\">Esqueci minha senha</a>"
+    },
+    {
+      "titulo": "Destino fora do sistema",
+      "codigo": "<ucam-link href=\"https://ucam.br/manual\" external target=\"_blank\">Manual do sistema de protocolo</ucam-link>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Manter o sublinhado em repouso.",
+      "evite": "Sublinhar só no hover.",
+      "porque": "Sem sublinhado, o que distingue link de texto é só a cor — violação de WCAG 1.4.1, e invisível para quem não distingue matiz."
+    },
+    {
+      "faca": "Escrever rótulos que funcionam sozinhos.",
+      "evite": "Ver detalhes, Saiba mais, Clique aqui.",
+      "porque": "A lista de links do leitor de tela mostra os rótulos fora do contexto; quinze iguais não permitem escolher nenhum."
+    },
+    {
+      "faca": "Usar botão quando a coisa executa e link quando a coisa navega.",
+      "evite": "Botão que muda de página, link que salva.",
+      "porque": "A escolha decide o clique do meio, o abrir em nova aba, o histórico e qual tecla ativa — Enter no link, Enter e Espaço no botão."
+    },
+    {
+      "faca": "Avisar no texto quando o destino abre em nova aba.",
+      "evite": "target=_blank silencioso.",
+      "porque": "Mudança de contexto sem aviso (WCAG 3.2.5), e quem usa ampliação frequentemente não percebe que a janela trocou."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na âncora. O @ucam/css não estiliza elemento nu — é a restrição de arquitetura do Trilho A —, então <a> sem a classe continua saindo no azul e roxo do navegador. Isso é deliberado: o CSS convive com o do app hospedeiro sem repintá-lo.",
+      "raiz": ".ucam-link",
+      "estado": "hover engrossa o sublinhado de 1px para 2px em vez de trocar a cor: engrossar não mexe no contraste já verificado.",
+      "variaveis": [
+        "--ucam-color-text-link",
+        "--ucam-radius-sm"
+      ],
+      "nota": "O raio existe só para o anel de foco: sem ele o anel sai retangular em volta de um texto com cantos de letra, e num link que quebra em duas linhas o retângulo cobre o vão entre elas."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/link/ucam-link.ts — pronto. Sublinhado em repouso, variantes, e o par target=_blank mais rel seguro com o aviso de nova aba para quem ouve."
+  },
+  "vs": [
+    {
+      "componente": "button",
+      "diferenca": "Link muda de ENDEREÇO; Button executa uma ação na página atual. A diferença não é de aparência, é de promessa — e é ela que decide se o clique do meio abre em outra aba.",
+      "escolha": "O destino tem URL própria e a pessoa poderia querer abri-lo em outra aba."
+    }
+  ]
+}

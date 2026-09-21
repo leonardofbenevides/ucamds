@@ -1,0 +1,284 @@
+{
+  "$schema": "../schema/adapter.schema.json",
+  "id": "relatorios-academicos",
+  "name": "Relatórios Acadêmicos — main.css próprio",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "description": "Reveste o Relatórios Acadêmicos (Spring Boot + Thymeleaf, main.css de 3.077 linhas com tema claro e escuro) com os tokens semânticos do DS sem editar nenhum dos 74 templates. O mecanismo é o mesmo do adaptador PrimeFaces, com uma diferença: aqui o alvo já é dirigido por variáveis CSS (--cor-*), então a primeira regra redeclara essas variáveis a partir dos tokens e re-tinge as ~1.200 regras que as leem de uma vez. As demais regras corrigem por seletor o que a variável não alcança: caixa alta, sombra e degradê, anel de foco, fonte. Carregar DEPOIS do main.css. Decisão em ADR-025.",
+  "alvo": {
+    "framework": "Thymeleaf + CSS próprio (main.css)",
+    "versao": "redesign de 2026-09-03, revisão de 2026-09-06",
+    "tema": "bordô #a91733, claro e escuro por data-theme",
+    "plataforma": "Spring Boot, páginas renderizadas no servidor",
+    "carregar_apos": "/css/main.css (e junto com dist/css/ucam-fonts.css, que traz a Geist)"
+  },
+  "evidencia": {
+    "origem": "Skill design-system-ucam entregue em 2026-09-08 (assets/main.css, references/01 a 07), medida em 2026-09-10 com tools/lib/wcag.mjs e tools/check-daltonismo.mjs",
+    "achados": [
+      "terceiro bordô do parque: #a91733, a 0,056 de distância do wine.600 do DS em visão normal — nem igual nem distinto o bastante",
+      "--cor-erro #a3242f fica a 0,018 do bordô em visão normal e a 0,005 em deuteranopia: erro e marca são a mesma cor (ADR-002)",
+      "--cor-texto-fraco #8a94a3 rende 3,07:1 sobre branco e é usado em legendas de 11 a 13px (WCAG 1.4.3 pede 4,5)",
+      "link do tema escuro #d43a5c sobre #14161a rende 3,93:1",
+      "um só :focus-visible em 3.077 linhas (.link-voltar); o botão primário, o item de menu e o card acionável não têm anel de foco (WCAG 2.4.7)",
+      "rótulo de campo em caixa alta 12.5px com letter-spacing .03em na cor da marca (ADR-003)",
+      "sombra colorida rgba(143,3,36,.5) sob o botão primário; faixa e hero em degradê de 135° (ADR-019)",
+      "cabeçalho de tabela em tint de marca com filete de 2px na primária — a moldura pesa mais que o dado",
+      "460 medidas em px contra 61 em rem; corpo em 14.5px",
+      "nenhuma regra de prefers-reduced-motion"
+    ],
+    "conclusao": "O sistema já é dirigido por variável, então o adaptador é barato: 24 redeclarações cobrem a paleta, o raio e a sombra do arquivo inteiro. O que sobra é corrigir por seletor o que a variável não decide — caixa alta, degradê, foco, fonte — e nomear o que só a migração da tela resolve."
+  },
+  "principios": [
+    "Redeclarar a variável, não o seletor: uma --cor-* apontando para token corrige todas as regras que a leem, nos dois temas, porque o token do DS já troca por data-theme e por prefers-color-scheme — o tema.js do sistema continua funcionando sem mudança.",
+    "A redeclaração vale em :root E em :root[data-theme=dark]: o bloco escuro do main.css tem especificidade maior que :root, e só perde se o adaptador o alcançar na mesma especificidade e depois.",
+    "Degradê vira cor sólida pela própria variável: a ponta fixa do degradê aponta para surface-brand, a mesma tinta da primária, e o degradê some sem tocar no seletor.",
+    "Só token semântico, nunca hex cru. O gerador confere cada var(--ucam-*) contra os tokens publicados.",
+    "Não inventar seletor: a folha ataca só classes que o main.css já pinta. Comportamento (overlay, acumulador, aria-disabled) não é CSS e fica em pendentes."
+  ],
+  "regras": [
+    {
+      "seletor": ":root, :root[data-theme=\"dark\"]",
+      "nota": "A PALETA INTEIRA, em 29 variáveis. Sombra segue a ADR-019: em repouso, elevation-raised (nenhuma); só o flutuante (sugestões do autocomplete, painel mobile) leva elevation-overlay. Tema escuro vem de graça: cada token já muda por data-theme e por prefers-color-scheme. Nomes que enganam no original ficam corrigidos pelo papel: --cor-primaria-clara é o hover (e é mais escura), --cor-primaria-escura é ênfase de texto (e fica clara no escuro). --cor-texto-fraco sobe para o mesmo degrau do secundário: 3,07:1 em legenda de 12px não passa, e a ADR-024 já fixou um degrau só abaixo do primário.",
+      "props": {
+        "--cor-primaria": { "token": "color-action-primary-default" },
+        "--cor-primaria-clara": { "token": "color-action-primary-hover" },
+        "--cor-primaria-escura": { "token": "color-action-primary-active" },
+        "--cor-primaria-tint": { "token": "color-action-primary-subtle" },
+        "--cor-primaria-tint-forte": { "token": "color-realce-background" },
+        "--cor-primaria-gradiente-fim": { "token": "color-surface-brand" },
+        "--cor-fundo": { "token": "color-surface-canvas" },
+        "--cor-superficie": { "token": "color-surface-default" },
+        "--cor-texto": { "token": "color-text-primary" },
+        "--cor-texto-secundario": { "token": "color-text-secondary" },
+        "--cor-texto-fraco": { "token": "color-text-secondary" },
+        "--cor-borda": { "token": "color-border-default" },
+        "--cinza-50": { "token": "color-surface-subtle" },
+        "--cinza-100": { "token": "color-surface-sunken" },
+        "--cinza-200": { "token": "color-border-default" },
+        "--cinza-400": { "token": "color-text-secondary" },
+        "--cor-erro": { "token": "color-feedback-danger-foreground" },
+        "--cor-erro-tint": { "token": "color-feedback-danger-background" },
+        "--cor-sucesso": { "token": "color-feedback-success-foreground" },
+        "--cor-sucesso-tint": { "token": "color-feedback-success-background" },
+        "--raio-lg": { "token": "radius-surface" },
+        "--raio-md": { "token": "radius-control" },
+        "--raio-sm": { "token": "radius-control-sm" },
+        "--sombra-sm": { "token": "elevation-raised" },
+        "--sombra-md": { "token": "elevation-sticky" },
+        "--sombra-lg": { "token": "elevation-overlay" },
+        "--espaco-sm": { "token": "space-stack-sm" },
+        "--espaco-md": { "token": "space-stack-md" },
+        "--espaco-lg": { "token": "space-stack-lg" }
+      }
+    },
+    {
+      "seletor": "body",
+      "nota": "Fonte e corpo do DS. A Geist vem de dist/css/ucam-fonts.css, carregada junto; sem ela a pilha cai para a fonte do sistema, que é o mesmo fallback do original.",
+      "props": {
+        "font-family": { "token": "font-body" },
+        "font-size": { "token": "typography-body-font-size" },
+        "line-height": { "token": "typography-body-line-height" }
+      }
+    },
+    {
+      "seletor": ".campo-formulario label, .sidebar-section-label, .stat-mapa__rotulo, .progresso-matriz__rotulo, .brand__eyebrow, .hero__eyebrow",
+      "nota": "ADR-003: nenhum papel tipográfico em caixa alta forçada. O rótulo de campo volta ao degrau de rótulo (13/500) na cor de texto, não na cor da marca.",
+      "props": {
+        "text-transform": { "literal": "none" },
+        "letter-spacing": { "literal": "normal" },
+        "font-size": { "token": "typography-label-font-size" },
+        "font-weight": { "token": "typography-label-font-weight" },
+        "color": { "token": "color-text-primary" }
+      }
+    },
+    {
+      "seletor": ".brand__eyebrow, .hero__eyebrow",
+      "nota": "Os dois selos moram sobre a faixa de marca: a cor volta ao branco do token, que a regra anterior tinha trocado por texto.",
+      "props": {
+        "color": { "token": "color-text-on-brand" }
+      }
+    },
+    {
+      "seletor": ".botao",
+      "nota": "ADR-019: sem sombra colorida sob a ação. Peso e tamanho do papel de ação do DS.",
+      "props": {
+        "box-shadow": { "literal": "none" },
+        "font-size": { "token": "typography-action-font-size" },
+        "font-weight": { "token": "typography-action-font-weight" },
+        "min-block-size": { "token": "size-control-md" },
+        "color": { "token": "color-text-on-action" }
+      }
+    },
+    {
+      "seletor": ".botao:hover, .botao:focus-visible",
+      "props": {
+        "background-color": { "token": "color-action-primary-hover" },
+        "box-shadow": { "literal": "none" }
+      }
+    },
+    {
+      "seletor": ".botao--secundario, button.botao:not([type=\"submit\"])",
+      "nota": "Secundário do DS: superfície, borda e texto primário — não texto secundário, que é para apoio.",
+      "props": {
+        "background-color": { "token": "color-action-secondary-default" },
+        "border-color": { "token": "color-action-secondary-border" },
+        "color": { "token": "color-text-primary" }
+      }
+    },
+    {
+      "seletor": ".botao:focus-visible, .campo-formulario select:focus-visible, .campo-formulario input:focus-visible, .paginacao__item:focus-visible, .paginacao__seta:focus-visible, .nav-item:focus-visible, .menu-relatorios__link:focus-visible, .menu-relatorios__sumario:focus-visible, .quick-card:focus-visible, .cat-card:focus-visible, .report-card:focus-visible, .topbar__tema-btn:focus-visible, .topbar__menu-btn:focus-visible, .topbar__user:focus-visible, .sidebar__colapsar:focus-visible, .acumulador__remover:focus-visible, .breadcrumb a:focus-visible",
+      "nota": "WCAG 2.4.7: o anel de foco único do DS em todo controle que o main.css deixou sem. Antes só .link-voltar tinha.",
+      "props": {
+        "outline": { "literal": "var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus)" },
+        "outline-offset": { "token": "focus-ring-offset" }
+      }
+    },
+    {
+      "seletor": ".topbar, .hero, .brand__mark, .app-footer",
+      "nota": "ADR-019 e ADR-007: superfície de marca sólida, sem degradê. O rodapé deixa de ser cartão bordô escuro e vira faixa de moldura, como o .ucam-shell__footer.",
+      "props": {
+        "background-image": { "literal": "none" }
+      }
+    },
+    {
+      "seletor": ".topbar, .hero",
+      "props": {
+        "background-color": { "token": "color-surface-brand" },
+        "color": { "token": "color-text-on-brand" }
+      }
+    },
+    {
+      "seletor": ".app-footer",
+      "props": {
+        "background-color": { "token": "color-surface-chrome" },
+        "color": { "token": "color-text-secondary" },
+        "border-block-start": { "literal": "1px solid var(--ucam-color-border-subtle)" },
+        "border-radius": { "literal": "0" },
+        "box-shadow": { "literal": "none" }
+      }
+    },
+    {
+      "seletor": ".tabela-relatorio th",
+      "nota": "Cabeçalho de tabela do DS: superfície afundada, texto secundário, um degrau de peso, filete comum. O filete de 2px na primária e o fundo em tint de marca faziam a moldura pesar mais que o dado.",
+      "props": {
+        "background-color": { "token": "color-surface-sunken" },
+        "color": { "token": "color-text-secondary" },
+        "font-size": { "token": "typography-table-header-font-size" },
+        "font-weight": { "token": "typography-table-header-font-weight" },
+        "letter-spacing": { "token": "typography-table-header-letter-spacing" },
+        "border-bottom": { "literal": "1px solid var(--ucam-color-border-default)" }
+      }
+    },
+    {
+      "seletor": ".tabela-relatorio tbody tr:hover",
+      "props": {
+        "background-color": { "token": "color-surface-subtle" }
+      }
+    },
+    {
+      "seletor": ".badge",
+      "nota": "ADR-020: selo preenchido, com o peso de rótulo — não 700 em 11px.",
+      "props": {
+        "font-size": { "token": "typography-caption-font-size" },
+        "font-weight": { "token": "typography-label-font-weight" },
+        "border-radius": { "token": "radius-pill" }
+      }
+    },
+    {
+      "seletor": ".badge--success, .badge-situacao--aprovado, .badge-situacao--isento, .selo-apto-formar",
+      "props": {
+        "background-color": { "token": "color-feedback-success-background" },
+        "color": { "token": "color-feedback-success-foreground" }
+      }
+    },
+    {
+      "seletor": ".badge--warn, .badge-situacao--cursando",
+      "props": {
+        "background-color": { "token": "color-feedback-warning-background" },
+        "color": { "token": "color-feedback-warning-foreground" }
+      }
+    },
+    {
+      "seletor": ".badge--danger, .badge-situacao--reprovado",
+      "props": {
+        "background-color": { "token": "color-feedback-danger-background" },
+        "color": { "token": "color-feedback-danger-foreground" }
+      }
+    },
+    {
+      "seletor": ".badge--info, .badge-ead, .badge-conjunta",
+      "nota": "O original escrevia #e8eefc/#1a4fb3 direto na regra, fora de qualquer variável — era o único azul do arquivo.",
+      "props": {
+        "background-color": { "token": "color-feedback-info-background" },
+        "color": { "token": "color-feedback-info-foreground" }
+      }
+    },
+    {
+      "seletor": ".badge--neutral, .badge-situacao--a-cursar",
+      "props": {
+        "background-color": { "token": "color-surface-sunken" },
+        "color": { "token": "color-text-secondary" }
+      }
+    },
+    {
+      "seletor": ".valor-alerta--critico",
+      "nota": "Valor acima do limite de negócio: cor de feedback, não a cor de erro de formulário nem 700 de peso. A palavra que explica o limite continua obrigatória na marcação (WCAG 1.4.1).",
+      "props": {
+        "color": { "token": "color-feedback-danger-foreground" },
+        "font-weight": { "token": "typography-label-font-weight" }
+      }
+    },
+    {
+      "seletor": ".valor-alerta--atencao",
+      "props": {
+        "color": { "token": "color-feedback-warning-foreground" },
+        "font-weight": { "token": "typography-label-font-weight" }
+      }
+    },
+    {
+      "seletor": ".resumo-filtros",
+      "nota": "Resumo dos filtros aplicados é informação, não destaque: superfície sutil e texto primário, no lugar da faixa em tom de marca com negrito. O padrão consulta-relatorio o leva para chips na barra de visão quando a tela migrar.",
+      "props": {
+        "background-color": { "token": "color-surface-subtle" },
+        "color": { "token": "color-text-primary" },
+        "border": { "literal": "1px solid var(--ucam-color-border-subtle)" }
+      }
+    },
+    {
+      "seletor": ".paginacao__item--ativo",
+      "props": {
+        "background-color": { "token": "color-action-primary-default" },
+        "color": { "token": "color-text-on-action" }
+      }
+    },
+    {
+      "seletor": ".quick-card:hover, .cat-card:hover, .report-card:hover",
+      "nota": "ADR-019: dentro da moldura ninguém flutua. O card acionável responde por borda e superfície, não por sombra e deslocamento.",
+      "props": {
+        "transform": { "literal": "none" },
+        "box-shadow": { "literal": "none" },
+        "border-color": { "token": "color-border-strong" },
+        "background-color": { "token": "color-surface-subtle" }
+      }
+    },
+    {
+      "seletor": ".loading-overlay",
+      "nota": "ADR-005: o overlay saiu do catálogo. CSS não o remove da tela sem mentir para quem espera; o que a folha faz é deixar de cobrir a página — o que foi pedido continua visível — até o carregamento.js sair na migração.",
+      "props": {
+        "background-color": { "literal": "transparent" },
+        "pointer-events": { "literal": "none" }
+      }
+    }
+  ],
+  "pendentes": [
+    "loading-overlay → estado loading do botão primário e formulário inerte (ADR-005; exige trocar carregamento.js)",
+    ".botao--desabilitado em <a> → aria-disabled=true na marcação; pointer-events:none sozinho não avisa o leitor de tela",
+    "section:has(> form)::before com texto de ajuda → frase na marcação, no hint da seção",
+    ".app-container:has(.page-head) section > h1 → remover o h1 duplicado dos templates em vez de escondê-lo",
+    "acumulador (filtro-dinamico.js) → combobox + lista + input hidden por item, com revalidação ao confirmar (padrão consulta-relatorio)",
+    "grafico-barras.js sobre Chart.js vendorizado → ucam-chart (ADR-014), na migração da tela",
+    "ícones SVG em data: URI com cor gravada (.botoes-exportacao .botao::before) → sprite do DS com currentColor",
+    "prefers-reduced-motion → não existe no main.css; a regra do DS só alcança o escopo .ucam"
+  ]
+}

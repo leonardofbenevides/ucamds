@@ -1,0 +1,294 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "select",
+  "name": "Select",
+  "selector": "ucam-select",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Escolha de um valor em uma lista fechada, com painel desenhado pelo design system. Até 15 opções não se procura, escolhe-se: acima disso o contrato manda escalar para Combobox, que tem busca por digitação.",
+  "quando_usar": [
+    "Uma lista fechada de até 15 opções em que não se procura, escolhe-se: campus, turno, situação.",
+    "A opção depende de outro campo já preenchido e a lista muda com ele.",
+    "O valor vem de um domínio do sistema e digitar livremente não é aceitável."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 7 (modal Novo Requerimento)",
+        "campo": "Sexo",
+        "problema": "largura mínima arbitrária; o rótulo Selecione... não cabe confortavelmente"
+      },
+      {
+        "tela": "image 7",
+        "campo": "Natureza",
+        "problema": "largura enorme ao lado de Tipo do Requerimento estreito — sem relação com o conteúdo de nenhum dos dois"
+      },
+      {
+        "tela": "image 7",
+        "campo": "Tipo do Requerimento",
+        "problema": "depende de Natureza, mas nada na interface comunica a dependência nem o estado de carregamento"
+      },
+      {
+        "tela": "image 9",
+        "campo": "Setor",
+        "problema": "largura de linha inteira para um select; e a lista de setores tem 6 páginas na tela de listagem — muitas opções para um select"
+      },
+      {
+        "tela": "image 6",
+        "campo": "Ordenar por mais antigo",
+        "problema": "select sem rótulo visível; a opção selecionada faz papel de rótulo"
+      }
+    ],
+    "conclusao": "Duas correções estruturais: largura derivada do conteúdo e um padrão explícito para selects dependentes, que hoje falham em silêncio."
+  },
+  "anatomia": [
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Persistente, acima do controle. Mesma regra do TextField."
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": false
+    },
+    {
+      "parte": "control",
+      "obrigatorio": true,
+      "descricao": "Elemento select nativo."
+    },
+    {
+      "parte": "chevron",
+      "obrigatorio": true,
+      "descricao": "Indicador de lista. Decorativo, aria-hidden."
+    },
+    {
+      "parte": "spinner",
+      "obrigatorio": false,
+      "descricao": "Substitui o chevron enquanto as opções carregam."
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "options",
+      "tipo": "Array<{ value: unknown; label: string; disabled?: boolean; group?: string }>",
+      "obrigatorio": true
+    },
+    {
+      "nome": "placeholder",
+      "tipo": "string",
+      "default": "'Selecione'",
+      "descricao": "Primeira opção, valor nulo. Quando required é true, ela recebe disabled para não passar na validação."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "loading",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Opções em carregamento. O controle fica inoperante mas focável, com aria-busy true."
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "errorMessage",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "width",
+      "tipo": "'content' | 'full'",
+      "default": "'content'",
+      "descricao": "Default é content: a largura acompanha a opção mais longa. Corrige as larguras arbitrárias do legado."
+    },
+    {
+      "nome": "dependsOn",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome do campo do qual este depende. Ativa o comportamento descrito em dependencia."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "filled",
+    "loading",
+    "invalid",
+    "disabled",
+    "aguardando-dependencia"
+  ],
+  "dependencia": {
+    "problema": "Natureza e Tipo do Requerimento são encadeados no Protocolo, mas o segundo select aparece habilitado e vazio antes da escolha do primeiro. O usuário abre, não vê nada e não entende o motivo.",
+    "regra": [
+      "Enquanto o campo pai estiver vazio, o dependente fica disabled com hint explicando: 'Selecione a natureza primeiro'.",
+      "Ao mudar o pai, o dependente limpa o valor, entra em loading e recarrega.",
+      "Se o pai mudar e o valor antigo do filho não existir na nova lista, o filho limpa em silêncio — mas o formulário não pode submeter com o filho vazio se ele for obrigatório.",
+      "O estado aguardando-dependencia é anunciado por aria-describedby, não apenas visualmente.",
+      "Com dois campos pai que não dependem um do outro, o dependente só habilita quando os DOIS têm valor, e o hint nomeia o que ainda falta. Qualquer um dos pais voltando a vazio limpa e desabilita o filho de novo. O Relatórios Acadêmicos tem esse caso (iniciarSelectCascataMultiplaOrigem)."
+    ]
+  },
+  "limites": {
+    "regra": "Até 15 opções: Select. Acima disso: ucam-combobox com busca por digitação.",
+    "motivo": "O corte é a necessidade de BUSCA, não a tecnologia — os dois usam overlay desde a ADR-011. Abaixo de 15 opções a lista cabe na tela e a busca só acrescenta um passo; acima, rolar procurando é o que fazia o campo Setor do Protocolo, com 58 opções, ser inutilizável.",
+    "excecao": "Listas longas mas fortemente ordenadas e familiares (ano, mês, UF) continuam em Select: ninguém precisa buscar por \"setembro\".",
+    "perda_assumida": "Sai o seletor nativo do celular, que é melhor em tela pequena. Custo aceito e registrado na ADR-011."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "select nativo — a experiência de teclado, o typeahead e o comportamento no mobile vêm de graça e são melhores que qualquer reimplementação.",
+      "label associado por for/id.",
+      "Nunca usar a opção selecionada como rótulo (o caso de Ordenar por). O rótulo é sempre elemento próprio, mesmo que visualmente oculto por sr-only quando o contexto for evidente.",
+      "Agrupar com optgroup quando houver categorias — não simular grupo com opções desabilitadas em caixa alta.",
+      "aria-busy true durante loading.",
+      "Contraste da borda mínimo 3:1 (WCAG 1.4.11).",
+      "Não disparar navegação nem submit na mudança de valor sem ação explícita do usuário (WCAG 3.2.2)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.6",
+      "3.2.2",
+      "3.3.2",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Placeholder é Selecione, sem reticências.",
+      "Opções em caixa natural. A listagem de setores em CAIXA ALTA vem do banco — normalizar na exibição, não no dado.",
+      "Ordenar por relevância quando houver opções óbvias no topo; alfabética caso contrário."
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / Angular Material (md-select)",
+    "mapa": [
+      {
+        "legado": "md-select com md-option",
+        "novo": "ucam-select com options"
+      },
+      {
+        "legado": "md-select do campo Setor",
+        "novo": "ucam-combobox",
+        "nota": "Passa de Select para Combobox por volume de opções."
+      },
+      {
+        "legado": "select de ordenação sem rótulo",
+        "novo": "ucam-select com label sr-only",
+        "nota": "label=Ordenar por, visualmente oculto."
+      },
+      {
+        "legado": "Tipo do Requerimento dependente de Natureza",
+        "novo": "dependsOn=natureza",
+        "nota": "Ganha estado de bloqueio e carregamento explícitos."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Simples",
+      "codigo": "<ucam-select label=\"Sexo\" [options]=\"sexos\" required />"
+    },
+    {
+      "titulo": "Dependente",
+      "codigo": "<ucam-select label=\"Tipo do requerimento\" dependsOn=\"natureza\" [options]=\"tipos()\" [loading]=\"carregandoTipos()\" required />"
+    },
+    {
+      "titulo": "Rótulo oculto",
+      "codigo": "<ucam-select label=\"Ordenar por\" labelHidden [options]=\"ordenacoes\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Escalar para Combobox acima de 15 opções.",
+      "evite": "Select nativo para lista longa sem busca.",
+      "porque": "O campo Setor do Protocolo tem 58 opções em caixa alta e ocupa seis páginas na listagem."
+    },
+    {
+      "faca": "Derivar a largura do maior rótulo de opção.",
+      "evite": "Largura de linha inteira, ou largura mínima arbitrária que corta o placeholder.",
+      "porque": "Há select ocupando o dobro do vizinho sem relação com o conteúdo de nenhum dos dois, e 'Selecione...' que não cabe."
+    },
+    {
+      "faca": "Comunicar a dependência e o carregamento quando um select depende de outro (dependsOn + loading).",
+      "evite": "Select dependente que aparece vazio e habilitado antes da escolha anterior.",
+      "porque": "O campo que depende de 'Natureza' hoje falha em silêncio — nada na interface comunica a dependência."
+    },
+    {
+      "faca": "Normalizar a caixa das opções na exibição.",
+      "evite": "Repassar CAIXA ALTA vinda do banco para a interface.",
+      "porque": "A caixa alta é característica do dado armazenado, não decisão de apresentação. Ver ADR-003."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "choice-card",
+      "diferenca": "Select esconde as opções atrás de um menu e economiza espaço; choice-card deixa todas à vista para serem comparadas.",
+      "escolha": "Muitas opções, escolha rotineira, sem necessidade de comparar: select."
+    },
+    {
+      "componente": "menu",
+      "diferenca": "Select escolhe um VALOR que fica no formulário; menu dispara uma AÇÃO e não guarda nada.",
+      "escolha": "Se o resultado é enviado com o formulário, é select."
+    },
+    {
+      "componente": "radio-group",
+      "diferenca": "radio-group mostra todas as alternativas de uma vez, e por isso serve até sete; select as esconde atrás de um clique e é o que serve de oito a quinze — acima disso, combobox com busca."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "unknown",
+      "descricao": "Valor da opção escolhida. Nunca dispara navegação nem submit por si (WCAG 3.2.2)."
+    }
+  ],
+  "composicao": {
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-formulario-entidade",
+      "padrao-listagem-inspetor",
+      "ucam-app-shell",
+      "ucam-pagination"
+    ],
+    "usa": [
+      "ucam-field"
+    ]
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Gatilho mais listbox desenhados pelo design system. O <select> nativo saiu na ADR-011.",
+      "raiz": ".ucam-select-wrap com .ucam-select-trigger e .ucam-listbox",
+      "nota": "A classe .ucam-select ainda existe e é o campo em si; o arranjo completo do gatilho estilizado precisa das três. O script que abre a lista é gerado por tools/lib/select-listbox.mjs e não faz parte do @ucam/css. O value do <option> atravessa a conversão: vira data-valor na opção e no gatilho, e escolher dispara um change que borbulha. É o que permite um select FILTRAR (data-filtra) com \"Todos\" valendo value vazio, ou seja, filtro nenhum — sem isso o gatilho nunca dizia o que fora escolhido.",
+      "estado": "loading: aria-busy=true no gatilho e um svg.ic.ucam-spinner no lugar do chevron."
+    }
+  }
+}

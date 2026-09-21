@@ -1,0 +1,138 @@
+{
+  "$description": "As MEDIDAS do sistema: quanto mede uma coluna, até onde uma linha de texto pode crescer, que altura tem um controle e qual é a área que o dedo realmente acerta. A camada de layout diz onde as coisas ficam; esta diz o tamanho delas. As duas juntas são a razão de nenhuma tela do sistema precisar de um número escrito à mão.",
+  "_meta": {
+    "regra": "O sistema tem UMA densidade. Não há chave de compacto/confortável, e a alternativa ao aperto não é encolher tudo — é escolher o papel certo de altura para cada peça.",
+    "origem": "As medidas existiam todas, e nenhuma tinha página: as alturas de controle viviam numa tabela dentro de Espaçamento, os tetos de largura viviam só como comentário na folha gerada, e o mecanismo de alvo de ponteiro — o mais recente e o menos óbvio dos três — vivia exclusivamente num comentário de CSS que ninguém que não abrisse o gerador iria ler.",
+    "unidade": "Largura de contêiner em rem; medida de leitura em ch. A escolha não é estilística: o que decide se uma frase quebra em duas linhas é quantos CARACTERES cabem, e ch é a única unidade que mede isso quando o corpo do texto muda."
+  },
+  "larguras": {
+    "regra": "Toda largura de conteúdo sai de um papel declarado. A tela larga levanta o teto trocando de papel, nunca escrevendo um número.",
+    "papeis": [
+      {
+        "token": "content-max (padrão)",
+        "valor": "88rem",
+        "papel": "O teto normal do conteúdo dentro da moldura.",
+        "porque": "O legado põe tudo num contêiner estreito centralizado que deixa metade de um monitor largo vazio. O teto aqui é generoso, e é variável."
+      },
+      {
+        "token": "content--larga",
+        "valor": "sem teto",
+        "papel": "Tabela larga, painel de comparação, painel gerencial.",
+        "porque": "Quando o dado é tabular e tem doze colunas, o monitor inteiro é a medida certa."
+      },
+      {
+        "token": "content--estreita",
+        "valor": "48rem",
+        "papel": "Formulário e texto corrido.",
+        "porque": "Linha longa demais custa a leitura tanto quanto a coluna estreita demais. Nesta largura o painel de apoio encolhe junto, para não sobrar chão além do que ele sustenta."
+      },
+      {
+        "token": "content--foco",
+        "valor": "25rem",
+        "papel": "Tela de tarefa única: entrada, confirmação, recuperação de senha.",
+        "porque": "Não é a largura de leitura reduzida — é a do formulário curto, em que a linha do campo cabe no foco central da visão."
+      },
+      {
+        "token": "content--pleno",
+        "valor": "sem teto",
+        "papel": "A tela cujo conteúdo É o arranjo da moldura: sem teto e sem recuo, alcança a borda dela.",
+        "porque": "Existe para um caso: duas colunas que precisam encostar no raio do painel."
+      },
+      {
+        "token": "nav-width",
+        "valor": "19.875rem",
+        "papel": "A coluna de navegação, quando é coluna da grade.",
+        "porque": "Abaixo do papel de viewport nav-fixa ela deixa de ser coluna e vira gaveta sobreposta."
+      },
+      {
+        "token": "rail-width",
+        "valor": "4.5rem",
+        "papel": "A navegação recolhida a só ícones.",
+        "porque": "Mesma medida da altura da faixa: a moldura tem uma medida de quina, não duas."
+      },
+      {
+        "token": "grid-min",
+        "valor": "16rem",
+        "papel": "Largura mínima da coluna numa grade de cartões — é ela que decide quantas colunas cabem.",
+        "porque": "A grade usa auto-fill e não auto-fit: com auto-fit, uma grade de dois itens estica os dois até a largura da tela."
+      },
+      {
+        "token": "split-aside",
+        "valor": "18rem",
+        "papel": "O painel de apoio ao lado do conteúdo principal.",
+        "porque": "Abaixo de 60rem o arranjo vira uma coluna só: painel espremido em 12rem não apoia nada."
+      }
+    ]
+  },
+  "medida_de_leitura": {
+    "regra": "Todo bloco de texto corrido tem teto em ch. O número muda com o papel do texto, e cada um foi escolhido pelo ponto em que a frase quebra bem — não por arredondamento.",
+    "medidas": [
+      { "medida": "68ch", "onde": "Linha de apoio do cabeçalho de página", "porque": "Em 14px, é onde a frase ainda se lê em uma ou duas linhas sem atravessar a tela toda." },
+      { "medida": "56ch", "onde": "Descrição de estado vazio dentro de moldura larga ou de tabela", "porque": "48ch numa moldura larga produz uma linha só, longuíssima, e o bloco centrado perde o eixo." },
+      { "medida": "48ch", "onde": "Descrição de estado vazio em página inteira", "porque": "É a medida clássica de texto centralizado curto." },
+      { "medida": "32ch", "onde": "Dica flutuante", "porque": "A pergunta é quantos caracteres cabem na linha, e é ela que decide se a frase quebra em duas." },
+      { "medida": "34rem", "onde": "Campo de busca da faixa", "porque": "Campo que se estica até a borda lê como barra de endereço." }
+    ]
+  },
+  "alturas": {
+    "regra": "Altura de peça é PAPEL, não número. Uma peça nova escolhe entre estes papéis; nenhuma inventa a própria altura.",
+    "papeis": [
+      { "token": "size.control-md", "papel": "Altura padrão de botão e de campo.", "quem_usa": "Botão, campo de texto, select, campo de data, busca." },
+      { "token": "size.control-sm", "papel": "Controle de barra de ferramentas e de linha de tabela, onde a altura disputa espaço com o dado.", "quem_usa": "Ação de linha, filtro de barra compacta." },
+      { "token": "size.control-lg", "papel": "Controle de destaque em tela de tarefa única.", "quem_usa": "Ação principal da entrada." },
+      { "token": "size.marcador", "papel": "A altura ÚNICA de toda peça de micro-rótulo.", "quem_usa": "Selo de estado, chip de filtro, marcador de prazo." },
+      { "token": "size.contagem", "papel": "A pastilha de número que vive DENTRO de um item de navegação.", "quem_usa": "Contador de fila no menu." },
+      { "token": "size.icon-sm / size.icon-md / size.icon-lg", "papel": "Os três degraus de ícone. Ícone não escolhe pixel, escolhe degrau.", "quem_usa": "Ícone em rótulo, em controle e em ladrilho." },
+      { "token": "size.touch-min", "papel": "O alvo de ponteiro grosso. Não é altura de desenho: é área de acerto.", "quem_usa": "Todo controle, sob ponteiro grosso — ver Alvos." }
+    ],
+    "excecao_de_densidade": "O único aperto legítimo é o control-sm em linha de tabela e barra de ferramentas, e ele é local: uma tela não pode ligar 'modo compacto' e encolher tudo. Densidade global é como o legado acabou com quatro alturas de botão na mesma tela."
+  },
+  "alvos": {
+    "regra": "A ÁREA CLICÁVEL NÃO É O DESENHO. O controle desenha 32px por decisão de densidade e estende a área de acerto por um pseudo-elemento centrado, que ocupa espaço de ponteiro sem ocupar espaço de layout.",
+    "patamares": [
+      { "ponteiro": "fino (mouse, caneta)", "alvo": "24px", "criterio": "WCAG 2.5.8 (AA)", "porque": "Numa barra com vão de 8px entre ações, 44px invadiria seis pixels da tinta do vizinho de cada lado — dois alvos disputando a faixa morta entre eles trocam um erro por outro." },
+      { "ponteiro": "grosso (dedo)", "alvo": "44px", "criterio": "WCAG 2.5.5 (AAA)", "porque": "No dedo o cálculo se inverte: a invasão fica dentro do vão, não sobre a tinta do vizinho, e errar o alvo por inteiro é o erro pior." }
+    ],
+    "medicao": {
+      "metodo": "Sonda de elementFromPoint em volta do centro de cada alvo, nas doze telas de template.",
+      "achados": [
+        { "alvo": "marca da faixa", "media": "199 × 20", "nota": "o alvo mais alto da tela, e o mais raso" },
+        { "alvo": "degrau da trilha", "media": "82 × 19", "nota": "cada nível navegável do caminho" },
+        { "alvo": "limpar seleção da barra de lote", "media": "64 × 22", "nota": "" },
+        { "alvo": "fechar do alerta", "media": "24 × 24", "nota": "passa na conta e falha nos CANTOS, que o raio recorta do teste de acerto" }
+      ],
+      "conclusao": "O token de alvo mínimo existia desde o primeiro dia, declarava 44px na própria descrição — e a folha inteira nunca o referenciou uma vez. Era promessa declarada e nunca cumprida."
+    },
+    "sob_toque": {
+      "regra": "Sob ponteiro grosso o extensor vale para TODO controle fora de texto corrido, não só para botão: select, segmented, página da paginação, cabeçalho de coluna, caixa de seleção, interruptor, degrau da trilha, ação de grupo de campo, link solto de apoio.",
+      "campo_de_texto": "<input> é elemento substituído e não tem ::after. Quem estende é o <label for>: o pseudo-elemento do rótulo cobre o campo e sangra (alvo − control-md) / 2 abaixo dele, e o controle, posicionado e depois no DOM, pinta por cima e recebe o próprio toque. Rótulo sr-only fica de fora — o recorte dele recorta o pseudo.",
+      "caixa_e_interruptor": "O extensor nasce do rótulo, não do centro dele: a caixa mora na borda inicial, e centrado no rótulo o extensor passava longe dela.",
+      "vao": "Extensor centrado só não invade o vizinho se o vão for pelo menos (alvo − desenho). Sob toque o vão cresce, o desenho não: faixa de marca e fileiras da barra de visão com alvo − control-sm; fileira de filtros com alvo − marcador.",
+      "limites": [
+        "Rolo recorta o extensor: overflow num eixo recorta os dois. O segmented que rola abaixo de nav-fixa e o cabeçalho de coluna e a caixa de seleção do topo da tabela perdem a parte que cai fora do rolo.",
+        "Elemento com overflow: hidden recorta o próprio pseudo: o título-link do ListItem, que precisa da reticência, não tem como estender.",
+        "Contexto de empilhamento (máscara, opacidade, transform) pinta por cima de extensor vizinho; quem o cria fica transparente ao ponteiro e só os filhos respondem."
+      ],
+      "medicao": "Sonda de elementFromPoint nos quatro cantos de 24 e 44, 20 telas a 390px com toque emulado, em 19/09/2026. Antes: 18 campos, 6 selects, 26 botões de ícone, 19 caixas de seleção, a trilha inteira e o × do chip abaixo de 44; depois, o que sobra é o dos limites acima."
+    },
+    "fora_da_lista": [
+      "Item de navegação e aba, que já nascem com 40 e 46 pixels.",
+      "Link dentro de texto corrido, que a própria 2.5.8 isenta — e onde um retângulo de 44 cobriria a linha de cima e a de baixo. Esses crescem por recuo, que em elemento em linha aumenta a caixa de acerto sem mexer na linha."
+    ]
+  },
+  "portao": {
+    "ferramenta": "tools/check-geometria.mjs",
+    "o_que_faz": "Traduz os tokens de tamanho para as classes de altura da base e cobra o valor em cada ponto onde a base declara geometria de controle.",
+    "porque": "O sistema promete, em toda página do catálogo, que o componente Angular e o preview em CSS puro são a mesma marca e os mesmos tokens. Medido no navegador, não eram: quatro pixels de diferença em TODO controle de formulário, porque a base traz a escala do shadcn e a spec declarava outra. As cores passavam pela ponte de tokens; a GEOMETRIA não passava por lugar nenhum.",
+    "custo_assumido": "A base é matéria-prima copiada (ADR-006), então a correção é na cópia. Um futuro comando de atualização da base reverte isto em silêncio — é exatamente contra esse silêncio que o portão existe."
+  },
+  "proibido": [
+    "Escrever largura, altura ou teto de leitura em pixel dentro de uma tela.",
+    "Chave global de densidade: modo compacto que encolhe a interface inteira.",
+    "Alvo de ponteiro abaixo de 24px em ponteiro fino, ou de 44px em ponteiro grosso.",
+    "Aumentar a área de acerto crescendo a peça: o desenho fica, a área cresce por baixo.",
+    "Altura de peça inventada fora dos papéis de tamanho.",
+    "Medida de leitura em rem: o que decide a quebra é o número de caracteres.",
+    "Teto de largura cravado numa tela em vez de trocar o papel de conteúdo."
+  ]
+}

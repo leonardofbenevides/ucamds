@@ -1,0 +1,85 @@
+/* @ucam/tokens — gerado de spec/tokens/ por tools/build-tokens.mjs
+ * NÃO EDITAR À MÃO. Edite a spec e rode: pnpm tokens
+ * Formato: ponte ZardUI → tokens UCAM
+ */
+
+/* Importe DEPOIS do styles.css da ZardUI: estas declarações sobrescrevem o
+ * tema neutro que o zard-cli instalou. Os componentes da base continuam
+ * escrevendo bg-primary; o valor passa a vir da UCAM. */
+
+@import "./ucam-tokens.css";
+
+:root {
+  --background: var(--ucam-color-surface-canvas);
+  --foreground: var(--ucam-color-text-primary);
+  --card: var(--ucam-color-surface-default);
+  --card-foreground: var(--ucam-color-text-primary);
+  --popover: var(--ucam-color-surface-raised);
+  --popover-foreground: var(--ucam-color-text-primary);
+  --primary: var(--ucam-color-action-primary-default);
+  --primary-foreground: var(--ucam-color-text-on-action);
+  --secondary: var(--ucam-color-action-secondary-default);
+  --secondary-foreground: var(--ucam-color-text-primary);
+  --muted: var(--ucam-color-surface-subtle);
+  --muted-foreground: var(--ucam-color-text-secondary);
+  --accent: var(--ucam-color-action-primary-subtle);
+  --accent-foreground: var(--ucam-color-action-primary-default);
+  --destructive: var(--ucam-color-action-danger-default);
+  --destructive-foreground: var(--ucam-color-text-on-action);
+  --border: var(--ucam-color-border-default);
+  --input: var(--ucam-color-border-default);
+  --ring: var(--ucam-color-border-focus);
+  --sidebar: var(--ucam-color-surface-default);
+  --sidebar-foreground: var(--ucam-color-text-primary);
+  --sidebar-primary: var(--ucam-color-action-primary-default);
+  --sidebar-primary-foreground: var(--ucam-color-text-on-action);
+  --sidebar-accent: var(--ucam-color-surface-subtle);
+  --sidebar-accent-foreground: var(--ucam-color-text-primary);
+  --sidebar-border: var(--ucam-color-border-subtle);
+  --sidebar-ring: var(--ucam-color-border-focus);
+  --chart-1: var(--ucam-color-chart-series-1);
+  --chart-2: var(--ucam-color-chart-series-2);
+  --chart-3: var(--ucam-color-chart-series-3);
+  --chart-4: var(--ucam-color-chart-series-4);
+  --chart-5: var(--ucam-color-chart-series-5);
+  /* lg, não md: é o 0.625rem que a própria base assume. Com md os
+     componentes do ZardUI ficavam mais quadrados aqui do que na origem. */
+  --radius: var(--ucam-radius-lg);
+
+  /* A ESCALA INTEIRA, degrau por degrau — não só o --radius.
+   *
+   * O tema do shadcn DERIVA os outros degraus por aritmética
+   * (sm = radius - 4px, md = radius - 2px, xl = radius + 4px). Com --radius em
+   * 0.625rem isso dá sm=6px e md=8px, enquanto a spec do DSUCAM declara
+   * sm=4px e md=6px: DOIS dos quatro degraus ficavam errados, em silêncio, em
+   * todo componente da base. Foi assim que o checkbox saiu com 6px de raio
+   * onde o mesmo checkbox em CSS puro tinha 4px.
+   *
+   * Escala derivada é escala que não obedece à spec. Aqui cada degrau aponta
+   * para o token que a spec declara, e nenhuma conta acontece pelo caminho. */
+  --radius-sm: var(--ucam-radius-sm);
+  --radius-md: var(--ucam-radius-md);
+  --radius-lg: var(--ucam-radius-lg);
+  --radius-xl: var(--ucam-radius-xl);
+
+  /* A CURVA, pela mesma porta que o raio.
+   *
+   * A ponte existe para que a base obedeça à UCAM sem reescrever a base. O
+   * mesmo argumento vale para movimento: os wrappers usam transition-colors
+   * do Tailwind, cujo padrão de fábrica é cubic-bezier(0.4, 0, 0.2, 1) em
+   * 150ms — curva SIMÉTRICA. O Trilho A move em ease-out. Sem estas linhas,
+   * um ucam-button do Angular e um .ucam-btn do CSS puro fazem a mesma troca
+   * de cor em curvas diferentes.
+   *
+   * Funciona no :root, e não só dentro de @theme, porque a utilitária que o
+   * Tailwind v4 gera não crava a curva: ela emite
+   * transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)).
+   * É consulta em tempo de execução, então redefinir a variável basta.
+   * @ucam/ui não importa o bloco @theme — a ponte é o único arquivo gerado
+   * que a lib carrega, e por isso é aqui que isto tem de estar. */
+  --default-transition-timing-function: var(--ucam-motion-easing-standard);
+  --default-transition-duration: var(--ucam-motion-duration-state);
+  --ease-standard: var(--ucam-motion-easing-standard);
+  --ease-entrance: var(--ucam-motion-easing-entrance);
+  --ease-emphasized: var(--ucam-motion-easing-emphasized);
+}

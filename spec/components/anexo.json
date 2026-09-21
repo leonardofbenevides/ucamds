@@ -1,0 +1,244 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "anexo",
+  "name": "Anexo",
+  "selector": "ucam-anexo",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "conteudo",
+  "description": "Um arquivo como peça: a figura do formato, o nome, o formato e o tamanho, e no máximo uma ação. É a mesma peça antes e depois do envio — no File Field ele é o que foi escolhido, no detalhe do requerimento é o que chegou —, porque quem anexa e quem analisa estão falando do mesmo arquivo. Existe porque no parque o anexo some depois de escolhido e não reaparece do outro lado: o requerente escreve 'anexei o comprovante' e a tela de quem analisa não mostra comprovante nenhum.",
+  "quando_usar": [
+    "Um registro tem arquivos anexados e quem o lê precisa abri-los: o detalhe do requerimento, a mensagem da atividade, a análise.",
+    "Dentro do File Field, para cada arquivo escolhido — o campo monta a grade de anexos e não desenha linha própria.",
+    "Vários arquivos lado a lado, em que cada um precisa ser reconhecido pelo nome e pelo formato sem ser aberto."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e as telas de referência do próprio DSUCAM",
+    "ocorrencias": [
+      {
+        "tela": "Telas de referência do DSUCAM — Requerimento 2026-0311",
+        "problema": "a solicitação do aluno termina com 'Anexei o comprovante da prova.' e a tela não mostra anexo nenhum: nem na citação, nem nos dados do requerimento, nem na atividade. Quem analisa uma revisão de nota não tem como abrir a prova que motiva o pedido."
+      },
+      {
+        "tela": "Telas de referência do DSUCAM — Novo requerimento",
+        "problema": "a prévia lateral lista 'Anexos: —' como texto. Com arquivo escolhido, a prévia teria de repetir o nome em prosa, e o arquivo passaria a ter duas caras na mesma tela: a linha do campo e a frase da prévia."
+      },
+      {
+        "tela": "Protocolo — Análise de Requerimento",
+        "problema": "o botão Anexar na barra de resposta envia arquivo, mas a resposta publicada na atividade não mostra o que foi enviado. O arquivo existe só no instante do envio."
+      }
+    ],
+    "conclusao": "O arquivo precisava de UMA peça que valesse dos dois lados do envio. A linha do File Field já respondia o que anexei e em que estado está; faltava a mesma resposta para quem recebe. O Anexo é essa linha promovida a componente, com o modo de leitura que abre o arquivo."
+  },
+  "anatomia": [
+    {
+      "parte": "grade",
+      "obrigatorio": true,
+      "descricao": "A ul que contém os anexos, mesmo quando há um só — a contagem anunciada pelo leitor de tela é a resposta para 'quantos arquivos'. Preenche por largura mínima de 15rem e não por número de colunas: cai para uma coluna no painel estreito e no celular.",
+      "classe": "ucam-anexos"
+    },
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O li do arquivo. Contorno de border.subtle sobre surface.default, sem fundo cinza: cinco blocos cinza lado a lado viram uma mancha em que nenhum nome se lê.",
+      "classe": "ucam-anexo"
+    },
+    {
+      "parte": "figura",
+      "obrigatorio": true,
+      "descricao": "O poço de 36px com o ícone do formato: fileText para PDF e documento, image para JPG e PNG, file para o resto. Decorativo — o formato também está escrito no apoio. Na recusa e no erro troca para circleAlert em tom de erro.",
+      "classe": "ucam-anexo__figura"
+    },
+    {
+      "parte": "corpo",
+      "obrigatorio": true,
+      "descricao": "A coluna de nome e apoio ao lado da figura. É ela que permite o nome truncar: sem min-inline-size:0 o item de flex adota a largura do conteúdo e o tile estoura a trilha da grade.",
+      "classe": "ucam-anexo__corpo"
+    },
+    {
+      "parte": "nome",
+      "obrigatorio": true,
+      "descricao": "O nome do arquivo com extensão, o dado principal. Trunca numa linha com o nome inteiro no title. Na leitura é um a com href e download quando o arquivo tem URL, ou um button quando ele vem de chamada autenticada — o anexo de requerimento costuma estar atrás do login —, e nos dois casos estica sobre o tile inteiro. No envio é texto.",
+      "classe": "ucam-anexo__nome"
+    },
+    {
+      "parte": "apoio",
+      "obrigatorio": true,
+      "descricao": "Formato e tamanho — 'PDF · 1,1 MB'. No envio acrescenta o estado ('enviando 60%', 'anexado'); na recusa e no erro é o motivo, e só aí pode quebrar linha.",
+      "classe": "ucam-anexo__apoio"
+    },
+    {
+      "parte": "acao",
+      "obrigatorio": false,
+      "descricao": "Um botão de ícone no canto, acima do link esticado: remover no envio, tentar de novo no erro. Nome acessível com o nome do arquivo — Remover anexo prova-av2.pdf.",
+      "classe": "ucam-anexo__acao"
+    },
+    {
+      "parte": "indicio",
+      "obrigatorio": false,
+      "descricao": "O ícone download no canto do tile de leitura, aria-hidden. Diz 'isto baixa' a quem só vê; não é botão, porque o tile inteiro já é o link.",
+      "classe": "ucam-anexo__indicio"
+    },
+    {
+      "parte": "progresso",
+      "obrigatorio": false,
+      "descricao": "A barra de 3px dentro do corpo, presente só enquanto o arquivo sobe. No tile, e não no pé da grade: com vários envios ao mesmo tempo, uma barra só não diz de qual arquivo fala.",
+      "classe": "ucam-anexo__progresso"
+    }
+  ],
+  "props": [
+    {
+      "nome": "file",
+      "tipo": "UcamFile",
+      "obrigatorio": true,
+      "descricao": "O arquivo, no mesmo esquema do File Field (nome, tamanho, tipo, estado, progresso, mensagem, url). Um esquema só para os dois lados do envio é o que garante que o anexo escolhido e o anexo recebido digam as mesmas coisas."
+    },
+    {
+      "nome": "removable",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Mostra a ação de remover. O File Field liga; a leitura nunca liga — tirar o arquivo de um requerimento enviado não é gesto de quem lê."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "remove",
+      "payload": "UcamFile",
+      "descricao": "A pessoa pediu para tirar este arquivo. O Anexo não se remove sozinho: quem é dono da lista decide."
+    },
+    {
+      "nome": "retry",
+      "payload": "UcamFile",
+      "descricao": "Tentar de novo, no estado erro. O envio recomeça do zero — o File Field não retoma envio interrompido."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "loading",
+    "invalid"
+  ],
+  "limites": {
+    "regras": [
+      "Sem miniatura de imagem. O parque anexa comprovante e declaração, que são PDF; a figura do formato basta, e miniatura custa baixar o arquivo para desenhar a lista.",
+      "Sem pré-visualização embutida. Abrir o arquivo é o navegador que faz, pelo link; um visualizador de PDF dentro do design system traria uma dependência de outro tamanho.",
+      "Sem fundo cinza no tile e sem sombra no hover. O hover sobe o filete um degrau e só.",
+      "Não é cartão. Não leva título, texto corrido nem mais de uma ação.",
+      "Não é chip. Chip é filtro ou valor escolhido; arquivo tem nome longo, tamanho e estado, e não cabe em pílula."
+    ]
+  },
+  "acessibilidade": {
+    "papel": "lista (ul/li); na leitura, cada item contém um link.",
+    "requisitos": [
+      "A grade é ul/li mesmo com um arquivo só: a contagem é informação (WCAG 1.3.1).",
+      "Na leitura, o link é o nome do arquivo e só ele — o nome acessível não inclui formato e tamanho lidos em sequência, que ficam no apoio, ligados por aria-describedby.",
+      "O link esticado cobre o tile, e o botão de ação sobe acima dele (z-index): os dois continuam alcançáveis pelo ponteiro e pelo teclado, e não há botão dentro de link.",
+      "A figura e o indício são aria-hidden. O formato está escrito no apoio, então o ícone nunca é o único portador (WCAG 1.4.1).",
+      "Recusa e erro são ditos por texto no apoio e pela troca de desenho da figura, não só pelo tom vermelho (WCAG 1.4.1).",
+      "O botão de remover tem o nome do arquivo no nome acessível: cinco botões chamados Remover são cinco alvos indistinguíveis (WCAG 2.4.6).",
+      "O anel de foco aparece no tile inteiro, não no texto do nome, com o mesmo token de foco dos outros componentes (WCAG 2.4.7).",
+      "O progresso tem role=progressbar com aria-valuenow e o percentual também em texto no apoio."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "2.4.6",
+      "2.4.7",
+      "4.1.2"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Na leitura, chega ao link de cada anexo na ordem da grade. No envio, chega ao botão de remover de cada um."
+      },
+      {
+        "tecla": "Enter no link",
+        "comportamento": "Abre ou baixa o arquivo, como qualquer link com download."
+      }
+    ]
+  },
+  "conteudo": {
+    "nome": [
+      "O nome do arquivo como ele é, com extensão. Não se renomeia para exibição: é pelo nome que quem anexou reconhece o que mandou.",
+      "Nome longo trunca no fim, com o nome inteiro no title."
+    ],
+    "apoio": [
+      "Formato em maiúsculas e nome comum — PDF, JPG —, depois o tamanho em pt-BR com uma casa: 'PDF · 1,1 MB'.",
+      "Sem tamanho conhecido, só o formato. Nunca '0 KB'.",
+      "Na recusa, o número que a pessoa precisa: 'tem 14,2 MB — o limite é 10 MB'. Ruim: 'Arquivo inválido.'"
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon",
+      "ucam-icon-button"
+    ],
+    "usada_por": [
+      "ucam-file-field"
+    ]
+  },
+  "vs": [
+    {
+      "componente": "file-field",
+      "diferenca": "O File Field é o CAMPO: escolhe, valida e diz a regra de formato e tamanho. O Anexo é o ARQUIVO: a peça que o campo mostra depois da escolha, e a mesma que o detalhe mostra depois do envio.",
+      "escolha": "Para receber arquivo, File Field. Para mostrar arquivo que já existe, Anexo solto numa grade."
+    },
+    {
+      "componente": "list-item",
+      "diferenca": "O ListItem é a linha de uma lista de registros, com divisor e largura inteira. O Anexo é uma peça com contorno próprio, que fica lado a lado com outras.",
+      "escolha": "Arquivos de um registro, Anexo. Uma lista de documentos que é a própria tela — um repositório, um histórico de arquivos —, ListItem."
+    }
+  ],
+  "exemplos": [
+    {
+      "titulo": "Leitura: os anexos de um requerimento",
+      "codigo": "<ul class=\"ucam-anexos\">\n  @for (a of requerimento().anexos; track a.id) {\n    <li><ucam-anexo [file]=\"a\" /></li>\n  }\n</ul>"
+    },
+    {
+      "titulo": "Envio: o que o File Field monta para cada arquivo",
+      "codigo": "<ucam-anexo [file]=\"arquivo\" removable (remove)=\"tirar($event)\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Mostrar os anexos do registro onde o registro é lido.",
+      "evite": "Deixar o anexo só no formulário de envio.",
+      "porque": "É o defeito que originou o componente: o aluno anexa, e quem analisa não vê."
+    },
+    {
+      "faca": "Escrever formato e tamanho no apoio.",
+      "evite": "Confiar só no ícone para dizer o formato.",
+      "porque": "O ícone é decorativo para o leitor de tela, e três desenhos de arquivo parecidos não se distinguem numa olhada."
+    },
+    {
+      "faca": "Deixar o tile inteiro ser o link.",
+      "evite": "Um botão Baixar ao lado do nome.",
+      "porque": "Com o link no nome e o botão ao lado, são dois alvos para a mesma ação, e o leitor de tela anuncia os dois."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "A aparência da grade e do tile, incluindo os tons de recusa e erro e o link esticado. O CSS não formata tamanho nem escolhe o ícone: o markup chega com o texto e o desenho certos.",
+      "raiz": ".ucam-anexo",
+      "estado": "Estado por modificador no tile: --recusado e --erro. O envio em andamento é a presença da barra de progresso.",
+      "variaveis": [
+        "--ucam-color-surface-default",
+        "--ucam-color-surface-sunken",
+        "--ucam-color-border-subtle",
+        "--ucam-color-border-default",
+        "--ucam-color-border-focus",
+        "--ucam-color-text-primary",
+        "--ucam-color-text-secondary",
+        "--ucam-color-feedback-danger-foreground",
+        "--ucam-color-feedback-danger-background",
+        "--ucam-color-feedback-danger-border",
+        "--ucam-space-inset-sm",
+        "--ucam-space-stack-sm",
+        "--ucam-space-inline-sm"
+      ]
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/anexo/ucam-anexo.ts"
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "chip",
+  "name": "Chip",
+  "selector": "ucam-chip",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Pastilha que torna visível um recorte já aplicado, com o botão que o desfaz. Responde a duas perguntas que nenhuma tela do parque responde hoje: o que está filtrando esta lista, e como tiro este filtro. Também serve como marcador de pertencimento em lista — os campi de um coordenador — e nesse caso não tem botão.",
+  "quando_usar": [
+    "Uma listagem está filtrada e a tela precisa dizer o que está filtrando e como desfazer.",
+    "Vários recortes foram aplicados ao mesmo tempo e cada um precisa poder sair sozinho.",
+    "Um registro pertence a vários grupos e a lista deles cabe inline — os campi de um coordenador."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 10 (Pesquisa de Requerimento)",
+        "problema": "os filtros são aplicados num painel que colapsa depois da busca. A lista fica filtrada e nada na tela diz por quê — a única forma de saber é reabrir o painel e ler os campos um a um"
+      },
+      {
+        "tela": "image 10 (Pesquisa de Requerimento)",
+        "problema": "não há como remover um filtro isolado: existe LIMPAR, que apaga todos, e refazer a busca inteira"
+      },
+      {
+        "tela": "Protocolo — Listagem de setores",
+        "campo": "campi do integrante",
+        "problema": "os campi de cada pessoa vêm concatenados numa célula em texto corrido, separados por vírgula — a lista não tem forma e quebra sem critério ao estreitar"
+      }
+    ],
+    "conclusao": "Filtro invisível é filtro que engana: a pessoa lê uma lista parcial acreditando que é a lista inteira. O chip devolve o recorte à tela e dá a ele um botão de desfazer individual."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "A pastilha. Mesma altura do selo de situação, com recuo assimétrico: mais folga à esquerda, menos à direita, porque o botão de remover ocupa o lado direito. O que muda entre chip e selo é a horizontal, nunca a vertical — dois marcadores na mesma fileira com alturas diferentes leem como defeito.",
+      "classe": "ucam-chip"
+    },
+    {
+      "parte": "dimensao",
+      "obrigatorio": false,
+      "descricao": "O prefixo que nomeia o que está filtrado: Setor:, Modalidade:. Obrigatório quando há mais de um chip, porque Secretaria Acadêmica sozinho não diz se é setor de origem, de destino ou lotação de quem analisa."
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": true,
+      "descricao": "O valor do recorte. Caption, caixa natural, sem quebra de linha."
+    },
+    {
+      "parte": "remover",
+      "obrigatorio": false,
+      "descricao": "Botão circular com o x, presente quando removable é verdadeiro. Tem nome acessível próprio que inclui o valor — Remover filtro Setor —, porque cinco chips com cinco botões chamados Remover são cinco alvos indistinguíveis no leitor de tela."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O valor do recorte ou do marcador."
+    },
+    {
+      "nome": "dimension",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O nome da dimensão filtrada, renderizado antes do rótulo com dois-pontos. Nulo em chip de pertencimento, onde não há dimensão a nomear."
+    },
+    {
+      "nome": "removable",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Mostra o botão de remover. Verdadeiro por padrão porque o caso dominante é filtro aplicado; falso no chip que só marca pertencimento, onde um x prometeria desvincular a pessoa do campus."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'brand' | 'neutral'",
+      "default": "'brand'",
+      "descricao": "brand no filtro aplicado: contorno de controle e texto primário, como o campo e o botão secundário ao lado. O tinto da marca saiu pela ADR-022, porque a tela já gasta o bordô na ação primária e no item ativo. neutral no marcador de pertencimento, que é dado e não escolha: filete mais leve e texto secundário. Nenhum dos dois leva poço cinza.",
+      "valores": {
+        "brand": {
+          "uso": "Recorte aplicado pela pessoa: filtro, busca ativa, período escolhido.",
+          "tokens": {
+            "fundo": "color.surface.default",
+            "texto": "color.text.primary",
+            "borda": "color.border.default"
+          }
+        },
+        "neutral": {
+          "uso": "Marcador de pertencimento que veio do dado: campi, modalidades, tags do registro.",
+          "limite": "Sem botão de remover — removable precisa ser falso, ou o x promete uma ação de escrita que a lista não tem.",
+          "classe": "ucam-chip--neutral",
+          "tokens": {
+            "fundo": "color.surface.default",
+            "texto": "color.text.secondary",
+            "borda": "color.border.subtle"
+          }
+        }
+      }
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "remove",
+      "payload": "void",
+      "descricao": "Emitido ao acionar o botão de remover. O chip NÃO se remove sozinho: quem sabe se o filtro ainda vale é a aplicação, e um chip que some antes de a lista recarregar mente sobre o estado."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Não é botão de filtro. O chip mostra o que JÁ está aplicado; escolher o filtro é trabalho do select, do combobox ou do segmentado.",
+      "Não é selo de situação. Situação é dado do registro e usa badge, com tom semântico; chip é recorte da consulta.",
+      "Não é ação. Chip com um verbo dentro (Exportar) é botão mal vestido.",
+      "Máximo de seis chips visíveis. Acima disso a fileira vira parágrafo e a pessoa perde a conta do que aplicou — mostrar cinco mais um contador e mais 3 filtros é preferível.",
+      "Não usar chip para o recorte que já está representado por outro controle visível na tela. Duas representações do mesmo filtro divergem no primeiro bug.",
+      "Chip de pertencimento não recebe botão de remover — o x prometeria desvincular o registro, que é escrita, numa tela de leitura."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "A fileira de chips fica dentro de um contêiner com aria-live=polite: remover um filtro muda a lista abaixo, e sem anúncio a mudança acontece em silêncio para quem não vê a tela.",
+      "O botão de remover tem nome acessível que inclui a dimensão ou o valor: Remover filtro Setor. Cinco botões chamados Remover são cinco alvos indistinguíveis.",
+      "Depois de remover, o foco vai para o chip seguinte, ou para o contêiner da fileira quando era o último — foco perdido no body devolve a pessoa ao topo da página.",
+      "Alvo do botão de remover com no mínimo 24px de área efetiva, mesmo o desenho sendo menor (WCAG 2.5.8).",
+      "O ícone x é decorativo (aria-hidden); quem nomeia é o aria-label do botão.",
+      "O tom não é o único portador de significado: a dimensão escrita antes do valor diz o que a cor não diz (WCAG 1.4.1).",
+      "Contraste do texto sobre o fundo da pastilha mínimo 4.5:1, nos dois tons e nos dois temas."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "1.4.3",
+      "2.4.3",
+      "2.5.8",
+      "4.1.2",
+      "4.1.3"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Vai para o botão de remover. A pastilha em si não é focável — não há nada a fazer com ela além de remover."
+      },
+      {
+        "tecla": "Enter / Espaço",
+        "comportamento": "Remove o filtro e move o foco para o chip seguinte."
+      }
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Dimensão e valor separados por dois-pontos: Setor: Secretaria Acadêmica.",
+      "O valor aparece como a pessoa o escolheu, não como o banco o guarda: EAD Campos, não modalidade_ead_campos.",
+      "Sem a palavra filtro dentro do chip — a fileira inteira já é a lista de filtros.",
+      "Caixa natural (ADR-003)."
+    ],
+    "exemplos": {
+      "bom": [
+        "Setor: Secretaria Acadêmica",
+        "Modalidade: EAD Campos",
+        "Período: 01/08 a 31/08",
+        "Araruama · EAD"
+      ],
+      "ruim": [
+        "SECRETARIA ACADÊMICA",
+        "Filtro: setor = 3",
+        "Secretaria Acadêmica (sem dizer qual dimensão)",
+        "Exportar"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon",
+      "ucam-icon-button"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-listagem-crud",
+      "padrao-triagem-lista-detalhe",
+      "ucam-data-table",
+      "ucam-list-item",
+      "ucam-section-bar"
+    ]
+  },
+  "migracao": {
+    "de": "Painel de filtros colapsável e célula com valores concatenados por vírgula",
+    "mapa": [
+      {
+        "legado": "painel de filtros que colapsa depois da busca",
+        "novo": "painel para escolher, mais uma fileira de chips para mostrar o que ficou",
+        "nota": "Não é substituição: o painel continua existindo. O que muda é que o estado aplicado passa a ser visível fora dele."
+      },
+      {
+        "legado": "botão LIMPAR que apaga todos os filtros",
+        "novo": "um x por chip, mais Limpar tudo ao fim da fileira quando houver três ou mais",
+        "nota": "O botão global continua útil; o que faltava era a remoção individual."
+      },
+      {
+        "legado": "célula com Araruama, Anchieta, Além Paraíba em texto corrido",
+        "novo": "chips com tone=neutral e removable=false",
+        "nota": "A conversão muda a semântica: o texto corrido era uma string, os chips são itens — o que permite quebrar a fileira sem partir um nome no meio."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Filtros aplicados",
+      "codigo": "<div class=\"ucam-cluster\" aria-live=\"polite\">\n  @for (f of filtros(); track f.id) {\n    <ucam-chip [dimension]=\"f.dimensao\" [label]=\"f.valor\" (remove)=\"tirar(f.id)\" />\n  }\n</div>"
+    },
+    {
+      "titulo": "Marcador de pertencimento, sem remover",
+      "codigo": "<ucam-chip tone=\"neutral\" [removable]=\"false\" label=\"Araruama · EAD\" />"
+    },
+    {
+      "titulo": "Fileira com corte e contador",
+      "codigo": "@for (f of filtros().slice(0, 5); track f.id) {\n  <ucam-chip [dimension]=\"f.dimensao\" [label]=\"f.valor\" (remove)=\"tirar(f.id)\" />\n}\n@if (filtros().length > 5) {\n  <span class=\"ucam-field__hint\">e mais {{ filtros().length - 5 }} filtros</span>\n}"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Nomear a dimensão antes do valor quando houver mais de um chip.",
+      "evite": "Secretaria Acadêmica sozinho numa fileira de cinco chips.",
+      "porque": "Sem a dimensão não se sabe se aquilo é setor de origem, de destino ou lotação de quem analisa — e a lista filtrada parece a lista inteira."
+    },
+    {
+      "faca": "Pôr a fileira dentro de uma região aria-live=polite.",
+      "evite": "Remover o filtro e recarregar a lista em silêncio.",
+      "porque": "Quem não vê a tela não percebe que a lista mudou, e continua lendo os resultados anteriores como se fossem os novos."
+    },
+    {
+      "faca": "Incluir o valor no nome acessível do botão de remover.",
+      "evite": "Cinco botões chamados Remover.",
+      "porque": "Na lista de controles do leitor de tela, cinco Remover idênticos não permitem escolher qual filtro tirar."
+    },
+    {
+      "faca": "Mover o foco para o chip seguinte depois de remover.",
+      "evite": "Deixar o foco cair no body.",
+      "porque": "Foco perdido devolve a pessoa ao topo da página, e remover três filtros passa a custar três viagens de volta."
+    },
+    {
+      "faca": "Usar tone=neutral e removable=false em marcador de pertencimento.",
+      "evite": "Chip tinto com x numa célula de listagem.",
+      "porque": "O tinto diz escolha de quem usa a tela, e o x promete desvincular o registro — duas mentiras numa pastilha só."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "badge",
+      "diferenca": "Status-badge mostra um DADO do registro, que o sistema decidiu; chip mostra uma ESCOLHA de quem está usando a tela, e por isso pode ser removido.",
+      "escolha": "Setor: Secretaria, Modalidade: EAD: são o filtro aplicado, e o x que os remove é a promessa que o chip cumpre."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Pastilha com botão opcional dentro. O aria-label do botão e o aria-live do contêiner são responsabilidade do markup.",
+      "raiz": ".ucam-chip",
+      "estado": "hover do botão de remover pinta um disco de 15% da tinta corrente. A pastilha em si não tem estado.",
+      "variaveis": [
+        "--ucam-color-action-primary-subtle",
+        "--ucam-color-action-primary-default",
+        "--ucam-size-marcador",
+        "--ucam-radius-pill",
+        "--ucam-typography-caption-font-size"
+      ],
+      "nota": "A altura vem do mesmo token do selo de situação de propósito: os dois convivem na mesma fileira e alturas diferentes leem como defeito de alinhamento, não como distinção de papel."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/chip/ucam-chip.ts — pronto. Rótulo, dimensão opcional e o botão de remover com nome acessível próprio; emite remove e para aí. O foco depois da remoção é da FILEIRA, não do chip: ele não conhece os irmãos, e procurar nextElementSibling quebraria no dia em que houvesse um separador entre dois."
+  }
+}

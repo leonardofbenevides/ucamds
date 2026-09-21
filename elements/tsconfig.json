@@ -1,0 +1,43 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "types": ["vite/client", "node"],
+    "paths": {
+      // A fonte de ui/ resolveria @angular/* no node_modules dela, que é
+      // Angular 21 — duas identidades de tipo para a mesma classe. Estes paths
+      // prendem todo import de pacote ao node_modules deste pacote. É o mesmo
+      // remédio de site/tsconfig.json, pelo mesmo motivo.
+      "@angular/*": ["./node_modules/@angular/*"],
+      "@ng-icons/*": ["./node_modules/@ng-icons/*"],
+      "rxjs": ["./node_modules/rxjs"],
+      "rxjs/*": ["./node_modules/rxjs/*"],
+      "@ucam/ui": ["../ui/projects/ui/src/public-api.ts"],
+      "@/*": ["../ui/projects/ui/src/lib/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  // A fonte da lib precisa entrar no programa do compilador, senão o plugin
+  // não a compila em AOT. Sem isto ele cai para JIT em silêncio: o bundle
+  // ainda funciona, mas carrega o compilador do Angular junto — foi assim que
+  // a primeira medição saiu 525 KB em vez do valor real.
+  "include": ["src/**/*.ts", "../ui/projects/ui/src/**/*.ts"]
+}

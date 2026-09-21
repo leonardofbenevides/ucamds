@@ -1,0 +1,285 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "choice-card",
+  "name": "ChoiceCard",
+  "selector": "ucam-choice-card",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Opção de escolha apresentada como cartão com ícone, título e uma linha de explicação. É um radio ou checkbox de verdade por baixo — o cartão é a etiqueta, não um substituto do controle.",
+  "quando_usar": [
+    "A escolha muda o caminho que vem depois e cada alternativa precisa de uma linha de explicação: a natureza do requerimento, o tipo de matrícula.",
+    "As alternativas são poucas e a decisão vale um bloco de tela, não uma linha.",
+    "A escolha é a primeira coisa que a tela pede e precisa parecer o assunto dela."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 7 (Novo Requerimento)",
+        "problema": "a natureza do requerimento é um select de lista longa cujos rótulos são códigos internos; escolher errado só se descobre depois do envio, quando o requerimento cai no setor errado"
+      },
+      {
+        "tela": "image 9 (Natureza do Requerimento)",
+        "problema": "as naturezas têm descrição cadastrada que nenhuma tela de escolha mostra — a informação existe no banco e não chega a quem escolhe"
+      },
+      {
+        "tela": "image 7",
+        "problema": "campos dependentes (natureza e tipo) sem dependência declarada: o segundo select abre com a lista inteira antes de o primeiro ser escolhido"
+      }
+    ],
+    "conclusao": "Escolha de até seis opções com explicação vira cartão visível. Acima disso volta a ser select — cartão em lista longa é pior que lista."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<label> envolvendo o controle. O clique em qualquer ponto do cartão marca a opção.",
+      "classe": "ucam-choice-card"
+    },
+    {
+      "parte": "controle",
+      "obrigatorio": true,
+      "descricao": "<input type=radio> ou <input type=checkbox> real, visualmente escondido mas focável e alcançável pelas setas."
+    },
+    {
+      "parte": "figura",
+      "obrigatorio": false,
+      "descricao": "Ícone em chip. Decorativo — o título nomeia a opção.",
+      "classe": "ucam-choice-card__figura"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": true,
+      "descricao": "Nome da opção, na palavra que a pessoa usa.",
+      "classe": "ucam-choice-card__titulo"
+    },
+    {
+      "parte": "apoio",
+      "obrigatorio": false,
+      "descricao": "Uma linha dizendo o que cai nessa opção. É onde a descrição cadastrada da natureza finalmente aparece.",
+      "classe": "ucam-choice-card__apoio"
+    },
+    {
+      "parte": "marca",
+      "obrigatorio": true,
+      "descricao": "Sinal de escolhido: check no canto. Reforça a borda, que sozinha é sutil demais em tela de secretaria.",
+      "classe": "ucam-choice-card__marca"
+    }
+  ],
+  "props": [
+    {
+      "nome": "value",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Valor emitido pelo grupo quando esta opção é a escolhida."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Título do cartão."
+    },
+    {
+      "nome": "description",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Uma linha. Duas já não são lidas na hora de escolher."
+    },
+    {
+      "nome": "icon",
+      "tipo": "UcamIconName | null",
+      "default": "null",
+      "descricao": "Ícone do conjunto curado. Nome fora do conjunto é erro de tipo, não ícone vazio."
+    },
+    {
+      "nome": "selection",
+      "tipo": "'single' | 'multiple'",
+      "default": "'single'",
+      "descricao": "Define o controle por baixo.",
+      "valores": {
+        "single": {
+          "uso": "Radio. Uma opção entre as do grupo.",
+          "limite": "O grupo precisa de <fieldset> com <legend> — sem isso o nome do grupo não é anunciado."
+        },
+        "multiple": {
+          "uso": "Checkbox. Várias opções ao mesmo tempo — unidades atendidas por um setor.",
+          "limite": "Com marcação múltipla o cartão precisa de quadrado, não de círculo: a forma do controle é o que diz se a escolha é exclusiva."
+        }
+      }
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Opção indisponível. Exige motivo visível ao lado — cartão apagado sem explicação é a queixa do legado."
+    },
+    {
+      "nome": "checked",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Estado de escolha. Two-way com o grupo."
+    },
+    {
+      "nome": "name",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Agrupa os radios da mesma pergunta. Sem ele as setas não andam entre as opções e duas ficam marcáveis ao mesmo tempo."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "checkedChange",
+      "payload": "boolean",
+      "descricao": "Escolha mudou. Completa o two-way de checked."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "active",
+    "disabled",
+    "checked"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar acima de seis opções: vira parede de cartões e o select volta a ser melhor.",
+      "Não usar quando as opções não precisam de explicação — Sim/Não em cartão é desperdício de tela.",
+      "Não usar cartão sem controle por baixo. Div com clique não é escolha: não entra na tabulação, não vai no formulário e não é anunciada.",
+      "Não desabilitar sem dizer por quê."
+    ],
+    "motivo": "O ganho do cartão é caber a explicação junto da opção. Sem explicação, ele é um select mais caro."
+  },
+  "acessibilidade": {
+    "papel": "radio",
+    "requisitos": [
+      "Há um <input type=radio> ou <input type=checkbox> real por cartão. O cartão é o <label>.",
+      "O grupo é <fieldset> com <legend> visível, ou role=radiogroup com aria-labelledby.",
+      "As setas percorrem as opções do grupo de radio — comportamento nativo, preservado.",
+      "O anel de foco aparece no cartão inteiro, não no controle escondido.",
+      "O estado escolhido aparece por marca visível além da borda e do fundo (WCAG 1.4.1).",
+      "Cartão desabilitado mantém o motivo em texto associado por aria-describedby.",
+      "Contraste da borda de escolhido mínimo 3:1 contra a superfície (WCAG 1.4.11)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.7",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Título é a palavra que a pessoa usa, não o código do cadastro.",
+      "Apoio dá exemplos do que cai ali: 'Matrícula, vínculo, histórico'.",
+      "Motivo de indisponibilidade é escrito, e diz o que fazer para liberar."
+    ],
+    "exemplos": {
+      "bom": [
+        "Declaração — Matrícula, vínculo, histórico",
+        "Financeiro — Boletos, negociação, restituição",
+        "Acadêmico — indisponível para alunos com matrícula trancada"
+      ],
+      "ruim": [
+        "NAT_DECL_01",
+        "Outros",
+        "Acadêmico (desabilitado)"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-checkbox",
+      "ucam-icon-tile"
+    ],
+    "usada_por": [
+      "ucam-drawer"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / md-select com códigos internos",
+    "mapa": [
+      {
+        "legado": "<md-select> de naturezas",
+        "novo": "grupo de choice-card com selection=single",
+        "nota": "Só até seis opções. Acima disso, ucam-combobox com busca."
+      },
+      {
+        "legado": "descrição da natureza guardada e nunca exibida",
+        "novo": "description",
+        "nota": "O dado já existe no cadastro; passa a aparecer onde a escolha acontece."
+      },
+      {
+        "legado": "segundo select aberto antes do primeiro",
+        "novo": "não migra para cá",
+        "nota": "Dependência entre campos é responsabilidade do ucam-select, que já declara a regra."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Natureza do requerimento",
+      "codigo": "<fieldset class=\"ucam-choice-grid\">\n  <legend class=\"ucam-field__label\">Natureza do requerimento</legend>\n  @for (n of naturezas(); track n.id) {\n    <ucam-choice-card\n      [value]=\"n.id\"\n      [label]=\"n.nome\"\n      [description]=\"n.descricao\"\n      [icon]=\"n.icone\"\n      [(checked)]=\"n.escolhida\" />\n  }\n</fieldset>"
+    },
+    {
+      "titulo": "Escolha múltipla",
+      "codigo": "<ucam-choice-card\n  selection=\"multiple\"\n  value=\"ead\"\n  label=\"Unidades EAD\"\n  description=\"Além Paraíba, Anchieta, Araruama\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Mostrar a descrição da opção junto da opção.",
+      "evite": "Um select cujos rótulos são códigos do cadastro.",
+      "porque": "Escolher a natureza errada só se descobre quando o requerimento cai no setor errado, dias depois."
+    },
+    {
+      "faca": "Manter um input real por baixo do cartão.",
+      "evite": "Uma div com (click) e uma classe de selecionado.",
+      "porque": "Div não entra na tabulação, não é anunciada como escolha e não vai no envio do formulário."
+    },
+    {
+      "faca": "Voltar ao select ou ao combobox acima de seis opções.",
+      "evite": "Grade de doze cartões.",
+      "porque": "Acima de seis o cartão perde a vantagem de ver tudo de uma vez e ganha a desvantagem de ocupar a tela inteira."
+    },
+    {
+      "faca": "Marcar o escolhido com check além da borda.",
+      "evite": "Apenas engrossar a borda.",
+      "porque": "Em monitor de secretaria com brilho baixo a diferença de borda desaparece, e a escolha some junto."
+    },
+    {
+      "faca": "Escrever o motivo ao desabilitar uma opção.",
+      "evite": "Cartão apagado sem explicação.",
+      "porque": "Sem motivo, quem precisa daquela opção não sabe se é erro do sistema ou regra da instituição."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "checkbox",
+      "diferenca": "Checkbox marca opções independentes, e nenhuma exclui a outra; choice-card escolhe UMA entre alternativas excludentes.",
+      "escolha": "Se escolher uma necessariamente descarta as outras, é choice-card — caixas para escolha única ensinam que dá para marcar duas."
+    },
+    {
+      "componente": "select",
+      "diferenca": "Select esconde as opções atrás de um menu e economiza espaço; choice-card deixa todas à vista para serem comparadas.",
+      "escolha": "Poucas opções que a pessoa precisa ler lado a lado antes de decidir — modalidade, campus, tipo de requerimento: choice-card."
+    },
+    {
+      "componente": "radio-group",
+      "diferenca": "choice-card é a mesma escolha exclusiva quando cada alternativa precisa de figura, título e parágrafo para ser entendida; radio-group é quando o rótulo e uma linha de apoio bastam."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "choice-card.json",
+      "raiz": "<label class=\"ucam-choice-card\"> com <input type=radio|checkbox> dentro",
+      "estado": ":has(input:checked) pinta borda, fundo e a marca de escolhido",
+      "nota": "A grade é .ucam-choice-grid, um <fieldset> com <legend>."
+    },
+    "trilho_b": "O host usa display:contents e renderiza um <label> real com o input dentro, escondido por opacity mas focável — as setas do grupo de radio continuam sendo as do navegador e nada reimplementa comportamento nativo. O anel de foco é desenhado no cartão inteiro por has-[:focus-visible]. NÃO entrega: o <fieldset> e a <legend> do grupo, que são responsabilidade de quem compõe a pergunta."
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "icon-tile",
+  "name": "IconTile",
+  "selector": "ucam-icon-tile",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "conteudo",
+  "description": "Fundo atrás de um ícone, onde o ícone precisa discriminar um item de seus irmãos: a grade de módulos, a lista de setores, os cartões de escolha. Não é botão, não é avatar e não é badge — é o suporte visual que faz um traço de 20px ter presença numa fileira de vinte e cinco.",
+  "quando_usar": [
+    "Uma grade de módulos, setores ou naturezas em que o ícone é o que distingue um item dos vizinhos.",
+    "Um traço de 20px precisa ter presença numa fileira de vinte e cinco irmãos.",
+    "Um cartão de escolha precisa de âncora visual à esquerda do título."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Portal e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "Portal — Grade de módulos",
+        "problema": "vinte e cinco módulos com ícones soltos do mesmo tamanho e da mesma cor. Sem fundo que os separe do cartão, a grade vira uma parede de traços cinzas e o que distingue um módulo do outro passa a ser só o rótulo"
+      },
+      {
+        "tela": "Portal — Grade de módulos",
+        "problema": "primeira versão do ladrilho usava 12% do bordô com traço em bordô cheio, nos vinte e cinco. A cor repetida não distinguia nada e ainda somava peso de marca a uma tela que já tem a marca na faixa"
+      },
+      {
+        "tela": "Protocolo — Listagem de setores",
+        "problema": "os setores não têm figura na lista, então a coluna da esquerda alterna entre avatar de pessoa e nada, e o olho perde a régua vertical ao descer a lista"
+      }
+    ],
+    "conclusao": "O ladrilho nasceu neutro por correção de rota: a cor da marca em todos os irmãos não informa. Cor de marca aqui volta só com o modificador, para o caso em que UM item precisa se destacar dos outros — que é o único caso em que cor de marca informa alguma coisa."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Quadrado de 36px com raio de controle, fundo rebaixado e tinta secundária. Não encolhe (flex none): num item de lista apertado, um ladrilho que cede largura vira um retângulo e deixa de ser ladrilho.",
+      "classe": "ucam-icon-tile"
+    },
+    {
+      "parte": "icone",
+      "obrigatorio": true,
+      "descricao": "Um ícone do conjunto curado, centrado, herdando a tinta do ladrilho. Decorativo — quem nomeia o item é o rótulo ao lado."
+    }
+  ],
+  "props": [
+    {
+      "nome": "icon",
+      "tipo": "UcamIconName",
+      "obrigatorio": true,
+      "descricao": "O ícone. Um desenho por conceito em todo o parque — é aqui que a regra pesa mais, porque o ladrilho existe justamente para o ícone discriminar."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'brand' | 'academico' | 'financeiro' | 'atendimento' | 'gestao' | 'pessoas' | 'acervo'",
+      "default": "'neutral'",
+      "descricao": "neutral é o padrão para irmãos sem classificação. brand destaca UM item de um conjunto — o módulo em que se está, o setor de lotação de quem usa. As seis categorias (ADR-032) discriminam irmãos: cada módulo da grade leva a cor da sua categoria, e a mesma cor identifica o módulo na marquinha da faixa.",
+      "valores": {
+        "categoria": {
+          "uso": "academico, financeiro, atendimento, gestao, pessoas ou acervo: a categoria do módulo, em toda grade de módulos e na marquinha da faixa. Discrimina irmãos — é o oposto de brand, que destaca um. O ícone e o nome escrito continuam carregando a distinção; a cor é reforço (o portão de daltonismo registra os pares que se confundem).",
+          "tokens": {
+            "fundo": "color.categoria.{nome} a 12%",
+            "icone": "color.categoria.{nome}"
+          }
+        },
+        "neutral": {
+          "uso": "Todos os itens de uma grade ou lista. O que os distingue é o desenho do ícone.",
+          "tokens": {
+            "fundo": "color.surface.sunken",
+            "icone": "color.text.secondary"
+          }
+        },
+        "brand": {
+          "classe": "ucam-icon-tile--marca",
+          "uso": "Um item destacado entre irmãos neutros, ou o ladrilho único que identifica o sistema no alto da navegação.",
+          "limite": "Nunca em todos os irmãos ao mesmo tempo. Cor de marca repetida vinte e cinco vezes não destaca nada e rouba peso da ação primária da tela.",
+          "tokens": {
+            "icone": "color.action.primary.default"
+          }
+        }
+      }
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md'",
+      "default": "'md'",
+      "descricao": "md é 40px, a medida da grade de módulos e do item de lista (a mesma do item de navegação). sm é 28px: a marquinha do módulo na faixa e a fileira densa onde o ladrilho acompanha texto de apoio em vez de título."
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não é botão. O ladrilho não recebe clique nem foco; quem recebe é o cartão ou o item de lista em volta.",
+      "Não usar tone=brand em todos os irmãos. É a correção de rota que originou o padrão neutro — cor igual em vinte e cinco itens não discrimina.",
+      "Não usar como avatar de pessoa. Pessoa tem avatar, com iniciais ou foto; ladrilho é para coisa, não para gente.",
+      "Não usar como selo de situação. Ladrilho não carrega estado — não muda de cor conforme o registro.",
+      "Não pôr contagem dentro do ladrilho. Número dentro de um quadrado de 36px ao lado de um ícone é dois significados no mesmo espaço.",
+      "Não usar isolado. O ladrilho só se justifica onde há irmãos a discriminar; sozinho numa tela, é um quadrado cinza em volta de um ícone."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O ladrilho inteiro é decorativo: aria-hidden=true na raiz, incluindo o ícone. Quem nomeia o item é o rótulo ao lado (WCAG 1.1.1).",
+      "O ícone nunca é o único portador do significado do item (WCAG 1.4.1): o nome do módulo ou do setor está sempre escrito.",
+      "Contraste do ícone sobre o fundo do ladrilho mínimo 3:1 — é elemento gráfico, não texto (WCAG 1.4.11) — verificado no build nos dois tons e nos dois temas.",
+      "O ladrilho não entra na ordem de tabulação e não recebe title: o alvo é o cartão em volta, e um title no ladrilho produziria uma segunda dica sobre o mesmo item.",
+      "Em tema escuro o fundo rebaixado continua abaixo da superfície do cartão; inverter essa relação faria o ladrilho ler como algo que sobe da tela em vez de um poço."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.4.1",
+      "1.4.11"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O ladrilho não tem texto. Todo conteúdo é o rótulo do item que ele acompanha.",
+      "Um desenho por conceito: graduationCap é graduação, bookOpen é pós-graduação. Repetir o mesmo desenho em módulos diferentes anula o ladrilho."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon"
+    ],
+    "usada_por": [
+      "ucam-app-shell",
+      "ucam-card",
+      "ucam-choice-card",
+      "ucam-list-item"
+    ]
+  },
+  "migracao": {
+    "de": "Ícone solto dentro do cartão de módulo e coluna vazia na lista",
+    "mapa": [
+      {
+        "legado": "<md-icon> solto no cartão de módulo",
+        "novo": "ladrilho neutro com o ícone dentro",
+        "nota": "A conversão só rende se cada módulo receber um desenho DIFERENTE. Vinte e cinco ladrilhos com o mesmo capelo trocam um problema por outro mais bonito."
+      },
+      {
+        "legado": "coluna da esquerda vazia em lista de setores",
+        "novo": "ladrilho na figura do item",
+        "nota": "Resolve a régua vertical: com figura em todos os itens, o olho desce a lista por um eixo só."
+      },
+      {
+        "legado": "ícone tingido de bordô em todos os itens",
+        "novo": "tone=neutral",
+        "nota": "Não é perda de identidade: a marca está na faixa e no rail. No ladrilho ela não informava."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Na grade de módulos",
+      "codigo": "<a class=\"ucam-card\" href=\"/academico\">\n  <ucam-icon-tile icon=\"graduationCap\" />\n  <strong>Acadêmico graduação</strong>\n</a>"
+    },
+    {
+      "titulo": "Como figura de item de lista",
+      "codigo": "<ucam-list-item title=\"Biblioteca\" support=\"3 integrantes\">\n  <ucam-icon-tile icon=\"bookOpen\" />\n</ucam-list-item>"
+    },
+    {
+      "titulo": "O item destacado entre irmãos",
+      "codigo": "<ucam-icon-tile icon=\"clipboardList\" tone=\"brand\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Dar um desenho diferente a cada irmão.",
+      "evite": "O mesmo ícone repetido na grade inteira.",
+      "porque": "O ladrilho existe para o ícone discriminar; com o mesmo desenho em todos, ele só engorda a fileira."
+    },
+    {
+      "faca": "Manter o tom neutro em conjuntos.",
+      "evite": "Tingir os vinte e cinco de bordô.",
+      "porque": "Cor repetida não distingue e ainda soma peso de marca a uma tela que já tem a marca na faixa."
+    },
+    {
+      "faca": "Marcar o ladrilho inteiro como decorativo.",
+      "evite": "Dar aria-label ou title ao ladrilho.",
+      "porque": "O item já tem nome no rótulo; um segundo nome faz o leitor de tela anunciar o mesmo item duas vezes."
+    },
+    {
+      "faca": "Usar avatar para pessoa e ladrilho para coisa.",
+      "evite": "Ladrilho com a inicial do nome de alguém.",
+      "porque": "São dois componentes com regras diferentes — o avatar tem tons por pessoa e fallback de foto, o ladrilho não."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Um quadrado com o svg dentro. O aria-hidden é responsabilidade do markup.",
+      "raiz": ".ucam-icon-tile",
+      "estado": "Sem estado. A única variação é o modificador de tom.",
+      "variaveis": [
+        "--ucam-color-surface-sunken",
+        "--ucam-color-text-secondary",
+        "--ucam-color-action-primary-default",
+        "--ucam-radius-control"
+      ],
+      "nota": "O tom de marca vem de color-mix a 12% sobre transparente, e não de um token próprio: é a única ocorrência de fundo tinto suave fora do chip, e criar semântico para um caso só seria inventar camada."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/icon-tile/ucam-icon-tile.ts — pronto. Ícone, tom e tamanho. O host é aria-hidden e não entra na ordem de tabulação: quem recebe clique e foco é o cartão em volta."
+  },
+  "vs": [
+    {
+      "componente": "icon",
+      "diferenca": "Icon é o traço; IconTile é o FUNDO atrás do traço. O ladrilho existe quando um ícone de 20px precisa ter presença numa fileira de vinte e cinco irmãos.",
+      "escolha": "O ícone é o que DISCRIMINA um item dos outros: grade de módulos, lista de setores, cartão de escolha."
+    },
+    {
+      "componente": "avatar",
+      "diferenca": "Os dois são um símbolo dentro de uma forma, e é por isso que se confundem — mas o IconTile marca uma CATEGORIA e o Avatar marca uma PESSOA. Ladrilho de pessoa apaga a identidade que o Avatar existe para mostrar.",
+      "escolha": "Módulo, setor, natureza de requerimento: coisas que se repetem numa grade."
+    }
+  ]
+}

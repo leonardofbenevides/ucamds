@@ -1,0 +1,277 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "date-field",
+  "name": "DateField",
+  "selector": "ucam-date-field",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Entrada de data com formato indicado, máscara e seletor de calendário. Construído sobre o TextField, com as regras específicas de data que o legado não tem.",
+  "quando_usar": [
+    "Qualquer data digitada pela pessoa: nascimento, abertura, vencimento, período de consulta.",
+    "O legado pede a data em três selects separados e ela vai virar um campo só.",
+    "A precisão não é o dia — mês/ano de competência do SIGFIN — e precisa ser declarada em vez de improvisada."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e APPSUCAM/SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — Novo Requerimento",
+        "campo": "Nascido em",
+        "problema": "sem indicação de formato, sem máscara e sem seletor; o rótulo descreve uma frase, não o dado"
+      },
+      {
+        "tela": "SIGFIN — Movimento de Caixa",
+        "campo": "data",
+        "problema": "campo estreito com botão de calendário anexo, sem formato indicado"
+      },
+      {
+        "tela": "SIGFIN — Cálculo de Mensalidade",
+        "campo": "Data de vencimento",
+        "problema": "campo tão estreito que corta o valor: 10/09/2026 aparece como 10/09/202"
+      },
+      {
+        "tela": "SIGFIN — Arquivo Remessa",
+        "campo": "Mês/Ano",
+        "problema": "campo de mês e ano com a mesma aparência de campo de data completa, sem dizer o que espera"
+      }
+    ],
+    "conclusao": "Nenhum campo de data do parque diz o formato que espera. O contrato torna a dica obrigatória."
+  },
+  "anatomia": [
+    {
+      "parte": "label",
+      "obrigatorio": true
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": true,
+      "descricao": "O formato é OBRIGATÓRIO aqui — é a correção central deste componente."
+    },
+    {
+      "parte": "input",
+      "obrigatorio": true,
+      "descricao": "Aceita digitação com máscara. Nunca é somente leitura com seletor obrigatório."
+    },
+    {
+      "parte": "botao-calendario",
+      "obrigatorio": false,
+      "descricao": "Abre o seletor. É um IconButton com nome acessível."
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "precision",
+      "tipo": "'day' | 'month' | 'year'",
+      "default": "'day'",
+      "descricao": "Define máscara, largura e dica. month resolve o Mês/Ano do SIGFIN."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Omitido, usa a dica padrão da precisão: dd/mm/aaaa, mm/aaaa ou aaaa."
+    },
+    {
+      "nome": "min",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "ISO. Fora do intervalo é erro com mensagem específica, não silêncio."
+    },
+    {
+      "nome": "max",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "errorMessage",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "showPicker",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "O seletor é apoio; digitar sempre funciona. Datas distantes são mais rápidas de digitar."
+    },
+    {
+      "nome": "autocomplete",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Token HTML de autopreenchimento. bday em data de nascimento (WCAG 1.3.5) — estava nos requisitos de acessibilidade e faltava na API."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string | null",
+      "descricao": "Data em ISO (aaaa-mm-dd). A máscara é apresentação; o modelo nunca recebe dd/mm/aaaa."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "filled",
+    "invalid",
+    "disabled"
+  ],
+  "formatacao": {
+    "entrada": "Aceita dd/mm/aaaa e também ddmmaaaa sem separador — a máscara insere as barras.",
+    "saida": "O modelo recebe ISO. Converter na borda evita o clássico erro de mês e dia trocados.",
+    "largura": "Derivada da precisão, com folga para padding e borda. É o que impede o corte visto no SIGFIN."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "A dica de formato é persistente e ligada por aria-describedby — nunca placeholder, que some ao digitar.",
+      "Digitação sempre disponível: seletor obrigatório inviabiliza datas distantes e prejudica quem usa só teclado.",
+      "O botão de calendário é IconButton com nome acessível Escolher data no calendário.",
+      "Data inválida gera mensagem dizendo o esperado: Data inválida. Use dd/mm/aaaa.",
+      "Fora do intervalo diz o limite: A data precisa ser posterior a 01/09/2026.",
+      "autocomplete=bday em data de nascimento (WCAG 1.3.5).",
+      "O seletor é um diálogo com retenção de foco e devolução do foco ao campo ao fechar."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.3.5",
+      "2.1.1",
+      "2.4.3",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Nomeia o dado: Data de nascimento, Vencimento, Desconto antecipado até.",
+      "Nascido em vira Data de nascimento."
+    ],
+    "erro": {
+      "bom": [
+        "Data inválida. Use dd/mm/aaaa.",
+        "A data precisa ser posterior a 01/09/2026.",
+        "Data de nascimento não pode estar no futuro."
+      ],
+      "ruim": [
+        "Campo inválido.",
+        "Erro de data.",
+        "Formato incorreto."
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-field",
+      "ucam-icon-button",
+      "ucam-text-field"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-formulario-entidade"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / input de texto com botão de calendário",
+    "mapa": [
+      {
+        "legado": "Nascido em sem formato",
+        "novo": "ucam-date-field label=\"Data de nascimento\"",
+        "nota": "Ganha dica obrigatória e máscara."
+      },
+      {
+        "legado": "campo Mês/Ano do SIGFIN",
+        "novo": "precision=\"month\"",
+        "nota": "Largura e dica passam a dizer o que o campo espera."
+      },
+      {
+        "legado": "campo estreito cortando o valor",
+        "novo": "largura derivada da precisão"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Data completa",
+      "codigo": "<ucam-date-field label=\"Data de nascimento\" autocomplete=\"bday\" required />"
+    },
+    {
+      "titulo": "Mês e ano",
+      "codigo": "<ucam-date-field label=\"Referência\" precision=\"month\" required />"
+    },
+    {
+      "titulo": "Com intervalo",
+      "codigo": "<ucam-date-field label=\"Vencimento\" [min]=\"hoje()\" errorMessage=\"A data precisa ser posterior a hoje.\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Mostrar o formato esperado no hint, sempre: dd/mm/aaaa.",
+      "evite": "Campo de data sem indicação de formato.",
+      "porque": "Nenhum campo de data do parque diz o que espera. O contrato torna a dica obrigatória."
+    },
+    {
+      "faca": "Dar ao campo largura suficiente para a data completa.",
+      "evite": "Campo estreito que corta o valor digitado.",
+      "porque": "No SIGFIN 10/09/2026 aparece como 10/09/202 — o dado está lá e não se lê."
+    },
+    {
+      "faca": "Diferenciar visualmente a precisão: mês/ano não tem a mesma cara de data completa.",
+      "evite": "Campo de mês e ano idêntico ao de data completa.",
+      "porque": "Aparência igual promete formato igual, e o usuário digita o dia que o campo recusa."
+    },
+    {
+      "faca": "Erro que ensina o formato ou o limite: A data precisa ser posterior a 01/09/2026.",
+      "evite": "'Data inválida' sozinho.",
+      "porque": "Sem o limite nomeado, o usuário tenta a mesma data de novo."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "text-field",
+      "diferenca": "DateField é o TextField com as regras de data por cima: formato indicado, máscara e calendário. Data em TextField cru aceita 31/02 e devolve string que ninguém sabe interpretar.",
+      "escolha": "Qualquer data — inclusive a que o legado hoje pede em três selects separados."
+    }
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para intervalo de datas com dois DateField soltos sem relação declarada: a validação de início antes de fim é do formulário, e sem ela os dois campos aceitam qualquer par.",
+      "Não usar para hora. O contrato cobre data; hora não tem máscara nem seletor aqui, e improvisar com máscara de texto devolve string ambígua.",
+      "Não esconder o formato esperado atrás do seletor de calendário. Quem digita é a maioria, e o formato tem de estar visível antes da primeira tecla.",
+      "Não usar para data aproximada ou parcial sem declarar precision: mês/ano é um valor diferente de dia/mês/ano, e tratá-los como o mesmo campo produz o dia 1 fantasma que o SIGFIN grava hoje."
+    ],
+    "motivo": "Data é o campo onde o legado mais erra em silêncio: aceita o impossível, grava ambíguo e só denuncia meses depois, num relatório. Os limites acima cercam exatamente os casos em que o erro não aparece na tela."
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "O mesmo .ucam-field do campo de texto, com o modificador de data e o <input> por dentro.",
+      "raiz": ".ucam-field--data com .ucam-input",
+      "nota": "Não há máscara nem seletor de calendário no Trilho A: o modificador só dá a largura de uma data e a fonte tabular. O formato aceito vive no .ucam-field__hint, escrito no markup."
+    }
+  }
+}

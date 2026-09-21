@@ -1,0 +1,262 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "progress",
+  "name": "Progress",
+  "selector": "ucam-progress",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "feedback",
+  "description": "Barra que representa uma proporção conhecida: quanto de uma carga está tomado, quanto de uma meta foi cumprido. Não serve para espera de duração desconhecida — isso é Skeleton.",
+  "quando_usar": [
+    "Um upload está em curso e a fração concluída é conhecida.",
+    "Uma meta tem um total e um quanto já foi cumprido: vagas ocupadas, arrecadação do mês.",
+    "Um processamento em lote informa quantos itens de quantos já passaram."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e o redesenho interno de 2026 (protocolo-redesign-ux)",
+    "ocorrencias": [
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "problema": "a carga de cada setor só aparece como contagem absoluta ('24 abertos'), sem referência: 24 é muito ou pouco depende de um total que a tela não mostra"
+      },
+      {
+        "tela": "redesenho interno, Gerencial",
+        "problema": "a barra foi desenhada com div e width inline em seis cartões, com a cor decidida por tela e sem valor acessível nenhum"
+      },
+      {
+        "tela": "todas",
+        "problema": "o sistema usa overlay bloqueante para espera, e não há vocabulário para proporção — os dois problemas acabam resolvidos com o mesmo desenho"
+      }
+    ],
+    "conclusao": "Proporção conhecida vira barra com valor declarado; espera de duração desconhecida continua sendo Skeleton."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O trilho. É o elemento com role=progressbar e os três valores ARIA.",
+      "classe": "ucam-progress"
+    },
+    {
+      "parte": "preenchimento",
+      "obrigatorio": true,
+      "descricao": "A parte tomada. Decorativa — o valor vive nos atributos ARIA e no texto. O tom pinta o preenchimento, não a trilha: .ucam-progress__fill--info, .ucam-progress__fill--success, .ucam-progress__fill--warning e .ucam-progress__fill--danger. O neutro é o padrão e não leva modificador.",
+      "classe": "ucam-progress__fill"
+    },
+    {
+      "parte": "legenda",
+      "obrigatorio": false,
+      "descricao": "Par de textos abaixo do trilho: o que foi medido à esquerda, a referência à direita.",
+      "classe": "ucam-progress__legenda"
+    }
+  ],
+  "props": [
+    {
+      "nome": "value",
+      "tipo": "number",
+      "obrigatorio": true,
+      "descricao": "Valor atual, na mesma unidade de max."
+    },
+    {
+      "nome": "max",
+      "tipo": "number",
+      "default": "100",
+      "descricao": "Referência. Declarar o total real (por exemplo 40 requerimentos) em vez de converter para porcentagem preserva o número que a pessoa conhece."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome acessível da barra. Nunca 'progresso': diz o que está sendo medido."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'info' | 'success' | 'warning' | 'danger'",
+      "default": "'neutral'",
+      "descricao": "Tinta do preenchimento.",
+      "valores": {
+        "neutral": {
+          "uso": "Proporção sem julgamento — quanto de uma cota foi usado.",
+          "limite": "É o default. Tom colorido sem regra escrita vira decoração."
+        },
+        "info": {
+          "uso": "Andamento normal.",
+          "limite": "—"
+        },
+        "success": {
+          "uso": "Meta cumprida.",
+          "limite": "Não usar para 'carga baixa': carga baixa não é conquista, é estado."
+        },
+        "warning": {
+          "uso": "Aproximando-se do limite.",
+          "limite": "O limiar é decisão do produto e precisa estar escrito na tela, não só na cor."
+        },
+        "danger": {
+          "uso": "Limite estourado.",
+          "limite": "A legenda diz o quanto estourou. Barra vermelha sozinha não informa o excesso."
+        }
+      }
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md'",
+      "default": "'md'",
+      "descricao": "sm tem 4px e vive dentro de cartão de indicador; md tem 8px.",
+      "valores": {
+        "sm": {
+          "uso": "Barra fina dentro de célula de tabela ou de linha de lista, ao lado do número que ela ilustra.",
+          "limite": "Sem legenda nas pontas: nesse degrau elas não cabem, e o número tem de estar ao lado.",
+          "classe": ".ucam-progress--sm"
+        }
+      }
+    },
+    {
+      "nome": "valueText",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto que substitui a leitura numérica padrão: '24 de 40 requerimentos'. Vai para aria-valuetext."
+    },
+    {
+      "nome": "legendStart",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto à esquerda abaixo do trilho: o que foi medido, com unidade. \"24 de 40 abertos\"."
+    },
+    {
+      "nome": "legendEnd",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto à direita: a referência ou o contexto. \"SLA médio 6,4 dias\"."
+    }
+  ],
+  "estados": [
+    "default",
+    "loading"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para espera de duração desconhecida — o certo é Skeleton, que preserva o arranjo da tela.",
+      "Não usar barra sem referência escrita: o preenchimento sozinho não diz de quanto é a parte.",
+      "Não animar o preenchimento em atualização periódica de painel: a barra pulsando a cada dez segundos rouba atenção do dado."
+    ],
+    "motivo": "O legado usa overlay bloqueante para espera e contagem absoluta para carga; nenhum dos dois é proporção."
+  },
+  "vs": [
+    {
+      "componente": "file-field",
+      "diferenca": "A barra do Progress mede uma operação da página inteira. O File Field tem barra própria dentro da linha de cada arquivo, e ela mede só aquele arquivo.",
+      "escolha": "Se o que sobe é arquivo, o campo já resolve — não se põe um Progress ao lado dele. Progress fica para a operação que não é envio de arquivo: o cálculo de mensalidade, a fila sendo processada."
+    },
+    {
+      "componente": "stepper",
+      "diferenca": "Stepper conta ETAPAS NOMEADAS e diz em qual delas se está; Progress é uma proporção sem nome — quanto de um todo foi cumprido. Etapa tem título; fração tem só número.",
+      "escolha": "O que importa é o quanto: upload do arquivo, ocupação de uma meta."
+    }
+  ],
+  "acessibilidade": {
+    "papel": "progressbar",
+    "requisitos": [
+      "role=progressbar com aria-valuenow, aria-valuemin e aria-valuemax na mesma unidade.",
+      "Nome acessível obrigatório por aria-labelledby apontando o rótulo visível, ou aria-label quando não há rótulo na tela.",
+      "aria-valuetext quando a leitura numérica crua não é compreensível: '24 de 40 requerimentos' em vez de '60'.",
+      "Contraste do preenchimento contra o trilho mínimo 3:1 — é elemento gráfico que carrega informação (WCAG 1.4.11).",
+      "O valor aparece em texto ao lado ou abaixo. A barra é reforço visual, nunca o único portador do número.",
+      "Sem transição quando prefers-reduced-motion está ativo."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.3.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "A legenda da esquerda é o que se mediu, com unidade: '24 abertos'.",
+      "A legenda da direita é a referência ou o contexto: 'SLA médio 6,4 dias'.",
+      "O rótulo nomeia o objeto medido: 'Carga do CPD · Nível 1'."
+    ],
+    "exemplos": {
+      "bom": [
+        "Carga do CPD · Nível 1 — 24 de 40 requerimentos",
+        "Prazo consumido — 6 de 10 dias"
+      ],
+      "ruim": [
+        "Progresso — 60%",
+        "Carregando…"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-painel-indicadores",
+      "ucam-stat"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / div com width inline",
+    "mapa": [
+      {
+        "legado": "<div style=\"width:62%\">",
+        "novo": "value + max",
+        "nota": "A porcentagem deixa de ser calculada na tela e o valor real passa a ser anunciado."
+      },
+      {
+        "legado": "md-progress-linear indeterminado",
+        "novo": "ucam-skeleton",
+        "nota": "Espera sem proporção não é barra de progresso."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Carga de um setor",
+      "codigo": "<ucam-progress\n  label=\"Carga do CPD · Nível 1\"\n  [value]=\"24\"\n  [max]=\"40\"\n  tone=\"danger\"\n  valueText=\"24 de 40 requerimentos abertos\" />"
+    },
+    {
+      "titulo": "Dentro de cartão de indicador",
+      "codigo": "<ucam-progress size=\"sm\" label=\"Prazo consumido\" [value]=\"6\" [max]=\"10\" tone=\"warning\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Declarar o total real em max e escrever o par na legenda.",
+      "evite": "Converter tudo para porcentagem antes de exibir.",
+      "porque": "'24 de 40' é o número que quem distribui requerimento conhece; 60% obriga a refazer a conta de cabeça."
+    },
+    {
+      "faca": "Usar Skeleton para espera de duração desconhecida.",
+      "evite": "Barra de progresso animada sem valor.",
+      "porque": "Barra sem valor promete previsão de término que o sistema não tem."
+    },
+    {
+      "faca": "Escrever o limiar que justifica o tom de aviso na própria tela.",
+      "evite": "Pintar de vermelho a partir de um número que só existe no código.",
+      "porque": "Cor sem regra escrita não é informação: ninguém sabe o que fazer para sair do vermelho."
+    },
+    {
+      "faca": "Manter o número visível ao lado da barra.",
+      "evite": "Confiar no comprimento do preenchimento.",
+      "porque": "Comprimento é estimativa; entre 58% e 64% ninguém distingue, e a decisão depende do número."
+    },
+    {
+      "faca": "Garantir 3:1 entre preenchimento e trilho.",
+      "evite": "Preenchimento cinza-claro sobre trilho cinza.",
+      "porque": "É elemento gráfico que carrega informação e cai na 1.4.11, não no contraste de texto."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "progress.json",
+      "raiz": ".ucam-progress com role=progressbar e os três valores ARIA escritos à mão",
+      "variaveis": [
+        "--ucam-progress-valor",
+        "--ucam-progress-alt"
+      ],
+      "nota": "A largura do preenchimento vem de --ucam-progress-valor, declarada com default 0% na própria folha."
+    },
+    "trilho_b": "NÃO parte do z-progress, e o motivo está no cabeçalho do wrapper: a base crava aria-valuemin=0 e aria-valuemax=100 no host e só aceita porcentagem, enquanto o contrato exige o total real mais aria-valuetext. Sobrescrever atributo de host da base de fora é frágil e ficaria calado ao quebrar. O que ela entregaria aqui são seis declarações de CSS."
+  }
+}

@@ -1,0 +1,648 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Camada 2 — semânticos. Nomeados por INTENÇÃO DE USO, nunca por aparência. Esta é a única camada que componentes e aplicações podem referenciar.",
+  "_meta": {
+    "regra": "Proibido nome de token que descreva a cor ('wine', 'red'). O nome descreve o papel ('action-primary', 'feedback-danger'). Isso é o que permite trocar marca e tema sem tocar em componente.",
+    "verificacao": "tools/lint-tokens falha o CI se algum componente referenciar um token da camada primitiva."
+  },
+  "color": {
+    "$type": "color",
+    "surface": {
+      "$description": "Fundos, do mais recuado ao mais elevado.",
+      "canvas": {
+        "$value": "{neutral.0}",
+        "$description": "Fundo da página. Branco, não cinza: fundo cinza com cards brancos flutuando é o desenho do Material de 2016 — exatamente o que os sistemas legados mostram hoje. Aqui a hierarquia vem de borda, espaçamento e tipografia; o cinza fica para superfícies que precisam recuar (surface.subtle). No escuro a lógica inverte e o card sobe, não o fundo desce."
+      },
+      "default": {
+        "$value": "{neutral.0}",
+        "$description": "Fundo de card, painel, tabela."
+      },
+      "subtle": {
+        "$value": "{neutral.50}",
+        "$description": "Zebra de tabela, seção recuada."
+      },
+      "raised": {
+        "$value": "{neutral.0}",
+        "$description": "Diálogo, popover, menu."
+      },
+      "sunken": {
+        "$value": "{neutral.100}",
+        "$description": "Faixa de RÓTULOS dentro de uma superfície: cabeçalho de tabela, barra de agrupamento de linhas. Recua um degrau mais que subtle porque o trabalho é outro — subtle recua um BLOCO (zebra, seção, bloco de código) e pode ser quase imperceptível; isto precisa dizer \"esta fileira não é dado\" contra o branco do painel, e o #FAFAFA do subtle não chegava lá: dava 1,02:1, e foi por isso que a faixa do cabeçalho saiu de cena em agosto. NÃO usar como fundo de bloco de conteúdo — ali o degrau certo continua sendo subtle."
+      },
+      "chrome": {
+        "$value": "{neutral.0}",
+        "$description": "Moldura da aplicação — a coluna de navegação, o chão do shell e a lista do bloco de lista e detalhe. BRANCA no tema claro desde 10/09/2026. Ela recuava um degrau (neutral.50) para separar moldura de conteúdo por TOM; o que a separação por tom entregava, na prática, era um cinza que o olho lia como o poço cinza que o resto do sistema já tinha expulsado de card, selo e filtro — a mesma regra que tirou o trilho cinza do segmented e a pastilha cinza do contador. Agora quem separa moldura de conteúdo é o FILETE, que é o único separador que o arranjo lateral já usava entre painéis vizinhos. No ESCURO nada muda: lá a moldura segue no nível do canvas enquanto o painel sobe para o 800, porque a elevação por luz não tem como ser feita por filete."
+      },
+      "chao": {
+        "$value": "{neutral.0}",
+        "$description": "CHÃO DO CONTEÚDO: o fundo do painel onde as superfícies assentam. BRANCO no tema claro desde 19/09/2026 (ADR-040) — pedido: \"deixe os fundos cinzas em branco\". Foi cinza claro frio entre 14/09 e 19/09 (ADR-034, cuja parte de fundo esta decisão revoga): o chão cinza refazia justamente o desenho que o resto do sistema já tinha expulsado de card, selo e filtro — superfície branca flutuando sobre poço cinza. O papel do token continua valendo e o nome continua certo: quem é chão é o painel de conteúdo, e quem assenta sobre ele são cartão, tabela, indicador, gaveta e o bloco de lista e detalhe, todos em surface.default e separados do chão pelo FILETE de border.subtle — o mesmo separador que a moldura branca já usa desde 10/09/2026. Não usar dentro de superfície: ali o recuo é surface.subtle ou surface.sunken. No ESCURO nada muda em nenhuma das duas voltas — lá o chão é o mesmo 800 que o painel sempre teve, porque elevação por luz não tem como ser feita por filete."
+      },
+      "inverse": {
+        "$value": "{neutral.900}"
+      },
+      "brand": {
+        "$value": "{wine.600}",
+        "$description": "Header da aplicação e faixas de marca."
+      },
+      "brand-raised": {
+        "$value": "{wine.500}",
+        "$description": "Um degrau acima da faixa de marca: chip de campus, botão de menu, avatar no header. Existe porque os templates cravavam rgba(255,255,255,.16) — cor literal, invisível para o tema escuro e proibida pela ADR-007. Branco sobre ele dá 5,06:1."
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "{grafite.900}",
+        "$description": "Texto de leitura. 17,78:1 sobre surface.default e 16,36:1 sobre surface.chao. Grafite, não slate, desde 14/09/2026 (ADR-034): o neutral.900 dava 18:1, mas com 0,04 de croma o texto lia azul-marinho sobre um chão também azulado, e a tela perdia nitidez sem perder contraste numérico."
+      },
+      "secondary": {
+        "$value": "{grafite.600}",
+        "$description": "Rótulo, legenda, apoio, ícone. 7,77:1 sobre surface.default, 7,15:1 sobre surface.chao e 6,91:1 sobre surface.sunken. Era neutral.550 (5,70:1) desde 10/09/2026 — o pedido de 14/09 foi \"mais contraste nas telas\", e o apoio era o texto que mais pesava na queixa: rótulo de campo, meta de indicador e ícone de navegação saem todos daqui. A hierarquia com o primário continua de 17,8 para 7,8, mais que o dobro, e o peso segue fazendo o resto."
+      },
+      "placeholder": {
+        "$value": "{neutral.500}",
+        "$description": "Texto de exemplo dentro do campo. 4.71:1 sobre surface.default, verificado no build: placeholder é texto e responde pela 1.4.3 como qualquer outro."
+      },
+      "disabled": {
+        "$value": "{neutral.500}",
+        "$description": "Tinta desabilitada sobre superfície COMUM: o chevron do campo travado, o número de página que não leva a lugar nenhum, o rótulo ao lado de um radio inativo, o botão fantasma que não age. 4,71:1 sobre surface.default. Quem veste um CONTROLE desabilitado — botão, campo, caixa — é o par action.disabled.*, que se mede contra o próprio chão do controle; este token responde pelo card, e a separação existe porque medir tinta apagada contra a superfície errada foi o defeito que esta rodada corrigiu. Era {neutral.400} até 20/09/2026, e a descrição anunciava 2,49:1 quando a conta dava 3,47:1 — número errado sobre a superfície certa, que é a forma mais fácil de uma isenção virar promessa. Divide o degrau com text.placeholder no tema claro de propósito: os dois são tinta apagada no mesmo piso de legibilidade e nunca aparecem lado a lado. Continua ISENTO da 1.4.3 e continua proibido de carregar conteúdo informativo."
+      },
+      "on-brand": {
+        "$value": "{neutral.0}",
+        "$description": "Sobre surface.brand. 8,36:1 — AAA para texto normal."
+      },
+      "on-action": {
+        "$value": "{neutral.0}"
+      },
+      "link": {
+        "$value": "{blue.600}"
+      }
+    },
+    "action": {
+      "$description": "Hierarquia de ação. Uma ação primária por tela, no máximo.",
+      "primary": {
+        "default": {
+          "$value": "{wine.600}",
+          "$description": "DECISÃO: primário passa a ser o bordô da marca. Substitui o preto do SALVAR e o azul do ENTRAR — ver ADR-001. Aponta para o degrau de aplicação (wine.600), não para o hex literal da logo (wine.700): o botão precisa de um bordô que não pese na tela, e o hover cai exatamente na cor institucional."
+        },
+        "hover": {
+          "$value": "{wine.700}"
+        },
+        "active": {
+          "$value": "{wine.800}"
+        },
+        "subtle": {
+          "$value": "{wine.50}"
+        }
+      },
+      "secondary": {
+        "default": {
+          "$value": "{neutral.0}"
+        },
+        "hover": {
+          "$value": "{neutral.100}"
+        },
+        "active": {
+          "$value": "{neutral.200}"
+        },
+        "border": {
+          "$value": "{neutral.200}",
+          "$description": "Limite do botão secundário em repouso. Acompanha color.border.default — o botão de apoio e o campo aparecem lado a lado em toda barra de ferramentas e não podem ter contornos de forças diferentes. A sombra de 1px do botão compensa o contorno claro (ADR-009)."
+        }
+      },
+      "danger": {
+        "default": {
+          "$value": "{red.600}",
+          "$description": "APENAS destruição irreversível: excluir, cancelar processo. Nunca para 'redefinir senha'."
+        },
+        "hover": {
+          "$value": "{red.700}"
+        },
+        "active": {
+          "$value": "{red.800}",
+          "$description": "O degrau que faltava para a família danger: primary tem default/hover/active, danger parava no hover. Branco sobre red.800 = 9,32:1."
+        },
+        "subtle": {
+          "$value": "{red.100}",
+          "$description": "Fundo do hover quando danger vem como tom sobre secondary ou ghost (ADR-015). Texto red.600 sobre ele = 4,76:1 — é o piso, e é o que prende o red.100 em L 95."
+        }
+      },
+      "disabled": {
+        "background": {
+          "$value": "{neutral.200}",
+          "$description": "O ÚNICO chão de controle desabilitado, desde 20/09/2026 (ADR-042). Antes era só o fundo do botão: campo e área de texto caíam em surface.subtle, radio em surface.sunken, e o mesmo estado saía em três cinzas diferentes na mesma tela — três cinzas que ninguém aprende a reconhecer como um estado só. Mais pesado que surface.subtle de propósito, porque é ele que separa desabilitado de SOMENTE LEITURA: readonly continua no recuo leve com tinta primária, porque o valor é justamente o que se veio ler; desabilitado assenta neste degrau e apaga a tinta, porque o valor não se aplica. Os dois deixaram de depender só da cor do texto para se distinguir."
+        },
+        "text": {
+          "$value": "{neutral.600}",
+          "$description": "5,70:1 contra action.disabled.background no claro, 6,77:1 no escuro. Subiu de {neutral.500} (3,71:1) em 20/09/2026 pelo pedido de mais contraste no estado desabilitado: o rótulo de um botão bloqueado é a informação de que algo está bloqueado, e abaixo de 4,5:1 ele some justo para quem mais precisa lê-lo. Agora passa o piso da 1.4.3 pelos dois temas, e a isenção de componente inativo deixou de ser necessária para este par — o portão continua medindo, porque o dia em que o tema mudar ele precisa avisar. A referência é sempre a superfície do próprio controle desabilitado, nunca o branco. Também é a tinta do CAMPO desabilitado desde a ADR-042: o campo passou a ter chão próprio, e tinta de card sobre chão de controle era o par que ninguém media."
+        }
+      }
+    },
+    "interaction": {
+      "$description": "Estado de superfície por TINTA, não por fundo sólido. Vale sobre qualquer coisa que esteja embaixo — linha de tabela, item de menu, aba, célula da faixa listrada — porque se compõe com ela em vez de substituí-la.",
+      "hover": {
+        "$value": "{alpha.ink-weak}"
+      },
+      "active": {
+        "$value": "{alpha.ink-strong}"
+      },
+      "selected": {
+        "$value": "{alpha.ink-strong}"
+      }
+    },
+    "realce": {
+      "$description": "O rastro de uma BUSCA sobre o texto — o trecho que casou com o que a pessoa digitou. Não é estado do sistema (feedback), não é estado de superfície (interaction) e não é seleção: é a resposta à pergunta \"por que este item está na lista?\".\n\nUsa o bordô da marca, não o âmbar que a intuição pede. Âmbar neste sistema já significa aviso, e um nome de módulo com metade pintada de aviso diz algo que não é verdade. O bordô é o único acento que o sistema tem, e a colisão com o anel de foco não acontece porque o foco é um ANEL de 500 e este é um PREENCHIMENTO de 200.\n\nA lavagem é reforço, não portador: quem responde \"este item casou\" é a própria lista filtrada. Ainda assim ela carrega degrau de luminância além da matiz — 1,46 contra o cartão branco no claro e 1,34 contra o painel no escuro —, então sobrevive à acromatopsia em vez de depender do vermelho.",
+      "background": {
+        "$value": "{wine.200}",
+        "$description": "Preenchimento do trecho que casou. O 200 e não o 100: contra o branco do cartão, o 100 dá 1,20 de degrau e some numa tela de escritório mal calibrada."
+      },
+      "foreground": {
+        "$value": "{neutral.900}",
+        "$description": "A tinta do texto NÃO muda de família ao ser realçada — continua a tinta de corpo, a 12,30:1 sobre o preenchimento. Pintar o trecho de bordô sobre fundo bordô seria trocar legibilidade por decoração."
+      }
+    },
+    "feedback": {
+      "$description": "Estado do sistema. Sempre acompanhado de ícone e texto — cor nunca é o único portador de significado (WCAG 1.4.1).\n\nQUATRO papéis por estado, e o quarto é novo. background, foreground e border servem a TEXTO — o foreground é calibrado para 4,5:1 sobre branco, o que empurra amarelo e verde para tons escuros e dessaturados. Usar esse mesmo valor como PREENCHIMENTO de uma barra de 8px foi o que deixou a carga por setor com uma barra marrom-oliva no lugar de âmbar: #6B4504 é a cor certa para a palavra \"atrasado\" e a errada para uma faixa de cor.\n\ngraphic existe para preenchimento — barra, coluna, fatia. Ele aponta o degrau 500, que já vivia na paleta como filete do selo: L entre 54 e 62, croma alto, e de 3,2:1 a 4,3:1 contra o trilho — acima do piso de 3:1 que a WCAG 1.4.11 pede para objeto gráfico. Não serve para texto e não deve ser usado como tal.",
+      "success": {
+        "background": {
+          "$value": "{green.100}"
+        },
+        "foreground": {
+          "$value": "{green.700}"
+        },
+        "border": {
+          "$value": "{green.500}"
+        },
+        "graphic": {
+          "$value": "{green.500}",
+          "$description": "Preenchimento de barra, coluna e fatia. Mesmo degrau do filete do selo, papel diferente — ver a nota do bloco."
+        },
+        "numeral": {
+          "$value": "{green.600}",
+          "$description": "CONTEXTO de indicador com tom: a variação e a meta do stat, em caption (ADR-035). No claro é o degrau 600 — o 700 do foreground, calibrado para número grande, lia quase preto em texto de 12px e a cor não chegava ao olho; o 600 passa 4,5:1 com folga. O nome numeral ficou da ADR-034, quando era o número que carregava o tom. No escuro o foreground (100) lê branco, e o papel desce para um degrau com croma que ainda passa 4,5:1 sobre o ladrilho."
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{amber.100}"
+        },
+        "foreground": {
+          "$value": "{amber.700}"
+        },
+        "border": {
+          "$value": "{amber.500}"
+        },
+        "graphic": {
+          "$value": "{amber.500}",
+          "$description": "Preenchimento de barra, coluna e fatia. Mesmo degrau do filete do selo, papel diferente — ver a nota do bloco."
+        },
+        "numeral": {
+          "$value": "{amber.600}",
+          "$description": "CONTEXTO de indicador com tom: a variação e a meta do stat, em caption (ADR-035). No claro é o degrau 600 — o 700 do foreground, calibrado para número grande, lia quase preto em texto de 12px e a cor não chegava ao olho; o 600 passa 4,5:1 com folga. O nome numeral ficou da ADR-034, quando era o número que carregava o tom. No escuro o foreground (100) lê branco, e o papel desce para um degrau com croma que ainda passa 4,5:1 sobre o ladrilho."
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{red.100}"
+        },
+        "foreground": {
+          "$value": "{red.700}"
+        },
+        "border": {
+          "$value": "{red.500}"
+        },
+        "graphic": {
+          "$value": "{red.500}",
+          "$description": "Preenchimento de barra, coluna e fatia. Mesmo degrau do filete do selo, papel diferente — ver a nota do bloco."
+        },
+        "numeral": {
+          "$value": "{red.600}",
+          "$description": "CONTEXTO de indicador com tom: a variação e a meta do stat, em caption (ADR-035). No claro é o degrau 600 — o 700 do foreground, calibrado para número grande, lia quase preto em texto de 12px e a cor não chegava ao olho; o 600 passa 4,5:1 com folga. O nome numeral ficou da ADR-034, quando era o número que carregava o tom. No escuro o foreground (100) lê branco, e o papel desce para um degrau com croma que ainda passa 4,5:1 sobre o ladrilho."
+        }
+      },
+      "info": {
+        "background": {
+          "$value": "{blue.100}"
+        },
+        "foreground": {
+          "$value": "{blue.700}"
+        },
+        "border": {
+          "$value": "{blue.500}"
+        },
+        "graphic": {
+          "$value": "{blue.500}",
+          "$description": "Preenchimento de barra, coluna e fatia. Mesmo degrau do filete do selo, papel diferente — ver a nota do bloco."
+        }
+      }
+    },
+    "border": {
+      "subtle": {
+        "$value": "{neutral.200}",
+        "$description": "FIO: divisor de linha de tabela, borda de card, separador de grupo, filete de faixa. Subiu de neutral.150 para neutral.200 em 14/09/2026 (ADR-034): com o conteúdo assentado no chão cinza, o 150 dava 1,09:1 contra o chão e o cartão branco perdia o limite. Quem contorna CONTROLE continua sendo border.default."
+      },
+      "default": {
+        "$value": "{neutral.300}",
+        "$description": "CONTORNO de controle em repouso: campo, botão secundário, gatilho de select. {neutral.300} desde 14/09/2026 (ADR-034), um degrau acima do fio, que subiu para {neutral.200} no mesmo dia: fio divide, contorno delimita, e os dois não podem empatar. Até ali o contorno era o 200, e a ADR-009 recusava o 300 por ser \"a linha mais forte da interface\" numa tela de formulário. O argumento foi pesado de novo com o pedido de mais contraste e com o chão cinza: sobre neutral.100 o 200 dava 1,17:1 e o campo branco perdia a borda, enquanto o 300 dá 1,41:1 no chão e 1,53:1 no branco. Continua DESVIO CONSCIENTE da 1.4.11: a identificação em 3:1 fica com hover, foco e a sombra de 1px do controle."
+      },
+      "strong": {
+        "$value": "{neutral.500}"
+      },
+      "focus": {
+        "$value": "{wine.500}",
+        "$description": "Anel de foco. Obrigatório 3:1 contra o fundo adjacente (WCAG 1.4.11)."
+      },
+      "on-brand": {
+        "$value": "{wine.300}",
+        "$description": "Filete sobre a faixa de marca: contorno do chip de campus, separador do header. Subiu de wine.400 para wine.300 quando a faixa clareou: sobre o 600 novo o 400 caía para 2,73:1. Agora dá 4,14:1, acima do piso de 3:1 da WCAG 1.4.11."
+      }
+    },
+    "chart": {
+      "$description": "Identidade de SÉRIE em gráfico. Seis slots, atribuídos em ordem fixa e NUNCA reciclados: a sétima série não ganha cor nova, ela vira \"Outros\" ou o gráfico vira pequenos múltiplos. A ordem não é estética — é o mecanismo que mantém os pares VIZINHOS separáveis sob daltonismo, e trocá-la exige rodar tools/check-daltonismo.mjs, que roda no build e reprova distância abaixo de 0,100. O que a ordem NÃO resolve, e nenhuma ordem resolve, é o par não-vizinho: seis matizes não cabem separáveis duas a duas nas três dicromacias, e a partir de quatro séries em cena existe par confundível. Quem carrega a informação sem cor é a tabela equivalente que o contrato do chart obriga a estar sempre no DOM. Estes tokens são proibidos fora de visualização de dados, e as cores de feedback são proibidas aqui: verde não pode significar 'sucesso' num lugar e 'série 6' no outro.",
+      "series-1": {
+        "$value": "{wine.600}",
+        "$description": "Slot 1 — vinho. A primeira série é a cor da marca: o gráfico de uma série só sai bordô."
+      },
+      "series-2": {
+        "$value": "{blue.500}",
+        "$description": "Slot 2 — azul."
+      },
+      "series-3": {
+        "$value": "{ochre.500}",
+        "$description": "Slot 3 — ocre."
+      },
+      "series-4": {
+        "$value": "{violet.500}",
+        "$description": "Slot 4 — violeta. Vem depois da turquesa, e não antes: violeta e oliva vizinhas reprovam sob tritanopia (d=0,080 no claro e 0,029 no escuro, contra o mínimo de 0,100 do portão da ADR-016), e a turquesa entre as duas resolve. Azul e turquesa ficam a três slots de distância, longe o bastante."
+      },
+      "series-5": {
+        "$value": "{teal.500}",
+        "$description": "Slot 5 — turquesa. Fica longe do azul na ordem de propósito: encostados, o par reprova no piso de visão normal."
+      },
+      "series-6": {
+        "$value": "{olive.500}",
+        "$description": "Slot 6 — oliva."
+      }
+    },
+    "categoria": {
+      "$type": "color",
+      "$description": "Cor de CATEGORIA de módulo: o que discrimina irmãos numa grade de 58 sistemas em que dez ícones se repetem. Pinta o ladrilho de ícone (fundo a 12%, traço na cor) e a marquinha do módulo na faixa. Categoria classifica; não julga — é a distinção que o contrato do stat faz entre tom e categoria, e por isso nenhum destes papéis reaproveita um par de feedback. Seis papéis, cada um apontando para um primitivo que já existe: nenhuma rampa nova (ADR-032). O portão de daltonismo confere os seis entre si; a distinção que vale para todo mundo é o desenho do ícone e o nome escrito.",
+      "academico": {
+        "$value": "{blue.500}",
+        "$description": "Acadêmico, biblioteca, vestibular, diplomas, estágio."
+      },
+      "financeiro": {
+        "$value": "{green.500}",
+        "$description": "Financeiro, caixa, mensalidades, bolsas."
+      },
+      "atendimento": {
+        "$value": "{wine.500}",
+        "$description": "Protocolo, ouvidoria, requerimentos — o atendimento é a cara da instituição, e leva a marca."
+      },
+      "gestao": {
+        "$value": "{violet.500}",
+        "$description": "Gerencial, relatórios, portal, parâmetros."
+      },
+      "pessoas": {
+        "$value": "{teal.500}",
+        "$description": "RH, funcionários, área do aluno, memorial."
+      },
+      "acervo": {
+        "$value": "{ochre.500}",
+        "$description": "Arquivo permanente, documentos, impressão."
+      }
+    }
+  },
+  "space": {
+    "$type": "dimension",
+    "$description": "Espaçamento por intenção, não por valor.",
+    "inline-xs": {
+      "$value": "{space.1}",
+      "$description": "Entre ícone e rótulo."
+    },
+    "inline-sm": {
+      "$value": "{space.2}",
+      "$description": "Entre controles irmãos."
+    },
+    "inline-md": {
+      "$value": "{space.4}"
+    },
+    "stack-sm": {
+      "$value": "{space.2}",
+      "$description": "Entre rótulo e campo."
+    },
+    "stack-md": {
+      "$value": "{space.4}",
+      "$description": "Entre campos de um formulário."
+    },
+    "stack-lg": {
+      "$value": "{space.8}",
+      "$description": "Entre seções."
+    },
+    "inset-sm": {
+      "$value": "{space.3}",
+      "$description": "Padding interno de controle."
+    },
+    "inset-md": {
+      "$value": "{space.4}"
+    },
+    "inset-lg": {
+      "$value": "{space.5}",
+      "$description": "Padding interno de card e diálogo. Acompanha a escala tipográfica: 24px de recuo em volta de texto de 14px é recuo de artigo, não de painel de dados."
+    },
+    "inset-xl": {
+      "$value": "{space.6}",
+      "$description": "Recuo da PÁGINA contra a moldura da aplicação: a distância entre o filete da navegação e o começo do conteúdo. Continua MAIOR que o inset-lg, que é a regra que importa — o vão que separa a moldura do conteúdo tem de ser maior que o vão dentro de um card, senão o card encosta na moldura e os dois leem como a mesma caixa. O que mudou foi o par inteiro, de 24/32 para 20/24: a relação se mantém, a interface para de flutuar."
+    }
+  },
+  "typography": {
+    "$description": "Papéis tipográficos.\n\nDuas regras valem para todos. (1) NENHUM papel usa text-transform uppercase — ver ADR-003. (2) A ENTRELINHA É EM REM e sempre múltipla de 0.25rem, nunca uma razão: razão sobre 13px dá 18,85px, o navegador arredonda conforme a posição na página, e a mesma linha de tabela mede 64px numa fileira e 65px na seguinte. Em rem a caixa de texto cai na mesma grade de 4px da escala de espaçamento.",
+    "page-title": {
+      "$type": "typography",
+      "$value": {
+        "fontSize": "{fontSize.2xl}",
+        "fontWeight": "{fontWeight.semibold}",
+        "lineHeight": "1.75rem",
+        "letterSpacing": "-0.02em"
+      }
+    },
+    "section-title": {
+      "$type": "typography",
+      "$value": {
+        "fontSize": "{fontSize.lg}",
+        "fontWeight": "{fontWeight.semibold}",
+        "lineHeight": "1.5rem",
+        "letterSpacing": "-0.01em"
+      }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": {
+        "fontSize": "{fontSize.base}",
+        "fontWeight": "{fontWeight.regular}",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "body-sm": {
+      "$type": "typography",
+      "$value": {
+        "fontSize": "{fontSize.sm}",
+        "fontWeight": "{fontWeight.regular}",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "label": {
+      "$type": "typography",
+      "$value": {
+        "fontSize": "{fontSize.sm}",
+        "fontWeight": "{fontWeight.medium}",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "action": {
+      "$type": "typography",
+      "$value": {
+        "fontSize": "{fontSize.sm}",
+        "fontWeight": "{fontWeight.semibold}",
+        "lineHeight": "1rem"
+      }
+    },
+    "caption": {
+      "$type": "typography",
+      "$value": {
+        "fontSize": "{fontSize.xs}",
+        "fontWeight": "{fontWeight.regular}",
+        "lineHeight": "1rem"
+      }
+    },
+    "table-header": {
+      "$type": "typography",
+      "$description": "O rótulo da coluna é o papel label — 13/500, sem tracking — em tinta secundária. A versão anterior, 12/560 com 0.04em de tracking, lia como monoespaçada ao lado do corpo em 13/400: dois registros tipográficos numa tabela só, e o cabeçalho pesando mais que o dado que ele rotula. A hierarquia entre cabeçalho e célula é de COR (secundária contra primária) e de peso um degrau acima, nunca de família nem de tracking. Mesma régua do rótulo de campo e do título de grupo do menu.",
+      "$value": {
+        "fontSize": "{fontSize.sm}",
+        "fontWeight": "{fontWeight.medium}",
+        "lineHeight": "1.25rem",
+        "letterSpacing": "0"
+      }
+    }
+  },
+  "motion": {
+    "$description": "Contrato de movimento: curva e duração são do sistema, não de cada componente. Componente que escolhe a própria curva produz três ou quatro easings na mesma tela — ease, ease-out, ease-in-out e a ausência deles. Movimento inconsistente não é percebido como movimento inconsistente; é percebido como interface mal-acabada.",
+    "easing": {
+      "standard": {
+        "$value": "{easing.standard}",
+        "$description": "Toda transição de estado: cor, fundo, filete, sombra."
+      },
+      "entrance": {
+        "$value": "{easing.entrance}",
+        "$description": "Superfície que aparece: menu, diálogo, dica, listbox."
+      },
+      "emphasized": {
+        "$value": "{easing.emphasized}",
+        "$description": "Percurso longo: a gaveta."
+      }
+    },
+    "duration": {
+      "state": {
+        "$value": "{duration.fast}",
+        "$description": "Troca de estado sob o ponteiro. Acima de ~150ms o hover começa a arrastar atrás do cursor."
+      },
+      "reveal": {
+        "$value": "{duration.normal}",
+        "$description": "Superfície entrando ou saindo de cena."
+      },
+      "travel": {
+        "$value": "{duration.slow}",
+        "$description": "Só a gaveta, que percorre a largura do painel."
+      }
+    },
+    "reveal-scale": {
+      "$value": "0.97",
+      "$description": "De onde a superfície cresce ao aparecer. 0.97 e não 0.9: em painel de 15rem, 10% é um salto que chama atenção para a animação em vez de para o conteúdo."
+    },
+    "reveal-shift": {
+      "$value": "0.25rem",
+      "$description": "Deslocamento de entrada, na direção de onde o painel está ancorado."
+    }
+  },
+  "size": {
+    "$type": "dimension",
+    "$description": "Alvos de toque. Mínimo 44x44 CSS px para alvo primário (WCAG 2.5.5 AAA / 2.5.8 AA em 24px).",
+    "control-sm": {
+      "$value": "1.75rem",
+      "$description": "28px. Controle de barra de ferramentas e de linha de tabela, onde a altura disputa espaço com o dado."
+    },
+    "control-md": {
+      "$value": "2rem",
+      "$description": "32px. Altura padrão de botão e campo.\n\nEsta medida já foi 2rem, subiu para 2.25rem em 29/08 e volta agora — a reversão é deliberada e o motivo mudou. Naquela decisão o corpo do sistema era 16px, e 32px de controle apertavam texto de 16 contra as bordas. Com a escala tipográfica recalibrada o rótulo de botão passa a 13px: 36px de altura em volta de 13px de texto é ar, não conforto, e é justamente o que engorda a interface.\n\nEfeito colateral bem-vindo: 32px é o h-8 nativo da ZardUI. O portão de check-geometria.mjs existe porque a base e a spec discordavam em quatro pixels em TODO controle de formulário; nesta medida elas param de discordar."
+    },
+    "control-lg": {
+      "$value": "2.5rem"
+    },
+    "marcador": {
+      "$value": "1.375rem",
+      "$description": "22px. A altura ÚNICA de toda peça de micro-rótulo: selo de estado, chip de filtro, marcador de prazo.\n\nPeça de micro-rótulo declara altura. Sem isso, cada uma resulta do line-height do próprio texto mais o próprio padding e a família chega à mesma linha com alturas fracionárias diferentes — selo 22,19px, chip 22,78px, prazo 24,19px numa tela só. Peças lado a lado que não fecham no mesmo topo e na mesma base são a diferença entre uma interface desenhada e uma montada.\n\n22px e não 24: o selo tem de caber dentro da linha de tabela e ao lado de um rótulo de 13px sem empurrar a linha para baixo."
+    },
+    "contagem": {
+      "$value": "1.125rem",
+      "$description": "18px. A pastilha de número que vive DENTRO de um item de navegação de 28px — outra métrica que a do marcador de propósito: ela é ornamento de um controle, não peça autônoma numa linha de conteúdo."
+    },
+    "touch-min": {
+      "$value": "2.75rem"
+    },
+    "icon-xs": {
+      "$value": "0.75rem",
+      "$description": "12px. O ícone DENTRO de uma peça de micro-rótulo — selo, chip, prazo — e a seta que liga dois valores na linha do tempo, que é pontuação e não assunto (ADR-041). A peça tem 22px (size.marcador) e um rótulo de 12px; com o ícone de 16 que ela herdava do miúdo, o símbolo ficava mais alto que as letras e lia como o assunto da pastilha, não como o sinal dela. É também o que o Trilho B sempre desenhou: a base Zard do badge crava [&>svg]:size-3, e o catálogo mostrava 12 onde as telas mostravam 16."
+    },
+    "icon-sm": {
+      "$value": "1rem"
+    },
+    "icon-md": {
+      "$value": "1.25rem"
+    },
+    "icon-lg": {
+      "$value": "1.5rem"
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "$description": "Raio por PAPEL, não por degrau. A camada primitiva declara a escala (sm…2xl); esta declara quem usa qual. Existe porque o arredondamento era o único eixo de forma que os componentes liam direto do primitivo — .ucam-card pedia radius.xl, .ucam-table-wrap pedia radius.lg, e nada dizia por quê. Com papéis, mudar a suavidade da interface é mudar quatro linhas aqui em vez de caçar 30 usos no gerador.",
+    "control": {
+      "$value": "{radius.md}",
+      "$description": "Botão, campo, gatilho de select, item de navegação — tudo que o ponteiro aciona e tem altura de size.control-*. Desceu de radius.lg (8px) para radius.md (6px) em 09/09/2026: 8px num controle de 32px de altura arredonda um quarto da caixa, e é o que dava à interface o ar de aplicativo de celular ampliado em vez de ferramenta de trabalho. 6px é também o que o ZardUI assume em rounded-md, então o Trilho A e o Trilho B passam a fechar no MESMO canto em vez de quase."
+    },
+    "control-sm": {
+      "$value": "{radius.sm}",
+      "$description": "Controle miúdo — botão pequeno, pastilha de tecla, ação dentro de um grupo. Um degrau abaixo do controle padrão, sempre: a proporção entre os dois é o que faz o pequeno parecer da mesma família e não de outra."
+    },
+    "miudo": {
+      "$value": "{radius.sm}",
+      "$description": "O menor recorte do sistema, para o que é pequeno ou plano: caixa de seleção, esqueleto de carregamento, balão de dica, chip de variação, aviso em linha e o retângulo de foco de um link. Não é control — nada aqui tem altura de controle — nem surface, que é o recorte do cartão. Existe desde 09/09/2026: onze regras liam {radius.sm} direto do primitivo."
+    },
+    "surface": {
+      "$value": "{radius.lg}",
+      "$description": "Cartão, painel, tabela, sobreposição. Desceu de radius.xl (12px) para radius.lg (8px). O raio de superfície precisa ser MAIOR que o dos controles que ela contém, senão o canto interno briga com o externo — 8px sobre 6px mantém essa relação com metade do arredondamento anterior."
+    },
+    "frame": {
+      "$value": "{radius.xl}",
+      "$description": "A moldura da aplicação — o painel de conteúdo do shell. Desceu de radius.2xl (16px) para radius.xl (12px). Continua sendo o maior raio do sistema, porque é a única superfície que emoldura todas as outras."
+    },
+    "pill": {
+      "$value": "{radius.full}",
+      "$description": "Selo de estado, chip de filtro, avatar. Forma que não tem tamanho — distingue a peça de METADADO do controle acionável, que é sempre radius.control."
+    }
+  },
+  "viewport": {
+    "$type": "dimension",
+    "$description": "Breakpoint por PAPEL, não por degrau — a mesma regra do raio. A camada primitiva declara a escala (xs…xl); esta declara o que MUDA em cada uma. Existe porque `@media (min-width: 64rem)` repetido onze vezes não diz o que acontece em 64rem, e quem lê a folha não tinha como saber que aquele número é onde a navegação deixa de ser gaveta.\n\nRegra: nenhuma media query nova escolhe medida. Ela escolhe papel. Papel que não existe é papel a declarar aqui, com o motivo — não um número a mais na folha.",
+    "faixa-minima": {
+      "$value": "{breakpoint.xs}",
+      "$description": "Abaixo daqui a faixa de marca não cabe inteira: o chip de campus sai, o chevron da conta sai e a logo vai ao tamanho mínimo. O contexto de campus continua alcançável pelo menu — a alternativa, logo cortada, é pior."
+    },
+    "controle-deitado": {
+      "$value": "{breakpoint.sm}",
+      "$description": "Abaixo daqui rótulo ao lado de campo não cabe: a linha de formulário vira pilha, a barra compacta devolve o rótulo para cima e o filete entre grupos some, porque a fileira que ele separava virou três fileiras."
+    },
+    "respiro-completo": {
+      "$value": "{breakpoint.md}",
+      "$description": "Abaixo daqui a régua da moldura encolhe para o recuo médio — 24px dos dois lados comem 12% da linha num aparelho de 390px — e o rótulo \"Campus\" sai, ficando só a unidade, que é o dado."
+    },
+    "duas-colunas": {
+      "$value": "{breakpoint.lg}",
+      "$description": "A partir daqui duas colunas de MESMO peso cabem lado a lado (o .ucam-split--igual). O bloco de divisão com painel de apoio NÃO lê este papel desde 11/09/2026: ele pergunta ao contêiner (container.duas-colunas), porque a partir de nav-fixa a coluna de navegação come 20rem da janela e a janela deixa de dizer quanto sobra para o conteúdo."
+    },
+    "nav-fixa": {
+      "$value": "{breakpoint.xl}",
+      "$description": "A partir daqui a navegação lateral é COLUNA da grade — persistente, sem escurecimento e sem armadilha de foco. Abaixo, é gaveta sobreposta. É a fronteira que mais decide a forma da aplicação: a busca da faixa, a fileira de seções e a caixa de entrada em duas colunas também dependem dela."
+    }
+  },
+  "container": {
+    "$type": "dimension",
+    "$description": "Largura do CONTÊINER, não da janela. Existe porque a janela mente a partir de nav-fixa: a 1024px a janela está acima de duas-colunas, mas a coluna de navegação leva 20rem e o painel de conteúdo fica com 666px. Medido em 11/09/2026: o bloco de divisão punha o painel de apoio ao lado e deixava 24rem para uma tabela de cinco colunas — 'Valor' no movimento de caixa e 'Situação' nos parâmetros dos setores ficavam fora da vista, sem sinal. Quem decide se cabe lado a lado é o painel que contém o bloco (.ucam-corpo é o contêiner nomeado 'corpo'). Mesma regra do viewport: media/container query não escolhe medida, escolhe papel, e o papel mora aqui.",
+    "duas-colunas": {
+      "$value": "52rem",
+      "$description": "A partir daqui o bloco de divisão põe o painel de apoio ao lado do conteúdo. 52rem = 30rem para o conteúdo (uma tabela de cinco colunas sem cortar a última) + 22rem do painel de apoio mais largo em uso. Abaixo, empilha: painel de apoio espremido em 12rem não apoia nada, e tabela em 24rem esconde coluna."
+    },
+    "indicadores-em-fileira": {
+      "$value": "47rem",
+      "$description": "Largura do PRÓPRIO grupo de indicadores (.ucam-stats é contêiner 'indicadores') a partir da qual quatro ladrilhos de 11rem cabem numa fileira: 4 × 11rem + 3 vãos de 1rem. Abaixo, um grupo de quatro vai a 2 + 2 em vez de 3 + 1 — o quarto sozinho na largura inteira lia como o mais importante. Grupo de três não muda: três cabem até 35rem e abaixo disso já caem em 2 + 1 sozinhos."
+    }
+  },
+  "focus": {
+    "ring-width": {
+      "$type": "dimension",
+      "$value": "2px"
+    },
+    "ring-offset": {
+      "$type": "dimension",
+      "$value": "2px"
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "$description": "Famílias por papel. body é a fonte de toda a interface; mono só onde o alinhamento de caractere importa.",
+    "body": {
+      "$value": "{fontFamily.sans}",
+      "$description": "Interface inteira."
+    },
+    "mono": {
+      "$value": "{fontFamily.mono}",
+      "$description": "Código, identificadores e número de requerimento."
+    }
+  },
+  "elevation": {
+    "$type": "shadow",
+    "$description": "Elevação por INTENÇÃO. Cada degrau existe porque algo precisa se destacar do que está atrás — não para decorar.",
+    "flat": {
+      "$value": "{shadow.none}",
+      "$description": "Conteúdo no plano da página. Padrão."
+    },
+    "raised": {
+      "$value": "{shadow.none}",
+      "$description": "Card e painel. Agora sem sombra: o que separa do fundo é o fio de 1px e o tom da superfície, não o descolamento. Sombra fica reservada ao que realmente flutua — sticky, overlay e tooltip. Antes era shadow.sm no claro e none no escuro, o que dava aos dois temas linguagens de superfície diferentes para o mesmo componente."
+    },
+    "sticky": {
+      "$value": "{shadow.md}",
+      "$description": "Barra fixa quando o conteúdo passa por baixo dela."
+    },
+    "tooltip": {
+      "$value": "{shadow.md}",
+      "$description": "Balão de dica. Papel próprio e não overlay: a dica é a única superfície flutuante que já se separa por INVERSÃO DE TINTA, e a sombra empilhada do overlay em cima disso pesa duas vezes pelo mesmo motivo. Existe desde 09/09/2026, quando a dica referenciava {shadow.md} cru — passava pelo portão da ADR-007 porque ele só vigiava cor e fonte."
+    },
+    "overlay": {
+      "$value": "{shadow.stack}",
+      "$description": "Diálogo, popover e menu: flutuam sobre tudo."
+    }
+  },
+  "z": {
+    "$type": "number",
+    "$description": "Camadas de empilhamento do shell. Existem como token porque z-index escrito no olho é como o legado produziu drawer por cima de diálogo: cada arquivo escolhia um número maior que o do vizinho. A escala é esparsa de propósito — cabe camada nova entre duas sem renumerar nada.",
+    "base": {
+      "$value": 0,
+      "$description": "Conteúdo. Não precisa de z-index; existe para nomear o piso."
+    },
+    "sticky": {
+      "$value": 100,
+      "$description": "O que gruda ao rolar DENTRO do conteúdo: barra de visão, cabeçalho de tabela, barra de lote, coluna de navegação."
+    },
+    "faixa": {
+      "$value": 150,
+      "$description": "A faixa de marca. Um degrau acima de todo sticky do conteúdo porque ela HOSPEDA os menus de contexto, de sistema e de conta: um menu aberto dentro dela herda o contexto de empilhamento dela, e quando a faixa empatava com a barra de visão em 100, a barra — que vem depois no DOM — cobria o menu. Medido em 10/09/2026: 24 de 36 pontos do menu de campus sob a barra de visão, em todas as telas do Protocolo. Fica abaixo de nav e scrim, que precisam cobrir a faixa quando a navegação sobrepõe."
+    },
+    "nav": {
+      "$value": 200,
+      "$description": "Navegação lateral em modo sobreposto. Acima da faixa, porque o painel a cobre."
+    },
+    "scrim": {
+      "$value": 190,
+      "$description": "Escurecimento sob a navegação sobreposta. Logo abaixo dela."
+    },
+    "overlay": {
+      "$value": 300,
+      "$description": "Diálogo, popover, menu. Sempre acima da navegação — o legado invertia isso."
+    },
+    "skip": {
+      "$value": 400,
+      "$description": "Skip-link em foco. O topo absoluto: se algo o cobrir, o atalho de teclado deixa de existir."
+    }
+  }
+}

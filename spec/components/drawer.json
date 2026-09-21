@@ -1,0 +1,296 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "drawer",
+  "name": "Drawer",
+  "selector": "ucam-drawer",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "sobreposicao",
+  "description": "Painel que entra pela borda da janela para uma tarefa curta sem tirar a pessoa da lista que ela estava lendo. Difere do Dialog por preservar o contexto atrás: o Dialog interrompe para decidir, a gaveta acompanha para complementar.",
+  "quando_usar": [
+    "A pessoa está lendo uma lista e precisa complementar um item sem perder a lista de vista.",
+    "Um formulário curto acompanha a seleção — o inspetor ao lado da listagem.",
+    "O conteúdo é longo na vertical e a borda da janela dá mais altura do que um diálogo centrado."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e o redesenho interno de 2026 (protocolo-redesign-ux)",
+    "ocorrencias": [
+      {
+        "tela": "image 9 (Natureza do Requerimento)",
+        "problema": "o formulário de cadastro ocupa o topo da tela permanentemente, mesmo quando ninguém está criando nada — a lista, que é o trabalho do dia, começa abaixo da dobra"
+      },
+      {
+        "tela": "image 5 (navegação)",
+        "problema": "a navegação primária abre como sobreposição escurecendo a tela inteira em desktop de 2518px: o padrão de gaveta aplicado onde ele não cabe"
+      },
+      {
+        "tela": "image 7 (Novo Requerimento)",
+        "problema": "formulário de sete campos mais texto livre dentro de um diálogo, produzindo rolagem aninhada e nenhuma saída rotulada além do X"
+      }
+    ],
+    "conclusao": "Formulário auxiliar sai do topo da página e do diálogo apertado: vira gaveta lateral, com rodapé de ações fixo e o contexto visível atrás."
+  },
+  "anatomia": [
+    {
+      "parte": "scrim",
+      "obrigatorio": true,
+      "descricao": "Véu sobre o conteúdo. Clicar nele fecha, exceto quando há alteração não salva.",
+      "classe": "ucam-drawer-scrim"
+    },
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O painel. role=dialog com aria-modal=true.",
+      "classe": "ucam-drawer"
+    },
+    {
+      "parte": "cabecalho",
+      "obrigatorio": true,
+      "descricao": "Título, uma linha de apoio e o botão de fechar. Fixo.",
+      "classe": "ucam-drawer__header"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": true,
+      "descricao": "Nomeia a tarefa. É o aria-labelledby do painel.",
+      "classe": "ucam-drawer__title"
+    },
+    {
+      "parte": "corpo",
+      "obrigatorio": true,
+      "descricao": "Única área rolável do painel.",
+      "classe": "ucam-drawer__body"
+    },
+    {
+      "parte": "rodape",
+      "obrigatorio": false,
+      "descricao": "Ações. Cancelar antes da primária, ambas rotuladas com o verbo da tarefa.",
+      "classe": "ucam-drawer__footer"
+    }
+  ],
+  "props": [
+    {
+      "nome": "open",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Abre e fecha. Two-way: fechar por Esc ou pelo véu devolve o valor."
+    },
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nomeia a tarefa, não o objeto: 'Novo setor', não 'Setor'."
+    },
+    {
+      "nome": "description",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Uma linha explicando o efeito da tarefa."
+    },
+    {
+      "nome": "side",
+      "tipo": "'end' | 'start' | 'bottom'",
+      "default": "'end'",
+      "descricao": "Borda de entrada.",
+      "valores": {
+        "end": {
+          "uso": "Padrão. Complemento de um registro selecionado na lista à esquerda.",
+          "limite": "—"
+        },
+        "start": {
+          "uso": "Navegação e filtros persistentes em viewport estreita.",
+          "limite": "Nunca para navegação primária em desktop — é o defeito registrado na image 5.",
+          "classe": ".ucam-drawer--inicio"
+        },
+        "bottom": {
+          "uso": "Viewport abaixo de 40rem, onde painel lateral deixa 4rem de conteúdo visível.",
+          "limite": "Em desktop parece notificação e não painel de tarefa.",
+          "classe": ".ucam-drawer--baixo"
+        }
+      }
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "Largura: sm 22rem para confirmação com contexto, md 30rem para formulário curto, lg 42rem para formulário com resumo ao lado.",
+      "valores": {
+        "sm": {
+          "uso": "22rem: confirmação com contexto — o que se lê antes de decidir cabe sem rolar.",
+          "limite": "Estreita demais para formulário: dois campos lado a lado não entram.",
+          "classe": ".ucam-drawer--sm"
+        },
+        "lg": {
+          "uso": "42rem: formulário com resumo ao lado, onde os dois precisam ser lidos juntos.",
+          "limite": "Acima de 42rem a gaveta deixa de ser painel e vira segunda tela — nesse ponto é diálogo ou rota própria.",
+          "classe": ".ucam-drawer--lg"
+        }
+      }
+    },
+    {
+      "nome": "dismissible",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Fecha por Esc e por clique no véu. Passa a false enquanto há envio em curso — nunca para 'obrigar' a concluir."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "openChange",
+      "payload": "boolean",
+      "descricao": "Estado de abertura mudou. Completa o two-way de open."
+    },
+    {
+      "nome": "close",
+      "payload": "'esc' | 'scrim' | 'button' | 'action'",
+      "descricao": "Fechou, e por qual caminho. O motivo importa: fechar pelo véu com formulário sujo pede confirmação, fechar por ação não."
+    }
+  ],
+  "estados": [
+    "default",
+    "loading",
+    "open",
+    "closing"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para decisão destrutiva: destruir exige Dialog, que interrompe e centraliza a escolha (ADR-002).",
+      "Não usar para navegação primária em desktop.",
+      "Não abrir gaveta a partir de gaveta. Empilhar sobreposição faz perder o fio do que está por baixo, e a tecla Esc passa a ter dois significados.",
+      "Não usar quando a tarefa precisa de URL própria — formulário retomável é página, não painel."
+    ],
+    "motivo": "A gaveta serve para complementar sem sair; usada para interromper, ela é um diálogo pior."
+  },
+  "acessibilidade": {
+    "papel": "dialog",
+    "requisitos": [
+      "role=dialog com aria-modal=true e aria-labelledby apontando o título.",
+      "Foco entra no primeiro elemento interativo do corpo, ou no painel quando não há nenhum — nunca no botão de fechar, que é a saída.",
+      "Foco fica preso enquanto aberta e volta ao controle que a abriu ao fechar.",
+      "Esc fecha quando dismissible.",
+      "Conteúdo atrás recebe inert: visível de propósito, mas fora da tabulação e da árvore de acessibilidade.",
+      "A rolagem do documento trava enquanto a gaveta está aberta; a única área que rola é o corpo.",
+      "O botão de fechar tem nome acessível textual, não só o X.",
+      "Sem transição de entrada quando prefers-reduced-motion está ativo."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.1.2",
+      "2.3.3",
+      "2.4.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Título nomeia a tarefa com verbo ou substantivo de ação: 'Novo integrante', 'Mais filtros'.",
+      "Descrição diz o efeito, em uma linha: 'Adiciona um funcionário ao setor Biblioteca'.",
+      "A ação primária repete o verbo do título: 'Adicionar integrante', nunca 'Salvar' ou 'OK'."
+    ],
+    "exemplos": {
+      "bom": [
+        "Novo integrante — Adiciona um funcionário ao setor Biblioteca. [Cancelar] [Adicionar integrante]",
+        "Mais filtros — Refina a caixa de entrada sem sair dela. [Limpar] [Aplicar filtros]"
+      ],
+      "ruim": [
+        "Cadastro — [Cancelar] [OK]",
+        "Atenção!"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-button",
+      "ucam-choice-card",
+      "ucam-description-list",
+      "ucam-icon-button",
+      "ucam-stepper",
+      "ucam-timeline"
+    ],
+    "usada_por": [
+      "ucam-app-shell"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / formulário fixo no topo da listagem e md-dialog",
+    "mapa": [
+      {
+        "legado": "formulário de cadastro sempre visível acima da tabela",
+        "novo": "drawer aberto pela ação primária do PageHeader",
+        "nota": "A lista recupera a tela e o formulário só existe quando alguém vai cadastrar."
+      },
+      {
+        "legado": "md-dialog com sete campos",
+        "novo": "drawer size=md, ou página quando a tarefa é retomável",
+        "nota": "Acaba a rolagem aninhada do diálogo apertado."
+      },
+      {
+        "legado": "md-sidenav de navegação em desktop",
+        "novo": "não migra",
+        "nota": "Navegação primária em desktop é a moldura do app-shell, não gaveta."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Cadastro auxiliar",
+      "codigo": "<ucam-drawer\n  [(open)]=\"criando\"\n  title=\"Novo integrante\"\n  description=\"Adiciona um funcionário ao setor Biblioteca.\">\n  <form class=\"ucam-stack\">…</form>\n  <ucam-button variant=\"secondary\" (click)=\"criando.set(false)\">Cancelar</ucam-button>\n  <ucam-button variant=\"primary\" (click)=\"adicionar()\">Adicionar integrante</ucam-button>\n</ucam-drawer>"
+    },
+    {
+      "titulo": "Filtros sob demanda",
+      "codigo": "<ucam-drawer [(open)]=\"filtros\" size=\"sm\" title=\"Mais filtros\" (close)=\"registrar($event)\">\n  …\n</ucam-drawer>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Tirar o formulário auxiliar do topo da listagem e pô-lo na gaveta.",
+      "evite": "Formulário de cadastro permanentemente visível acima da tabela.",
+      "porque": "Na tela de Natureza o formulário empurra a lista para baixo da dobra o tempo todo, para uma tarefa que acontece uma vez por semana."
+    },
+    {
+      "faca": "Usar Dialog para decisão destrutiva.",
+      "evite": "Confirmar exclusão em gaveta.",
+      "porque": "A gaveta preserva o contexto de propósito; destruir exige interromper e centralizar a escolha (ADR-002)."
+    },
+    {
+      "faca": "Rotular a ação primária com o verbo do título.",
+      "evite": "'Salvar' ou 'OK'.",
+      "porque": "Quem chega ao rodapé depois de rolar o formulário perdeu o título de vista, e 'OK' não diz o que vai acontecer."
+    },
+    {
+      "faca": "Devolver o foco ao controle que abriu a gaveta.",
+      "evite": "Deixar o foco no <body> ao fechar.",
+      "porque": "Foco no body joga quem usa teclado para o começo do documento a cada fechamento."
+    },
+    {
+      "faca": "Aplicar inert no conteúdo de trás.",
+      "evite": "Só escurecer com o véu.",
+      "porque": "Sem inert a tabulação continua entrando na lista atrás do painel, que está visível e inalcançável pelo ponteiro."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "dialog",
+      "diferenca": "Dialog interrompe para obter uma decisão curta e sai; drawer abre um painel lateral para trabalho que continua ao lado do contexto.",
+      "escolha": "Se é consulta, edição longa ou filtro que a pessoa quer conferir contra a lista atrás, é drawer."
+    },
+    {
+      "componente": "app-shell",
+      "diferenca": "A navegação do AppShell é PERMANENTE e é por onde se anda no sistema; o Drawer entra pela borda para uma tarefa curta e sai. Gaveta não é lugar de menu principal, e menu principal não vira gaveta em telas grandes.",
+      "escolha": "Complementar a lista que se está lendo sem perdê-la de vista."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "drawer.json",
+      "raiz": ".ucam-drawer-scrim mais .ucam-drawer",
+      "variaveis": [
+        "--ucam-drawer-largura"
+      ],
+      "nota": "Só a superfície. Foco preso, inert atrás, trava de rolagem e Escape NÃO existem no Trilho A: a página hospedeira precisa resolvê-los, e é por isso que a gaveta é um caso ruim para CSS puro."
+    },
+    "trilho_b": "Parte do z-drawer, que entrega overlay do CDK, véu, Escape, trava de rolagem, armadilha de foco e devolução do foco ao controle que abriu. O wrapper acrescenta o cabeçalho montado de title e description e o MOTIVO do fechamento — a base colapsava véu, Escape, swipe e botão numa chamada só, e quem escuta não distinguia arrastar de confirmar (patch UCAM em drawer-host.ts, o quarto na base pela ADR-006). A superfície foi estreitada: swipe, alça e pontos de encaixe da base não entram, porque não há evidência deles no parque. Ações do rodapé entram pelo seletor [ucamDrawerFooter]."
+  }
+}

@@ -1,0 +1,361 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "text-field",
+  "name": "TextField",
+  "selector": "ucam-text-field",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Entrada de texto de linha única, com rótulo persistente, texto de apoio e mensagem de erro. Base para os campos mascarados (CPF, telefone, CEP) e para o campo de data.",
+  "quando_usar": [
+    "Um dado curto e fechado numa linha: nome, matrícula, e-mail, telefone, CEP.",
+    "Um campo mascarado — CPF, telefone, CEP — que herda a base deste contrato.",
+    "O campo precisa de rótulo persistente, texto de apoio e mensagem de erro ligados por ARIA."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 7 (modal Novo Requerimento)",
+        "campo": "CPF",
+        "problema": "sem máscara visível, sem dica de formato, largura arbitrária menor que a do Nome sem relação com o conteúdo"
+      },
+      {
+        "tela": "image 7",
+        "campo": "Nascido em",
+        "problema": "campo de data sem indicação de formato esperado (dd/mm/aaaa) e sem seletor"
+      },
+      {
+        "tela": "image 7",
+        "campo": "todos",
+        "problema": "nenhuma indicação de campo obrigatório; o usuário só descobre ao tentar salvar"
+      },
+      {
+        "tela": "image 10, 12",
+        "campo": "busca",
+        "problema": "o texto 'Digite aqui para pesquisar' é placeholder fazendo papel de rótulo — some ao digitar"
+      },
+      {
+        "tela": "image 7",
+        "campo": "textarea",
+        "problema": "'Clique aqui para digitar...' idem, e com contraste insuficiente"
+      },
+      {
+        "tela": "image 9",
+        "campo": "Descrição",
+        "problema": "rótulo flutuante Material: ao preencher, o rótulo encolhe e perde contraste"
+      }
+    ],
+    "conclusao": "O padrão Material de rótulo flutuante é a raiz de metade dos problemas. Substituído por rótulo persistente acima do campo — ver ADR-004."
+  },
+  "anatomia": [
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Sempre visível, acima do campo. Nunca colapsa para dentro do input."
+    },
+    {
+      "parte": "indicador-obrigatorio",
+      "obrigatorio": false,
+      "descricao": "Marca de obrigatoriedade. Ver seção obrigatoriedade."
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": false,
+      "descricao": "Formato ou instrução. Persistente — nunca vira placeholder."
+    },
+    {
+      "parte": "input",
+      "obrigatorio": true,
+      "descricao": "Elemento input nativo."
+    },
+    {
+      "parte": "affix-inicio",
+      "obrigatorio": false,
+      "descricao": "Ícone ou prefixo (R$, @). aria-hidden quando decorativo."
+    },
+    {
+      "parte": "affix-fim",
+      "obrigatorio": false,
+      "descricao": "Ícone de ação (limpar, revelar senha) — precisa ser botão focável, não ícone solto."
+    },
+    {
+      "parte": "contador",
+      "obrigatorio": false,
+      "descricao": "Contagem de caracteres quando há maxLength. aria-live polite."
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false,
+      "descricao": "Mensagem de erro. Substitui o hint visualmente, mas ambos permanecem em aria-describedby."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Rótulo visível. Campo sem rótulo é erro de build, não aviso."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto de apoio persistente. Use para formato: dd/mm/aaaa, somente números."
+    },
+    {
+      "nome": "placeholder",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "EXEMPLO de valor, nunca instrução nem rótulo. Opcional e desencorajado — ver ADR-004."
+    },
+    {
+      "nome": "type",
+      "tipo": "'text' | 'email' | 'tel' | 'password' | 'number' | 'url' | 'search'",
+      "default": "'text'",
+      "descricao": "Define teclado no mobile e validação nativa."
+    },
+    {
+      "nome": "mask",
+      "tipo": "'cpf' | 'cnpj' | 'phone' | 'cep' | 'date' | null",
+      "default": "null",
+      "descricao": "Máscara de entrada. O valor emitido no modelo é SEMPRE sem máscara — máscara é apresentação, não dado."
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Campo inaplicável no contexto. Para valor relevante mas não editável, use readonly."
+    },
+    {
+      "nome": "readonly",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Valor visível e copiável, não editável. Permanece focável — ao contrário de disabled."
+    },
+    {
+      "nome": "loading",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Busca ou validação remota em curso a partir do valor digitado — o CEP que preenche o endereço, a matrícula que traz o nome. Desenha o indicador no fim do campo e declara aria-busy. O campo continua editável: travar a digitação enquanto a rede responde é pior que a espera."
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "errorMessage",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Obrigatório quando invalid é true."
+    },
+    {
+      "nome": "maxLength",
+      "tipo": "number | null",
+      "default": "null"
+    },
+    {
+      "nome": "width",
+      "tipo": "'content' | 'full'",
+      "default": "'full'",
+      "descricao": "O valor content dimensiona o campo pelo tamanho esperado do dado (CPF, CEP, data). Elimina as larguras arbitrárias do legado."
+    },
+    {
+      "nome": "autocomplete",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Token HTML de autopreenchimento. Obrigatório em campos de identificação e endereço (WCAG 1.3.5)."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "filled",
+    "loading",
+    "invalid",
+    "disabled",
+    "readonly"
+  ],
+  "obrigatoriedade": {
+    "decisao": "Marcar os OBRIGATÓRIOS com asterisco e legenda quando a maioria dos campos for opcional. Marcar os OPCIONAIS com (opcional) quando a maioria for obrigatória.",
+    "motivo": "Nos formulários do Protocolo quase tudo é obrigatório; marcar tudo com asterisco vira ruído e não informa nada.",
+    "regra_tecnica": "O asterisco é decorativo (aria-hidden). A obrigatoriedade é comunicada por required e aria-required no input."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "label associado ao input por for/id. Nunca usar apenas placeholder como nome acessível (WCAG 3.3.2).",
+      "hint e erro referenciados por aria-describedby, ambos simultaneamente quando existirem.",
+      "aria-invalid true quando invalid.",
+      "Mensagem de erro em container aria-live polite, anunciada sem roubar o foco.",
+      "Erro identificado em texto, não apenas por borda vermelha (WCAG 1.4.1).",
+      "Contraste da borda do campo mínimo 3:1 contra o fundo (WCAG 1.4.11).",
+      "Anel de foco de 2px com offset, visualmente distinto do estado de erro.",
+      "autocomplete preenchido em campos de dado pessoal (WCAG 1.3.5).",
+      "Campo utilizável com zoom de 200% e em viewport de 320px (WCAG 1.4.10).",
+      "Em loading, aria-busy=true no input e NUNCA disabled: quem digita não perde o foco nem o que escreveu. O resultado é anunciado por quem o recebe — os campos que se preencheram —, não pelo indicador, que é aria-hidden."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.3.5",
+      "1.4.1",
+      "1.4.10",
+      "1.4.11",
+      "2.4.6",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Substantivo curto em caixa natural: CPF, Nome completo, Data de nascimento.",
+      "Nascido em vira Data de nascimento — o rótulo nomeia o dado, não a frase."
+    ],
+    "erro": [
+      "Diz o que está errado E como corrigir.",
+      "Bom: CPF inválido. Verifique os 11 dígitos.",
+      "Ruim: Campo inválido. / Erro. / Preencha corretamente.",
+      "Sem culpar o usuário e sem pedir desculpas."
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / Angular Material (md-input-container + input)",
+    "mapa": [
+      {
+        "legado": "md-input-container com rótulo flutuante",
+        "novo": "label persistente acima do campo",
+        "nota": "Mudança visual perceptível. Ver ADR-004."
+      },
+      {
+        "legado": "placeholder usado como rótulo",
+        "novo": "prop label",
+        "nota": "Digite aqui para pesquisar vira label=Pesquisar."
+      },
+      {
+        "legado": "campo CPF sem máscara",
+        "novo": "mask=cpf width=content"
+      },
+      {
+        "legado": "campo Nascido em",
+        "novo": "ucam-date-field label=Data de nascimento hint=dd/mm/aaaa"
+      },
+      {
+        "legado": "ng-messages para erro",
+        "novo": "invalid + errorMessage"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Campo obrigatório com máscara",
+      "codigo": "<ucam-text-field label=\"CPF\" mask=\"cpf\" width=\"content\" required [(ngModel)]=\"cpf\" />"
+    },
+    {
+      "titulo": "Com apoio de formato",
+      "codigo": "<ucam-text-field label=\"Data de nascimento\" hint=\"dd/mm/aaaa\" mask=\"date\" width=\"content\" />"
+    },
+    {
+      "titulo": "Em erro",
+      "codigo": "<ucam-text-field label=\"CPF\" [invalid]=\"true\" errorMessage=\"CPF inválido. Verifique os 11 dígitos.\" />"
+    },
+    {
+      "titulo": "Busca",
+      "codigo": "<ucam-text-field label=\"Pesquisar\" type=\"search\" placeholder=\"Nome ou número do requerimento\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Rótulo persistente acima do campo, sempre visível.",
+      "evite": "Rótulo flutuante Material e placeholder fazendo papel de rótulo.",
+      "porque": "'Digite aqui para pesquisar' some ao digitar e o rótulo flutuante encolhe e perde contraste. É a ADR-004."
+    },
+    {
+      "faca": "Declarar o formato esperado no hint quando o campo tem máscara: dd/mm/aaaa, 000.000.000-00.",
+      "evite": "Deixar o usuário descobrir o formato ao errar.",
+      "porque": "Nenhum campo mascarado do parque diz o que espera; o erro depois da submissão é a primeira pista."
+    },
+    {
+      "faca": "Derivar a largura do conteúdo: CPF é estreito, Nome completo é largo.",
+      "evite": "Largura arbitrária, e largura menor que o dado que o campo recebe.",
+      "porque": "No Protocolo há campo de data tão estreito que corta o valor — 10/09/2026 aparece como 10/09/202."
+    },
+    {
+      "faca": "Mensagem de erro que diz o que está errado e como corrigir: CPF inválido. Verifique os 11 dígitos.",
+      "evite": "'Campo inválido', 'Erro', 'Preencha corretamente'.",
+      "porque": "Erro que não ensina a correção obriga o usuário a adivinhar duas vezes."
+    },
+    {
+      "faca": "Marcar o campo obrigatório na hora do preenchimento.",
+      "evite": "Revelar a obrigatoriedade só na submissão.",
+      "porque": "Hoje o usuário preenche o formulário inteiro antes de descobrir o que faltava."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string",
+      "descricao": "Valor sem máscara. A máscara é apresentação, nunca dado."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "textarea",
+      "diferenca": "TextField é UMA linha; Textarea é várias, e a diferença não é de tamanho: é de qual resposta se espera. Linha única promete um dado curto e fechado; a caixa alta promete que se pode escrever.",
+      "escolha": "Nome, matrícula, CPF, e-mail, telefone: cabe numa linha e não tem parágrafo."
+    },
+    {
+      "componente": "date-field",
+      "diferenca": "DateField é o TextField com as regras de data por cima: formato indicado, máscara e calendário. Data em TextField cru aceita 31/02 e devolve string que ninguém sabe interpretar.",
+      "escolha": "Qualquer texto que não seja uma data."
+    },
+    {
+      "componente": "input-group",
+      "diferenca": "TextField é o campo sozinho; InputGroup é o campo mais o que está GRUDADO nele dentro do mesmo contorno — ícone, unidade, prefixo ou botão que age sobre o próprio valor.",
+      "escolha": "Nada acompanha o campo, ou o que acompanha é rótulo e apoio, que são do Field."
+    },
+    {
+      "componente": "field",
+      "diferenca": "Field é a CASCA — rótulo, obrigatoriedade, apoio, erro e a fiação ARIA; TextField é o CONTROLE que a casca veste. Um não substitui o outro: todo TextField já vem dentro de um Field.",
+      "escolha": "Você quer uma entrada de texto: use o TextField, que traz a casca junto."
+    }
+  ],
+  "composicao": {
+    "usada_por": [
+      "padrao-formulario-entidade",
+      "padrao-listagem-crud",
+      "padrao-listagem-inspetor",
+      "ucam-app-shell",
+      "ucam-date-field"
+    ],
+    "usa": [
+      "ucam-field"
+    ]
+  },
+  "limites": {
+    "regras": [
+      "Não usar para data: isso é date-field. TextField cru aceita 31/02 e devolve string que ninguém sabe interpretar.",
+      "Não usar para texto com parágrafo: acima de uma frase é textarea. Linha única promete resposta curta, e quem recebe a promessa escreve curto.",
+      "Não usar placeholder como rótulo. O placeholder some ao digitar e leva embora a única pista do que ali se pede — é o defeito mais repetido do parque legado (ADR-004).",
+      "Não pôr unidade, prefixo ou botão soltos ao lado do campo: o que é grudado ao valor vai DENTRO do contorno, e isso é input-group.",
+      "Não usar como campo de busca que filtra uma lista em tempo real — ali o controle é combobox ou command, que trazem estado vazio e navegação por teclado."
+    ],
+    "motivo": "O TextField é a entrada mais genérica do sistema e por isso é a mais fácil de usar no lugar errado. Cada regra acima aponta um componente que já resolve o caso com as garantias que o campo cru não tem."
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<div class=\"ucam-field\"> com rótulo, <input class=\"ucam-input\"> e dica.",
+      "raiz": ".ucam-field com .ucam-input",
+      "nota": "São duas classes porque são duas coisas: o campo é o arranjo de rótulo, controle e dica; o input é o controle. Um .ucam-input solto funciona e perde o rótulo, que é justamente o defeito que o contrato existe para impedir.",
+      "estado": "loading: .ucam-input-group com o input em .ucam-input-group__controle, aria-busy=true, e um .ucam-input-group__adorno final com svg.ic.ucam-spinner (ícone loaderCircle). readonly: o atributo nativo; a folha dá o chão sem papel e o contorno de fio."
+    }
+  }
+}

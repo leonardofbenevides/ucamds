@@ -1,0 +1,265 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "stepper",
+  "name": "Stepper",
+  "selector": "ucam-stepper",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "navegacao",
+  "description": "Mostra em que ponto de uma tarefa de várias etapas a pessoa está e quanto falta. Indica progresso; não é ele que troca a etapa — quem navega são as ações do formulário e a URL.",
+  "quando_usar": [
+    "Uma tarefa tem etapas conhecidas de antemão e a pessoa precisa saber em qual está e quanto falta.",
+    "O formulário é longo e foi quebrado em passos nomeados.",
+    "A pessoa pode sair e voltar, e precisa reencontrar onde parou."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e o redesenho interno de 2026 (protocolo-redesign-ux)",
+    "ocorrencias": [
+      {
+        "tela": "image 7 (Novo Requerimento)",
+        "problema": "sete campos e um texto livre num diálogo único, sem nenhuma indicação de tamanho da tarefa: quem começa não sabe se falta um campo ou dez"
+      },
+      {
+        "tela": "image 7",
+        "problema": "a validação só aparece no envio, então descobrir que faltou um campo do começo custa a rolagem inteira de volta"
+      },
+      {
+        "tela": "redesenho interno, Novo requerimento",
+        "problema": "o progresso foi desenhado como três tarjas sem rótulo nem número — a pessoa vê que há três partes e não sabe quais são"
+      }
+    ],
+    "conclusao": "Tarefa longa declara suas etapas com nome e posição. Barra sem rótulo informa que existe progresso e esconde qual é."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<ol> das etapas, com nome acessível dizendo de que tarefa é o progresso.",
+      "classe": "ucam-stepper"
+    },
+    {
+      "parte": "passo",
+      "obrigatorio": true,
+      "descricao": "<li>. A etapa atual declara aria-current=step. O estado vem por classe: .ucam-stepper__passo--done, .ucam-stepper__passo--current e .ucam-stepper__passo--error. O padrão (pendente) não leva modificador.",
+      "classe": "ucam-stepper__passo"
+    },
+    {
+      "parte": "marcador",
+      "obrigatorio": true,
+      "descricao": "Número da etapa, ou o ícone de check quando concluída.",
+      "classe": "ucam-stepper__marcador"
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": true,
+      "descricao": "Nome da etapa. Só é escondido em variant=bar, e mesmo lá continua no nome acessível. O rótulo é texto solto dentro do <li> do passo, sem elemento próprio — o que o estiliza é a regra do passo."
+    },
+    {
+      "parte": "conector",
+      "obrigatorio": false,
+      "descricao": "Traço entre etapas. Decorativo.",
+      "classe": "ucam-stepper__conector"
+    }
+  ],
+  "props": [
+    {
+      "nome": "steps",
+      "tipo": "StepItem[]",
+      "obrigatorio": true,
+      "descricao": "As etapas, em ordem. Entre três e cinco: duas não justificam o componente, seis viram formulário fatiado demais."
+    },
+    {
+      "nome": "current",
+      "tipo": "number",
+      "obrigatorio": true,
+      "descricao": "Índice da etapa atual, base zero."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome acessível do conjunto: 'Progresso do novo requerimento'."
+    },
+    {
+      "nome": "variant",
+      "tipo": "'steps' | 'bar'",
+      "default": "'steps'",
+      "descricao": "Apresentação.",
+      "valores": {
+        "steps": {
+          "uso": "Padrão. Marcador, número e nome de cada etapa.",
+          "limite": "Abaixo de 40rem os nomes não cabem lado a lado; a variante cai para bar automaticamente."
+        },
+        "bar": {
+          "uso": "Faixa de segmentos sem rótulo visível, para topo de formulário estreito ou gaveta.",
+          "limite": "Só é aceitável porque o nome da etapa atual aparece logo abaixo, no título do formulário. Sem esse título, a barra é decoração.",
+          "classe": ".ucam-stepper--barra"
+        }
+      }
+    },
+    {
+      "nome": "navigable",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Permite voltar a uma etapa já concluída clicando nela. Etapa futura nunca é clicável — o caminho para frente passa pela validação."
+    }
+  ],
+  "schemas": {
+    "StepItem": {
+      "label": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Nome da etapa. Substantivo do que se preenche ali: 'Aluno', 'Solicitação', 'Revisão'."
+      },
+      "state": {
+        "tipo": "'done' | 'current' | 'todo' | 'error'",
+        "obrigatorio": true,
+        "descricao": "Situação da etapa. error marca a etapa que ficou com campo inválido para trás."
+      },
+      "hint": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Uma linha de apoio. Em error, diz o que falta: '2 campos obrigatórios'."
+      }
+    }
+  },
+  "eventos": [
+    {
+      "nome": "stepSelect",
+      "payload": "number",
+      "descricao": "Etapa concluída escolhida pela pessoa. Só emite quando navigable é true."
+    }
+  ],
+  "estados": [
+    "default",
+    "focus-visible",
+    "done",
+    "current",
+    "todo",
+    "error"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar com duas etapas: dois passos não são um caminho, são um formulário com um título.",
+      "Não usar acima de cinco: a tarefa está fatiada demais e cada etapa vira uma tela de um campo.",
+      "Não usar como abas. Aba troca de assunto e a ordem não importa; etapa tem ordem e a seguinte depende da anterior.",
+      "Não deixar etapa futura clicável antes da validação da atual."
+    ],
+    "motivo": "O componente informa posição numa sequência. Onde não há sequência obrigatória, o certo é aba."
+  },
+  "acessibilidade": {
+    "papel": "list",
+    "requisitos": [
+      "É <ol> com nome acessível — a ordem é significado.",
+      "A etapa atual declara aria-current=step.",
+      "O estado de cada etapa aparece em texto no nome acessível ('etapa 2 de 3, concluída'), não só no ícone e na cor.",
+      "Em variant=bar o rótulo continua no nome acessível, apenas escondido visualmente com ucam-sr-only.",
+      "Etapa navegável é <button> real; etapa não navegável não é focável.",
+      "A etapa em error é anunciada com o motivo, não só pintada de vermelho.",
+      "Contraste do conector e do marcador mínimo 3:1 contra o fundo (WCAG 1.4.11)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Rótulo de etapa é substantivo curto do que se preenche: 'Aluno', 'Solicitação', 'Revisão'.",
+      "Nada de 'Passo 1' como rótulo: o número já está no marcador.",
+      "A dica de erro diz o que falta e onde, com contagem: '2 campos obrigatórios'."
+    ],
+    "exemplos": {
+      "bom": [
+        "Aluno · Solicitação · Revisão",
+        "Solicitação — 2 campos obrigatórios"
+      ],
+      "ruim": [
+        "Passo 1 · Passo 2 · Passo 3",
+        "Erro"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-drawer"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / formulário único em diálogo",
+    "mapa": [
+      {
+        "legado": "sete campos sem indicação de tamanho",
+        "novo": "steps + current",
+        "nota": "A pessoa passa a saber quanto falta antes de começar."
+      },
+      {
+        "legado": "validação só no envio",
+        "novo": "state=error na etapa",
+        "nota": "O erro fica ancorado na etapa em que mora, não numa lista solta no topo."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Novo requerimento em três etapas",
+      "codigo": "<ucam-stepper\n  label=\"Progresso do novo requerimento\"\n  [current]=\"etapa()\"\n  [steps]=\"[\n    { label: 'Aluno', state: 'done' },\n    { label: 'Solicitação', state: 'current' },\n    { label: 'Revisão', state: 'todo' }\n  ]\" />"
+    },
+    {
+      "titulo": "Dentro de gaveta estreita",
+      "codigo": "<ucam-stepper variant=\"bar\" label=\"Progresso do novo requerimento\" [current]=\"1\" [steps]=\"etapas()\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Nomear cada etapa pelo que se preenche nela.",
+      "evite": "'Passo 1', 'Passo 2'.",
+      "porque": "O número já está no marcador; repetir gasta o único lugar onde caberia dizer do que a etapa trata."
+    },
+    {
+      "faca": "Ancorar o erro na etapa onde ele mora, com contagem.",
+      "evite": "Uma lista de erros no topo depois do envio.",
+      "porque": "É o defeito da tela atual: descobrir o campo que faltou custa a rolagem inteira de volta."
+    },
+    {
+      "faca": "Usar aba quando a ordem não importa.",
+      "evite": "Stepper para agrupar assuntos independentes.",
+      "porque": "Sequência declarada onde não existe faz a pessoa preencher na ordem errada e achar que quebrou algo."
+    },
+    {
+      "faca": "Deixar voltar a uma etapa concluída.",
+      "evite": "Travar o caminho de volta para 'proteger' o preenchimento.",
+      "porque": "Corrigir o que já se preencheu é o uso mais comum; sem volta, a saída vira recomeçar."
+    },
+    {
+      "faca": "Manter o rótulo no nome acessível mesmo em variant=bar.",
+      "evite": "Três tarjas sem texto nenhum.",
+      "porque": "Sem rótulo a barra informa que há progresso e esconde qual — que é o que o redesenho interno fez."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "stepper.json",
+      "raiz": "<ol class=\"ucam-stepper\">",
+      "nota": "A etapa atual declara aria-current=step. O conector é um <li> aria-hidden."
+    },
+    "trilho_b": "A situação de cada etapa entra em texto por ucam-sr-only (\", etapa 2 de 3, com pendência: 2 campos obrigatórios\"), começando por vírgula para emendar no rótulo visível sem repeti-lo. Etapa concluída com navigable é <button> real; etapa futura nunca é focável. Em variant=bar o rótulo continua na árvore de acessibilidade. NÃO entrega: a troca de etapa — quem navega são as ações do formulário e a URL."
+  },
+  "vs": [
+    {
+      "componente": "timeline",
+      "diferenca": "Timeline conta o que JÁ aconteceu, em ordem cronológica e sem etapas previstas; Stepper mostra onde a pessoa está numa tarefa cujas etapas são conhecidas de antemão e quanto ainda falta.",
+      "escolha": "O formulário de abertura em quatro passos, sempre os mesmos quatro."
+    },
+    {
+      "componente": "progress",
+      "diferenca": "Stepper conta ETAPAS NOMEADAS e diz em qual delas se está; Progress é uma proporção sem nome — quanto de um todo foi cumprido. Etapa tem título; fração tem só número.",
+      "escolha": "As partes têm nome e a pessoa precisa saber o que vem depois."
+    }
+  ]
+}

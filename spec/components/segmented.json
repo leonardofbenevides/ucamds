@@ -1,0 +1,289 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "segmented",
+  "name": "Segmented",
+  "selector": "ucam-segmented",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Grupo de dois a quatro segmentos em que um está sempre escolhido, com todas as opções visíveis ao mesmo tempo. Serve ao recorte mais usado de uma listagem — Todas / EAD / Presencial — e à escolha binária de formulário — Sim / Não. Não troca de conteúdo como a aba e não esconde as opções como o select.",
+  "quando_usar": [
+    "O recorte mais usado de uma listagem, com duas a quatro opções sempre visíveis: Todas / EAD / Presencial.",
+    "Uma escolha binária de formulário em que os dois lados precisam ser lidos juntos: Sim / Não.",
+    "A troca é de FILTRO sobre a mesma lista, não de conteúdo — trocar conteúdo é aba."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/SIGFIN e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "SIGFIN — Cálculo de mensalidade",
+        "rotulo": "Sim / Não",
+        "problema": "escolha binária feita com dois botões pintados, em que o escolhido é o de cor mais forte. Não há grupo, não há rótulo do que está sendo perguntado e nada carrega o estado além da cor — componente que não estava em nenhum inventário e que aparece em várias telas do financeiro"
+      },
+      {
+        "tela": "Protocolo — Gerencial e Analytics",
+        "rotulo": "EAD / Presencial",
+        "problema": "o recorte por modalidade não existe na tela atual; obtê-lo exige refazer a consulta na tela de pesquisa com outro parâmetro"
+      },
+      {
+        "tela": "SIGFIN — Movimento de caixa",
+        "problema": "recortes de duas ou três opções são oferecidos como select, escondendo atrás de um clique a informação de que existem só duas alternativas"
+      }
+    ],
+    "conclusao": "O toggle Sim/Não do SIGFIN é um componente real do parque que nenhum inventário registrou. Este contrato o adota, dá-lhe grupo e rótulo, e absorve junto os recortes curtos que hoje viram select sem motivo."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O trilho: CONTORNO de 1px e raio de controle, com recuo de 3px que dá o vão em volta do segmento escolhido, e altura amarrada em --ucam-size-control-md para medir o mesmo que o input e o botão ao lado numa barra de ferramentas. Fundo transparente: o trilho diz que os botões são um grupo, e quem carrega o estado é o segmento. É ele que leva o role=group e o nome do que está sendo escolhido.",
+      "classe": "ucam-segmented"
+    },
+    {
+      "parte": "segmento",
+      "obrigatorio": true,
+      "descricao": "Cada opção, sempre um <button type=button>. O escolhido é TINTA CHEIA na cor do texto (surface.inverse com text.on-action, 18:1), e essa é a terceira tentativa: cartão branco sobre trilho afundado trazia uma quarta superfície para barras que já têm chip, campo e botão; action.primary.subtle sobre trilho transparente deu #FFF4F4 no branco, 1,03:1 de diferença de plano — o estado sumia. Não é a marca cheia: bordô aqui roubaria o peso da ação primária da tela (ADR-001), e um filtro não é a ação da tela. O par inverse/on-action troca de lado sozinho no tema escuro, então não há regra de tema para manter.",
+      "classe": "ucam-segmented"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "SegmentItem[]",
+      "obrigatorio": true,
+      "descricao": "As opções, de duas a quatro. A ordem é fixa e vai do mais amplo ao mais restrito quando houver uma opção que engloba as outras: Todas antes de EAD e Presencial."
+    },
+    {
+      "nome": "value",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O id do segmento escolhido. Two-way: [(value)]. Nunca fica vazio — grupo segmentado sem escolha não tem estado neutro que faça sentido, e um trilho todo cinza parece desabilitado."
+    },
+    {
+      "nome": "ariaLabel",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O que está sendo escolhido: Modalidade, Ordenação da fila. Obrigatório porque o grupo não tem rótulo visível próprio quando vive numa barra de ferramentas — e sem ele o leitor de tela anuncia dois botões soltos, que é o defeito do Sim/Não do SIGFIN."
+    },
+    {
+      "nome": "label",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Rótulo visível acima do grupo. Obrigatório quando o segmentado está dentro de um formulário: a escolha entre Sim e Não sem a pergunta escrita ao lado é ilegível fora do contexto (ADR-004). Em barra de ferramentas fica nulo, e o ariaLabel sustenta sozinho."
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md'",
+      "default": "'md'",
+      "descricao": "sm em barra de ferramentas densa, junto de botões pequenos. md em formulário, onde o alvo precisa acompanhar a altura dos campos vizinhos."
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Desabilita o grupo inteiro. Não existe desabilitar um segmento: opção indisponível some da lista, porque um segmento morto num trilho de três ocupa um terço da largura sem oferecer nada."
+    }
+  ],
+  "schemas": {
+    "SegmentItem": {
+      "id": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Chave estável da opção."
+      },
+      "label": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Uma palavra, no máximo duas. O segmentado não quebra linha."
+      },
+      "count": {
+        "tipo": "number | null",
+        "default": "null",
+        "descricao": "Contagem do recorte, quando conhecida sem custo. Entra depois do rótulo e no nome acessível."
+      }
+    }
+  },
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string",
+      "descricao": "Emitido quando a escolha muda, com o id do novo segmento."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "active",
+    "disabled",
+    "pressed"
+  ],
+  "limites": {
+    "$descricao": "O segmentado só rende enquanto todas as opções cabem à vista. As regras existem para impedir que ele vire um select ruim.",
+    "regras": [
+      "Máximo de quatro segmentos. Acima disso o trilho não cabe em telas estreitas e o certo volta a ser o select — está no limite porque é o ponto exato em que ver todas de uma vez deixa de ser possível.",
+      "Rótulos curtos, de uma ou duas palavras. O trilho não quebra linha: rótulo longo empurra os irmãos para fora da tela.",
+      "Não usar para troca de conteúdo. Se o painel abaixo muda de forma, e não só de recorte, o componente é a aba.",
+      "Não usar para múltipla escolha. Segmentado tem exatamente um escolhido; marcar vários é checkbox ou chip de filtro.",
+      "Não usar para ação. Segmento é estado, não comando: Exportar não é um segmento.",
+      "Não usar como par de botões Sim/Não em confirmação de ação destrutiva — isso é diálogo, e a resposta ali é ação, não escolha persistente."
+    ],
+    "excecao": "Escolha binária de formulário pode ficar no segmentado mesmo tendo alternativa em radio: com duas opções, o radio custa duas linhas e o segmentado custa uma, e a leitura é a mesma. Acima de duas opções em formulário, o radio volta a ser o certo porque comporta descrição por opção."
+  },
+  "acessibilidade": {
+    "papel": "group, com cada segmento sendo um button e aria-pressed carregando a escolha",
+    "requisitos": [
+      "A raiz é role=group com aria-label ou aria-labelledby. Sem isso o leitor de tela anuncia botões soltos e a pergunta se perde — é o defeito exato do Sim/Não do SIGFIN.",
+      "Cada segmento é <button type=\"button\"> com aria-pressed=true no escolhido e false nos demais. type=button é obrigatório: dentro de um formulário, botão sem type envia o formulário ao ser clicado.",
+      "A escolha não é comunicada só pela superfície (WCAG 1.4.1): aria-pressed carrega o estado, e o rótulo escolhido muda de tinta e de peso além de ganhar plano.",
+      "Todos os segmentos são tabuláveis. Diferente da tira de abas: aqui não há painel associado, o grupo é curto e roving tabindex esconderia opções de quem tabula.",
+      "Alvo mínimo de 24px em qualquer tamanho; em formulário, size=md acompanha a altura do controle vizinho.",
+      "O anel de foco aparece no segmento, dentro do trilho, e não é recortado pelo overflow do trilho.",
+      "Rótulo em caixa natural (ADR-003)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.5.8",
+      "4.1.2"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Anda de segmento em segmento, como em qualquer grupo de botões."
+      },
+      {
+        "tecla": "Enter / Espaço",
+        "comportamento": "Escolhe o segmento focado."
+      }
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Uma palavra sempre que possível: Todas, EAD, Presencial, Sim, Não.",
+      "A opção que engloba as outras vem primeiro e chama-se Todas ou Todos, concordando com o substantivo do recorte.",
+      "Paralelismo entre os segmentos: ou todos são adjetivos, ou todos são substantivos. Todas / EAD / Presencial funciona; Todas / EAD / Aula na sala não."
+    ],
+    "ariaLabel": [
+      "Nomeia a dimensão, não a ação: Modalidade, Ordenação da fila, Bolsista.",
+      "Não repetir a palavra filtro: o leitor de tela já anuncia que é um grupo."
+    ],
+    "exemplos": {
+      "bom": [
+        "Modalidade · Todas / EAD / Presencial",
+        "Ordenação da fila · Mais recentes / Mais urgentes",
+        "Bolsista · Sim / Não"
+      ],
+      "ruim": [
+        "TODAS / EAD",
+        "Filtrar por modalidade: Todas / EAD / Presencial / Semipresencial / Híbrido EAD",
+        "Sim / Não sem nada dizendo qual é a pergunta"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon"
+    ],
+    "usada_por": [
+      "padrao-listagem-crud",
+      "padrao-painel-indicadores",
+      "ucam-page-header",
+      "ucam-section-bar"
+    ]
+  },
+  "migracao": {
+    "de": "Par de botões pintados (SIGFIN) e select de duas ou três opções",
+    "mapa": [
+      {
+        "legado": "dois botões lado a lado, o escolhido em cor mais forte",
+        "novo": "<ucam-segmented> com aria-pressed",
+        "nota": "A conversão exige acrescentar o que não existia: o grupo, o nome do que se escolhe e o estado em atributo. Trocar só o visual mantém o componente ilegível para leitor de tela."
+      },
+      {
+        "legado": "<select> com Todas / EAD / Presencial",
+        "novo": "<ucam-segmented>",
+        "nota": "Só até quatro opções. Acima disso o select estava certo."
+      },
+      {
+        "legado": "md-radio-group horizontal com duas opções em barra de filtros",
+        "novo": "<ucam-segmented>",
+        "nota": "Em formulário com descrição por opção, o radio permanece — ver a exceção em limites."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Recorte em barra de ferramentas",
+      "codigo": "<ucam-segmented\n  ariaLabel=\"Modalidade\"\n  size=\"sm\"\n  [items]=\"[\n    { id: 'todas', label: 'Todas' },\n    { id: 'ead', label: 'EAD' },\n    { id: 'pres', label: 'Presencial' }\n  ]\"\n  [(value)]=\"modalidade\" />"
+    },
+    {
+      "titulo": "Escolha binária de formulário",
+      "codigo": "<ucam-segmented\n  label=\"Aluno bolsista\"\n  ariaLabel=\"Aluno bolsista\"\n  [items]=\"[{ id: 's', label: 'Sim' }, { id: 'n', label: 'Não' }]\"\n  [(value)]=\"bolsista\" />"
+    },
+    {
+      "titulo": "Ordenação da fila, com recarga ao trocar",
+      "codigo": "<ucam-segmented\n  ariaLabel=\"Ordenação da fila\"\n  [items]=\"[{ id: 'rec', label: 'Mais recentes' }, { id: 'urg', label: 'Mais urgentes' }]\"\n  [(value)]=\"ordem\"\n  (valueChange)=\"recarregar($event)\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Dar nome ao grupo com ariaLabel, sempre.",
+      "evite": "Sim e Não soltos numa linha.",
+      "porque": "Sem o nome do grupo, o leitor de tela anuncia dois botões e a pergunta desaparece — é o que o Cálculo de mensalidade do SIGFIN faz hoje."
+    },
+    {
+      "faca": "Manter no máximo quatro segmentos.",
+      "evite": "Cinco ou seis opções no trilho.",
+      "porque": "Acima de quatro o trilho não cabe em tela estreita, e o valor do componente — ver todas de uma vez — desaparece. Aí o select estava certo."
+    },
+    {
+      "faca": "Marcar o escolhido com tinta cheia na cor do texto.",
+      "evite": "Pintar o segmento escolhido com a cor da marca, ou com o tom claro dela.",
+      "porque": "Marca cheia num filtro rouba o peso da ação primária da tela, que é o único elemento que deveria usá-la (ADR-001). O tom claro da marca é o erro oposto e foi o que esteve no ar: #FFF4F4 sobre branco é 1,03:1 de diferença de plano, e o estado deixa de existir para quem não distingue o rosa."
+    },
+    {
+      "faca": "Remover da lista a opção indisponível.",
+      "evite": "Segmento desabilitado dentro do trilho.",
+      "porque": "Um segmento morto ocupa um terço da largura sem oferecer nada, e o trilho não tem espaço para gastar."
+    },
+    {
+      "faca": "Escrever type=\"button\" em cada segmento.",
+      "evite": "Botão sem type dentro de formulário.",
+      "porque": "Botão sem type é submit por padrão: escolher Não enviaria o formulário."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "tabs",
+      "diferenca": "Tabs troca o conteúdo abaixo dela; segmented escolhe um VALOR que continua valendo — uma ordenação, um recorte, um Sim/Não.",
+      "escolha": "Se as opções mudam como o mesmo conteúdo é mostrado ou filtrado, é segmented."
+    },
+    {
+      "componente": "radio-group",
+      "diferenca": "segmented é o recorte de duas a quatro opções num trilho, que troca o que a tela MOSTRA e nunca fica vazio; radio-group é a escolha de duas a sete alternativas de um formulário, que é RESPOSTA e pode começar sem resposta."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Trilho e segmentos vêm estilizados; a escolha é lida de aria-pressed=\"true\" no botão, e não de uma classe — para que o visual não possa divergir do que o leitor de tela ouve.",
+      "raiz": ".ucam-segmented",
+      "estado": "hover em quem NÃO está escolhido clareia o plano e escurece a tinta; a escolha pinta o segmento por inteiro. Sem classe de estado própria — o seletor é o aria-pressed.",
+      "variaveis": [
+        "--ucam-color-surface-inverse",
+        "--ucam-color-text-on-action",
+        "--ucam-color-surface-subtle",
+        "--ucam-color-text-secondary",
+        "--ucam-color-text-primary",
+        "--ucam-color-border-subtle",
+        "--ucam-size-control-md",
+        "--ucam-radius-control"
+      ],
+      "nota": "O Trilho A NÃO entrega o role=group nem o aria-label — os dois são atributos do markup. É justamente o que falta no legado, então a migração por CSS sozinha não corrige o defeito de acessibilidade. Nas telas de exemplo o segmented é também o PORTADOR dos recortes, sempre com data-valor em cada botão e o efeito declarado no grupo: data-filtra (esconde o que não casa), data-ordena (reordena sem esconder ninguém), data-cenario (troca os números de um recorte que, na aplicação, seria outra consulta) e data-timeline-filtro. O grupo escolhido continua sendo lido de aria-pressed — os atributos dizem o EFEITO, nunca o estado."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/segmented/ucam-segmented.ts — pronto. Grupo com um segmento sempre escolhido, teclado por setas e ariaLabel OBRIGATÓRIO: é a pergunta que o par Sim/Não do SIGFIN não faz."
+  }
+}

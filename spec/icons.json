@@ -1,0 +1,355 @@
+{
+  "$description": "Conjunto oficial de ícones do Design System UCAM. Base: Lucide, via @ng-icons/lucide — a mesma que a ZardUI já usa, então não há segunda dependência.",
+  "_meta": {
+    "regra": "Só ícone deste conjunto. Precisar de um novo é PEDIDO ao design system, não escolha local — foi a ausência dessa regra que produziu no Portal o mesmo capelo identificando três módulos diferentes.",
+    "tamanho": "Escala fechada: 12 · 16 · 20 · 24, nos tokens size.icon-xs/sm/md/lg, nos dois trilhos desde a ADR-041 — antes dela o degrau de 12 só existia na folha do Trilho A, e o mesmo selo saía com 16 no Angular. Quem escolhe o degrau é o PAPEL, não a marcação: 12 dentro da pastilha e na pontuação (selo, prazo, chip, a seta que liga dois valores na linha do tempo — o size-3 que a base Zard do Trilho B sempre deu ao svg do badge), 16 no miúdo (botão, alerta, item de menu, célula de tabela, linha de lista, adorno de campo, cromo da barra), 20 no padrão (navegação, ladrilho, e tudo que não caia num contexto miúdo) e 24 no estado vazio. A regra mora em um lugar só — a seção \"escala de ícone por papel\" de tools/build-css.mjs no Trilho A, o input size do <ucam-icon> no Trilho B — e a marcação escreve apenas class=\"ic\". Havia cinco classes de tamanho (ic-sm a ic-xl, em 14/16/20/28) concorrendo com regras de contexto na folha: o mesmo selo saía com 14px numa tela e 16 em outra, e os degraus de 20 e 24 não apareciam em tela nenhuma. O portão está em validate-spec.mjs: degrau escrito na marcação reprova o build.",
+    "traco": "Lucide usa traço de 2px em grade de 24. Não alterar a espessura: ícone com traço diferente destoa ao lado dos outros.",
+    "acessibilidade": "Ícone é SEMPRE decorativo (aria-hidden). Quem nomeia é o texto ao lado ou o ariaLabel do controle. Ícone nunca é o único portador de significado (WCAG 1.4.1).",
+    "producao": "O legado usa ícones bitmap que aparecem quebrados em produção. Aqui o nome inexistente derruba o build."
+  },
+  "grupos": [
+    {
+      "id": "acao",
+      "nome": "Ação",
+      "icones": [
+        {
+          "lucide": "plus",
+          "uso": "Criar registro. Sempre acompanhado do texto: Novo setor. Também o passo de AUMENTAR do campo de número (input-group --numero), onde o aria-label da ação nomeia o campo."
+        },
+        {
+          "lucide": "arrowUpNarrowWide",
+          "uso": "Ordenar em ordem CRESCENTE, no menu da coluna da tabela (item menuitemradio). O desenho diz a direção por barras que crescem — não confundir com o chevronUp, que é o INDICADOR da ordem no próprio cabeçalho."
+        },
+        {
+          "lucide": "arrowDownWideNarrow",
+          "uso": "Ordenar em ordem DECRESCENTE, no menu da coluna da tabela. Par do arrowUpNarrowWide."
+        },
+        {
+          "lucide": "pin",
+          "uso": "Fixar a coluna à esquerda ou à direita, no menu da coluna da tabela. Item de escolha (menuitemradio): escolher de novo a opção marcada solta a coluna. Não confundir com star, que é favorito."
+        },
+        {
+          "lucide": "minus",
+          "uso": "Passo de DIMINUIR do campo de número (input-group --numero), par do plus. Só ali: remover registro é trash2, e recolher é chevron."
+        },
+        {
+          "lucide": "pencil",
+          "uso": "Editar."
+        },
+        {
+          "lucide": "trash2",
+          "uso": "Excluir. Exige confirmação (ADR-002)."
+        },
+        {
+          "lucide": "check",
+          "uso": "Confirmar, marcar como concluído."
+        },
+        {
+          "lucide": "x",
+          "uso": "Fechar diálogo, remover filtro. Substitui o caractere × do legado, que é lido como multiplicação."
+        },
+        {
+          "lucide": "search",
+          "uso": "Buscar."
+        },
+        {
+          "lucide": "listFilter",
+          "uso": "Filtrar."
+        },
+        {
+          "lucide": "download",
+          "uso": "Exportar, baixar arquivo."
+        },
+        {
+          "lucide": "upload",
+          "uso": "Enviar arquivo."
+        },
+        {
+          "lucide": "refreshCw",
+          "uso": "Recarregar, tentar novamente."
+        },
+        {
+          "lucide": "copy",
+          "uso": "Copiar valor."
+        },
+        {
+          "lucide": "printer",
+          "uso": "Imprimir, gerar boleto."
+        },
+        {
+          "lucide": "externalLink",
+          "uso": "Abre fora do sistema. Obrigatório quando o destino é externo."
+        },
+        {
+          "lucide": "send",
+          "uso": "Enviar resposta ao requerente, encaminhar requerimento a outro setor. Nunca usar para salvar."
+        },
+        {
+          "lucide": "paperclip",
+          "uso": "Anexo. Acompanha a contagem quando houver mais de um."
+        },
+        {
+          "lucide": "eye",
+          "uso": "Visualizar sem editar. Só existe quando ver e editar são ações distintas na mesma linha."
+        },
+        {
+          "lucide": "eyeOff",
+          "uso": "Ocultar o que \"eye\" mostrou — a senha revelada no login. Como segundo estado de um interruptor com aria-pressed, e como a ação \"Ocultar coluna\" do menu da coluna da tabela — onde a volta é o botão Mostrar da barra de colunas ocultas, não um segundo ícone."
+        },
+        {
+          "lucide": "star",
+          "uso": "Fixar nos favoritos. É o único ícone do conjunto com dois desenhos: traçado quando solto, preenchido quando pressionado — o preenchimento vem do CSS, não de um segundo ícone. Sempre em botão com aria-pressed e com o nome da ação por extenso (contrato icon-button)."
+        }
+      ]
+    },
+    {
+      "id": "navegacao",
+      "nome": "Navegação",
+      "icones": [
+        {
+          "lucide": "menu",
+          "uso": "Abrir navegação em viewport estreita, e recolher/expandir a navegação fixa — o botão do topo da coluna, com aria-expanded. O mesmo desenho nos dois estados: quem diz se a coluna está aberta é o aria-expanded, não um giro."
+        },
+        {
+          "lucide": "chevronLeft",
+          "uso": "Página anterior. Exige nome acessível próprio."
+        },
+        {
+          "lucide": "chevronRight",
+          "uso": "Próxima página."
+        },
+        {
+          "lucide": "chevronsLeft",
+          "uso": "Primeira página."
+        },
+        {
+          "lucide": "chevronsRight",
+          "uso": "Última página."
+        },
+        {
+          "lucide": "chevronDown",
+          "uso": "Expandir seção, abrir select."
+        },
+        {
+          "lucide": "chevronUp",
+          "uso": "Recolher. Também indica ordenação crescente na tabela."
+        },
+        {
+          "lucide": "chevronsUpDown",
+          "uso": "Coluna ORDENÁVEL ainda não ordenada. É o convite: sem ele, só a coluna já ordenada mostra seta e nada diz que as outras também respondem ao clique — que é exatamente o defeito registrado na evidência do Protocolo (\"o usuário não descobre que pode ordenar\"). Troca por chevronUp/chevronDown quando a coluna passa a governar a ordem."
+        },
+        {
+          "lucide": "arrowLeft",
+          "uso": "Voltar."
+        },
+        {
+          "lucide": "arrowRight",
+          "uso": "Sentido de uma transição: a situação DE onde o registro saiu para a situação PARA onde foi. Decorativa — a relação é dita em texto ao lado."
+        },
+        {
+          "lucide": "ellipsisVertical",
+          "uso": "Mais ações da linha."
+        },
+        {
+          "lucide": "logOut",
+          "uso": "Sair do sistema."
+        },
+        {
+          "lucide": "sun",
+          "uso": "Tema claro, no grupo Tema do menu da conta. Só ali: sol solto em outra tela lê como clima, não como aparência."
+        },
+        {
+          "lucide": "moon",
+          "uso": "Tema escuro, no grupo Tema do menu da conta."
+        },
+        {
+          "lucide": "monitor",
+          "uso": "Tema como o dispositivo, no grupo Tema do menu da conta: a aparência segue a do sistema operacional."
+        },
+        {
+          "lucide": "arrowUpRight",
+          "uso": "Variação para cima em indicador. Neutro: subir nem sempre é bom — quem julga é o texto ao lado."
+        },
+        {
+          "lucide": "arrowDownRight",
+          "uso": "Variação para baixo em indicador. Mesma regra do arrowUpRight."
+        },
+        {
+          "lucide": "bell",
+          "uso": "Notificações da faixa. A contagem de não lidas vem ao lado, em número — sino sozinho não diz quantas."
+        }
+      ]
+    },
+    {
+      "id": "feedback",
+      "nome": "Feedback",
+      "icones": [
+        {
+          "lucide": "circleCheck",
+          "uso": "Sucesso, deferido."
+        },
+        {
+          "lucide": "circleAlert",
+          "uso": "Erro, indeferido."
+        },
+        {
+          "lucide": "triangleAlert",
+          "uso": "Atenção, prazo próximo."
+        },
+        {
+          "lucide": "info",
+          "uso": "Informação neutra."
+        },
+        {
+          "lucide": "loaderCircle",
+          "uso": "Carregando. Sempre com aria-busy no contêiner."
+        },
+        {
+          "lucide": "inbox",
+          "uso": "Estado vazio."
+        },
+        {
+          "lucide": "clock",
+          "uso": "Prazo. Acompanha SEMPRE o texto do prazo — o relógio sozinho não diz se falta ou passou (WCAG 1.4.1)."
+        }
+      ]
+    },
+    {
+      "id": "dominio",
+      "nome": "Domínio acadêmico e financeiro",
+      "icones": [
+        {
+          "lucide": "fileText",
+          "uso": "Requerimento, documento."
+        },
+        {
+          "lucide": "image",
+          "uso": "Anexo de imagem (JPG, PNG) na figura do Anexo. Não é ícone de galeria nem de foto de perfil — pessoa tem avatar."
+        },
+        {
+          "lucide": "file",
+          "uso": "Anexo de formato que não é PDF nem imagem, na figura do Anexo. O fileText fica para o documento de texto: é ele que diz \"isto é um comprovante\"."
+        },
+        {
+          "lucide": "clipboardList",
+          "uso": "Protocolo, fila de análise."
+        },
+        {
+          "lucide": "graduationCap",
+          "uso": "Graduação. NÃO usar para pós — ver a nota do Portal."
+        },
+        {
+          "lucide": "bookOpen",
+          "uso": "Pós-graduação e extensão."
+        },
+        {
+          "lucide": "scrollText",
+          "uso": "Diploma, certificado."
+        },
+        {
+          "lucide": "user",
+          "uso": "Aluno, pessoa."
+        },
+        {
+          "lucide": "users",
+          "uso": "Turma, colegiado."
+        },
+        {
+          "lucide": "building2",
+          "uso": "Campus, unidade."
+        },
+        {
+          "lucide": "landmark",
+          "uso": "Instituição, memorial."
+        },
+        {
+          "lucide": "calendar",
+          "uso": "Data, vencimento."
+        },
+        {
+          "lucide": "creditCard",
+          "uso": "Pagamento em cartão."
+        },
+        {
+          "lucide": "banknote",
+          "uso": "Dinheiro, caixa."
+        },
+        {
+          "lucide": "receipt",
+          "uso": "Mensalidade, boleto."
+        },
+        {
+          "lucide": "wallet",
+          "uso": "Financeiro, saldo."
+        },
+        {
+          "lucide": "chartColumn",
+          "uso": "Relatórios."
+        },
+        {
+          "lucide": "archive",
+          "uso": "Arquivo permanente."
+        },
+        {
+          "lucide": "briefcase",
+          "uso": "Estágio."
+        },
+        {
+          "lucide": "settings",
+          "uso": "Gerencial, configuração."
+        },
+        {
+          "lucide": "lock",
+          "uso": "Acesso, senha."
+        },
+        {
+          "lucide": "mail",
+          "uso": "E-mail, notificação."
+        },
+        {
+          "lucide": "layoutGrid",
+          "uso": "Grade de módulos e sistemas. O Portal reúne ~25 deles numa tela só."
+        },
+        {
+          "lucide": "calculator",
+          "uso": "Cálculo — mensalidade, simulação, memória de cálculo."
+        },
+        {
+          "lucide": "messageSquare",
+          "uso": "Mensagem trocada com o requerente. No histórico marca o item que é fala de alguém, não mudança de estado."
+        },
+        {
+          "lucide": "tag",
+          "uso": "Natureza ou categoria de um registro — a etiqueta que classifica. No painel de dados do requerimento marca o rótulo Natureza."
+        },
+        {
+          "lucide": "mapPin",
+          "uso": "Lugar: polo, campus, unidade. Rótulo Polo no painel de dados."
+        },
+        {
+          "lucide": "presentation",
+          "uso": "Professor, docência."
+        },
+        {
+          "lucide": "doorOpen",
+          "uso": "Sala, recurso físico reservável."
+        },
+        {
+          "lucide": "clipboardCheck",
+          "uso": "Avaliação, nota lançada."
+        },
+        {
+          "lucide": "listChecks",
+          "uso": "Processo seletivo, vestibular, classificação."
+        }
+      ]
+    }
+  ],
+  "regras_de_uso": [
+    "Ícone acompanha texto por padrão. Ícone sozinho só em ação convencional e sempre com ariaLabel (contrato icon-button).",
+    "Um ícone, um significado, em todo o parque. O capelo é graduação; pós-graduação usa bookOpen. No Portal atual o mesmo capelo identifica três módulos diferentes, o que anula a função do ícone.",
+    "Não usar emoji como ícone de interface: renderiza diferente por sistema operacional e é lido em voz alta pelo leitor de tela.",
+    "Não redesenhar ícone do conjunto nem misturar com outro pacote.",
+    "Ícone decorativo recebe aria-hidden=true; o significado vive no texto."
+  ]
+}

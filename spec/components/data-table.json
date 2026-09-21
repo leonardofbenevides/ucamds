@@ -1,0 +1,574 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "data-table",
+  "name": "DataTable",
+  "selector": "ucam-data-table",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "dados",
+  "description": "Tabela de dados tabulares com ordenação, seleção, paginação e estados de vazio, carregamento e erro. É o componente de maior superfície do sistema e o que mais aparece nos módulos do portal.",
+  "quando_usar": [
+    "Muitos registros com os mesmos campos, em que o que importa é comparar linhas: a pesquisa de requerimentos, o movimento de caixa, a listagem de setores.",
+    "É preciso ordenar por coluna, filtrar, paginar ou selecionar em lote.",
+    "O valor exato importa e não pode sair de um desenho."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 9 (Natureza)",
+        "problema": "paginação só com ícones |< << >> >| sem rótulo acessível — leitor de tela anuncia botões sem nome"
+      },
+      {
+        "tela": "image 12 (Setor)",
+        "problema": "segunda paginação, numerada 1..6, com aparência e comportamento diferentes da anterior no MESMO sistema"
+      },
+      {
+        "tela": "image 9, 10, 11",
+        "problema": "estado vazio Sem registros; na image 6 a mesma situação diz Nenhum registro encontrado — duas redações para o mesmo estado"
+      },
+      {
+        "tela": "todas",
+        "problema": "estado vazio sem orientação: não diz se é filtro restritivo, se falta cadastrar, nem oferece ação"
+      },
+      {
+        "tela": "image 6",
+        "problema": "ordenação vive num select separado (Ordenar por mais antigo), desconectada dos cabeçalhos de coluna — o usuário não descobre que pode ordenar"
+      },
+      {
+        "tela": "image 10 (Pesquisa)",
+        "problema": "5 colunas sem alocação de largura: NATUREZA DO REQUERIMENTO ocupa vão enorme enquanto DATA e SITUAÇÃO ficam espremidas na direita"
+      },
+      {
+        "tela": "image 10",
+        "problema": "coluna SITUAÇÃO é status e deveria usar Badge, não texto solto"
+      },
+      {
+        "tela": "image 6, 8",
+        "problema": "carregamento usa modal bloqueante de tela cheia em vez de estado dentro da própria tabela"
+      },
+      {
+        "tela": "todas",
+        "problema": "cabeçalho em CAIXA ALTA sobre barra cinza-escuro; contraste do texto branco a verificar"
+      },
+      {
+        "tela": "image 12 vs 9",
+        "problema": "zebra presente em uma tabela e ausente em outra, sem critério"
+      },
+      {
+        "tela": "image 14",
+        "problema": "linha clicável (BIBLIOTECA abre edição) sem qualquer affordance visual de que a linha é interativa"
+      }
+    ],
+    "conclusao": "Onze problemas em um único componente, sendo dois de acessibilidade bloqueantes (paginação sem nome acessível e ordenação inalcançável por teclado). Este contrato unifica paginação, vazio e ordenação."
+  },
+  "anatomia": [
+    {
+      "parte": "toolbar",
+      "obrigatorio": false,
+      "descricao": "Busca, filtros e ações em massa. Fica ACIMA da tabela, dentro da região rotulada."
+    },
+    {
+      "parte": "resumo",
+      "obrigatorio": true,
+      "descricao": "Contagem de resultados. Substitui o TOTAL DE REQUERIMENTOS: 0 solto. Precisa de aria-live polite para anunciar mudança após filtro."
+    },
+    {
+      "parte": "caption",
+      "obrigatorio": true,
+      "descricao": "Elemento caption descrevendo a tabela. Pode ser sr-only quando houver título de seção visível."
+    },
+    {
+      "parte": "thead",
+      "obrigatorio": true
+    },
+    {
+      "parte": "header-cell",
+      "obrigatorio": true,
+      "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th."
+    },
+    {
+      "parte": "column-menu",
+      "obrigatorio": false,
+      "descricao": "O menu que o cabeçalho abre. Três grupos, nesta ordem e separados por filete: ordem (Crescente, Decrescente e, só com a coluna ordenada, Remover ordenação), fixação (Fixar à esquerda, Fixar à direita — menuitemradio) e Ocultar coluna. É um .ucam-menu com posição FIXA: a tabela mora num contêiner com overflow-x, que recortaria um menu absoluto na altura do cabeçalho. Fecha ao rolar, e devolve o foco ao gatilho — menos depois de ocultar, quando o foco vai para o \"Mostrar\" da barra de colunas ocultas.",
+      "classe": "ucam-menu--coluna"
+    },
+    {
+      "parte": "tbody",
+      "obrigatorio": true
+    },
+    {
+      "parte": "row",
+      "obrigatorio": true
+    },
+    {
+      "parte": "cell",
+      "obrigatorio": true
+    },
+    {
+      "parte": "selection-column",
+      "obrigatorio": false,
+      "descricao": "Primeira coluna, só com selectable=\"multiple\": uma caixa por linha e a de selecionar tudo no cabeçalho. Encolhe ao conteúdo (.th--selecao/.td--selecao). Cada caixa carrega o nome do registro no seu nome acessível — \"Selecionar a natureza Acadêmico\", não \"Selecionar\" doze vezes. A caixa do cabeçalho fica no meio-termo quando parte das linhas está marcada; caixa vazia ali faz quem clica desmarcar o que havia. Linha que a ação em lote não alcança traz a caixa desabilitada em vez de ausente: coluna com buraco parece falha de renderização."
+    },
+    {
+      "parte": "row-actions",
+      "obrigatorio": false,
+      "descricao": "Coluna fixa à direita com ações por linha."
+    },
+    {
+      "parte": "empty",
+      "obrigatorio": false,
+      "descricao": "Delegado a ucam-empty-state."
+    },
+    {
+      "parte": "loading",
+      "obrigatorio": false,
+      "descricao": "Skeleton de linhas DENTRO da tabela. Nunca overlay de tela cheia."
+    },
+    {
+      "parte": "error",
+      "obrigatorio": false,
+      "descricao": "Falha de carregamento com ação de tentar novamente."
+    },
+    {
+      "parte": "bulk-bar",
+      "obrigatorio": false,
+      "descricao": "Barra de ação em lote, só com selectable=\"multiple\" e só enquanto há seleção. Fica ABAIXO da tabela e paira (position: sticky), ao contrário da toolbar: a seleção se faz rolando a lista, e uma barra no alto sai de vista no terceiro registro marcado. Carrega a contagem em role=\"status\" — o número muda a cada caixa e ninguém volta ao alto para conferir — as ações do lote e a saída (\"Limpar\"). Tinta invertida (surface.inverse com text.on-action), o único par que inverte junto no tema escuro: papel semântico com tinta própria, como o vermelho de perigo, clareia junto com o fundo no escuro e o rótulo some. É por isso que a ação destrutiva não é vermelha aqui — quem carrega o peso é a confirmação que ela abre. No Trilho A a contagem é escrita pelo comportamento das telas a cada marcação, e a barra some quando a seleção zera — \"só enquanto há seleção\" não é um estado inicial, é uma regra que vale o tempo todo. O substantivo sai do texto que a tela já escreveu; o singular, de data-lote-singular, porque nenhuma regra de flexão resolve \"opções\" tirando o s.",
+      "classe": "ucam-lote"
+    },
+    {
+      "parte": "pagination",
+      "obrigatorio": false,
+      "descricao": "Delegado a ucam-pagination. Um único padrão para todo o sistema."
+    }
+  ],
+  "props": [
+    {
+      "nome": "columns",
+      "tipo": "ColumnDef[]",
+      "obrigatorio": true,
+      "descricao": "Ver schema ColumnDef."
+    },
+    {
+      "nome": "rows",
+      "tipo": "T[]",
+      "obrigatorio": true
+    },
+    {
+      "nome": "caption",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Descrição da tabela para leitor de tela. Ex: Requerimentos aguardando análise."
+    },
+    {
+      "nome": "state",
+      "tipo": "'idle' | 'loading' | 'error' | 'empty'",
+      "default": "'idle'",
+      "descricao": "Estado derivado. empty é distinto de idle com rows vazio porque exige saber se há filtro ativo."
+    },
+    {
+      "nome": "emptyReason",
+      "tipo": "'no-data' | 'no-results'",
+      "default": "'no-data'",
+      "descricao": "no-data: nada cadastrado ainda. no-results: filtro ou busca não retornou. As mensagens e as ações oferecidas são diferentes."
+    },
+    {
+      "nome": "selectable",
+      "tipo": "'none' | 'single' | 'multiple'",
+      "default": "'none'",
+      "descricao": "Escolha de linha. single é o que o padrão listagem-inspetor usa: uma linha alimenta o painel ao lado e a lista não sai do lugar. multiple é para ação em lote e traz a coluna de caixas de seleção mais a barra de lote. Até 09/09/2026 a prop existia no contrato e NÃO tinha desenho no Trilho A — a linha escolhida ficava idêntica às outras. O single ganhou tinta naquele dia; o multiple, no mesmo dia, ganhou a coluna e a barra, e a tela de naturezas passou a ser onde a promessa se confere.",
+      "valores": {
+        "none": {
+          "uso": "O padrão. Tabela que só apresenta."
+        },
+        "single": {
+          "uso": "Tabela que alimenta um inspetor ou um detalhe ao lado.",
+          "limite": "A marca de escolha é o fundo tingido, a BARRA de 4px na entrada da linha e o aria-selected no <tr>. A barra entrou em 21/09/2026, contra o que este contrato dizia antes: medido, o fundo tingido sozinho dá 1,08:1 no claro e 1,04:1 no escuro contra a superfície — exatamente os números que já tinham feito o item de LISTA ganhar a mesma barra em 10/09. Dizer \"fundo tingido e aria-selected bastam\" é verdade para quem lê o atributo e falso para quem olha a tela. Ela não é a barra que a ADR-027 tirou: aquela dizia ESTADO e pintava as 11 linhas de 11, repetindo em cor o que o selo já diz em palavra; esta diz ESCOLHA, existe uma por tabela (ou uma por linha marcada, no multiple) e é o único sinal colorido que a linha escolhida ganha além do próprio realce — o selo da coluna Situação segue sendo o portador do estado, e os dois nunca dizem a mesma coisa. Implementação: inset box-shadow na primeira célula, porque a tabela é border-collapse e uma borda empurraria a coluna para fora do alinhamento com o cabeçalho.",
+          "tokens": {
+            "fundo": "color.action.primary.subtle",
+            "barra": "color.action.primary.default"
+          }
+        },
+        "multiple": {
+          "uso": "Ação em lote — encaminhar dez requerimentos ao mesmo setor.",
+          "limite": "Traz a coluna de caixas de seleção, o cabeçalho de selecionar tudo e a barra de lote — ver anatomia. Todos precisam de nome acessível próprio. O <ucam-data-table> do Trilho B desenha a coluna e o cabeçalho desde a primeira versão; a BARRA ainda não tem equivalente lá, e enquanto não tiver o lote em Angular depende de a página montar a sua."
+        }
+      }
+    },
+    {
+      "nome": "rowClickable",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Quando true, a linha inteira navega. EXIGE que a primeira célula contenha um link real — ver acessibilidade."
+    },
+    {
+      "nome": "zebra",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Desligada por padrão. O defeito do legado não era a zebra: era alternar sem critério. O critério agora é um só — a zebra existe para não se perder a linha ao atravessar muitas colunas, e o realce da linha sob o ponteiro faz isso melhor, porque acompanha o olho em vez de pintar metade da tabela. Ligar só em tabela larga demais para o hover dar conta (impressão, por exemplo, onde não há ponteiro)."
+    },
+    {
+      "nome": "density",
+      "tipo": "'comfortable' | 'compact'",
+      "default": "'comfortable'"
+    },
+    {
+      "nome": "stickyHeader",
+      "tipo": "boolean",
+      "default": "true"
+    },
+    {
+      "nome": "sort",
+      "tipo": "{ column: string; direction: 'asc' | 'desc' } | null",
+      "default": "null",
+      "descricao": "null é ausência de ordenação, não um terceiro estado decorativo. Com o menu da coluna (columnMenu, o padrão desde 11/09/2026) o cabeçalho ABRE o menu e a ordem se escolhe por nome — Crescente e Decrescente, menuitemradio com aria-checked; escolher de novo a opção marcada, ou \"Remover ordenação\", devolve a ordem natural dos dados. Sem o menu, o cabeçalho ordenável percorre crescente → decrescente → sem ordenação. Valores ausentes vão sempre para o FIM, nas duas direções: quem ordena por Data quer ver datas primeiro, não a fileira de travessões."
+    },
+    {
+      "nome": "columnMenu",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "O cabeçalho de cada coluna abre o menu da coluna: ordenar (quando sortable), fixar à esquerda ou à direita, ocultar. Existe porque a ordem em ciclo — clicar inverte, clicar de novo some — não se lê no cabeçalho, e porque fixar e ocultar não tinham onde morar. Desligar só em tabela de leitura curta, onde nenhuma das três ações faz sentido."
+    },
+    {
+      "nome": "pinned",
+      "tipo": "Record<string, 'start' | 'end'>",
+      "default": "{}",
+      "descricao": "Colunas fixas, pela key. UMA por lado: fixar outra do mesmo lado solta a anterior, porque duas colunas grudadas na mesma borda comem a área que rola. A coluna fixa é MOVIDA para a ponta e cola com sticky; a de seleção gruda junto com a do início, a de ações junto com a do fim."
+    },
+    {
+      "nome": "hidden",
+      "tipo": "string[]",
+      "default": "[]",
+      "descricao": "Colunas ocultas, pela key. Enquanto houver alguma, a tabela mostra acima dela \"N colunas ocultas · Mostrar\": ocultar sem caminho de volta é apagar. A coluna identificadora nunca oculta — sem ela a linha deixa de ser identificável (ver ColumnDef.hideable)."
+    },
+    {
+      "nome": "responsive",
+      "tipo": "'scroll' | 'stack' | 'priority'",
+      "default": "'scroll'",
+      "descricao": "Ver seção responsividade."
+    }
+  ],
+  "schemas": {
+    "ColumnDef": {
+      "key": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Chave no objeto da linha."
+      },
+      "header": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Rótulo em caixa natural. O legado usa CAIXA ALTA — ver ADR-003."
+      },
+      "type": {
+        "tipo": "'text' | 'number' | 'date' | 'currency' | 'status' | 'actions'",
+        "default": "'text'",
+        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge; number e currency recebem tabular-nums e alinham à direita."
+      },
+      "width": {
+        "tipo": "'auto' | 'min' | number",
+        "default": "'auto'",
+        "descricao": "Corrige a alocação errática do legado. min encolhe ao conteúdo (datas, status, ações)."
+      },
+      "sortable": {
+        "tipo": "boolean",
+        "default": "false"
+      },
+      "priority": {
+        "tipo": "number",
+        "default": "0",
+        "descricao": "Usado por responsive=priority. Colunas de menor prioridade somem primeiro em telas estreitas. A coluna identificadora precisa ter a maior prioridade."
+      },
+      "align": {
+        "tipo": "'start' | 'end' | 'center'",
+        "descricao": "Derivado de type quando omitido. Não centralizar texto."
+      },
+      "hideable": {
+        "tipo": "boolean",
+        "default": "true",
+        "descricao": "Se o menu da coluna oferece \"Ocultar coluna\". A identificadora (identifierKey, ou a primeira coluna) nunca oculta, qualquer que seja o valor: o item aparece desabilitado em vez de sumir, para o menu ter a mesma forma em todas as colunas."
+      }
+    }
+  },
+  "estados": [
+    "idle",
+    "loading",
+    "empty-no-data",
+    "empty-no-results",
+    "error",
+    "sorting"
+  ],
+  "responsividade": {
+    "problema": "As telas do Protocolo rodam num container de ~1020px numa janela de 2518px, e não têm estratégia nenhuma abaixo disso. A tabela de Pesquisa, com 5 colunas, é inutilizável em tablet.",
+    "estrategias": {
+      "scroll": {
+        "quando": "Padrão. Muitas colunas, todas necessárias.",
+        "como": "Container com overflow-x auto, primeira coluna fixa, e o container recebe tabindex=0 e role=region para ser rolável por teclado."
+      },
+      "stack": {
+        "quando": "Poucas colunas, leitura registro a registro.",
+        "como": "Abaixo do limiar de contêiner, cada linha vira um cartão de pares rótulo/valor. O rótulo vem de data-label na célula e é impresso por ::before — a marcação continua sendo uma table para o DOM e para o leitor de tela; só a pintura muda. Nada de remontar a lista em divs."
+      },
+      "priority": {
+        "quando": "Muitas colunas com importância desigual.",
+        "como": "Colunas somem por ordem de priority; um botão por linha revela as ocultas."
+      }
+    },
+    "regra": "Qualquer que seja a estratégia, a tabela nunca provoca rolagem horizontal na página — só no próprio container (WCAG 1.4.10).",
+    "medida": "As três estratégias reagem à largura do CONTÊINER da tabela (@container), não à da janela. As telas do Protocolo rodam num container de ~1020px numa janela de 2518px: media query de viewport nunca dispara, e a tabela quebra dentro de uma página que o navegador considera larga. Duas referências independentes chegaram ao mesmo lugar — o @gitlab/ui empilha por container query (gl-container-width-down) e o checkout do Shopify expõe query-container como primitivo.",
+    "ordenacao": "No modo empilhado a ordenação por cabeçalho SAI: sem linha de cabeçalho não há onde ancorá-la, e um botão solto dentro do cartão ordenaria algo que não está mais em colunas. Ela migra para a toolbar. É a única situação em que o controle de ordenação vive fora do cabeçalho — a regra geral do contrato, e o defeito da image 6, continuam valendo em toda tabela que ainda tem colunas."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Tabela semântica: table, thead, tbody, th com scope. Nunca div com role=table quando o dado é tabular.",
+      "caption obrigatório, mesmo que sr-only.",
+      "Coluna ordenável: aria-sort no th (ascending, descending, none). Com o menu da coluna, o button do th é gatilho de menu — aria-haspopup='menu' e aria-expanded —, nomeado pelo rótulo visível; a ordem vigente é dita pelo aria-sort e pelo aria-checked das opções Crescente e Decrescente. Sem o menu, o button tem nome do tipo 'Ordenar por Data, crescente'.",
+      "BLOQUEANTE do legado: paginação por ícone precisa de nome acessível — Primeira página, Página anterior, Próxima página, Última página. Hoje são botões anônimos.",
+      "Mudança de página ou de ordenação move o foco para o resumo de resultados e anuncia a nova contagem por aria-live polite.",
+      "Contagem de resultados em região aria-live polite — nunca assertive, que interrompe a digitação na busca.",
+      "Seleção múltipla: checkbox do cabeçalho com estado indeterminado correto e nome acessível 'Selecionar todas as linhas desta página'.",
+      "rowClickable exige link real na célula identificadora. Linha inteira com handler de clique não é focável, não abre em nova aba e não é anunciada como interativa.",
+      "Container de rolagem horizontal precisa ser focável por teclado (tabindex=0) e ter role=region com aria-label (WCAG 2.1.1).",
+      "Estado de carregamento com aria-busy true na região da tabela, sem remover o conteúdo anterior abruptamente.",
+      "Status por cor SEMPRE acompanhado de texto (WCAG 1.4.1).",
+      "Célula sem valor nunca fica muda — ver formatacao.valorAusente. Travessão isolado não tem anúncio previsível entre leitores de tela.",
+      "th não contém elemento de título (h1–h6). O cabeçalho da coluna já é o rótulo da coluna; um heading ali injeta um item falso no sumário da página.",
+      "caption é filho IMEDIATO de table. Envolvido em div ou movido para fora, deixa de ser o nome acessível da tabela e vira parágrafo solto.",
+      "Ícone de ordenação SEMPRE visível, nunca revelado no hover: quem navega por teclado e quem usa toque jamais passam o ponteiro, e a ordenação volta a ser indescoberta — que é exatamente o defeito da image 6.",
+      "Ao voltar para sem ordenação, o aria-sort do th volta a none. Um th preso em ascending anuncia uma ordem que a tabela não tem.",
+      "Menu da coluna: setas navegam, Esc fecha e devolve o foco ao gatilho, item indisponível (Ocultar na coluna identificadora) fica com aria-disabled e continua no menu. Coluna oculta leva o foco para o botão \"Mostrar\", que é o caminho de volta; e a barra anuncia a contagem em role=status."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.10",
+      "2.1.1",
+      "2.4.3",
+      "2.4.6",
+      "2.4.7",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "composicao": {
+    "$descricao": "Componentes que a DataTable orquestra. Alterações nos contratos abaixo impactam este.",
+    "usa": [
+      "[ucamTooltip]",
+      "ucam-badge",
+      "ucam-button",
+      "ucam-checkbox",
+      "ucam-chip",
+      "ucam-empty-state",
+      "ucam-icon-button",
+      "ucam-list-item",
+      "ucam-pagination",
+      "ucam-prazo",
+      "ucam-realce",
+      "ucam-skeleton"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-listagem-crud",
+      "padrao-listagem-inspetor"
+    ]
+  },
+  "conteudo": {
+    "vazio": [
+      "Uma única redação por motivo. Fim de Sem registros versus Nenhum registro encontrado.",
+      "no-data: 'Nenhum setor cadastrado ainda.' + ação primária 'Novo setor'.",
+      "no-results: 'Nenhum requerimento encontrado para esta busca.' + ação secundária 'Limpar filtros'.",
+      "Nunca terminar num beco: todo estado vazio oferece uma saída."
+    ],
+    "cabecalho": [
+      "Caixa natural, substantivo curto. Natureza do requerimento, não NATUREZA DO REQUERIMENTO."
+    ],
+    "resumo": [
+      "'12 requerimentos' — não 'TOTAL DE REQUERIMENTOS: 12'. Quando filtrado: '12 de 340 requerimentos'."
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / Angular Material (md-table ou table customizada)",
+    "mapa": [
+      {
+        "legado": "paginação por ícones |< << >> >|",
+        "novo": "ucam-pagination",
+        "nota": "Padrão único. Ganha nome acessível em cada botão."
+      },
+      {
+        "legado": "paginação numerada 1..6",
+        "novo": "ucam-pagination",
+        "nota": "Converge para o mesmo componente."
+      },
+      {
+        "legado": "Sem registros / Nenhum registro encontrado",
+        "novo": "ucam-empty-state",
+        "nota": "Passa a exigir emptyReason e uma ação."
+      },
+      {
+        "legado": "select Ordenar por mais antigo",
+        "novo": "sortable nos ColumnDef",
+        "nota": "Ordenação volta para o cabeçalho da coluna, onde é descoberta."
+      },
+      {
+        "legado": "coluna SITUAÇÃO em texto",
+        "novo": "type=status",
+        "nota": "Renderiza Badge."
+      },
+      {
+        "legado": "overlay CARREGANDO de tela cheia",
+        "novo": "state=loading",
+        "nota": "Skeleton dentro da tabela; a página continua utilizável."
+      },
+      {
+        "legado": "linha clicável sem affordance",
+        "novo": "rowClickable + link na célula identificadora"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Listagem com busca e paginação",
+      "codigo": "<ucam-data-table caption=\"Requerimentos aguardando análise\" [columns]=\"colunas\" [rows]=\"requerimentos()\" [state]=\"estado()\" emptyReason=\"no-results\" responsive=\"priority\" />"
+    },
+    {
+      "titulo": "Definição de colunas",
+      "codigo": "colunas: ColumnDef[] = [\n  { key: 'numero',   header: 'Requerimento', width: 'min', priority: 10, sortable: true },\n  { key: 'natureza', header: 'Natureza',     priority: 5 },\n  { key: 'requerente', header: 'Requerente', priority: 8 },\n  { key: 'data',     header: 'Data',   type: 'date',   width: 'min', priority: 6, sortable: true },\n  { key: 'situacao', header: 'Situação', type: 'status', width: 'min', priority: 9 }\n];"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Ordenar pelo cabeçalho da coluna, alcançável por teclado.",
+      "evite": "Ordenação num select separado ('Ordenar por mais antigo').",
+      "porque": "Desconectada do cabeçalho, a ordenação não é descoberta — e no Protocolo ela é inalcançável por teclado."
+    },
+    {
+      "faca": "Alocar largura por coluna segundo o conteúdo.",
+      "evite": "Cinco colunas sem alocação, com o texto longo comendo o vão.",
+      "porque": "NATUREZA DO REQUERIMENTO ocupa metade da tabela enquanto DATA e SITUAÇÃO ficam espremidas."
+    },
+    {
+      "faca": "Renderizar coluna de situação com Badge.",
+      "evite": "Situação como texto solto.",
+      "porque": "A situação é a informação mais consultada da tabela e hoje não se destaca de nenhum outro campo."
+    },
+    {
+      "faca": "Carregar dentro da própria tabela, com skeleton nas linhas.",
+      "evite": "Modal bloqueante sobre a tabela.",
+      "porque": "O overlay aparece sobre uma tabela que já mostra TOTAL: 0 — duas informações contraditórias ao mesmo tempo."
+    },
+    {
+      "faca": "Dar affordance visual quando a linha inteira é clicável.",
+      "evite": "Linha que navega sem nenhum sinal de que é interativa.",
+      "porque": "No Protocolo a linha BIBLIOTECA abre a edição e nada na tela anuncia isso."
+    },
+    {
+      "faca": "Decidir zebra e densidade uma vez, para todas as tabelas do sistema.",
+      "evite": "Zebra numa tabela e não na outra.",
+      "porque": "Diferença sem critério faz o usuário procurar um significado que não existe."
+    },
+    {
+      "faca": "Manter as ações de linha sempre visíveis, na coluna à direita.",
+      "evite": "Revelar as ações quando o ponteiro passa por cima da linha.",
+      "porque": "Ação revelada no hover não existe para teclado nem para toque, e quem vê a tela precisa varrer linha a linha para descobrir o que dá para fazer. Com duas ou mais por linha, agrupar num menu — visível — em vez de espalhar botões."
+    },
+    {
+      "faca": "Fazer a tabela reagir à largura do próprio contêiner.",
+      "evite": "Decidir o empilhamento por media query de viewport.",
+      "porque": "As telas do Protocolo cabem num container de ~1020px numa janela de 2518px: a media query nunca dispara e a tabela quebra numa página que o navegador considera larga."
+    },
+    {
+      "faca": "Escrever o motivo da ausência: Sem responsável, Não se aplica.",
+      "evite": "Deixar a célula em branco, ou preencher com 0 e N/A.",
+      "porque": "Branco não distingue não informado de falhou ao carregar, e zero é um valor legítimo que mente sobre o dado."
+    },
+    {
+      "faca": "Quando a lista chega inteira e quase tudo entra, trazer as caixas já marcadas e pedir só que se desmarque o que sai.",
+      "evite": "Obrigar a marcar cem linhas uma a uma — ou confiar que os ids que voltam no envio são os que a tela mostrou.",
+      "porque": "É o inverso do lote comum, e resolve com checkbox nativo: o formulário só envia o que continuou marcado. Quem recebe revalida a lista contra a fonte, porque nada garante que os ids não foram alterados. Evidência: a lista de presença do vestibular no Relatórios Acadêmicos."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "list-item",
+      "diferenca": "Data-table alinha os mesmos campos em COLUNAS, para comparar valor com valor; list-item empilha um registro rico, para reconhecer o registro.",
+      "escolha": "Se a pergunta é \"qual é o maior\", \"quais estão vencidos\", \"ordene por data\", é data-table."
+    },
+    {
+      "componente": "chart",
+      "diferenca": "Chart entrega forma; DataTable entrega valor exato e ordenável. Não é escolha entre os dois: todo gráfico do sistema tem a tabela equivalente ao lado, que é a fonte acessível dos mesmos dados.",
+      "escolha": "A pergunta é sobre a linha: quanto exatamente, e onde ela fica na ordem."
+    },
+    {
+      "componente": "description-list",
+      "diferenca": "DescriptionList mostra UM registro por inteiro, um par por linha; DataTable mostra MUITOS registros, um por linha, com os mesmos campos em colunas. A escolha é a cardinalidade.",
+      "escolha": "A tela é a listagem de requerimentos."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "sortChange",
+      "payload": "{ column: string; direction: \"asc\" | \"desc\" }",
+      "descricao": "Ordenação alterada pelo cabeçalho."
+    },
+    {
+      "nome": "selectionChange",
+      "payload": "T[]",
+      "descricao": "Linhas selecionadas. Só emitido quando selectable não é none."
+    },
+    {
+      "nome": "rowClick",
+      "payload": "T",
+      "descricao": "Linha acionada. Só emitido com rowClickable; a célula identificadora ainda precisa conter um link real."
+    },
+    {
+      "nome": "retry",
+      "payload": "void",
+      "descricao": "Tentar novamente, a partir do estado de erro."
+    },
+    {
+      "nome": "pinnedChange",
+      "payload": "Record<string, 'start' | 'end'>",
+      "descricao": "Coluna fixada ou solta pelo menu da coluna."
+    },
+    {
+      "nome": "hiddenChange",
+      "payload": "string[]",
+      "descricao": "Coluna ocultada pelo menu, ou todas reexibidas pela barra de colunas ocultas."
+    }
+  ],
+  "formatacao": {
+    "$descricao": "Regras de valor. A ausência de dado é o caso que o legado não trata: célula em branco não distingue \"não informado\" de \"falhou ao carregar\" de \"zero\".",
+    "valorAusente": {
+      "regra": "Toda célula sem valor carrega texto. Nenhuma fica muda.",
+      "ordem": [
+        "1. Texto descritivo, quando o motivo é conhecido e cabe na coluna: \"Não atribuído\", \"Sem responsável\", \"Não se aplica\".",
+        "2. Travessão (—) com o motivo em texto só para leitor de tela, quando a coluna é estreita e o travessão já é convenção da tela.",
+        "3. Célula visualmente vazia com texto sr-only — último recurso, só quando quase toda linha repete o mesmo vazio e o travessão viraria ruído."
+      ],
+      "porque": "O travessão sozinho é anunciado como \"traço\", como \"menos\" ou como nada, conforme o leitor de tela. Quem ouve a tabela não recebe a informação que quem vê recebe — WCAG 1.3.1.",
+      "nunca": "Preencher com 0 nem com \"N/A\" cru. Zero é um valor legítimo e mente sobre o dado; \"N/A\" é sigla que a tela nunca explica."
+    },
+    "numero": "type=number e type=currency alinham ao fim e recebem tabular-nums, com a MESMA quantidade de casas decimais em toda a coluna. Casa decimal irregular destrói a varredura vertical, que é a única razão de alinhar à direita.",
+    "data": "type=date usa formato curto e estável na coluna. A data por extenso vai na tela de detalhe, não na grade."
+  },
+  "limites": {
+    "$descricao": "É o componente de maior superfície do sistema — e por isso o mais usado fora de lugar. Tabela é para COMPARAR registros pelos mesmos atributos. Onde não há comparação, não há tabela.",
+    "regras": [
+      "Não diagramar página com tabela. Grade de layout é ucam-grid ou ucam-split, em spec/layouts.json.",
+      "Não usar para lista vertical de um dado só: uma coluna não é tabela, é lista (ul/ol).",
+      "Não usar quando cada linha é um assunto próprio, com ações próprias e textos de tamanhos muito diferentes — isso é cartão.",
+      "Não usar para hierarquia (setor, subsetor, natureza). Tabela é grade plana; árvore é outro componente, ainda não catalogado.",
+      "Agrupar por curso, ou por grupo e subgrupo com subtotal, também não é esta tabela — e ainda não tem contrato. Enquanto não tiver, cada grupo é uma seção com título e tabela própria; ver aindaNaoExiste no guia de migração.",
+      "Acima de 20 linhas por página, paginação é obrigatória — 40 quando density=compact, que cabe mais linha no mesmo espaço."
+    ],
+    "motivo": "O limiar de 20/40 vem do Pajamas (GitLab), que opera tabelas de crescimento aberto há anos. Sem limiar, a rolagem substitui a navegação em silêncio e o resumo de resultados perde a função."
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<div class=\"ucam-table-wrap\"> em volta de <table class=\"ucam-table\">. O invólucro é quem rola na horizontal.",
+      "raiz": ".ucam-table-wrap mais .ucam-table",
+      "nota": "A barra de seleção em lote é .ucam-lote, irmã da tabela e não filha: ela aparece e some conforme a seleção, e dentro do <table> não haveria onde pôr um elemento que não é linha. O menu da coluna é .ucam-table__coluna (o gatilho, dentro do th) mais .ucam-menu.ucam-menu--coluna; quem ordena, fixa e oculta de verdade é o estadoScript de tools/lib/shell.mjs, e as colunas fixas são .ucam-col--fixa-inicio / .ucam-col--fixa-fim."
+    }
+  }
+}

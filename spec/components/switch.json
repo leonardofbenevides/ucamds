@@ -1,0 +1,239 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "switch",
+  "name": "Switch",
+  "selector": "ucam-switch",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Alterna uma opção com efeito imediato, sem submissão. Substitui os pares de botão SIM/NÃO do legado, que não deixavam claro se o rótulo era o estado atual ou a ação de mudá-lo.",
+  "quando_usar": [
+    "Uma preferência liga ou desliga com efeito imediato, sem botão de salvar.",
+    "O legado tem um par de botões SIM/NÃO em que não se sabe se o rótulo é o estado ou a ação.",
+    "A mudança é reversível e não destrói dado — se destruísse, pediria confirmação, e confirmação não cabe num alternador."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e APPSUCAM/SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — Análise de Requerimento",
+        "rotulo": "Mostrar requerimentos de nível abaixo do meu · NÃO",
+        "problema": "botão único mostrando NÃO: ambíguo por construção — não se sabe se NÃO é o estado ou o que vai acontecer ao clicar"
+      },
+      {
+        "tela": "SIGFIN — Arquivo Remessa Diário",
+        "rotulo": "Impressão pelo banco · Sim",
+        "problema": "par Sim/Não em que a metade ativa é verde e a inativa é branca, sem rótulo do que está ligado"
+      },
+      {
+        "tela": "SIGFIN — Cálculo de Mensalidade",
+        "rotulo": "Rematrícula · Registrar Boleto",
+        "problema": "dois pares Sim/Não na mesma tela, com estados de cor diferentes entre si"
+      },
+      {
+        "tela": "todas",
+        "problema": "o controle não é focável como alternador: leitores de tela anunciam dois botões, não um estado ligado ou desligado"
+      }
+    ],
+    "conclusao": "Três telas, três aparências para o mesmo controle booleano. O Switch unifica e resolve a ambiguidade: o que se vê é o ESTADO, não a ação."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "input type=checkbox com role de switch, visualmente substituído."
+    },
+    {
+      "parte": "trilho",
+      "obrigatorio": true,
+      "descricao": "Fundo que muda de cor conforme o estado."
+    },
+    {
+      "parte": "polegar",
+      "obrigatorio": true,
+      "descricao": "Elemento que desliza. Movimento respeita prefers-reduced-motion."
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Texto clicável. Descreve o que fica ligado, nunca a ação."
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": false
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Descreve o que está ligado. Nunca use Sim, Não ou Ativar."
+    },
+    {
+      "nome": "labelHidden",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "checked",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "loading",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Enquanto o efeito é confirmado pelo servidor. Mantém o estado anterior visível até a resposta."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "checkedChange",
+      "payload": "boolean",
+      "descricao": "Novo estado. O efeito é imediato — não há botão de confirmar."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "checked",
+    "unchecked",
+    "disabled",
+    "loading"
+  ],
+  "limites": {
+    "regras": [
+      "Efeito imediato e reversível: Switch. Parte de formulário submetido: Checkbox.",
+      "Nunca em ação destrutiva — desligar algo que apaga dado pede confirmação, e confirmação não cabe num alternador.",
+      "Nunca com rótulo Sim/Não: o rótulo nomeia o que é ligado, e o estado vem do controle."
+    ],
+    "criterio": "Se a mudança já valeu quando a pessoa soltou o dedo, é Switch."
+  },
+  "acessibilidade": {
+    "papel": "switch",
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Recebe foco."
+      },
+      {
+        "tecla": "Space",
+        "comportamento": "Alterna."
+      }
+    ],
+    "requisitos": [
+      "input type=checkbox com role=switch: leitores anunciam ligado ou desligado, não marcado ou desmarcado.",
+      "O trilho tem contraste mínimo 3:1 contra o fundo nos DOIS estados (WCAG 1.4.11) — é ele que identifica o controle.",
+      "A distinção entre ligado e desligado não pode depender só de cor: a posição do polegar é o segundo sinal (WCAG 1.4.1).",
+      "Alvo mínimo de 24x24px cobrindo trilho e rótulo (WCAG 2.5.8).",
+      "Mudança de estado não navega nem recarrega a página sem aviso (WCAG 3.2.2).",
+      "O deslize do polegar respeita prefers-reduced-motion."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.7",
+      "2.5.8",
+      "3.2.2",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O rótulo nomeia o que fica ligado: Mostrar requerimentos de nível abaixo do meu.",
+      "Sem verbo de ação: não use Ativar notificações — use Notificações por e-mail.",
+      "Nada de Sim/Não no rótulo nem ao lado do controle."
+    ],
+    "exemplos": {
+      "bom": [
+        "Mostrar requerimentos de nível abaixo do meu",
+        "Registrar boleto",
+        "Impressão pelo banco"
+      ],
+      "ruim": [
+        "SIM / NÃO",
+        "Ativar",
+        "Deseja registrar boleto?",
+        "Não desativar alertas"
+      ]
+    }
+  },
+  "migracao": {
+    "de": "AngularJS / par de botões SIM-NÃO",
+    "mapa": [
+      {
+        "legado": "botão alternando SIM/NÃO (Protocolo)",
+        "novo": "ucam-switch",
+        "nota": "O rótulo passa a descrever o que é ligado; o estado sai do texto e vai para o controle."
+      },
+      {
+        "legado": "par Sim|Não com metade verde (SIGFIN)",
+        "novo": "ucam-switch"
+      },
+      {
+        "legado": "md-switch",
+        "novo": "ucam-switch"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Padrão",
+      "codigo": "<ucam-switch label=\"Mostrar requerimentos de nível abaixo do meu\" [(ngModel)]=\"incluirAbaixo\" />"
+    },
+    {
+      "titulo": "Com apoio",
+      "codigo": "<ucam-switch label=\"Registrar boleto\" hint=\"O boleto é gerado ao salvar.\" [(ngModel)]=\"registrar\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Rótulo que nomeia o que fica ligado: Mostrar requerimentos de nível abaixo do meu.",
+      "evite": "Par de botões SIM/NÃO, e rótulo com verbo de ação ('Ativar notificações').",
+      "porque": "O botão único mostrando NÃO é ambíguo por construção: não se sabe se é o estado atual ou o que vai acontecer ao clicar."
+    },
+    {
+      "faca": "Deixar o controle carregar o estado.",
+      "evite": "Escrever Sim/Não ao lado do controle.",
+      "porque": "Se o rótulo precisa dizer o estado, o controle não está comunicando."
+    },
+    {
+      "faca": "Usar Dialog de confirmação quando desligar algo apaga dado.",
+      "evite": "Switch em ação destrutiva.",
+      "porque": "Confirmação não cabe num alternador — não há onde encaixar o passo intermediário."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "checkbox",
+      "diferenca": "Switch tem efeito IMEDIATO e não espera submissão; Checkbox é um valor que só vale quando o formulário for enviado. A pergunta não é a forma do controle, é quando a mudança acontece.",
+      "escolha": "Ligar notificação por e-mail, alternar uma preferência: mudou, valeu."
+    }
+  ],
+  "composicao": {
+    "usada_por": [
+      "padrao-listagem-inspetor"
+    ]
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<label class=\"ucam-switch\"> envolvendo o <input type=\"checkbox\">, igual ao checkbox mas com o desenho de chave.",
+      "raiz": ".ucam-switch",
+      "nota": "Chave e caixa de seleção não são intercambiáveis: a chave aplica o efeito na hora e não espera um botão de salvar, e é isso que o contrato de migração usa para separar as duas no legado."
+    }
+  }
+}

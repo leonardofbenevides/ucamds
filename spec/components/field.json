@@ -1,0 +1,308 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "field",
+  "name": "Field",
+  "selector": "ucam-field",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "A casca de todo campo: rótulo persistente, marca de obrigatoriedade, texto de apoio, mensagem de erro e a fiação ARIA que liga os quatro ao controle. Não é um campo — não tem input dentro. É o que text-field, select, textarea, date-field e combobox vestem por baixo, e a razão de todos eles se comportarem igual.",
+  "quando_usar": [
+    "Um controle de formulário novo está sendo construído e precisa do mesmo rótulo, apoio, erro e fiação ARIA dos outros.",
+    "Um controle de terceiros precisa se comportar como os campos do sistema.",
+    "Na maioria dos casos você não a usa direto: text-field, select, textarea, date-field, combobox e file-field já a vestem."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e a base ZardUI",
+    "ocorrencias": [
+      {
+        "tela": "image 10 (Pesquisa de Requerimento)",
+        "rotulo": "Digite aqui para pesquisar",
+        "problema": "placeholder usado como rótulo. Some assim que a digitação começa, e a pessoa perde a única indicação do que aquele campo é — inclusive na hora de conferir o que digitou"
+      },
+      {
+        "tela": "image 7 (Novo Requerimento)",
+        "rotulo": "Clique aqui para digitar...",
+        "problema": "mesma falha, com o agravante de a frase instruir o gesto em vez de nomear o dado"
+      },
+      {
+        "tela": "base ZardUI",
+        "problema": "o input da base é uma diretiva de estilo sobre <input>: sem label, sem hint, sem erro e sem ligação ARIA. É exatamente a lacuna que produziu os placeholders-rótulo do legado"
+      }
+    ],
+    "conclusao": "O rótulo flutuante do Material empurra times a usar placeholder como rótulo, e o parque tem duas provas disso. A casca existe para que rótulo, apoio e erro sejam impossíveis de esquecer: quem monta um campo novo recebe os três já ligados (ADR-004)."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Coluna que empilha rótulo, controle e mensagem, com o ritmo curto entre eles. É o bloco que garante que dois campos vizinhos tenham o mesmo espaçamento interno.",
+      "classe": "ucam-field"
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Rótulo persistente ACIMA do controle, sempre visível, ligado por for/id. Nunca colapsa para dentro do campo: o padrão flutuante reduz tamanho e contraste do rótulo justamente quando a pessoa quer conferir o que digitou (ADR-004).",
+      "classe": "ucam-field__label"
+    },
+    {
+      "parte": "marca-obrigatorio",
+      "obrigatorio": false,
+      "descricao": "O asterisco. É DECORATIVO (aria-hidden): a obrigatoriedade real viaja em required e aria-required no controle. Asterisco lido em voz alta como estrela não informa nada.",
+      "classe": "ucam-field__required"
+    },
+    {
+      "parte": "controle",
+      "obrigatorio": true,
+      "descricao": "O elemento nativo, projetado de fora. A casca não o cria — ela gera e distribui os ids que ele precisa carregar."
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": false,
+      "descricao": "Texto de apoio abaixo do controle: formato esperado, origem do dado, consequência do preenchimento. Não repete o rótulo.",
+      "classe": "ucam-field__hint"
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false,
+      "descricao": "Mensagem de erro, no lugar do hint — no lugar VISUAL: o apoio segue no DOM, apenas escondido —, com role=alert. O role anuncia sem roubar o foco — mover o foco para a mensagem tiraria a pessoa do campo que ela está corrigindo.",
+      "classe": "ucam-field__error"
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Obrigatório sem exceção. Campo sem rótulo não existe neste sistema — é a regra que impede o retorno do placeholder-rótulo."
+    },
+    {
+      "nome": "labelHidden",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Esconde o rótulo VISUALMENTE, mantendo-o na árvore de acessibilidade. Só para o campo cujo rótulo é redundante no contexto — a busca dentro de uma barra que já diz Pesquisar. Não é atalho para tela apertada."
+    },
+    {
+      "nome": "controlId",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Id do controle. Vem de fora porque quem monta o controle é que precisa colocá-lo no elemento nativo; a casca gera o trio com nextFieldIds e distribui."
+    },
+    {
+      "nome": "hintId",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Id do texto de apoio, para o aria-describedby do controle."
+    },
+    {
+      "nome": "errorId",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Id da mensagem de erro, para o aria-describedby do controle."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto de apoio. Continua descrito pelo controle mesmo quando há erro — o contrato pede que a pessoa siga ouvindo o formato esperado depois de errar."
+    },
+    {
+      "nome": "errorMessage",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A mensagem. Só é renderizada quando invalid também é verdadeiro: mensagem escrita e campo não marcado como inválido é erro visível que a validação não conhece."
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Estado de validação. Governa a exibição do erro e o aria-invalid do controle."
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Mostra a marca de obrigatoriedade. Não substitui required no controle nativo — a marca é visual, a regra é do elemento."
+    }
+  ],
+  "estados": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "invalid",
+    "com-apoio"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar diretamente numa tela. A casca é peça interna: quem a veste é text-field, select, textarea, date-field ou combobox. Campo montado à mão sobre ela some do inventário e diverge no primeiro ajuste.",
+      "Não usar placeholder como rótulo, nem com a casca aplicada. O placeholder descreve o formato de um exemplo; o rótulo nomeia o dado (ADR-004).",
+      "Não pôr dois controles dentro de uma casca. Dois controles, dois rótulos — período com data inicial e final são dois campos dentro de um grupo, não um campo com dois inputs.",
+      "Não usar o hint para dizer que o campo é obrigatório. Isso é a marca e o atributo.",
+      "Não esconder o rótulo por falta de espaço. Se não cabe, o problema é o arranjo."
+    ]
+  },
+  "obrigatoriedade": {
+    "regra": "A marca é o asterisco no rótulo, decorativo, e a obrigatoriedade real vive em required/aria-required no controle.",
+    "motivo": "Asterisco é convenção visual, não semântica. Anunciado literalmente por leitor de tela, ele lê como estrela e não informa nada — e sem o atributo no controle a validação do navegador e a do formulário divergem.",
+    "excecao": "Formulário em que quase todos os campos são obrigatórios inverte a marcação e assinala os OPCIONAIS, com a regra dita uma vez no topo. Marcar quinze de dezesseis campos é ruído."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O rótulo é um <label> real, ligado por for/id. aria-label no controle não é substituto: ele não fica visível, e quem usa comando de voz precisa ver a palavra que vai falar.",
+      "hint e erro entram JUNTOS em aria-describedby quando ambos existem, com o erro primeiro — a pessoa precisa continuar ouvindo o formato esperado depois de errar.",
+      "O apoio PERMANECE no DOM quando há erro — escondido visualmente, nunca removido. O aria-describedby cita o id do apoio, e id sem elemento não é lido por ninguém: tirar o apoio da árvore na hora do erro é retirar o formato esperado de quem mais precisa dele (revisão de feedback, 19/09/2026).",
+      "A mensagem de erro usa role=alert: anuncia sem mover o foco. Mover o foco tiraria a pessoa do campo que ela está corrigindo.",
+      "O asterisco é aria-hidden. A obrigatoriedade viaja em required e aria-required no controle (WCAG 3.3.2).",
+      "aria-invalid no controle acompanha invalid. Estado visual sem atributo é erro que só existe para quem enxerga.",
+      "Rótulo persistente e acima do controle, nunca flutuante (ADR-004): o colapso reduz tamanho e contraste no momento em que a pessoa quer conferir o que digitou.",
+      "Rótulo em caixa natural (ADR-003)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.4.6",
+      "3.3.1",
+      "3.3.2",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Nomeia o DADO, não o gesto: Matrícula, não Digite a matrícula.",
+      "Uma ou duas palavras, em caixa natural, sem dois-pontos.",
+      "Vocabulário do domínio acadêmico, o mesmo que aparece no documento em papel."
+    ],
+    "hint": [
+      "Diz o formato, a origem ou a consequência: Como no seu documento de identidade.",
+      "Não repete o rótulo e não instrui o gesto.",
+      "Permanece visível durante o preenchimento — é para isso que ele não é placeholder."
+    ],
+    "erro": [
+      "Diz o que está errado e como corrigir, na ordem.",
+      "Não culpa quem preencheu.",
+      "Específica: A matrícula tem 8 dígitos, não Campo inválido."
+    ],
+    "exemplos": {
+      "bom": [
+        "Matrícula · Oito dígitos, sem pontos",
+        "Data de nascimento · Como no documento de identidade",
+        "A matrícula tem 8 dígitos. Confira e tente de novo."
+      ],
+      "ruim": [
+        "Digite aqui para pesquisar",
+        "Clique aqui para digitar...",
+        "Campo inválido",
+        "Você errou o campo"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-listagem-inspetor",
+      "ucam-combobox",
+      "ucam-date-field",
+      "ucam-file-field",
+      "ucam-select",
+      "ucam-text-field",
+      "ucam-textarea"
+    ],
+    "usa": [
+      "ucam-input-group"
+    ]
+  },
+  "migracao": {
+    "de": "md-input-container do Angular Material, com rótulo flutuante",
+    "mapa": [
+      {
+        "legado": "<md-input-container><label>…</label><input></md-input-container>",
+        "novo": "a casca aplicada pelo componente de campo correspondente",
+        "nota": "A conversão não é 1:1 e é a mudança visual mais perceptível do projeto: o rótulo deixa de flutuar e passa a ficar sempre acima. Precisa ser comunicada antes da migração (ADR-004)."
+      },
+      {
+        "legado": "placeholder=\"Digite aqui para pesquisar\" sem label",
+        "novo": "label=\"Pesquisar requerimento\" e placeholder com um exemplo, ou nenhum",
+        "nota": "O texto muda de papel: o que era instrução vira nome do dado."
+      },
+      {
+        "legado": "ng-messages abaixo do campo",
+        "novo": "errorMessage com invalid",
+        "nota": "Ganha role=alert e a ligação por aria-describedby, que o ng-messages não fazia."
+      },
+      {
+        "legado": "asterisco escrito no texto do label",
+        "novo": "required na casca mais required no controle",
+        "nota": "O asterisco passa a ser decorativo e a obrigatoriedade passa a existir para a validação e para o leitor de tela."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Como os campos a vestem — visão interna",
+      "codigo": "const ids = nextFieldIds('matricula');\n\n<ucam-field\n  label=\"Matrícula\"\n  hint=\"Oito dígitos, sem pontos\"\n  [controlId]=\"ids.controlId\"\n  [hintId]=\"ids.hintId\"\n  [errorId]=\"ids.errorId\"\n  [invalid]=\"invalido()\"\n  [errorMessage]=\"erro()\"\n  required>\n  <input [id]=\"ids.controlId\" [attr.aria-describedby]=\"descricao()\" required />\n</ucam-field>"
+    },
+    {
+      "titulo": "Rótulo escondido, em barra que já se explica",
+      "codigo": "<ucam-text-field label=\"Pesquisar natureza\" labelHidden placeholder=\"Declaração\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Manter o rótulo sempre visível acima do controle.",
+      "evite": "Placeholder no lugar do rótulo.",
+      "porque": "O placeholder some quando a digitação começa, e é exatamente o que produziu Digite aqui para pesquisar e Clique aqui para digitar no Protocolo."
+    },
+    {
+      "faca": "Manter o hint em aria-describedby junto do erro.",
+      "evite": "Trocar o hint pelo erro na fiação ARIA.",
+      "porque": "Quem errou o formato precisa continuar ouvindo qual é o formato — trocar um pelo outro tira a informação no momento em que ela é mais necessária."
+    },
+    {
+      "faca": "Deixar o asterisco decorativo e pôr required no controle.",
+      "evite": "Asterisco escrito dentro do texto do label.",
+      "porque": "Lido literalmente, o asterisco vira estrela e não informa; sem o atributo, a validação do navegador não sabe que o campo é obrigatório."
+    },
+    {
+      "faca": "Usar role=alert no erro, sem mover o foco.",
+      "evite": "Focar a mensagem de erro ao validar.",
+      "porque": "Mover o foco tira a pessoa do campo que ela está corrigindo, e ela precisa voltar a ele para digitar."
+    },
+    {
+      "faca": "Vestir a casca por um dos componentes de campo.",
+      "evite": "Montar um campo novo direto sobre ela numa tela.",
+      "porque": "Campo montado à mão não aparece no inventário e diverge do resto no primeiro ajuste de contrato."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "As classes existem e entregam a coluna, o rótulo e as duas mensagens. A FIAÇÃO não: for/id, aria-describedby, aria-invalid e role=alert são atributos do markup e precisam ser escritos pela aplicação.",
+      "raiz": ".ucam-field",
+      "estado": "O erro é a classe da mensagem mais aria-invalid no controle; o CSS lê o atributo, não uma classe de estado paralela. O apoio não sai do markup quando o erro aparece: recebe a classe de esconder visualmente, porque o aria-describedby continua apontando para ele.",
+      "variaveis": [
+        "--ucam-color-text-primary",
+        "--ucam-color-text-secondary",
+        "--ucam-color-feedback-danger-foreground",
+        "--ucam-typography-caption-font-size"
+      ],
+      "nota": "É o componente em que a diferença entre os dois trilhos mais pesa: o visual correto sem a fiação produz um campo que parece acessível e não é. Numa migração de legado, conferir o for/id vale mais que conferir o espaçamento."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/field/ucam-field.ts — pronto. Exporta nextFieldIds, que gera o trio de ids, e describedBy, que monta o aria-describedby com erro e hint na ordem certa. O apoio é renderizado sempre e ganha sr-only enquanto há erro."
+  },
+  "vs": [
+    {
+      "componente": "text-field",
+      "diferenca": "Field é a CASCA — rótulo, obrigatoriedade, apoio, erro e a fiação ARIA; TextField é o CONTROLE que a casca veste. Um não substitui o outro: todo TextField já vem dentro de um Field.",
+      "escolha": "Você está construindo um controle novo que precisa do mesmo rótulo e da mesma mensagem de erro dos outros."
+    },
+    {
+      "componente": "input-group",
+      "diferenca": "Field é o que fica FORA do contorno do controle (rótulo em cima, apoio e erro embaixo); InputGroup é o que fica DENTRO do mesmo contorno, colado ao valor. Os dois convivem no mesmo campo.",
+      "escolha": "A informação é sobre o campo: como se chama, se é obrigatório, o que deu errado."
+    },
+    {
+      "componente": "tooltip",
+      "diferenca": "Tooltip SOME; o texto de apoio do Field fica. Informação necessária para preencher não pode depender de apontar o ponteiro — quem usa teclado ou toque pode nunca ver.",
+      "escolha": "Formato esperado, regra de preenchimento, motivo do erro: tudo que a pessoa precisa ler ANTES de digitar."
+    }
+  ]
+}

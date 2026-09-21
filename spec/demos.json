@@ -1,0 +1,868 @@
+{
+  "$description": "Demos dos componentes — o equivalente aos arquivos *.stories do Storybook. Separado dos contratos de propósito: o contrato define a API, a demo mostra o uso. Cada demo tem o preview (marcação com classes de @ucam/css, renderizada no site) e o codigo (template Angular com a API de @ucam/ui).",
+  "_meta": {
+    "preview": "HTML real, renderizado pelo dist/css/ucam.css gerado. Não é maquete: mudou o token, muda o preview.",
+    "codigo": "Template Angular com a API definida no contrato do componente. Validado contra as props da spec."
+  },
+  "demos": {
+    "alert": {
+      "instalacao": "npx ucam-cli add alert",
+      "importacao": "import { UcamAlert } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-stack'><div class='ucam-alert ucam-alert--info'><svg class='ic' aria-hidden='true'><use href='#i-info'/></svg><div class='ucam-alert__corpo'>Requerimentos abertos após as 17h entram na fila do dia seguinte.</div></div><div class='ucam-alert ucam-alert--danger'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg><div class='ucam-alert__corpo'>Matrícula ou senha incorreta. Confira os dados e tente novamente.</div></div><div class='ucam-alert ucam-alert--warning'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg><div class='ucam-alert__corpo'><p class='ucam-alert__titulo'>O prazo vence hoje</p>Depois das 23h59 o requerimento será encerrado sem análise.</div><button class='ucam-alert__fechar' type='button' aria-label='Fechar aviso'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div></div>",
+        "codigo": "<ucam-alert tone=\"info\">\n  Requerimentos abertos após as 17h entram na fila do dia seguinte.\n</ucam-alert>\n\n<ucam-alert tone=\"danger\" live=\"assertive\">\n  Matrícula ou senha incorreta. Confira os dados e tente novamente.\n</ucam-alert>\n\n<ucam-alert tone=\"warning\" title=\"O prazo vence hoje\" dismissible (dismiss)=\"aviso.set(null)\">\n  Depois das 23h59 o requerimento será encerrado sem análise.\n</ucam-alert>"
+      },
+      "exemplos": []
+    },
+    "app-shell": {
+      "instalacao": "npx ucam-cli add app-shell",
+      "importacao": "import { UcamAppShell } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-lg);overflow:hidden;background:var(--ucam-color-surface-default);min-inline-size:28rem'><div class='ucam-appbar ucam-appbar--clara' style='position:static;gap:.75rem;padding-inline:.875rem;border-block-end:1px solid var(--ucam-color-border-subtle)'><span class='ucam-icon-tile ucam-icon-tile--marca' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><strong class='ucam-appbar__system'>Protocolo</strong><span class='ucam-appbar__search' style='max-inline-size:8.5rem;color:var(--ucam-appbar-muted);font-size:.8125rem'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg>Buscar</span><span class='ucam-appbar__spacer'></span><span class='ucam-campus ucam-campus--faixa'><span class='ucam-sr-only'>Campus</span><span class='ucam-campus__valor'>Campos</span></span><span class='ucam-appbar__avatar' aria-hidden='true'>LB</span></div><div style='display:grid;grid-template-columns:9.5rem 1fr;min-block-size:12rem'><div style='display:flex;flex-direction:column;gap:2px;padding:.625rem;border-inline-end:1px solid var(--ucam-color-border-subtle)'><span class='ucam-nav__item' aria-current='page' style='min-block-size:2rem'><svg class='ic' aria-hidden='true'><use href='#i-inbox'/></svg><span style='flex:1'>Entrada</span><span class='ucam-nav__count'>9</span></span><span class='ucam-nav__item' style='min-block-size:2rem'><svg class='ic' aria-hidden='true'><use href='#i-layoutGrid'/></svg><span style='flex:1'>Gerencial</span></span><span class='ucam-nav__item' style='min-block-size:2rem'><svg class='ic' aria-hidden='true'><use href='#i-users'/></svg><span style='flex:1'>Setores</span></span><span class='ucam-nav__item' style='min-block-size:2rem'><svg class='ic' aria-hidden='true'><use href='#i-settings'/></svg><span style='flex:1'>Parâmetros</span></span></div><div style='padding:1rem 1.125rem;display:flex;flex-direction:column;gap:.75rem;background:var(--ucam-color-surface-canvas)'><div style='display:flex;align-items:center;gap:.75rem'><strong style='flex:1;font-size:1.0625rem;font-weight:620;letter-spacing:-.01em;color:var(--ucam-color-text-primary)'>Caixa de entrada</strong><span class='ucam-btn ucam-btn--primary ucam-btn--sm'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg>Novo</span></div><div style='border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-md);overflow:hidden;background:var(--ucam-color-surface-default)'><div style='display:flex;align-items:center;gap:.75rem;padding:.55rem .75rem;border-block-start:0'><span style='display:flex;flex-direction:column;min-inline-size:0;flex:1'><span style='font-size:.8125rem;font-weight:560;color:var(--ucam-color-text-primary)'>2ª via de diploma</span><span style='font-size:.75rem;color:var(--ucam-color-text-secondary)'>Ana Ribeiro · há 2 h</span></span><span class='ucam-badge ucam-badge--warning'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg>Pendente</span></div><div style='display:flex;align-items:center;gap:.75rem;padding:.55rem .75rem;border-block-start:1px solid var(--ucam-color-border-subtle)'><span style='display:flex;flex-direction:column;min-inline-size:0;flex:1'><span style='font-size:.8125rem;font-weight:560;color:var(--ucam-color-text-primary)'>Trancamento de matrícula</span><span style='font-size:.75rem;color:var(--ucam-color-text-secondary)'>Bruno Lima · ontem</span></span><span class='ucam-badge ucam-badge--info'><svg class='ic' aria-hidden='true'><use href='#i-info'/></svg>Em análise</span></div><div style='display:flex;align-items:center;gap:.75rem;padding:.55rem .75rem;border-block-start:1px solid var(--ucam-color-border-subtle)'><span style='display:flex;flex-direction:column;min-inline-size:0;flex:1'><span style='font-size:.8125rem;font-weight:560;color:var(--ucam-color-text-primary)'>Declaração de vínculo</span><span style='font-size:.75rem;color:var(--ucam-color-text-secondary)'>Carla Souza · 08/09</span></span><span class='ucam-badge ucam-badge--success'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg>Concluído</span></div></div></div></div></div>",
+        "codigo": "<ucam-app-shell\n  systemName=\"Protocolo\"\n  [context]=\"campus()\"\n  [contextOptions]=\"campiDoUsuario()\"\n  [user]=\"usuario()\"\n  (contextChange)=\"trocarCampus($event)\">\n  <!-- conteúdo da tela -->\n</ucam-app-shell>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Contexto de campus",
+          "descricao": "O campus muda o significado de toda a tela. Hoje aparece em cinza-claro sobre o bordô, com contraste insuficiente — e quem tem acesso a mais de um campus não tem como trocar sem sair do sistema.",
+          "preview": "<div class='ucam-appbar'><span><strong>Protocolo</strong></span><span style='margin-inline-start:auto;display:flex;align-items:center;gap:.75rem'><span style='display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.16);padding:.2rem .55rem;border-radius:var(--ucam-radius-md);font-size:.8rem'><svg class='ic' aria-hidden='true'><use href='#i-building2'/></svg> Campus Campos <svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></span><span style='font-size:.85rem'>Leonardo F. Benevides</span></span></div>",
+          "codigo": "<ucam-app-shell\n  systemName=\"Protocolo\"\n  context=\"Campus Campos\"\n  [contextOptions]=\"campiDoUsuario()\"\n  (contextChange)=\"trocarCampus($event)\" />"
+        }
+      ]
+    },
+    "avatar": {
+      "instalacao": "npx ucam-cli add avatar",
+      "importacao": "import { UcamAvatar } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;gap:1.25rem;align-items:center'><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:24px;block-size:24px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:10px;font-weight:650'>LB</span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:32px;block-size:32px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:12px;font-weight:650'>AS</span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:48px;block-size:48px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:16px;font-weight:650'>MC</span><span class='ucam-field__hint'>24 · 32 · 48px</span></div>",
+        "codigo": "<ucam-avatar name=\"Leonardo Fagundes Benevides\" size=\"sm\" />\n<ucam-avatar name=\"Ana de Souza\" />\n<ucam-avatar name=\"Marina Costa\" size=\"lg\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Iniciais identificam; clipart não",
+          "descricao": "O modal Funcionário do Protocolo usa o mesmo desenho genérico para toda pessoa. Ocupa espaço e não distingue ninguém.",
+          "preview": "<div style='display:grid;grid-template-columns:1fr 1fr;gap:2rem'><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes</p><div style='display:flex;gap:.75rem'><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border:1px solid #ccc;background:#eee;color:#999'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border:1px solid #ccc;background:#eee;color:#999'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border:1px solid #ccc;background:#eee;color:#999'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span></div></div><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois</p><div style='display:flex;gap:.75rem'><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:13px;font-weight:650'>LB</span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:13px;font-weight:650'>AS</span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:13px;font-weight:650'>MC</span></div></div></div>",
+          "codigo": "<ucam-avatar [name]=\"funcionario.nome\" [photoUrl]=\"funcionario.foto\" />"
+        }
+      ]
+    },
+    "button": {
+      "instalacao": "npx ucam-cli add button",
+      "importacao": "import { UcamButton } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center'><button class='ucam-btn ucam-btn--primary'>Salvar</button><button class='ucam-btn ucam-btn--secondary'>Cancelar</button><button class='ucam-btn ucam-btn--ghost'>Ver histórico</button></div>",
+        "codigo": "<ucam-button variant=\"primary\">Salvar</ucam-button>\n<ucam-button variant=\"secondary\">Cancelar</ucam-button>\n<ucam-button variant=\"ghost\">Ver histórico</ucam-button>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Tom destrutivo, nos três pesos",
+          "descricao": "tone diz que a ação destrói; variant diz quanto ela pesa (ADR-015). O preenchido pertence ao diálogo que confirma, o contornado à linha de tabela, o de texto ao menu. Os três exigem confirmação: a regra da ADR-002 está presa ao tom, não ao peso.",
+          "preview": "<div style='display:flex;gap:.5rem;flex-wrap:wrap;align-items:center'><button class='ucam-btn ucam-btn--primary' data-tone='danger'>Excluir setor</button><button class='ucam-btn ucam-btn--secondary' data-tone='danger'>Excluir setor</button><button class='ucam-btn ucam-btn--ghost' data-tone='danger'>Excluir setor</button></div>",
+          "codigo": "<ucam-button variant=\"primary\" tone=\"danger\">Excluir setor</ucam-button>\n<ucam-button variant=\"secondary\" tone=\"danger\">Excluir setor</ucam-button>\n<ucam-button variant=\"ghost\" tone=\"danger\">Excluir setor</ucam-button>"
+        },
+        {
+          "titulo": "Tamanhos",
+          "descricao": "sm apenas dentro de linha de tabela, onde a densidade justifica.",
+          "preview": "<div style='display:flex;gap:.5rem;align-items:center'><button class='ucam-btn ucam-btn--primary ucam-btn--sm'>Pequeno</button><button class='ucam-btn ucam-btn--primary'>Médio</button><button class='ucam-btn ucam-btn--primary ucam-btn--lg'>Grande</button></div>",
+          "codigo": "<ucam-button variant=\"primary\" size=\"sm\">Pequeno</ucam-button>\n<ucam-button variant=\"primary\">Médio</ucam-button>\n<ucam-button variant=\"primary\" size=\"lg\">Grande</ucam-button>"
+        },
+        {
+          "titulo": "Com ícone",
+          "descricao": "O ícone é decorativo e recebe aria-hidden. Quem nomeia a ação é o texto.",
+          "preview": "<div style='display:flex;gap:.5rem'><button class='ucam-btn ucam-btn--primary'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Novo requerimento</button><button class='ucam-btn ucam-btn--secondary'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> Exportar</button></div>",
+          "codigo": "<ucam-button variant=\"primary\" iconStart=\"plus\">Novo requerimento</ucam-button>\n<ucam-button variant=\"secondary\" iconStart=\"download\">Exportar</ucam-button>"
+        },
+        {
+          "titulo": "Carregando e desabilitado",
+          "descricao": "Em loading o botão mantém a largura e usa aria-busy — nunca o atributo disabled, que o tiraria do foco.",
+          "preview": "<div style='display:flex;gap:.5rem;align-items:center'><button class='ucam-btn ucam-btn--primary' aria-busy='true' aria-disabled='true'><svg class='ic' aria-hidden='true'><use href='#i-loaderCircle'/></svg> Salvando</button><button class='ucam-btn ucam-btn--secondary' disabled>Excluir</button></div>",
+          "codigo": "<ucam-button variant=\"primary\" [loading]=\"salvando()\">Salvar</ucam-button>\n<ucam-button variant=\"secondary\" disabled>Excluir</ucam-button>"
+        }
+      ]
+    },
+    "card": {
+      "instalacao": "npx ucam-cli add card",
+      "importacao": "import { UcamCard } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-card' style='max-inline-size:22rem'><p style='margin:0 0 .35rem;font-weight:600'>Secretaria Acadêmica</p><p class='ucam-page-header__description' style='margin:0'>Documentos, declarações e histórico. 6 requerimentos na fila.</p><p class='ucam-card__rodape'><a class='ucam-link ucam-link--apoio' href='#'>Ver a fila do setor</a></p></div>",
+        "codigo": "<ucam-card>\n  <strong>Secretaria Acadêmica</strong>\n  <p>Documentos, declarações e histórico. 6 requerimentos na fila.</p>\n</ucam-card>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Sem recuo, para tabela de largura total",
+          "descricao": "padding none existe para o conteudo que precisa encostar na borda. Dentro do card, a tabela perde a propria moldura — duas molduras concentricas competem, e a interna le como erro de espacamento.",
+          "codigo": "<ucam-card padding=\"none\">\n  <ucam-data-table [columns]=\"colunas\" [rows]=\"linhas\" />\n</ucam-card>"
+        },
+        {
+          "titulo": "Cartão de painel, com cabeçalho",
+          "descricao": "Ladrilho de ícone, título e apoio empilhados, e o que sobra à direita. É a única parte do cartão com margem própria, de propósito: o cabeçalho não é conteúdo, é o que separa o conteúdo da moldura, e essa distância tem de ser a mesma em todo cartão do sistema.",
+          "preview": "<div class='ucam-card' style='max-inline-size:22rem'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile ucam-icon-tile--marca' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-chartColumn'/></svg></span><div class='ucam-card__cabecalho-texto'><p class='ucam-card__titulo'>Volume de requerimentos</p><p class='ucam-card__apoio'>Abertos contra concluídos, mês a mês</p></div><span class='ucam-badge ucam-badge--neutral'>Set · 2026</span></div><p class='ucam-section__hint'>No app, o gráfico entra aqui.</p></div>",
+          "codigo": "<ucam-card icone=\"chartColumn\" titulo=\"Volume de requerimentos\" apoio=\"Abertos contra concluídos, mês a mês\">\n  <ucam-badge ucamCardCabecalho tone=\"neutral\">Set · 2026</ucam-badge>\n  <ucam-chart [series]=\"series\" />\n</ucam-card>"
+        }
+      ]
+    },
+    "chart": {
+      "instalacao": "npx ucam-cli add chart",
+      "importacao": "import { UcamChart } from '@ucam/ui';",
+      "principal": {
+        "codigo": "<ucam-chart\n  type=\"bar\"\n  label=\"Requerimentos abertos e concluídos por mês — primeiro semestre de 2026\"\n  unit=\"requerimentos\"\n  categoryKey=\"mes\"\n  categoryLabel=\"Mês\"\n  [data]=\"volume()\"\n  [series]=\"[\n    { key: 'abertos', name: 'Abertos' },\n    { key: 'concluidos', name: 'Concluídos' }\n  ]\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Barra deitada, sem a tabela",
+          "descricao": "A tabela equivalente é o que torna o gráfico legível sem enxergá-lo. Recolhê-la só se justifica quando o mesmo dado já está tabulado logo abaixo na tela.",
+          "codigo": "<ucam-chart\n  type=\"bar\"\n  horizontal\n  height=\"sm\"\n  [showTable]=\"false\"\n  label=\"Prazo médio por setor, em dias — últimos 90 dias\"\n  unit=\"dias\"\n  categoryKey=\"setor\"\n  [data]=\"prazo()\"\n  [series]=\"[{ key: 'dias', name: 'Prazo médio' }]\" />"
+        }
+      ]
+    },
+    "checkbox": {
+      "instalacao": "npx ucam-cli add checkbox",
+      "importacao": "import { UcamCheckbox } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;flex-direction:column;gap:.5rem'><label class='ucam-check'><input type='checkbox' checked><span class='ucam-check__label'>Receber notificações por e-mail</span></label><label class='ucam-check'><input type='checkbox'><span class='ucam-check__label'>Receber resumo semanal</span></label><label class='ucam-check'><input type='checkbox' disabled><span class='ucam-check__label'>Receber SMS (indisponível no seu perfil)</span></label></div>",
+        "codigo": "<ucam-checkbox label=\"Receber notificações por e-mail\" [(ngModel)]=\"email\" />\n<ucam-checkbox label=\"Receber resumo semanal\" [(ngModel)]=\"semanal\" />\n<ucam-checkbox label=\"Receber SMS\" hint=\"Indisponível no seu perfil\" disabled />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Indeterminado",
+          "descricao": "Estado exigido pelo cabeçalho de seleção da tabela. Vem da propriedade indeterminate do elemento, que produz aria-checked=mixed — não se simula com atributo.",
+          "preview": "<label class='ucam-check'><input type='checkbox' class='js-indeterminate'><span class='ucam-check__label'>Selecionar todas as linhas desta página</span></label>",
+          "codigo": "<ucam-checkbox\n  label=\"Selecionar todas as linhas desta página\"\n  labelHidden\n  [checked]=\"todasSelecionadas()\"\n  [indeterminate]=\"algumasSelecionadas()\" />"
+        },
+        {
+          "titulo": "Quando usar Switch",
+          "descricao": "Efeito imediato, sem submissão, é Switch — não Checkbox. Foi o que substituiu o par de botões SIM/NÃO do legado, que não deixava claro se NÃO era o estado ou a ação.",
+          "preview": "<label class='ucam-switch'><input type='checkbox'><span class='ucam-check__label'>Mostrar requerimentos de nível abaixo do meu</span></label>",
+          "codigo": "<ucam-switch label=\"Mostrar requerimentos de nível abaixo do meu\" [(ngModel)]=\"incluirAbaixo\" />"
+        },
+        {
+          "titulo": "Em erro",
+          "descricao": "O aceite que falta. Só o filete muda na caixa vazia — quem comunica é a mensagem, com role=alert.",
+          "preview": "<div class='ucam-field' style='max-inline-size:26rem'><label class='ucam-check'><input type='checkbox' aria-invalid='true' aria-describedby='d-cx-e'><span class='ucam-check__label'>Li e aceito as condições do requerimento</span></label><span class='ucam-field__error' id='d-cx-e'>É preciso aceitar as condições para enviar.</span></div>",
+          "codigo": "<ucam-checkbox\n  label=\"Li e aceito as condições do requerimento\"\n  [invalid]=\"true\"\n  errorMessage=\"É preciso aceitar as condições para enviar.\" />"
+        }
+      ]
+    },
+    "chip": {
+      "instalacao": "npx ucam-cli add chip",
+      "importacao": "import { UcamChip } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-cluster'><span class='ucam-chip'>Setor: Secretaria Acadêmica <button type='button' aria-label='Remover filtro Setor'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></span><span class='ucam-chip'>Modalidade: EAD Campos <button type='button' aria-label='Remover filtro Modalidade'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></span></div>",
+        "codigo": "<ucam-chip dimension=\"Setor\" label=\"Secretaria Acadêmica\" (remove)=\"tirar('setor')\" />\n<ucam-chip dimension=\"Modalidade\" label=\"EAD Campos\" (remove)=\"tirar('modalidade')\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Marcador de pertencimento",
+          "descricao": "Veio do dado, nao de uma escolha de quem usa a tela: fica neutro e sem o x, que prometeria desvincular o registro numa tela de leitura.",
+          "codigo": "<ucam-chip tone=\"neutral\" [removable]=\"false\" label=\"Araruama · EAD\" />"
+        }
+      ]
+    },
+    "citacao": {
+      "instalacao": "npx ucam-cli add citacao",
+      "importacao": "import { UcamCitacao } from '@ucam/ui';",
+      "principal": {
+        "preview": "<blockquote class='ucam-citacao'>Solicito revisão da nota da AV2 de Cálculo III: identifiquei divergência entre o gabarito e a correção da questão 4. Anexei o comprovante da prova.</blockquote>",
+        "codigo": "<ucam-citacao>{{ req().texto }}</ucam-citacao>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Com autoria",
+          "preview": "<figure><blockquote class='ucam-citacao'>Indeferido: o prazo de revisão da AV2 encerrou em 28/08.</blockquote><figcaption class='ucam-citacao__autoria'>Marina Salles</figcaption></figure>",
+          "codigo": "<ucam-citacao autor=\"Marina Salles\">{{ decisao().justificativa }}</ucam-citacao>"
+        }
+      ]
+    },
+    "choice-card": {
+      "instalacao": "npx ucam-cli add choice-card",
+      "importacao": "import { UcamChoiceCard } from '@ucam/ui';",
+      "principal": {
+        "preview": "<fieldset class='ucam-choice-grid' style='max-inline-size:34rem'><legend class='ucam-field__label'>Natureza do requerimento</legend><label class='ucam-choice-card' for='cc-decl'><input type='radio' name='natureza' id='cc-decl' checked><span class='ucam-icon-tile ucam-choice-card__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-scrollText'/></svg></span><span><span class='ucam-choice-card__titulo'>Declaração</span><span class='ucam-choice-card__apoio'>Matrícula, vínculo, histórico</span></span><span class='ucam-choice-card__marca' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span></label><label class='ucam-choice-card' for='cc-acad'><input type='radio' name='natureza' id='cc-acad'><span class='ucam-icon-tile ucam-choice-card__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg></span><span><span class='ucam-choice-card__titulo'>Acadêmico</span><span class='ucam-choice-card__apoio'>Notas, disciplinas, revisão</span></span><span class='ucam-choice-card__marca' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span></label><label class='ucam-choice-card' for='cc-fin'><input type='radio' name='natureza' id='cc-fin'><span class='ucam-icon-tile ucam-choice-card__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-wallet'/></svg></span><span><span class='ucam-choice-card__titulo'>Financeiro</span><span class='ucam-choice-card__apoio'>Boletos, negociação, restituição</span></span><span class='ucam-choice-card__marca' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span></label><label class='ucam-choice-card' for='cc-out'><input type='radio' name='natureza' id='cc-out'><span class='ucam-icon-tile ucam-choice-card__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span><span class='ucam-choice-card__titulo'>Outros</span><span class='ucam-choice-card__apoio'>Demais solicitações</span></span><span class='ucam-choice-card__marca' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span></label></fieldset>",
+        "codigo": "<fieldset class=\"ucam-choice-grid\">\n  <legend class=\"ucam-field__label\">Natureza do requerimento</legend>\n  @for (n of naturezas(); track n.id) {\n    <ucam-choice-card\n      [value]=\"n.id\"\n      [label]=\"n.nome\"\n      [description]=\"n.descricao\"\n      [icon]=\"n.icone\"\n      [(checked)]=\"n.escolhida\" />\n  }\n</fieldset>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Quando NÃO usar",
+          "descricao": "O ganho do cartão é caber a explicação junto da opção. Sem explicação, e acima de seis opções, ele é um select mais caro e uma parede de cartões.",
+          "codigo": "<!-- errado: 14 naturezas em cartão -->\n<ucam-choice-card [value]=\"n.id\" [label]=\"n.nome\" />\n\n<!-- certo -->\n<ucam-combobox label=\"Natureza do requerimento\" [options]=\"naturezas()\" />"
+        }
+      ]
+    },
+    "combobox": {
+      "instalacao": "npx ucam-cli add combobox",
+      "importacao": "import { UcamCombobox } from '@ucam/ui';",
+      "$nota": "Sem preview estático de propósito. O Combobox precisa de JavaScript para o painel, o filtro e o teclado — ele não existe na camada @ucam/css, e um preview em HTML puro mostraria uma casca que ninguém pode usar. Ver limites em spec/components/combobox.json.",
+      "principal": {
+        "codigo": "<ucam-combobox label=\"Setor\" [options]=\"setores()\" required />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Quando NÃO usar",
+          "descricao": "Abaixo de 15 opções o select nativo ganha: entrega typeahead e o seletor de roda do celular sem custo. Trocar por combobox nesse caso piora a experiência no mobile.",
+          "codigo": "<!-- errado: 3 opções não pedem busca -->\n<ucam-combobox label=\"Situação\" [options]=\"situacoes\" />\n\n<!-- certo -->\n<ucam-select label=\"Situação\" [options]=\"situacoes\" />"
+        },
+        {
+          "titulo": "Campo dependente",
+          "descricao": "Mesmo encadeamento do Select: enquanto o pai estiver vazio, o dependente fica bloqueado e diz o motivo.",
+          "codigo": "<ucam-combobox\n  label=\"Tipo do requerimento\"\n  dependsOn=\"natureza\"\n  [options]=\"tipos()\"\n  [loading]=\"carregandoTipos()\"\n  required\n/>"
+        },
+        {
+          "titulo": "Busca no servidor",
+          "descricao": "queryChange devolve o texto digitado para quem precisa buscar fora da memória. O estado vazio deve dizer o que fazer, não só que não achou.",
+          "codigo": "<ucam-combobox\n  label=\"Aluno\"\n  [options]=\"resultados()\"\n  (queryChange)=\"buscar()\"\n  emptyText=\"Nenhum aluno encontrado. Tente pelo CPF.\"\n/>"
+        },
+        {
+          "titulo": "Em erro",
+          "descricao": "Digitou um nome que não está na lista. O erro nomeia a saída — escolher da lista —, não acusa o texto.",
+          "preview": "<div class='ucam-field' style='max-inline-size:22rem'><label class='ucam-field__label' for='d-cb-e'>Curso <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='d-cb-e' role='combobox' aria-expanded='false' aria-autocomplete='list' required aria-invalid='true' aria-describedby='d-cb-e-e' value='Direto'><span class='ucam-field__error' id='d-cb-e-e'>Não há curso com esse nome. Escolha um da lista.</span></div>",
+          "codigo": "<ucam-combobox\n  label=\"Curso\"\n  required\n  [invalid]=\"true\"\n  errorMessage=\"Não há curso com esse nome. Escolha um da lista.\"\n  [options]=\"cursos\" />"
+        }
+      ]
+    },
+    "command": {
+      "instalacao": "npx ucam-cli add command",
+      "importacao": "import { UcamCommand } from '@ucam/ui';",
+      "principal": {
+        "codigo": "<ucam-command\n  [(open)]=\"paletaAberta\"\n  [groups]=\"comandos\"\n  (escolher)=\"executar($event)\" />",
+        "nota": "A paleta abre por Ctrl+K (ou ⌘K) sem que a aplicação registre nada — o ouvinte é do componente, e é por isso que ele existe: o selo \"Ctrl K\" da testeira já estava na tela e no aria-keyshortcuts antes de haver o que responder por ele. Não há preview em CSS puro porque não existe: filtro, teclado e sobreposição não sobrevivem sem JavaScript."
+      },
+      "exemplos": [
+        {
+          "titulo": "Quando NÃO usar",
+          "descricao": "A paleta é atalho para quem já sabe o destino, nunca o único caminho — e não é busca de dado.",
+          "codigo": "<!-- errado: procurar ALUNO na paleta -->\n<ucam-command [groups]=\"[{ titulo: 'Alunos', itens: alunos() }]\" />\n\n<!-- certo: aluno é DADO, e dado tem outra permissão e outro resultado -->\n<!-- a paleta leva a telas e ações; a busca da testeira procura registro -->\n<ucam-command [groups]=\"[{ titulo: 'Ir para', itens: telas() }]\" />"
+        }
+      ]
+    },
+    "data-table": {
+      "instalacao": "npx ucam-cli add data-table",
+      "importacao": "import { UcamDataTable } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-table-wrap'><table class='ucam-table'><caption class='ucam-sr-only'>Setores cadastrados</caption><thead><tr><th scope='col' aria-sort='ascending'><button type='button' class='ucam-table__coluna' id='dcol-1-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='dcol-1-menu'>Descrição <svg class='ic' aria-hidden='true'><use href='#i-chevronUp'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='dcol-1-menu' role='menu' aria-labelledby='dcol-1-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='true' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' aria-disabled='true' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col'><button type='button' class='ucam-table__coluna' id='dcol-2-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='dcol-2-menu'>Situação <svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='dcol-2-menu' role='menu' aria-labelledby='dcol-2-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--num'><button type='button' class='ucam-table__coluna' id='dcol-3-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='dcol-3-menu'>Requerimentos <svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='dcol-3-menu' role='menu' aria-labelledby='dcol-3-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th></tr></thead><tbody><tr><td>Biblioteca</td><td><span class='ucam-badge ucam-badge--success'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg>Ativo</span></td><td class='td--num'>12</td></tr><tr><td>Centro de Informática</td><td><span class='ucam-badge ucam-badge--success'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg>Ativo</span></td><td class='td--num'>31</td></tr><tr><td>Centro Gráfico</td><td><span class='ucam-badge ucam-badge--warning'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg>Sem responsável</span></td><td class='td--num'>4</td></tr><tr><td>Colegiado Direito</td><td><span class='ucam-badge ucam-badge--success'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg>Ativo</span></td><td class='td--num'>23</td></tr></tbody></table><nav class='ucam-pagination' aria-label='Paginação de setores'><span class='ucam-pagination__range'>1–4 de 58 setores</span><button class='ucam-pagination__page' aria-current='page' aria-label='Página 1 de 15'>1</button><button class='ucam-pagination__page' aria-label='Página 2 de 15'>2</button><button class='ucam-pagination__page' aria-label='Próxima página'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></nav></div>",
+        "codigo": "<ucam-data-table\n  caption=\"Setores cadastrados\"\n  [columns]=\"colunas\"\n  [rows]=\"setores()\"\n  [state]=\"estado()\"\n  responsive=\"priority\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Definição de colunas",
+          "descricao": "width=min encolhe ao conteúdo; priority define quais colunas somem primeiro em tela estreita — a coluna identificadora tem a maior.",
+          "preview": "",
+          "codigo": "colunas: ColumnDef[] = [\n  { key: 'descricao',     header: 'Descrição',     priority: 10, sortable: true },\n  { key: 'situacao',      header: 'Situação',      type: 'status', width: 'min', priority: 8 },\n  { key: 'requerimentos', header: 'Requerimentos', type: 'number', width: 'min', priority: 6, sortable: true },\n];"
+        },
+        {
+          "titulo": "Vazio e carregando",
+          "descricao": "Dois estados que o legado tratava com a mesma frase muda. Aqui cada motivo tem redação e ação próprias, e o carregamento acontece dentro da tabela.",
+          "preview": "<div style='display:flex;flex-direction:column;gap:1rem'><div class='ucam-table-wrap'><table class='ucam-table'><thead><tr><th scope='col'>Descrição</th><th scope='col'>Situação</th></tr></thead></table><div class='ucam-empty'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum setor cadastrado ainda</p><p class='ucam-empty__description'>Cadastre o primeiro para começar a distribuir requerimentos.</p><button class='ucam-btn ucam-btn--primary'>Novo setor</button></div></div><div class='ucam-table-wrap' style='padding:.75rem'><div aria-hidden='true' style='display:grid;grid-template-columns:2fr 1fr;gap:.6rem'><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span></div></div></div>",
+          "codigo": "<ucam-data-table\n  caption=\"Setores cadastrados\"\n  [columns]=\"colunas\"\n  [rows]=\"setores()\"\n  [state]=\"estado()\"\n  emptyReason=\"no-data\" />"
+        }
+      ]
+    },
+    "date-field": {
+      "instalacao": "npx ucam-cli add date-field",
+      "importacao": "import { UcamDateField } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-form-row' style='--ucam-cols:max-content max-content'><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='df1'>Data de nascimento</label><input class='ucam-input' id='df1' value='14/03/1998' aria-describedby='df1-h'><span class='ucam-field__hint' id='df1-h'>dd/mm/aaaa</span></div><div class='ucam-field ucam-field--mes'><label class='ucam-field__label' for='df2'>Referência</label><input class='ucam-input' id='df2' value='08/2026' aria-describedby='df2-h'><span class='ucam-field__hint' id='df2-h'>mm/aaaa</span></div></div>",
+        "codigo": "<ucam-date-field label=\"Data de nascimento\" autocomplete=\"bday\" required />\n<ucam-date-field label=\"Referência\" precision=\"month\" required />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Em erro",
+          "descricao": "A mensagem diz o formato esperado. No legado, data inválida falhava em silêncio ou no envio.",
+          "preview": "<div class='ucam-field ucam-field--data' style='max-inline-size:22rem'><label class='ucam-field__label' for='df3'>Vencimento</label><input class='ucam-input' id='df3' value='32/13/2026' aria-invalid='true' aria-describedby='df3-e'><span class='ucam-field__error' id='df3-e'>Data inválida. Use dd/mm/aaaa.</span></div>",
+          "codigo": "<ucam-date-field\n  label=\"Vencimento\"\n  [invalid]=\"true\"\n  errorMessage=\"Data inválida. Use dd/mm/aaaa.\" />"
+        }
+      ]
+    },
+    "description-list": {
+      "instalacao": "npx ucam-cli add description-list",
+      "importacao": "import { UcamDescriptionList } from '@ucam/ui';",
+      "principal": {
+        "preview": "<dl class='ucam-descricao ucam-descricao--3' style='max-inline-size:34rem'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Natureza</dt><dd class='ucam-descricao__valor'>Acadêmico</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Tipo</dt><dd class='ucam-descricao__valor'>Revisão de nota</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Prazo</dt><dd class='ucam-descricao__valor ucam-descricao__valor--warning'>vence em 1 dia</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Polo</dt><dd class='ucam-descricao__valor'>Campos</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Setor responsável</dt><dd class='ucam-descricao__valor'>Secretaria Acadêmica</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Telefone</dt><dd class='ucam-descricao__valor'>—</dd></div></dl>",
+        "codigo": "<ucam-description-list\n  [columns]=\"3\"\n  [items]=\"[\n    { label: 'Natureza', value: 'Acadêmico' },\n    { label: 'Tipo', value: 'Revisão de nota' },\n    { label: 'Prazo', value: 'vence em 1 dia', tone: 'warning' },\n    { label: 'Polo', value: 'Campos' },\n    { label: 'Setor responsável', value: 'Secretaria Acadêmica' },\n    { label: 'Telefone', value: null }\n  ]\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "O que ele substitui",
+          "descricao": "A tela de Análise de Requerimento mostra dado em campo desabilitado: caixa cinza, borda de input e cursor bloqueado para informação que ninguém pretende editar. O último par acima também prova a outra regra — ausência vira travessão, nunca célula vazia.",
+          "preview": "<div style='display:flex;gap:1.5rem;flex-wrap:wrap'><div><p class='ucam-descricao__rotulo' style='margin-block-end:.5rem'>Antes</p><div class='ucam-field'><label class='ucam-field__label'>Natureza</label><input class='ucam-input' value='Acadêmico' disabled></div></div><div><p class='ucam-descricao__rotulo' style='margin-block-end:.5rem'>Depois</p><dl class='ucam-descricao ucam-descricao--1'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Natureza</dt><dd class='ucam-descricao__valor'>Acadêmico</dd></div></dl></div></div>",
+          "codigo": "<!-- antes -->\n<ucam-text-field label=\"Natureza\" value=\"Acadêmico\" disabled />\n\n<!-- depois -->\n<ucam-description-list [items]=\"[{ label: 'Natureza', value: 'Acadêmico' }]\" />"
+        },
+        {
+          "titulo": "Painel: a coluna lateral do registro",
+          "descricao": "Uma linha por par, ícone e rótulo em coluna de largura declarada, valor ao lado. Cinco à vista; o botão diz quantos faltam, porque \"mostrar mais\" sem número obriga a abrir para descobrir se vale a pena. Os pares escondidos levam hidden na marcação, não display:none numa classe.",
+          "preview": "<div style='max-inline-size:22rem'><dl class='ucam-descricao ucam-descricao--painel' id='demo-painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-tag'/></svg>Natureza</dt><dd class='ucam-descricao__valor'>Acadêmico</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg>Tipo</dt><dd class='ucam-descricao__valor'>Revisão de nota</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-building2'/></svg>Setor responsável</dt><dd class='ucam-descricao__valor'>Secretaria Acadêmica</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>Prazo</dt><dd class='ucam-descricao__valor ucam-descricao__valor--warning'>vence em 1 dia</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-mapPin'/></svg>Polo</dt><dd class='ucam-descricao__valor'>Campos</dd></div><div class='ucam-descricao__par' hidden data-alem><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg>Modalidade</dt><dd class='ucam-descricao__valor'>Graduação EAD</dd></div><div class='ucam-descricao__par' hidden data-alem><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-calendar'/></svg>Aberto em</dt><dd class='ucam-descricao__valor'>03/09/2026 09:08</dd></div></dl><button class='ucam-descricao__mais' type='button' aria-expanded='false' aria-controls='demo-painel' data-mostrar-todos><span data-fechado>Mostrar todos os 7 valores</span><span data-aberto hidden>Mostrar menos</span><svg class='ic ucam-nav__chevron' aria-hidden='true'><use href='#i-chevronDown'/></svg></button></div>",
+          "codigo": "<ucam-description-list\n  layout=\"painel\"\n  [visibleCount]=\"5\"\n  [items]=\"[\n    { label: 'Natureza', value: 'Acadêmico', icon: 'tag' },\n    { label: 'Tipo', value: 'Revisão de nota', icon: 'fileText' },\n    { label: 'Setor responsável', value: 'Secretaria Acadêmica', icon: 'building2' },\n    { label: 'Prazo', value: 'vence em 1 dia', tone: 'warning', icon: 'clock' },\n    { label: 'Polo', value: 'Campos', icon: 'mapPin' },\n    { label: 'Modalidade', value: 'Graduação EAD', icon: 'graduationCap' },\n    { label: 'Aberto em', value: '03/09/2026 09:08', icon: 'calendar' }\n  ]\" />"
+        }
+      ]
+    },
+    "dialog": {
+      "instalacao": "npx ucam-cli add dialog",
+      "importacao": "import { UcamDialog } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-dialog' style='inline-size:min(28rem,100%)'><div class='ucam-dialog__header'><h3 class='ucam-dialog__title'>Funcionário</h3><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm' aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div><div class='ucam-dialog__body'><div class='ucam-field'><label class='ucam-field__label' for='d-f-n'>Nome ou CPF</label><input class='ucam-input' id='d-f-n' placeholder='Maria Silva'></div><div class='ucam-field'><label class='ucam-field__label' for='d-f-l'>Nível de acesso</label><select class='ucam-select' id='d-f-l'><option>Consulta</option><option>Análise</option><option>Administração</option></select></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary'>Cancelar</button><button class='ucam-btn ucam-btn--primary'>Adicionar funcionário</button></div></div>",
+        "codigo": "<ucam-dialog title=\"Funcionário\" size=\"sm\" [(open)]=\"aberto\">\n  <ucam-text-field label=\"Nome ou CPF\" />\n  <ucam-select label=\"Nível de acesso\" [options]=\"niveis\" />\n  <footer>\n    <ucam-button variant=\"secondary\" (click)=\"fechar()\">Cancelar</ucam-button>\n    <ucam-button variant=\"primary\" (click)=\"adicionar()\">Adicionar funcionário</ucam-button>\n  </footer>\n</ucam-dialog>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Confirmação destrutiva",
+          "descricao": "Diz o que será perdido, o efeito colateral e se é reversível. O botão nomeia a ação — nunca Confirmar ou OK. O foco inicial não cai sobre a ação destrutiva.",
+          "preview": "<div class='ucam-dialog' style='inline-size:min(28rem,100%)'><div class='ucam-dialog__header'><h3 class='ucam-dialog__title'>Excluir setor</h3><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm' aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div><div class='ucam-dialog__body'><p style='margin:0'>Excluir o setor <strong>Biblioteca</strong>? Os 12 requerimentos vinculados ficarão sem setor. Esta ação não pode ser desfeita.</p></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary'>Cancelar</button><button class='ucam-btn ucam-btn--primary' data-tone='danger'>Excluir setor</button></div></div>",
+          "codigo": "<ucam-dialog title=\"Excluir setor\" variant=\"destructive\" size=\"sm\" [(open)]=\"confirmando\">\n  <p>Excluir o setor Biblioteca? Os 12 requerimentos vinculados ficarão sem setor. Esta ação não pode ser desfeita.</p>\n  <footer>\n    <ucam-button variant=\"secondary\">Cancelar</ucam-button>\n    <ucam-button variant=\"danger\">Excluir setor</ucam-button>\n  </footer>\n</ucam-dialog>"
+        }
+      ]
+    },
+    "drawer": {
+      "instalacao": "npx ucam-cli add drawer",
+      "importacao": "import { UcamDrawer } from '@ucam/ui';",
+      "$nota": "O preview abaixo prende a gaveta num palco de altura fixa para caber na página. Na aplicação ela é fixed contra a janela, com o conteúdo de trás inerte e o foco preso dentro do painel — comportamento que vive no @ucam/ui, não no @ucam/css.",
+      "principal": {
+        "preview": "<div style='position:relative;transform:translate(0);block-size:24rem;overflow:hidden;border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-surface);background:var(--ucam-color-surface-chrome)'><div class='ucam-drawer-scrim'></div><div class='ucam-drawer ucam-drawer--sm' role='dialog' aria-modal='true' aria-labelledby='dw-t'><div class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='dw-t'>Novo integrante</h2><p class='ucam-drawer__description'>Adiciona um funcionário ao setor Biblioteca.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div><div class='ucam-drawer__body'><div class='ucam-stack'><div class='ucam-field'><label class='ucam-field__label' for='dw-f'>Buscar funcionário</label><input class='ucam-input' id='dw-f' type='search' placeholder='Nome ou e-mail institucional'></div><div class='ucam-field'><label class='ucam-field__label' for='dw-n'>Nível de prioridade</label><select class='ucam-select' id='dw-n'><option>Nível 1</option><option>Nível 2</option></select><span class='ucam-field__hint'>Define a ordem de distribuição automática.</span></div></div></div><div class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--secondary'>Cancelar</button><button class='ucam-btn ucam-btn--primary'>Adicionar integrante</button></div></div></div>",
+        "codigo": "<ucam-drawer\n  [(open)]=\"criando\"\n  size=\"sm\"\n  title=\"Novo integrante\"\n  description=\"Adiciona um funcionário ao setor Biblioteca.\">\n  <form class=\"ucam-stack\">…</form>\n  <ucam-button variant=\"secondary\">Cancelar</ucam-button>\n  <ucam-button variant=\"primary\">Adicionar integrante</ucam-button>\n</ucam-drawer>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Quando NÃO usar",
+          "descricao": "A gaveta preserva o contexto de propósito. Destruir exige interromper e centralizar a escolha — isso é Dialog, e está na ADR-002.",
+          "codigo": "<!-- errado -->\n<ucam-drawer [(open)]=\"excluindo\" title=\"Excluir setor\">…</ucam-drawer>\n\n<!-- certo -->\n<ucam-dialog [(open)]=\"excluindo\" variant=\"destructive\" title=\"Excluir setor Biblioteca?\">…</ucam-dialog>"
+        }
+      ]
+    },
+    "empty-state": {
+      "instalacao": "npx ucam-cli add empty-state",
+      "importacao": "import { UcamEmptyState } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-empty'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum setor cadastrado ainda</p><p class='ucam-empty__description'>Cadastre o primeiro setor para começar a distribuir requerimentos.</p><button class='ucam-btn ucam-btn--primary'>Novo setor</button></div>",
+        "codigo": "<ucam-empty-state\n  reason=\"no-data\"\n  title=\"Nenhum setor cadastrado ainda\"\n  description=\"Cadastre o primeiro setor para começar a distribuir requerimentos.\">\n  <ucam-button variant=\"primary\">Novo setor</ucam-button>\n</ucam-empty-state>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Busca sem resultado",
+          "descricao": "Motivo diferente, ação oposta. Aqui a pessoa não quer criar registro — quer corrigir o filtro.",
+          "preview": "<div class='ucam-empty'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum requerimento encontrado para “biblioteca”</p><p class='ucam-empty__description'>Tente outros termos ou limpe os filtros.</p><button class='ucam-btn ucam-btn--secondary'>Limpar filtros</button></div>",
+          "codigo": "<ucam-empty-state\n  reason=\"no-results\"\n  size=\"sm\"\n  [title]=\"'Nenhum requerimento encontrado para \\\"' + termo() + '\\\"'\"\n  description=\"Tente outros termos ou limpe os filtros.\">\n  <ucam-button variant=\"secondary\" (click)=\"limpar()\">Limpar filtros</ucam-button>\n</ucam-empty-state>"
+        }
+      ]
+    },
+    "field": {
+      "instalacao": "já vem com @ucam/ui — é peça interna dos campos",
+      "importacao": "import { UcamField, nextFieldIds, describedBy } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-field' style='max-inline-size:20rem'><label class='ucam-field__label' for='dm-mat'>Matrícula <span aria-hidden='true' style='color:var(--ucam-color-action-primary-default)'>*</span></label><input class='ucam-input' id='dm-mat' value='2040112' aria-describedby='dm-err dm-hint' aria-invalid='true'><p class='ucam-field__error' id='dm-err' role='alert'>A matrícula tem 8 dígitos. Confira e tente de novo.</p><p class='ucam-field__hint' id='dm-hint'>Oito dígitos, sem pontos</p></div>",
+        "codigo": "<!-- A casca é peça interna: quem a veste é text-field, select, textarea,\n     date-field ou combobox. Campo montado à mão sobre ela some do\n     inventário e diverge no primeiro ajuste de contrato. -->\n<ucam-text-field\n  label=\"Matrícula\"\n  hint=\"Oito dígitos, sem pontos\"\n  [invalid]=\"invalido()\"\n  errorMessage=\"A matrícula tem 8 dígitos. Confira e tente de novo.\"\n  required />"
+      },
+      "exemplos": []
+    },
+    "file-field": {
+      "instalacao": "npx ucam-cli add file-field",
+      "importacao": "import { UcamFileField } from '@ucam/ui';",
+      "principal": {
+        "preview": "<fieldset class='ucam-file-field' style='max-inline-size:26rem'><legend class='ucam-field__label'>Comprovante de pagamento</legend><button class='ucam-btn ucam-btn--secondary ucam-file-field__gatilho' type='button'><svg class='ic' aria-hidden='true'><use href='#i-paperclip'/></svg>Escolher arquivo</button><span class='ucam-field__hint'>PDF ou JPG de até 10 MB.</span><ul class='ucam-anexos'><li class='ucam-anexo' data-estado='enviado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='boleto-092026.pdf'>boleto-092026.pdf</span><span class='ucam-anexo__apoio'>PDF · 182 KB · anexado</span></span><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-anexo__acao' type='button' aria-label='Remover anexo boleto-092026.pdf'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></li><li class='ucam-anexo ucam-anexo--recusado' data-estado='recusado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='digitalizacao.tiff'>digitalizacao.tiff</span><span class='ucam-anexo__apoio'>tem 14,2 MB — o limite é 10 MB</span></span><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-anexo__acao' type='button' aria-label='Remover anexo digitalizacao.tiff'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></li></ul></fieldset>",
+        "codigo": "<ucam-file-field\n  label=\"Comprovante de pagamento\"\n  accept=\"application/pdf,image/jpeg\"\n  [maxSize]=\"10 * 1024 * 1024\"\n  [(files)]=\"comprovante\"\n  required\n/>"
+      },
+      "exemplos": [
+        {
+          "titulo": "A linha recusada FICA",
+          "descricao": "É o defeito do parque inteiro invertido: hoje o arquivo grande é descartado em silêncio, e quem anexou só descobre quando o requerimento volta. Aqui a linha permanece na lista, em tom de erro, com o motivo em número ao lado do nome — tem 14,2 MB, o limite é 10 MB — até quem anexou removê-la. O motivo é o número, não \"arquivo inválido\": só o número diz o que fazer com o arquivo.",
+          "preview": "<fieldset class='ucam-file-field' style='max-inline-size:26rem'><legend class='ucam-field__label'>Anexos</legend><span class='ucam-field__hint'>PDF, JPG ou PNG de até 10 MB. No máximo 5 arquivos.</span><ul class='ucam-anexos'><li class='ucam-anexo' data-estado='enviado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='prova-av2-calculo3.pdf'>prova-av2-calculo3.pdf</span><span class='ucam-anexo__apoio'>PDF · 1,1 MB · anexado</span></span><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-anexo__acao' type='button' aria-label='Remover anexo prova-av2-calculo3.pdf'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></li><li class='ucam-anexo' data-estado='enviando'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='gabarito-oficial.pdf'>gabarito-oficial.pdf</span><span class='ucam-anexo__apoio'>PDF · 3,4 MB · enviando 60%</span><span class='ucam-anexo__progresso'><span style='inline-size:60%'></span></span></span></li><li class='ucam-anexo ucam-anexo--recusado' data-estado='recusado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='digitalizacao.tiff'>digitalizacao.tiff</span><span class='ucam-anexo__apoio'>tem 14,2 MB — o limite é 10 MB</span></span><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-anexo__acao' type='button' aria-label='Remover anexo digitalizacao.tiff'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></li></ul></fieldset>",
+          "codigo": "<ucam-file-field\n  label=\"Anexos\"\n  accept=\"application/pdf,image/jpeg,image/png\"\n  [maxSize]=\"10 * 1024 * 1024\"\n  [max]=\"5\"\n  multiple\n  [(files)]=\"anexos\"\n/>"
+        },
+        {
+          "titulo": "Arrastar para cá, e a lista em leitura",
+          "descricao": "A área tracejada é a convenção de \"pode soltar aqui\" — não precisa de frase explicando. O realce de arrasto é do CAMPO inteiro, não do retângulo: quem arrasta raramente acerta a mira de primeira, e a confirmação tem de chegar antes dela. Em modo leitura o gatilho, a área e o remover somem: sobra a lista, que é o dado.",
+          "preview": "<div class='ucam-form-row'><fieldset class='ucam-file-field' style='min-inline-size:15rem'><legend class='ucam-field__label'>Arquivo de retorno</legend><div class='ucam-file-field__alvo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-upload'/></svg></span><button class='ucam-btn ucam-btn--secondary ucam-file-field__gatilho' type='button'><svg class='ic' aria-hidden='true'><use href='#i-paperclip'/></svg>Escolher arquivo</button><span class='ucam-anexo__apoio'>ou arraste o arquivo para cá</span></div></fieldset><fieldset class='ucam-file-field' data-readonly style='min-inline-size:15rem'><legend class='ucam-field__label'>Anexos do requerimento</legend><ul class='ucam-anexos'><li class='ucam-anexo' data-estado='enviado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='prova-av2-calculo3.pdf'>prova-av2-calculo3.pdf</span><span class='ucam-anexo__apoio'>PDF · 1,1 MB · 03/09/2026</span></span></li></ul></fieldset></div>",
+          "codigo": "<ucam-file-field\n  label=\"Anexos do requerimento\"\n  readonly\n  [files]=\"requerimento().anexos\"\n/>"
+        }
+      ]
+    },
+    "icon": {
+      "instalacao": "já vem com @ucam/ui",
+      "importacao": "import { UcamIcon } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-cluster'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg><svg class='ic' aria-hidden='true'><use href='#i-inbox'/></svg><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg><svg class='ic' aria-hidden='true'><use href='#i-wallet'/></svg><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg></div>",
+        "codigo": "<ucam-icon name=\"circleCheck\" />\n<ucam-icon name=\"inbox\" size=\"lg\" />"
+      },
+      "exemplos": []
+    },
+    "icon-button": {
+      "instalacao": "npx ucam-cli add icon-button",
+      "importacao": "import { UcamIconButton } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;gap:.5rem'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button><button class='ucam-btn ucam-btn--icon ucam-btn--secondary' aria-label='Editar setor Biblioteca'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></button><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' data-tone='danger' aria-label='Excluir setor Biblioteca'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg></button></div>",
+        "codigo": "<ucam-icon-button icon=\"close\" label=\"Fechar\" />\n<ucam-icon-button icon=\"edit\" variant=\"secondary\" label=\"Editar setor Biblioteca\" />\n<ucam-icon-button icon=\"trash\" tone=\"danger\" label=\"Excluir setor Biblioteca\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Por que o vermelho aqui nunca é preenchido",
+          "descricao": "Este botão vive repetido: uma vez por linha da tabela. Vinte quadrados vermelhos não avisam de nada — viram textura, e gastam na listagem o sinal que deveria restar para o diálogo que confirma. Por isso o contrato só permite tone=\"danger\" sobre ghost ou secondary, e o preenchimento sólido pertence ao Button.",
+          "preview": "<table class='ucam-table' style='inline-size:100%'><thead><tr><th scope='col'>Setor</th><th scope='col' style='inline-size:1%'>Ações</th></tr></thead><tbody><tr><td>Biblioteca</td><td><div style='display:flex;gap:.25rem'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm' aria-label='Editar setor Biblioteca'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></button><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm' data-tone='danger' aria-label='Excluir setor Biblioteca'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg></button></div></td></tr><tr><td>Secretaria Acadêmica</td><td><div style='display:flex;gap:.25rem'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm' aria-label='Editar setor Secretaria Acadêmica'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></button><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm' data-tone='danger' aria-label='Excluir setor Secretaria Acadêmica'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg></button></div></td></tr></tbody></table>",
+          "codigo": "<ucam-icon-button icon=\"trash\" tone=\"danger\" size=\"sm\" [label]=\"'Excluir setor ' + linha.descricao\" />"
+        }
+      ]
+    },
+    "icon-tile": {
+      "instalacao": "npx ucam-cli add icon-tile",
+      "importacao": "import { UcamIconTile } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-cluster'><span class='ucam-icon-tile'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg></span><span class='ucam-icon-tile'><svg class='ic' aria-hidden='true'><use href='#i-bookOpen'/></svg></span><span class='ucam-icon-tile'><svg class='ic' aria-hidden='true'><use href='#i-wallet'/></svg></span><span class='ucam-icon-tile ucam-icon-tile--marca'><svg class='ic' aria-hidden='true'><use href='#i-clipboardList'/></svg></span></div>",
+        "codigo": "<ucam-icon-tile icon=\"graduationCap\" />\n<ucam-icon-tile icon=\"bookOpen\" />\n<ucam-icon-tile icon=\"clipboardList\" tone=\"brand\" />"
+      },
+      "exemplos": []
+    },
+    "input-group": {
+      "instalacao": "npx ucam-cli add input-group",
+      "importacao": "import { UcamInputGroup } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-form-row'><div class='ucam-field'><label class='ucam-field__label' for='d-ig-valor'>Valor do acordo</label><div class='ucam-input-group'><span class='ucam-input-group__adorno' aria-hidden='true'>R$</span><input class='ucam-input-group__controle' id='d-ig-valor' inputmode='decimal' value='1.240,00'></div></div><div class='ucam-field'><label class='ucam-field__label' for='d-ig-prazo'>Prazo de análise</label><div class='ucam-input-group'><input class='ucam-input-group__controle' id='d-ig-prazo' inputmode='numeric' value='15'><span class='ucam-input-group__adorno' aria-hidden='true'>dias</span></div></div></div>",
+        "codigo": "<ucam-input-group prefix=\"R$\">\n  <input id=\"valor\" inputmode=\"decimal\" [(ngModel)]=\"valor\" />\n</ucam-input-group>\n\n<ucam-input-group suffix=\"dias\">\n  <input id=\"prazo\" inputmode=\"numeric\" [(ngModel)]=\"prazo\" />\n</ucam-input-group>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Busca com ícone e ação de limpar",
+          "descricao": "A ação age sobre o VALOR do campo — limpar, copiar, mostrar a senha, abrir o calendário. Ela tem nome acessível próprio que diz o que faz e sobre o quê, e recebe o anel de foco no lugar do grupo: são dois alvos distintos, e acender o contorno inteiro ao tabular para o botão diria que o cursor está no campo quando não está.",
+          "preview": "<div class='ucam-field' style='max-inline-size:22rem'><label class='ucam-field__label' for='d-ig-busca'>Buscar requerimento</label><div class='ucam-input-group'><span class='ucam-input-group__adorno' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg></span><input class='ucam-input-group__controle' id='d-ig-busca' type='search' value='2026-0311'><button class='ucam-input-group__acao' type='button' aria-label='Limpar a busca por requerimento'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div></div>",
+          "codigo": "<ucam-input-group icon=\"search\">\n  <input id=\"busca\" type=\"search\" [(ngModel)]=\"termo\" />\n</ucam-input-group>"
+        },
+        {
+          "titulo": "Um contorno só, nunca dois",
+          "descricao": "A borda, o raio, a sombra e o anel de foco são do GRUPO; o campo de dentro entra sem nenhum dos quatro. Contorno dentro de contorno é o defeito visual mais comum deste componente, e ele aparece no instante em que alguém põe .ucam-input dentro do grupo em vez de .ucam-input-group__controle. À direita, o grupo inválido: o tom de erro também é do contorno externo.",
+          "preview": "<div class='ucam-form-row'><div class='ucam-field'><label class='ucam-field__label' for='d-ig-ok'>Como deve ser</label><div class='ucam-input-group'><span class='ucam-input-group__adorno' aria-hidden='true'>R$</span><input class='ucam-input-group__controle' id='d-ig-ok' value='980,00'></div></div><div class='ucam-field'><label class='ucam-field__label' for='d-ig-erro'>Inválido</label><div class='ucam-input-group' data-invalid><span class='ucam-input-group__adorno' aria-hidden='true'>R$</span><input class='ucam-input-group__controle' id='d-ig-erro' value='0,00' aria-invalid='true' aria-describedby='d-ig-erro-m'></div><span class='ucam-field__error' id='d-ig-erro-m'>O valor do acordo tem de ser maior que zero.</span></div></div>",
+          "codigo": "<ucam-input-group prefix=\"R$\" [invalid]=\"valor() <= 0\">\n  <input id=\"valor\" [(ngModel)]=\"valor\" />\n</ucam-input-group>"
+        }
+      ]
+    },
+    "kbd": {
+      "instalacao": "npx ucam-cli add kbd",
+      "importacao": "import { UcamKbd } from '@ucam/ui';",
+      "principal": {
+        "preview": "<p class='ucam-cluster' style='margin:0;font-size:var(--ucam-typography-caption-font-size);color:var(--ucam-color-text-secondary)'><span><kbd class='ucam-kbd'>↑</kbd> <kbd class='ucam-kbd'>↓</kbd> navegar</span><span><kbd class='ucam-kbd'>R</kbd> responder</span><span><kbd class='ucam-kbd'>E</kbd> encaminhar</span></p>",
+        "codigo": "<ucam-kbd [keys]=\"setas\" /> navegar\n<ucam-kbd [keys]=\"atalhoBusca\" /> buscar no menu"
+      },
+      "exemplos": []
+    },
+    "link": {
+      "instalacao": "npx ucam-cli add link",
+      "importacao": "import { UcamLink } from '@ucam/ui';",
+      "principal": {
+        "preview": "<p style='margin:0'>O prazo segue o <a class='ucam-link' href='#'>calendário acadêmico</a>. <a class='ucam-link ucam-link--apoio' href='#'>Esqueci minha senha</a></p>",
+        "codigo": "<ucam-link href=\"/calendario\">calendário acadêmico</ucam-link>\n<ucam-link href=\"/senha\" variant=\"apoio\">Esqueci minha senha</ucam-link>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Destino fora do sistema",
+          "descricao": "external acrescenta o icone, o rel de seguranca e o aviso no nome acessivel. Abrir aba sem avisar e mudanca de contexto sem pedir (WCAG 3.2.5).",
+          "codigo": "<ucam-link href=\"https://ucam.br/manual\" external target=\"_blank\">Manual do sistema de protocolo</ucam-link>"
+        }
+      ]
+    },
+    "list-item": {
+      "instalacao": "npx ucam-cli add list-item",
+      "importacao": "import { UcamListItem } from '@ucam/ui';",
+      "principal": {
+        "preview": "<ul class='ucam-list' style='max-inline-size:34rem;border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-surface);overflow:hidden'><li class='ucam-list-item' aria-current='true'><span class='ucam-avatar ucam-list-item__figura' aria-hidden='true'>RC</span><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Rafael Augusto Cordeiro</span><time class='ucam-list-item__tempo' datetime='2026-09-03T09:10'>há 4h</time></span><span class='ucam-list-item__apoio'>Revisão de nota — divergência entre gabarito e correção</span><span class='ucam-list-item__marcadores'><span class='ucam-badge ucam-badge--danger'><span class='ucam-badge__ponto' aria-hidden='true'></span>Urgente</span><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 1 dia</span></span></span></li><li class='ucam-list-item'><span class='ucam-avatar ucam-list-item__figura' aria-hidden='true'>CM</span><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Carlos Eduardo Martins Souza</span><time class='ucam-list-item__tempo' datetime='2026-08-16'>16/08/2026</time></span><span class='ucam-list-item__apoio'>Carteira do estudante — foto</span><span class='ucam-list-item__marcadores'><span class='ucam-prazo ucam-prazo--vencido'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>venceu há 18 dias</span></span></span><span class='ucam-list-item__indicador' aria-hidden='true'></span><span class='ucam-sr-only'>não lido</span></li><li class='ucam-list-item'><span class='ucam-avatar ucam-list-item__figura' aria-hidden='true'>3</span><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Ana Beatriz Ferreira Lima</span><time class='ucam-list-item__tempo' datetime='2026-08-31'>há 3 dias</time></span><span class='ucam-list-item__apoio'>Declaração de matrícula</span><span class='ucam-list-item__marcadores'><span class='ucam-badge ucam-badge--info'><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span><span class='ucam-prazo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>dentro do prazo</span></span></span></li></ul>",
+        "codigo": "<ul class=\"ucam-list\">\n  @for (r of fila(); track r.id) {\n    <ucam-list-item\n      [title]=\"r.requerente\"\n      [support]=\"r.assunto\"\n      [time]=\"r.relativo\"\n      [timeValue]=\"r.abertoEm\"\n      [tone]=\"r.prazo\"\n      [unread]=\"!r.lido\"\n      [selected]=\"r.id === aberto()\"\n      (open)=\"abrir(r)\" />\n  }\n</ul>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Quando NÃO usar",
+          "descricao": "Se o trabalho é comparar valores entre registros, a lista esconde a comparação. Isso é tabela, com colunas alinhadas e ordenação no cabeçalho.",
+          "codigo": "<!-- errado: seis números por linha, para comparar entre linhas -->\n<ucam-list-item title=\"CPD · Nível 1\" support=\"24 abertos · 6 atrasados · 6,4 dias\" />\n\n<!-- certo -->\n<ucam-data-table [columns]=\"colunas\" [rows]=\"setores()\" />"
+        }
+      ]
+    },
+    "menu": {
+      "instalacao": "npx ucam-cli add menu",
+      "importacao": "import { UcamMenu } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;gap:3rem;align-items:flex-start;min-block-size:12rem'><div class='ucam-acoes'><button class='ucam-btn ucam-btn--secondary' data-menu aria-haspopup='menu' aria-expanded='true' aria-controls='demo-menu-acoes'>Mais ações <svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></button><div class='ucam-menu' id='demo-menu-acoes' role='menu' style='position:static;margin-block-start:.5rem'><button class='ucam-menu__item' role='menuitem' tabindex='-1' type='button'><svg class='ic' aria-hidden='true'><use href='#i-printer'/></svg><span>Imprimir requerimento</span></button><button class='ucam-menu__item' role='menuitem' tabindex='-1' type='button'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg><span>Exportar em PDF</span></button><div class='ucam-menu__sep' role='separator'></div><button class='ucam-menu__item ucam-menu__item--perigo' role='menuitem' tabindex='-1' type='button'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg><span>Excluir requerimento</span></button></div></div><div class='ucam-acoes'><button class='ucam-btn ucam-btn--secondary' data-menu aria-haspopup='menu' aria-expanded='true' aria-controls='demo-menu-campus'><svg class='ic' aria-hidden='true'><use href='#i-building2'/></svg> Campus Campos <svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></button><div class='ucam-menu' id='demo-menu-campus' role='menu' style='position:static;margin-block-start:.5rem'><p class='ucam-menu__titulo'>Trocar de unidade</p><button class='ucam-menu__item' role='menuitemradio' tabindex='-1' type='button' aria-checked='true'><svg class='ic' aria-hidden='true'><use href='#i-building2'/></svg><span>Campos</span></button><button class='ucam-menu__item' role='menuitemradio' tabindex='-1' type='button' aria-checked='false'><svg class='ic' aria-hidden='true'><use href='#i-building2'/></svg><span>Rio de Janeiro</span></button></div></div></div>",
+        "codigo": "<ucam-menu ariaLabel=\"Mais ações do requerimento\" [items]=\"acoes()\" (escolher)=\"executar($event)\">\n  <ucam-icon-button trigger icon=\"ellipsisVertical\" label=\"Mais ações do requerimento\" />\n</ucam-menu>",
+        "nota": "Os dois menus aparecem ABERTOS e em fluxo para a página do componente poder mostrá-los. Na aplicação eles são sobrepostos e nascem fechados. À esquerda, menu de AÇÃO; à direita, menu de ESCOLHA, com a unidade ativa marcada por aria-checked e por marca visível."
+      }
+    },
+    "page-header": {
+      "instalacao": "npx ucam-cli add page-header",
+      "importacao": "import { UcamPageHeader } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-card'><div class='ucam-page-header'><h2 class='ucam-page-header__title'>Setores</h2><div style='display:flex;gap:.5rem'><button class='ucam-btn ucam-btn--secondary'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> Exportar</button><button class='ucam-btn ucam-btn--primary'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Novo setor</button></div></div><p class='ucam-field__hint' style='margin:0'>Conteúdo da tela.</p></div>",
+        "codigo": "<ucam-page-header title=\"Setores\" [count]=\"total()\">\n  <ucam-button variant=\"secondary\" iconStart=\"download\">Exportar</ucam-button>\n  <ucam-button variant=\"primary\" iconStart=\"plus\">Novo setor</ucam-button>\n</ucam-page-header>"
+      },
+      "exemplos": [
+        {
+          "titulo": "O que ele unifica",
+          "descricao": "O Protocolo tem três posições para ação: NOVO em texto cinza no topo de uma tela, botão acima da tabela em outra, e SALVAR no rodapé do card numa terceira.",
+          "preview": "<div style='display:grid;gap:1rem'><div style='padding:.75rem;border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-lg)'><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes — ação como texto cinza</p><div style='display:flex;justify-content:space-between;align-items:baseline;border-block-end:1px solid #ddd;padding-block-end:.5rem'><strong style='font-size:1.05rem'>Setor</strong><span style='font-size:.7rem;color:#777;letter-spacing:.05em'>NOVO&nbsp;&nbsp;&nbsp;PESQUISAR</span></div></div><div style='padding:.75rem;border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-lg)'><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois — ação como ação</p><div class='ucam-page-header' style='margin:0;padding-block-end:.5rem'><h3 class='ucam-page-header__title' style='font-size:1.15rem'>Setores</h3><button class='ucam-btn ucam-btn--primary ucam-btn--sm'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Novo setor</button></div></div></div>",
+          "codigo": "<!-- uma posição para ação em todo o sistema -->\n<ucam-page-header title=\"Setores\">\n  <ucam-button variant=\"primary\" iconStart=\"plus\">Novo setor</ucam-button>\n</ucam-page-header>"
+        }
+      ]
+    },
+    "pagination": {
+      "instalacao": "npx ucam-cli add pagination",
+      "importacao": "import { UcamPagination } from '@ucam/ui';",
+      "principal": {
+        "preview": "<nav class='ucam-pagination' aria-label='Paginação de setores'><span class='ucam-pagination__range'>1–10 de 58 setores</span><button class='ucam-pagination__page' aria-disabled='true' aria-label='Página anterior'><svg class='ic' aria-hidden='true'><use href='#i-chevronLeft'/></svg></button><button class='ucam-pagination__page' aria-current='page' aria-label='Página 1 de 6'>1</button><button class='ucam-pagination__page' aria-label='Página 2 de 6'>2</button><button class='ucam-pagination__page' aria-label='Página 3 de 6'>3</button><button class='ucam-pagination__page' aria-label='Página 4 de 6'>4</button><button class='ucam-pagination__page' aria-label='Página 5 de 6'>5</button><button class='ucam-pagination__page' aria-label='Página 6 de 6'>6</button><button class='ucam-pagination__page' aria-label='Próxima página'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></nav>",
+        "codigo": "<ucam-pagination\n  [page]=\"pagina()\"\n  [total]=\"total()\"\n  [pageSize]=\"10\"\n  itemLabel=\"setores\"\n  (pageChange)=\"carregar($event)\" />"
+      },
+      "exemplos": []
+    },
+    "prazo": {
+      "instalacao": "npx ucam-cli add prazo",
+      "importacao": "import { UcamPrazo } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-cluster'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 1 dia</span><span class='ucam-prazo ucam-prazo--vencido'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>venceu há 3 dias</span><span class='ucam-badge ucam-badge--warning'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg>Urgente</span></div>",
+        "codigo": "<ucam-prazo [date]=\"req.dataLimite\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Ao lado do selo de situação",
+          "descricao": "Os dois dizem coisas diferentes: situacao muda quando alguem age, prazo muda sozinho com o relogio. Compartilham a caixa para que a fileira nao pareca torta.",
+          "codigo": "<ucam-badge tone=\"warning\" label=\"Urgente\" />\n<ucam-prazo [date]=\"req.dataLimite\" />"
+        }
+      ]
+    },
+    "progress": {
+      "instalacao": "npx ucam-cli add progress",
+      "importacao": "import { UcamProgress } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='max-inline-size:22rem'><p class='ucam-descricao__rotulo' id='pg-cpd' style='margin-block-end:.4rem'>Carga do CPD · Nível 1</p><div class='ucam-progress' role='progressbar' aria-labelledby='pg-cpd' aria-valuemin='0' aria-valuemax='40' aria-valuenow='24' aria-valuetext='24 de 40 requerimentos abertos'><span class='ucam-progress__fill ucam-progress__fill--danger' style='--ucam-progress-valor:60%'></span></div><p class='ucam-progress__legenda'><span>24 de 40 abertos</span><span>SLA médio 6,4 dias</span></p></div>",
+        "codigo": "<ucam-progress\n  label=\"Carga do CPD · Nível 1\"\n  [value]=\"24\"\n  [max]=\"40\"\n  tone=\"danger\"\n  valueText=\"24 de 40 requerimentos abertos\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Espera não é progresso",
+          "descricao": "Barra sem valor promete uma previsão de término que o sistema não tem. Para espera de duração desconhecida o certo é o Skeleton, que preserva o arranjo da tela em vez de bloqueá-la.",
+          "preview": "<div class='ucam-stack ucam-stack--sm' style='max-inline-size:22rem'><span class='ucam-skeleton ucam-skeleton--heading'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton ucam-skeleton--last'></span></div>",
+          "codigo": "<!-- errado: proporção que ninguém conhece -->\n<ucam-progress label=\"Carregando\" [value]=\"0\" />\n\n<!-- certo -->\n<ucam-skeleton lines=\"3\" />"
+        }
+      ]
+    },
+    "radio-group": {
+      "instalacao": "npx ucam-cli add radio-group",
+      "importacao": "import { UcamRadioGroup } from '@ucam/ui';",
+      "principal": {
+        "preview": "<fieldset class='ucam-radio-group' style='max-inline-size:22rem'><legend class='ucam-radio-group__legenda'>Forma de pagamento</legend><div class='ucam-radio-group__opcoes'><label class='ucam-radio'><input type='radio' name='d-pag' checked><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>À vista</span><span class='ucam-radio__apoio'>Desconto de 5% sobre o valor da mensalidade</span></span></label><label class='ucam-radio'><input type='radio' name='d-pag'><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>Parcelado em até 6 vezes</span><span class='ucam-radio__apoio'>Primeira parcela na matrícula</span></span></label><label class='ucam-radio'><input type='radio' name='d-pag'><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>Boleto mensal</span><span class='ucam-radio__apoio'>Vencimento todo dia 10</span></span></label></div></fieldset>",
+        "codigo": "<ucam-radio-group\n  label=\"Forma de pagamento\"\n  [(value)]=\"forma\"\n  [options]=\"formas\"\n/>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Deitado, numa linha de campos",
+          "descricao": "Só quando cada alternativa é de uma palavra. O vão em linha é maior que o vão em coluna de propósito: rótulos curtos e próximos passam a ser lidos como uma frase só.",
+          "preview": "<fieldset class='ucam-radio-group ucam-radio-group--horizontal'><legend class='ucam-radio-group__legenda'>Campus</legend><div class='ucam-radio-group__opcoes'><label class='ucam-radio'><input type='radio' name='d-campus' checked><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>Rio</span></span></label><label class='ucam-radio'><input type='radio' name='d-campus'><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>Campos</span></span></label><label class='ucam-radio'><input type='radio' name='d-campus'><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>Nova Friburgo</span></span></label></div></fieldset>",
+          "codigo": "<ucam-radio-group\n  label=\"Campus\"\n  orientation=\"horizontal\"\n  [(value)]=\"campus\"\n  [options]=\"campi\"\n/>"
+        },
+        {
+          "titulo": "Obrigatório e ainda sem resposta",
+          "descricao": "O filete de erro fica só nas alternativas NÃO escolhidas — pintar a escolhida de vermelho diria que a escolha está errada, quando o que falta é escolher. A mensagem diz o que fazer, não que houve um problema.",
+          "preview": "<fieldset class='ucam-radio-group ucam-radio-group--invalido' style='max-inline-size:22rem'><legend class='ucam-radio-group__legenda'>Modalidade</legend><div class='ucam-radio-group__opcoes'><label class='ucam-radio'><input type='radio' name='d-mod'><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>Presencial</span></span></label><label class='ucam-radio'><input type='radio' name='d-mod'><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>EAD</span></span></label><label class='ucam-radio'><input type='radio' name='d-mod'><span class='ucam-radio__texto'><span class='ucam-radio__rotulo'>Semipresencial</span></span></label></div><p class='ucam-radio-group__erro'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg>Escolha uma modalidade</p></fieldset>",
+          "codigo": "<ucam-radio-group\n  label=\"Modalidade\"\n  required\n  [invalid]=\"enviado() && !modalidade()\"\n  errorMessage=\"Escolha uma modalidade\"\n  [(value)]=\"modalidade\"\n  [options]=\"modalidades\"\n/>"
+        }
+      ]
+    },
+    "realce": {
+      "instalacao": "npx ucam-cli add realce",
+      "importacao": "import { UcamRealce } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-stack ucam-stack--sm' style='max-inline-size:26rem'><p class='ucam-page-header__description' style='margin:0'>Resultado de <strong>diplo</strong> — o realce responde por que cada item ficou.</p><ul class='ucam-list' style='margin:0;padding:0;list-style:none'><li class='ucam-list-item'><span class='ucam-list-item__titulo'>Registro de <mark class='ucam-realce'>diplo</mark>mas</span></li><li class='ucam-list-item'><span class='ucam-list-item__titulo'><mark class='ucam-realce'>Diplo</mark>ma digital — segunda via</span></li></ul></div>",
+        "codigo": "<ucam-realce [texto]=\"modulo.nome\" [termo]=\"busca()\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Termo em duas palavras",
+          "descricao": "O padrão quebra o termo nos espaços e procura cada pedaço. É o que faz \"acad pos\" achar Acadêmico pós-graduação e extensão — que é o nome mais longo da grade de módulos e o mais buscado. Exigir a sequência contígua devolveria nada.",
+          "codigo": "<ucam-realce [texto]=\"modulo.nome\" [termo]=\"busca()\" modo=\"palavras\" />"
+        },
+        {
+          "titulo": "Identificador, onde o espaço é parte do valor",
+          "descricao": "Em número de requerimento e matrícula o espaço não separa palavras: separa campos do próprio código. Aqui o casamento é do trecho inteiro, contíguo.",
+          "codigo": "<ucam-realce [texto]=\"req.numero\" [termo]=\"busca()\" modo=\"trecho\" />"
+        }
+      ]
+    },
+    "section-bar": {
+      "instalacao": "npx ucam-cli add section-bar",
+      "importacao": "import { UcamSectionBar } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:grid;gap:1.25rem'><div><div style='display:flex;align-items:baseline;gap:.6rem;border-block-end:1px solid var(--ucam-color-border-subtle);padding-block-end:.4rem;margin-block-end:.6rem'><h3 style='font-size:.95rem;font-weight:650;margin:0'>Rio de Janeiro</h3><span class='ucam-badge ucam-badge--neutral'>13</span></div><p class='ucam-field__hint' style='margin:0'>Cartões dos módulos deste campus.</p></div><div><div style='display:flex;align-items:baseline;gap:.6rem;border-block-end:1px solid var(--ucam-color-border-subtle);padding-block-end:.4rem;margin-block-end:.6rem'><h3 style='font-size:.95rem;font-weight:650;margin:0'>Campos</h3><span class='ucam-badge ucam-badge--neutral'>6</span></div><p class='ucam-field__hint' style='margin:0'>Cartões dos módulos deste campus.</p></div></div>",
+        "codigo": "<ucam-section-bar title=\"Rio de Janeiro\" [count]=\"13\" />\n<ucam-section-bar title=\"Campos\" [count]=\"6\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "O peso sai da cor",
+          "descricao": "A barra cinza-escuro do legado dá à seção mais peso visual que aos cartões que ela agrupa. A hierarquia passa a vir de tipografia e de um fio.",
+          "preview": "<div style='display:grid;gap:1rem'><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes</p><div style='background:#5A5A5A;color:#fff;padding:.35rem .75rem;font-size:.72rem;letter-spacing:.05em'>RIO</div></div><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois</p><div style='display:flex;align-items:baseline;gap:.5rem;border-block-end:1px solid var(--ucam-color-border-subtle);padding-block-end:.35rem'><h4 style='font-size:.95rem;font-weight:650;margin:0'>Rio de Janeiro</h4></div></div></div>",
+          "codigo": "<ucam-section-bar title=\"Rio de Janeiro\" />"
+        }
+      ]
+    },
+    "segmented": {
+      "instalacao": "npx ucam-cli add segmented",
+      "importacao": "import { UcamSegmented } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-cluster'><div class='ucam-segmented' role='group' aria-label='Modalidade'><button type='button' aria-pressed='true'>Todas</button><button type='button' aria-pressed='false'>EAD</button><button type='button' aria-pressed='false'>Presencial</button></div><div class='ucam-segmented' role='group' aria-label='Aluno bolsista'><button type='button' aria-pressed='false'>Sim</button><button type='button' aria-pressed='true'>Não</button></div></div>",
+        "codigo": "<ucam-segmented\n  ariaLabel=\"Modalidade\"\n  [items]=\"[\n    { id: 'todas', label: 'Todas' },\n    { id: 'ead', label: 'EAD' },\n    { id: 'pres', label: 'Presencial' }\n  ]\"\n  [(value)]=\"modalidade\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Escolha binária de formulário",
+          "descricao": "O Sim/Nao do SIGFIN e dois botoes pintados, sem grupo e sem a pergunta escrita: o leitor de tela anuncia dois botoes soltos. O rotulo e o ariaLabel sao o que faltava.",
+          "codigo": "<ucam-segmented\n  label=\"Aluno bolsista\"\n  ariaLabel=\"Aluno bolsista\"\n  [items]=\"opcoesSimNao\"\n  [(value)]=\"bolsista\" />"
+        }
+      ]
+    },
+    "select": {
+      "instalacao": "npx ucam-cli add select",
+      "importacao": "import { UcamSelect } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-field' style='max-inline-size:18rem'><label class='ucam-field__label' for='d-nat'>Natureza <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='d-nat' required><option>Selecione</option><option selected>Requerimento acadêmico</option><option>Requerimento financeiro</option></select></div>",
+        "codigo": "<ucam-select label=\"Natureza\" [options]=\"naturezas\" required />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Campo dependente",
+          "descricao": "Enquanto o pai estiver vazio, o dependente fica bloqueado e explica o motivo. No legado ele aparecia habilitado e vazio, sem dizer nada.",
+          "preview": "<div class='ucam-form-row'><div class='ucam-field' style='min-inline-size:14rem'><label class='ucam-field__label' for='d-p'>Natureza</label><select class='ucam-select' id='d-p'><option>Selecione</option></select></div><div class='ucam-field' style='min-inline-size:14rem'><label class='ucam-field__label' for='d-f'>Tipo do requerimento</label><select class='ucam-select' id='d-f' disabled aria-describedby='d-f-h'><option>Selecione</option></select><span class='ucam-field__hint' id='d-f-h'>Selecione a natureza primeiro.</span></div></div>",
+          "codigo": "<ucam-select label=\"Natureza\" [options]=\"naturezas\" required />\n\n<ucam-select\n  label=\"Tipo do requerimento\"\n  dependsOn=\"natureza\"\n  [options]=\"tipos()\"\n  [loading]=\"carregandoTipos()\"\n  required />"
+        },
+        {
+          "titulo": "Rótulo oculto",
+          "descricao": "Quando o contexto já nomeia o campo, o rótulo continua existindo para o leitor de tela. A opção selecionada nunca faz papel de rótulo.",
+          "preview": "<div class='ucam-field'><label class='ucam-field__label ucam-sr-only' for='d-ord'>Ordenar por</label><select class='ucam-select' id='d-ord' style='inline-size:auto'><option>Mais recentes primeiro</option><option>Mais antigos primeiro</option></select></div>",
+          "codigo": "<ucam-select label=\"Ordenar por\" labelHidden [options]=\"ordenacoes\" />"
+        },
+        {
+          "titulo": "Em erro",
+          "descricao": "O campo obrigatório que ficou em Selecione. A mensagem diz o que falta, não \"campo inválido\".",
+          "preview": "<div class='ucam-field' style='max-inline-size:20rem'><label class='ucam-field__label' for='d-sel-e'>Setor responsável <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='d-sel-e' required aria-invalid='true' aria-describedby='d-sel-e-e'><option>Selecione</option><option>Secretaria Acadêmica</option><option>Coordenação de Curso</option></select><span class='ucam-field__error' id='d-sel-e-e'>Escolha o setor que vai receber o requerimento.</span></div>",
+          "codigo": "<ucam-select\n  label=\"Setor responsável\"\n  required\n  [invalid]=\"true\"\n  errorMessage=\"Escolha o setor que vai receber o requerimento.\"\n  [options]=\"setores\" />"
+        }
+      ]
+    },
+    "skeleton": {
+      "instalacao": "npx ucam-cli add skeleton",
+      "importacao": "import { UcamSkeleton } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div aria-hidden='true' style='max-inline-size:26rem'><span class='ucam-skeleton ucam-skeleton--heading' style='inline-size:45%'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton ucam-skeleton--last'></span></div>",
+        "codigo": "<ucam-skeleton variant=\"heading\" width=\"45%\" />\n<ucam-skeleton variant=\"text\" [lines]=\"3\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Linhas de tabela",
+          "descricao": "Substitui o overlay CARREGANDO de tela cheia (ADR-005). A página continua utilizável enquanto os dados chegam.",
+          "preview": "<div aria-hidden='true'><div style='display:grid;grid-template-columns:2fr 1fr 6rem;gap:.75rem'><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span><span class='ucam-skeleton'></span></div></div>",
+          "codigo": "<div [attr.aria-busy]=\"carregando()\" aria-live=\"polite\">\n  @if (carregando()) {\n    <ucam-skeleton variant=\"table-row\" [count]=\"10\" />\n  } @else {\n    <ucam-data-table [columns]=\"colunas\" [rows]=\"setores()\" />\n  }\n</div>"
+        }
+      ]
+    },
+    "stat": {
+      "instalacao": "npx ucam-cli add stat",
+      "importacao": "import { UcamStat } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-stats ucam-stats--cartoes'><div class='ucam-stat'><span class='ucam-stat__label'>Requerimentos abertos</span><span class='ucam-stat__value'>86</span><span class='ucam-stat__meta'>em 6 setores</span></div><div class='ucam-stat'><span class='ucam-stat__label'>Atrasados</span><span class='ucam-stat__value'>19</span><span class='ucam-stat__meta'><span class='ucam-badge ucam-badge--danger'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg>22% da fila</span></span></div><div class='ucam-stat ucam-stat--danger'><span class='ucam-stat__label'>Saldo do dia</span><span class='ucam-stat__value'>-R$ 1.240,00</span><span class='ucam-stat__meta'>Saldo negativo</span></div></div>",
+        "codigo": "<ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />\n<ucam-stat label=\"Atrasados\" [value]=\"19\" meta=\"22% da fila\" />\n<ucam-stat label=\"Saldo do dia\" value=\"-R$ 1.240,00\" tone=\"danger\" meta=\"Saldo negativo\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Deitado, acima de uma tabela",
+          "descricao": "Contagem cabe deitada e rende quatro ladrilhos numa faixa de 56px em vez de 96 — altura que volta para a tabela logo abaixo. Valor monetario nao cabe: fica empilhado.",
+          "preview": "<div class='ucam-stats'><div class='ucam-stat ucam-stat--linha'><span class='ucam-stat__label'>Aguardam você</span><span class='ucam-stat__value'>4</span></div><div class='ucam-stat ucam-stat--linha'><span class='ucam-stat__label'>Encaminhados</span><span class='ucam-stat__value'>12</span></div></div>",
+          "codigo": "<ucam-stat layout=\"row\" label=\"Aguardam você\" [value]=\"4\" />\n<ucam-stat layout=\"row\" label=\"Encaminhados\" [value]=\"12\" />"
+        }
+      ]
+    },
+    "badge": {
+      "instalacao": "npx ucam-cli add badge",
+      "importacao": "import { UcamBadge } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;gap:.5rem;flex-wrap:wrap'><span class='ucam-badge ucam-badge--neutral'>Arquivado</span><span class='ucam-badge ucam-badge--info'><svg class='ic' aria-hidden='true'><use href='#i-info'/></svg>Em análise</span><span class='ucam-badge ucam-badge--success'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg>Deferido</span><span class='ucam-badge ucam-badge--warning'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg>Aguardando documento</span><span class='ucam-badge ucam-badge--danger'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg>Indeferido</span></div>",
+        "codigo": "<ucam-badge tone=\"neutral\" label=\"Arquivado\" />\n<ucam-badge tone=\"info\" label=\"Em análise\" />\n<ucam-badge tone=\"success\" label=\"Deferido\" />\n<ucam-badge tone=\"warning\" label=\"Aguardando documento\" />\n<ucam-badge tone=\"danger\" label=\"Indeferido\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Ponto, para densidade alta",
+          "nota": "O ponto substitui o ícone e herda a tinta do rótulo. Numa lista longa, o disco de 6px custa menos largura que o símbolo de 14px e continua marcando o tom.",
+          "preview": "<div style='display:flex;gap:.5rem;flex-wrap:wrap'><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span>Arquivado</span><span class='ucam-badge ucam-badge--info'><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Deferido</span><span class='ucam-badge ucam-badge--warning'><span class='ucam-badge__ponto' aria-hidden='true'></span>Aguardando documento</span><span class='ucam-badge ucam-badge--danger'><span class='ucam-badge__ponto' aria-hidden='true'></span>Indeferido</span></div>",
+          "codigo": "<ucam-badge tone=\"info\" label=\"Em análise\" variant=\"dot\" />"
+        },
+        {
+          "titulo": "Contorno, para coluna longa",
+          "nota": "A pílula branca com filete. Existe porque numa coluna de catorze linhas repetindo o mesmo selo, catorze preenchimentos viram uma faixa de cor que compete com o dado ao lado. Escolha da TELA: ou a coluna inteira é contorno, ou nenhuma parte dela é.",
+          "preview": "<div style='display:flex;gap:.5rem;flex-wrap:wrap'><span class='ucam-badge ucam-badge--outline ucam-badge--neutral'>Arquivado</span><span class='ucam-badge ucam-badge--outline ucam-badge--info'><svg class='ic' aria-hidden='true'><use href='#i-info'/></svg>Em análise</span><span class='ucam-badge ucam-badge--outline ucam-badge--success'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg>Deferido</span><span class='ucam-badge ucam-badge--outline ucam-badge--warning'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg>Aguardando documento</span><span class='ucam-badge ucam-badge--outline ucam-badge--danger'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg>Indeferido</span></div>",
+          "codigo": "<ucam-badge tone=\"info\" label=\"Em análise\" variant=\"outline\" />"
+        }
+      ]
+    },
+    "stepper": {
+      "instalacao": "npx ucam-cli add stepper",
+      "importacao": "import { UcamStepper } from '@ucam/ui';",
+      "principal": {
+        "preview": "<ol class='ucam-stepper' aria-label='Progresso do novo requerimento' style='max-inline-size:32rem'><li class='ucam-stepper__passo ucam-stepper__passo--done'><span class='ucam-stepper__marcador'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span>Aluno<span class='ucam-sr-only'>, etapa 1 de 3, concluída</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo ucam-stepper__passo--current' aria-current='step'><span class='ucam-stepper__marcador'>2</span>Solicitação<span class='ucam-sr-only'>, etapa 2 de 3, atual</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo'><span class='ucam-stepper__marcador'>3</span>Revisão<span class='ucam-sr-only'>, etapa 3 de 3, pendente</span></li></ol>",
+        "codigo": "<ucam-stepper\n  label=\"Progresso do novo requerimento\"\n  [current]=\"1\"\n  [steps]=\"[\n    { label: 'Aluno', state: 'done' },\n    { label: 'Solicitação', state: 'current' },\n    { label: 'Revisão', state: 'todo' }\n  ]\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Etapa com pendência",
+          "descricao": "O erro fica ancorado na etapa em que mora, com contagem. É a correção do defeito da tela atual, em que a validação só aparece no envio e achar o campo que faltou custa a rolagem inteira de volta.",
+          "preview": "<ol class='ucam-stepper' aria-label='Progresso do novo requerimento' style='max-inline-size:32rem'><li class='ucam-stepper__passo ucam-stepper__passo--done'><span class='ucam-stepper__marcador'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span>Aluno</li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo ucam-stepper__passo--error'><span class='ucam-stepper__marcador'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg></span>Solicitação <span class='ucam-stepper__dica'>2 campos obrigatórios</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo ucam-stepper__passo--current' aria-current='step'><span class='ucam-stepper__marcador'>3</span>Revisão</li></ol>",
+          "codigo": "<ucam-stepper\n  label=\"Progresso do novo requerimento\"\n  [current]=\"2\"\n  [navigable]=\"true\"\n  (stepSelect)=\"irPara($event)\"\n  [steps]=\"[\n    { label: 'Aluno', state: 'done' },\n    { label: 'Solicitação', state: 'error', hint: '2 campos obrigatórios' },\n    { label: 'Revisão', state: 'current' }\n  ]\" />"
+        }
+      ]
+    },
+    "switch": {
+      "instalacao": "npx ucam-cli add switch",
+      "importacao": "import { UcamSwitch } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;flex-direction:column;gap:.65rem'><label class='ucam-switch'><input type='checkbox' id='sw1' checked><span class='ucam-check__label'>Mostrar requerimentos de nível abaixo do meu</span></label><label class='ucam-switch'><input type='checkbox' id='sw2'><span class='ucam-check__label'>Registrar boleto</span></label><label class='ucam-switch'><input type='checkbox' id='sw3'><span class='ucam-check__label'>Impressão pelo banco</span></label></div>",
+        "codigo": "<ucam-switch label=\"Mostrar requerimentos de nível abaixo do meu\" [(ngModel)]=\"incluirAbaixo\" />\n<ucam-switch label=\"Registrar boleto\" [(ngModel)]=\"registrar\" />\n<ucam-switch label=\"Impressão pelo banco\" [(ngModel)]=\"impressaoBanco\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "O que ele substitui",
+          "descricao": "À esquerda, o controle do legado: um botão mostrando NÃO, sem dizer se esse é o estado atual ou o que acontece ao clicar. À direita, o estado é inequívoco.",
+          "preview": "<div style='display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start'><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes</p><div style='display:flex;align-items:center;gap:.6rem'><span style='font-size:.8rem'>Mostrar requerimentos de nível abaixo do meu</span><span style='background:#E8E8E8;color:#444;padding:.35rem .9rem;font-size:.75rem;border:1px solid #ccc'>NÃO</span></div></div><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois</p><label class='ucam-switch'><input type='checkbox' id='sw4'><span class='ucam-check__label'>Mostrar requerimentos de nível abaixo do meu</span></label></div></div>",
+          "codigo": "<!-- antes: par de botões, estado ambíguo -->\n<!-- depois -->\n<ucam-switch label=\"Mostrar requerimentos de nível abaixo do meu\" [(ngModel)]=\"incluirAbaixo\" />"
+        }
+      ]
+    },
+    "tabs": {
+      "instalacao": "npx ucam-cli add tabs",
+      "importacao": "import { UcamTabs } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-tabs' role='tablist' aria-label='Recortes da caixa de entrada'><button class='ucam-tabs__tab' type='button' role='tab' id='demo-aba-suas' aria-selected='true' tabindex='0'>Aguardam você<span class='ucam-tabs__contagem' aria-hidden='true'>4</span><span class='ucam-sr-only'>, 4 itens</span></button><button class='ucam-tabs__tab' type='button' role='tab' id='demo-aba-pauta' aria-selected='false' tabindex='-1'>Minha pauta<span class='ucam-tabs__contagem' aria-hidden='true'>0</span><span class='ucam-sr-only'>, 0 itens</span></button><button class='ucam-tabs__tab' type='button' role='tab' id='demo-aba-enc' aria-selected='false' tabindex='-1'>Encaminhados<span class='ucam-tabs__contagem' aria-hidden='true'>0</span><span class='ucam-sr-only'>, 0 itens</span></button><button class='ucam-tabs__tab' type='button' role='tab' id='demo-aba-fim' aria-selected='false' tabindex='-1'>Concluídos</button></div>",
+        "codigo": "<ucam-tabs\n  ariaLabel=\"Recortes da caixa de entrada\"\n  [items]=\"[\n    { id: 'suas', label: 'Aguardam você', count: 4 },\n    { id: 'pauta', label: 'Minha pauta', count: 0 },\n    { id: 'enc', label: 'Encaminhados', count: 0 },\n    { id: 'fim', label: 'Concluídos' }\n  ]\"\n  [(value)]=\"recorte\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Quando cada aba consulta o servidor",
+          "descricao": "Com ativacao automatica, atravessar cinco abas pela seta dispara cinco requisicoes e a ultima resposta pode chegar fora de ordem. Manual move o foco e so seleciona no Enter.",
+          "codigo": "<ucam-tabs\n  ariaLabel=\"Blocos do requerimento\"\n  activation=\"manual\"\n  [items]=\"blocos()\"\n  [(value)]=\"bloco\"\n  (valueChange)=\"carregar($event)\" />"
+        }
+      ]
+    },
+    "text-field": {
+      "instalacao": "npx ucam-cli add text-field",
+      "importacao": "import { UcamTextField } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-field' style='max-inline-size:20rem'><label class='ucam-field__label' for='d-nome'>Nome completo <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='d-nome' required placeholder='Maria Silva'></div>",
+        "codigo": "<ucam-text-field label=\"Nome completo\" required placeholder=\"Maria Silva\" [(ngModel)]=\"nome\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Com apoio de formato",
+          "descricao": "A dica é persistente. Nunca vira placeholder — placeholder some ao digitar, que é justamente quando a pessoa quer conferir o formato.",
+          "preview": "<div class='ucam-field ucam-field--data' style='max-inline-size:20rem'><label class='ucam-field__label' for='d-nasc'>Data de nascimento</label><input class='ucam-input' id='d-nasc' aria-describedby='d-nasc-h' value='14/03/1998'><span class='ucam-field__hint' id='d-nasc-h'>dd/mm/aaaa</span></div>",
+          "codigo": "<ucam-text-field label=\"Data de nascimento\" hint=\"dd/mm/aaaa\" mask=\"date\" width=\"content\" />"
+        },
+        {
+          "titulo": "Em erro",
+          "descricao": "O erro é comunicado por texto, não só pela borda vermelha. E diz como corrigir.",
+          "preview": "<div class='ucam-field' style='max-inline-size:20rem'><label class='ucam-field__label' for='d-cpf'>CPF</label><input class='ucam-input' id='d-cpf' aria-invalid='true' aria-describedby='d-cpf-e' value='123.456.789-0'><span class='ucam-field__error' id='d-cpf-e'>CPF inválido. Verifique os 11 dígitos.</span></div>",
+          "codigo": "<ucam-text-field\n  label=\"CPF\"\n  mask=\"cpf\"\n  width=\"content\"\n  [invalid]=\"true\"\n  errorMessage=\"CPF inválido. Verifique os 11 dígitos.\" />"
+        },
+        {
+          "titulo": "Largura pelo conteúdo",
+          "descricao": "Acaba com as larguras arbitrárias do legado, onde CPF era menor que Nome sem relação nenhuma com o dado.",
+          "preview": "<div class='ucam-form-row' style='--ucam-cols:max-content max-content 1fr'><div class='ucam-field ucam-field--cpf'><label class='ucam-field__label' for='d-c'>CPF</label><input class='ucam-input' id='d-c' value='143.985.747-43'></div><div class='ucam-field ucam-field--cep'><label class='ucam-field__label' for='d-z'>CEP</label><input class='ucam-input' id='d-z' value='22071-900'></div><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='d-l'>Logradouro</label><input class='ucam-input' id='d-l' value='Rua da Assembleia, 10'></div></div>",
+          "codigo": "<ucam-text-field label=\"CPF\" mask=\"cpf\" width=\"content\" />\n<ucam-text-field label=\"CEP\" mask=\"cep\" width=\"content\" />\n<ucam-text-field label=\"Logradouro\" />"
+        }
+      ]
+    },
+    "textarea": {
+      "instalacao": "npx ucam-cli add textarea",
+      "importacao": "import { UcamTextarea } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-field' style='max-inline-size:34rem'><label class='ucam-field__label' for='ta1'>Descrição da solicitação <span class='ucam-field__required' aria-hidden='true'>*</span></label><textarea class='ucam-textarea' id='ta1' rows='4' required placeholder='Descreva o pedido com o máximo de detalhes.'></textarea><span class='ucam-field__hint'>O setor responsável usa este texto para analisar o requerimento.</span></div>",
+        "codigo": "<ucam-textarea\n  label=\"Descrição da solicitação\"\n  placeholder=\"Descreva o pedido com o máximo de detalhes.\"\n  hint=\"O setor responsável usa este texto para analisar o requerimento.\"\n  required />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Com limite de caracteres",
+          "descricao": "O contador só aparece a partir de 80% do limite — antes disso é ruído.",
+          "preview": "<div class='ucam-field' style='max-inline-size:34rem'><label class='ucam-field__label' for='ta2'>Observações internas</label><textarea class='ucam-textarea' id='ta2' rows='3'>Aluno solicitou revisão presencial na secretaria.</textarea><span class='ucam-field__hint'>Visível apenas para a equipe do setor.</span></div>",
+          "codigo": "<ucam-textarea label=\"Observações internas\" [maxLength]=\"500\" hint=\"Visível apenas para a equipe do setor.\" />"
+        },
+        {
+          "titulo": "Em erro",
+          "descricao": "O apoio não sai de cena: quem errou o tamanho precisa continuar lendo qual é o mínimo.",
+          "preview": "<div class='ucam-field' style='max-inline-size:26rem'><label class='ucam-field__label' for='d-ta-e'>Descrição da solicitação <span class='ucam-field__required' aria-hidden='true'>*</span></label><textarea class='ucam-textarea' id='d-ta-e' rows='3' required aria-invalid='true' aria-describedby='d-ta-e-e d-ta-e-h'>Preciso</textarea><span class='ucam-field__error' id='d-ta-e-e'>Descreva o pedido com pelo menos 20 caracteres. Faltam 13.</span><span class='ucam-field__hint' id='d-ta-e-h'>O setor responsável usa este texto para analisar o requerimento.</span></div>",
+          "codigo": "<ucam-textarea\n  label=\"Descrição da solicitação\"\n  hint=\"O setor responsável usa este texto para analisar o requerimento.\"\n  required\n  [invalid]=\"true\"\n  errorMessage=\"Descreva o pedido com pelo menos 20 caracteres. Faltam 13.\" />"
+        }
+      ]
+    },
+    "timeline": {
+      "instalacao": "npx ucam-cli add timeline",
+      "importacao": "import { UcamTimeline } from '@ucam/ui';",
+      "principal": {
+        "preview": "<ol class='ucam-timeline' style='max-inline-size:34rem'><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--info'><svg class='ic' aria-hidden='true'><use href='#i-messageSquare'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Rafael Augusto Cordeiro</span><span class='ucam-timeline__papel'>Aluno</span><time class='ucam-timeline__tempo' datetime='2026-09-03T09:10'>há 4h</time></p><p class='ucam-timeline__corpo ucam-timeline__corpo--mensagem'>Solicito revisão da nota da AV2 de Cálculo III: identifiquei divergência entre o gabarito e a correção da questão 4.</p></div></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--warning'><svg class='ic' aria-hidden='true'><use href='#i-refreshCw'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Marina Duarte</span><span class='ucam-timeline__papel'>Atendente</span><time class='ucam-timeline__tempo' datetime='2026-09-03T09:20'>há 4h</time></p><p class='ucam-timeline__transicao'><span class='ucam-sr-only'>de Aguardando análise para Em análise</span><span class='ucam-badge ucam-badge--neutral' aria-hidden='true'>Aguardando análise</span><span class='ucam-timeline__seta' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></span><span class='ucam-badge ucam-badge--info' aria-hidden='true'>Em análise</span></p></div></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--success'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Sistema</span><span class='ucam-timeline__papel'>Automático</span><time class='ucam-timeline__tempo' datetime='2026-09-03T09:08'>há 4h</time></p><p class='ucam-timeline__corpo'>Protocolo aberto e distribuído para Secretaria Acadêmica.</p></div></li></ol>",
+        "codigo": "<ucam-timeline [items]=\"atividade()\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "Mensagem e evento, lado a lado",
+          "descricao": "Na tabela de histórico do legado a resposta ao aluno e a mudança de situação são idênticas: é preciso ler o texto inteiro para saber qual é qual. Aqui a mensagem ganha balão e o papel de quem fez aparece escrito — a distinção não depende da forma do nó.",
+          "codigo": "atividade = signal<TimelineItem[]>([\n  { kind: 'message', author: 'Rafael Augusto Cordeiro', role: 'Aluno',\n    at: '2026-09-03T09:10', text: 'Solicito revisão da nota da AV2…', icon: 'messageSquare', tone: 'info' },\n  { kind: 'event', author: 'Sistema', role: 'Automático',\n    at: '2026-09-03T09:08', text: 'Protocolo aberto e distribuído para Secretaria Acadêmica.',\n    icon: 'check', tone: 'success' }\n]);"
+        },
+        {
+          "titulo": "A transição vem do dado, não da prosa",
+          "descricao": "O histórico do Protocolo é, na maior parte, mudança de situação. Escrita só em prosa, ela depende de quem grava o evento acertar o texto — e não dá para varrer o histórico procurando quando o requerimento entrou em análise. O par DE e PARA vem do dado; a seta entre eles é decorativa e a relação é dita em texto.",
+          "codigo": "// errado: a situação anterior só existe na cabeça de quem escreveu\n{ kind: 'event', author: 'Marina Duarte', at: '2026-09-03T09:20',\n  text: 'Situação alterada' }\n\n// certo\n{ kind: 'event', author: 'Marina Duarte', role: 'Atendente',\n  at: '2026-09-03T09:20', icon: 'refreshCw', tone: 'warning',\n  from: 'Aguardando análise', to: 'Em análise' }"
+        },
+        {
+          "titulo": "Período e edição de vários campos",
+          "descricao": "groupBy corta a lista por dia ou por ano, e o rótulo do período é um item da lista de verdade — quem ouve a página também precisa do corte. O evento de edição traz as mudanças numa lista dentro dele: como três eventos, seriam três linhas com o mesmo autor e a mesma hora, escondendo que foi uma ação só. O valor antigo vem apagado antes da seta, nunca riscado — riscado lê como cancelado.",
+          "preview": "<ol class='ucam-timeline' style='max-inline-size:34rem'><li class='ucam-timeline__grupo'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__linha'></span></span><p class='ucam-timeline__periodo'>Hoje</p></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Marina Duarte</span><span class='ucam-timeline__papel'>Atendente</span><time class='ucam-timeline__tempo' datetime='2026-09-03T12:40'>há 1h</time></p><p class='ucam-timeline__corpo'>Editou o requerimento</p><dl class='ucam-timeline__mudancas'><div class='ucam-timeline__mudanca'><dt class='ucam-timeline__campo'><svg class='ic' aria-hidden='true'><use href='#i-building2'/></svg>Setor responsável</dt><dd class='ucam-timeline__novo'><span class='ucam-timeline__anterior'>Coordenação de Curso</span><span class='ucam-timeline__destino'><span class='ucam-timeline__seta' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></span><span class='ucam-sr-only'>para</span><span>Secretaria Acadêmica</span></span></dd></div><div class='ucam-timeline__mudanca'><dt class='ucam-timeline__campo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>Prazo</dt><dd class='ucam-timeline__novo'><span class='ucam-timeline__anterior'>10/09/2026</span><span class='ucam-timeline__destino'><span class='ucam-timeline__seta' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></span><span class='ucam-sr-only'>para</span><span>04/09/2026</span></span></dd></div><div class='ucam-timeline__mudanca'><dt class='ucam-timeline__campo'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg>Prioridade</dt><dd class='ucam-timeline__novo'><span>Urgente</span></dd></div></dl></div></li><li class='ucam-timeline__grupo'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__linha'></span></span><p class='ucam-timeline__periodo'>Ontem</p></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--info'><svg class='ic' aria-hidden='true'><use href='#i-messageSquare'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Rafael Augusto Cordeiro</span><span class='ucam-timeline__papel'>Aluno</span><time class='ucam-timeline__tempo' datetime='2026-09-02T09:10'>ontem, 09:10</time></p><p class='ucam-timeline__corpo ucam-timeline__corpo--mensagem'>Solicito revisão da nota da AV2 de Cálculo III.</p></div></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--success'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Sistema</span><span class='ucam-timeline__papel'>Automático</span><time class='ucam-timeline__tempo' datetime='2026-09-02T09:08'>ontem, 09:08</time></p><p class='ucam-timeline__corpo'>Protocolo aberto e distribuído para Coordenação de Curso.</p></div></li></ol>",
+          "codigo": "<ucam-timeline\n  groupBy=\"day\"\n  [items]=\"[\n    { kind: 'event', author: 'Marina Duarte', role: 'Atendente', at: '2026-09-03T12:40', icon: 'pencil',\n      text: 'Editou o requerimento',\n      changes: [\n        { field: 'Setor responsável', from: 'Coordenação de Curso', to: 'Secretaria Acadêmica', icon: 'building2' },\n        { field: 'Prazo', from: '10/09/2026', to: '04/09/2026', icon: 'clock' },\n        { field: 'Prioridade', to: 'Urgente', icon: 'triangleAlert' }\n      ] },\n    { kind: 'message', author: 'Rafael Augusto Cordeiro', role: 'Aluno', at: '2026-09-02T09:10', tone: 'info',\n      text: 'Solicito revisão da nota da AV2 de Cálculo III.' },\n    { kind: 'event', author: 'Sistema', role: 'Automático', at: '2026-09-02T09:08', tone: 'success',\n      text: 'Protocolo aberto e distribuído para Coordenação de Curso.' }\n  ]\" />"
+        },
+        {
+          "titulo": "Fases, etapas e filtro",
+          "descricao": "A coluna de atividade do requerimento. O corte é pela situação do registro, não pela data; o parecer pedido à coordenação mostra os passos que faltam; e o filtro esconde a fase que ficou sem item. Clique em Mensagens.",
+          "preview": "<div style='max-inline-size:22rem'><div class='ucam-segmented ucam-segmented--sm ucam-timeline__filtro' role='group' aria-label='Mostrar na atividade' data-timeline-filtro aria-controls='demo-atividade'><button type='button' aria-pressed='true' data-valor='todos'>Todos</button><button type='button' aria-pressed='false' data-valor='mensagem'>Mensagens</button><button type='button' aria-pressed='false' data-valor='evento'>Tramitação</button></div><ol class='ucam-timeline ucam-timeline--compacta' id='demo-atividade'><li class='ucam-timeline__grupo ucam-timeline__grupo--fase'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__linha'></span><span class='ucam-timeline__marco'></span><span class='ucam-timeline__linha'></span></span><p class='ucam-timeline__periodo'><span class='ucam-sr-only'>Fase: </span>Em análise</p></li><li class='ucam-timeline__item' data-tipo='evento'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--info'><svg class='ic' aria-hidden='true'><use href='#i-send'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Marina Duarte</span><span class='ucam-timeline__papel'>Atendente</span><time class='ucam-timeline__tempo' datetime='2026-09-03T13:10'>há 30 min</time></p><p class='ucam-timeline__corpo'>Pediu parecer ao professor da disciplina</p><ul class='ucam-timeline__etapas'><li class='ucam-timeline__etapa ucam-timeline__etapa--feita'><span class='ucam-timeline__etapa-marca' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span>Enviado ao professor<span class='ucam-sr-only'>, concluída</span></li><li class='ucam-timeline__etapa ucam-timeline__etapa--atual'><span class='ucam-timeline__etapa-marca' aria-hidden='true'></span>Parecer sobre a questão 4<span class='ucam-sr-only'>, em curso</span></li><li class='ucam-timeline__etapa ucam-timeline__etapa--pendente'><span class='ucam-timeline__etapa-marca' aria-hidden='true'></span>Resposta ao aluno<span class='ucam-sr-only'>, pendente</span></li></ul></div></li><li class='ucam-timeline__item' data-tipo='evento'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Marina Duarte</span><span class='ucam-timeline__papel'>Atendente</span><time class='ucam-timeline__tempo' datetime='2026-09-03T12:40'>há 1h</time></p><p class='ucam-timeline__corpo'>Editou o requerimento</p><dl class='ucam-timeline__mudancas'><div class='ucam-timeline__mudanca'><dt class='ucam-timeline__campo'><svg class='ic' aria-hidden='true'><use href='#i-building2'/></svg>Setor responsável</dt><dd class='ucam-timeline__novo'><span class='ucam-timeline__anterior'>Coordenação de Curso</span><span class='ucam-timeline__destino'><span class='ucam-timeline__seta' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></span><span class='ucam-sr-only'>para</span><span>Secretaria Acadêmica</span></span></dd></div><div class='ucam-timeline__mudanca'><dt class='ucam-timeline__campo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>Prazo</dt><dd class='ucam-timeline__novo'><span class='ucam-timeline__anterior'>10/09/2026</span><span class='ucam-timeline__destino'><span class='ucam-timeline__seta' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></span><span class='ucam-sr-only'>para</span><span>04/09/2026</span></span></dd></div><div class='ucam-timeline__mudanca'><dt class='ucam-timeline__campo'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg>Prioridade</dt><dd class='ucam-timeline__novo'><span>Urgente</span></dd></div></dl></div></li><li class='ucam-timeline__item' data-tipo='evento'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--warning'><svg class='ic' aria-hidden='true'><use href='#i-refreshCw'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Marina Duarte</span><span class='ucam-timeline__papel'>Atendente</span><time class='ucam-timeline__tempo' datetime='2026-09-03T09:20'>há 4h</time></p><p class='ucam-timeline__transicao'><span class='ucam-sr-only'>de Aguardando análise para Em análise</span><span class='ucam-badge ucam-badge--neutral' aria-hidden='true'>Aguardando análise</span><span class='ucam-timeline__seta' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></span><span class='ucam-badge ucam-badge--info' aria-hidden='true'>Em análise</span></p></div></li><li class='ucam-timeline__grupo ucam-timeline__grupo--fase'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__linha'></span><span class='ucam-timeline__marco'></span><span class='ucam-timeline__linha'></span></span><p class='ucam-timeline__periodo'><span class='ucam-sr-only'>Fase: </span>Aguardando análise</p></li><li class='ucam-timeline__item' data-tipo='mensagem'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--info'><svg class='ic' aria-hidden='true'><use href='#i-messageSquare'/></svg></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Rafael Augusto Cordeiro</span><span class='ucam-timeline__papel'>Aluno</span><time class='ucam-timeline__tempo' datetime='2026-09-03T09:10'>há 4h</time></p><p class='ucam-timeline__corpo ucam-timeline__corpo--mensagem'>Solicito revisão da nota da AV2 de Cálculo III: divergência entre o gabarito e a correção da questão 4.</p></div></li><li class='ucam-timeline__item' data-tipo='evento'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no ucam-timeline__no--success'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Sistema</span><span class='ucam-timeline__papel'>Automático</span><time class='ucam-timeline__tempo' datetime='2026-09-03T09:08'>há 4h</time></p><p class='ucam-timeline__corpo'>Protocolo aberto e distribuído para Secretaria Acadêmica.</p></div></li></ol></div>",
+          "codigo": "<ucam-segmented size=\"sm\" ariaLabel=\"Mostrar na atividade\" [(value)]=\"natureza\" [items]=\"[{ id: 'all', label: 'Todos' }, { id: 'message', label: 'Mensagens' }, { id: 'event', label: 'Tramitação' }]\" />\n<ucam-timeline\n  density=\"compact\"\n  groupBy=\"phase\"\n  [filter]=\"natureza()\"\n  [items]=\"[\n    { kind: 'event', author: 'Marina Duarte', role: 'Atendente', at: '2026-09-03T13:10', phase: 'Em análise', icon: 'send', tone: 'info',\n      text: 'Pediu parecer ao professor da disciplina',\n      steps: [\n        { label: 'Enviado ao professor', state: 'done' },\n        { label: 'Parecer sobre a questão 4', state: 'current' },\n        { label: 'Resposta ao aluno', state: 'pending' }\n      ] },\n    { kind: 'message', author: 'Rafael Augusto Cordeiro', role: 'Aluno', at: '2026-09-03T09:10', phase: 'Aguardando análise', text: 'Solicito revisão da nota da AV2.' }\n  ]\" />"
+        }
+      ]
+    },
+    "tooltip": {
+      "instalacao": "npx ucam-cli add tooltip",
+      "importacao": "import { UcamTooltip } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;flex-direction:column;align-items:center;gap:.375rem'><div class='ucam-tooltip' style='inline-size:max-content'>Exportar em PDF</div><div style='display:flex;gap:.375rem'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Imprimir requerimento'><svg class='ic' aria-hidden='true'><use href='#i-printer'/></svg></button><button class='ucam-btn ucam-btn--icon ucam-btn--secondary' type='button' aria-label='Exportar em PDF'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg></button><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Excluir requerimento'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg></button></div></div>",
+        "codigo": "<ucam-icon-button\n  icon=\"download\"\n  label=\"Exportar em PDF\"\n  ucamTooltip=\"Exportar em PDF\"\n/>"
+      },
+      "exemplos": [
+        {
+          "titulo": "A dica repete o nome, não o substitui",
+          "descricao": "O botão de ícone já tem nome acessível pelo aria-label — a dica torna esse nome VISÍVEL para quem enxerga. Por isso o texto é o mesmo: dica que diz outra coisa cria dois nomes para um controle só, e o leitor de tela anuncia um enquanto a tela mostra o outro. Passe o ponteiro ou chegue por Tab.",
+          "preview": "<div style='display:flex;gap:.375rem'><span class='ucam-tooltip-wrap'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-tooltip-gatilho' type='button' aria-label='Imprimir requerimento' aria-describedby='dica-printer'><svg class='ic' aria-hidden='true'><use href='#i-printer'/></svg></button><span class='ucam-tooltip' id='dica-printer' role='tooltip'>Imprimir requerimento</span></span><span class='ucam-tooltip-wrap'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-tooltip-gatilho' type='button' aria-label='Exportar em PDF' aria-describedby='dica-download'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg></button><span class='ucam-tooltip' id='dica-download' role='tooltip'>Exportar em PDF</span></span><span class='ucam-tooltip-wrap'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-tooltip-gatilho' type='button' aria-label='Excluir requerimento' aria-describedby='dica-trash2'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg></button><span class='ucam-tooltip' id='dica-trash2' role='tooltip'>Excluir requerimento</span></span></div>",
+          "codigo": "<ucam-icon-button icon=\"printer\" label=\"Imprimir requerimento\" ucamTooltip=\"Imprimir requerimento\" />\n<ucam-icon-button icon=\"download\" label=\"Exportar em PDF\" ucamTooltip=\"Exportar em PDF\" />\n<ucam-icon-button icon=\"trash\" label=\"Excluir requerimento\" ucamTooltip=\"Excluir requerimento\" />"
+        },
+        {
+          "titulo": "O que o Trilho A não entrega",
+          "descricao": "Em CSS puro a dica abre em :hover e em :focus-visible, e só. Virar de lado perto da borda da janela, dispensar por Esc e permanecer quando o ponteiro entra no balão precisam de JavaScript e moram no Trilho B. Ainda assim o subconjunto é melhor que o title nativo, que não abre no foco do teclado.",
+          "preview": "<p style='margin:0;max-inline-size:28rem'>Setor responsável: <span class='ucam-tooltip-wrap'><a class='ucam-link ucam-tooltip-gatilho' href='#' aria-describedby='dica-setor'>SEC-ACAD-CAMPOS</a><span class='ucam-tooltip' id='dica-setor' role='tooltip'>Secretaria Acadêmica — Campus Campos</span></span>. O prazo conta a partir do protocolo.</p>",
+          "codigo": "<a class=\"ucam-link\" href=\"/setores/12\" ucamTooltip=\"Secretaria Acadêmica — Campus Campos\">\n  SEC-ACAD-CAMPOS\n</a>"
+        }
+      ]
+    },
+    "anexo": {
+      "instalacao": "npx ucam-cli add anexo",
+      "importacao": "import { UcamAnexo } from '@ucam/ui';",
+      "principal": {
+        "preview": "<ul class='ucam-anexos' aria-label='Anexos da solicitação' style='max-inline-size:34rem'><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='prova-av2-calculo3.pdf' aria-describedby='dm-ax1'>prova-av2-calculo3.pdf</button><span class='ucam-anexo__apoio' id='dm-ax1'>PDF · 1,1 MB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-image'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='questao-4-correcao.jpg' aria-describedby='dm-ax2'>questao-4-correcao.jpg</button><span class='ucam-anexo__apoio' id='dm-ax2'>JPG · 640 KB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-file'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='planilha-de-notas-turma-b.xlsx' aria-describedby='dm-ax3'>planilha-de-notas-turma-b.xlsx</button><span class='ucam-anexo__apoio' id='dm-ax3'>XLSX · 88 KB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li></ul>",
+        "codigo": "<ul class=\"ucam-anexos\" aria-label=\"Anexos da solicitação\">\n  @for (a of requerimento().anexos; track a.id) {\n    <li><ucam-anexo [file]=\"a\" /></li>\n  }\n</ul>"
+      },
+      "exemplos": [
+        {
+          "titulo": "No envio: escolhido, subindo e recusado",
+          "descricao": "A mesma peça dentro do File Field. O que sobe leva a barra no próprio tile; o recusado fica na grade, com o motivo em número e circleAlert na figura, até quem anexou tirá-lo.",
+          "preview": "<ul class='ucam-anexos' style='max-inline-size:34rem'><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='termo-de-estagio.pdf'>termo-de-estagio.pdf</span><span class='ucam-anexo__apoio'>PDF · 312 KB · anexado</span></span><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-anexo__acao' type='button' aria-label='Remover anexo termo-de-estagio.pdf'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='gabarito-oficial.pdf'>gabarito-oficial.pdf</span><span class='ucam-anexo__apoio'>PDF · 3,4 MB · enviando 60%</span><span class='ucam-anexo__progresso' role='progressbar' aria-valuenow='60' aria-valuemin='0' aria-valuemax='100' aria-label='Envio de gabarito-oficial.pdf'><span style='inline-size:60%'></span></span></span><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-anexo__acao' type='button' aria-label='Remover anexo gabarito-oficial.pdf'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></li><li class='ucam-anexo ucam-anexo--recusado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg></span><span class='ucam-anexo__corpo'><span class='ucam-anexo__nome' title='digitalizacao.tiff'>digitalizacao.tiff</span><span class='ucam-anexo__apoio'>tem 14,2 MB — o limite é 10 MB</span></span><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-anexo__acao' type='button' aria-label='Remover anexo digitalizacao.tiff'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></li></ul>",
+          "codigo": "<ucam-anexo [file]=\"arquivo\" removable (remove)=\"tirar($event)\" />"
+        }
+      ]
+    },
+    "compositor": {
+      "instalacao": "npx ucam-cli add compositor",
+      "importacao": "import { UcamCompositor } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='max-inline-size:34rem'><form class='ucam-field'><label class='ucam-field__label' for='demo-resp'>Resposta ao requerente</label><div class='ucam-compositor'><textarea class='ucam-compositor__campo' id='demo-resp' rows='2' placeholder='O aluno recebe este texto por e-mail e no portal.' aria-describedby='demo-resp-h'></textarea><div class='ucam-compositor__barra'><span class='ucam-compositor__dica' id='demo-resp-h'>Ctrl + Enter envia. A resposta entra na atividade e não pode ser apagada.</span><div class='ucam-compositor__acoes'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='anexar'><svg class='ic' aria-hidden='true'><use href='#i-paperclip'/></svg> Anexar</button><button class='ucam-btn ucam-btn--primary ucam-btn--sm' type='button' data-fluxo='c' data-acao='responder'><svg class='ic' aria-hidden='true'><use href='#i-send'/></svg> Enviar resposta</button></div></div></div></form></div>",
+        "codigo": "<ucam-compositor\n  label=\"Resposta ao requerente\"\n  placeholder=\"O aluno recebe este texto por e-mail e no portal.\"\n  hint=\"Ctrl + Enter envia. A resposta entra na atividade e não pode ser apagada.\"\n  submitLabel=\"Enviar resposta\"\n  [attach]=\"true\"\n  [(value)]=\"resposta\"\n  (enviar)=\"responder($event)\"\n/>"
+      },
+      "exemplos": []
+    }
+  }
+}

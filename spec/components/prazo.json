@@ -1,0 +1,250 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "prazo",
+  "name": "Prazo",
+  "selector": "ucam-prazo",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "feedback",
+  "description": "Marcador que diz quanto tempo falta, em palavra: vence em 1 dia, venceu há 3 dias. Não é o selo de situação, que diz em que estado o registro está; é a urgência, que muda sozinha com o relógio mesmo quando ninguém toca no registro. Aparece só quando há urgência — prazo confortável não vira marcador.",
+  "quando_usar": [
+    "O requerimento tem prazo regimental e falta pouco, ou ele já venceu.",
+    "A fila de análise precisa mostrar o que é urgente antes de qualquer ordenação.",
+    "A urgência muda sozinha com o relógio, mesmo que ninguém toque no registro."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "campo": "DATA LIMITE",
+        "problema": "o prazo é exibido como data absoluta numa coluna. Saber se 05/09/2026 é urgente exige que a pessoa calcule mentalmente a diferença para hoje, uma vez por linha, em cada varredura da fila"
+      },
+      {
+        "tela": "image 10 (Pesquisa de Requerimento)",
+        "problema": "não há nenhuma marca de atraso na listagem: um requerimento vencido há uma semana e um aberto hoje têm exatamente a mesma aparência"
+      },
+      {
+        "tela": "Protocolo — Caixa de entrada",
+        "problema": "a urgência, quando aparece, é comunicada por cor de fundo na linha inteira — cor como único portador de significado, e uma linha tingida ainda por cima compete com o selo de situação ao lado"
+      }
+    ],
+    "conclusao": "O parque guarda a data limite e deixa o cálculo da urgência para quem lê. O contrato inverte: o sistema calcula e escreve a urgência em palavra, e a data absoluta fica no title para quem precisar dela."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "A pastilha do Badge, composta e não redesenhada: no Trilho B é um <ucam-badge>, no Trilho A a classe .ucam-prazo entra nos mesmos seletores do .ucam-badge. A caixa — tipo, peso, entrelinha, respiro, altura e raio — é declarada uma vez só, no badge. Até 09/09/2026 eram duas declarações, e elas divergiram em produção: o rótulo do prazo saía maior que o do selo colado nele.",
+      "classe": "ucam-prazo"
+    },
+    {
+      "parte": "indicador",
+      "obrigatorio": true,
+      "descricao": "Ícone de relógio, decorativo (aria-hidden). Obrigatório, e SOBRESCREVE o ícone padrão do tom do badge — warning traria um triângulo. É o que distingue prazo de selo de situação numa varredura rápida, quando os dois estão colados na mesma linha."
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": true,
+      "descricao": "O tempo em palavra: vence hoje, vence em 1 dia, venceu há 3 dias. Nunca a data absoluta — ela vai no title."
+    }
+  ],
+  "props": [
+    {
+      "nome": "date",
+      "tipo": "Date | string",
+      "obrigatorio": true,
+      "descricao": "A data limite. O componente calcula a distância até hoje e escolhe o tom; a aplicação não decide o tom, para que dois módulos não classifiquem o mesmo atraso de formas diferentes."
+    },
+    {
+      "nome": "warnAt",
+      "tipo": "number",
+      "default": "2",
+      "descricao": "Quantos dias antes do vencimento o marcador passa a aparecer, em tom de atenção. Fora dessa janela o componente não renderiza nada: prazo confortável não é informação, é ruído em toda linha da lista."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'auto' | 'proximo' | 'vencido'",
+      "default": "'auto'",
+      "descricao": "auto deriva o tom da data e é o único valor que deveria aparecer em código de aplicação. Os dois valores explícitos existem para preview de documentação e para teste, onde a data de hoje não pode governar a saída.",
+      "valores": {
+        "proximo": {
+          "uso": "Vence dentro da janela de aviso, ainda não venceu.",
+          "tokens": {
+            "fundo": "color.feedback.warning.background",
+            "texto": "color.feedback.warning.foreground"
+          }
+        },
+        "vencido": {
+          "uso": "Data limite já passou.",
+          "limite": "Vencido é fato, não desfecho: o requerimento vencido continua podendo ser deferido. O desfecho é do badge.",
+          "tokens": {
+            "fundo": "color.feedback.danger.background",
+            "texto": "color.feedback.danger.foreground"
+          }
+        }
+      }
+    },
+    {
+      "nome": "showAbsolute",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Escreve a data absoluta ao lado da palavra, para telas de detalhe onde a data é dado do registro e não só urgência. Em lista fica falso — a data absoluta em cada linha devolve à pessoa o cálculo que o componente existe para fazer."
+    }
+  ],
+  "estados": [
+    "default",
+    "proximo",
+    "vencido",
+    "oculto"
+  ],
+  "limites": {
+    "regras": [
+      "Não é selo de situação. Situação é estado do processo e muda quando alguém age; prazo muda sozinho com o relógio. Os dois convivem na mesma linha e dizem coisas diferentes.",
+      "Não aparecer quando o prazo é confortável. Um marcador em todas as linhas não marca nada.",
+      "Não usar para data que não é limite. Data de abertura, de última movimentação e de nascimento são dados, e o lugar deles é a description-list ou a coluna da tabela.",
+      "Não usar hora em lista. vence em 4 horas é útil no detalhe e ilegível numa varredura de 20 linhas, onde a unidade precisa ser a mesma em todas.",
+      "Não pintar a linha inteira da lista pela urgência. A pastilha basta; a linha tingida compete com o selo de situação e volta a ser cor como único portador de significado."
+    ],
+    "criterio": "Se a informação continua verdadeira amanhã sem ninguém tocar no registro, não é prazo."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "A urgência está na PALAVRA, não na cor (WCAG 1.4.1). É a correção direta da linha tingida da caixa de entrada, onde o único sinal de atraso era o fundo.",
+      "A data absoluta vai em title e, quando o marcador é a única fonte dela, também num elemento <time> com datetime em ISO — o title sozinho não é alcançável por teclado nem por toque.",
+      "O texto relativo é escrito por extenso, sem abreviação: venceu há 3 dias, não -3d. Abreviação é lida letra a letra por parte dos leitores de tela.",
+      "Contraste do texto sobre o fundo da pastilha mínimo 4.5:1, nos dois tons e nos dois temas.",
+      "O relógio é decorativo (aria-hidden=true).",
+      "O marcador não é interativo: não recebe foco, não recebe clique. Filtrar por atraso é trabalho de um controle de filtro.",
+      "Quando o prazo muda de tom enquanto a tela está aberta, quem anuncia é a região viva da lista — não o marcador."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Tempo relativo por extenso, no singular e no plural certos: vence em 1 dia, vence em 3 dias.",
+      "Hoje e ontem em palavra: vence hoje, venceu ontem — mais curto e mais legível que vence em 0 dias.",
+      "Passado no pretérito: venceu há 3 dias. O verbo carrega o tempo antes da cor.",
+      "Unidade única dentro de uma mesma lista: ou tudo em dias, ou tudo em horas.",
+      "Caixa natural (ADR-003)."
+    ],
+    "exemplos": {
+      "bom": [
+        "vence hoje",
+        "vence em 1 dia",
+        "venceu ontem",
+        "venceu há 3 dias"
+      ],
+      "ruim": [
+        "05/09/2026",
+        "-3d",
+        "ATRASADO",
+        "Prazo: 3"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-badge",
+      "ucam-icon"
+    ],
+    "usada_por": [
+      "padrao-triagem-lista-detalhe",
+      "ucam-data-table",
+      "ucam-list-item"
+    ]
+  },
+  "migracao": {
+    "de": "Coluna DATA LIMITE em texto e linha pintada por regra de célula",
+    "mapa": [
+      {
+        "legado": "coluna DATA LIMITE com data absoluta",
+        "novo": "ColumnDef type=prazo",
+        "nota": "A coluna deixa de mostrar a data e passa a mostrar a urgência; a data continua acessível no title e no detalhe. Quem precisa ordenar por data limite ordena pela mesma coluna — a ordenação usa o valor, não o texto."
+      },
+      {
+        "legado": "linha da lista pintada de vermelho quando atrasada",
+        "novo": "<ucam-prazo> na linha, sem tingir o fundo",
+        "nota": "Remover a pintura faz parte da migração. Mantê-la junto com o marcador é dizer a mesma coisa duas vezes, e uma delas em violação de 1.4.1."
+      },
+      {
+        "legado": "campo Prazo mostrando um número de dias sem unidade",
+        "novo": "texto por extenso calculado pelo componente",
+        "nota": "O número sozinho não diz se são dias corridos, úteis, restantes ou decorridos."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Em item de fila",
+      "codigo": "<ucam-prazo [date]=\"req.dataLimite\" />"
+    },
+    {
+      "titulo": "Ao lado do selo de situação",
+      "codigo": "<span class=\"ucam-cluster\">\n  <ucam-badge tone=\"warning\" label=\"Urgente\" />\n  <ucam-prazo [date]=\"req.dataLimite\" />\n</span>"
+    },
+    {
+      "titulo": "No detalhe, com a data absoluta",
+      "codigo": "<ucam-prazo [date]=\"req.dataLimite\" showAbsolute />"
+    },
+    {
+      "titulo": "Janela de aviso mais larga, para processo lento",
+      "codigo": "<ucam-prazo [date]=\"processo.limite\" [warnAt]=\"7\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Escrever o tempo em palavra e guardar a data absoluta no title.",
+      "evite": "Mostrar 05/09/2026 e esperar que a pessoa calcule.",
+      "porque": "Numa fila de 20 linhas o cálculo se repete 20 vezes por varredura, e é o que a tela de análise cobra hoje."
+    },
+    {
+      "faca": "Deixar o componente derivar o tom da data.",
+      "evite": "Passar tone explícito na aplicação.",
+      "porque": "Tom decidido por regra local faz dois módulos classificarem o mesmo atraso de formas diferentes, que é como o parque chegou a quatro cores para a mesma intenção."
+    },
+    {
+      "faca": "Não renderizar nada quando o prazo é confortável.",
+      "evite": "Marcador verde em todas as linhas dizendo que está tudo bem.",
+      "porque": "Marcador presente em toda linha deixa de marcar; o que sobra é uma coluna a menos de espaço para o dado."
+    },
+    {
+      "faca": "Manter a mesma unidade em toda a lista.",
+      "evite": "Misturar vence em 4 horas com vence em 3 dias na mesma coluna.",
+      "porque": "Comparar urgências exige a mesma régua; unidades misturadas obrigam a converter linha a linha."
+    },
+    {
+      "faca": "Tirar a pintura da linha ao adotar o marcador.",
+      "evite": "Manter fundo vermelho e pastilha juntos.",
+      "porque": "É dizer duas vezes a mesma coisa, e uma das duas continua sendo cor como único portador de significado."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "badge",
+      "diferenca": "Status-badge é o DESFECHO do registro; prazo é um FATO sobre a data. Um requerimento vencido continua podendo ser deferido, e por isso os dois aparecem juntos.",
+      "escolha": "Vence hoje, venceu há 3 dias: é contagem de data, e é do prazo. Colocar \"Vencido\" como situação apaga o desfecho real do requerimento."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Pastilha do badge com o relógio e o texto. O CSS não calcula nada: o texto relativo e o modificador de tom são escritos pelo markup, o que no legado significa calcular no servidor ou no controlador.",
+      "raiz": ".ucam-prazo, que entra nos seletores do .ucam-badge em vez de redeclarar a caixa",
+      "estado": "Tom por modificador --proximo e --vencido, que vestem o --warning e o --danger do badge. Sem estado de interação: o marcador não é controle.",
+      "variaveis": [
+        "--ucam-size-marcador",
+        "--ucam-radius-pill",
+        "--ucam-typography-caption-font-size",
+        "--ucam-color-feedback-warning-border",
+        "--ucam-color-feedback-danger-border"
+      ],
+      "nota": "Nenhuma medida da caixa é declarada aqui — todas vêm do .ucam-badge. É o que impede a divergência que já aconteceu uma vez, quando as duas cópias existiam."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/prazo/ucam-prazo.ts — compõe o <ucam-badge> e projeta um <time datetime>. O que é só do prazo fica aqui: o cálculo do tempo relativo, a escolha do tom e a decisão de não renderizar quando não há urgência."
+  }
+}

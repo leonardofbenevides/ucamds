@@ -1,0 +1,597 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "app-shell",
+  "name": "AppShell",
+  "selector": "ucam-app-shell",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "layout",
+  "description": "Moldura de toda aplicação da UCAM: faixa de identificação, navegação, contexto de campus e área de conteúdo. É o componente que faz três sistemas com aparências diferentes parecerem a mesma universidade.",
+  "quando_usar": [
+    "Toda tela de aplicação da UCAM, sem exceção: Protocolo, SIGFIN e Portal.",
+    "A tela precisa da identificação institucional, da navegação entre módulos e da troca de campus no mesmo lugar em que todas as outras as têm.",
+    "Uma tela nova está sendo criada e a pergunta é onde ela mora — a moldura é o que responde."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo, Portal Universitário e SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "todos os três apps",
+        "problema": "TRÊS faixas diferentes: Protocolo e Portal em bordô, SIGFIN inteiramente verde. Mesma universidade, três marcas (ADR-008)"
+      },
+      {
+        "tela": "Protocolo — drawer",
+        "problema": "a navegação abre como sobreposição escurecendo o resto da tela, mesmo em desktop de 2518px — padrão de modal aplicado à navegação primária"
+      },
+      {
+        "tela": "Protocolo e SIGFIN — header",
+        "rotulo": "CAMPOS",
+        "problema": "o campus ativo aparece em cinza-claro sobre o bordô, com contraste insuficiente. É informação crítica: a mesma tela mostra dados diferentes por campus"
+      },
+      {
+        "tela": "SIGFIN — menu",
+        "problema": "19 grupos e mais de cem itens, todos em CAIXA ALTA, com uma Busca de menus própria: o sistema admitindo que o menu é grande demais"
+      },
+      {
+        "tela": "Protocolo — header",
+        "problema": "o botão de menu é um quadrado preto sólido sobre o bordô, sem relação com a paleta"
+      },
+      {
+        "tela": "SIGFIN — header",
+        "problema": "clipart decorativo de mão com caneta cortando na borda direita"
+      },
+      {
+        "tela": "SIGFIN — header",
+        "problema": "UNIVERSIDADE CANDIDO MENDES aparece duas vezes: no logo e ao lado dele"
+      },
+      {
+        "tela": "Portal — rodapé",
+        "problema": "faixa amarela recomendando navegadores; em 2026 é ruído, não informação"
+      },
+      {
+        "tela": "todos",
+        "problema": "o conteúdo fica num container estreito centralizado, deixando metade da tela vazia em monitores largos"
+      }
+    ],
+    "conclusao": "A faixa é o que o usuário vê em toda tela de todo sistema. Unificá-la é a mudança de maior alcance por linha de código do projeto."
+  },
+  "anatomia": [
+    {
+      "parte": "skip-link",
+      "obrigatorio": true,
+      "descricao": "Primeiro elemento focável: pular para o conteúdo. Hoje não existe em nenhum app, e sem ele o teclado atravessa mais de cem itens de menu a cada página.",
+      "classe": "ucam-skip"
+    },
+    {
+      "parte": "regiao-viva",
+      "obrigatorio": true,
+      "descricao": "Região de anúncio da tela: um parágrafo vazio, invisível, com role=status, logo depois do skip-link. É onde o resultado de uma ação ganha PALAVRA. Toast está fora do catálogo por decisão (alert.json), então a confirmação de ação vira mudança na própria tela — selo que troca, linha que entra na atividade, botão que muda de nome —, e nada disso existe para quem não vê a tela. Uma por shell, criada com a página: região que nasce junto com o texto não é observada por leitor de tela nenhum.",
+      "classe": "ucam-sr-only"
+    },
+    {
+      "parte": "rail",
+      "obrigatorio": false,
+      "classe": "ucam-rail",
+      "descricao": "Coluna de MÓDULOS na borda esquerda, 72px, em cor de marca cheia. Um ícone por sistema do parque — não por seção deste sistema. Existe porque o Portal reúne ~25 módulos e, uma vez dentro de um deles, não havia como trocar sem voltar ao Portal. Só ícone: 72px não comportam rótulo, então cada item exige aria-label. Presente COMO COLUNA = arranjo \"rail\" e AUSÊNCIA de header. A mesma lista tem uma segunda forma: recolhida no system-launcher da faixa, ela custa 28px em vez de 72 e o header volta a existir — é o arranjo padrão das telas de referência. A lista é a mesma nos dois casos, montada de um lugar só; o que muda é a forma."
+    },
+    {
+      "parte": "notifications",
+      "obrigatorio": false,
+      "classe": "ucam-appbar__notificacoes",
+      "descricao": "Sino de notificações na faixa, entre o contexto de campus e o lançador de sistemas. Emitido quando a aplicação declara `notificacoes` — um NÚMERO de não lidas, não um booleano: sino sem contagem obriga a abrir a lista para responder uma pergunta de um dígito, e o custo de abrir é a tela inteira mudando. Zero e ausência são estados diferentes: com zero o sino aparece sem selo (a aplicação tem notificações e você está em dia); sem a chave o sino não existe (a aplicação não tem o recurso), pela mesma regra que impede o lançador de aparecer sem rail. O selo é bordô da marca e não vermelho — a ADR-002 reserva vermelho para destruição, e contagem não destrói nada. A contagem entra no nome acessível do botão por um sr-only dentro dele, e não no aria-label: o número muda sozinho, e rótulo escrito uma vez mente quando o valor anda. Acima de 99 o selo mostra 99+ e o nome acessível mantém o número exato. Não aparece no arranjo lateral, onde a faixa não existe. O sino ABRE A LISTA que o selo conta: um popover .ucam-menu--notificacoes ancorado nele, com aria-haspopup=menu, aria-expanded e aria-controls — e é a mesma máquina de popover da conta e do lançador, com Esc, clique fora, seta e devolução de foco. Sino com contagem e sem lista é a promessa falsa que a própria regra do selo condena: o número existe para decidir se vale abrir, e não havia o que abrir. A lista recebe `notificacoesItens` — título, quando, ícone e a tela de destino; com a chave ausente ou vazia o painel abre dizendo que não há nada, porque popover que abre em branco é indistinguível de popover quebrado. \"Marcar todas como lidas\" zera o selo, troca o nome acessível do sino e some — e os avisos FICAM: lido não é apagado."
+    },
+    {
+      "parte": "system-launcher",
+      "obrigatorio": false,
+      "classe": "ucam-appbar__lancador",
+      "descricao": "Botão de grade na ponta DIREITA da faixa, encostado na conta — o arranjo da grade de aplicativos do Google: abre a lista de MÓDULOS do parque num popover. É a forma recolhida do rail, e existe pelo mesmo motivo que ele — uma vez dentro de um sistema, trocar para outro não pode exigir voltar ao Portal. Só um dos dois aparece por tela: com a coluna presente o lançador seria a mesma lista duas vezes. Sem `rail` declarado não há botão — grade que abre menu vazio é a mesma promessa falsa do chevron sem popover. O lado é decisão de 09/09/2026 e não gosto: na ponta esquerda ele era o terceiro alvo antes do nome do sistema — menu, grade, marca — e o único dos três que leva para FORA do sistema em que a pessoa está. À direita ele entra no grupo que já responde \"quem sou eu, onde estou, por onde saio\", e aproveita o hábito que aluno e servidor trazem do Workspace."
+    },
+    {
+      "parte": "system-selector",
+      "obrigatorio": false,
+      "classe": "ucam-nav__sistema",
+      "descricao": "Nome do sistema no alto da navegação, 60px. Só existe no arranjo \"rail\": sem faixa superior, o nome do sistema mora junto do menu que ele governa. Substitui a parte brand do header nesse arranjo. Com faixa NÃO é emitido: o nome já está na brand, 60px acima, e repeti-lo numa fileira própria é o defeito que o SIGFIN comete ao escrever o nome da universidade duas vezes na mesma tela."
+    },
+    {
+      "parte": "header",
+      "obrigatorio": true,
+      "descricao": "Faixa de marca. Elemento banner. O FUNDO É O MESMO EM TODO SISTEMA (21/09/2026): surface.subtle, com o filete derivado da própria tinta da faixa. A faixa é cromo, não conteúdo — um plano próprio a separa do que se lê, e o chão do conteúdo segue branco (ADR-040). Até aqui cada sistema tingia a faixa com 10% da cor da sua categoria e o Portal, que não declara data-sistema, ficava branco: cinco telas, cinco cromos. Quem diz em que sistema se está continua na faixa e diz mais alto — a marquinha cheia na cor do sistema, com o nome ao lado. As variantes seguem para quem precisa dizer o contrário no markup: .ucam-appbar--clara devolve o branco, --escura e --marca trocam o par bg/fg inteiro.",
+      "classe": "ucam-appbar"
+    },
+    {
+      "parte": "brand",
+      "obrigatorio": true,
+      "descricao": "Logo e nome do sistema. Link para a raiz do sistema.",
+      "classe": "ucam-appbar__brand"
+    },
+    {
+      "parte": "context",
+      "obrigatorio": false,
+      "descricao": "Campus ou unidade ativa. Um select de verdade (ADR-033): na faixa, rótulo para leitor de tela e gatilho no desenho dos selects de formulário; na coluna lateral, rótulo visível. Sem opções para trocar, é só texto. Abaixo de faixa-minima sai da faixa e aparece no cabeçalho da gaveta.",
+      "classe": "ucam-campus"
+    },
+    {
+      "parte": "nav",
+      "obrigatorio": true,
+      "descricao": "Navegação. Fixa em desktop, sobreposta apenas em viewport estreita.",
+      "classe": "ucam-nav"
+    },
+    {
+      "parte": "nav-marca",
+      "obrigatorio": false,
+      "classe": "ucam-nav__topo",
+      "descricao": "Bloco de identidade no alto da coluna, no arranjo `lateral`: lançador de sistemas, logo, nome do sistema e botão de recolher numa fileira de 56px, e o campus numa fileira própria logo abaixo. Substitui a parte `header` nesse arranjo — e é por isso que os dois nunca coexistem: a marca dita duas vezes na mesma tela é o defeito que a evidência do SIGFIN registra."
+    },
+    {
+      "parte": "nav-contexto",
+      "obrigatorio": false,
+      "classe": "ucam-campus--nav",
+      "descricao": "O campus, em fileira de largura cheia sob a marca: rótulo visível e select de largura cheia, desenhado como campo (ADR-033). É a mesma informação da parte `context`, com o peso que a evidência pede — o dado que decide QUAIS registros a tela mostra. O seletor é o mesmo dos outros arranjos."
+    },
+    {
+      "parte": "nav-recolher",
+      "obrigatorio": false,
+      "descricao": "Botão que encolhe a navegação do módulo a uma coluna de ícones de 56px. Vive na fileira do nome do sistema no arranjo com rail, e na barra do pé da coluna quando há faixa — lá o alto da coluna não tem fileira e o botão flutuaria sozinho acima da ação primária e só existe a partir de 64rem — abaixo disso a navegação já é painel sobreposto e recolher não significa nada. Carrega aria-expanded apontando a própria navegação, para que o estado que se vê e o que o leitor de tela ouve sejam o mesmo atributo.",
+      "classe": "ucam-nav__recolher"
+    },
+    {
+      "parte": "nav-search",
+      "obrigatorio": false,
+      "descricao": "Busca dentro da navegação. Obrigatória acima de 20 itens.",
+      "classe": "ucam-nav__search"
+    },
+    {
+      "parte": "search",
+      "obrigatorio": false,
+      "descricao": "Busca global na faixa. NÃO é a nav-search: aquela peneira o MENU, esta procura no conteúdo do sistema — requerimento, aluno, setor, plano. As duas podem coexistir, e coexistem no SigFin, porque respondem a perguntas diferentes: 'onde fica a tela' e 'onde está o registro'. Só existe quando há mais de uma entidade procurável; caixa de busca que devolve nada é pior que ausência dela.",
+      "classe": "ucam-appbar__search"
+    },
+    {
+      "parte": "nav-scrim",
+      "classe": "ucam-nav-scrim",
+      "obrigatorio": false,
+      "descricao": "Escurecimento sob a navegação sobreposta. Só existe abaixo de 64rem — em desktop a navegação é coluna da grade e nada escurece."
+    },
+    {
+      "parte": "nav-group",
+      "classe": "ucam-nav__group",
+      "obrigatorio": false,
+      "descricao": "Agrupamento de itens, com rótulo em caixa alta. A caixa alta vale para o RÓTULO DO GRUPO e para mais nada: no SIGFIN os mais de cem itens estão em caixa alta, o que apaga a distinção entre título e destino navegável."
+    },
+    {
+      "parte": "nav-favoritos",
+      "obrigatorio": false,
+      "classe": "ucam-nav__fixados",
+      "descricao": "O grupo Favoritos, no alto da navegação e antes dos grupos do sistema: telas, filtros salvos e registros que quem usa fixou. Só é emitido quando há algo fixado — vazio não ocupa linha. O título é <button aria-expanded> (.ucam-nav__group-title--recolhivel) e recolhe a lista, pelo mesmo script dos ramos. Cada item (.ucam-nav__fixado) é o <a> de sempre com um <button> de desfixar AO LADO, nunca dentro — alvo aninhado é HTML inválido; o botão senta sobre a ponta direita por posição e só aparece sob o ponteiro ou com foco, e sempre em tela de toque. Num sistema de vinte destinos, os três que uma pessoa abre todo dia não são os três de outra; é o grupo que resolve isso sem trocar a ordem do menu."
+    },
+    {
+      "parte": "nav-sub",
+      "obrigatorio": false,
+      "classe": "ucam-nav__sub",
+      "descricao": "Subitens de um item de navegação, pendurados num filete vertical. Quem os contém é <button aria-expanded>, nunca <a>: ramo não é destino, e um link que só abre a lista promete uma página que não existe. O filete não é enfeite — com o pai rolado para fora do campo de visão, uma lista apenas indentada é uma lista de nomes soltos, e a linha é o que continua dizendo de quem eles são. O ramo que guarda o item ativo nasce aberto."
+    },
+    {
+      "parte": "nav-footer",
+      "obrigatorio": false,
+      "classe": "ucam-nav__footer",
+      "descricao": "Pé da navegação, fora da rolagem: configuração e ajuda. Não são destino de trabalho — vai-se lá duas vezes por ano — e no meio da lista disputam a varredura vertical com o que se usa dez vezes por dia. No SIGFIN, somadas ao menu, ficariam depois de cem itens."
+    },
+    {
+      "parte": "nav-conta",
+      "obrigatorio": false,
+      "classe": "ucam-nav__conta",
+      "descricao": "A conta no pé da coluna, no arranjo `lateral`, e com NOME VISÍVEL. Na faixa sobrava só o avatar, e estava certo: ali o nome custava largura ao lado da marca. No pé de uma coluna de 318px a linha está vazia de qualquer forma, e o nome responde de graça o que duas letras fazem adivinhar. Fica FORA da rolagem: um menu de cem itens não pode enterrar o Sair depois de todos eles."
+    },
+    {
+      "parte": "mobilebar",
+      "obrigatorio": false,
+      "classe": "ucam-mobilebar",
+      "descricao": "Fileira rasa com o gatilho da navegação e o nome do sistema, emitida SÓ no arranjo `lateral` e visível só abaixo de 64rem. Existe porque nessa largura a coluna vira painel sobreposto e não há faixa para hospedar o botão que a abre. É a mesma dívida que o arranjo de rail pagou com o .ucam-rail__menu."
+    },
+    {
+      "parte": "user",
+      "obrigatorio": true,
+      "descricao": "Gatilho da conta: o avatar, e nada mais. O nome por extenso e o Sair moram no user-menu que ele abre — avatar, nome e botão Sair fixos na ponta da faixa gastam espaço permanente ao lado da marca com um dado que nunca muda e uma ação rara. No arranjo com rail o gatilho é o .ucam-rail__usuario, no pé da coluna; mesmo menu, mesma marcação.",
+      "classe": "ucam-appbar__user"
+    },
+    {
+      "parte": "user-menu",
+      "obrigatorio": false,
+      "classe": "ucam-menu",
+      "descricao": "Popover da conta. Guarda a identificação por extenso — com o campus, quando há — e o Sair. É onde o evento signOut é acionado: no arranjo com rail o shell identificava quem estava logado e não oferecia saída nenhuma, ou seja, metade do contrato estava desenhada. Fecha por hidden, não por classe: o atributo tira o menu da ordem de tabulação e da árvore de acessibilidade de uma vez."
+    },
+    {
+      "parte": "main",
+      "obrigatorio": true,
+      "descricao": "Alvo do skip-link, com id fixo e tabindex -1.",
+      "classe": "ucam-main"
+    },
+    {
+      "parte": "footer",
+      "obrigatorio": false,
+      "classe": "ucam-shell__footer"
+    }
+  ],
+  "props": [
+    {
+      "nome": "systemName",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome do sistema: Protocolo, SigFin, Portal. Não repete Universidade Candido Mendes — isso já está no logo."
+    },
+    {
+      "nome": "context",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Campus ou unidade ativa."
+    },
+    {
+      "nome": "contextLabel",
+      "tipo": "string",
+      "default": "'Campus'",
+      "descricao": "Palavra que qualifica o contexto, exibida esmaecida antes do valor. Sem ela a faixa mostra só \"Campos\", que em português não diz que aquilo é um campus. O rótulo é do sistema, não fixo: unidade, polo, filial."
+    },
+    {
+      "nome": "contextOptions",
+      "tipo": "UcamOption[] | null",
+      "default": "null",
+      "descricao": "Quando o usuário tem acesso a mais de um campus, o contexto vira seletor."
+    },
+    {
+      "nome": "user",
+      "tipo": "{ name: string; photoUrl?: string } | null",
+      "default": "null"
+    },
+    {
+      "nome": "favorites",
+      "tipo": "NavItem[] | null",
+      "default": "null",
+      "descricao": "Os itens fixados por quem usa, na ordem em que fixou. null ou vazio: o grupo não existe. Quem persiste é a aplicação — o shell só desenha e emite."
+    },
+    {
+      "nome": "navMode",
+      "tipo": "'fixed' | 'overlay' | 'auto'",
+      "default": "'auto'",
+      "descricao": "auto: fixa a partir de 64rem, sobreposta abaixo. Corrige o drawer que cobre a tela em desktop."
+    },
+    {
+      "nome": "navSearchable",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Obrigatório acima de 20 itens de navegação — o caso do SIGFIN."
+    },
+    {
+      "nome": "searchable",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Liga a busca global na faixa. Falso por padrão de propósito: o shell não pode presumir que a aplicação tem o que buscar."
+    },
+    {
+      "nome": "searchShortcut",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Atalho de teclado anunciado dentro do campo, desenhado como tecla. Só declarar quando a aplicação REALMENTE registra a tecla: atalho escrito e não implementado é promessa falsa, e quem depende de teclado é justamente quem tenta usá-lo primeiro."
+    },
+    {
+      "nome": "maxContentWidth",
+      "tipo": "string",
+      "default": "'88rem'",
+      "descricao": "Teto do conteúdo. Nem estreito demais, nem linha de 200 caracteres."
+    },
+    {
+      "nome": "navWidth",
+      "tipo": "string",
+      "default": "'17rem'",
+      "descricao": "Largura da navegação fixa. Chega ao CSS como --ucam-nav-width no elemento raiz do shell."
+    },
+    {
+      "nome": "navCollapsible",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Oferece o botão de recolher. Falso só onde a navegação é curta a ponto de a economia não pagar o clique — abaixo de seis destinos, recolher tira rótulo e não devolve largura que se note."
+    },
+    {
+      "nome": "navCollapsed",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Estado inicial da coluna. Aberta por padrão: é o estado que ensina onde estão os destinos a quem chega pela primeira vez. A escolha de quem usa persiste em localStorage e vence este valor a partir da segunda visita."
+    },
+    {
+      "nome": "appbarAppearance",
+      "tipo": "'brand' | 'light' | 'dark' | 'custom'",
+      "default": "'brand'",
+      "descricao": "Cor da faixa. 'brand' é o bordô institucional e continua sendo o default (ADR-001). 'light' e 'dark' são variantes prontas. 'custom' não pinta nada: a aplicação declara --ucam-appbar-bg e --ucam-appbar-fg no .ucam-shell e os estados — filete, esmaecido, hover — saem daí por color-mix.",
+      "valores": {
+        "brand": {
+          "uso": "Default. Sistemas do parque, onde a faixa é o que faz três aplicações diferentes parecerem a mesma universidade.",
+          "limite": "Não trocar por gosto de uma tela só: a faixa é identidade do sistema inteiro."
+        },
+        "light": {
+          "uso": "Sistema em que a marca já aparece em outro lugar, ou tela que precisa de menos peso no topo.",
+          "limite": "Exige que o logo herde currentColor — o mask da .ucam-appbar__logo já garante isso."
+        },
+        "dark": {
+          "uso": "Sistema usado o dia inteiro ao lado de outro, onde a tarja bordô cansa."
+        },
+        "custom": {
+          "uso": "Marca futura — pós-graduação, EAD — sem esperar por multi-marca no token.",
+          "limite": "Contraste de --ucam-appbar-fg sobre --ucam-appbar-bg é responsabilidade de quem declara; o design system não tem como verificar cor que não conhece."
+        }
+      }
+    },
+    {
+      "nome": "systemCategory",
+      "tipo": "'academico' | 'financeiro' | 'atendimento' | 'gestao' | 'pessoas' | 'acervo' | null",
+      "default": "null",
+      "descricao": "Categoria do sistema (ADR-032). Em teste pela ADR-037: vira a subpaleta do sistema — família da ação (primário, hover, pressionado, sutil, foco) derivada da categoria e faixa tinta a 10% com a marquinha cheia. Feedback, links e ladrilhos não mudam. null mantém o bordô, e é o que o Portal declara: ele é o saguão. O teste tem três modos (cheia, moldura, comum) pela chave ?paleta= das telas autônomas."
+    },
+    {
+      "nome": "shellLayout",
+      "tipo": "'appbar' | 'rail' | 'lateral'",
+      "default": "'appbar'",
+      "descricao": "Arranjo da moldura. appbar é a faixa superior com marca, busca, contexto e usuário. rail troca a faixa por uma coluna de módulos de 72px e redistribui o que a faixa carregava. lateral APAGA a faixa: marca, nome do sistema, campus, busca global e conta descem todos para a coluna de navegação, que passa a ir do topo ao pé da janela, e o conteúdo recebe a largura inteira mais a própria barra de visão.",
+      "valores": {
+        "appbar": {
+          "uso": "Sistema único, sem irmãos para alternar. Mantém contexto de campus em lugar fixo."
+        },
+        "rail": {
+          "uso": "Sistema que vive ao lado de outros módulos da universidade — o caso do parque da UCAM.",
+          "limite": "O contexto de campus perde lugar fixo neste arranjo. Enquanto não houver um seletor de contexto dentro do seletor de sistema, uma tela cujos dados dependem do campus NÃO deve usar rail sem resolver isso — é dívida declarada, não detalhe."
+        },
+        "lateral": {
+          "uso": "O padrão para tela de trabalho densa — fila, listagem, painel. A faixa de 72px atravessava o campo de leitura em TODA tela para carregar cinco papéis que a coluna já carrega de graça, porque está ali de qualquer forma. Neste arranjo superfícies se ENCOSTAM: sem vão, canto arredondado ou sombra entre painéis vizinhos — o que separa dois planos é um fio de 1px, e a hierarquia entre eles vem do tom (moldura em surface-chrome, conteúdo em surface-default). Os outros arranjos gastavam mais de 90px de vão puro na horizontal numa janela de 1440, e cada vão cobrava ainda um raio e uma sombra para explicar por que existia. O bordô, sem a faixa, deixa de ser plano de fundo permanente e volta a ser acento: fica na ação primária e no item ativo, e a superfície grande de marca sobrevive num lugar só — a coluna institucional da tela de entrada, onde não há dado na tela para ela disputar.",
+          "limite": "Abaixo de 64rem a navegação é painel sobreposto e não há faixa para hospedar o botão que a abre: o arranjo é obrigado a emitir a mobilebar. Um lateral sem ela deixa o sistema inteiro sem navegação no celular."
+        }
+      }
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "contextChange",
+      "payload": "string",
+      "descricao": "Campus alterado. Recarregar dados é responsabilidade da aplicação."
+    },
+    {
+      "nome": "signOut",
+      "payload": "void",
+      "descricao": "Sair acionado."
+    },
+    {
+      "nome": "unpin",
+      "payload": "NavItem",
+      "descricao": "O item cujo botão de desfixar foi acionado. A aplicação remove da preferência e reflete em favorites."
+    }
+  ],
+  "estados": [
+    "default",
+    "nav-fixa",
+    "nav-sobreposta-aberta",
+    "nav-sobreposta-fechada"
+  ],
+  "responsividade": {
+    "problema": "O drawer sobreposto é o padrão de viewport estreita aplicado a todas as larguras.",
+    "estrategias": {
+      "fixed": {
+        "quando": "A partir de 64rem.",
+        "como": "Navegação persistente na lateral; o conteúdo divide a tela com ela."
+      },
+      "overlay": {
+        "quando": "Abaixo de 64rem.",
+        "como": "Sobreposição com escurecimento, retenção de foco e fechamento por Esc."
+      }
+    },
+    "regra": "A sobreposição só é modal quando é sobreposição. Em desktop a navegação não retém foco nem escurece o conteúdo."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Skip-link como primeiro elemento focável, visível ao receber foco (WCAG 2.4.1). É a correção mais urgente do shell: hoje o teclado atravessa 100+ itens do SIGFIN a cada página.",
+      "A tela tem UMA região viva (role=status) para o resultado das ações, vazia desde o carregamento. O que ela diz é a mesma coisa que a tela mostrou: \"Requerimento encaminhado ao setor responsável.\" Erro de campo NÃO passa por ela — erro é role=alert junto do campo, e a mesma frase dita duas vezes é ruído.",
+      "Marcos semânticos: header como banner, nav com aria-label, main, footer.",
+      "A navegação em modo overlay retém o foco e fecha com Esc; em modo fixed NÃO retém foco.",
+      "O item ativo usa aria-current=page, além da distinção visual.",
+      "O contexto de campus é lido junto ao nome do sistema, não como texto solto — ele muda o significado de toda a tela.",
+      "Contraste do texto sobre a faixa mínimo 4.5:1, inclusive o contexto (hoje reprova).",
+      "O botão de menu tem nome acessível e aria-expanded.",
+      "Ordem de foco previsível: skip-link, marca, navegação, conteúdo, usuário.",
+      "Nenhum elemento decorativo é focável — o clipart do SIGFIN sai.",
+      "O gatilho da conta declara aria-haspopup=\"menu\" e aria-expanded, e carrega o nome do usuário no nome acessível: o nome sai do desenho, não da árvore de acessibilidade.",
+      "O menu da conta fecha com Esc devolvendo o foco ao gatilho, navega com as setas e fecha ao clicar fora. Menu que só responde a Tab é menu no nome e lista de links no comportamento.",
+      "Ramo de navegação declara aria-expanded e aria-controls, e o ramo que contém o item ativo abre por padrão — esconder a tela em que se está obriga a caçar de onde se veio."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.1.1",
+      "2.1.2",
+      "2.4.1",
+      "2.4.3",
+      "2.4.7",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "systemName é só o nome do sistema. O logo já diz a universidade.",
+      "O contexto de campus é sempre visível, nunca escondido em menu.",
+      "Nada de aviso de navegador no rodapé."
+    ],
+    "exemplos": {
+      "bom": [
+        "Protocolo",
+        "SigFin",
+        "Portal Universitário",
+        "Campus Campos"
+      ],
+      "ruim": [
+        "SISTEMA DE PROTOCOLO CANDIDO MENDES",
+        "UNIVERSIDADE CANDIDO MENDES · Universidade Candido Mendes",
+        "Recomendamos Mozilla Firefox, Google Chrome ou Safari"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "[ucamTooltip]",
+      "ucam-avatar",
+      "ucam-command",
+      "ucam-drawer",
+      "ucam-icon",
+      "ucam-icon-button",
+      "ucam-icon-tile",
+      "ucam-input-group",
+      "ucam-kbd",
+      "ucam-menu",
+      "ucam-select",
+      "ucam-text-field"
+    ],
+    "usada_por": [
+      "padrao-painel-indicadores",
+      "padrao-shell-aplicacao",
+      "padrao-triagem-lista-detalhe"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / headers próprios por aplicação",
+    "mapa": [
+      {
+        "legado": "header bordô do Protocolo e do Portal",
+        "novo": "ucam-app-shell"
+      },
+      {
+        "legado": "header verde do SIGFIN",
+        "novo": "ucam-app-shell com camada de marca",
+        "nota": "Durante a transição preserva o verde na faixa, sem contaminar a semântica dos componentes (ADR-008)."
+      },
+      {
+        "legado": "drawer sobreposto em desktop",
+        "novo": "navMode=\"auto\""
+      },
+      {
+        "legado": "Busca de menus do SIGFIN",
+        "novo": "navSearchable"
+      },
+      {
+        "legado": "clipart de mão com caneta",
+        "novo": "removido"
+      },
+      {
+        "legado": "faixa amarela de navegadores",
+        "novo": "removido"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Uso típico",
+      "codigo": "<ucam-app-shell\n  systemName=\"Protocolo\"\n  [context]=\"campus()\"\n  [contextOptions]=\"campiDoUsuario()\"\n  [user]=\"usuario()\"\n  (contextChange)=\"trocarCampus($event)\">\n  <!-- conteúdo da tela -->\n</ucam-app-shell>"
+    },
+    {
+      "titulo": "Sistema com navegação grande",
+      "codigo": "<ucam-app-shell systemName=\"SigFin\" navSearchable [user]=\"usuario()\">\n  <!-- 19 grupos de navegação ficam pesquisáveis -->\n</ucam-app-shell>"
+    },
+    {
+      "titulo": "Trilho A — HTML puro, para o app legado",
+      "codigo": "<div class=\"ucam ucam-shell\" data-nav=\"closed\">\n  <a class=\"ucam-skip\" href=\"#conteudo\">Pular para o conteúdo</a>\n\n  <header class=\"ucam-appbar\">\n    <button class=\"ucam-btn ucam-btn--icon ucam-btn--ghost ucam-appbar__menu\"\n            aria-label=\"Abrir navegação\" aria-expanded=\"false\" aria-controls=\"nav-app\">…</button>\n    <a class=\"ucam-appbar__brand\" href=\"/\"><span class=\"ucam-appbar__system\">Protocolo</span></a>\n    <span class=\"ucam-appbar__spacer\"></span>\n    <span class=\"ucam-campus ucam-campus--faixa\"><label class=\"ucam-sr-only\" for=\"campus\">Campus</label><select class=\"ucam-select ucam-select--faixa\" id=\"campus\"><option selected>Campos</option><option>Rio de Janeiro</option></select></span>\n    <span class=\"ucam-appbar__user\"><span class=\"ucam-appbar__avatar\">LB</span>\n      <span class=\"ucam-appbar__name\">Leonardo Benevides</span></span>\n  </header>\n\n  <nav class=\"ucam-nav\" id=\"nav-app\" aria-label=\"Navegação principal\">\n    <div class=\"ucam-nav__scroll\">\n      <div class=\"ucam-nav__group\">\n        <p class=\"ucam-nav__group-title\">Requerimentos</p>\n        <a class=\"ucam-nav__item\" href=\"#\" aria-current=\"page\">Pesquisar</a>\n      </div>\n    </div>\n  </nav>\n  <div class=\"ucam-nav-scrim\"></div>\n\n  <main class=\"ucam-main\" id=\"conteudo\" tabindex=\"-1\">\n    <div class=\"ucam-content\">…</div>\n  </main>\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Mesma faixa, mesma marca, em todos os sistemas.",
+      "evite": "Bordô no Protocolo e verde no SIGFIN.",
+      "porque": "Três sistemas, três marcas para a mesma universidade. É a ADR-008, e a faixa é o que o usuário vê em toda tela."
+    },
+    {
+      "faca": "Navegação fixa em desktop.",
+      "evite": "Navegação como sobreposição escurecendo a tela em monitor largo.",
+      "porque": "É padrão de modal aplicado à navegação primária, e acontece até em viewport de 2518px."
+    },
+    {
+      "faca": "Contexto de campus sempre visível, com contraste verificado sobre a faixa.",
+      "evite": "Campus ativo em cinza-claro sobre o bordô, ou escondido em menu.",
+      "porque": "A mesma tela mostra dados diferentes por campus — é informação crítica, não decoração."
+    },
+    {
+      "faca": "Deixar o conteúdo usar a largura do monitor.",
+      "evite": "Container estreito centralizado com metade da tela vazia.",
+      "porque": "As tabelas do portal são largas e são espremidas por uma restrição que não as serve."
+    },
+    {
+      "faca": "systemName com o nome do sistema apenas.",
+      "evite": "Repetir a universidade ao lado do logo, e manter faixa de navegador recomendado no rodapé.",
+      "porque": "UNIVERSIDADE CANDIDO MENDES aparece duas vezes na mesma faixa; em 2026 recomendar navegador é ruído."
+    },
+    {
+      "faca": "Deixar o CSS posicionar e o script apenas alternar data-nav.",
+      "evite": "Script que mede a largura da janela para decidir se a navegação é fixa ou sobreposta.",
+      "porque": "A media query já decide, e decide de novo a cada redimensionamento sem custo. Script que mede largura erra no primeiro quadro, erra no zoom e erra quando o usuário muda o tamanho da fonte."
+    },
+    {
+      "faca": "Trocar a cor da faixa declarando --ucam-appbar-bg e --ucam-appbar-fg, e deixar filete, esmaecido e hover saírem por color-mix.",
+      "evite": "Cravar rgba(255,255,255,.16) para o filete e outro rgba para o hover em cada sistema.",
+      "porque": "Foi assim que o parque chegou a três faixas diferentes para a mesma universidade: cada sistema inventou os próprios estados a partir da cor de fundo. Derivar os estados de uma variável faz a cor nova chegar já acompanhada deles."
+    },
+    {
+      "faca": "Qualificar o contexto da faixa com a palavra que o nomeia — Campus Campos.",
+      "evite": "Mostrar só o valor — Campos.",
+      "porque": "O valor sozinho é ambíguo para quem chega de fora e não diz nada para quem lê a tela pela primeira vez. O par rótulo + valor cabe na mesma largura."
+    },
+    {
+      "faca": "Avatar na moldura; nome por extenso e Sair dentro do menu que ele abre.",
+      "evite": "Avatar, nome completo e botão Sair lado a lado, fixos, em toda tela.",
+      "porque": "Quem está logado é o dado que menos muda na aplicação, e sair é ação rara. Nenhum dos dois compra espaço permanente ao lado da marca — e a ponta direita da faixa é justamente onde cabe o contexto que MUDA, como o campus."
+    },
+    {
+      "faca": "Contorno leve nos controles da moldura, com o degrau forte reservado a hover e foco.",
+      "evite": "Contorno de 3:1 em repouso no chip de campus, no anel do avatar e na tecla do atalho.",
+      "porque": "É a ADR-009, que já valia para botão e campo e não estava aplicada à faixa. Medido: 48% do quase-preto sobre a faixa clara dá algo como #8C8C8C — mais escuro que a borda do campo onde se digita (#D0D0D0) e que o filete entre linhas da tabela. A moldura desenhava mais forte que o conteúdo que ela serve."
+    },
+    {
+      "faca": "Dobrar grupo longo em ramo, com o filete vertical ligando os subitens ao pai.",
+      "evite": "Cem itens no mesmo nível, como o menu do SIGFIN.",
+      "porque": "O sistema já admitiu o problema ao inventar uma \"Busca de menus\" própria. Ramo e busca resolvem coisas diferentes: a busca serve a quem sabe o nome do destino; o ramo serve a quem está procurando com os olhos."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "spec/layouts.json",
+      "raiz": ".ucam-shell",
+      "estado": "data-nav=\"open|closed\" no elemento raiz — só tem efeito abaixo de 64rem",
+      "variaveis": [
+        "--ucam-nav-width",
+        "--ucam-content-max",
+        "--ucam-gutter",
+        "--ucam-appbar-height"
+      ],
+      "nota": "A folha entrega a grade, os modos da navegação e o contêiner de conteúdo. O que ela NÃO entrega, porque é comportamento: alternar data-nav, reter foco no modo sobreposto, fechar com Esc e manter aria-expanded em dia. Isso é do <ucam-app-shell> ou de dez linhas de script na aplicação legada. A raiz aqui vinha escrita sem o ponto, e por isso caía no ramo de \"não entrega\" do validador: a moldura de toda tela do parque foi a única do catálogo que nunca teve a classe conferida contra a folha."
+    },
+    "trilho_b": "ucam-app-shell (@ucam/ui) — primeira versão em 20/09/2026, fechando a lista: os 49 contratos passam a ter componente. Cobre o arranjo appbar (faixa em cima, navegação à esquerda, conteúdo no resto), com as partes obrigatórias do contrato: skip-link que move o FOCO, região viva vazia, faixa, marca com marquinha do sistema, navegação em grupos, conta e main com id fixo e tabindex -1. A navegação é coluna a partir de 64rem e sobreposta abaixo, com escurecimento e inert quando fechada. Declara as próprias variáveis de moldura (--ucam-appbar-height, --ucam-nav-width, --ucam-content-max): elas moram na folha do Trilho A e não existem em @ucam/tokens. NÃO cobre ainda: arranjos rail e lateral, busca global da faixa, seletor de campus e lançador de sistemas. Paridade medida em scratchpad/prova-paridade-shell.mjs — faixa de 72px, recuo de 20px e coluna de 318px iguais nos dois trilhos."
+  },
+  "limites": {
+    "regras": [
+      "No arranjo rail, o header NÃO é emitido — não é escondido por CSS. Uma testeira presente e invisível continuaria na ordem de tabulação e no leitor de tela, anunciando marca, busca e sair que ninguém vê, e o skip-link passaria por cima dela.",
+      "Rail é para MÓDULO, nunca para seção do sistema atual. Seção do sistema é a navegação lateral. Um rail com \"Setores\" e \"Naturezas\" dentro dele faria a troca de sistema e a navegação interna terem o mesmo desenho."
+    ],
+    "motivo": "O rail promete alternância entre sistemas. Um item que não leva a outro sistema quebra a promessa e reduz o rail a uma segunda barra de ícones.",
+    "nav_recolhida": [
+      "Recolher NÃO é esconder. Os destinos continuam todos na tela, na mesma ordem e na mesma vertical — o que sai é o rótulo, não o item. Trocar a coluna por um botão de menu custa um clique só para descobrir onde se está.",
+      "O rótulo sai da vista, nunca da árvore de acessibilidade. Recorte de 1px, não display:none: o item precisa continuar tendo nome acessível, e a contagem precisa continuar entrando no anúncio.",
+      "A busca no menu e os subitens não sobrevivem a 56px e ficam ocultos enquanto recolhida. Num módulo como o SIGFIN, que tem mais de cem itens e depende da busca, a navegação recolhida é uma escolha ruim — e o botão de expandir precisa estar sempre à mão.",
+      "A contagem vira ponto. O número não cabe ao lado do ícone em 56px, e encolhê-lo até caber o tornaria ilegível; o ponto diz que há pendência e o número continua no nome acessível.",
+      "O alvo de ponteiro continua com 40px. Recolher a coluna não pode encolher o alvo (WCAG 2.5.8).",
+      "A coluna recolhida tem 56px e o rail tem 72px de propósito. Duas colunas de ícones da mesma largura leem como uma coluna só partida por um filete; o degrau é o que diz que são camadas diferentes de navegação."
+    ]
+  },
+  "vs": [
+    {
+      "componente": "page-header",
+      "diferenca": "AppShell é a moldura que NÃO muda entre telas — identificação, navegação, campus; PageHeader é a primeira coisa que muda quando a tela troca. A fronteira entre os dois é a fronteira entre sistema e tela.",
+      "escolha": "O conteúdo vale para toda a aplicação e permanece ao navegar."
+    },
+    {
+      "componente": "drawer",
+      "diferenca": "A navegação do AppShell é PERMANENTE e é por onde se anda no sistema; o Drawer entra pela borda para uma tarefa curta e sai. Gaveta não é lugar de menu principal, e menu principal não vira gaveta em telas grandes.",
+      "escolha": "Ir de um módulo a outro, trocar de campus, sair."
+    }
+  ]
+}

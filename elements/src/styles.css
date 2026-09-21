@@ -1,0 +1,48 @@
+/*
+ * Folha do Trilho A+. Acompanha ucam-elements.js — o bundle sozinho renderiza
+ * markup sem estilo, porque os componentes da base escrevem classes utilitárias
+ * do Tailwind no vocabulário shadcn (bg-popover, border-input, animate-spin).
+ *
+ * SEM PREFLIGHT, de propósito e sem exceção. O preflight do Tailwind zera
+ * margin, padding e estilo de lista em `*`, `body` e cabeçalhos. Numa página
+ * do Protocolo — AngularJS com Angular Material de 2016 — isso repintaria a
+ * aplicação inteira. Por isso importamos theme + utilities, nunca 'tailwindcss'
+ * inteiro: o custom element traz o que ELE precisa e não toca no resto da
+ * página.
+ */
+@import 'tailwindcss/theme';
+@import 'tailwindcss/utilities';
+
+/* Varre a fonte da lib para saber quais utilitários gerar. Sem isto o Tailwind
+   não vê classe nenhuma — elas vivem dentro dos templates de ui/, não aqui. */
+@source '../../ui/projects/ui/src/lib';
+
+/* Os tokens da UCAM e a ponte que dá ao vocabulário shadcn os valores da
+   marca. A ponte importa a cópia de ucam-tokens.css que vive em ui/ — a mesma
+   cópia que tools/sync-ui.mjs mantém em dia. */
+@import '../../ui/projects/ui/src/tokens/ucam-zard-bridge.css';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}

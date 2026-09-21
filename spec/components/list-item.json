@@ -1,0 +1,333 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "list-item",
+  "name": "ListItem",
+  "selector": "ucam-list-item",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "dados",
+  "description": "Linha de uma lista de registros com identidade, título, apoio, marcadores e horário. É a alternativa à tabela quando o registro tem uma pessoa na frente e o que importa é decidir se ele exige ação agora — não comparar colunas entre linhas.",
+  "quando_usar": [
+    "A lista tem uma pessoa na frente de cada registro e a decisão é se ele exige ação agora: a fila de análise, as mensagens do requerimento.",
+    "O registro tem título, apoio, marcadores e horário — e comparar colunas entre linhas não é o que se faz ali.",
+    "A tela é estreita e a tabela não caberia sem virar rolagem horizontal."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e o redesenho interno de 2026 (protocolo-redesign-ux)",
+    "ocorrencias": [
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "problema": "a fila de requerimentos é uma tabela de sete colunas em que só três são lidas na triagem; o nome do requerente compete com protocolo, data e código de natureza no mesmo peso"
+      },
+      {
+        "tela": "image 10 (Pesquisa de Requerimento)",
+        "problema": "não há como distinguir, correndo o olho, o requerimento que venceu o prazo do que acabou de chegar — a informação de prazo é uma data crua numa coluna"
+      },
+      {
+        "tela": "redesenho interno, Caixa de Entrada e Gerencial",
+        "problema": "a mesma linha foi desenhada duas vezes, com marcação e medidas diferentes em cada tela, porque não existia componente para ela"
+      }
+    ],
+    "conclusao": "A fila de triagem não é uma tabela. Vira lista com identidade à esquerda, uma linha de assunto e os marcadores que decidem prioridade."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "A linha inteira. É <li> dentro de <ul>, ou <a>/<button> quando abre algo.",
+      "classe": "ucam-list-item"
+    },
+    {
+      "parte": "alvo",
+      "obrigatorio": false,
+      "descricao": "O botão que ocupa a linha inteira, quando escolher o item governa um painel ao lado em vez de navegar (Grupo × Menu). É <button> e não <li> com onclick: um <li> clicável não responde a Enter, não entra na ordem de tabulação e não se anuncia como controle. O botão toma o recuo do item — a raiz zera o seu — para que a área de clique seja a linha toda. Leva aria-pressed, que é o estado do CONTROLE; quem a folha pinta é o aria-current do <li>. Não existe junto com título-link: ou a linha abre algo, e o alvo é o link esticado do título, ou a linha escolhe, e o alvo é este botão.",
+      "classe": "ucam-list-item__alvo"
+    },
+    {
+      "parte": "identidade",
+      "obrigatorio": false,
+      "descricao": "Avatar ou ícone de domínio à esquerda. Decorativo — o nome vem no título.",
+      "classe": "ucam-list-item__figura"
+    },
+    {
+      "parte": "corpo",
+      "obrigatorio": true,
+      "descricao": "Embrulha título, apoio e marcadores ao lado da figura. Existe porque o item não tem sempre o mesmo número de linhas — o setor mostra título e apoio, o requerimento mostra os três — e uma grade que faça a figura atravessar as linhas depende dessa contagem para não abrir linha vazia.",
+      "classe": "ucam-list-item__corpo"
+    },
+    {
+      "parte": "linha",
+      "obrigatorio": false,
+      "descricao": "Embrulha título e tempo numa fileira só, alinhada pela base. Só entra quando os dois convivem: com o título sozinho ela não tem o que distribuir, e o título já é bloco por conta própria.",
+      "classe": "ucam-list-item__linha"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": true,
+      "descricao": "Quem ou o quê. Uma linha, sem quebra.",
+      "classe": "ucam-list-item__titulo"
+    },
+    {
+      "parte": "tempo",
+      "obrigatorio": false,
+      "descricao": "Horário relativo, à direita do título. Sempre com <time datetime> — 'há 4h' sozinho não é data para ninguém além de quem lê a tela naquele instante.",
+      "classe": "ucam-list-item__tempo"
+    },
+    {
+      "parte": "apoio",
+      "obrigatorio": false,
+      "descricao": "Assunto do registro, em uma linha truncada.",
+      "classe": "ucam-list-item__apoio"
+    },
+    {
+      "parte": "marcadores",
+      "obrigatorio": false,
+      "descricao": "Faixa de selos: situação, prazo, natureza. Nunca mais de três.",
+      "classe": "ucam-list-item__marcadores"
+    },
+    {
+      "parte": "indicador",
+      "obrigatorio": false,
+      "descricao": "Ponto de não lido. Acompanhado de texto em ucam-sr-only — cor e forma sozinhas não informam. Mora no recuo inicial da linha, fora do fluxo, centrado na linha do título, e não reserva espaço: a hora da linha não lida alinha com a das vizinhas. À direita, como era até 13/09/2026, ele empurrava o tempo 16px para dentro e a coluna da hora serrilhava na fila.",
+      "classe": "ucam-list-item__indicador"
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Quem ou o quê. Nome do requerente na fila, nome do setor no painel gerencial."
+    },
+    {
+      "nome": "support",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Assunto em uma linha. Truncado com reticências, nunca quebrado em duas."
+    },
+    {
+      "nome": "time",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto relativo exibido. O valor absoluto vai em timeValue."
+    },
+    {
+      "nome": "timeValue",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Data ISO do atributo datetime. Obrigatória quando time existe."
+    },
+    {
+      "nome": "selected",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Item aberto no painel de detalhe ao lado. Reflete em aria-current=true, não só na pintura. Desde 19/09/2026 o escolhido se diz por realce TINTO (action.primary.subtle) mais uma barra de 4px na borda de entrada, e não mais pelo cinza de interaction.selected — cinza translúcido era o mesmo sinal do hover um degrau acima, e numa coluna de oito itens não dizia qual estava aberto. A barra não recria a que a ADR-022 removeu: aquela repetia o TOM da linha, esta diz SELEÇÃO e existe uma por lista."
+    },
+    {
+      "nome": "unread",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Não lido. Desenha o indicador e acrescenta o texto 'não lido' ao nome acessível."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'info' | 'success' | 'warning' | 'danger'",
+      "default": "'neutral'",
+      "descricao": "DEPRECIADO desde 09/09/2026 (ADR-022): não desenha mais nada. Era a barra de 3px na borda inicial, \"para a primeira passada do olho\", com o selo de situação obrigatório ao lado — o mesmo estado dito duas vezes na mesma linha. Quem carrega o tom é o marcador. A prop segue aceita até 0.2.0 para não quebrar quem a passa; no Trilho A, o data-tone na linha simplesmente sai.",
+      "valores": {
+        "neutral": {
+          "uso": "Sem urgência declarada. É o default e não desenha barra.",
+          "limite": "Não usar como 'sem informação' — item sem situação conhecida não recebe tom nenhum. [sem efeito visual desde a ADR-022]"
+        },
+        "info": {
+          "uso": "Em andamento, dentro do prazo.",
+          "limite": "Não é destaque; é o estado normal de quem já está trabalhando no registro. [sem efeito visual desde a ADR-022]"
+        },
+        "success": {
+          "uso": "Concluído, deferido.",
+          "limite": "Item concluído raramente pertence a uma fila de ação. Se está na caixa de entrada, revisar a consulta antes de pintar. [sem efeito visual desde a ADR-022]"
+        },
+        "warning": {
+          "uso": "Prazo próximo do vencimento.",
+          "limite": "O prazo em texto continua obrigatório ao lado (WCAG 1.4.1). [sem efeito visual desde a ADR-022]"
+        },
+        "danger": {
+          "uso": "Prazo vencido ou urgência declarada pelo requerente.",
+          "limite": "Se mais de um terço da lista está em danger, o problema é a fila, não a linha — o vermelho deixa de discriminar. [sem efeito visual desde a ADR-022]"
+        }
+      }
+    },
+    {
+      "nome": "href",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Quando presente, a linha inteira é um link. Sem ele, é <li> inerte e a ação vive num controle interno."
+    },
+    {
+      "nome": "name",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome de quem pede, usado só para derivar as iniciais do avatar. Decorativo: o nome que se lê é o title, e repeti-lo faria o leitor de tela dizer duas vezes."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "open",
+      "payload": "void",
+      "descricao": "Linha acionada por clique, Enter ou Espaço."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "active",
+    "selected",
+    "unread"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar quando o trabalho é comparar valores entre registros — isso é tabela, com colunas alinhadas e ordenação no cabeçalho.",
+      "Não empilhar mais de três marcadores: a faixa vira parede de selos e nenhum discrimina.",
+      "Não colocar controle focável dentro de uma linha que já é link — vira armadilha de tabulação. A ação, nesse caso, vive no painel de detalhe."
+    ],
+    "motivo": "A fila do Protocolo é lida para decidir o que tratar primeiro, não para comparar colunas."
+  },
+  "acessibilidade": {
+    "papel": "listitem",
+    "requisitos": [
+      "As linhas vivem dentro de <ul>/<ol> real: contagem e posição são anunciadas sem nenhum atributo extra.",
+      "O item aberto no painel ao lado declara aria-current=true. Fundo e barra são reforço, nunca o único sinal.",
+      "O indicador de não lido tem texto equivalente em ucam-sr-only.",
+      "A hora relativa vai em <time datetime> com o valor absoluto.",
+      "Quando a linha é um link, o nome acessível é o título mais o assunto, não a linha inteira lida em fragmentos.",
+      "Contraste do texto de apoio mínimo 4.5:1 — o cinza-claro de linha secundária do legado reprova.",
+      "A barra de tom tem 3px e não carrega significado sozinha: o selo de situação diz o mesmo em palavra."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "2.1.1",
+      "2.4.7",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Título é o nome completo de quem pede, não a matrícula. A matrícula vai no detalhe.",
+      "Apoio começa pelo tipo do requerimento e só depois cita o texto do requerente.",
+      "Tempo é relativo até sete dias e absoluto depois disso: 'há 18 dias' já não ajuda ninguém a agir."
+    ],
+    "exemplos": {
+      "bom": [
+        "Rafael Augusto Cordeiro · Revisão de nota — divergência entre gabarito e correção · há 4h",
+        "Carteira do estudante — foto · 18/07/2025"
+      ],
+      "ruim": [
+        "20403345 — REQ/2026/0031",
+        "Solicito revisão da nota da AV2 de Cálculo III, pois identifiquei uma divergência entre o gabarito e a correção aplicada na questão 4, conforme anexo"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-avatar",
+      "ucam-badge",
+      "ucam-chip",
+      "ucam-icon",
+      "ucam-icon-tile",
+      "ucam-kbd",
+      "ucam-prazo",
+      "ucam-realce"
+    ],
+    "usada_por": [
+      "padrao-triagem-lista-detalhe",
+      "ucam-data-table"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / <table> de triagem",
+    "mapa": [
+      {
+        "legado": "<td> com nome do requerente",
+        "novo": "title",
+        "nota": "Passa a vir acompanhado do avatar de iniciais, que é decorativo."
+      },
+      {
+        "legado": "<td> com data de vencimento",
+        "novo": "tone + ucam-prazo",
+        "nota": "A data crua vira prazo em palavra mais tom. A data absoluta continua no detalhe."
+      },
+      {
+        "legado": "linha destacada por background inline",
+        "novo": "selected",
+        "nota": "Passa a declarar aria-current."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Fila de triagem",
+      "codigo": "<ul class=\"ucam-list\">\n  @for (r of fila(); track r.id) {\n    <ucam-list-item\n      [title]=\"r.requerente\"\n      [support]=\"r.assunto\"\n      [time]=\"r.relativo\"\n      [timeValue]=\"r.abertoEm\"\n      [tone]=\"r.prazo\"\n      [selected]=\"r.id === aberto()\"\n      (open)=\"abrir(r)\" />\n  }\n</ul>"
+    },
+    {
+      "titulo": "Sem ação própria, dentro de um painel",
+      "codigo": "<ucam-list-item\n  title=\"Carlos Eduardo Martins Souza\"\n  support=\"Carteira do estudante — foto\"\n  time=\"há 18 dias\"\n  timeValue=\"2026-08-16\"\n  tone=\"danger\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Usar lista quando a decisão é 'isto exige ação agora?'.",
+      "evite": "Usar lista quando a decisão é comparar valores entre registros.",
+      "porque": "Comparação pede colunas alinhadas e ordenação — que é exatamente o que a tabela entrega e a lista não."
+    },
+    {
+      "faca": "Manter no máximo três marcadores por linha.",
+      "evite": "Repetir na linha tudo o que o detalhe já mostra.",
+      "porque": "Quando toda linha tem cinco selos, nenhum deles discrimina e a faixa vira ruído colorido."
+    },
+    {
+      "faca": "Declarar aria-current no item aberto no painel ao lado.",
+      "evite": "Marcar o selecionado só com fundo cinza.",
+      "porque": "Quem usa leitor de tela não vê o fundo e perde a única pista de onde está na lista."
+    },
+    {
+      "faca": "Escrever a hora relativa dentro de <time datetime>.",
+      "evite": "'há 4h' em <span>.",
+      "porque": "O texto relativo envelhece na tela; o datetime é o que continua verdadeiro."
+    },
+    {
+      "faca": "Deixar a barra de tom acompanhar sempre um selo de situação em palavra.",
+      "evite": "Confiar na barra colorida para dizer que o prazo venceu.",
+      "porque": "Cor como único portador de significado reprova na WCAG 1.4.1 e some para quem tem baixa visão de cor."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "card",
+      "diferenca": "Card é um bloco autônomo que se lê sozinho; list-item é uma linha, e só faz sentido dentro da lista que lhe dá o eixo de comparação.",
+      "escolha": "Se a pessoa está varrendo muitos registros procurando um, é list-item: a linha alinha os mesmos campos na mesma posição e a varredura funciona."
+    },
+    {
+      "componente": "data-table",
+      "diferenca": "Data-table alinha os mesmos campos em COLUNAS, para comparar valor com valor; list-item empilha um registro rico, para reconhecer o registro.",
+      "escolha": "Se a pergunta é \"qual é o meu\", com nome, avatar, situação e prazo lidos juntos, é list-item."
+    },
+    {
+      "componente": "anexo",
+      "diferenca": "O Anexo é uma peça com contorno próprio, que fica lado a lado com outras na grade de arquivos de um registro. O ListItem é a linha de uma lista de registros, com divisor e largura inteira.",
+      "escolha": "Os arquivos de um requerimento, Anexo. Uma lista de documentos que é a própria tela — um repositório, um histórico de arquivos —, ListItem."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "list-item.json",
+      "raiz": ".ucam-list-item dentro de <ul class=\"ucam-list\">",
+      "estado": "aria-current no item aberto — é por ele que a folha pinta. O <button class=\"ucam-list-item__alvo\"> carrega aria-pressed em paralelo, que é o estado do controle; o anel de foco sai no <li>, não no botão. O data-tone não pinta nada desde a ADR-022 e pode sair da marcação.",
+      "nota": "O <li> é escrito à mão, então a contagem da lista sai de graça. Marcadores entram como filhos de .ucam-list-item__marcadores. Quando a linha ESCOLHE em vez de abrir, o filho direto é um <button class=\"ucam-list-item__alvo\"> e o recuo passa para ele."
+    },
+    "trilho_b": "ucam-list-item declara role=listitem no próprio elemento customizado: o host fica entre o <ul> e o conteúdo, e um <ul> com filho que não é <li> perde a contagem em parte dos leitores de tela. Com href a linha ganha um link ESTICADO sobre ela (absolute inset-0), que preserva clique do meio e menu de contexto e monta o nome acessível de título + apoio; sem href a linha é inerte e a ação vive num controle interno. Os marcadores entram por ng-content. NÃO entrega: seleção por teclado dentro da lista (setas) — quem governa a fila é a página, não o item."
+  }
+}

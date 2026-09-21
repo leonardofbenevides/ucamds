@@ -1,0 +1,314 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "page-header",
+  "name": "PageHeader",
+  "selector": "ucam-page-header",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "layout",
+  "description": "Título da tela e suas ações principais, sempre no mesmo lugar. Resolve a inconsistência de posicionamento que faz o usuário procurar o botão de criar em cada tela.",
+  "quando_usar": [
+    "Toda tela de conteúdo: é o que responde \"que tela é esta\" e onde ficam as ações principais dela.",
+    "A tela tem uma ação de criar, exportar ou voltar, e ela precisa estar onde está em todas as outras.",
+    "A tela precisa de trilha de navegação até onde ela mora."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — Setor e Natureza",
+        "rotulo": "NOVO · PESQUISAR",
+        "problema": "as ações são texto cinza pequeno em caixa alta no canto superior direito; não se leem como ação"
+      },
+      {
+        "tela": "Protocolo — Análise de Requerimento",
+        "rotulo": "NOVO REQUERIMENTO",
+        "problema": "aqui a ação de criar é um botão acima da tabela, e não no cabeçalho — posição diferente da tela anterior"
+      },
+      {
+        "tela": "Protocolo — Setor",
+        "rotulo": "SALVAR · EXCLUIR",
+        "problema": "ações de gravação ficam no rodapé do card, enquanto criar fica no topo: três posições para ação na mesma aplicação"
+      },
+      {
+        "tela": "SIGFIN — todas",
+        "problema": "título centralizado em caixa alta sobre barra com gradiente verde, sem espaço para ação nenhuma"
+      },
+      {
+        "tela": "todas",
+        "problema": "nenhuma tela indica onde o usuário está na hierarquia, nem oferece caminho de volta"
+      }
+    ],
+    "conclusao": "Três posições para ação na mesma aplicação. O contrato fixa uma: ação primária no cabeçalho, à direita do título."
+  },
+  "anatomia": [
+    {
+      "parte": "breadcrumb",
+      "obrigatorio": false,
+      "descricao": "Caminho até a tela. Obrigatório a partir do terceiro nível."
+    },
+    {
+      "parte": "back",
+      "obrigatorio": false,
+      "descricao": "Volta ao nível anterior em telas de detalhe."
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "h1 da página. Um por tela.",
+      "classe": "ucam-page-header__title"
+    },
+    {
+      "parte": "count",
+      "obrigatorio": false,
+      "descricao": "Contagem ao lado do título em telas de listagem."
+    },
+    {
+      "parte": "favorito",
+      "obrigatorio": false,
+      "classe": "ucam-page-header__favorito",
+      "descricao": "A estrela que marca o registro como favorito, colada ao título e na linha dele. É o interruptor de ícone (icon-button com pressed), com nome acessível que diz o efeito — \"Adicionar aos favoritos\" / \"Remover dos favoritos\" — e o estado em aria-pressed. Só existe em tela de UM registro: requerimento, setor, aluno. Numa listagem, favoritar seria favoritar a tela, e isso é assunto do grupo Favoritos da navegação (app-shell), não do título. Na variante barra a classe é ucam-viewbar__favorito."
+    },
+    {
+      "parte": "ferramentas",
+      "obrigatorio": false,
+      "classe": "ucam-viewbar__fileira",
+      "descricao": "A terceira fileira da variante `barra`: o que se vê da tela e como. À esquerda o estado da visão — as abas de fila; à direita os controles — ordenação, filtros com contador, e o menu do que sobra. Só existe na variante barra."
+    },
+    {
+      "parte": "filtros-aplicados",
+      "obrigatorio": false,
+      "classe": "ucam-viewbar__fileira--filtros",
+      "descricao": "Fileira CONDICIONAL: existe quando há filtro de pé, e não é escondida por CSS quando não há. Mostra QUAIS filtros estão aplicados, em chip removível. O contador no botão de filtros diz quantos; só o chip diz quais — e sem os quais alguém conclui que a fila está curta quando ela está filtrada."
+    },
+    {
+      "parte": "description",
+      "obrigatorio": false,
+      "descricao": "Uma frase explicando a tela, quando o título não basta.",
+      "classe": "ucam-page-header__description"
+    },
+    {
+      "parte": "actions",
+      "obrigatorio": false,
+      "descricao": "Ações da tela, alinhadas à direita. Secundárias antes da primária.",
+      "classe": "ucam-page-header__acoes"
+    }
+  ],
+  "props": [
+    {
+      "nome": "variante",
+      "tipo": "'pagina' | 'barra'",
+      "default": "'pagina'",
+      "descricao": "pagina é o cabeçalho alto — título de 30px e frase de apoio —, para tela que se lê como documento. barra é a BARRA DE VISÃO: três fileiras rasas coladas no alto do painel, uma para cada pergunta — trilha (onde estou), título com a contagem (o que é esta tela) e ferramentas (o que vejo dela). Tela de trabalho que fica aberta o dia inteiro usa barra: ali o título é etiqueta, não abertura de documento, e os 30px custavam altura em toda tela para repetir o que o item ativo da navegação já diz.",
+      "valores": {
+        "pagina": {
+          "uso": "Detalhe, formulário, texto corrido — tela que se abre para ler."
+        },
+        "barra": {
+          "uso": "Fila, listagem, painel — tela que se opera. Substitui o empilhamento de cabeçalho + abas + chips de filtro, que gastava mais que o dobro da altura sem que nenhum dos três fosse um lugar fixo. A barra é sticky no alto do painel: trilha, título e filtros aplicados continuam à vista enquanto o conteúdo rola — numa fila de triagem é o que impede alguém de concluir que a fila está curta quando ela está filtrada."
+        }
+      }
+    },
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "count",
+      "tipo": "number | null",
+      "default": "null",
+      "descricao": "Exibido junto ao título: Setores 58."
+    },
+    {
+      "nome": "favorite",
+      "tipo": "boolean | null",
+      "default": "null",
+      "descricao": "null esconde a estrela: o registro não é favoritável. true/false é o estado, e é two-way — [(favorite)]. Quem persiste é quem chama; o cabeçalho só troca o estado e anuncia."
+    },
+    {
+      "nome": "description",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "breadcrumb",
+      "tipo": "Array<{ label: string; link?: string }> | null",
+      "default": "null"
+    },
+    {
+      "nome": "backLink",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "sticky",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Mantém título e ações visíveis em listagem longa."
+    }
+  ],
+  "estados": [
+    "default",
+    "sticky",
+    "barra"
+  ],
+  "limites": {
+    "regras": [
+      "Uma ação primária, no máximo. Duas significam que a tela não decidiu o que é importante.",
+      "Acima de três ações, agrupe as excedentes em menu.",
+      "Ação que pertence a uma linha da tabela não sobe para o cabeçalho.",
+      "Ação de gravar formulário fica no rodapé do formulário, perto do último campo — não aqui.",
+      "Na variante barra a contagem entra no nome acessível do título, e não como frase de apoio: \"4 requerimentos aguardam ação sua\" gastava uma linha de 14px para entregar um número de três caracteres."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O título é o h1 da página: um por tela, e o primeiro cabeçalho da hierarquia.",
+      "O breadcrumb é um nav com aria-label=Trilha e o item atual usa aria-current=page.",
+      "A contagem faz parte do nome acessível do título, não é número solto.",
+      "Em sticky, o cabeçalho não pode cobrir o alvo do foco ao navegar por teclado — usar scroll-margin nos alvos.",
+      "A ordem no DOM é a ordem visual: título antes das ações."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.4.1",
+      "2.4.6",
+      "2.4.7"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Título no plural em listagem, singular em detalhe: Setores, Setor Biblioteca.",
+      "A ação nomeia o objeto: Novo setor, não Novo.",
+      "A descrição só existe se acrescentar algo — repetir o título é ruído."
+    ],
+    "exemplos": {
+      "bom": [
+        "Setores · Novo setor",
+        "Requerimentos · Novo requerimento",
+        "Movimento de caixa"
+      ],
+      "ruim": [
+        "SETOR · NOVO",
+        "Cadastro de Setores do Sistema",
+        "MOVIMENTO DE CAIXA"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-button",
+      "ucam-card",
+      "ucam-icon-button",
+      "ucam-link",
+      "ucam-segmented",
+      "ucam-stat",
+      "ucam-tabs"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-formulario-entidade",
+      "padrao-listagem-crud",
+      "padrao-listagem-inspetor",
+      "padrao-painel-indicadores",
+      "padrao-triagem-lista-detalhe"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / cabeçalhos improvisados por tela",
+    "mapa": [
+      {
+        "legado": "NOVO / PESQUISAR em texto cinza",
+        "novo": "slot actions com ucam-button",
+        "nota": "Passam a se ler como ação."
+      },
+      {
+        "legado": "botão Novo Requerimento acima da tabela",
+        "novo": "slot actions",
+        "nota": "Posição unificada."
+      },
+      {
+        "legado": "barra verde com título centralizado (SIGFIN)",
+        "novo": "ucam-page-header"
+      },
+      {
+        "legado": "SALVAR/EXCLUIR no rodapé do card",
+        "novo": "permanece no rodapé do formulário",
+        "nota": "NÃO migra para o cabeçalho — ver limites."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Listagem",
+      "codigo": "<ucam-page-header title=\"Setores\" [count]=\"total()\">\n  <ucam-button variant=\"secondary\">Exportar</ucam-button>\n  <ucam-button variant=\"primary\" (click)=\"novo()\">Novo setor</ucam-button>\n</ucam-page-header>"
+    },
+    {
+      "titulo": "Detalhe com trilha",
+      "codigo": "<ucam-page-header\n  title=\"Setor Biblioteca\"\n  backLink=\"/setores\"\n  [breadcrumb]=\"[{ label: 'Setores', link: '/setores' }, { label: 'Biblioteca' }]\" />"
+    },
+    {
+      "titulo": "Registro favoritável",
+      "codigo": "<ucam-page-header\n  title=\"Requerimento 2026-0311\"\n  backLink=\"/protocolo/entrada\"\n  [(favorite)]=\"favorito\" />"
+    },
+    {
+      "titulo": "Barra de visão de uma fila",
+      "codigo": "<ucam-page-header variante=\"barra\" title=\"Caixa de entrada\" [count]=\"total()\"\n  [breadcrumb]=\"[{ label: 'Protocolo', link: '/protocolo' }, { label: 'Caixa de entrada' }]\">\n  <ucam-button variant=\"primary\" (click)=\"novo()\">Novo requerimento</ucam-button>\n  <div ucamFerramentas>…abas de fila, ordenação, filtros…</div>\n  @if (filtros().length) {\n    <div ucamFiltros>\n      @for (f of filtros(); track f.id) {\n        <ucam-chip [dimension]=\"f.dimensao\" [label]=\"f.valor\" (remove)=\"tirar(f)\" />\n      }\n    </div>\n  }\n</ucam-page-header>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Ação primária no cabeçalho, à direita do título, sempre no mesmo lugar.",
+      "evite": "Criar acima da tabela numa tela e no rodapé do card na outra.",
+      "porque": "São três posições para ação na mesma aplicação — o usuário procura o botão em cada tela."
+    },
+    {
+      "faca": "Nomear o objeto na ação: Novo setor.",
+      "evite": "'Novo' sozinho, e ação como texto cinza pequeno em caixa alta.",
+      "porque": "No legado as ações não se leem como ação: parecem legenda."
+    },
+    {
+      "faca": "Deixar no rodapé do formulário a ação de gravar, perto do último campo.",
+      "evite": "Subir Salvar para o cabeçalho.",
+      "porque": "A ação de gravação pertence ao fim da tarefa, não ao topo da página."
+    },
+    {
+      "faca": "Usar o breadcrumb para dizer onde o usuário está.",
+      "evite": "Tela de detalhe sem caminho de volta.",
+      "porque": "Nenhuma tela do parque indica a posição na hierarquia nem oferece retorno."
+    },
+    {
+      "faca": "Descrição só quando acrescenta informação.",
+      "evite": "Descrição que repete o título.",
+      "porque": "'Cadastro de Setores do Sistema' sob o título Setores não informa nada."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "section-bar",
+      "diferenca": "PageHeader titula a TELA e carrega as ações principais dela; SectionBar titula um BLOCO dentro da tela e carrega, no máximo, uma ação de escopo local. Um por tela, vários do outro.",
+      "escolha": "O título que responde que tela é esta, e o botão de criar."
+    },
+    {
+      "componente": "app-shell",
+      "diferenca": "AppShell é a moldura que NÃO muda entre telas — identificação, navegação, campus; PageHeader é a primeira coisa que muda quando a tela troca. A fronteira entre os dois é a fronteira entre sistema e tela.",
+      "escolha": "O conteúdo é desta tela e só dela."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Título da página com descrição e ações opcionais.",
+      "raiz": ".ucam-page-header",
+      "nota": "Nas telas com .ucam-viewbar ele não aparece: a barra de visão o substitui, e as duas peças juntas desenhariam dois títulos de página empilhados."
+    }
+  },
+  "eventos": [
+    {
+      "nome": "favoriteChange",
+      "payload": "boolean",
+      "descricao": "O novo estado da estrela, emitido a cada clique. Quem chama grava e reflete de volta em favorite."
+    }
+  ]
+}

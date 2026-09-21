@@ -1,0 +1,391 @@
+import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+
+import { fundamentos, meta } from '../../spec/spec';
+import { PageHeaderComponent } from '../../docs/page-header.component';
+import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+
+@Component({
+  selector: 'ucam-cor',
+  imports: [PageHeaderComponent, NestaPaginaComponent],
+  host: { class: 'pagina' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <ucam-page-header
+      secao="Fundamentos"
+      [titulo]="'Cor'"
+      [lede]="f.descricao"
+    />
+
+    <ucam-nesta-pagina [secoes]="secoes" />
+
+    <div class="callout callout-warn">
+      <p>
+        <strong>Origem da paleta.</strong> {{ aviso.origem }} {{ aviso.pendencia }}
+      </p>
+    </div>
+
+    <div class="prose largo">
+      <section id="primitiva">
+        <h2>Camada primitiva</h2>
+        <p>
+          Valores brutos, sem significado de uso. Nenhum componente pode referenciar esta camada —
+          é o que sustenta a troca de marca e o tema escuro.
+        </p>
+
+        @for (r of f.rampas; track r.nome) {
+          <div class="rampa">
+            <div class="rampa-topo">
+              <h3>{{ r.nome }}</h3>
+              @if (r.descricao) {
+                <p class="small muted">{{ r.descricao }}</p>
+              }
+            </div>
+            <div class="amostras">
+              @for (d of r.degraus; track d.degrau) {
+                <div
+                  class="amostra"
+                  [style.background]="d.valor"
+                  [style.color]="d.tinta"
+                  [title]="d.descricao"
+                >
+                  <span class="grau">{{ d.degrau }}</span>
+                  <span class="hex">{{ d.valor }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </section>
+
+      <section id="semantica">
+        <h2>Camada semântica</h2>
+        <p>
+          A única camada que componentes e aplicações podem referenciar. Os contrastes abaixo são
+          calculados no build pela fórmula da WCAG 2.1: se um token de texto reprovar, o build
+          falha antes de a página existir.
+        </p>
+
+        <div class="alternador" role="group" aria-label="Tema">
+          <button type="button" [class.ativo]="tema() === 'claro'" (click)="tema.set('claro')">
+            Tema claro
+          </button>
+          <button type="button" [class.ativo]="tema() === 'escuro'" (click)="tema.set('escuro')">
+            Tema escuro
+          </button>
+        </div>
+
+        <h3>Texto</h3>
+        <div class="scroller">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Token</th>
+                <th scope="col">Resolve para</th>
+                <th scope="col">Contraste</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Nota</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (t of texto(); track t.token) {
+                <tr>
+                  <td><code>{{ t.token }}</code></td>
+                  <td>
+                    <span class="dot" [style.background]="t.hex"></span><code>{{ t.ref }}</code>
+                  </td>
+                  <td class="num">{{ t.razao }}:1</td>
+                  <td><span class="chip" [class]="'chip-' + t.wcag.tone">{{ t.wcag.label }}</span></td>
+                  <td class="small">{{ t.descricao }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Ação</h3>
+        <p class="small muted">
+          Contraste do rótulo branco sobre cada cor de ação sólida — é o par que decide se o botão
+          é legível.
+        </p>
+        <div class="scroller">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Token</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Contraste c/ branco</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Nota</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (a of acao(); track a.token) {
+                <tr>
+                  <td><code>{{ a.token }}</code></td>
+                  <td>
+                    <span class="dot" [style.background]="a.hex"></span><code>{{ a.hex }}</code>
+                  </td>
+                  <td class="num">{{ a.razao }}:1</td>
+                  <td><span class="chip" [class]="'chip-' + a.wcag.tone">{{ a.wcag.label }}</span></td>
+                  <td class="small">{{ a.descricao }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="superficies">
+        <h2>Superfícies, filetes e interação</h2>
+        <p>
+          As famílias que pintam o FUNDO e o LIMITE, e as que respondem ao ponteiro. Elas não
+          entram na tabela de contraste acima porque não são texto: o que se confere aqui é a
+          separação entre uma superfície e a vizinha, não a legibilidade de uma letra.
+        </p>
+
+        @for (fam of familias(); track fam.id) {
+          <h3>{{ rotuloFamilia(fam.id) }}</h3>
+          @if (fam.descricao) {
+            <p class="small muted">{{ fam.descricao }}</p>
+          }
+          <ul class="amostras">
+            @for (a of fam.amostras; track a.token) {
+              <li>
+                <span
+                  class="chapa"
+                  [style.background]="a.hex"
+                  [style.color]="a.tinta"
+                >{{ a.hex }}</span>
+                <code class="nome">{{ a.nome }}</code>
+                @if (a.descricao) {
+                  <span class="small muted nota">{{ a.descricao }}</span>
+                }
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+      <section id="feedback">
+        <h2>Feedback e estado</h2>
+        <p>
+          A única família com tinta e fundo declarados AOS PARES — e por isso a única cujo
+          contraste é verificável token contra token, sem depender de onde o componente for
+          colocado. Cada tom traz fundo, tinta, filete e o traço de gráfico.
+        </p>
+
+        <div class="scroller">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Tom</th>
+                <th scope="col">Amostra</th>
+                <th scope="col">Fundo</th>
+                <th scope="col">Tinta</th>
+                <th scope="col">Contraste</th>
+                <th scope="col">WCAG</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (t of feedback(); track t.tom) {
+                <tr>
+                  <td><code>{{ t.tom }}</code></td>
+                  <td>
+                    <span
+                      class="pastilha"
+                      [style.background]="t.background"
+                      [style.color]="t.foreground"
+                      [style.border-color]="t.border"
+                    >Aa</span>
+                  </td>
+                  <td><code class="num">{{ t.background }}</code></td>
+                  <td><code class="num">{{ t.foreground }}</code></td>
+                  <td class="num">{{ t.razao }}:1</td>
+                  <td>
+                    @if (t.wcag; as w) {
+                      <span class="chip" [class]="'chip-' + w.tone">{{ w.label }}</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>Cor nunca é o único portador do estado.</strong> WCAG 1.4.1: um requerimento
+            atrasado é vermelho <em>e</em> diz “Atrasado”. O token de traço
+            (<code>graphic</code>) existe para o mesmo motivo do lado do gráfico — a série
+            precisa de forma ou rótulo além da tinta.
+          </p>
+        </div>
+      </section>
+
+      <section id="escuro">
+        <h2>Tema escuro</h2>
+        <p>{{ f.temaEscuro.descricao }}</p>
+        <p class="muted">{{ f.temaEscuro.regra }}</p>
+        <p class="small muted">
+          O botão de tema no cabeçalho troca esta página junto. Se a camada escura estiver errada,
+          quebra aqui primeiro.
+        </p>
+      </section>
+    </div>
+  `,
+  styles: `
+    .rampa {
+      margin-block-end: 1.5rem;
+    }
+    .rampa-topo h3 {
+      margin-block-end: 0.15rem;
+    }
+    .rampa-topo p {
+      margin-block-end: 0.5rem;
+      max-inline-size: var(--measure);
+    }
+    .amostras {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+    }
+    .amostra {
+      flex: 1 1 5.5rem;
+      min-inline-size: 5rem;
+      padding: 0.65rem 0.6rem 0.5rem;
+      border-radius: var(--ucam-radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      font-family: var(--f-mono);
+      font-size: 0.65rem;
+    }
+    .grau {
+      font-weight: 600;
+      font-size: 0.7rem;
+    }
+    .hex {
+      opacity: 0.85;
+    }
+    .amostras {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+      gap: 0.6rem;
+      margin: 0.75rem 0 1.75rem;
+      padding: 0;
+      list-style: none;
+    }
+    .amostras li {
+      display: grid;
+      gap: 0.3rem;
+    }
+    /* A chapa carrega o próprio hex ESCRITO nela, com a tinta escolhida por
+       contraste no build. Amostra que só mostra a cor obriga a passar o
+       conta-gotas para descobrir qual é o valor. */
+    .chapa {
+      display: flex;
+      align-items: end;
+      justify-content: end;
+      block-size: 3.25rem;
+      padding: 0.35rem 0.5rem;
+      font-family: var(--ucam-font-mono);
+      font-size: 0.6875rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-md);
+    }
+    .nome {
+      font-size: 0.75rem;
+    }
+    .nota {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .pastilha {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 2.75rem;
+      block-size: 1.75rem;
+      font-size: 0.75rem;
+      border: 1px solid;
+      border-radius: var(--ucam-radius-control);
+    }
+    .alternador {
+      display: inline-flex;
+      gap: 2px;
+      padding: 2px;
+      border-radius: var(--ucam-radius-md);
+      background: var(--ucam-color-surface-subtle);
+      border: 1px solid var(--ucam-color-border-subtle);
+      margin-block-end: 1rem;
+    }
+    .alternador button {
+      padding: 0.3rem 0.7rem;
+      border: 0;
+      border-radius: var(--ucam-radius-sm);
+      background: transparent;
+      color: var(--ucam-color-text-secondary);
+      font: inherit;
+      font-size: 0.8125rem;
+      cursor: pointer;
+    }
+    .alternador button.ativo {
+      background: var(--ucam-color-surface-default);
+      color: var(--ucam-color-text-primary);
+      box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+    }
+  `,
+})
+export default class CorPage {
+  protected readonly f = fundamentos;
+  protected readonly aviso = meta.avisoCores;
+  protected readonly tema = signal<'claro' | 'escuro'>('claro');
+
+  protected readonly texto = computed(() =>
+    this.tema() === 'claro' ? this.f.texto : this.f.textoEscuro,
+  );
+
+  protected readonly acao = computed(() =>
+    this.tema() === 'claro' ? this.f.acao : this.f.acaoEscuro,
+  );
+
+  // As famílias novas acompanham o MESMO alternador de tema das tabelas de
+  // texto e ação. Uma família que ficasse presa no claro seria a metade do
+  // sistema que ninguém confere — e o escuro é onde as superfícies mudam.
+  protected readonly familias = computed(() =>
+    this.tema() === 'claro' ? this.f.familias : this.f.familiasEscuro,
+  );
+
+  protected readonly feedback = computed(() =>
+    this.tema() === 'claro' ? this.f.feedback : this.f.feedbackEscuro,
+  );
+
+  private readonly ROTULOS: Record<string, string> = {
+    surface: 'Superfície',
+    border: 'Filete e contorno',
+    interaction: 'Interação',
+    realce: 'Realce de busca',
+    chart: 'Séries de gráfico',
+  };
+
+  protected rotuloFamilia(id: string): string {
+    return this.ROTULOS[id] ?? id;
+  }
+  /**
+   * Âncoras da página, na ordem em que as seções aparecem.
+   *
+   * Declarada e não varrida do DOM: no prerender não há DOM, e uma navegação
+   * que só aparecesse depois da hidratação seria salto de layout. O portão
+   * tools/check-ancoras.mjs confere que cada id daqui existe no template.
+   */
+  protected readonly secoes: readonly Ancora[] = [
+    { id: 'primitiva', rotulo: 'Camada primitiva' },
+    { id: 'semantica', rotulo: 'Camada semântica' },
+    { id: 'superficies', rotulo: 'Superfícies e filetes' },
+    { id: 'feedback', rotulo: 'Feedback e estado' },
+    { id: 'escuro', rotulo: 'Tema escuro' },
+  ];
+
+}

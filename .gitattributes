@@ -1,0 +1,13 @@
+# O repositório guarda LF; cada checkout usa a convenção da sua plataforma.
+# Sem isto, um commit feito no Windows vira diff de arquivo inteiro no Linux.
+* text=auto eol=lf
+
+# Binários — nunca converter.
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.ico binary
+
+# Saída gerada e lockfile: fora do diff e da contagem de linguagem.
+pnpm-lock.yaml linguist-generated=true -diff
+dist/** linguist-generated=true

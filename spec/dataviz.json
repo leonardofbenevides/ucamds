@@ -1,0 +1,142 @@
+{
+  "$description": "Como um número chega aos olhos. A escolha não começa no tipo de gráfico — começa na pergunta: um número que vale agora, a forma de um conjunto ao longo do tempo, o valor exato de cada registro e a fração de um limite consumido são quatro perguntas diferentes, e cada uma tem um componente certo. Esta fundação decide o veículo antes da forma, e declara as regras que valem para TODOS eles: a paleta de série, a integridade do eixo e o equivalente textual obrigatório.",
+  "_meta": {
+    "regra": "O desenho mostra a FORMA; o número exato vem sempre de um texto — a tabela equivalente, o ladrilho de indicador, a célula da tabela. Nenhum dado do sistema existe apenas como vetor.",
+    "origem": "O contrato do chart já respondia 'qual forma para qual pergunta' dentro do próprio componente, e os tokens de série já traziam a ordem e o portão de daltonismo. O que não existia era a camada acima: qual COMPONENTE responde a pergunta, antes de existir gráfico nenhum. Sem ela, a pergunta 'quanto de um limite foi consumido' vira um gráfico de pizza de duas fatias, que é a forma mais cara de escrever 62%.",
+    "escopo": "Vale para painel gerencial, relatório e qualquer tela que resuma um conjunto. Os tokens de série são PROIBIDOS fora de visualização de dados, e as cores de feedback são proibidas dentro: verde não pode significar 'sucesso' num lugar e 'série 6' no outro."
+  },
+  "veiculos": [
+    {
+      "pergunta": "Quanto é este número, agora?",
+      "componente": "stat",
+      "forma": "Ladrilho com rótulo, valor e, quando houver, uma variação com palavra junto.",
+      "evite": "Gráfico de uma barra só, medidor circular, velocímetro.",
+      "porque": "O número é o dado. Desenhá-lo custa espaço e devolve menos precisão do que o próprio número já tinha."
+    },
+    {
+      "pergunta": "Como isto se comportou ao longo do tempo?",
+      "componente": "chart",
+      "forma": "Linha, ou área quando o volume acumulado importa tanto quanto a curva.",
+      "evite": "Tabela de doze linhas para mostrar uma tendência.",
+      "porque": "Tendência é forma, e forma se vê. A tabela obriga a reconstruir a curva de cabeça, uma linha por vez."
+    },
+    {
+      "pergunta": "Qual categoria é maior?",
+      "componente": "chart",
+      "forma": "Barra, com o eixo de valor começando em zero.",
+      "evite": "Linha ligando categorias sem ordem natural.",
+      "porque": "A linha afirma continuidade entre um ponto e o seguinte, e entre dois campi não há continuidade nenhuma."
+    },
+    {
+      "pergunta": "Qual o valor exato de cada registro?",
+      "componente": "data-table",
+      "forma": "Tabela com ordenação, alinhamento por tipo e as mesmas casas decimais em toda a coluna.",
+      "evite": "Gráfico com rótulo de valor em cima de cada ponto.",
+      "porque": "Quando a resposta é o valor exato, o desenho é embalagem. Rótulo em todo ponto é a admissão de que o gráfico não era necessário."
+    },
+    {
+      "pergunta": "Quanto de um limite já foi consumido?",
+      "componente": "progress",
+      "forma": "Barra de progresso com o valor em texto ao lado.",
+      "evite": "Pizza de duas fatias, anel, medidor.",
+      "porque": "É uma fração de um todo conhecido, não uma comparação entre categorias. A pizza de duas fatias é a forma mais cara de escrever uma porcentagem."
+    },
+    {
+      "pergunta": "Em que estado está este registro?",
+      "componente": "badge",
+      "forma": "Selo com o nome do estado escrito.",
+      "evite": "Bolinha colorida, quadradinho de legenda, coluna pintada.",
+      "porque": "Estado é categoria nomeada, não medida. E a cor sozinha não sobrevive à impressão nem a quem não distingue matiz."
+    },
+    {
+      "pergunta": "O que aconteceu com este registro, e em que ordem?",
+      "componente": "timeline",
+      "forma": "Linha do tempo com data, hora e o acontecimento em palavras.",
+      "evite": "Gráfico de Gantt, dispersão temporal.",
+      "porque": "A pergunta é sobre a sequência de eventos discretos, não sobre a forma de uma série."
+    },
+    {
+      "pergunta": "Falta quanto tempo?",
+      "componente": "prazo",
+      "forma": "Frase relativa com o verbo carregando o tempo: vence em 3 dias.",
+      "evite": "Barra de progresso do prazo, contagem regressiva animada.",
+      "porque": "Prazo é uma frase curta que se lê de relance numa fila de triagem. A barra ocupa a largura de uma coluna para dizer menos."
+    },
+    {
+      "pergunta": "Como um todo se divide entre poucas partes?",
+      "componente": "chart",
+      "forma": "Pizza, com no máximo três fatias — e duas no tema escuro.",
+      "evite": "Pizza para comparar categorias que não somam um todo.",
+      "porque": "Em pizza todas as cores se comparam com todas, não só as vizinhas, e é aí que o teto da paleta aparece: no escuro, dois dos tons colidem sob tritanopia. Quatro ou mais partes, use barra."
+    }
+  ],
+  "paleta": {
+    "regra": "Seis slots, atribuídos em ordem fixa e NUNCA reciclados. A sétima série não ganha cor nova: vira 'Outros', ou o gráfico vira pequenos múltiplos.",
+    "ordem": "A ordem não é estética — é o mecanismo que mantém os pares VIZINHOS separáveis sob daltonismo. Trocá-la exige rodar o portão de novo.",
+    "identidade": "Cor segue a ENTIDADE, não o ranking. Num painel filtrável, fixe o slot: se tirar uma série repinta as outras, quem lê entende que elas mudaram de identidade.",
+    "fronteira": "Os tokens de série são proibidos fora de visualização de dados. As cores de feedback são proibidas dentro dela.",
+    "limite_honesto": "O que a ordem NÃO resolve, e nenhuma ordem resolve, é o par não-vizinho: seis matizes não cabem separáveis duas a duas nas três dicromacias. A partir de quatro séries em cena existe par confundível — e quem carrega a informação sem cor é a tabela equivalente."
+  },
+  "integridade": [
+    {
+      "id": "eixo-em-zero",
+      "regra": "O eixo de valor de um gráfico de barra começa em zero, sempre.",
+      "porque": "A barra comunica proporção pela ALTURA. Truncada, uma diferença de 3% vira uma diferença visual de 80%."
+    },
+    {
+      "id": "um-eixo-de-valor",
+      "regra": "Nunca dois eixos de valor no mesmo gráfico.",
+      "porque": "Duas escalas diferentes sobrepostas produzem cruzamentos que não significam nada. Viram dois gráficos, ou uma indexação a uma base comum."
+    },
+    {
+      "id": "ordem-do-eixo",
+      "regra": "Eixo de tempo em ordem cronológica; eixo de categoria ordenado pelo valor, a menos que a categoria tenha ordem natural.",
+      "porque": "Categoria em ordem alfabética esconde o ranking, que costuma ser a pergunta."
+    },
+    {
+      "id": "sem-profundidade",
+      "regra": "Nada de 3D, sombra projetada, gradiente de série nem perspectiva.",
+      "porque": "Qualquer profundidade adiciona área que não corresponde a dado. Em pizza 3D, a fatia da frente cresce sem que o número mude."
+    },
+    {
+      "id": "densidade",
+      "regra": "Até doze linhas em barra e pizza; acima disso os rótulos giram e param de ser lidos.",
+      "porque": "Rótulo girado obriga a inclinar a cabeça, literalmente. Passando de doze, o recorte é que está errado."
+    },
+    {
+      "id": "unidade-declarada",
+      "regra": "O rótulo do gráfico diz a medida, o recorte e o período.",
+      "porque": "Um número sem período não é comparável — e é o rótulo que vira o nome acessível da figura."
+    },
+    {
+      "id": "arredondamento",
+      "regra": "O rótulo de eixo corta o zero à direita; a tabela equivalente não.",
+      "porque": "São dois trabalhos diferentes: o eixo dá a ordem de grandeza sem crescer, a tabela dá o valor com as casas da coluna."
+    }
+  ],
+  "equivalente": {
+    "regra": "Todo gráfico publica a tabela equivalente, sempre presente no DOM.",
+    "porque": "O desenho é vetor. Vetor não é lido por voz e some na impressão em preto e branco — sem a tabela, o dado não existe para quem não enxerga o desenho. É também o que carrega a informação quando a paleta chega ao seu limite honesto.",
+    "forma": "Mesma legenda do gráfico, mesmos números, mesmo formatador. A tabela pode estar visualmente recolhida, nunca ausente."
+  },
+  "portao": {
+    "ferramenta": "tools/check-daltonismo.mjs",
+    "adr": "ADR-016",
+    "o_que_faz": "Simula protanopia, deuteranopia e tritanopia sobre a paleta de séries, nos dois temas, e mede a distância em OKLab entre os pares vizinhos.",
+    "limiar": "Reprova distância abaixo de 0,100.",
+    "quando_roda": "No build, junto com a geração de tokens.",
+    "historia": "A spec prometia a verificação em três lugares — o contrato do chart, a descrição dos tokens de série e a ADR-014 — e até 07/09/2026 nada verificava. A ordem atual das séries é resultado do portão, não de gosto: a turquesa entrou entre a violeta e a oliva porque as duas vizinhas reprovavam sob tritanopia."
+  },
+  "proibido": [
+    "Publicar gráfico sem a tabela equivalente.",
+    "Distinguir séries só por cor: a legenda dá o nome, a ordem é fixa e a dica nomeia a série.",
+    "Usar os tokens de série fora de visualização de dados.",
+    "Usar cor de feedback como cor de série.",
+    "Escolher a cor de cada série na aplicação.",
+    "Truncar o eixo de valor de uma barra.",
+    "Dois eixos de valor no mesmo gráfico.",
+    "Pizza com mais de três fatias, ou mais de duas no tema escuro.",
+    "Gráfico para responder 'quanto de um limite foi consumido'.",
+    "Rótulo de valor em cima de todos os pontos — se o valor exato é a resposta, era tabela."
+  ]
+}

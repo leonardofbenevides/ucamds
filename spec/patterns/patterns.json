@@ -1,0 +1,273 @@
+{
+  "$description": "Padrões: composições recorrentes de componentes que resolvem uma tarefa inteira. Um padrão vira código em @ucam/patterns quando aparece em três ou mais telas.",
+  "patterns": [
+    {
+      "id": "listagem-crud",
+      "nome": "Listagem CRUD",
+      "status": "draft",
+      "frequencia": "Presente em praticamente todos os módulos do portal. Observado em Natureza do Requerimento, Setor, Pesquisa de Requerimento e Análise de Requerimento.",
+      "problema": "Cada tela de listagem do Protocolo resolve a mesma tarefa de um jeito diferente: duas paginações distintas, três redações de estado vazio, ordenação ora no cabeçalho ora num select solto, e o botão de nova entidade ora acima ora abaixo da tabela.",
+      "estrutura": [
+        "PageHeader com título e ação primária (Novo …) alinhada à direita",
+        "Toolbar com busca e filtros, acima da tabela",
+        "Resumo de resultados com aria-live",
+        "DataTable com ordenação nos cabeçalhos",
+        "Pagination — padrão único do sistema",
+        "EmptyState diferenciando no-data de no-results",
+        "Dialog de confirmação para exclusão"
+      ],
+      "regras": [
+        "A ação de criar fica no PageHeader, sempre no mesmo lugar. Nunca abaixo da tabela.",
+        "Ordenação vive no cabeçalho da coluna, onde é descoberta — não em select separado.",
+        "Busca filtra a lista sem recarregar a página e anuncia a nova contagem.",
+        "Estado vazio sempre oferece uma saída: criar o primeiro registro ou limpar os filtros.",
+        "Exclusão exige confirmação nomeando o que será destruído."
+      ],
+      "usa": [
+        "ucam-alert",
+        "ucam-badge",
+        "ucam-button",
+        "ucam-chip",
+        "ucam-data-table",
+        "ucam-dialog",
+        "ucam-empty-state",
+        "ucam-page-header",
+        "ucam-pagination",
+        "ucam-segmented",
+        "ucam-tabs",
+        "ucam-text-field"
+      ],
+      "evidencia": "image 9 (Natureza), image 10 (Pesquisa), image 11-13 (Setor), image 6-7 (Análise)"
+    },
+    {
+      "id": "formulario-entidade",
+      "nome": "Formulário de entidade",
+      "status": "draft",
+      "frequencia": "Novo Requerimento, Funcionário, Setor, Natureza.",
+      "problema": "O Novo Requerimento é um formulário de sete campos mais texto livre espremido num diálogo, o que produz rolagem aninhada e nenhuma saída rotulada além do X. Já o Funcionário, com dois campos, é diálogo apropriado.",
+      "regras": [
+        "Até 5 campos e sem texto livre extenso: diálogo.",
+        "Acima disso: página dedicada com URL própria, que pode ser recarregada, compartilhada e retomada.",
+        "Campos agrupados por assunto, num grid de larguras derivadas do conteúdo — não arbitrárias.",
+        "Campos dependentes declaram a dependência e bloqueiam até o pai ser preenchido.",
+        "Ações no rodapé: secundária Cancelar antes da primária, que nomeia a ação.",
+        "Erros aparecem inline junto ao campo, e um resumo no topo lista os campos com problema quando o envio falha."
+      ],
+      "usa": [
+        "ucam-alert",
+        "ucam-button",
+        "ucam-card",
+        "ucam-date-field",
+        "ucam-dialog",
+        "ucam-page-header",
+        "ucam-section-bar",
+        "ucam-select",
+        "ucam-text-field",
+        "ucam-textarea"
+      ],
+      "evidencia": "image 7 (Novo Requerimento — caso de uso indevido), image 14 (Funcionário — caso apropriado)"
+    },
+    {
+      "id": "confirmacao-destrutiva",
+      "nome": "Confirmação destrutiva",
+      "status": "draft",
+      "frequencia": "Toda ação EXCLUIR do sistema.",
+      "problema": "Os botões EXCLUIR do Protocolo aparecem desabilitados e ilegíveis, sem nenhum fluxo de confirmação especificado.",
+      "estrutura": [
+        "Button variant=danger",
+        "Dialog variant=destructive",
+        "Texto nomeando o que será perdido",
+        "Ação primária repetindo o verbo e o objeto"
+      ],
+      "regras": [
+        "O diálogo diz o que será perdido, o efeito colateral e se é reversível.",
+        "O botão de confirmação nomeia a ação: Excluir setor. Nunca Confirmar, OK ou Sim.",
+        "O foco inicial nunca cai sobre a ação destrutiva.",
+        "Quando houver vínculos (um setor com requerimentos), o diálogo informa a quantidade antes de confirmar."
+      ],
+      "usa": [
+        "ucam-button",
+        "ucam-dialog"
+      ],
+      "evidencia": "image 9, image 11, image 14 (botões EXCLUIR)"
+    },
+    {
+      "id": "shell-aplicacao",
+      "nome": "Shell da aplicação",
+      "status": "draft",
+      "frequencia": "Todos os ~25 módulos do portal.",
+      "problema": "A navegação lateral abre como sobreposição escurecendo o resto da tela, mesmo em desktop de 2518px — padrão de modal aplicado à navegação primária. O conteúdo, por sua vez, fica num container estreito centralizado, desperdiçando a tela.",
+      "regras": [
+        "Em desktop, a navegação é fixa e persistente, não sobreposição.",
+        "A sobreposição com escurecimento fica reservada a viewports estreitas.",
+        "O header carrega marca, identificação do usuário, campus ativo e sair.",
+        "O campus ativo é informação crítica de contexto — hoje aparece em cinza-claro sobre bordô, com contraste insuficiente.",
+        "O container de conteúdo cresce até um máximo legível, mas tabelas largas podem ultrapassá-lo."
+      ],
+      "usa": [
+        "ucam-app-shell",
+        "ucam-avatar",
+        "ucam-button",
+        "ucam-menu",
+        "ucam-section-bar"
+      ],
+      "evidencia": "image 5 (drawer sobreposto), image 3 (portal), todas as telas (header)"
+    },
+    {
+      "id": "triagem-lista-detalhe",
+      "nome": "Triagem em lista e detalhe",
+      "status": "draft",
+      "frequencia": "Caixa de entrada de requerimentos, setores com integrantes, inadimplência com extrato do aluno. Aparece em três telas, que é o limite a partir do qual o padrão vira código em @ucam/patterns.",
+      "problema": "No Protocolo atual, abrir um registro é uma navegação: a lista some, e voltar recarrega a consulta e devolve a pessoa ao topo. Quem trata dezenas de protocolos por dia paga esse trajeto dezenas de vezes, e perde a posição na fila a cada um.",
+      "estrutura": [
+        "PageHeader com título, contagem e a ação de criar",
+        "Abas de recorte da fila, quando existem estados de trabalho distintos",
+        "Chips dos filtros aplicados, removíveis",
+        "Bloco de layout ucam-inbox: lista rolável e painel de detalhe, cada um com a própria rolagem",
+        "ListItem por registro, com identidade, assunto, prazo e situação",
+        "No painel: cabeçalho do registro com as ações, DescriptionList dos dados, Timeline da atividade e o campo de resposta"
+      ],
+      "regras": [
+        "A página não rola: rolam os dois painéis, por dentro. É o que permite tratar um registro e passar ao seguinte sem reencontrar a lista.",
+        "O item aberto declara aria-current e é um cartão que sobe da moldura, nunca um retângulo pintado de marca.",
+        "Trocar de registro move o foco para o título do detalhe.",
+        "Prazo aparece em palavra na lista; a data absoluta vive no datetime e no detalhe.",
+        "Filtro aplicado vira chip removível: ninguém pode concluir que a fila está curta quando ela está filtrada.",
+        "Atalho de teclado desenhado na tela é atalho que existe. Promessa não implementada sai do desenho.",
+        "Abaixo de 64rem a coluna dupla acaba: a lista ocupa a largura e o detalhe vira uma segunda tela com voltar."
+      ],
+      "usa": [
+        "ucam-app-shell",
+        "ucam-avatar",
+        "ucam-badge",
+        "ucam-button",
+        "ucam-chip",
+        "ucam-description-list",
+        "ucam-list-item",
+        "ucam-page-header",
+        "ucam-prazo",
+        "ucam-tabs",
+        "ucam-timeline",
+        "ucam-compositor"
+      ],
+      "evidencia": "image 6 (Análise de Requerimento), image 10 (Pesquisa), image 11-13 (Setor)"
+    },
+    {
+      "id": "painel-indicadores",
+      "nome": "Painel de indicadores",
+      "status": "draft",
+      "frequencia": "Gerencial e Analytics do Protocolo; Movimento de Caixa do SigFin tem a mesma forma.",
+      "problema": "A carga de trabalho e o volume do sistema só existem como contagem absoluta espalhada por telas de listagem, ou como exportação para planilha. Nenhuma tela responde onde está o acúmulo sem que alguém entre setor por setor.",
+      "estrutura": [
+        "PageHeader com o recorte de período ou modalidade ao lado do título",
+        "Faixa de Stats — leituras independentes em cartões separados, com a variação declarada contra uma base",
+        "Gráfico com a tabela dos mesmos dados junto",
+        "Ranking ou grade de Progress por objeto medido",
+        "Elo com a ação: cada leitura leva à tela onde se faz alguma coisa a respeito"
+      ],
+      "regras": [
+        "Todo indicador declara contra o que a variação está sendo comparada. Percentual sem base é ruído.",
+        "A variação é neutra por padrão: subir nem sempre é bom, e quem julga é o texto ao lado.",
+        "Toda proporção declara o total real, não a porcentagem: 24 de 40 é o número que quem distribui conhece.",
+        "Todo gráfico vem com a tabela equivalente. Sem ela o dado não existe para leitor de tela nem para impressão.",
+        "O painel termina em ação: um indicador que não leva a lugar nenhum é relatório, não painel.",
+        "O recorte de período vive no topo, junto do título, e não numa barra lateral fixa que ocupa largura o tempo todo."
+      ],
+      "usa": [
+        "ucam-app-shell",
+        "ucam-badge",
+        "ucam-card",
+        "ucam-chart",
+        "ucam-page-header",
+        "ucam-progress",
+        "ucam-segmented",
+        "ucam-stat"
+      ],
+      "evidencia": "image 6 (contagem por aba), SIGFIN movimento de caixa, redesenho interno de 2026"
+    },
+    {
+      "id": "listagem-inspetor",
+      "nome": "Listagem com inspetor",
+      "status": "draft",
+      "frequencia": "Ainda não observado no parque — é padrão PROPOSTO, e o rótulo draft carrega isso. Ele nasce de duas coisas: uma referência visual trazida pelo usuário em 09/09/2026 e um buraco que o próprio repositório já tinha, descrito abaixo.",
+      "problema": "A listagem-crud resolve o registro que se cria e se apaga. Ela não resolve o registro que se AFINA: aquele em que ninguém cria linha nova, e o trabalho é ajustar valores de uma linha que já existe e comparar com as vizinhas.\n\nO caso concreto está dentro deste repositório. A tela gerencial mede a carga de cada setor \"contra a capacidade declarada de 40 requerimentos\" — e nenhuma tela declara essa capacidade. O número aparece em seis cartões de um painel e não tem origem. Levado para a listagem-crud, ajustar a capacidade da Secretaria abriria uma gaveta que cobre a lista, e comparar a capacidade dela com a do CPD exigiria abrir, fechar, abrir de novo e guardar o primeiro número de cabeça.",
+      "estrutura": [
+        "PageHeader com título e a ação que o registro admite — que aqui costuma não ser Novo",
+        "Toolbar com busca e filtros, acima da tabela",
+        "Split: tabela ocupando a coluna larga, inspetor na coluna de apoio",
+        "DataTable com selectable=single e aria-selected na linha escolhida",
+        "Inspetor com o nome do registro como título e os campos editáveis abaixo",
+        "Rodapé de ações do inspetor, aplicando ao registro escolhido"
+      ],
+      "regras": [
+        "O inspetor tem de NOMEAR o registro que está mostrando, no próprio título. Ele é a única coisa que amarra o painel à linha para quem chegou à tela pelo teclado ou por leitor de tela — a tinta da linha escolhida não fala.",
+        "Escolher uma linha não navega e não recarrega: a posição da lista é o que o padrão existe para preservar.",
+        "A linha escolhida é marcada por aria-selected no <tr>, nunca só por classe. Cor sozinha não informa (WCAG 1.4.1).",
+        "A escolha da linha NÃO usa tarja de 3px na primeira célula, e a barra de estado da linha também não existe mais (ADR-027): numa linha de tabela o portador de cor é o selo da coluna Situação, que leva a palavra. Escolha e desfecho são dois fatos diferentes sobre a mesma linha, cada um com o seu sinal — fundo tingido com aria-selected, e o selo.",
+        "O inspetor cabe em 18rem. Campo que não cabe ali não pertence ao inspetor — pertence a um formulário de entidade, que é outro padrão.",
+        "Abaixo de 60rem o split vira uma coluna só e o inspetor cai para baixo da tabela. Painel de apoio espremido em 12rem não apoia nada."
+      ],
+      "usa": [
+        "ucam-badge",
+        "ucam-button",
+        "ucam-data-table",
+        "ucam-field",
+        "ucam-page-header",
+        "ucam-select",
+        "ucam-switch",
+        "ucam-text-field"
+      ],
+      "evidencia": "O buraco da capacidade declarada, visível na própria tela gerencial deste repositório (spec/templates.json, protocolo/gerencial). A referência de 09/09/2026 forneceu o ARRANJO; a necessidade já estava escrita."
+    },
+    {
+      "id": "consulta-relatorio",
+      "nome": "Consulta e relatório",
+      "status": "draft",
+      "frequencia": "É o padrão mais frequente do parque em número de telas, e não existia no catálogo. O Relatórios Acadêmicos são 74 templates, em 37 pares filtro/resultado, todos com esta forma. No SIGFIN, o movimento de caixa e o cálculo de mensalidade são consultas; no Protocolo, o gerencial e o analytics exportam. Entrou em 10/09/2026, absorvido do design system portátil daquele sistema (ADR-025).",
+      "problema": "A listagem-crud resolve o registro que se cria, edita e apaga. Ela não resolve a tela em que NINGUÉM cria nada: a pessoa faz uma pergunta — que alunos, de que curso, em que período — e lê uma resposta, que depois leva embora em papel ou planilha. São dois momentos com necessidades opostas. Na pergunta, o que importa é preencher poucos campos sem errar a combinação; na resposta, é ler uma tabela longa e conferir de onde ela veio. O legado mistura os dois: formulário e tabela na mesma página, ou o formulário inteiro repetido em cima do resultado, e a pessoa rola 40 linhas sem saber se está olhando 2026.1 ou 2025.2. O sistema de origem acertou a separação em duas telas e o resumo dos filtros aplicados na tela de resposta; o que faltava era escrever a regra, porque cada um dos 37 pares reescrevia o mesmo esqueleto.",
+      "estrutura": [
+        "Catálogo: a tela de entrada do sistema lista os relatórios por assunto, com busca; os mais gerados por quem está logado vêm primeiro",
+        "Filtros: PageHeader com o nome do relatório, um único formulário em cartão com os campos da pergunta, e o painel de apoio dizendo o que o relatório responde, a fonte, quando o dado foi atualizado e em que formatos sai",
+        "Campos: obrigatórios primeiro; campo dependente começa desabilitado até o pai ter valor; período é UM fieldset com duas datas, nunca dois campos soltos",
+        "Ação: um só primário, Gerar relatório, na fileira de ações do formulário; Limpar campos é fantasma à esquerda",
+        "Resultado: PageHeader com o mesmo título, a contagem do que veio e, na fileira de filtros, um chip por filtro aplicado mais o link Alterar filtros de volta para a tela anterior",
+        "Ações da resposta: Exportar como menu secundário (PDF com timbre, Excel, Word) e Imprimir como botão de ícone; nenhum primário — a tela não tem ação principal, tem leitura",
+        "Totais: uma fileira de stats acima da tabela quando o relatório tem números que a pessoa procuraria somando linhas",
+        "DataTable com número alinhado à direita em fonte tabular, situação em selo, e a linha vazia dita como caso normal pelo EmptyState",
+        "Pagination sempre resolvida no servidor, com a faixa \"1–25 de 312 alunos\"",
+        "Nota de atualidade no pé da seção: até quando o dado vale e de onde veio"
+      ],
+      "regras": [
+        "Pergunta e resposta são duas telas. O formulário não reaparece na tela de resultado; o que reaparece é o resumo dos filtros, em chips, e um caminho de volta. Quem quer mudar um filtro volta uma tela — e encontra o formulário preenchido como deixou.",
+        "Todo filtro aplicado aparece como chip na fileira de filtros da barra de visão, mesmo o que veio por padrão (o período letivo corrente). Resultado sem resumo é resultado que a pessoa não sabe de onde veio, e é assim que uma planilha de 2025.2 vai parar num relatório de 2026.1.",
+        "Exportar não é ação primária: é secundário com menu, um item por formato. Primário é o que faz a tela existir, e nesta tela isso já aconteceu ao gerar (ADR-023).",
+        "A exportação sai com timbre institucional e com o mesmo resumo dos filtros no cabeçalho do arquivo — o papel não tem barra de visão para mostrar o período.",
+        "Paginação no servidor, sempre. Carregar tudo e paginar no navegador é o que faz o relatório de 4.000 alunos derrubar a aba — e o resumo no topo (total, por situação) vem da mesma consulta, nunca de uma segunda.",
+        "Enquanto o relatório gera, o botão primário assume o estado loading e o formulário fica inerte. Não existe overlay de tela cheia (ADR-005): a pessoa precisa continuar vendo o que pediu.",
+        "Nenhum resultado é caso normal, não erro: EmptyState com a frase dizendo qual combinação de filtros não retornou nada e o botão de alterar filtros. Tabela sem linhas e sem frase é a tela dizendo que quebrou.",
+        "Valor que ultrapassa um limite de negócio (faltas acima de 25%) é cor E texto — a cor no número e a razão em texto ao lado ou em sr-only. Cor sozinha não informa (WCAG 1.4.1), e o mesmo vermelho já é a cor de erro do formulário.",
+        "A tela de resultado imprime só o conteúdo: some a moldura inteira, a paginação e as ações. O que fica é título, chips de filtro, totais, tabela e a nota de atualidade — o suficiente para o papel provar de onde veio.",
+        "Campo dependente (turno depende de curso) começa desabilitado, com dica dizendo do que depende. Pai voltando a vazio limpa e desabilita o filho de novo. É a seção dependencia do contrato do Select.",
+        "O acumulador — montar uma lista item a item antes de confirmar, como destinatários de uma etiqueta — é combobox + lista + botão de remover, com um input hidden por item. Cada item é validado ao entrar E de novo ao confirmar: o dado pode ter mudado no intervalo.",
+        "A nota de atualidade não é decoração: quando o dado tem defasagem (fechamento de ontem às 23h), ela aparece nas duas telas — no painel de apoio dos filtros e no pé do resultado."
+      ],
+      "usa": [
+        "ucam-alert",
+        "ucam-button",
+        "ucam-chip",
+        "ucam-combobox",
+        "ucam-data-table",
+        "ucam-date-field",
+        "ucam-empty-state",
+        "ucam-field",
+        "ucam-icon-button",
+        "ucam-menu",
+        "ucam-page-header",
+        "ucam-pagination",
+        "ucam-select",
+        "ucam-stat"
+      ],
+      "evidencia": "Relatórios Acadêmicos (Spring Boot + Thymeleaf), 74 templates gerados a partir do mesmo layout, entregues como skill em 08/09/2026: references/04-paginas.md descreve o par formulário/resultado com .resumo-filtros, .link-voltar, .botoes-exportacao, .paginacao e .nota-dados; 05-interacoes-js.md descreve cascata, acumulador e overlay. O que este padrão muda em relação à origem: o overlay sai (ADR-005), o resumo vira chip na barra de visão em vez de faixa em tom de marca, a exportação vira menu em vez de fileira de três botões outline, e a paginação ganha a faixa de contagem. As três telas de referência estão em spec/templates.json, projeto relatorios."
+    }
+  ]
+}

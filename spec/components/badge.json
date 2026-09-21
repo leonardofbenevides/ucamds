@@ -1,0 +1,299 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "badge",
+  "name": "Badge",
+  "selector": "ucam-badge",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "feedback",
+  "description": "Rótulo compacto que comunica a situação de um registro. Carrega sempre texto além da cor, porque cor sozinha não é informação acessível.",
+  "quando_usar": [
+    "A coluna SITUAÇÃO de uma tabela de requerimentos: Aguardando análise, Em análise, Deferido, Indeferido, Arquivado.",
+    "O estado do registro precisa ser reconhecido na varredura de uma lista, antes da leitura.",
+    "Um registro aberto precisa mostrar em que ponto da máquina de estados ele está, ao lado do título."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 10 (Pesquisa de Requerimento)",
+        "campo": "SITUAÇÃO",
+        "problema": "coluna de status renderizada como texto simples, sem distinção visual — a situação do requerimento é a informação mais consultada da tabela e não se destaca"
+      },
+      {
+        "tela": "image 6 (Análise)",
+        "rotulo": "AGUARDANDO ANÁLISE / ANALISANDO",
+        "problema": "os estados do fluxo existem como abas, mas não há vocabulário visual consistente para eles em nenhum outro lugar"
+      },
+      {
+        "tela": "image 11, 13",
+        "campo": "NÍVEL",
+        "problema": "coluna de nível sem representação visual definida"
+      }
+    ],
+    "conclusao": "O sistema tem uma máquina de estados de requerimento e nenhum componente para expressá-la. Este contrato fixa o vocabulário."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento span. Não é botão nem link — status não é ação."
+    },
+    {
+      "parte": "indicador",
+      "obrigatorio": true,
+      "descricao": "Ícone do estado, decorativo (aria-hidden). OBRIGATÓRIO nos tons que significam DESFECHO — info, success, warning, danger. Sem ele o selo entrega o estado por dois canais apenas, cor e palavra, e a cor não conta para quem não a distingue. Com o ícone a forma carrega o estado sozinha: quem varre uma coluna de 20 linhas reconhece o desfecho antes de ler a palavra. O ícone NÃO substitui o rótulo, que continua obrigatório — é o terceiro canal. Um ícone por tom, sempre o mesmo: circleCheck no success, triangleAlert no warning, circleAlert no danger, info no info. Na variante dot quem ocupa este papel é o ponto, não o ícone — ver a parte ponto. No tom neutral segue opcional: ali o selo costuma marcar categoria ou contagem, não desfecho, e não há forma que signifique \"nada aconteceu\".",
+      "classe": "ucam-badge"
+    },
+    {
+      "parte": "ponto",
+      "obrigatorio": false,
+      "descricao": "O indicador da variante dot: disco de 6px que HERDA a tinta do rótulo, decorativo (aria-hidden). Substitui o ícone, nunca acompanha. Não usa o degrau saturado que o ícone usa, e a distinção é entre uma forma e um disco: o ícone tem 14px de traço reconhecível e se lê com pouco contraste; um disco de 6px é contraste puro, e medido contra o próprio preenchimento no tema escuro o degrau saturado dava 2,98:1. Herdando o rótulo, o ponto viaja no par que o portão de build já mede.",
+      "classe": "ucam-badge__ponto"
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": true,
+      "descricao": "Texto do estado. Sempre presente."
+    }
+  ],
+  "props": [
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'info' | 'success' | 'warning' | 'danger'",
+      "default": "'neutral'",
+      "descricao": "Semântica visual. Mapeia para color.feedback.*.",
+      "valores": {
+        "neutral": {
+          "uso": "Estado inicial ou inerte: Rascunho, Arquivado."
+        },
+        "info": {
+          "uso": "Em andamento, sem exigir ação: Em análise, Encaminhado."
+        },
+        "success": {
+          "uso": "Concluído favoravelmente: Deferido, Concluído."
+        },
+        "warning": {
+          "uso": "Exige atenção ou está próximo de prazo: Aguardando documento, Vence hoje.",
+          "limite": "Não usar para o estado normal de espera — só quando há algo a fazer."
+        },
+        "danger": {
+          "uso": "Encerrado desfavoravelmente ou vencido: Indeferido, Prazo expirado.",
+          "limite": "Não é erro de sistema; é desfecho de negócio."
+        }
+      }
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": false,
+      "descricao": "O texto do estado. Obrigatório na REGRA, não no tipo: quem precisa de marcação dentro da pastilha projeta conteúdo em vez de passar a string — é o que o <ucam-prazo> faz com um <time datetime>. O que nunca se admite é a pastilha sair sem texto, e a checagem de desenvolvimento lê o texto renderizado justamente para cobrar as duas formas. Não existe badge só com cor (WCAG 1.4.1)."
+    },
+    {
+      "nome": "variant",
+      "tipo": "'soft' | 'dot' | 'outline'",
+      "default": "'soft'",
+      "descricao": "Tratamento da superfície do selo. soft e dot são a mesma pílula PREENCHIDA (fundo no degrau 100 do tom, rótulo no 700) e diferem só no indicador: ícone no soft, ponto no dot. outline é a pílula branca com filete, que foi o padrão entre 03/09 e 09/09/2026 e continua disponível. Até a ADR-020 o contrato declarava solid, que nunca existiu em trilho nenhum, e chamava de soft justamente o desenho de contorno — três camadas com três vocabulários.",
+      "valores": {
+        "soft": {
+          "uso": "O padrão. Situação do registro em qualquer contexto: tabela, cartão, cabeçalho de detalhe.",
+          "tokens": {
+            "fundo": "color.feedback.<tom>.background",
+            "texto": "color.feedback.<tom>.foreground",
+            "indicador": "color.feedback.<tom>.border"
+          }
+        },
+        "dot": {
+          "uso": "Densidade alta, onde o ícone de 14px já é ruído — lista longa, célula estreita, marcador ao lado de um nome.",
+          "limite": "O ponto SUBSTITUI o ícone, não se soma a ele: dois indicadores na mesma pílula gastam a largura que a densidade estava tentando economizar.",
+          "tokens": {
+            "indicador": "herda color.feedback.<tom>.foreground pelo currentColor do rótulo"
+          },
+          "classe": "ucam-badge__ponto"
+        },
+        "outline": {
+          "uso": "Coluna longa de status — a partir de ~10 linhas visíveis com o mesmo selo repetido.",
+          "limite": "Escolha da TELA, não do componente: ou a coluna inteira é outline, ou nenhuma parte dela é. Misturar os dois tratamentos na mesma tabela inventa uma distinção que não existe no dado.",
+          "tokens": {
+            "fundo": "color.surface.default",
+            "texto": "color.text.primary",
+            "filete": "color.feedback.<tom>.border a 30%"
+          }
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não é botão. Se o status for clicável para filtrar, quem recebe o clique é um controle de filtro, não o badge.",
+      "Não usar para contagem — isso é Counter, componente distinto.",
+      "Máximo de cinco tons em uso simultâneo numa mesma tabela; acima disso a cor deixa de discriminar.",
+      "Não inventar tom por estado: o mapeamento estado do domínio para tom é decidido uma vez e documentado no módulo.",
+      "Não tem tamanho. A altura sai de --ucam-size-marcador, o MESMO token do chip e do prazo, e é o que faz as três peças fecharem no mesmo topo e na mesma base quando aparecem na mesma linha — que é sempre. Até 09/09/2026 o contrato declarava size: sm | md, que nunca existiu em trilho nenhum; um segundo tamanho quebraria justamente o alinhamento que o token garante."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O rótulo textual é obrigatório. Cor nunca é o único meio de transmitir o estado (WCAG 1.4.1) — regra que também protege quem tem daltonismo.",
+      "Contraste do texto sobre o fundo do badge mínimo 4.5:1, verificado no build para os cinco tons.",
+      "Indicador de ponto ou ícone com aria-hidden=true.",
+      "Em tabela, o badge é conteúdo de célula comum e não precisa de role adicional.",
+      "Quando o status muda em tempo real, quem anuncia é a região live do contexto — não o badge, que apareceria repetidamente.",
+      "Não usar apenas caixa alta para diferenciar tons (ADR-003)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "1.4.11"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Uma ou duas palavras, em caixa natural: Em análise, Deferido, Indeferido.",
+      "Usar o vocabulário do domínio acadêmico, não termos técnicos: Deferido, não Aprovado no sistema.",
+      "O mesmo estado usa o mesmo rótulo em todos os módulos."
+    ],
+    "exemplos": {
+      "bom": [
+        "Aguardando análise",
+        "Em análise",
+        "Deferido",
+        "Indeferido",
+        "Arquivado"
+      ],
+      "ruim": [
+        "AGUARDANDO ANÁLISE",
+        "OK",
+        "Status 3",
+        "Pendente/Aguardando"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-listagem-crud",
+      "padrao-listagem-inspetor",
+      "padrao-painel-indicadores",
+      "padrao-triagem-lista-detalhe",
+      "ucam-data-table",
+      "ucam-list-item",
+      "ucam-prazo",
+      "ucam-stat"
+    ],
+    "usa": [
+      "ucam-icon"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / texto simples em célula",
+    "mapa": [
+      {
+        "legado": "coluna SITUAÇÃO em texto",
+        "novo": "ColumnDef type=status",
+        "nota": "A DataTable renderiza o badge automaticamente."
+      },
+      {
+        "legado": "estados em caixa alta",
+        "novo": "prop label em caixa natural",
+        "nota": "ADR-003."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Em tabela",
+      "codigo": "{ key: 'situacao', header: 'Situação', type: 'status', width: 'min' }"
+    },
+    {
+      "titulo": "Direto",
+      "codigo": "<ucam-badge tone=\"info\" label=\"Em análise\" />"
+    },
+    {
+      "titulo": "Densidade alta",
+      "codigo": "<ucam-badge tone=\"danger\" label=\"Indeferido\" variant=\"dot\" />"
+    },
+    {
+      "titulo": "Coluna longa",
+      "codigo": "<ucam-badge tone=\"info\" label=\"Em análise\" variant=\"outline\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Carregar sempre o texto do estado além da cor.",
+      "evite": "Comunicar situação só por cor.",
+      "porque": "Cor como único portador de significado é violação da WCAG 1.4.1, e é o que o SIGFIN faz com valores monetários."
+    },
+    {
+      "faca": "Decidir o mapa estado-do-domínio → tom uma vez, por módulo, e documentá-lo.",
+      "evite": "Escolher o tom caso a caso na tela.",
+      "porque": "O sistema tem uma máquina de estados de requerimento e nenhum vocabulário visual consistente para ela."
+    },
+    {
+      "faca": "Usar o vocabulário acadêmico: Deferido, Indeferido, Em análise.",
+      "evite": "Termo técnico ('Aprovado no sistema', 'Status 3') e caixa alta.",
+      "porque": "O rótulo do badge é lido pelo aluno e pelo servidor, não pelo desenvolvedor."
+    },
+    {
+      "faca": "Manter no máximo cinco tons simultâneos numa tabela.",
+      "evite": "Um tom por estado quando há oito estados.",
+      "porque": "Acima de cinco, a cor deixa de discriminar e vira decoração."
+    },
+    {
+      "faca": "Colocar um controle de filtro ao lado quando o status precisa ser clicável.",
+      "evite": "Badge clicável.",
+      "porque": "Badge é rótulo. Se recebe clique, promete uma ação que sua forma não anuncia."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "chip",
+      "diferenca": "Status-badge mostra um DADO do registro, que o sistema decidiu; chip mostra uma ESCOLHA de quem está usando a tela, e por isso pode ser removido.",
+      "escolha": "Deferido, Em análise, Indeferido: vêm do registro e ninguém remove clicando."
+    },
+    {
+      "componente": "prazo",
+      "diferenca": "Status-badge é o DESFECHO do registro; prazo é um FATO sobre a data. Um requerimento vencido continua podendo ser deferido, e por isso os dois aparecem juntos.",
+      "escolha": "Deferido, Indeferido, Em análise, Arquivado: é situação, e é do badge."
+    },
+    {
+      "componente": "realce",
+      "diferenca": "Realce pinta um trecho DENTRO da frase para dizer por que aquele item casou com a busca; Badge é um rótulo à parte que diz a situação do registro. Um é sobre a busca, o outro é sobre o dado.",
+      "escolha": "Há um estado no registro: Deferido, Em análise, Indeferido."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe de base mais uma de tom. A base não traz tinta — fundo e filete vêm do tom, e é por isso que ela declara border: 1px solid transparent: sem a borda declarada nas duas variantes, o selo encolhe 2px ao trocar de tratamento e a coluna desalinha.",
+      "raiz": ".ucam-badge",
+      "estado": "Sem estado. Selo é rótulo, não controle: não recebe hover, foco nem clique.",
+      "variaveis": [
+        "--ucam-color-feedback-info-background",
+        "--ucam-color-feedback-info-foreground",
+        "--ucam-color-feedback-info-border",
+        "--ucam-color-feedback-success-background",
+        "--ucam-color-feedback-success-foreground",
+        "--ucam-color-feedback-success-border",
+        "--ucam-color-feedback-warning-background",
+        "--ucam-color-feedback-warning-foreground",
+        "--ucam-color-feedback-warning-border",
+        "--ucam-color-feedback-danger-background",
+        "--ucam-color-feedback-danger-foreground",
+        "--ucam-color-feedback-danger-border",
+        "--ucam-color-surface-default",
+        "--ucam-color-border-default",
+        "--ucam-color-border-subtle",
+        "--ucam-color-text-primary",
+        "--ucam-color-text-secondary",
+        "--ucam-size-marcador",
+        "--ucam-radius-pill"
+      ],
+      "nota": "A caixa é declarada UMA vez, compartilhada com .ucam-prazo. As duas peças aparecem coladas na mesma linha da Caixa de entrada, e quando a geometria era declarada dos dois lados elas divergiram em produção."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/badge/ucam-badge.ts — TONE_CLASSES veste o preenchido, OUTLINE_CLASSES a pílula branca, DOT_CLASSES o ponto. O construtor cobra em ngDevMode que a pastilha saia com texto: lê o textContent renderizado, e não o input label, porque o <ucam-prazo> projeta um <time> em vez de passar string."
+  }
+}

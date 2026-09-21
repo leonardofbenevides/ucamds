@@ -1,0 +1,306 @@
+{
+  "$description": "Modelo de estados do design system: o que cada estado significa, qual vence quando dois se aplicam, e como o movimento acompanha a mudança. Vale para todo componente interativo.",
+  "_meta": {
+    "origem": "A precedência veio da skill design-system (nextlevelbuilder/ui-ux-pro-max-skill). Era lacuna real: os contratos listavam estados sem dizer qual ganha quando coincidem.",
+    "divergencia": "A mesma skill receita opacity 0.5 para desabilitado e, na linha seguinte, exige 3:1 de contraste. As duas coisas não cabem juntas: a tinta de controle desabilitado da UCAM tem 5,70:1 sobre o próprio chão e cai para 2,28:1 a 50% de opacidade. A UCAM usa COR EXPLÍCITA para desabilitado, verificada no portão de build — nunca opacidade. O 4,80:1 que esta linha afirmou até 20/09/2026 não correspondia a par nenhum do sistema; ver ADR-042."
+  },
+  "estados": [
+    {
+      "id": "default",
+      "gatilho": "Nenhum",
+      "aparencia": "Base.",
+      "precedencia": 6
+    },
+    {
+      "id": "hover",
+      "gatilho": "Ponteiro sobre o elemento",
+      "aparencia": "Um degrau de superfície. Nunca muda tamanho nem posição — layout que se mexe no hover atrapalha quem tem tremor.",
+      "precedencia": 5
+    },
+    {
+      "id": "focus-visible",
+      "gatilho": "Foco por teclado",
+      "aparencia": "Anel de 2px com offset 2px, cor color.border.focus, mínimo 3:1 contra o fundo adjacente (WCAG 1.4.11).",
+      "precedencia": 4
+    },
+    {
+      "id": "active",
+      "gatilho": "Botão do ponteiro pressionado",
+      "aparencia": "Degrau mais escuro no claro, mais claro no escuro.",
+      "precedencia": 3
+    },
+    {
+      "id": "loading",
+      "gatilho": "Operação em andamento",
+      "aparencia": "Indicador de progresso no lugar do ícone; o rótulo permanece e a largura não muda.",
+      "precedencia": 2
+    },
+    {
+      "id": "disabled",
+      "gatilho": "Ação indisponível no contexto",
+      "aparencia": "Dois sinais, nunca um: o chão único de color.action.disabled.background E a perda da aresta (borda transparente). Cor explícita, nunca opacidade. Ver divergência e a seção disabled.",
+      "precedencia": 1
+    }
+  ],
+  "precedencia": {
+    "ordem": [
+      "disabled",
+      "loading",
+      "active",
+      "focus-visible",
+      "hover",
+      "default"
+    ],
+    "regra": "Quando dois estados se aplicam, vence o de menor número em precedencia. Um botão desabilitado sob o ponteiro não mostra hover; um botão em loading que recebe foco mostra o anel de foco E continua em loading, porque foco é sinal de navegação e não pode ser suprimido.",
+    "excecao": "focus-visible NUNCA é suprimido por hover, active ou loading. Esconder o foco quebra a navegação por teclado (WCAG 2.4.7). É a única exceção à ordem."
+  },
+  "disabled": {
+    "regra": "Cor explícita dos tokens color.action.disabled.*, verificada no build.",
+    "motivo": "opacity reduz o contraste de forma invisível para quem escreve o código e produz exatamente os botões ilegíveis do Protocolo e do SIGFIN. Com token explícito, o portão de contraste enxerga o valor real.",
+    "chao_unico": {
+      "regra": "Todo controle bloqueado — botão, campo, área de texto, caixa de marcação, radio, grupo de entrada — assenta em color.action.disabled.background e veste color.action.disabled.text. Nenhum outro degrau de superfície serve para dizer desabilitado.",
+      "motivo": "Até 20/09/2026 o botão usava action.disabled.background, o campo usava surface.subtle e o radio usava surface.sunken. Um estado em três cinzas na mesma tela não é um estado reconhecível: é um cinza que não quer dizer nada. Ver ADR-042."
+    },
+    "dois_sinais": {
+      "regra": "A cor não pode ser o único portador do estado. Ao chão pesado soma-se a perda da ARESTA: o controle bloqueado fica com borda transparente, enquanto o ativo mantém o fio de 1px.",
+      "motivo": "Desabilitado e somente-leitura dividiam surface.subtle e a borda de fio, e só a cor do texto os separava — a 3,31:1, uma diferença que quase ninguém enxergava. Forma se enxerga onde tom vizinho não se enxerga: quem não distingue os dois cinzas ainda distingue a aresta que sumiu.",
+      "nao_confundir": "readonly mantém o recuo leve, a borda e a tinta primária, porque o valor é justamente o que se veio ler e copiar. disabled desce para o chão do controle, perde a aresta e apaga a tinta, porque o valor não se aplica."
+    },
+    "acessibilidade": [
+      "Controle de formulário usa o atributo disabled.",
+      "Elemento que precisa continuar focável usa aria-disabled=true e barra a ação no manipulador.",
+      "Botão desabilitado sem explicação é beco sem saída: acompanhe de tooltip ou texto dizendo o motivo.",
+      "WCAG 1.4.3 isenta componentes inativos de contraste — a UCAM mantém legível mesmo assim, porque o rótulo ainda precisa ser lido para se entender o que está bloqueado. Desde a ADR-042 os três pares de controle passam os 4,5:1 sem depender da isenção: 5,70:1 no claro e 6,77:1 no escuro. Sobra um desvio nomeado, color.text.disabled sobre o card escuro a 4,37:1, e ali o limite não é o contraste e sim o teto por cima dele — o degrau seguinte devolve ao desabilitado o brilho de texto ativo."
+    ]
+  },
+  "loading": {
+    "regra": "aria-busy=true e aria-disabled=true. NUNCA o atributo disabled.",
+    "motivo": "disabled remove o elemento da ordem de foco; quem navega por teclado perde o contexto no meio da operação. O elemento continua focável e o clique é barrado no código.",
+    "posicao_do_indicador": [
+      {
+        "componente": "Button",
+        "posicao": "No lugar do ícone inicial; o rótulo permanece e a largura não muda."
+      },
+      {
+        "componente": "Select",
+        "posicao": "No lugar do chevron."
+      },
+      {
+        "componente": "DataTable",
+        "posicao": "Skeleton nas linhas, dentro da tabela (ADR-005)."
+      },
+      {
+        "componente": "Página",
+        "posicao": "Skeleton na região que carrega. Nunca overlay de tela cheia."
+      },
+      {
+        "componente": "TextField",
+        "posicao": "No fim do campo, dentro da borda. O campo continua editável: a busca do CEP não pode travar a digitação."
+      },
+      {
+        "componente": "Dialog",
+        "posicao": "No botão primário do rodapé. O diálogo declara aria-busy e deixa de fechar por Esc, pelo fundo e pelo ×, até a operação terminar."
+      },
+      {
+        "componente": "Command",
+        "posicao": "Uma linha \"Buscando…\" no lugar da lista, com role=status. O \"nada encontrado\" só aparece com a busca concluída."
+      },
+      {
+        "componente": "Chart, Timeline, DescriptionList, Stat",
+        "posicao": "Esqueleto no lugar do conteúdo, dentro do próprio bloco, que mantém o rótulo. Erro e vazio no mesmo lugar, pelo EmptyState pequeno — no Stat, só o traço e a frase."
+      }
+    ]
+  },
+  "movimento": {
+    "regra": "A transição existe para explicar a mudança de estado, não para enfeitar. Só propriedades que não provocam recálculo de layout. A curva e a duração saem SEMPRE dos papéis de motion — nunca de uma palavra-chave crua do CSS. Ver a fundação de Movimento.",
+    "mapa": [
+      {
+        "propriedade": "color, background-color, border-color",
+        "duracao": "motion.duration.state",
+        "easing": "motion.easing.standard"
+      },
+      {
+        "propriedade": "box-shadow, outline",
+        "duracao": "motion.duration.state",
+        "easing": "motion.easing.standard"
+      },
+      {
+        "propriedade": "opacity",
+        "duracao": "motion.duration.state",
+        "easing": "motion.easing.standard"
+      },
+      {
+        "propriedade": "translate, scale",
+        "duracao": "motion.duration.state",
+        "easing": "motion.easing.standard"
+      },
+      {
+        "propriedade": "entrada de menu, listbox e dica",
+        "duracao": "motion.duration.state",
+        "easing": "motion.easing.entrance"
+      },
+      {
+        "propriedade": "entrada de diálogo",
+        "duracao": "motion.duration.reveal",
+        "easing": "motion.easing.entrance"
+      },
+      {
+        "propriedade": "entrada da gaveta",
+        "duracao": "motion.duration.travel",
+        "easing": "motion.easing.emphasized"
+      }
+    ],
+    "proibido": [
+      "Animar width, height, top, left ou margin: provoca reflow e engasga em tabela longa.",
+      "Escrever a curva à mão (ease, ease-out, cubic-bezier solto) em vez do papel de motion: é assim que a mesma tela acaba com três easings.",
+      "Transição em estado de foco que atrase o aparecimento do anel.",
+      "Qualquer movimento sem respeitar prefers-reduced-motion."
+    ]
+  },
+  "vocabulario": {
+    "regra": "Estado de domínio tem nome livre, mas conceito que já tem nome no sistema usa esse nome, em inglês, como os estados de interação. Sinônimo é divergência silenciosa: quem procura \"open\" nos contratos não acha o menu que dizia \"aberto\", e a página de cada componente passa a falar duas línguas sobre a mesma coisa. O validador recusa o sinônimo EXATO; estado composto, como \"nav-sobreposta-aberta\", continua livre.",
+    "origem": "Revisão de estados de 13/09/2026: nove contratos diziam o mesmo estado em português e em inglês, e o avatar chamava de \"carregando\" um estado de interação — que por não conter \"loading\" escapava da tabela de precedência.",
+    "termos": [
+      {
+        "id": "open",
+        "uso": "Painel, lista, menu ou dica visível.",
+        "sinonimos": [
+          "aberto",
+          "aberta"
+        ]
+      },
+      {
+        "id": "closed",
+        "uso": "O mesmo, fora da tela.",
+        "sinonimos": [
+          "fechado",
+          "fechada"
+        ]
+      },
+      {
+        "id": "empty",
+        "uso": "Não há dado para mostrar.",
+        "sinonimos": [
+          "vazio",
+          "vazia",
+          "sem-dado",
+          "sem-dados"
+        ]
+      },
+      {
+        "id": "error",
+        "uso": "A carga ou a operação falhou.",
+        "sinonimos": [
+          "erro",
+          "falha"
+        ]
+      },
+      {
+        "id": "invalid",
+        "uso": "O valor não passa na validação.",
+        "sinonimos": [
+          "invalido",
+          "invalida",
+          "inválido",
+          "inválida"
+        ]
+      },
+      {
+        "id": "readonly",
+        "uso": "Visível e copiável, não editável; continua focável.",
+        "sinonimos": [
+          "somente-leitura",
+          "read-only"
+        ]
+      },
+      {
+        "id": "filled",
+        "uso": "O campo tem valor.",
+        "sinonimos": [
+          "preenchido",
+          "preenchida"
+        ]
+      },
+      {
+        "id": "checked",
+        "uso": "O controle anuncia aria-checked: checkbox, radio, interruptor.",
+        "sinonimos": [
+          "marcado",
+          "marcada"
+        ]
+      },
+      {
+        "id": "selected",
+        "uso": "O item anuncia aria-selected ou aria-current: aba, opção, linha.",
+        "sinonimos": [
+          "selecionado",
+          "selecionada"
+        ]
+      },
+      {
+        "id": "pressed",
+        "uso": "O botão anuncia aria-pressed: segmento, botão que alterna.",
+        "sinonimos": [
+          "pressionado",
+          "pressionada"
+        ]
+      },
+      {
+        "id": "current",
+        "uso": "O passo ou a página em que se está.",
+        "sinonimos": [
+          "atual"
+        ]
+      },
+      {
+        "id": "collapsed",
+        "uso": "Seção recolhida.",
+        "sinonimos": [
+          "recolhido",
+          "recolhida"
+        ]
+      },
+      {
+        "id": "expanded",
+        "uso": "Seção expandida.",
+        "sinonimos": [
+          "expandido",
+          "expandida"
+        ]
+      },
+      {
+        "id": "loading",
+        "uso": "Estado de interação: ver precedencia.",
+        "sinonimos": [
+          "carregando"
+        ]
+      },
+      {
+        "id": "disabled",
+        "uso": "Estado de interação: ver precedencia.",
+        "sinonimos": [
+          "desabilitado",
+          "desabilitada"
+        ]
+      },
+      {
+        "id": "focus-visible",
+        "uso": "Estado de interação: ver precedencia.",
+        "sinonimos": [
+          "foco",
+          "focado",
+          "focada"
+        ]
+      }
+    ],
+    "ambiguos": [
+      {
+        "termo": "escolhido",
+        "tambem": [
+          "escolhida"
+        ],
+        "opcoes": "use checked quando o controle anuncia aria-checked, selected quando anuncia aria-selected ou aria-current, pressed quando anuncia aria-pressed"
+      }
+    ]
+  }
+}

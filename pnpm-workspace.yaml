@@ -1,0 +1,12 @@
+packages:
+  - site
+  - elements
+
+# esbuild precisa do script de instalação para baixar o binário da plataforma.
+# Os demais são aceleradores nativos opcionais do Nx (que entra como peer do
+# @analogjs/platform, mas não é usado aqui) — sem eles tudo funciona.
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: true
+  lmdb: false
+  msgpackr-extract: false

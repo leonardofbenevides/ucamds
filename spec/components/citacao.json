@@ -1,0 +1,155 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "citacao",
+  "name": "Citacao",
+  "selector": "ucam-citacao",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "conteudo",
+  "description": "O texto que alguém escreveu, reproduzido como foi escrito, dentro de uma tela que fala com a voz do sistema. Separa a fala da pessoa — o pedido do requerente, a justificativa de quem indeferiu — dos dados que o sistema registra em volta dela.",
+  "quando_usar": [
+    "Uma tela de registro mostra o texto livre que a pessoa escreveu ao abrir o pedido.",
+    "Uma decisão cita a justificativa escrita por quem a tomou.",
+    "O texto é de alguém e não do sistema, e precisa ser lido como tal."
+  ],
+  "evidencia": {
+    "origem": "Redesenho do Protocolo (templates.json, protocolo/requerimento-detalhe)",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — Requerimento (página própria)",
+        "problema": "o texto do requerente era um blockquote que tomava emprestada a classe da mensagem da linha do tempo, fora de qualquer linha do tempo, e ajustava a margem com estilo inline. Se a linha do tempo mudasse o balão, o pedido do aluno mudava junto sem ninguém ter decidido isso"
+      },
+      {
+        "tela": "Protocolo legado — Detalhe de requerimento",
+        "problema": "a solicitação do aluno aparecia como mais um campo da grade de dados, rotulada Observação, com o mesmo peso de Campus e Curso. O único texto escrito por uma pessoa se lia como atributo do registro"
+      }
+    ],
+    "conclusao": "Texto de pessoa e dado de sistema pedem formas diferentes. A citação dá à fala uma superfície própria e um nome no catálogo, para que ela deixe de depender do desenho de outro componente."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento blockquote. A mesma forma da mensagem da linha do tempo — o filete de citação à esquerda, sem fundo nem contorno (ADR-036) — porque é o mesmo fato: alguém falando, e não o sistema registrando. Mesma forma por decisão, não por empréstimo de classe.",
+      "classe": "ucam-citacao"
+    },
+    {
+      "parte": "texto",
+      "obrigatorio": true,
+      "descricao": "O texto como foi escrito, em corpo de leitura e tinta primária. Parágrafos do original viram parágrafos."
+    },
+    {
+      "parte": "autoria",
+      "obrigatorio": false,
+      "descricao": "Quem escreveu, abaixo do texto, em legenda. Omitida quando a tela já diz o autor logo acima — repetir o nome a dez pixels não informa nada.",
+      "classe": "ucam-citacao__autoria"
+    }
+  ],
+  "props": [
+    {
+      "nome": "autor",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome de quem escreveu. Nulo quando o contexto já o diz — no requerimento, o nome do requerente está no cabeçalho."
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para destacar texto do sistema. Aviso, dica e regra de negócio são alert ou texto de apoio; a citação é só para a fala de uma pessoa.",
+      "Não usar dentro da linha do tempo. Lá a mensagem já tem o próprio corpo, com autor e hora no cabeçalho do evento.",
+      "Não editar o texto citado para caber. Truncar a fala de alguém muda o que foi dito; se é longo, a tela dá espaço."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O elemento é blockquote de verdade, para que o leitor de tela anuncie o começo e o fim da citação (WCAG 1.3.1).",
+      "Com autoria, raiz e autoria ficam num figure com figcaption, e não num parágrafo solto depois da citação: é o que liga o nome ao texto.",
+      "Contraste do texto sobre o preenchimento mínimo 4.5:1 nos dois temas."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O texto entra como foi escrito, sem aspas acrescentadas: a superfície já diz que é citação.",
+      "A autoria é o nome da pessoa, sem travessão nem Enviado por."
+    ],
+    "exemplos": {
+      "bom": [
+        "Solicito revisão da nota da AV2 de Cálculo III: identifiquei divergência entre o gabarito e a correção da questão 4."
+      ],
+      "ruim": [
+        "“Solicito revisão da nota…” (aspas somadas à superfície)",
+        "Observação: Solicito revisão… (fala de pessoa rotulada como campo)"
+      ]
+    }
+  },
+  "migracao": {
+    "de": "Campo Observação na grade de dados do requerimento",
+    "mapa": [
+      {
+        "legado": "Observação: <texto do aluno> na grade de dados",
+        "novo": "ucam-citacao no corpo do registro, antes da resposta",
+        "nota": "O texto sai da grade e vira a primeira coisa que se lê: é ele que diz o que a pessoa pediu."
+      },
+      {
+        "legado": "blockquote com .ucam-timeline__corpo--mensagem e margem inline",
+        "novo": "blockquote.ucam-citacao",
+        "nota": "Mesma aparência, sem depender da linha do tempo."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Pedido do requerente",
+      "codigo": "<ucam-citacao>\n  Solicito revisão da nota da AV2 de Cálculo III: identifiquei divergência entre o gabarito e a correção da questão 4.\n</ucam-citacao>"
+    },
+    {
+      "titulo": "Com autoria",
+      "codigo": "<ucam-citacao autor=\"Marina Salles\">\n  Indeferido: o prazo de revisão da AV2 encerrou em 28/08.\n</ucam-citacao>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Usar a citação para o texto livre que a pessoa escreveu.",
+      "evite": "Pôr esse texto como mais um par de rótulo e valor.",
+      "porque": "Na grade de dados a fala de alguém pesa o mesmo que Campus e Curso, e é justamente ela que diz o que a pessoa quer."
+    },
+    {
+      "faca": "Omitir a autoria quando o cabeçalho já nomeia a pessoa.",
+      "evite": "Repetir o nome embaixo do texto.",
+      "porque": "O mesmo nome duas vezes na mesma dobra lê como se fossem duas pessoas."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe no blockquote. Com autoria, figure envolvendo o blockquote e um figcaption.ucam-citacao__autoria.",
+      "raiz": ".ucam-citacao",
+      "estado": "Sem estado — é texto.",
+      "variaveis": [
+        "--ucam-color-surface-subtle",
+        "--ucam-color-border-subtle",
+        "--ucam-radius-surface"
+      ]
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/citacao/ucam-citacao.ts"
+  },
+  "vs": [
+    {
+      "componente": "timeline",
+      "diferenca": "A mensagem da linha do tempo é uma fala DENTRO de um histórico, com autor e hora no cabeçalho do evento. A citação é uma fala solta no corpo do registro. As duas vestem a mesma superfície porque dizem o mesmo fato — alguém falando —, mas cada uma tem a sua classe.",
+      "escolha": "O texto está fora de qualquer histórico."
+    },
+    {
+      "componente": "alert",
+      "diferenca": "O alerta é o sistema falando com quem usa a tela. A citação é uma pessoa falando, reproduzida pelo sistema.",
+      "escolha": "Quem escreveu o texto foi uma pessoa."
+    }
+  ]
+}

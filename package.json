@@ -1,0 +1,48 @@
+{
+  "name": "dsucam",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.4.0",
+  "engines": {
+    "node": "24.x"
+  },
+  "description": "Design System da Universidade Candido Mendes",
+  "scripts": {
+    "validate": "node tools/check-crases.mjs && node tools/validate-spec.mjs",
+    "tokens": "node tools/build-tokens.mjs && node tools/check-daltonismo.mjs",
+    "marca": "node tools/check-marca-vs-destrutivo.mjs",
+    "css": "node tools/build-css.mjs",
+    "ui": "node tools/check-geometria.mjs && node tools/sync-ui.mjs",
+    "site": "pnpm --dir site build",
+    "legado": "node tools/build-docs.mjs",
+    "dev:legado": "node tools/serve.mjs",
+    "demo": "node tools/build-demo.mjs",
+    "build": "pnpm run validate && pnpm run tokens && pnpm run marca && pnpm run fonts && pnpm run icons && pnpm run css && pnpm run subpaleta && pnpm run faixa && pnpm run adaptador && pnpm run ui && pnpm run indice && pnpm run telas && pnpm run legado && pnpm run obrigatoriedade && pnpm run regra-anexo && pnpm run demo && pnpm run agentes && pnpm run site",
+    "icons": "node tools/build-icons.mjs",
+    "dev": "pnpm --dir site dev",
+    "telas": "node tools/build-templates.mjs",
+    "fonts": "node tools/build-fonts.mjs",
+    "elements": "pnpm --filter @ucam/elements build",
+    "prova": "node elements/prova.mjs",
+    "lib": "pnpm --dir ui run build",
+    "pacotes": "node tools/check-agentes.mjs && node tools/build-pacotes.mjs",
+    "indice": "node tools/build-index.mjs",
+    "dist": "pnpm run build && pnpm run lib && pnpm run pacotes",
+    "adaptador": "node tools/build-adapters.mjs",
+    "agentes": "node tools/build-agentes.mjs && node tools/check-agentes.mjs",
+    "faixa": "node tools/check-faixa.mjs",
+    "obrigatoriedade": "node tools/check-obrigatoriedade.mjs",
+    "regra-anexo": "node tools/check-regra-anexo.mjs",
+    "subpaleta": "node tools/check-subpaleta.mjs"
+  },
+  "devDependencies": {
+    "@ng-icons/lucide": "^35.1.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0"
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "empty-state",
+  "name": "EmptyState",
+  "selector": "ucam-empty-state",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "feedback",
+  "description": "Comunica ausência de conteúdo e oferece uma saída. Distingue o que ainda não existe do que a busca não encontrou — situações diferentes que pedem mensagens e ações diferentes.",
+  "quando_usar": [
+    "Uma listagem não tem nenhum registro ainda e é preciso dizer o que fazer para o primeiro existir.",
+    "A busca ou o filtro não encontrou nada — situação diferente da anterior, e com outra saída: limpar o recorte.",
+    "Um painel depende de dado que ainda não foi apurado e a tela precisa explicar a ausência em vez de mostrar zero."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 9 (Natureza), image 10 (Pesquisa), image 11 (Setor)",
+        "rotulo": "Sem registros",
+        "problema": "texto solto, em cinza-claro, sem contexto nem saída"
+      },
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "rotulo": "Nenhum registro encontrado.",
+        "problema": "segunda redação para a mesma situação, no mesmo sistema"
+      },
+      {
+        "tela": "todas",
+        "problema": "não distingue nada cadastrado de busca sem resultado — o usuário não sabe se deve criar um registro ou corrigir o filtro"
+      },
+      {
+        "tela": "todas",
+        "problema": "nenhuma ação oferecida; o usuário chega a um beco sem saída e precisa descobrir sozinho o próximo passo"
+      },
+      {
+        "tela": "image 6",
+        "problema": "aparece dentro de aba (AGUARDANDO ANÁLISE) sem esclarecer que o vazio é daquela aba, não do sistema"
+      }
+    ],
+    "conclusao": "Duas redações viram uma, com dois motivos explícitos. A regra fundamental: todo estado vazio oferece uma saída."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Região com role=status quando o vazio resulta de uma ação do usuário."
+    },
+    {
+      "parte": "icone",
+      "obrigatorio": false,
+      "descricao": "Decorativo, aria-hidden. Discreto — o vazio não é um erro."
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": true,
+      "descricao": "Uma frase dizendo o que não há."
+    },
+    {
+      "parte": "descricao",
+      "obrigatorio": false,
+      "descricao": "Por que está vazio e o que fazer."
+    },
+    {
+      "parte": "acao",
+      "obrigatorio": true,
+      "descricao": "A saída. Obrigatória — ver limites."
+    }
+  ],
+  "props": [
+    {
+      "nome": "reason",
+      "tipo": "'no-data' | 'no-results' | 'no-access' | 'error'",
+      "obrigatorio": true,
+      "descricao": "Determina redação, ícone e ação padrão.",
+      "valores": {
+        "no-data": {
+          "uso": "Nada foi cadastrado ainda. Primeira visita ao módulo.",
+          "limite": "A ação é primária: criar o primeiro registro."
+        },
+        "no-results": {
+          "uso": "Há dados, mas o filtro ou a busca não retornou nada.",
+          "limite": "A ação é secundária: limpar filtros. Nunca oferecer criar registro aqui — não é o que o usuário quer."
+        },
+        "no-access": {
+          "uso": "Existe conteúdo, mas o usuário não tem permissão.",
+          "limite": "Nunca revelar o que existe. A ação é solicitar acesso ou voltar."
+        },
+        "error": {
+          "uso": "Falha ao carregar.",
+          "limite": "A ação é tentar novamente. Distinto de vazio — não usar a mesma redação."
+        }
+      }
+    },
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "description",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md'",
+      "default": "'md'",
+      "descricao": "sm dentro de tabela ou card; md em página inteira."
+    },
+    {
+      "nome": "scope",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Contexto do vazio quando ele é parcial — o nome da aba ou do filtro ativo. Resolve a ambiguidade da aba AGUARDANDO ANÁLISE."
+    }
+  ],
+  "estados": [
+    "no-data",
+    "no-results",
+    "no-access",
+    "error"
+  ],
+  "limites": {
+    "regras": [
+      "Estado vazio sem ação é proibido. Se genuinamente não há o que fazer, a descrição precisa explicar por quê e para onde ir.",
+      "Não usar ilustração grande em tabela — o vazio de uma listagem é rotina, não evento.",
+      "Não usar tom de desculpa nem humor. É uma informação, não um problema."
+    ],
+    "motivo": "Todos os estados vazios do Protocolo terminam num beco sem saída."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Quando o vazio resulta de uma ação (busca, filtro), o container tem role=status para anunciar sem roubar o foco.",
+      "Quando é o estado inicial da página, não usar região live — o conteúdo já é lido na navegação normal.",
+      "Ícone decorativo com aria-hidden=true.",
+      "O título é um cabeçalho no nível correto da hierarquia da página, não um parágrafo em negrito.",
+      "Contraste do texto mínimo 4.5:1 — o Sem registros atual usa cinza-claro que reprova.",
+      "A ação é um botão ou link real, alcançável por teclado na ordem natural."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.1.1",
+      "2.4.6",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Título diz o que não há, nomeando a entidade: Nenhum setor cadastrado.",
+      "Em no-results, nomear o que foi buscado: Nenhum requerimento encontrado para \"biblioteca\".",
+      "Descrição explica e orienta, em uma frase.",
+      "Redação única por motivo em todo o sistema — fim do Sem registros versus Nenhum registro encontrado."
+    ],
+    "exemplos": {
+      "bom": [
+        "Nenhum setor cadastrado ainda. Cadastre o primeiro para começar a distribuir requerimentos.",
+        "Nenhum requerimento encontrado para esta busca. Tente outros termos ou limpe os filtros.",
+        "Nenhum requerimento aguardando análise. Os que estão em andamento aparecem na aba Analisando."
+      ],
+      "ruim": [
+        "Sem registros",
+        "Nenhum registro encontrado.",
+        "Ops! Nada por aqui 😕",
+        "Desculpe, não encontramos nada."
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-button",
+      "ucam-icon",
+      "ucam-link"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-listagem-crud",
+      "ucam-data-table"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / texto solto na tabela",
+    "mapa": [
+      {
+        "legado": "Sem registros",
+        "novo": "reason=no-data",
+        "nota": "Passa a exigir título específico da entidade e uma ação."
+      },
+      {
+        "legado": "Nenhum registro encontrado.",
+        "novo": "reason=no-results",
+        "nota": "Passa a oferecer limpar filtros."
+      },
+      {
+        "legado": "vazio dentro de aba",
+        "novo": "scope=nome-da-aba",
+        "nota": "Esclarece que o vazio é da aba, não do sistema."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Nada cadastrado",
+      "codigo": "<ucam-empty-state reason=\"no-data\" title=\"Nenhum setor cadastrado ainda\" description=\"Cadastre o primeiro setor para começar a distribuir requerimentos.\">\n  <ucam-button variant=\"primary\">Novo setor</ucam-button>\n</ucam-empty-state>"
+    },
+    {
+      "titulo": "Busca sem resultado",
+      "codigo": "<ucam-empty-state reason=\"no-results\" size=\"sm\" [title]=\"'Nenhum requerimento encontrado para \\\"' + termo() + '\\\"'\" description=\"Tente outros termos ou limpe os filtros.\">\n  <ucam-button variant=\"secondary\" (click)=\"limpar()\">Limpar filtros</ucam-button>\n</ucam-empty-state>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Distinguir no-data de no-results e mudar a mensagem e a ação junto.",
+      "evite": "Uma redação única para nada cadastrado e busca sem resultado.",
+      "porque": "São problemas opostos: um pede criar o primeiro registro, o outro pede corrigir o filtro."
+    },
+    {
+      "faca": "Oferecer sempre uma saída.",
+      "evite": "Texto solto em cinza-claro sem ação.",
+      "porque": "Todos os estados vazios do Protocolo terminam num beco sem saída."
+    },
+    {
+      "faca": "Nomear o escopo quando o vazio é de uma aba ou de um filtro: Nenhum requerimento aguardando análise.",
+      "evite": "Mensagem que sugere que o sistema inteiro está vazio.",
+      "porque": "Dentro da aba AGUARDANDO ANÁLISE, 'Sem registros' faz o usuário concluir que não há requerimento nenhum."
+    },
+    {
+      "faca": "Manter a mesma redação para o mesmo motivo em todo o sistema.",
+      "evite": "'Sem registros' numa tela e 'Nenhum registro encontrado' na outra.",
+      "porque": "Duas redações para a mesma situação no mesmo sistema ensinam que são situações diferentes."
+    },
+    {
+      "faca": "Tom informativo e discreto em listagem.",
+      "evite": "Ilustração grande, tom de desculpa ou humor.",
+      "porque": "O vazio de uma listagem é rotina, não evento."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "alert",
+      "diferenca": "Alert é uma mensagem ao lado do conteúdo que existe; empty-state ocupa a área inteira porque não há conteúdo nenhum.",
+      "escolha": "Se a área está vazia, o protagonismo é do empty-state — um alerta pairando sobre o vazio deixa a região sem explicação e sem saída."
+    },
+    {
+      "componente": "skeleton",
+      "diferenca": "Skeleton é ENQUANTO carrega; empty-state é quando não há o que carregar. Um é ignorância temporária do sistema, o outro é um fato sobre os dados.",
+      "escolha": "Se a requisição voltou vazia, empty-state. Deixar o skeleton girando para sempre é o carregamento eterno do legado."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "action",
+      "payload": "void",
+      "descricao": "Ação principal do estado vazio acionada."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Um bloco centrado com título, descrição e, quando há saída, uma ação.",
+      "raiz": ".ucam-empty",
+      "nota": "A classe encurta o nome do contrato. Quem escrever .ucam-empty-state não recebe regra nenhuma."
+    }
+  }
+}

@@ -1,0 +1,919 @@
+{
+  "$description": "Architecture Decision Records do Design System UCAM. Cada regra nas specs referencia uma ADR daqui — decisão sem justificativa registrada vira discussão repetida a cada seis meses.",
+  "decisions": [
+    {
+      "id": "ADR-001",
+      "titulo": "A ação primária é o bordô da marca",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "O Sistema de Protocolo usa quatro cores diferentes para a mesma intenção de ação principal: preto no SALVAR das telas de cadastro, azul no ENTRAR do login, verde no PRIMEIRO ACESSO e cinza no NOVO REQUERIMENTO. Nenhuma delas é a cor institucional.",
+      "decisao": "A variante primary do Button passa a usar o bordô institucional (wine.600). Uma única ação primária por tela.",
+      "consequencias": [
+        "O bordô, hoje restrito ao header, passa a marcar a ação em todas as telas — a marca aparece onde o usuário age.",
+        "Texto branco sobre wine.600 atinge 8,36:1 de contraste, nível AAA para texto normal.",
+        "Todas as telas com botão preto ou azul mudam de aparência na migração.",
+        "Exige revisão das telas que hoje têm três ações de peso visual idêntico, como o login."
+      ],
+      "afeta": [
+        "button"
+      ]
+    },
+    {
+      "id": "ADR-002",
+      "titulo": "Vermelho é reservado a destruição irreversível",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "A tela de login usa vermelho no botão REDEFINIR / CADASTRAR SENHA, uma ação corriqueira e não destrutiva. Isso ensina o usuário a ignorar vermelho, corroendo o sinal justamente onde ele precisa funcionar.",
+      "decisao": "A variante danger é exclusiva de ações irreversíveis (excluir registro, cancelar processo) e exige diálogo de confirmação. A rampa red.* é deliberadamente distinta do bordô da marca para que as duas leituras não se confundam.",
+      "consequencias": [
+        "REDEFINIR / CADASTRAR SENHA passa a secondary.",
+        "Toda ação danger ganha um diálogo de confirmação que hoje não existe.",
+        "O vermelho semântico precisa ser cromaticamente distinguível do bordô — restrição a respeitar em qualquer ajuste futuro da paleta."
+      ],
+      "afeta": [
+        "button",
+        "dialog",
+        "badge"
+      ]
+    },
+    {
+      "id": "ADR-003",
+      "titulo": "Nenhum papel tipográfico usa caixa alta forçada",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "Botões, cabeçalhos de tabela, navegação lateral e títulos de seção estão todos em CAIXA ALTA no legado.",
+      "decisao": "Nenhum token tipográfico aplica text-transform uppercase. A distinção hierárquica fica por peso, tamanho e cor.",
+      "consequencias": [
+        "Caixa alta elimina o contorno da palavra e reduz a velocidade de leitura; alguns leitores de tela soletram palavras em caixa alta.",
+        "A listagem de setores vem do banco em caixa alta — a normalização acontece na exibição, nunca no dado.",
+        "Mudança visual ampla e perceptível em todas as telas."
+      ],
+      "afeta": [
+        "button",
+        "data-table",
+        "app-shell",
+        "section-bar"
+      ]
+    },
+    {
+      "id": "ADR-004",
+      "titulo": "Rótulo persistente acima do campo, não flutuante",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "O padrão Material de rótulo flutuante colapsa o rótulo para dentro do campo ao preencher, reduzindo tamanho e contraste justamente quando o usuário quer conferir o que digitou. Ele também empurra os times a usar placeholder como rótulo, o que produziu 'Digite aqui para pesquisar' e 'Clique aqui para digitar...' no Protocolo — ambos invisíveis assim que a digitação começa.",
+      "decisao": "Todo campo tem rótulo visível acima do controle. Placeholder é exemplo de valor, nunca instrução nem rótulo.",
+      "consequencias": [
+        "É a mudança visual mais perceptível do projeto e precisa ser comunicada antes da migração.",
+        "Formulários ficam ligeiramente mais altos.",
+        "Elimina de uma vez a classe de falha WCAG 3.3.2 que o placeholder-como-rótulo produz.",
+        "Campos ganham a prop width=content para acabar com as larguras arbitrárias do legado."
+      ],
+      "afeta": [
+        "text-field",
+        "select",
+        "date-field",
+        "textarea"
+      ]
+    },
+    {
+      "id": "ADR-005",
+      "titulo": "LoadingOverlay sai do catálogo",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "O modal CARREGANDO bloqueia a tela inteira para operações de lista, impedindo o usuário de cancelar, navegar ou entender o que está acontecendo.",
+      "decisao": "Carregamento passa a ser estado do componente que o originou: state=loading na DataTable com skeleton de linhas, prop loading no Button que disparou a ação.",
+      "consequencias": [
+        "Um componente a menos no catálogo antes de qualquer linha de código.",
+        "A página permanece utilizável durante o carregamento.",
+        "Exige que cada componente que dispara requisição declare seu próprio estado de carregamento."
+      ],
+      "afeta": [
+        "data-table",
+        "button",
+        "dialog"
+      ]
+    },
+    {
+      "id": "ADR-006",
+      "titulo": "ZardUI é matéria-prima, nunca dependência",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "A ZardUI (MIT, modelo copy-paste, Angular 21 + Tailwind v4) é a melhor base disponível para o trilho Angular, mas está em beta e tem comunidade pequena.",
+      "decisao": "O código da ZardUI é copiado para dentro de @ucam/ui e fica atrás de uma camada de wrapper. Aplicações importam apenas a API da UCAM: <ucam-button>, nunca <z-button>.",
+      "consequencias": [
+        "Permite reescrever, substituir ou abandonar a base sem tocar em uma linha das aplicações consumidoras.",
+        "A UCAM assume, na prática, a manutenção do próprio fork — é preciso orçar esse tempo.",
+        "Nenhuma referência a ZardUI pode vazar para a API pública; o linter do CI verifica isso."
+      ],
+      "afeta": [
+        "*"
+      ]
+    },
+    {
+      "id": "ADR-008",
+      "titulo": "Uma só marca institucional; o verde volta a ser semântico",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "O parque tem DUAS identidades visuais em produção ao mesmo tempo. Portal Universitário e Sistema de Protocolo usam o bordô institucional; o SIGFIN é inteiramente verde — header, menu, cabeçalhos de painel e botões. Não é variação de tom: são marcas diferentes. Pior: dentro do próprio SIGFIN o verde acumula dois significados incompatíveis. Ele é a cor do sistema e, ao mesmo tempo, a cor de Saldo Atual — valor positivo. Na tela de Movimento de Caixa convivem valores em azul, vermelho e verde sem legenda nenhuma, e o usuário não tem como saber se verde ali quer dizer é deste sistema ou este número está bom.",
+      "decisao": "O bordô é a única marca institucional; o SIGFIN adota o bordô ao migrar. O verde passa a ser exclusivamente semântico — sucesso e valores positivos —, e nenhuma aplicação recebe cor de marca própria. Durante a transição, o SIGFIN pode rodar uma camada de marca que preserva o verde no header, sem contaminar a semântica dos componentes.",
+      "consequencias": [
+        "Resolve a colisão de significado: o verde deixa de disputar entre marca e semântica de valor positivo.",
+        "A arquitetura de tokens em três camadas deixa de ser preparação para o futuro e passa a ser necessidade da transição — a camada de marca é o que permite o SIGFIN migrar por etapas.",
+        "É a mudança de maior impacto político do projeto: o SIGFIN tem identidade própria consolidada, logo próprio (SigFin) e provavelmente donos que gostam dela. Precisa de patrocínio explícito.",
+        "Enquanto durar a transição, dois sistemas terão aparências diferentes — o que já acontece hoje, com a diferença de passar a ser deliberado e ter prazo.",
+        "Os valores monetários coloridos sem legenda passam a usar tom semântico documentado, com texto acompanhando a cor (WCAG 1.4.1)."
+      ],
+      "afeta": [
+        "*"
+      ]
+    },
+    {
+      "id": "ADR-007",
+      "titulo": "Componentes só referenciam tokens semânticos",
+      "status": "aceita",
+      "data": "2026-08-28",
+      "contexto": "Tokens em três camadas — primitivos, semânticos e marca/tema — só entregam troca de marca e tema escuro se a disciplina de camada for respeitada.",
+      "decisao": "Componentes e aplicações referenciam exclusivamente a camada semântica. Referência direta a primitivo é erro de CI, não aviso.",
+      "consequencias": [
+        "Multi-marca (graduação, pós, EAD) e tema escuro tornam-se troca de arquivo, não refatoração.",
+        "Exige vocabulário semântico bem nomeado desde o início — nome de token que descreve cor em vez de intenção quebra a regra na prática mesmo passando no linter.",
+        "Custa disciplina de revisão nos primeiros meses."
+      ],
+      "afeta": [
+        "*"
+      ]
+    },
+    {
+      "id": "ADR-009",
+      "titulo": "As métricas seguem a ZardUI; a borda em repouso é desvio consciente",
+      "status": "aceita",
+      "data": "2026-08-29",
+      "contexto": "Os primeiros componentes ficaram visualmente distantes da base. Comparando as métricas: altura de controle 2.5rem contra 2rem da ZardUI, raio 0.25rem contra 0.5rem, fonte 1rem contra 0.875rem, e borda #8E8A8A contra uma borda bem mais clara. O resultado era pesado e destoante. A borda escura não era acidente: foi escolhida para atingir os 3:1 da WCAG 1.4.11, que exige contraste no limite visual que identifica um componente.",
+      "decisao": "Adotar as métricas da ZardUI — controle de 2rem, raio de 0.5rem, texto de 0.875rem, padding de 0.625rem — e clarear a borda em repouso para neutral.300. A identificação em 3:1 passa a ser carregada pelo hover e pelo anel de foco de 3px, que continuam sendo exigidos pelo portão de build. EMENDA (03/09/2026): a borda em repouso desceu mais um degrau, de neutral.300 (#D0D0D0) para neutral.200 (#E4E4E4). O motivo é o mesmo que originou a ADR — peso visual em repouso — e o argumento é que o #D0D0D0 tinha virado a linha mais escura da interface, repetida em cada campo e cada botão de apoio. A mitigação ganhou uma perna: além de hover e anel de foco, o botão secundário passou a carregar a mesma sombra de 1px que o campo já tinha, para que o limite do controle não dependa só do filete.",
+      "consequencias": [
+        "A borda em repouso fica em ~1.24:1, abaixo dos 3:1 da 1.4.11 — e mais longe do que os 1.54:1 de antes da emenda de 03/09/2026. É desvio conhecido e nomeado, não falha silenciosa: o portão de tokens o reporta a cada build, com o número atual.",
+        "É o mesmo desvio que shadcn/ui e a própria ZardUI praticam. Isso não o torna conforme — torna-o uma escolha consciente, com registro.",
+        "A mitigação é real: no hover a borda vai para border-strong e no foco há anel de 3px com cor verificada em 3:1. Quem navega por teclado nunca fica sem o limite visível.",
+        "Para auditoria estrita, basta apontar color.border.default para neutral.400 — o desvio some e o portão volta a passar limpo. Continua sendo opção de uma linha, e a emenda de 03/09/2026 não a fecha.",
+        "Alturas menores aumentam a densidade das telas de listagem, que é onde o parque mais sofre."
+      ],
+      "afeta": [
+        "*"
+      ]
+    },
+    {
+      "id": "ADR-010",
+      "titulo": "Trilho A+: os componentes que precisam de JavaScript chegam ao legado como custom elements",
+      "status": "aceita",
+      "data": "2026-08-30",
+      "contexto": "A estratégia de dois trilhos entrega ao parque legado apenas @ucam/css: classes, tokens e estados declaráveis em CSS. Isso cobre aparência, e só. Os componentes cujo contrato depende de comportamento — o Combobox com busca sobre os 58 setores do Protocolo, a retenção de foco do Dialog, a paginação com nome acessível — ficam fora do alcance do legado, que hoje os reimplementa à mão e os reimplementa errado: é o que a evidência de cada contrato registra. O parque é AngularJS com Angular Material de ~2016 e Angular v14; nenhum deles pode consumir uma biblioteca Angular 21. A referência que motivou a investigação foi a documentação de web components do Shopify App Home, onde <s-button> é HTML puro, sem import e sem framework.",
+      "decisao": "Criar um terceiro artefato de distribuição, o Trilho A+: @ucam/ui compilado em AOT para custom elements por @angular/elements, publicado como um par de arquivos (ucam-elements.js + ucam-elements.css) que uma página legada carrega com uma tag script e uma tag link. Os nomes de tag são os mesmos do contrato — <ucam-button> aqui é o mesmo <ucam-button> que uma aplicação Angular importa. Change detection é zoneless por obrigação, não por preferência: zone.js sobre o digest do AngularJS seriam dois laços de detecção disputando a mesma página. A folha importa tailwindcss/theme e tailwindcss/utilities, NUNCA o preflight, que zeraria margin, padding e estilo de lista em * e body e repintaria a aplicação legada inteira. O Trilho A+ não substitui o Trilho A: o CSS continua sendo a entrega padrão, e o A+ é reservado às telas que precisam de um componente cujo contrato não cabe em CSS.",
+      "consequencias": [
+        "O custo foi medido, não estimado. Piso do trilho (runtime Angular zoneless + @angular/elements + um componente trivial): 239,6 KB brutos, 65,2 KB gzip. Com quatro componentes (Button, TextField, Select, Combobox): 412,0 KB brutos, 103,8 KB gzip, mais 95,5 KB de CSS que gzipam em 14,1 KB. Total de 117,8 KB gzip contra 7,2 KB do @ucam/css inteiro — dezesseis vezes mais. O piso domina: os três componentes além do botão custaram 38,6 KB gzip juntos, menos do que o runtime sozinho.",
+        "Como o piso domina, o trilho só se paga por página que use vários componentes. Uma tela legada que precisa apenas de botões estilizados continua no Trilho A — carregar 65 KB de runtime para pintar um botão é decisão errada com qualquer justificativa.",
+        "Uma página NÃO pode carregar o bundle de elements e a biblioteca Angular ao mesmo tempo. O registro do custom element é global no documento e a segunda definição do mesmo nome lança. Isso separa os trilhos por página, não por aplicação.",
+        "Dado estruturado não cabe em atributo HTML. A prop options do Combobox e do Select precisa ser atribuída por PROPRIEDADE via JavaScript (el.options = [...]), não por atributo no template. É a fricção real do trilho para quem escreve template AngularJS, e nenhuma configuração a remove — é limite do padrão de custom elements.",
+        "A ausência do preflight foi verificada, não presumida: elements/prova.html é uma página com CSS próprio ao estilo do legado, e a suíte de elements/prova.mjs confere que a lista mantém marcador quadrado, recuo de 28px e fonte Verdana depois de a folha do design system entrar.",
+        "O protótipo passou em 10 de 10 verificações de interação numa página sem framework: os quatro elementos se registram, o clique do botão chega ao script da página, o painel do Combobox abre com aria-expanded e aria-controls corretos, digitar filtra, ArrowDown move aria-activedescendant, Enter escolhe e o valor sai por evento, e a busca sem resultado mostra o estado vazio do contrato.",
+        "O bundle precisa ser AOT. A primeira medição saiu 525,7 KB brutos porque o plugin não achou tsconfig e caiu para JIT em silêncio, embutindo o compilador do Angular. É a mesma armadilha já documentada em site/tsconfig.app.json, e agora ela morde em dois lugares.",
+        "elements/ entrou no pnpm-workspace.yaml e compila a fonte de ui/ com Angular 22, não com a Angular 21 de ui/. O descasamento de major entre ui/ e os consumidores agora afeta três pacotes, o que aumenta a urgência de subir ui/ para a mesma major.",
+        "O trilho está em protótipo: quatro dos dezenove componentes estão registrados, e nenhuma tela do Protocolo o consome ainda. Promover a decisão a entrega exige escolher a primeira tela real e medir o carregamento nela, não em página de prova."
+      ],
+      "afeta": [
+        "button",
+        "text-field",
+        "select",
+        "combobox",
+        "dialog",
+        "pagination",
+        "data-table"
+      ]
+    },
+    {
+      "id": "ADR-011",
+      "titulo": "O Select passa para o overlay da base; o <select> nativo sai",
+      "status": "aceita",
+      "data": "2026-08-30",
+      "contexto": "O contrato do Select mandava usar o <select> nativo até 15 opções, e o raciocínio era bom: teclado, typeahead e o seletor de roda do celular vêm de graça, e nenhuma reimplementação empata com isso. O que a decisão não pesou é que a LISTA ABERTA de um select nativo não é estilizável em navegador nenhum. Na prática o componente ficava partido ao meio: o campo fechado seguia a marca — altura, raio e chevron do design system — e, ao abrir, a lista aparecia com o azul de seleção do Windows, tipografia do sistema e nenhum token da UCAM. O usuário levantou isso duas vezes olhando a mesma tela.",
+      "decisao": "O ucam-select passa a usar o overlay do z-select da ZardUI. A API pública não muda em nada — label, options, placeholder, hint, required, disabled, loading, invalid, errorMessage, width, dependsOn, dependencyFilled, value e o ControlValueAccessor seguem idênticos —, então nenhuma tela consumidora precisa ser tocada. O limite de 15 opções deixa de separar Select de Combobox por tecnologia e passa a separá-los por NECESSIDADE DE BUSCA: abaixo de 15 opções não se procura, escolhe-se; acima, procura-se, e aí é Combobox.",
+      "consequencias": [
+        "Perde-se o seletor nativo do celular, que é genuinamente melhor que qualquer overlay em tela pequena: roda de rolagem, ocupa a metade de baixo e não briga com o teclado virtual. É o custo real desta decisão e não há mitigação completa — o overlay do CDK ancora e rola, mas não vira folha nativa.",
+        "A base define o seletor como `z-select, [z-select]` e não expõe id no botão gatilho. Foi preciso adicionar `zTriggerId` à base (legítimo pela ADR-006, que trata a ZardUI como matéria-prima). Sem ele o único nome acessível vinha de `triggerAriaLabel`, que é o VALOR escolhido: o campo se anunciava \"Colegiado Direito\" em vez de \"Setor\". CONFLITA com um futuro `zard-cli add select`.",
+        "O chevron deixa de ser nosso e passa a ser o do gatilho da base. O spinner de `loading` que o contrato exige o cobre por sobreposição, em vez de bifurcar o trigger inteiro.",
+        "O `ucam-select` e o `ucam-combobox` passam a ter a mesma natureza — ambos overlay sobre CDK. A diferença que resta é a busca por digitação, que é a diferença que o usuário percebe.",
+        "Verificado em navegador por CDP, 8 de 8: o <select> nativo saiu, o <label for> alcança o gatilho, o aria-label cede ao rótulo visível, a lista abre no overlay com os tokens da UCAM, a escolha propaga o valor e o select dependente carrega as opções certas."
+      ],
+      "afeta": [
+        "select",
+        "combobox"
+      ]
+    },
+    {
+      "id": "ADR-012",
+      "titulo": "Layout é uma camada do design system, com contrato próprio",
+      "status": "aceita",
+      "data": "2026-08-30",
+      "contexto": "O catálogo tinha 19 contratos de componente e nenhum de arranjo. O app-shell existia como contrato desde o primeiro dia — nove partes, dois modos de navegação, quatro props — mas a implementação no Trilho A eram oito linhas de CSS pintando uma faixa. Tudo o mais que o contrato descreve (skip-link, navegação fixa em desktop, contêiner de conteúdo, rodapé) não existia. A consequência foi medida no próprio repositório: as sete telas de spec/templates.json remontavam o shell à mão, uma por uma, e saíram diferentes entre si — uma com chip de campus e outra sem, larguras de conteúdo em 72rem, 68rem, 48rem e nenhuma, rgba(255,255,255,.16) cravado em três delas, nenhuma com skip-link, <main> ou navegação. O design system reproduzia, nos próprios exemplos, os defeitos que app-shell.json condena. A confirmação de que a camada tem lugar veio do catálogo Storybook do CENPRE, da própria UCAM, que separa Fundações · Componentes · Layout · Páginas.",
+      "decisao": "Layout vira camada de primeira classe, com spec/layouts.json como contrato e uma seção própria no @ucam/css. A camada tem duas metades: o SHELL, que é a moldura da aplicação (grade, faixa, navegação nos dois modos, main, rodapé), e os BLOCOS de composição — empilha, fileira, grade, divide, seção e conteúdo. Cada bloco expõe botões de ajuste como custom properties com prefixo --ucam-, que é como uma prop do contrato (maxContentWidth, navWidth) alcança o CSS. E o shell dos templates passa a ser GERADO de um lugar só, tools/lib/shell.mjs, a partir da configuração declarada na spec: a tela descreve o que é dela, e nunca a faixa.",
+      "consequencias": [
+        "A anatomia de um contrato passa a declarar a CLASSE que realiza cada parte. É o que teria feito o descompasso do app-shell aparecer: nove partes descritas contra uma folha que entregava uma. O schema exige o campo como opcional — parte que só existe no Trilho B não tem classe —, mas onde ele existe o mapa é verificável.",
+        "O portão da ADR-007 precisou distinguir token de variável de bloco: --ucam-nav-width leva o prefixo para não colidir com o CSS da aplicação hospedeira, mas não é token do design system. A regra é mecânica — token é lido, variável de bloco é declarada pela própria folha — e por isso todo botão de ajuste passou a ter default DECLARADO, nunca escondido no fallback de um var().",
+        "Ao arrumar o portão apareceu um furo antigo: o padrão só examinava var(--x), sem vírgula, então qualquer var com fallback escapava. var(--ucam-color-inventada, red) passava calado e pintava de vermelho em produção. Corrigido junto.",
+        "Dois tokens semânticos novos nasceram do rgba cravado: surface.brand-raised e border.on-brand. O portão de contraste do build passou a exigir os dois — texto sobre a superfície elevada em 4,5:1 e o filete sobre a faixa em 3:1.",
+        "Uma escala de z-index virou token. A alternativa é o que o legado fez: cada arquivo escolhendo um número maior que o do vizinho, até o drawer ficar por cima do diálogo.",
+        "O @ucam/css NÃO embute a logo institucional — não embute asset nenhum. A faixa reserva o espaço e a página hospedeira aponta o arquivo por --ucam-appbar-logo, entrando por mask-image para que a marca monocromática herde currentColor e sirva à faixa bordô e ao tema escuro sem segunda variante.",
+        "A cascata mordeu duas vezes na mesma tarde, do mesmo jeito: a página declarava a variável ANTES do @ucam/css, e o default da folha, no mesmo seletor, vencia por vir depois. Regra que fica: override de variável de bloco vai DEPOIS da folha, sempre.",
+        "O site ganhou /layout e /telas. spec/templates.json existia havia semanas e nunca tinha chegado ao site novo — as telas só existiam no docs/ estático."
+      ],
+      "afeta": [
+        "app-shell",
+        "page-header",
+        "data-table",
+        "empty-state"
+      ]
+    },
+    {
+      "id": "ADR-013",
+      "titulo": "Movimento e estado de superfície são camada de token, não escolha de componente",
+      "status": "aceita",
+      "data": "2026-09-05",
+      "contexto": "O sistema tinha durações em token e NENHUMA curva. O CSS gerado usava quatro funções de tempo diferentes — ease, ease-out, ease-in-out e a ausência delas — escolhidas componente a componente, e todas as quatro são curvas simétricas ou de entrada, que aceleram no começo. Menu, diálogo, gaveta e listbox não tinham transição alguma: apareciam por troca de display, e o salto lê como falha de renderização, não como velocidade. No mesmo levantamento apareceu um defeito de estado: o realce da linha da tabela era color.surface.subtle, exatamente a mesma cor da faixa par da zebra, e o seletor da zebra vinha DEPOIS com especificidade idêntica — com data-table[zebra] o realce nunca chegava a pintar em metade da tabela. O estudo que expôs os três é o da interface da Linear, que trata movimento e estado como camada única do sistema.",
+      "decisao": "Movimento vira contrato: primitivos easing.standard, easing.entrance e easing.emphasized (família ease-out) e a camada semântica motion.*, com duração por papel (state, reveal, travel), escala e deslocamento de entrada. Nenhum componente escolhe curva. Estado de superfície deixa de ser fundo sólido e passa a ser TINTA translúcida (color.interaction.hover/active/selected, sobre alpha.ink-* no tema claro e alpha.paper-* no escuro), aplicada como camada de background-image onde a superfície de baixo varia. Toda superfície que aparece — menu, listbox, diálogo, gaveta, véu — tem entrada declarada, com transform-origin no ponto de ancoragem. A sombra do que flutua passa a ser empilhada em quatro camadas de alfa baixo (shadow.stack) no lugar de uma camada de alfa alto. A decisão vale para os DOIS trilhos: a ponte ZardUI passa a redefinir --default-transition-timing-function e --default-transition-duration, de modo que toda utilitária transition-* do Tailwind herde a curva do sistema sem que cada wrapper precise declará-la.",
+      "consequencias": [
+        "Movimento de saída, sempre: a interface responde a um gesto que já aconteceu, então sai rápido e desacelera na chegada. A curva simétrica do ease faz painel parecer que hesitou antes de abrir.",
+        "A tinta translúcida se compõe com o que estiver embaixo em vez de substituir — o mesmo realce vale sobre linha branca, faixa da zebra, item de menu e opção de listbox, com o mesmo degrau medido de ~10 de luminância nos dois fundos.",
+        "O realce da linha par da tabela volta a existir. Estava morto desde que a zebra virou opt-in, e a causa era empate de especificidade resolvido por ordem de arquivo — a segunda vez que esta armadilha aparece no repositório.",
+        "A entrada usa transform-origin ancorado no gatilho: menu alinhado pelo fim cresce do fim, pelo início cresce do início. Origem fixa faria o painel da esquerda parecer vir da direita.",
+        "prefers-reduced-motion continua zerando tudo pela regra única do topo do arquivo — a entrada some e o painel volta a simplesmente existir.",
+        "Sombra empilhada de alfa baixo mantém a beirada limpa; uma camada só precisa de alfa alto para existir, e alfa alto suja o contorno do painel.",
+        "A escala de entrada é 0.97, não 0.9: em painel de 15rem, 10% é salto que chama atenção para a animação em vez de para o conteúdo.",
+        "Curva nova é decisão de sistema — qualquer componente futuro que declarar ease cru está errado por construção, e a prova por CDP conta as regras remanescentes.",
+        "O Tailwind v4 entrega transition-* com cubic-bezier(0.4, 0, 0.2, 1) em 150ms — curva SIMÉTRICA. Sem a redefinição, um ucam-button do Angular e um .ucam-btn do CSS puro faziam a mesma troca de cor em curvas diferentes, e a divergência é invisível olhando um trilho de cada vez.",
+        "A redefinição funciona no :root, e não só dentro de @theme, porque a utilitária gerada emite transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)) — consulta em tempo de execução. É por isso que a ponte, que @ucam/ui já importa, é o lugar certo: a lib não carrega o bloco @theme.",
+        "Continua sendo PADRÃO, não trava: duration-200 explícito num wrapper segue vencendo.",
+        "A tinta de estado alcançou os wrappers que divergiam (list-item e choice-card). Medido no site construído: o mesmo degrau de −9,9 de luminância nos dois trilhos, partindo de fundos de repouso diferentes (#FFFFFF no CSS puro, #F8FAFC no wrapper)."
+      ],
+      "afeta": [
+        "data-table",
+        "menu",
+        "select",
+        "dialog",
+        "drawer",
+        "list-item",
+        "button",
+        "choice-card"
+      ]
+    },
+    {
+      "id": "ADR-014",
+      "titulo": "Gráfico parte do chart da ZardUI, e com ele entra a primeira dependência de execução do @ucam/ui",
+      "status": "aceita",
+      "data": "2026-09-06",
+      "contexto": "O primeiro gráfico do design system foi escrito à mão com div e altura em porcentagem, sob a premissa de que a ZardUI não tinha equivalente. A premissa estava errada: a base tem z-chart, com linha, área, barra, pizza, radar e radial. O componente feito à mão não tinha eixo rotulado, dica, nem escala derivada de forma verificável — que são justamente as três falhas que a evidência do parque registra nos gráficos do redesenho interno. Manter os dois significaria manter duas escalas, duas paletas e dois jeitos de errar. O ponto que pesa contra: o z-chart não é código copiado como o resto da base — ele traz echarts e ngx-echarts, pacotes de terceiros, e a ADR-006 diz que a ZardUI é matéria-prima e nunca dependência.",
+      "decisao": "Gráfico passa a partir do z-chart, e echarts + ngx-echarts entram como dependência de execução do @ucam/ui — a primeira. A ADR-006 continua valendo para o que ela diz: o CÓDIGO da ZardUI é copiado, e nenhum z-* vaza para a API pública, que segue sendo ucam-chart. O que muda é o reconhecimento de que uma peça da base pode carregar um motor junto, e de que reescrever esse motor não é opção séria. O motor entra por import dinâmico via provideZardCharts(): a aplicação que não desenha gráfico não baixa o megabyte, e no site ele saiu num pedaço separado de 785 KB que nenhuma outra rota puxa. O trilho A NÃO recebe gráfico: não há como desenhar isto sem JavaScript, e o legado em AngularJS continua exportando para planilha até a tela migrar.",
+      "consequencias": [
+        "Atualizar a ZardUI ficou mais caro NESTE ponto: uma major do echarts passa a poder quebrar o chart, o que não acontece com badge ou button.",
+        "Em troca, o design system ganhou eixo rotulado, dica, empilhamento, barra deitada e pizza sem escrever nenhum deles.",
+        "A fronteira da ADR-006 continua verificada pelo sync-ui: nenhum z-* aparece na API pública, que segue sendo ucam-chart.",
+        "O wrapper NÃO é fino, e cada coisa que ele acrescenta é algo que a base faz de um jeito que este design system não aceita: a tabela equivalente sempre no DOM; a paleta por slot em ordem fixa (a base CICLA as cores a partir do quinto item, e ciclar quebra a verificação de daltonismo); formatação pt-BR no eixo, na dica e na tabela; animação desligada sob prefers-reduced-motion; releitura das cores quando o data-theme do DSUCAM muda, que o serviço de tema da base não observa.",
+        "O trilho A perdeu o gráfico que tinha. A tela estática de Analytics passou a mostrar a tabela equivalente, com um alerta dizendo por quê — o que é a verdade sobre o legado, não uma degradação."
+      ],
+      "afeta": [
+        "chart",
+        "stat"
+      ]
+    },
+    {
+      "id": "ADR-015",
+      "titulo": "Peso e natureza são eixos separados nos componentes de ação",
+      "status": "aceita",
+      "data": "2026-09-06",
+      "contexto": "O Button declarava variant='primary' | 'secondary' | 'ghost' | 'danger', misturando dois eixos num enum só: os três primeiros dizem PESO na hierarquia da tela, o quarto diz NATUREZA da ação. O resto do sistema já separa os dois — tone é prop própria em alert, badge, chip, stat, prazo, progress, icon-tile, list-item e timeline, sempre com o sentido de natureza semântica. Os dois componentes de ação eram a exceção, e a exceção custava: como danger só existe preenchido, uma exclusão de pouco peso não tem representação. A prova está dentro dos próprios contratos. O exemplo 'Apenas ícone' do Button escreve variant='ghost' com ícone de lixeira e ariaLabel='Excluir linha' — cinza para ação destrutiva, porque não havia como dizer 'destrutivo e leve'. O exemplo 'Ação de linha' do IconButton faz o oposto e escreve variant='danger' size='sm' — vermelho sólido repetido em cada linha da tabela, que gasta na listagem o único sinal que deveria restar para a confirmação. Um contrato fugia para menos e o outro para mais, pela mesma falta. A referência é o Button do Polaris, que separa variant (primary/secondary/tertiary) de tone (neutral/critical).",
+      "decisao": "Os componentes de ação passam a ter dois eixos. variant fica só com o peso — 'primary' | 'secondary' | 'ghost' no Button, 'secondary' | 'ghost' no IconButton. tone entra com a natureza, e nos componentes de ação é DELIBERADAMENTE truncado a 'neutral' | 'danger': não existe botão success, info ou warning. O nome do valor é 'danger' e não o 'critical' do Polaris porque danger é a palavra que os outros nove contratos já usam para a mesma ideia; introduzir um sinônimo custaria mais do que a semelhança com a referência vale. O tom não altera o peso: primary+danger é o preenchimento vermelho de hoje, secondary+danger é contorno e texto vermelhos, ghost+danger é só texto vermelho. As regras da ADR-002 continuam presas ao TOM, não à variante — qualquer combinação com tone='danger' é destruição irreversível e exige confirmação em diálogo.",
+      "consequencias": [
+        "É quebra de API. variant='danger' passa a variant='primary' tone='danger'. O mapa está no bloco migracao dos dois contratos; no Trilho A a classe .ucam-btn--danger continua funcionando como apelido depreciado até 0.2.0, porque o CSS já está publicado no parque e quebrá-lo de um dia para o outro não é migração, é pane.",
+        "As três combinações novas foram verificadas em contraste antes de existirem, nos dois temas. Claro: texto red.600 sobre branco 6,86:1, sobre o hover red.100 5,71:1, borda 6,86:1 contra os 3:1 da 1.4.11. Escuro: red.400 sobre a superfície 4,79:1 e sobre o canvas 5,68:1.",
+        "A verificação achou um defeito que já estava lá. color.action.danger.subtle valia {red.700} no escuro — dois degraus mais claro que o {wine.900} do primary.subtle, o único subtle da família que não espelhava a claridade do tema. Não doía porque o token não tinha um único consumidor; como fundo de hover do tom danger reprovaria em 3,12:1. Passou a {red.900}, 4,63:1.",
+        "Entrou também color.action.danger.active, que faltava: primary tinha default/hover/active e danger parava no hover, então o botão de excluir era o único que não respondia à pressão com cor.",
+        "O eixo tone fica aberto para os outros componentes de ação que ainda não existem (menu-item destrutivo, list-item acionável) sem precisar de enum novo em cada um.",
+        "O truncamento a neutral|danger precisa estar ESCRITO no contrato, não presumido. Um tone que aceita cinco valores em nove componentes e dois em outros dois é armadilha para quem lê por analogia — por isso cada um dos dois contratos declara o limite e o motivo."
+      ],
+      "afeta": [
+        "button",
+        "icon-button"
+      ]
+    },
+    {
+      "id": "ADR-016",
+      "titulo": "Daltonismo vira portão de build; a ordem das séries muda porque o portão reprovou",
+      "status": "aceita",
+      "data": "2026-09-07",
+      "contexto": "A spec prometia separação sob daltonismo em três lugares — o requisito de acessibilidade do contrato do chart ('séries vizinhas separadas com folga também sob simulação de daltonismo (protanopia, deuteranopia, tritanopia)'), a descrição de color.chart.series-* ('a ordem é o mecanismo que mantém os pares vizinhos separáveis, e trocá-la invalida a verificação') e a ADR-014, que critica a ZardUI por ciclar cores e 'quebrar a verificação de daltonismo'. Nenhuma dessas verificações existia como código: a palavra 'daltonismo' aparecia só em prosa, e nenhum arquivo de tools/ a mencionava. É a mesma classe de buraco que a auditoria de 05/09 achou nos contratos — regulamento escrito, portão ausente —, e o custo aqui era maior porque o texto afirmava que a checagem estava sendo invalidada por mudanças, dando a entender que ela rodava.",
+      "decisao": "Criar tools/check-daltonismo.mjs, que simula protanopia, deuteranopia e tritanopia por Viénot-Brettel-Mollon sobre RGB LINEAR e mede a distância em OKLab entre séries. Separação de VIZINHOS abaixo de 0,100 é FALHA de build; qualquer par abaixo de 0,060 é desvio nomeado. Visão normal entra na lista de simulações junto com as três dicromacias, porque paleta desenhada para o caso difícil pode encostar duas séries no caso fácil. O portão roda depois de build-tokens, sobre o CSS gerado e não sobre a spec, para medir o que a tela realmente recebe. Na primeira execução ele reprovou a ordem vigente: violeta e oliva, vizinhas nos slots 5 e 6, davam d=0,080 no claro e 0,029 no escuro sob tritanopia. A correção é uma TRANSPOSIÇÃO — turquesa e violeta trocam de slot — escolhida entre as 120 permutações possíveis com o vinho da marca travado no slot 1. Nenhuma cor nova, nenhum valor alterado, e wine > blue > ochre permanece, que é o prefixo que a maioria dos gráficos usa.",
+      "consequencias": [
+        "O pior par vizinho sobe de 0,029 para 0,106, medido nos dois temas e nas quatro condições de visão. A melhor permutação da busca dava 0,112, mas reordenava quatro slots; os 0,006 de diferença não pagam a mudança maior.",
+        "O afastamento entre azul e turquesa, que a descrição do slot 4 protegia explicitamente, sobreviveu: eram dois slots de distância, passaram a três.",
+        "O portão NÃO conserta o par não-vizinho, e nenhuma ordem consertaria: separação entre pares quaisquer é invariante a permutação. A partir de quatro séries em cena no claro, e de três no escuro, existe par confundível. Isso vira desvio nomeado, impresso a cada build.",
+        "A causa do caso escuro ser pior ficou medida: as seis séries do tema escuro cabem em 3,7 de amplitude de luminosidade (σ 1,3), porque todas são o degrau 400 da sua rampa. Matiz é o único canal que as separa, e matiz é exatamente o que o dicromata perde. No claro a amplitude é 17,6. Consertar isso é escalonar a luminosidade dos slots, o que muda a identidade visual dos gráficos e por isso não entrou nesta ADR.",
+        "O que de fato torna o gráfico legível sem cor continua sendo a tabela equivalente sempre no DOM, que a ADR-014 já obrigava. A cor é reforço; o portão existe para que o reforço não minta."
+      ],
+      "afeta": [
+        "chart",
+        "stat"
+      ]
+    },
+    {
+      "id": "ADR-017",
+      "titulo": "O redesenho interno do SIGU entra como EVIDÊNCIA, não como desenho — e paga quatro contratos",
+      "status": "aceita",
+      "data": "2026-09-08",
+      "contexto": "Chegou um redesenho da tela \"Meus sistemas\" do SIGU feito internamente, fora do design system: HTML de arquivo único, com painel em degradê, sombras coloridas de 60px, duas famílias tipográficas, uma cor de acento inventada por unidade (turquesa, ocre, índigo), entrada escalonada por cartão e uma descrição de marketing escrita à mão para cada um dos 58 sistemas. Nada disso é adotável — mas o levantamento por trás dele é o melhor dado que o projeto tem sobre essa tela, e contradiz o que a spec assumia: não são 25 módulos em 2 campi, são 58 em 4 unidades (EAD, Presencial, ITECAM, Rio), com o mesmo sistema aparecendo em até quatro delas e duplicatas legadas convivendo com as novas sem nenhuma marca. E o desenho responde a três necessidades que o catálogo não sabia expressar: fixar um sistema, recolher um grupo, e mostrar o que casou com a busca.",
+      "decisao": "Separar as duas coisas. O DESENHO é recusado inteiro — os acentos por unidade contrariam a marca única em bordô, o degradê e a sombra colorida não existem na escala de elevação, a entrada escalonada chama atenção para a animação, e a descrição por sistema é texto inventado que ninguém pode verificar. A EVIDÊNCIA é adotada: a contagem, o agrupamento por unidade e os três defeitos estruturais que o HTML exibe viram quatro enriquecimentos de contrato. (1) icon-button ganha pressed — interruptor de dois estados com aria-pressed, onde a estrela solta e a pressionada diferem em FORMA (traçado/preenchido) e não só em cor. (2) section-bar ganha collapsible/open, com o gatilho sendo um button DENTRO do cabeçalho — o inverso, que o SIGU faz nos quatro grupos, achata o h2 no nome acessível do botão e apaga os grupos da árvore de títulos. (3) card ganha acionavel: o cartão deixa de ser a âncora, o TÍTULO vira o link e estica sobre a superfície, e o controle próprio sobe uma camada. (4) realce entra como contrato novo, com token de cor próprio nos dois temas. O template portal/grade-modulos é reescrito sobre os dados reais.",
+      "consequencias": [
+        "A tela final tem TRÊS controles onde o redesenho tem seis. As pastilhas de filtro por unidade saem: as seções já são esse recorte, e o mesmo corte em dois controles obriga a pessoa a decidir qual dos dois manda. Também saem a saudação por hora do dia, as pastilhas de contagem e a dica explicativa em cada ladrilho.",
+        "O acento por unidade é recusado por contrariar decisão anterior: marca única em bordô, com o verde do SIGFIN classificado como deriva a corrigir. Reintroduzir três matizes de acento por agrupamento seria refazer a deriva com nome de sistema.",
+        "O buraco estrutural do cartão-com-controle ficou nomeado. Botão dentro de âncora é inválido; a saída do SIGU — div com role=\"button\" e tabindex=\"0\" — é pior, porque joga fora o href (nova aba, menu de contexto, arrastar para a barra) e reimplementa Enter e Espaço em cada um dos 58 ladrilhos. O link esticado resolve os dois.",
+        "O cartão-âncora nunca teve hover, nem foco na superfície, nem estado de pressionado — a grade de módulos era 25 alvos de clique sem nenhuma resposta ao ponteiro. Isso só apareceu porque o ladrilho ganhou um segundo controle e a pergunta \"onde está o alvo?\" precisou de resposta.",
+        "O realce usa o bordô da marca e não o âmbar que a intuição pede: âmbar neste sistema significa aviso, e meio nome de módulo pintado de aviso afirma algo falso. Medido no navegador: 12,30:1 de texto sobre a marca no claro e 11,30:1 no escuro, com degrau de luminância de 1,46 e 1,34 contra o cartão — a lavagem sobrevive à acromatopsia em vez de depender do vermelho.",
+        "A marca não leva padding horizontal nenhum. Com 2px ela partia a palavra: \"Registro de diplo mas\". O respiro vem do spread da sombra, que pinta 2px em volta sem ocupar espaço de layout — as letras ficam onde estariam sem a marca e o texto não remede a cada tecla.",
+        "O atributo hidden passou a vencer QUALQUER display do sistema, por uma regra só no escopo. Havia três remendos pontuais — menu, listbox e submenu da navegação —, cada um escrito depois de o bug aparecer, e o quarto apareceu na seção recolhida: .ucam-grid[hidden] continuava desenhando a grade inteira. É a terceira vez que uma armadilha de especificidade é resolvida caso a caso neste repositório.",
+        "Ícone do sprite passou a poder mudar de forma pelo CSS: o fill saiu para uma custom property com \"none\" de padrão. É o único caminho — o conteúdo clonado pelo <use> não é alcançável por seletor, e o fill cravado como atributo vence a herança.",
+        "O ícone discrimina o TIPO de sistema, não a instância. Financeiro é o mesmo ícone nas quatro unidades e quem separa é o nome do grupo; o que sai é o capelo servindo a três coisas diferentes, que era o defeito registrado. O próprio template do design system tinha o defeito que denunciava: graduationCap e chartColumn apareciam duas vezes cada no preview anterior.",
+        "A prova por CDP ganhou uma correção de método: CSS.forcePseudoState NÃO reavalia os :has() que dependem do nó forçado. O hover do cartão acionável nasce de :has(.ucam-card__link:hover) e a prova devolvia falso negativo silencioso — borda de repouso, conclusão de que o estado não existe. Estado que nasce de :has se prova com Input.dispatchMouseEvent, não com pseudo-classe forçada.",
+        "A tela achou um defeito de tema que não era dela: no escuro, color.border.subtle valia {neutral.800} — exatamente o valor de surface.default. Como o painel de conteúdo do app-shell É surface.default, TODO cartão dentro dele ficava sem aresta nenhuma. Medido no navegador: cartão, borda e painel os três em #1B263A, 1,00:1 entre quaisquer dois, com os 58 ladrilhos da grade desaparecendo no fundo. O fio escuro passou a ser tinta translúcida ({alpha.paper-weak}), que dá 1,19:1 contra o painel — o MESMO degrau que o fio do tema claro tem contra o branco — e sobe sozinho para 1,42:1 sobre o canvas mais escuro. É a lógica da ADR-013 aplicada ao fio: valor sólido só acerta a superfície para a qual foi calculado, e o fio divide linha de tabela, borda de cartão e separador de grupo, que não são a mesma cor.",
+        "O defeito só apareceu porque a tela foi medida no tema escuro. Nenhum portão de build o pegaria: o contraste de fio contra superfície não é requisito da WCAG (limite não textual só é exigido quando ele é a ÚNICA forma de identificar o controle), e por isso não estava na lista do build-tokens. O que o encontrou foi olhar a captura e desconfiar.",
+        "O que ficou por fazer: os quatro enriquecimentos existem no Trilho A e no contrato, e nenhum deles tem implementação Angular ainda. O ucam-realce é o primeiro componente do sistema que precisa produzir nós de texto em vez de interpolação, e por isso não pode virar pipe que devolve HTML."
+      ],
+      "afeta": [
+        "icon-button",
+        "section-bar",
+        "card",
+        "realce",
+        "icon"
+      ]
+    },
+    {
+      "id": "ADR-018",
+      "titulo": "Nenhum componente do @ucam/ui declara output com nome de evento do DOM",
+      "status": "aceita",
+      "data": "2026-09-09",
+      "contexto": "Ao levar o interruptor de ícone (ADR-017) para o Trilho B, a demo viva não alternava: clicar na estrela deixava o aria-pressed onde estava. Um contador no handler deu o número — UM clique, DUAS execuções. A causa é que ucam-button e ucam-icon-button declaravam `readonly click = output<MouseEvent>()` e emitiam esse output a partir do <button> do próprio template. O evento nativo NÃO para aí: continua borbulhando do <button> interno até o host <ucam-button>, onde o (click) do consumidor também escuta. O handler roda pelas duas vias.\n\nO defeito é antigo e passou por todas as revisões porque todo handler existente era idempotente: `excluiu.set(true)` e `salvar()` dão o mesmo resultado rodando uma ou duas vezes. Quem revelou foi o primeiro handler que NÃO é idempotente — `fixado.set(!fixado())` —, que alternava duas vezes e voltava ao estado inicial. O caso caro não é a estrela: é o botão primário, que é o que submete formulário.",
+      "decisao": "Os outputs `click` de ucam-button e ucam-icon-button são REMOVIDOS. O evento nativo já sobe do controle interno até o host, então o (click) do consumidor continua funcionando — uma vez só —, e o guarda de loading/disabled continua barrando o clique com stopImmediatePropagation antes de ele subir. A regra vira portão em tools/sync-ui.mjs: nenhum arquivo de lib/ucam/ pode declarar output cujo nome esteja na lista de eventos do DOM. O portão encontrou um terceiro caso na primeira execução — o `select` do ucam-command —, renomeado para `escolher`, que é o nome que o ucam-menu já usava para o mesmo papel.",
+      "consequencias": [
+        "O portão achou o caso que ninguém procuraria: a paleta de comando emitia `select`, que é evento nativo disparado ao SELECIONAR TEXTO num campo — e a paleta tem um campo de busca dentro. Arrastar o cursor sobre o termo digitado faria o (select) do consumidor receber um Event nativo no lugar do item escolhido. Nunca foi acionado porque ninguém arrastou o cursor sobre a busca de uma paleta aberta.",
+        "É a quarta vez neste repositório que uma regra existia e o portão não: contratos sem validação (05/09), daltonismo prometido em prosa e nunca medido (ADR-016), hidden perdendo para o display de cada bloco (ADR-017) e agora isto. O padrão comum é regra que só falha em condição que os testes de mesa não visitam.",
+        "A API pública muda em um ponto: quem usava `ucam-command (select)` passa a escrever `(escolher)`. Os dois `click` saem sem renomear nada, porque o (click) do consumidor continua ligando no mesmo lugar.",
+        "A troca destapou uma divergência mais velha: o contrato do menu declarava o evento `select` e a implementação Angular sempre emitiu `escolher`. Ninguém percebeu porque o validador confere as DEMOS contra o contrato, e a demo do menu copiava o contrato — errado nos dois lugares, portanto consistente. Corrigido a favor do código, e os dois componentes que escolhem item de uma lista passam a emitir o mesmo nome.",
+        "A lição de método: o bug era invisível para o compilador, para o ngPackagr, para a captura estática e para toda demo idempotente. Só apareceu contando execuções do handler no navegador. Componente que só foi visto compilando não foi visto funcionando — e componente cujo efeito é idempotente não prova quantas vezes rodou.",
+        "O ngPackagr também não pegou o defeito irmão que apareceu no mesmo dia: `sort` virou model() no data-table e o `sortChange` explícito ficou, ligando o mesmo nome a duas saídas. A biblioteca compilava e quem quebrava era a aplicação que a consome — o site inteiro não construía. Portão de biblioteca não substitui construir o consumidor."
+      ],
+      "afeta": [
+        "button",
+        "icon-button",
+        "command",
+        "data-table"
+      ]
+    },
+    {
+      "id": "ADR-019",
+      "titulo": "Elevação distingue moldura de conteúdo; dentro da moldura ninguém flutua",
+      "status": "aceita",
+      "data": "2026-09-09",
+      "contexto": "Quatro peças carregavam elevation.raised: a faixa (.ucam-appbar), o painel de conteúdo (.ucam-main), o cartão (.ucam-card) e a moldura da tabela (.ucam-table-wrap). Medido no navegador na tela do painel gerencial, isso são três planos empilhados com a MESMA sombra — o painel levita do chão da aplicação, e dentro dele oito cartões levitam do painel com o degrau idêntico.\n\nSombra que todo mundo tem não separa ninguém. Numa grade de seis setores, seis sombras iguais não dizem qual cartão importa nem que ele é uma superfície distinta: dizem só que a tela inteira está um pouco fora de foco. O fio de 1px em --ucam-color-border-subtle já fazia sozinho o trabalho de recortar o cartão, e é ele que o olho usa.\n\nA ocasião foi uma referência visual trazida pelo usuário em 09/09/2026 — um app de builder com cartões e tabela sobre uma moldura branca. Comparando com a tela atual, a distância de raio, de escala tipográfica e de densidade era quase nula; o que dava o ar diferente era exatamente isto: na referência a MOLDURA flutua sobre o chão e nada dentro dela flutua.",
+      "decisao": "Elevação passa a marcar uma fronteira só: a que separa a moldura da aplicação do chão em que ela pousa. .ucam-appbar e .ucam-main mantêm elevation.raised, porque são a moldura. .ucam-card e .ucam-table-wrap passam a elevation.flat, e o que os recorta do painel é o fio de 1px que eles já tinham.\n\nO degrau não é removido do contrato — vira valor não-padrão. A prop elevation do card ganha flat como default e mantém raised para o caso que a borda não resolve: cartão sobre superfície tinta ou aninhado em outro cartão, onde não há contraste de fio. sticky continua sendo o que paira de verdade.\n\nO box-shadow fica DECLARADO como var(--ucam-elevation-flat) em vez de omitido. Omitir esconde a escolha: quem lesse a folha depois não saberia se o repouso plano foi decidido ou esquecido, e trazer o degrau de volta viraria escrever uma linha nova em vez de trocar um valor.",
+      "consequencias": [
+        "O hover do cartão acionável GANHA significado. Ele já ia para elevation.sticky, mas partindo de um cartão que já flutuava — o salto era de sombra para sombra maior, e quase não se lia. Saindo de plano, o levantar sob o ponteiro é a única elevação que aparece dentro do painel, e passa a ser inequívoco.",
+        "A tabela perde a sombra mas não perde a leitura de superfície: sobra o fio em volta somado à faixa cinza do cabeçalho, que é o par que a referência usa e que o .ucam-table-wrap já emitia.",
+        "A Caixa de entrada não é afetada. Ela não usa cartão entre lista e detalhe por decisão própria registrada em templates.json (superfícies se encostam, sem vão, canto ou sombra) — decisão que esta ADR não toca e, se alguma coisa, reforça: as duas dizem que dentro da moldura o que separa planos é fio e tom, não profundidade.",
+        "Fica um degrau órfão em observação: elevation.raised agora só é usado pela moldura e pelo caso raro do cartão sobre fundo tinto. Se o caso raro nunca aparecer numa tela real, o token vira candidato a virar elevation.frame — mas renomear sem evidência de uso é o tipo de simetria que a paleta já recusou em spec/tokens.",
+        "No tema ESCURO isto já era verdade e ninguém tinha dito. elevation.raised é none no escuro desde a camada de tema — sombra sobre fundo escuro não separa nada —, então a distinção moldura/conteúdo lá sempre foi carregada pelo fio. O que esta ADR faz no claro é alinhar os dois temas: a faixa e o painel elevam onde a elevação funciona, e em nenhum dos dois temas o conteúdo dentro deles flutua.",
+        "SUPERADA EM PARTE, no mesmo dia. Depois desta ADR a camada de token levou elevation.raised para shadow.none nos dois temas, e com isso a faixa e o painel de conteúdo — que esta decisão manteve elevados — pararam de elevar também. O que sobra de pé é a metade que importava: dentro da moldura nada flutua. A fronteira que a ADR queria marcar continua existindo, mas quem a carrega agora é o fio e o tom, não a profundidade, e o sistema inteiro passou a ser plano em repouso. Elevação real sobrou em sticky e overlay — o que gruda na rolagem e o que sobrepõe. A prop elevation=raised do card continua declarada e apontando para o token; enquanto o token for none ela não pinta nada, e isso é decisão da camada de token, não classe faltando."
+      ],
+      "afeta": [
+        "card",
+        "data-table",
+        "app-shell"
+      ]
+    },
+    {
+      "id": "ADR-020",
+      "titulo": "O selo de estado volta ao preenchimento; o contorno vira variante nomeada",
+      "status": "aceita",
+      "data": "2026-09-09",
+      "contexto": "Em 03/09/2026 o selo trocou o preenchimento tinto pela pílula branca com filete, seguindo o arquivo de interfaces da UCAM. O argumento está escrito no gerador e é bom: numa coluna de 14 linhas, catorze retângulos tintos viram uma faixa de cor que compete com o dado ao lado, e concentrar a cor no ícone de 14px devolve significado ao verde e ao vermelho por torná-los raros.\n\nO que essa troca deixou para trás foi o estado das TRÊS camadas. Levantado em 09/09/2026:\n\n  · o contrato declarava variant: soft | solid | dot, com default soft;\n  · o CSS entregava contorno no padrão, preenchimento sob --cheio e nenhum dot;\n  · o Angular entregava soft | dot, com soft sendo o contorno.\n\nNenhum dos três vocabulários coincide com os outros. solid nunca existiu em trilho nenhum; dot existia só no Trilho B (DOT_CLASSES em ucam-badge.ts) e nunca no CSS, então o mesmo componente tinha duas anatomias conforme o trilho — o defeito exato que a página do catálogo promete não ter. E --cheio, o preenchimento, aparece 78 vezes no repositório: todas em saída GERADA, nenhuma em markup. A variante existia na folha e nenhuma tela jamais a pediu.\n\nA ocasião foi uma referência visual trazida pelo usuário em 09/09/2026, onde os estados aparecem como pílulas pastel com ponto colorido. Medida contra a tela atual, essa era uma das três únicas diferenças reais de acabamento — as outras duas eram a sombra dos cartões (ADR-019) e o neutro quente, que o usuário decidiu NÃO adotar.",
+      "decisao": "O preenchimento pastel volta a ser o PADRÃO do selo, e o contorno vira a variante outline, preservada inteira. As três camadas passam a falar o mesmo vocabulário: soft (preenchido, com ícone), dot (preenchido, com ponto) e outline (branco, com filete). solid é excluído do contrato por nunca ter existido. A classe --cheio some, substituída pelo padrão que ela descrevia.\n\nO ponto passa a existir no Trilho A como .ucam-badge__ponto, fechando a divergência de anatomia entre os trilhos.\n\nO tom neutral fica FORA do preenchimento, e isso é decisão e não omissão: o fundo pastel dos outros quatro é o degrau 100 da própria matiz, e o neutro não tem matiz — o 100 dele é o #FAFAFA de surface-subtle, que sobre o branco do painel dá 1,02:1. O selo desapareceria e sobraria texto com respiro. neutral segue se resolvendo pelo filete.",
+      "consequencias": [
+        "O par de tintas do selo passa a ser o ÚNICO que o portão de build realmente mede. tools/build-tokens.mjs já conferia feedback.<tom>.foreground sobre feedback.<tom>.background em 4.5:1 nos dois temas, e reprovava o build — só que nenhuma tela usava esse par. O contorno apoiava o rótulo em text-primary sobre surface-default: par legítimo, mas idêntico nos cinco tons, o que significa que a tinta do texto não dizia nada sobre o estado.",
+        "O argumento de 03/09 não foi revogado, foi NOMEADO. Quem tem coluna longa de status pede variant=outline e recebe o desenho anterior inteiro. O contrato marca isso como escolha da tela, não do componente: ou a coluna toda é outline, ou nenhuma parte dela é.",
+        "O <ucam-prazo> acompanha, porque compartilha a caixa do selo por decisão anterior — declarar a geometria dos dois lados já os fez divergir em produção uma vez. Efeito visível: na Caixa de entrada, o par \"Urgente\" + \"vence em 1 dia\" passa de duas pílulas brancas a duas pílulas pastel. A tela não muda de arranjo; ela mantém as superfícies encostadas, que é decisão própria e independente desta.",
+        "O ponto é decorativo e não responde por 1.4.11: o estado continua escrito por extenso ao lado. É por isso que ele pode usar o degrau saturado sem que a leitura dependa dele — e é a mesma divisão de trabalho da referência, onde o pastel é o fundo e a saturação fica no disco de 6px.",
+        "É a quinta vez neste repositório que a spec prometia e nada verificava — depois de contratos sem validação (05/09), daltonismo prometido em prosa (ADR-016), hidden perdendo para o display (ADR-017) e output com nome de evento do DOM (ADR-018). Aqui o buraco é de VOCABULÁRIO: nenhum portão compara os nomes de variante que o contrato declara com os que os dois trilhos implementam. Vale como candidato a portão, e não foi escrito nesta passagem.",
+        "O PONTO herda a tinta do rótulo, e essa parte foi decidida pela medida e não pelo desenho. Com o degrau saturado que o ícone usa, o par ponto/preenchimento deu 4,17 no claro e 2,98 no escuro (success) — no tema escuro o fundo vai para o degrau 900 e a tinta do ponto fica no 500, e os dois se aproximam pelos dois lados. Ícone pode gastar contraste porque tem forma; um disco de 6px é contraste puro e some. Em currentColor o ponto passa a viajar no par que o portão já mede: 8,24 no claro, 12,22 no escuro.",
+        "Três props declaradas e sem tinta apareceram na mesma passagem, todas procuradas por uma referência visual: a variante de ponto do badge, o selectable do data-table e o width=min do ColumnDef. Nenhum portão compara o vocabulário que o contrato declara com o que os dois trilhos implementam — é o mesmo feitio dos buracos anteriores, e continua em aberto."
+      ],
+      "afeta": [
+        "badge",
+        "prazo",
+        "data-table"
+      ]
+    },
+    {
+      "id": "ADR-021",
+      "titulo": "Suprimir a faixa se pede pelo nome; a tela de entrada volta a ter moldura",
+      "status": "aceita",
+      "data": "2026-09-09",
+      "contexto": "A tela de entrada era a única das doze que sangrava de ponta a ponta: medida no navegador, .ucam-main saía com 1440x966, sem margem, sem raio e sem sombra, enquanto todas as outras eram um painel recuado pela régua.\n\nIsso não tinha sido decidido. O que a tela precisava era de UMA coisa: não emitir a faixa, porque antes de entrar não há busca, campus nem conta para hospedar. O que ela usava para conseguir isso era o arranjo `lateral`, que suprime a faixa como EFEITO COLATERAL — e arrasta junto tudo o que o arranjo lateral decide sobre o painel, inclusive zerar margem, raio e sombra. O login pedia um efeito e recebia um pacote.\n\nO login não é o arranjo lateral. Ele não tem coluna de navegação para arranjar. O acoplamento só não aparecia porque nenhuma outra tela precisava de faixa nenhuma.",
+      "decisao": "O shell ganha a opção `semFaixa`: suprime a testeira e mais nada. A tela de entrada troca `lateral` por `semFaixa` e recebe de volta a moldura que todas as outras têm.\n\nJunto vem `largura: pleno`, o quinto valor de largura de conteúdo — e o único que não é medida de leitura. Ele desliga o teto E o recuo para que as duas colunas alcancem a borda do painel. O recuo zerado e o clipe moram no MAIN, alcançados por :has(> .ucam-content--pleno), pela mesma razão que .ucam-content--estreita já resolve assim: quem tem a régua e o raio é o painel, não o contêiner dentro dele. Anular o recuo por margem negativa no filho deixaria o raio cortando um retângulo de canto vivo.\n\nO overflow: hidden que acompanha fica preso ao :has() e não alcança tela nenhuma que não peça pleno — importa porque main com overflow recortaria qualquer coisa grudada por sticky.",
+      "consequencias": [
+        "A coluna institucional passa a terminar no canto arredondado da moldura em vez de na borda da janela, e isso habilitou a figura: a janela do Protocolo que a coluna agora mostra SANGRA para fora do quadro e é cortada pelo raio do painel. Sem a moldura não haveria o que cortar, e o corte é o argumento — o sistema não cabe na tela de entrada.",
+        "A sangria é variável (--ucam-previa-sangria) porque as fileiras da figura precisam do mesmo número no recuo interno. Sem isso o corte cai em cima do selo de situação e a janela mostra \"Aguarda\", \"Em aná\", \"Urg\". Palavra partida ao meio lê como defeito de renderização, não como continuação: o que sai do quadro tem de ser vão, não conteúdo.",
+        "A marca desceu do canto superior para dentro do bloco do formulário. Medida em 1440, ela estava a 335px do título — longe demais para ancorar, e o formulário lia como se boiasse. Ela fica alinhada à esquerda e não centrada como na referência que motivou a revisão: o lockup da UCAM é horizontal e largo, e centrá-lo sobre um formulário alinhado à esquerda criaria dois eixos na mesma coluna.",
+        "O que a referência faz e esta tela NÃO copia é o campo sem rótulo. A ADR-004 fixa rótulo persistente acima do campo, e o problema número um registrado no SIGU é exatamente campo sem rótulo nenhum. Copiar o placeholder-como-rótulo reintroduziria o defeito que esta tela existe para corrigir.",
+        "Entrada por conta institucional (Microsoft e Google) entra abaixo da senha, atrás de um divisor, como SEGUNDA via. Os botões saem sem a marca gráfica dos provedores: o conjunto de ícones do sistema é monocromático e a regra do catálogo é \"só ícone deste conjunto, não misturar com outro pacote\". Marca de terceiro não é ícone de interface e o uso dela é governado pelo manual de quem a possui — fica em aberto, e é decisão de marca, não de desenho.",
+        "A opção `lateral` continua sendo o arranjo de quem TEM coluna — a Caixa de entrada segue nela, e segue sem moldura por decisão própria. O que esta ADR desfaz é o uso de `lateral` como atalho para suprimir a faixa."
+      ],
+      "afeta": [
+        "app-shell",
+        "text-field",
+        "button"
+      ]
+    },
+    {
+      "id": "ADR-022",
+      "titulo": "Uma linha de lista tem um portador de cor",
+      "status": "aceita",
+      "data": "2026-09-09",
+      "contexto": "A caixa de entrada do Protocolo, medida em 09/09/2026 contra a referência que o usuário trouxe (tabela de entregas com tags planas): cada linha da fila carregava avatar tinto em uma de quatro cores sem significado, barra de 3px na borda com a cor do tom, selo de situação com ícone e preenchimento, prazo com ícone e preenchimento, ponto de não lido e hora. Até seis sinais, quatro deles coloridos, e os quatro usando as MESMAS matizes do feedback — um avatar verde ao lado de um prazo vencido lia como contradição, não como decoração. Numa lista de nove, a coluna virava uma faixa de cor em que nada discriminava. A referência tem um sinal por linha: a tag.",
+      "decisao": "Numa linha de lista, o único portador de cor é o marcador — selo de situação ou prazo — que já leva a palavra ao lado (WCAG 1.4.1). A barra de 3px da borda sai do .ucam-list-item e o tone deixa de pintar; o item escolhido se diz só pela superfície, que sobe da moldura. Os avatares --1 a --4 saem: o avatar é neutro, e a identidade vem da foto ou das iniciais. Em lista densa o selo usa o ponto em vez do ícone; o prazo mantém o relógio, que é o que o distingue do selo. O chip de filtro aplicado deixa de vestir a marca e passa a contorno de controle. A mesma barra continua existindo na linha de tabela (tr[data-estado]) — fica fora desta decisão de propósito, para ser medida na tela dela antes de mudar.",
+      "consequencias": [
+        "tone no <ucam-list-item> vira prop depreciada sem efeito, aceita até 0.2.0. No Trilho A o data-tone sai da marcação das telas.",
+        "ucam-avatar--1..4 saem do CSS e das seis telas que os usavam. O avatar neutro passa a usar tinta alfa (interaction.selected) em vez de surface-subtle, que era invisível sobre o painel e sumia sobre a moldura.",
+        "O chip de filtro perde o bordô: era mais um uso da marca numa tela que já a gasta na ação primária e no item ativo da navegação.",
+        "A regra vale para o que a lista mostra, não para o que o registro tem: o detalhe ao lado continua exibindo o selo com ícone, porque ali não há densidade.",
+        "Candidato seguinte: a barra de estado da tabela, pelo mesmo argumento, na tela de naturezas — não decidido aqui."
+      ],
+      "afeta": [
+        "list-item",
+        "avatar",
+        "chip",
+        "badge",
+        "prazo"
+      ]
+    },
+    {
+      "id": "ADR-023",
+      "titulo": "Uma tela, um primário em vista; e a coluna que não se vê",
+      "status": "aceita",
+      "data": "2026-09-10",
+      "contexto": "Revisão heurística das doze telas de referência em 10/09/2026, por captura de página inteira e medida por CDP. Três achados de estrutura: (1) o requerimento aberto — em painel na caixa de entrada e em página própria — mostrava DOIS botões bordô ao mesmo tempo, \"Concluir\" no cabeçalho do registro e \"Enviar resposta\" no rodapé da resposta, e o olho tinha de decidir qual era a ação da tela; (2) o piso de 44rem da tabela, dentro de um .ucam-split com painel de apoio, empurrava a última coluna para fora da vista sem sinal nenhum — \"Valor\" no movimento de caixa, \"Situação\" nos parâmetros dos setores e nos protocolos anteriores do requerimento —, porque a barra de rolagem é fina e só aparece com o ponteiro; (3) a etapa 2 de 3 do novo requerimento oferecia \"Revisar e enviar\" com ícone de concluído e sem caminho de volta, prometendo o envio uma etapa antes da revisão que o stepper anuncia.",
+      "decisao": "Numa vista, um só botão primário: o da ação mais FREQUENTE. Ação terminal ou rara (concluir, fechar caixa quando há outra ação frequente em vista, excluir) é secundária ou vive no menu de mais ações — o que já valia para a ação do módulo na moldura passa a valer para a ação do registro no cabeçalho. Tabela dentro de .ucam-split tem piso de 34rem, o que cabe na coluna principal a 1280 sem rolar. Fluxo em etapas: \"Voltar\" no início do rodapé, o primário nomeia a próxima etapa (Continuar para revisão), e o aviso de irreversibilidade fica na etapa que envia. Na coluna de ações da tabela a tinta destrutiva só aparece com ponteiro ou foco — extensão da ADR-022 para a linha de tabela. Campo de texto é papel (surface-default) em qualquer superfície, e não transparente. Painel de apoio feito de cartões não desenha moldura própria.",
+      "consequencias": [
+        "\"Concluir\" desce a secundário nas duas apresentações do requerimento; \"Enviar resposta\" é o único bordô do painel. O botão de sidebar \"Novo requerimento\" continua primário porque é o da moldura, não da tela — e a moldura já é secundária em cor de fundo.",
+        "O piso de 34rem vale para toda tabela sob .ucam-split; telas com mais de cinco colunas de dado ao lado de um painel de apoio devem cortar coluna, não contar com a rolagem.",
+        "O rodapé de formulário ganha .ucam-form-actions__inicio para a ação de voltar; o Trilho B (ucam-stepper + ucam-button) já tinha os meios e não muda.",
+        "A lixeira de linha lê text-secondary em repouso e action-danger com ponteiro ou foco. O nome acessível (\"Excluir a natureza X\") não muda com o estado.",
+        "O skip link perde a sombra em repouso: ela vazava de cima da janela e pintava um borrão no canto de toda tela.",
+        "Não decidido aqui: a barra de estado da linha de tabela (tr[data-estado]) continua como estava — nas três telas em que aparece o texto está ao lado."
+      ],
+      "afeta": [
+        "button",
+        "page-header",
+        "data-table",
+        "stepper",
+        "text-field",
+        "input-group",
+        "icon-button"
+      ]
+    },
+    {
+      "id": "ADR-024",
+      "titulo": "Régua de 20 na moldura e de 16 na superfície; secundário um degrau abaixo",
+      "status": "aceita",
+      "data": "2026-09-10",
+      "contexto": "O usuário pediu para \"trabalhar melhor cores, fontes, contraste e alinhamento\", com uma referência de produto (grade de integrações: neutros coesos, hierarquia em dois degraus de cor, uma prumada só). Medido por CDP em 10/09/2026: o contraste de texto já estava limpo nas doze telas (nenhum par abaixo de 4,5:1 fora dos itens desabilitados), então \"contraste\" era HIERARQUIA — o secundário (neutral.600, 7,2:1) ficava a dois degraus do primário (18:1) e os dois liam como o mesmo cinza-escuro; a hierarquia vinha só do peso. E \"alinhamento\" eram DUAS réguas na mesma tela: a coluna de navegação punha a tinta em x=12/13 (o recuo era calc(gutter − 12px) com gutter zero na janela larga — negativo, descartado) enquanto a logo acima estava em x=20 e o corpo começava em 318 + 20; dentro do corpo, o cartão recuava 20 e stat, lista e tabela recuavam 16, o que dava 4px de degrau entre blocos empilhados; e o painel de indicadores usava anel por fora da caixa em vez de borda, mais 1px.",
+      "decisao": "Duas réguas, declaradas: a MOLDURA (faixa, coluna de navegação, corpo) recua 20px, e a coluna ganha --ucam-nav-regua para não depender do gutter; toda SUPERFÍCIE (cartão, stat, linha de lista, célula de tabela, painel de apoio) recua 16px, com moldura por borda e não por anel, para a tinta de dentro nascer na mesma vertical em qualquer bloco. O texto secundário do tema claro desce para o degrau novo neutral.550 (#56687F): 5,70:1 sobre branco, 5,25:1 sobre surface.subtle, 4,78:1 sobre a tinta do avatar — AA em toda superfície clara, um degrau visível abaixo do primário. Mesma matiz e croma do slate. O tema escuro não muda. A escala de títulos passa a ter quatro degraus e nenhum fora deles: página 22/560, seção 16/560, painel 14/560 (.ucam-aside__title e .ucam-section__title--painel), item e rótulo 13/500; apoio e legenda 12/400. Cabeçalho de linha de tabela (th no corpo) pesa 500 como o de coluna, nunca o 700 do navegador. Valor de lista de descrição é 13/500 em todos os arranjos, sobre rótulo 12/400 secundário.",
+      "consequencias": [
+        "Primitivo neutral.550 entra na rampa; text.secondary (claro) aponta para ele. O 600 continua existindo para quem precisar de mais peso.",
+        ".ucam-card passa de inset-lg para inset-md. Diálogo mantém inset-lg: é moldura própria, não superfície dentro da moldura.",
+        "A tela autônoma de docs/t/ ganhou barra de contexto de 40px inteiros (era 41,8) — a fração dela empurrava toda tela acima para y=x,1.",
+        "O login refaz a coluna institucional: sai o símbolo do DSUCAM (marca do design system, não do Portal), entra a grade de módulos real como figura, e o bloco frase + janela fica centrado como o formulário ao lado.",
+        "Saem os três style inline que davam 14, 15 e 17px a títulos: viram classe ou regra do arranjo. O título do registro aberto no painel da caixa de entrada é título de seção.",
+        "O botão de recolher a coluna não fica na faixa: mora na barra do pé da coluna (.ucam-nav__recolher-barra), na régua de 20 quando aberta e centrado quando recolhida. Decisão do usuário em 10/09/2026."
+      ],
+      "afeta": [
+        "app-shell",
+        "card",
+        "stat",
+        "list-item",
+        "data-table",
+        "text-field"
+      ]
+    },
+    {
+      "id": "ADR-025",
+      "titulo": "Contribuição de sistema entra como evidência, padrão e adaptador — nunca como segunda folha",
+      "status": "aceita",
+      "data": "2026-09-10",
+      "contexto": "Em 08/09/2026 o desenvolvedor do Relatórios Acadêmicos (Spring Boot + Thymeleaf, 74 templates de relatório em 37 pares filtro/resultado) entregou uma skill \"design-system-ucam\": main.css de 3.077 linhas, nove scripts vanilla, templates Thymeleaf e sete referências em prosa, destilados de um redesign aprovado em 03/09/2026. É o quarto sistema inventariado e o primeiro em que alguém do time já tomou decisões de desenho por conta própria. Medido em 10/09/2026 com as réguas deste repositório: a paleta tem um terceiro bordô (#a91733; o site institucional usa outro e o DSUCAM usa wine.600 #8D293A), e o vermelho de erro dele (#a3242f) fica a 0,018 do bordô em visão normal e a 0,005 em deuteranopia — marca e destrutivo são a mesma cor, o caso que a ADR-002 existe para impedir. O texto fraco (#8a94a3) rende 3,07:1 sobre branco em legendas de 11 a 13px; o link do tema escuro rende 3,93:1. Só um seletor tem :focus-visible em 3.077 linhas — o botão primário não tem anel de foco. Rótulo de campo em caixa alta com letter-spacing (ADR-003), overlay de carregamento de tela cheia (ADR-005), sombra colorida sob o botão primário e degradê na faixa (ADR-019), 460 medidas em px contra 61 em rem, texto de ajuda injetado por content: de pseudo-elemento, e link desabilitado por pointer-events: none sem aria-disabled. Do outro lado, o material resolve coisas que o catálogo não tinha: o par filtro → resultado com resumo dos filtros aplicados e volta para alterá-los, exportação em três formatos com timbre, paginação sempre no servidor, nota de atualidade do dado, impressão sem o cromo da aplicação, seleção em cascata, e o acumulador de itens antes de confirmar.",
+      "decisao": "Três destinos, por natureza do que veio. (1) O que o sistema resolveu e o catálogo não tinha vira CONTRATO ou PADRÃO: o padrão consulta-relatorio em patterns.json, três telas de referência em templates.json (catálogo, filtros, resultado) e a impressão como bloco da folha, com @media print escopado sob .ucam. (2) O CSS dele NÃO entra no catálogo — classes em português sem prefixo (.botao, .campo-formulario), variáveis fora do DTCG e uma terceira paleta são exatamente a deriva que a ADR-008 fechou. Entra um ADAPTADOR, spec/adapters/relatorios-academicos.json, que redeclara as variáveis --cor-* dele a partir dos tokens semânticos e corrige por seletor o que CSS alcança: caixa alta do rótulo, sombra e degradê, anel de foco, fonte. A folha carrega depois do main.css e re-tinge os 74 templates de uma vez, sem editar nenhum — é o Trilho A aplicado a um sistema que já tem CSS próprio, o mesmo mecanismo do adaptador PrimeFaces. (3) O que contradiz ADR anterior e CSS não alcança — overlay, acumulador, link com pointer-events — fica registrado como pendência nomeada no adaptador e no guia de migração, para a migração da tela, não para o adaptador. Regra geral que fica: contribuição de sistema é evidência e mapeamento; a fonte da verdade continua sendo uma.",
+      "consequencias": [
+        "O gerador de adaptadores deixa de ser específico do PrimeFaces: tools/build-adapters.mjs varre spec/adapters/*.json e emite dist/css/ucam-<id>.css para cada um. O comando continua sendo pnpm run adaptador.",
+        "O validador ganha a seção 1b: todo adaptador é conferido contra spec/schema/adapter.schema.json, que até aqui existia sem nada que o lesse.",
+        "Padrão novo, consulta-relatorio, com 13 componentes em usa e o espelho usada_por em cada contrato. É o padrão mais frequente do parque em número de telas e não existia.",
+        "Projeto novo em templates.json, relatorios, com três telas. O item \"Relatórios\" do rail dos outros três projetos passa a apontar para ele — deixa de ser destino sem tela.",
+        "A folha ganha um bloco de impressão: some a moldura (faixa, navegação, rail, rodapé, ações da barra de visão, paginação, barra de lote, ações de formulário), a moldura de altura fixa vira fluxo normal e a tabela imprime inteira. É a primeira regra de mídia da folha além de prefers-reduced-motion.",
+        "Fica em aberto, e registrado: a régua marca × destrutivo deste repositório também reprova (ADR-002, pnpm run marca). O adaptador herda a paleta do DS, então herda o problema — corrigir lá corrige aqui."
+      ],
+      "afeta": [
+        "app-shell",
+        "button",
+        "chip",
+        "combobox",
+        "data-table",
+        "date-field",
+        "empty-state",
+        "icon-button",
+        "menu",
+        "page-header",
+        "pagination",
+        "select",
+        "stat"
+      ]
+    },
+    {
+      "id": "ADR-026",
+      "titulo": "Marca e destruição se separam por luminosidade, não por matiz",
+      "status": "aceita",
+      "data": "2026-09-11",
+      "contexto": "A ADR-002 escreveu que o vermelho semântico precisa ser cromaticamente distinguível do bordô, e o portão que a ADR-016 pediu (tools/check-marca-vs-destrutivo.mjs, pnpm run marca) mediu em 09/09/2026 que ele não era: no claro, wine.600 × red.600 a d=0,058 sob protanopia; no escuro, wine.400 × red.400 a d=0,006 sob tritanopia — os dois tinham sido feitos com L 67 e C 0,135 idênticos \"para terem o mesmo peso\", e é exatamente isso que apaga o sinal. Oito falhas em oito pares decisivos. Girar a matiz do vermelho de +15° a +65° com L e C fixos foi medido e rende entre 0,000 e 0,025: sob protanopia e deuteranopia o arco vinho→vermelho→laranja colapsa num eixo só, e o que sobra para separar duas cores mora na luminosidade. A mitigação em vigor, o diálogo de confirmação, aparece DEPOIS do clique; a cor precisa evitar o clique errado. O portão ficou fora do build por dois dias porque mexer no vermelho é identidade visual e a escolha era do dono do projeto; em 11/09/2026 ele mandou fechar.",
+      "decisao": "A rampa red.* é refeita com uma regra só: todo degrau que aparece ao lado de um degrau do wine no MESMO estado fica a pelo menos dez pontos de L dele, com o wine intocado. Claro: red.600 #B44334 (L 54, dez acima do wine.600), red.700 #9F2F23 (hover, onze acima do wine.700), red.800 #7F2A1F (novo, active, onze acima do wine.800), red.500 #E04938 (filete e barra, na folga entre wine.500 e wine.400), red.100 #FFE9E5 (fundo do tom e de feedback). Escuro: red.200 #FFA191 (novo, ação destrutiva, treze acima do wine.400), red.300 #D86F5F (hover), red.400 #DF5240 (active), red.900 #55120B (fundo). No escuro o destrutivo ESCURECE sob o ponteiro e sob pressão, ao contrário do primário, que clareia: clarear cai em cima do wine.300 e do wine.200, e acima disso o botão vira branco. No escuro o filete e a barra de feedback usam o red.200 da ação, porque o red.500 (L 61) encosta no wine.400 (L 67). O par primary-subtle × danger-subtle sai do portão: cada fundo carrega em cima a própria tinta a 4,5:1, o que prende os dois acima de L 95, e dois fundos presos nessa faixa nunca ficam a 0,06 um do outro — o par é insatisfazível enquanto a 1.4.3 valer, e quem decide nesse estado é a tinta em cima, que é o primeiro par medido. O portão entra no build depois dos tokens.",
+      "consequencias": [
+        "pnpm run marca passa: 0 falhas nos seis pares decisivos, todos com ΔL ≥ 9,6. Ficam três desvios nomeados, todos de vizinhança de anel: anel de foco (wine.500 / wine.300) × botão destrutivo (red.600 / red.200) a 0,020 e 0,024, e no escuro anel de foco × filete de erro (wine.300 × red.200) a 0,024. O anel tem offset e pousa fora do botão, na superfície da página; e no campo em erro o anel SUBSTITUI o filete ao focar (.ucam-input:focus-visible troca a border-color), então os dois não dividem a mesma borda. Foi escolha medida: o filete escuro em red.500 passava no anel (0,122) e reprovava no primário ao lado (0,016), e botão primário ao lado de campo em erro é o formulário comum.",
+        "Contraste conferido nos dois temas pelo portão de build: branco sobre red.600/700/800 = 5,54 / 7,23 / 9,32; red.600 como texto sobre branco 5,54 e sobre red.100 4,76; tinta escura sobre red.200/300/400 = 9,22 / 5,45 / 4,7; red.200 como texto sobre o card 7,77 e sobre red.900 7,23; feedback 6,21 no claro e 12,12 no escuro.",
+        "Todo botão destrutivo, selo de erro, campo em erro e barra de erro muda de cor nos dois trilhos. No claro o vermelho fica mais claro e mais quente que o de ontem (L 54 contra L 44); no escuro a ação destrutiva fica salmão sobre tinta escura, treze pontos mais clara que o primário. É o custo de o par passar; ele não passava.",
+        "A descrição do red.400 que dizia \"mesma altura do wine.400, para que primário e destrutivo tenham o mesmo peso\" era a causa, não a solução. Peso igual em L é d=0,006 para quem não tem o canal de matiz.",
+        "O adaptador do Relatórios Acadêmicos (ADR-025) herda a correção sem editar nada: as variáveis --cor-erro dele leem os tokens semânticos.",
+        "ADR-002 continua valendo; esta ADR é o \"ajuste futuro da paleta\" que a terceira consequência dela previa, agora com o portão medindo."
+      ],
+      "afeta": [
+        "button",
+        "icon-button",
+        "badge",
+        "alert",
+        "field",
+        "input-group",
+        "prazo",
+        "chart",
+        "dialog"
+      ]
+    },
+    {
+      "id": "ADR-027",
+      "titulo": "A linha de tabela também tem um portador de cor só",
+      "status": "aceita",
+      "data": "2026-09-11",
+      "contexto": "A ADR-022 tirou da linha de LISTA a barra de 3px que repetia a cor do selo, e deixou de propósito a barra da linha de TABELA (tr[data-estado]) para ser medida na tela dela. A ADR-023 olhou de novo e manteve. Medida em 11/09/2026 nas três telas em que aparecia: movimento de caixa, onze linhas e onze barras (oito verdes, três vermelhas); parâmetros dos setores, seis em seis; protocolos anteriores do requerimento, quatro em quatro. Em todas, a coluna Situação está ao lado com selo, ícone e palavra. A justificativa da barra era a primeira passada do olho — descer a tabela procurando o que exige ação —, mas uma coluna inteira pintada é faixa de cor em que nada discrimina, o mesmo achado da caixa de entrada; e o selo da coluna Situação, alinhado numa coluna só, já faz a passada.",
+      "decisao": "Numa linha de tabela, o único portador de cor é o selo (ou o prazo) da coluna que já leva a palavra. A barra de 3px sai do CSS (.ucam-table tbody tr[data-estado]) e o atributo data-estado sai da marcação das telas: atributo sem efeito é controle morto. A primeira célula fica livre e a linha escolhida continua não usando esse lugar — fundo tingido e aria-selected bastam (ADR-022, contrato do data-table). Vale a mesma ressalva da ADR-022: a regra é para o que a linha mostra, não para o que o registro tem.",
+      "consequencias": [
+        "Três telas de referência perdem 21 atributos data-estado; nenhuma perde informação, porque a coluna Situação estava em todas.",
+        "A lixeira de linha em text-secondary até o hover (ADR-023) e esta decisão são a mesma regra vista de dois lados: cor na tabela é marcador com palavra, e mais nada.",
+        "Fica fechado o \"candidato seguinte\" que a ADR-022 deixou em aberto e a ADR-023 adiou."
+      ],
+      "afeta": [
+        "data-table",
+        "badge",
+        "prazo"
+      ]
+    },
+    {
+      "id": "ADR-028",
+      "titulo": "Bloco de layout pergunta ao contêiner, não à janela",
+      "status": "aceita",
+      "data": "2026-09-11",
+      "contexto": "O bloco de divisão (.ucam-split) ia a duas colunas por @media (min-width: 60rem), o papel viewport.duas-colunas. A coluna de navegação vira coluna da grade em 64rem (nav-fixa) e leva 20rem da janela — e a janela não desconta isso. Medido em 11/09/2026 a 1024px, a largura mais comum de notebook institucional: painel de conteúdo de 666px, bloco em duas colunas, 24rem para o conteúdo. Uma tabela de cinco colunas ali escondia \"Valor\" no movimento de caixa e \"Situação\" nos parâmetros dos setores, com a barra de rolagem fina e só no hover — o mesmo defeito que a ADR-023 tinha achado a 1280 e mitigado com um piso menor de tabela, que era remédio para o sintoma. O detalhe do setor cortava \"SLA médio\" pela borda direita (descrição em três colunas cravadas); os quatro indicadores do gerencial iam a 3 + 1, com o quarto sozinho na largura inteira; e a tabela de três colunas da mensalidade rolava a 1024 mesmo fora de qualquer split, porque o piso de 44rem era o de uma listagem de cinco colunas aplicado a todas. Em todos os casos a pergunta certa era \"quanto sobra aqui\", e a janela não sabe responder.",
+      "decisao": "Bloco de layout cuja forma depende do espaço que sobra consulta o CONTÊINER, por container query, e não a janela. O painel de conteúdo (.ucam-corpo) é o contêiner nomeado \"corpo\"; o grupo de indicadores (.ucam-stats) é o contêiner nomeado \"indicadores\". A medida mora em semantic.json > container, com papel e motivo, e passa pelo mesmo portão de largura de acima()/abaixo(): número na folha só vindo de papel declarado — contentorAcima()/contentorAbaixo() no gerador. Papéis: container.duas-colunas (52rem: 30rem de conteúdo, o bastante para cinco colunas, mais o apoio de 22rem) e container.indicadores-em-fileira (47rem: quatro ladrilhos de 11rem mais três vãos). Abaixo do primeiro o bloco de divisão empilha e a descrição em N colunas cai para quantas cabem (o N vira teto, não contagem); abaixo do segundo um grupo de quatro ou mais indicadores vai a 2 + 2, e o de três não muda. O piso da tabela passa a depender do número de cabeçalhos, contado por :has(): 26rem para três colunas e ~7rem por coluna a mais, até 56rem para sete; dentro de split o piso não passa de 34rem. Media query de viewport continua sendo o instrumento certo para o que depende da JANELA: a navegação virar gaveta, a faixa perder o chip de campus, o rótulo ir para cima do campo. Sem contêiner nomeado acima do bloco — página sem shell — a consulta cai no viewport, que é o comportamento anterior.",
+      "consequencias": [
+        "A 1024px os quatro blocos de divisão empilham e nenhuma tabela das quinze telas corta coluna; a tabela de três colunas da mensalidade cabe sem rolar; o gerencial e o movimento de caixa mostram os indicadores em 2 + 2; o detalhe do setor mostra as três leituras inteiras, em duas colunas. A 1280 e 1440 nada muda, salvo o analytics, cujo painel de apoio foi de 22rem para 20rem para a tabela de volume caber dentro do cartão sem rolar.",
+        "Container query pede que o contêiner tenha container-type: inline-size — contenção só no eixo inline, para não travar a altura do rolo. É o mesmo piso de suporte do :has(), que a folha já exige.",
+        "O portão de build passa a aceitar larguras de papel de contêiner além das de viewport; a mensagem diz \"viewport ou container\". A página de breakpoints do site lista os papéis de contêiner ao lado dos de viewport.",
+        "Regra para o futuro: antes de escrever uma media query de largura para um BLOCO (grade, divisão, grupo de indicadores, descrição em colunas), perguntar se o que decide é a janela ou o espaço em que o bloco vive. Se é o espaço, é papel de contêiner."
+      ],
+      "afeta": [
+        "app-shell",
+        "data-table",
+        "description-list",
+        "stat"
+      ]
+    },
+    {
+      "id": "ADR-029",
+      "titulo": "Sair da tarefa é fantasma; arquivar não é excluir; o registro diz em que pé está",
+      "status": "aceita",
+      "data": "2026-09-12",
+      "contexto": "Segunda passada heurística sobre as quinze telas de referência, em 12/09/2026, por captura de página inteira nos dois temas, sonda de área de clique (nenhum alvo abaixo de 24px) e leitura tela a tela contra as heurísticas de Nielsen e os fluxos entre telas. Cinco achados de estrutura: (1) o movimento de caixa ainda tinha \"Fechar caixa\" como único bordô — a ação de uma vez por dia, que trava novos lançamentos — e \"Registrar lançamento\", a de onze vezes por dia, contornada; a ADR-023 citava esta tela pelo nome e ela não tinha acompanhado; (2) a ação de sair da tarefa tinha três pesos no sistema: Cancelar contornado (novo requerimento), Limpar contornado (mensalidade), Descartar e Limpar campos fantasmas (parâmetros, filtros); (3) a linha de natureza oferecia uma lixeira, e a barra de seleção da mesma tabela oferecia Arquivar — dois verbos para um gesto, e o irreversível era o de um clique; (4) o requerimento aberto, em painel e em página, não mostrava a própria situação: \"Em análise\" só existia como par DE → PARA num evento da linha do tempo, e a lista de dados com \"mostrar todos os 7 valores\" não a incluía — enquanto as oito linhas ao lado mostravam a delas; e do painel não havia caminho nenhum até a página do registro, que existe e mostra o que o painel não mostra; (5) números que prometiam o que a tela não entrega — \"7 relatórios\" num cartão com três e sem link, \"9 assuntos\" com seis, \"Turno: Noite\" no resultado de filtros que diziam \"Todos\", uma fila \"ordenada do mais vencido\" que abria com um registro ainda no prazo, um painel que nasce filtrado em EAD e diz \"6 setores\".",
+      "decisao": "Ação que sai da tarefa sem produzir nada — cancelar, descartar, limpar — é fantasma, em toda tela; contornado fica para a alternativa real (anexar, encaminhar, exportar). O primário é o da ação frequente, e a ADR-023 vale para o cabeçalho de módulo tanto quanto para o de registro. Objeto com histórico apontando para ele (natureza com requerimentos) não se exclui: a ação da linha é a mesma da barra de seleção, arquivar, reversível e sem tinta de perigo; o arquivado oferece reativar no mesmo lugar. O cabeçalho de um registro mostra a situação atual como primeiro selo, antes de prioridade e modalidade, nas duas apresentações — o histórico conta como chegou lá, não onde está. Toda apresentação parcial de um registro (painel) oferece caminho para a apresentação inteira (página): o identificador é link e \"Abrir em página\" é o primeiro item de mais ações. Contagem, ordem e filtro na marcação são o que a tela mostra: o número do cartão é o tamanho da lista, a soma do cabeçalho é a soma dos cartões, a ordem da lista é a que o subtítulo anuncia, o filtro de escopo nasce em \"Todas\", e a tela de resultado carrega os valores que a tela de filtros deixou.",
+      "consequencias": [
+        "Movimento de caixa: Registrar lançamento é o primário; Fechar caixa é secundário no cabeçalho.",
+        "Cancelar (novo requerimento) e Limpar (mensalidade, nos dois trilhos) são fantasmas; Descartar e Limpar campos não mudam.",
+        "Naturezas: doze botões de linha trocam trash2 por archive, sem data-tone; a arquivada oferece refreshCw \"Reativar\"; nomes acessíveis acompanham. O rodapé diz o período que só a legenda oculta dizia.",
+        "Requerimento em painel e em página: selo \"Em análise\" abre o cabeçalho; no painel o número do protocolo é link e o menu de mais ações ganha \"Abrir em página\".",
+        "Gerencial: modalidade abre em Todas; a fila vai vencido → vence → em análise. Catálogo: 18 relatórios em 6 assuntos, três por cartão. Filtros: turno Noite selecionado.",
+        "CSS: a última linha da tabela zera a borda também em th (a coluna de meses do analytics deixava um filete curto sob \"Setembro\").",
+        "Não decidido aqui: a linha da fila do requerimento aberto continua sem o selo de situação (Urgente + prazo já ocupam a largura da coluna); e a nota de desenvolvimento dentro do analytics (\"No app estes números aparecem em <ucam-chart>\") continua na tela."
+      ],
+      "afeta": [
+        "button",
+        "badge",
+        "icon-button",
+        "menu",
+        "segmented",
+        "list-item",
+        "data-table",
+        "page-header"
+      ]
+    },
+    {
+      "id": "ADR-032",
+      "titulo": "Cor onde há dado: o tom pinta o ladrilho, a categoria discrimina o módulo",
+      "status": "aceita",
+      "data": "2026-09-13",
+      "contexto": "Pedido de 13/09/2026: \"melhore o estilo das telas, pode ter mais cor em alguns momentos mas fique clean\" e \"coloque cor nos kpi's / big numbers\". As decisões anteriores tinham reduzido a cor a quatro lugares — ação primária, item ativo, selo e gráfico — pelo mesmo argumento em três ADRs: cor que não discrimina nada é ruído (ADR-022, avatar tinto; ADR-027, barra da linha de tabela; o contrato do stat, fundo em quatro ladrilhos lado a lado). O argumento continua certo e tem uma condição que ficou implícita: ele vale quando a cor está em TODOS os irmãos. O painel gerencial mostrava quatro números — abertos, atrasados, urgentes sem resposta, concluídos — com o mesmo fundo branco e o mesmo preto, e a única diferença entre o número bom e o ruim era o rótulo. Na grade do Portal, 62 cartões usam dez ícones: o capelo aparece em onze módulos, e o ladrilho neutro que a correção de rota impôs ao tinto fazia o Financeiro e o Acadêmico lerem igual até a leitura do nome.",
+      "decisao": "O tom do stat pinta o LADRILHO quando o número carrega julgamento: fundo no degrau 100 da família de feedback e número no 700. Os tons são success, warning (novo), danger e marca (novo): marca é o número-título do painel, um por grupo, e pinta só o número em action.primary.default, sem fundo — com fundo, o subtle da marca ao lado do fundo de danger lia como o mesmo rosa, o par que a ADR-026 declara insatisfazível. Tom não categoriza: total recebido e total de saída de um caixa são receita e despesa, e ficam neutros. neutral continua branco, e a regra que impede a faixa de cor passa a ser explícita: o tom vem do DADO, nunca da posição — um painel de quatro contagens neutras continua branco. A meta em palavra continua obrigatória com qualquer tom (WCAG 1.4.1). Os ícones de módulo ganham seis papéis de CATEGORIA em semantic.json > color.categoria — acadêmico, financeiro, atendimento, gestão, pessoas e acervo —, cada um apontando para um primitivo que já existe (blue, green, wine, violet, teal e ochre no 500; 400 no escuro). O ladrilho de categoria usa a receita do --marca: fundo a 12% da tinta, traço na tinta. Categoria classifica e não julga: nenhum papel reaproveita um par de feedback, e o contrato do stat continua proibindo o tom de categorizar.",
+      "consequencias": [
+        "Painéis: 14 ladrilhos ganham tom nas telas de referência (gerencial, analytics, movimento de caixa, cálculo de mensalidade, resultado de relatório); os que são base de comparação (saldo anterior, formados, prazo médio) ficam neutros.",
+        "Portal: os 62 cartões e os oito da janela do login levam a categoria do módulo. O ícone e o nome continuam carregando a distinção; a cor é reforço.",
+        "check-daltonismo.mjs confere as seis categorias entre si, par a par, e registra como desvio os pares abaixo de 0,06. No tema escuro cinco pares ficam abaixo (acadêmico × gestão sob deuteranopia a 0,003, o pior) — é o mesmo platô de luminosidade do degrau 400 que a escala de cores já registra para as séries, e a mitigação é a mesma: a cor não é a portadora.",
+        "check-marca-vs-destrutivo.mjs passa a medir a categoria de atendimento (wine.500) contra a tinta de erro, porque o ladrilho do Protocolo convive com selo de erro na mesma grade. Passa.",
+        "Cabeçalho de página, cartão comum, tabela, navegação e barra de visão continuam brancos. A ação primária segue sendo o único bordô cheio da tela (ADR-023)."
+      ],
+      "afeta": [
+        "stat",
+        "icon-tile",
+        "chart"
+      ]
+    },
+    {
+      "id": "ADR-033",
+      "titulo": "A faixa identifica o módulo, o campus é um select e toda ação da tela leva a algum lugar",
+      "status": "aceita",
+      "data": "2026-09-13",
+      "contexto": "Quatro pedidos de 13/09/2026 que convergem na moldura. (1) \"No header, não valeria ter uma marquinha para cada sistema e deixar o 'universidade candido mendes' em outros momentos só?\" — o lockup institucional de 110px abria a faixa de toda tela de todo sistema, e foi ele que estourou a faixa a 320 e a 480px na auditoria de responsividade de 12/09. (2) \"Esse select do header 'campus Campos' pode melhorar e ficar no estilo dos demais selects\" — o chip era um botão em pastilha com rótulo esmaecido, chevron e um menu de itens radio: um select que não se parecia com nenhum select do sistema. (3) \"Na tela de autenticação, melhore o conteúdo, tem muito texto solto\" — cinco textos além do formulário, incluindo a linha de campi. (4) \"Deixe clicável e faça funcionar nas telas o que tem que funcionar\" — nenhum link morto nas quinze telas, mas 168 botões sem comportamento: editar, arquivar, encaminhar, exportar, avançar etapa.",
+      "decisao": "A faixa de um sistema abre com a MARQUINHA do módulo: o ladrilho de 28px com o ícone e a categoria do projeto (ADR-032) e o nome do sistema, dentro do link para a primeira tela. O lockup da universidade sai da faixa dos sistemas e fica onde a universidade é o assunto: na faixa do Portal (a grade É a universidade), no login, no cabeçalho da gaveta e no rodapé do shell — uma vez por tela, nunca duas. O campus é um .ucam-select de verdade na faixa, com rótulo para leitor de tela, gatilho no mesmo desenho dos selects de formulário e o listbox do sistema; escolher uma unidade escreve data-campus no shell, que é o que a aplicação lê para recarregar o contexto. Abaixo de faixa-minima o select sai da faixa e o campus aparece no cabeçalho da gaveta. No login saem a linha de campi e a frase de apoio; o rodapé da coluna de acesso vira uma linha. Toda ação das telas de referência passa a fazer uma de três coisas, declarada em data-fluxo: (a) é link para a tela que realiza a ação; (b) não tem tela neste conjunto e fica aria-disabled com o motivo em title — alcançável pelo teclado e pelo leitor, sem fingir que age; (c) age na própria tela, com o eco no próprio controle ou no registro (selo, linha do tempo, etapa, realce), porque toast está fora do catálogo.",
+      "consequencias": [
+        "tools/lib/shell.mjs: opções moduloIcone e moduloCategoria; logo passa a ser a exceção do Portal (projeto.lockup); o menu de campus e as classes .ucam-appbar__context* saem do gerador e da folha; entram .ucam-select--faixa, .ucam-nav__gaveta-marca, .ucam-nav__gaveta-campus e .ucam-shell__footer-marca.",
+        "tools/lib/select-listbox.mjs: o gatilho gerado herda as classes extras e os atributos data-* do <select> original — sem isso qualquer modificador de select sumia na conversão, e o de campus não conseguia se identificar.",
+        "As regras de largura estreita que existiam para o lockup caber (piso da marca, nome do sistema escondido com chip de campus) passam a valer só com .ucam-appbar--lockup.",
+        "estadoScript ganha os tratadores de data-acao; cada template ganha o bloco fluxos, que alimenta o mapa de fluxo da página de telas do site.",
+        "Não decidido aqui: o Trilho B do app-shell, que está na spec paralela de 12/09/2026, e as telas de natureza e de integrante, que continuam não desenhadas — as ações que as pediriam ficam em (b)."
+      ],
+      "afeta": [
+        "app-shell",
+        "select",
+        "button",
+        "stepper",
+        "badge",
+        "timeline",
+        "chip",
+        "icon-tile"
+      ]
+    },
+    {
+      "id": "ADR-034",
+      "titulo": "Indicador limpo: o tom pinta o número, nunca o ladrilho; o conteúdo assenta num chão cinza e a tinta é grafite",
+      "status": "aceita",
+      "data": "2026-09-14",
+      "contexto": "Três pedidos de 14/09/2026, na mesma conversa em que chegaram as telas do Módulo Gerencial do SIGU. (1) \"Cuidado com as cores de fundo nos KPIs, não use dessa forma, queremos clean mas com cores semânticas.\" A ADR-032, da véspera, tinha feito o tom pintar o ladrilho inteiro — fundo no degrau 100 da família — e o painel gerencial virou quatro retângulos de quatro cores. A folha ainda contradizia a própria ADR: ela decidia que marca pinta só o número, sem fundo, e o CSS pintava o fundo de marca mesmo assim. (2) \"Conseguimos ter contraste maior nas telas? Uso do grafite escuro.\" O texto de apoio estava em 5,70:1 desde 10/09 e é dele que saem rótulo de campo, meta de indicador e ícone de navegação. (3) \"Deixar um fundo com shapes brancos sobrepondo.\" Desde 10/09 moldura e conteúdo eram brancos (surface.chrome branco), e cartão branco sobre painel branco só existia pelo filete de 1,19:1.",
+      "decisao": "O tom do stat pinta o VALOR, e só: success, warning e danger no degrau 700 da família de feedback, marca em action.primary.default. O ladrilho é sempre surface.default, e a variação não ganha pastilha — é texto na tinta do valor. A regra da ADR-032 que continua valendo: o tom vem do dado e a meta em palavra acompanha qualquer tom. Revoga da ADR-032 só a parte do fundo; a categoria de módulo no icon-tile fica como está. O conteúdo passa a assentar num CHÃO: surface.chao, neutral.100 no claro, pintado no .ucam-main. Cartão, tabela, indicador, gaveta, lista e detalhe continuam em surface.default e sobem do chão por tom. A barra de visão e a coluna de navegação continuam brancas, porque são moldura. No escuro o chão é o mesmo 800 de sempre, e nada muda. A tinta de texto do claro sai da rampa slate para uma rampa grafite de dois degraus, com a mesma matiz e um terço do croma: text.primary em grafite.900 (17,78:1) e text.secondary em grafite.600 (7,77:1 no branco, 7,15:1 no chão). O fio sobe um degrau (border.subtle para neutral.200), e o contorno de controle sobe junto (border.default para neutral.300), para os dois não empatarem.",
+      "consequencias": [
+        "Nenhuma tela precisa mudar a marcação: os ladrilhos com tom seguem com as mesmas classes, e só a folha deixa de pintar o fundo.",
+        "tools/build-tokens.mjs confere dois pares novos: texto principal e texto de apoio sobre o chão.",
+        "Seções que hoje assentam direto no corpo — formulário do cálculo de mensalidade, filtros de relatório — passam a ler sobre o cinza. Campo e select já eram surface.default, então continuam brancos. Onde a seção inteira pedir superfície, ela entra em cartão, e não o chão volta a ser branco.",
+        "O realce de linha selecionada (interaction.selected, alfa neutro) foi medido sobre branco e continua sobre branco, porque tabela e lista ficam dentro de superfície.",
+        "Trilho B: UcamStat perde o mapa de fundo; o valor continua recebendo a tinta do tom.",
+        "Papel novo color.feedback.{success,warning,danger}.numeral: o número do indicador. No claro aponta o mesmo 700 do foreground; no escuro, green.400 e amber.400 (degraus novos, com papel declarado) e red.300. A captura do escuro mostrou o que o raciocínio não: sem o fundo tinto, o foreground do escuro (100) deixava os números de atenção e perigo brancos, e o tom sumia.",
+        "O painel de apoio (.ucam-aside) passa a ser branco. Transparente, ele virava caixa cinza com filete sobre o chão novo."
+      ],
+      "afeta": [
+        "stat",
+        "app-shell",
+        "card",
+        "data-table",
+        "field"
+      ]
+    },
+    {
+      "id": "ADR-035",
+      "titulo": "Indicador: o número fica em tinta de texto e o tom pinta o contexto",
+      "status": "aceita",
+      "data": "2026-09-16",
+      "contexto": "Pedido de 16/09/2026 sobre os painéis do Protocolo e do Gerencial: \"os números podem estar em cinza escuro, os \"em 6 setores\" e textos do mesmo tipo podem ser coloridos, \"+9% sobre agosto\"\". Com a ADR-034 quatro números grandes coloridos lado a lado disputavam entre si: o olho lia a cor antes do valor, e o número deixava de ser a coisa mais legível do ladrilho.",
+      "decisao": "O valor do stat usa sempre a tinta de texto principal (grafite). O tom (success, warning, danger, marca) pinta a variação e a linha de meta, nos mesmos papéis color.feedback.*.numeral e action.primary.default. O ladrilho continua branco (ADR-034) e a meta em palavra continua obrigatória com qualquer tom — agora ela é também o portador da cor, então tinta e palavra ficam no mesmo lugar.",
+      "consequencias": [
+        "Nenhuma marcação muda: as classes .ucam-stat--{tom} seguem, e só a folha troca o alvo da cor.",
+        "Trilho B: UcamStat deixa de pintar o valor e passa a pintar delta e meta.",
+        "Os papéis numeral valem 4,5:1 sobre a superfície; o caption de 12-13px exige exatamente esse piso, então o portão de contraste não muda.",
+        "Revoga a parte da ADR-034 que dizia que o tom pinta o valor; o resto dela (ladrilho branco, chão cinza, grafite) continua."
+      ],
+      "afeta": [
+        "stat"
+      ]
+    },
+    {
+      "id": "ADR-036",
+      "titulo": "Linha do tempo: fase no trilho, etapas no item, mensagem sem balão",
+      "status": "aceita",
+      "data": "2026-09-19",
+      "contexto": "Revisão de 19/09/2026 contra duas referências (inbox do Intercom e o histórico de um pedido com remessas). A atividade da coluna lateral do requerimento era a peça mais fraca da tela: o papel em pastilha cinza repetida a cada item, a mensagem num balão cinza (e, na densidade compacta, sem forma nenhuma), a edição de três campos ocupando seis linhas, e nenhum corte que respondesse \"o que aconteceu desde que entrou em análise?\". Quem atende também não tinha como saber se o parecer pedido à coordenação já tinha saído.",
+      "decisao": "Cinco mudanças na timeline, nos dois trilhos. (1) O papel vira texto secundário depois de um ponto médio, sem fundo. (2) Mensagem e citação trocam balão por filete de citação à esquerda, nas duas densidades. (3) groupBy ganha phase: o rótulo é a situação do registro e o trilho ganha um marco com fio antes e depois. (4) O item de evento ganha steps — os passos do trâmite que ele abriu, feita/atual/pendente, cada um com forma própria e estado dito em texto. (5) filter (all/message/event) com o controle fora do componente; a lista esconde a fase vazia e fecha o fio no último visível. Na densidade compacta, as mudanças correm em frase (\"Prazo: 10/09 → 04/09\").",
+      "consequencias": [
+        "Nenhuma marcação existente quebra: papel, corpo--mensagem e citacao só trocam de desenho. Telas que usam a timeline ganham o novo visual sem editar HTML.",
+        "A fase usa os nomes da coluna Situação — mesma regra dos selos da transição.",
+        "Etapas de UM item não são stepper: o limite novo do contrato proíbe usá-las para as etapas do registro inteiro.",
+        "Trilho A: linhaDoTempoScript entra nas telas; evento() insere o item novo abaixo do rótulo da fase atual, e não acima dele."
+      ],
+      "afeta": [
+        "timeline",
+        "citacao"
+      ]
+    },
+    {
+      "id": "ADR-037",
+      "titulo": "Subpaleta por sistema: família da ação derivada da categoria, com as semânticas compartilhadas (em teste)",
+      "status": "proposta",
+      "data": "2026-09-19",
+      "contexto": "Pedido de 19/09/2026: \"e se cada sistema tiver sua subpaleta? E ter o seu header, a sensação de que está em outro sistema\". Com a faixa clara (ADR-033), Protocolo, SigFin e Gerencial só se distinguiam por um ladrilho de 28px e pelo nome — a pessoa que troca de sistema pelo lançador não sente a troca. Uma paleta completa por sistema foi avaliada e recusada: o bordô é a ação primária em todo o parque, e trocá-lo por sistema tira a pista de onde clicar; 58 sistemas não cabem em cores distinguíveis — as seis categorias já têm cinco pares aceitos como desvio de daltonismo no escuro; e fundo tinto já foi revertido uma vez (ADR-034). A primeira resposta (19/09) foi só um fio de 3px no alto da faixa; no mesmo dia o pedido voltou: \"ao invés de ter uma linha no topo, testar o header + cores no geral da subpaleta de cada sistema\". Em 20/09/2026 o pedido voltou com a regra que faltava: \"para cada app tenha uma subpaleta especial da main-color, mas as cores semânticas são as mesmas para todos os apps\", depois \"nas paletas dos apps, pode usar cores menos saturadas\" e \"tenha atenção no contraste, em especial nos disabled e estados dos componentes\". A main-color de cada app continua sendo a cor da sua categoria (ADR-032); o que mudou foi a receita que sai dela, e o fato de existir portão.",
+      "decisao": "Em teste: cada sistema troca, dentro do seu .ucam-shell[data-sistema], a família da AÇÃO — primário, hover, pressionado, fundo sutil, anel de foco e superfície de marca — derivada da cor da sua categoria. Feedback, link, disabled, texto desabilitado, placeholder e séries de gráfico são os MESMOS em todos os apps, e isso deixou de ser parágrafo: tools/check-subpaleta.mjs falha se qualquer regra de [data-sistema] na folha construída declarar um desses tokens. A receita saiu do navegador e virou número. Antes cada degrau era color-mix da categoria com text-primary, resolvido pelo browser — elegante, porque virava sozinho no tema escuro, e imensurável, porque valor que só existe em tempo de execução nenhum portão confere. Agora os degraus saem de tools/lib/subpaleta.mjs em OKLCH: croma a 62% do da categoria (o pedido de \"menos saturadas\"), e lightness ABSOLUTA — L 35 no claro, L 77 no escuro — escolhida para ficar a dez pontos de L de todo tom semântico da mesma família de matiz. Dez pontos e não outra coisa porque é o número da ADR-026, e família de matiz porque é o mecanismo que ela achou: sob protanopia e deuteranopia a matiz colapsa num eixo e só o L separa. Dois sistemas não derivam. O Portal porque é o saguão, como já era. E ATENDIMENTO porque é a matiz da marca — o token já dizia \"o atendimento é a cara da instituição, e leva a marca\" — e porque não haveria onde pô-lo: no escuro o filete de erro (L 80) e o numeral de erro (L 66) fecham a janela do vinho, e a primeira altura que cumpre a regra é L 89, um rosa lavado que já não lê como bordô. PESSOAS anda um degrau (−8 no claro, +8 no escuro): teal (182°) e verde (162°) nascem a vinte graus um do outro, e à mesma altura com croma reduzido o SigFin e o RH saem a 0,021 de distância — a mesma cor. É a ADR-026 aplicada entre sistemas em vez de entre papéis. A faixa continua com fundo tinto a 10% e filete na cor, e a marquinha continua ícone de aplicativo cheio. ?paleta=comum e ?paleta=moldura seguem como os dois controles do teste. REVISTO EM 21/09/2026, ainda dentro do teste: a FAIXA saiu da subpaleta. O fundo a 10% da cor da categoria e o filete a 30% davam cinco cromos diferentes para cinco telas — e o Portal, sem data-sistema, ficava branco no meio deles. A faixa passa a ser neutra e igual em todos (surface.subtle); o que muda ao trocar de sistema é a marquinha, o nome e a família da ação, que é o resto desta decisão e segue em teste. O REALCE entrou na família em 21/09/2026, depois de uma queixa que a medida confirmou: o eco da ação usa --ucam-color-realce-background, que ficava fora da troca, e clicar no botão primário do SigFin piscava o rosa da marca dentro de um sistema verde. O mesmo token pinta o <mark> da busca, então a correção vale para os dois papéis. Degrau próprio (L 88 claro, L 36 escuro), porque é o único papel da família que carrega texto de leitura em bloco por cima.",
+      "consequencias": [
+        "O que o portão achou no primeiro dia é pior do que a prosa da versão anterior dizia: color-categoria-financeiro e color-feedback-success-border são o MESMO hex (#17825A), e color-categoria-academico e color-feedback-info-border também (#1A6FC4). O primário do SigFin não \"encostava\" no verde de sucesso — partia dele. Onze colisões da receita antiga deixaram de existir; as medidas estão no relato de `pnpm run subpaleta`.",
+        "A ação fica MAIS ESCURA que o bordô no tema claro: L 35 contra L 44, ou 11:1 contra 8,36:1 com o texto branco. É o preço da regra e foi medido antes de ser aceito — o tom que aperta é o NUMERAL do indicador (sucesso em L 47, aviso em L 52), que divide a tela do painel com o botão primário, que é exatamente o risco nomeado na versão anterior desta ADR.",
+        "O croma a 62% tem piso, e o piso é a separação ENTRE sistemas: dessaturar aproxima tudo do cinza, e no cinza as subpaletas viram uma só. O portão mede esses pares a 0,06 — o LIMITE_COEXISTE da ADR-016 — e não a 0,10, porque dois sistemas nunca dividem uma tela: a pessoa está num sistema de cada vez e o reconhecimento é de memória, não de comparação. Exigir 0,10 foi tentado e o preço apareceu na hora: para separar cinco matizes à mesma altura o otimizador espalhava o L de 20 a 56, e o mesmo botão saía quase preto no RH e violeta médio no Gerencial.",
+        "A superfície de marca NÃO é o preenchimento da ação, e isso custou uma rodada do portão. No claro as duas coincidem; no escuro a ação vira clara com texto quase-preto (#DB6F7A) enquanto surface-brand continua vinho escuro com texto BRANCO (#52151F). Derivar uma da outra punha a superfície de marca do escuro a 2,06:1 nos cinco sistemas — bloco de marca ilegível em todo app derivado. Cada papel passou a ser medido contra o texto que ELE carrega.",
+        "O portão pergunta se os estados são TRÊS COISAS diferentes, e não só se cada um está legível. Foi o que faltava na primeira rodada: pessoas saiu com ponteiro e pressão em #001B17 os dois, porque a escada bateu no piso da receita e os dois degraus foram aparados para a mesma altura. Seis contrastes daquele sistema passavam e o botão não respondia ao toque. O piso da escada desceu de L 20 para L 12 e o desvio de pessoas de −10 para −8.",
+        "O DISABLED não se move, e agora é conferido. action.disabled.* e text.disabled são neutros, não saem do primário: continuam a 3,71:1 no claro e 2,99:1 no escuro, isentos da 1.4.3 por ser componente inativo, iguais nos seis sistemas. A prova no navegador confere a assinatura das semânticas nas cinco telas dos dois temas e ela é idêntica.",
+        "DESVIO HERDADO, que esta entrega não criou e não conserta: o bordô da marca no tema escuro (#DB6F7A) fica a UM ponto de L do numeral de erro (#D86F5F), a 0,037 de distância. No claro são 9,6 pontos, a um décimo da régua. O portão da marca não pegava porque casa action-primary com action-danger, e o numeral é outro papel. Consertar mexe na ação da marca no parque inteiro: é decisão, não conserto, e fica nomeado à espera dela.",
+        "Sob dicromacia as subpaletas encostam umas nas outras — academico × gestao dá 0,003 sob deuteranopia. Nomeado e aceito pelo mesmo motivo da ADR-032: o que diz em que sistema a pessoa está é o NOME escrito na faixa e o desenho do ícone, não a cor.",
+        "A folha triplicou neste trecho. Com valor literal acabou a mágica do color-mix virar sozinho no escuro, e cada sistema precisa das três condições que a folha de tokens já usa — claro, escuro por preferência, escuro por escolha. É gerado por cssDaSubpaleta(), não escrito à mão.",
+        "Reverter continua barato: tirar o bloco gerado da folha, o portão do build e um atributo. Nada nas telas depende da subpaleta.",
+        "Trilho B: o <ucam-app-shell> foi construído em 20/09/2026 e já nasce com systemCategory — a faixa clara recebe o fundo tinto a 10% e a marquinha sai na tinta do sistema. A subpaleta cheia (família da ação) continua só no Trilho A, porque lá ela é sobrescrita de token no .ucam-shell.",
+        "Pessoas e acervo não têm tela autônoma e só foram provados pelo portão, não pelo navegador. As cinco telas da prova cobrem atendimento, financeiro, academico, gestao e o Portal."
+      ],
+      "afeta": [
+        "app-shell",
+        "icon-tile",
+        "button"
+      ]
+    },
+    {
+      "id": "ADR-038",
+      "titulo": "Os controles da faixa são papel, e o cabeçalho tem portão",
+      "status": "aceita",
+      "data": "2026-09-19",
+      "contexto": "Pedido de 19/09/2026: \"a barra de busca teria um fundo branco pra ficar mais visível, bem como o select; proteja também o avatar (a cor) e a área de clique dos ícones\". Medido na faixa clara: busca e campus estavam com background transparente, isto é, com o MESMO fundo da barra — só um filete de 20% dizia onde o controle começava. A faixa é a peça que aparece em toda tela, e já perdeu partes por descuido: o extensor de alvo que some sem mudar nada visível, e o poço cinza que voltou uma vez.",
+      "decisao": "Busca e campus leem --ucam-appbar-control-bg, que vale color.surface.default (papel) na faixa clara e transparent nas faixas escura e de marca, onde papel seria um retângulo claro cravado na tarja. O avatar mantém fundo próprio (--ucam-appbar-hover) e não entra nessa variável: não é controle, e em papel a inicial sumiria. Os alvos de clique dos ícones continuam vindo do extensor por pseudo-elemento do fim da folha. As três coisas passam a ser verificadas por tools/check-faixa.mjs, que lê o CSS construído e entra no build depois do css.",
+      "consequencias": [
+        "Papel é token: no tema escuro o controle acompanha a superfície em vez de virar um buraco claro.",
+        "A nota antiga de .ucam-appbar__search que dizia \"nem fundo branco\" foi revogada; a de 09/09/2026 contra o POÇO cinza continua valendo — poço é mais escuro que a superfície, papel é mais claro que a faixa.",
+        "O portão reprova três regressões distintas: controle sem papel, avatar sem cor própria e ícone fora da lista do extensor. Provado quebrando cada uma antes de entrar.",
+        "pnpm run faixa roda sozinho; no build vem logo depois do css, porque lê dist/css/ucam.css."
+      ],
+      "afeta": [
+        "app-shell",
+        "select",
+        "avatar"
+      ]
+    },
+    {
+      "id": "ADR-039",
+      "titulo": "As telas de referência agem: filtro, marcar todos e confirmação",
+      "status": "aceita",
+      "data": "2026-09-19",
+      "contexto": "Dois defeitos relatados em 19/09/2026 e uma varredura. (1) O cabeçalho de marcar todos não marcava nada e piscava: o estado misto era só data-indeterminate, atributo que a folha lê e que ficava posto depois do clique — a caixa ficava marcada COM o traço do misto desenhado por baixo do tique. (2) Oito campos de busca e dois segmenteds existiam em sete telas sem filtrar nada. A varredura clicou em todos os controles das 20 telas: nenhum link sem destino e nenhum clique sem efeito, mas 41 botões em aria-disabled com o motivo no título, dos quais 15 eram confirmações — bloquear, desbloquear, tirar do grupo, redefinir senha, reemitir cartão.",
+      "decisao": "Três camadas novas em tools/lib/shell.mjs, ligadas às telas e ao site. filtroScript: data-filtra=\"texto|coluna:<cabeçalho>|marcados\" nos controles que já existiam, filtros que se SOMAM sobre o mesmo alvo, eco de contagem, estado vazio e região de status — a coluna é achada pelo texto do cabeçalho, não pelo índice. O mesmo script escreve o estado do marcar todos na PROPRIEDADE indeterminate e no atributo juntos, e a contagem da seção anda pela diferença, nunca pela conta inteira (a tela mostra 6 dos 44 menus). confirmaScript: as ações que mexem em acesso passam de fluxo b para fluxo c com data-confirmar, e um <dialog> NATIVO com showModal pergunta antes; o efeito continua morando no estadoScript, porque a confirmação apenas reclica o botão com data-confirmado.",
+      "consequencias": [
+        "O foco de abertura pousa em Cancelar, nunca na ação destrutiva, e ao fechar volta a quem abriu — ou ao título da seção, quando a linha sumiu com o clique (tirar do grupo).",
+        "O diálogo é criado DENTRO do .ucam: pendurado no body ele sai em Times, porque os tokens e a fonte são escopados nessa classe.",
+        "Bloquear troca o selo, o motivo ao lado dele, o verbo do botão e o ícone, e deixa rastro na linha do tempo quando a tela tem uma.",
+        "Sobram 26 botões em fluxo b: são formulários e telas que este conjunto não desenha — editar natureza, editar setor, novo integrante, copiar permissões."
+      ],
+      "afeta": [
+        "data-table",
+        "dialog",
+        "checkbox",
+        "app-shell"
+      ]
+    },
+    {
+      "id": "ADR-040",
+      "titulo": "Nenhum fundo cinza no tema claro: o chão do conteúdo e os palcos do site vão a branco, e quem separa é o filete",
+      "status": "aceita",
+      "data": "2026-09-19",
+      "contexto": "Pedido de 19/09/2026: \"deixe os fundos cinzas em branco agora\". A ADR-034, de 14/09, tinha pintado o painel de conteúdo (.ucam-main) com color.surface.chao em neutral.100, a partir do pedido \"um fundo com shapes brancos sobrepondo\". Cinco dias de telas depois, o arranjo mostrou o defeito que o sistema já tinha combatido em toda outra escala: cartão, tabela, indicador e gaveta são brancos, então o chão cinza os transformava em superfícies flutuando sobre um poço — o mesmo desenho que tirou o fundo cinza de card, selo e filtro (09/09), o trilho cinza do segmented, a pastilha cinza do contador e, em 10/09, o cinza da própria moldura. A moldura branca já tinha provado que filete separa tão bem quanto tom.",
+      "decisao": "color.surface.chao passa de {neutral.100} para {neutral.0} no tema claro. O token NÃO sai: o papel \"chão onde as superfícies assentam\" continua sendo o que .ucam-main faz, e é ele que o tema escuro usa para dizer 800. Muda só o valor do claro. Nada mais da ADR-034 é revogado — o indicador segue sem ladrilho tinto, a tinta segue grafite, border.subtle segue em neutral.200 — e o painel de apoio (.ucam-aside) segue com fundo branco DECLARADO, não transparente, porque é o fundo que garante o papel de superfície em qualquer hospedeiro.",
+      "consequencias": [
+        "Uma mudança de valor, um arquivo: spec/tokens/semantic.json. .ucam-main é o único consumidor de surface.chao na folha, então não há efeito colateral em outra peça.",
+        "O tema ESCURO não muda. Lá o chão é o 800 e a moldura é o 900 — separação por LUZ, que filete não substitui. theme.dark.json não foi tocado, como em 10/09.",
+        "Cartão, stat, painel de apoio, barra de visão e o bloco de lista e detalhe já carregam filete de border.subtle; nenhum deles perde limite ao ficar branco sobre branco. O stat usa box-shadow de 1px, não border, e continua valendo.",
+        "A separação entre a coluna de navegação e o painel continua sendo o border-inline-end da .ucam-nav, restaurado em 10/09 justamente para este caso: as duas superfícies voltam a ser brancas.",
+        "Os cinzas FUNCIONAIS ficam: surface.sunken no cabeçalho de tabela e no trilho de progresso, surface.subtle na zebra, no campo desabilitado e no esqueleto. Ali o cinza é o próprio sinal, não decoração de fundo — foi a escolha do usuário quando perguntei o alcance.",
+        "SEGUNDA PASSADA, 20/09/2026, mesmo pedido (\"o fundo das pages continua cinza, deixe branco\"): os PALCOS do site também eram cinza, e eles são o mesmo desenho do chão numa escala menor — amostra branca sobre poço cinza. Quatro foram a surface.canvas: .painel-corpo.palco (demo-painel), .palco-vivo (demo-viva), .palco do card do catálogo e .palco da página de layout.",
+        "Onde o cinza ERA o limite, o filete entra no lugar. Só o .palco-vivo precisou de borda nova — os outros três já tinham moldura de painel, border-block-end ou filete próprio. A elevacao.page e a telas/index já faziam palco branco com filete desde antes: a decisão promove o que era exceção a regra.",
+        "O esmaecimento do preview que não cabe (.palco[data-encaixe='corta']::after) teve de acompanhar: um gradiente que morre em surface.subtle sobre palco branco desenha uma faixa cinza no pé da miniatura.",
+        "Verificado por CDP nas 20 telas e em 11 rotas do site a 1440px: nenhuma área neutra não-branca acima de 30.000 px² sobrou no tema claro.",
+        "TERCEIRA PASSADA, 20/09/2026: a prova do Trilho A (docs/prova.html, gerada por build-demo.mjs) tinha o fundo de página cravado em #F2F0F0 — cor literal, fora dos tokens, que nenhum portão pega porque a página é gerada à parte. A variável --pg servia ao mesmo tempo de fundo da página e de recuo do cabeçalho de tabela e do trecho de código; foi partida em --fundo (branco no claro) e --pg (o recuo, que continua cinza). No escuro as duas seguem iguais.",
+        "O painel ANTES da prova continua cinza de propósito: ele reproduz a tela legada em produção, e é o termo de comparação."
+      ],
+      "afeta": [
+        "app-shell"
+      ]
+    },
+    {
+      "id": "ADR-041",
+      "titulo": "O degrau de 12 entra na escala do componente; e o ponto de etapa é informação, não marca",
+      "status": "aceita",
+      "data": "2026-09-20",
+      "contexto": "Revisão da linha do tempo do requerimento em 20/09/2026, na coluna de atividade do detalhe. Dois achados. (1) A seta entre dois valores — \"Coordenação de Curso → Secretaria Acadêmica\", \"Prazo: 10/09/2026 → 04/09/2026\" — saía com 20px contra 13px de texto, o ícone mais alto da coluna. A regra da escala existia e mirava .ucam-timeline__seta, que é o SPAN que embrulha o svg: span inline não obedece a inline-size, e o .ic lá dentro continuava no degrau padrão. A regra não estava errada de valor, estava errada de alvo — e uma regra que não pega não aparece em lugar nenhum a não ser na tela. (2) O ponto cheio da etapa em curso era pintado com action-primary-default. Num painel onde o \"Enviar resposta\" fica a três dedos dali, o bordô prometia clique num ponto que só se lê, e a tela passava a ter dois portadores da cor da marca. Ao corrigir (1) apareceu o terceiro: o Trilho A alcança o degrau de 12 por regra de CONTEXTO na folha — o símbolo dentro da pastilha —, e o Trilho B não tem contexto para consultar, porque quem escreve a marcação diz o degrau pelo input size do <ucam-icon>, fechado em sm/md/lg. O mesmo selo saía com 12 no legado e 16 no Angular, e a seta não tinha como acompanhar. Ao medir o resultado nos dois trilhos apareceu o quarto: no Trilho B a escala INTEIRA era inerte. O <ucam-icon> dava o degrau por classe do Tailwind (w-4/h-4 e irmãs) e o <ng-icon> da base traz \":host{width:var(--ng-icon__size, 1em)}\" em folha SEM camada — estilo sem camada ganha de qualquer @layer, e as utilitárias moram em @layer utilities. Todo ícone do Trilho B saía com 1em do CONTEXTO: o sm parecia certo por coincidência (1em = 16px na raiz), o md nunca chegou aos 20 que o contrato promete, e a medição de 20/09/2026 achou o mesmo ícone com 16 e 14 na mesma página do catálogo.",
+      "decisao": "A escala do <ucam-icon> passa a ter quatro degraus: xs (12), sm (16), md (20), lg (24) — os mesmos size.icon-* que a folha já declarava. O 12 é o degrau da PASTILHA e da PONTUAÇÃO: selo, prazo e chip, onde a caixa tem 22px e o rótulo 12; e a seta que liga dois valores, que não nomeia nada, liga duas coisas já escritas. Na linha do tempo, a trinca de estados da etapa é semântica e cinza: sucesso no ✓ da feita, feedback-info-foreground no ponto cheio da que está em curso, contorno de border-strong na pendente. A cor da marca é do que se CLICA — extensão da ADR-023 para peça de leitura, e da ADR-022 para a linha do evento. Regra de folha que dimensiona ícone mira o svg (.ic), nunca o invólucro: o envoltório inline não carrega tamanho, e a regra morre em silêncio. No Trilho B o degrau passa a ser escrito em --ng-icon__size, pelo input size do <ng-icon>, e com o TOKEN e não o pixel (var(--ucam-size-icon-*)) — a mesma variável decide o tamanho nos dois trilhos. Regra de tamanho de ícone mira o que a base lê: o svg no Trilho A, a variável no Trilho B. Classe utilitária em camada não sustenta escala contra folha de componente sem camada.",
+      "consequencias": [
+        "A seta da linha do tempo sai de 20 para 12 nos dois trilhos, e o Trilho B ganha size=\"xs\" no <ucam-icon>. Medido por CDP no detalhe do requerimento: 12×12 nas três setas, centro alinhado ao do vizinho dentro de 0,06px.",
+        "Selo e chip do Trilho B passam a 12 e param de divergir do legado; o prazo vem junto porque é um selo com relógio. É a diferença que a medição de 11/09/2026 já tinha achado dentro do Trilho A e que sobrevivia entre os trilhos.",
+        "O ponto da etapa atual fica azul de informação e casa com o selo \"Em análise\" logo acima; nenhum bordô sobra na coluna de atividade além do botão que envia.",
+        "O contrato de icon.json passa a declarar quatro degraus e a listar --ucam-size-icon-xs no Trilho A. O portão de validate-spec.mjs não muda: degrau escrito na marcação do legado continua reprovando o build.",
+        "A escala do Trilho B volta a existir: sm/md/lg passam a medir 16/20/24 de fato, e não 1em do contexto. Muda o tamanho de ícone em toda a biblioteca — é correção, não regressão, mas é ampla e pede olhada nas telas do Trilho B antes de publicar.",
+        "A varredura das 16 páginas do catálogo, com a escala já valendo, achou mais dois degraus perdidos no Trilho A — os chevrons da paginação e o \"x\" de limpar do input-group saíam com 20 ao lado de rótulos de 13 e 14, enquanto o Trilho B já os dava em 16. Mesma família da seta: papel de miúdo sem regra que o dissesse. Entram no bloco, e .ucam-input-group__adorno vira .ucam-input-group, que é a peça inteira."
+      ],
+      "afeta": [
+        "icon",
+        "timeline",
+        "badge",
+        "chip",
+        "prazo"
+      ]
+    },
+    {
+      "id": "ADR-042",
+      "titulo": "Desabilitado tem um chão só, e dois sinais",
+      "status": "aceita",
+      "data": "2026-09-20",
+      "contexto": "Pedido de 20/09/2026: \"diferencie melhor os estados dos componentes, quem está disabled; melhore o contraste disso\". A revisão achou três defeitos empilhados. (1) O mesmo estado saía em TRÊS cinzas: o botão e a caixa de marcação em action.disabled.background, o campo e a área de texto em surface.subtle, o radio em surface.sunken — este último a faixa de RÓTULO de tabela, um degrau cujo trabalho declarado é dizer \"esta fileira não é dado\". Um formulário com os três lado a lado não ensina o estado, ensina que o cinza não quer dizer nada. (2) Desabilitado e somente-leitura eram visualmente quase o mesmo controle: dividiam surface.subtle e a borda de fio, e a única coisa que os separava era a cor do texto, a 3,31:1 — uma diferença de tom entre dois cinzas vizinhos, que é o sinal mais fraco que o sistema sabe emitir. O comentário da folha afirmava essa divisão como se fosse suficiente. (3) Os números estavam errados nos dois sentidos. A descrição de color.text.disabled anunciava 2,49:1 e a conta dava 3,47:1; o _meta de states.json afirmava 4,80:1, que não correspondia a par nenhum do sistema. E o portão media o texto de campo desabilitado contra surface.subtle do tema CLARO — superfície que o campo desabilitado do tema escuro nunca teve. Foi por essa porta que o pior par de texto do sistema, 2,10:1 no escuro, atravessou um build de cada vez sem um aviso.",
+      "decisao": "Um chão só: todo controle bloqueado — botão, campo, área de texto, caixa de marcação, radio, grupo de entrada — assenta em color.action.disabled.background e veste color.action.disabled.text. Dois sinais, nunca um: ao chão pesado soma-se a perda da ARESTA, borda transparente no bloqueado contra o fio de 1px do ativo. Isso é o que separa disabled de readonly, e é de FORMA e não de tom: readonly fica no recuo leve, com borda e tinta primária, porque o valor é o que se veio ler e copiar; disabled desce para o chão do controle, perde a aresta e apaga a tinta, porque o valor não se aplica. Os dois tokens de tinta passam a responder cada um por UMA superfície, que é a única coisa que um número de contraste consegue responder: action.disabled.text é a tinta de quem tem chão próprio e se mede contra esse chão (neutral.600 no claro, 5,70:1; neutral.300 no escuro, 6,77:1); color.text.disabled é tinta apagada solta sobre o card e se mede contra o card (neutral.500 no claro, 4,71:1; neutral.400 no escuro, 4,37:1). O portão de build passa a medir esses dois pares assim.",
+      "consequencias": [
+        "Os três pares de controle desabilitado deixam de depender da isenção da 1.4.3: passam 4,5:1 por mérito, nos dois temas — 5,70:1 no claro e 6,77:1 no escuro.",
+        "Sobra um desvio nomeado: color.text.disabled sobre o card escuro, a 4,37:1. Ali o limite não é o contraste, é o teto por cima dele — o degrau seguinte dá 9,89:1 e devolve ao desabilitado o brilho de texto ativo, que é exatamente o que o estado não pode ter.",
+        "O campo desabilitado ficou visivelmente mais pesado que antes. É proposital, e é o preço de readonly e disabled pararem de se confundir.",
+        "A caixa de marcação ganhou o apagamento do próprio rótulo, que o radio já tinha e ela não: um checkbox bloqueado saía com a caixa cinza e o texto em tinta primária ao lado, lendo como item ativo que por acaso está vazio.",
+        "O botão FANTASMA é a única exceção ao chão único, e por isso troca de tinta: sem superfície própria, a tinta dele cai sobre o card, onde action.disabled.text daria 7,23:1. Ele usa text.disabled.",
+        "No tema claro, color.text.disabled passa a dividir o degrau com color.text.placeholder. Os dois são tinta apagada no mesmo piso de legibilidade e nunca aparecem lado a lado; continuam tokens separados porque respondem a superfícies diferentes."
+      ],
+      "afeta": [
+        "button",
+        "text-field",
+        "textarea",
+        "select",
+        "checkbox",
+        "radio-group",
+        "input-group",
+        "field"
+      ]
+    },
+    {
+      "id": "ADR-043",
+      "titulo": "A regra que não pega: três lugares em que o intento declarado foi cancelado por outra regra",
+      "status": "aceita",
+      "data": "2026-09-20",
+      "contexto": "Revisão de tela em 20/09/2026, por medição no navegador. Três defeitos diferentes, e a mesma forma nos três: alguém declarou o comportamento certo, e outra regra o desfazia em silêncio. (1) A lista do Select dentro do diálogo morria na borda. A folha já tirava o recorte do CORPO enquanto uma lista está aberta — e ainda assim a lista saía 78px para fora sem aparecer, porque o navegador dá overflow:auto ao <dialog> por padrão e o max-block-size cravado aqui faz do próprio diálogo uma SEGUNDA área rolável, contra o que .ucam-dialog__body declara ser (\"única área rolável\"). Medido: no ponto 20px abaixo da borda, o que respondia era o dialog, não a opção. (2) Na grade do Portal, uma unidade tem 620 a 710px de altura e 32px de vão até a próxima; o fio ao lado do título, posto ali justamente para separar EAD de Presencial, não dava conta da escala. (3) No cálculo de mensalidade a fileira de parâmetros declarava minmax(16rem,1fr) para a primeira coluna enquanto o controle tem teto de 30rem: a sobra da coluna empoçava como um cânion de ~290px no MEIO da linha, e o trio de datas ia para a borda direita, a 1362px, longe do campo que o governa.",
+      "decisao": "Quem rola é o corpo, sempre; o diálogo só emoldura — dialog.ucam-dialog volta a overflow:visible, desfazendo o padrão do navegador. A unidade é uma PASTA: entre seções irmãs do corpo, um fio atravessa a coluna inteira com 32px de ar de cada lado, e o fio ao lado do título sai (dois fios na mesma cabeça é ruído, e o de cima é o que diz \"começa aqui\"). Fora do corpo não há dobra, e lá o fio ao lado continua sendo a aba. Coluna de fileira é medida pelo DADO, como o controle: declarar 1fr para uma coluna cujo controle tem teto transforma a sobra em buraco no meio do formulário. A sobra pertence à margem, não ao meio do grupo.",
+      "consequencias": [
+        "A lista do Select passa a pintar fora da moldura do diálogo, e o formulário longo continua rolando no corpo — medido com 40 linhas: corpo rola 978px, diálogo rola 0, e nada do corpo pinta abaixo da moldura.",
+        "A cabeça grudenta foi tentada e NÃO é possível na moldura de hoje: .ucam-corpo (overflow auto) e .ucam-main (overflow hidden) são dois contêineres de rolagem que nunca rolam — quem rola é o documento — e o sticky se prende ao mais próximo. Com position:sticky e top:72px a cabeça sai de vista em -154px. Fica escrito para ninguém tentar de novo sem antes desfazer os dois.",
+        "A dobra vale para toda seção irmã dentro de .ucam-corpo: Portal, catálogo de relatórios e qualquer tela que empilhe seções. Painel e cartão não mudam.",
+        "No cálculo de mensalidade o grupo de parâmetros passa a terminar em 1171px em vez de 1362, com as quatro caixas juntas. Os controles NÃO mudaram de largura: \"08/2026\" continua em 84px e o select de agência em 384px, que é a largura do dado — o que mudou foi onde a sobra mora."
+      ],
+      "afeta": [
+        "dialog",
+        "section-bar",
+        "field",
+        "select"
+      ]
+    },
+    {
+      "id": "ADR-044",
+      "titulo": "O controle que a tela desenha age, e o número que ela mostra é o tamanho do que existe",
+      "status": "aceita",
+      "data": "2026-09-21",
+      "contexto": "A varredura de controles das 23 telas autônomas fechava em 10 mortos, todos botões de página: Usuários prometia \"1–10 de 312 usuários\" em 32 páginas com dez linhas no fixture, e Resultado, \"1–8 de 312 alunos\" em 39 páginas com oito. Clicar em qualquer número não fazia nada, e não podia fazer: as outras 302 linhas não existiam. Na mesma tela, a coluna de seleção com \"Selecionar todos os usuários da página\" não tinha barra de lote — dava para marcar trinta contas e não havia nada que agisse sobre elas. São o mesmo defeito em dois disfarces, e a ADR-029 já o condenava numa forma só (números que prometem o que a tela não entrega).",
+      "decisao": "Todo controle desenhado numa tela do conjunto AGE, e o que ele diz é verificável na própria tela. A paginação passa a ser comportamento (data-paginacao=\"<tamanho da página>\" na nav, comportamento no filtroScript) sobre o fixture REAL: Usuários tem trinta contas em três páginas de dez, Resultado tem vinte e quatro alunos em três de oito, e os indicadores do relatório somam vinte e quatro. Coluna de seleção só existe com barra de lote que consuma a seleção. O contrário — controle sem dado atrás — sai da tela.",
+      "consequencias": [
+        "Filtrar, ordenar ou trocar de página são a mesma máquina: o filtro decide QUAIS linhas existem, a página decide QUANTAS cabem, e a cabeça de seleção e a barra de lote passam a falar só da página visível.",
+        "O contrato do componente ganha o que já prometia e ninguém cumpria: uma página só não desenha controle nenhum, zero resultado não desenha nada, e a troca de página anuncia o intervalo e leva o foco até ele.",
+        "O fixture cresce quando a tela promete escala: preferir número pequeno e verdadeiro a número grande e vazio.",
+        "A sonda de controles mortos ganhou a quarta armadilha: aria-current=\"page\" é \"já escolhido\", como pressed e selected, e controle que navega por script (data-destino) conta vivo sem ser clicado — clicá-lo destrói a página que a sonda está medindo."
+      ],
+      "afeta": [
+        "pagination",
+        "data-table",
+        "checkbox",
+        "empty-state"
+      ]
+    }
+  ]
+}

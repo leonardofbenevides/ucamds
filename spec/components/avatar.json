@@ -1,0 +1,214 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "avatar",
+  "name": "Avatar",
+  "selector": "ucam-avatar",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "conteudo",
+  "description": "Representação visual de uma pessoa: foto quando existe, iniciais como alternativa. Nunca um desenho genérico que não identifica ninguém.",
+  "quando_usar": [
+    "Uma pessoa aparece identificada: quem abriu o requerimento, quem o analisou, quem respondeu a mensagem.",
+    "A lista tem uma pessoa por linha e a identidade ajuda a varrer — a fila de análise, o histórico de atendimento.",
+    "A faixa da aplicação precisa mostrar quem está logado, ancorando o menu da conta."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — modal Funcionário",
+        "problema": "clipart genérico de pessoa em bitmap, idêntico para todos os funcionários: ocupa espaço e não identifica ninguém"
+      },
+      {
+        "tela": "Protocolo e SIGFIN — header",
+        "problema": "glifo branco de pessoa ao lado do nome, também idêntico para todos"
+      },
+      {
+        "tela": "todas",
+        "problema": "não há alternativa por iniciais, então quem não tem foto fica indistinguível de quem também não tem"
+      }
+    ],
+    "conclusao": "Avatar que é igual para todos não é avatar, é ícone. As iniciais identificam; o clipart não."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Container circular."
+    },
+    {
+      "parte": "image",
+      "obrigatorio": false,
+      "descricao": "Foto. Falha no carregamento cai para as iniciais, sem imagem quebrada."
+    },
+    {
+      "parte": "initials",
+      "obrigatorio": true,
+      "descricao": "Alternativa padrão: primeira letra do primeiro e do último nome."
+    },
+    {
+      "parte": "status",
+      "obrigatorio": false,
+      "descricao": "Indicador de estado. Sempre com texto acessível junto."
+    }
+  ],
+  "props": [
+    {
+      "nome": "name",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome completo. Gera as iniciais e o texto alternativo."
+    },
+    {
+      "nome": "photoUrl",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Falha de carregamento cai silenciosamente para as iniciais."
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "24, 32 e 48px.",
+      "valores": {
+        "sm": {
+          "uso": "Dentro de linha de lista e de célula de tabela, onde o avatar acompanha o nome e não o apresenta.",
+          "limite": "—",
+          "classe": ".ucam-avatar--sm"
+        },
+        "lg": {
+          "uso": "Cabeçalho de registro de pessoa, onde o rosto é o assunto da tela.",
+          "limite": "Um por tela: dois avatares grandes disputam a mesma função de âncora.",
+          "classe": ".ucam-avatar--lg"
+        }
+      }
+    },
+    {
+      "nome": "decorative",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Quando o nome já aparece ao lado, o avatar é decorativo e sai da árvore de acessibilidade — evita o leitor de tela dizer o nome duas vezes."
+    }
+  ],
+  "estados": [
+    "com-foto",
+    "com-iniciais",
+    "loading"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para entidade que não é pessoa: setor, curso e campus usam ícone.",
+      "Não é botão. Se abre menu, quem recebe o clique é um botão que o contém.",
+      "Nunca desenho genérico: se não há foto, as iniciais identificam melhor."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Com decorative=false, o texto alternativo é o nome da pessoa.",
+      "Com decorative=true, aria-hidden — o nome já está no texto adjacente e repeti-lo atrapalha.",
+      "As iniciais são texto de verdade, com contraste mínimo 4.5:1 sobre o fundo do avatar.",
+      "A cor de fundo derivada do nome NUNCA carrega significado: é só variação visual (WCAG 1.4.1).",
+      "Imagem que falha não deixa alt quebrado na tela — cai para iniciais.",
+      "Indicador de estado sempre acompanhado de texto acessível."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.4.1",
+      "1.4.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Iniciais: primeira letra do primeiro nome e do último. Leonardo Fagundes Benevides vira LB.",
+      "Nome de uma palavra usa uma letra só.",
+      "Preposições não contam: Ana de Souza vira AS."
+    ],
+    "exemplos": {
+      "bom": [
+        "LB para Leonardo Fagundes Benevides",
+        "AS para Ana de Souza"
+      ],
+      "ruim": [
+        "clipart igual para todos",
+        "LFB",
+        "?"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-shell-aplicacao",
+      "padrao-triagem-lista-detalhe",
+      "ucam-app-shell",
+      "ucam-list-item",
+      "ucam-timeline"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / clipart e glifo",
+    "mapa": [
+      {
+        "legado": "clipart de pessoa no modal Funcionário",
+        "novo": "ucam-avatar com iniciais"
+      },
+      {
+        "legado": "glifo de pessoa no header",
+        "novo": "ucam-avatar decorative",
+        "nota": "O nome já aparece ao lado; o avatar sai da leitura."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Com nome ao lado",
+      "codigo": "<ucam-avatar name=\"Leonardo Fagundes Benevides\" decorative />\n<span>Leonardo Fagundes Benevides</span>"
+    },
+    {
+      "titulo": "Sozinho numa lista",
+      "codigo": "<ucam-avatar [name]=\"funcionario.nome\" [photoUrl]=\"funcionario.foto\" size=\"sm\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Cair para iniciais quando não há foto.",
+      "evite": "Clipart genérico de pessoa, igual para todos.",
+      "porque": "Avatar que é igual para todos não é avatar, é ícone: ocupa espaço e não identifica ninguém."
+    },
+    {
+      "faca": "Iniciais do primeiro e do último nome, sem preposições: Ana de Souza vira AS.",
+      "evite": "Três letras, ou interrogação como alternativa.",
+      "porque": "A regra precisa ser determinística para o mesmo nome render a mesma sigla em todo módulo."
+    },
+    {
+      "faca": "Usar ícone para entidade que não é pessoa: setor, curso, campus.",
+      "evite": "Avatar para entidade.",
+      "porque": "Iniciais de um setor não identificam nada — a convenção do avatar é de pessoa."
+    },
+    {
+      "faca": "Envolver num botão quando o avatar abre menu.",
+      "evite": "Clique no próprio avatar.",
+      "porque": "Avatar é imagem: sem o botão não há papel, foco nem tecla."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "icon",
+      "diferenca": "Icon representa uma COISA ou uma ação e é sempre decorativo; Avatar representa uma PESSOA e é identificação. Pessoa nunca vira ícone genérico — sem foto, o Avatar mostra as iniciais dela.",
+      "escolha": "O aluno, o servidor, o responsável pela análise: alguém com nome."
+    },
+    {
+      "componente": "icon-tile",
+      "diferenca": "Os dois são um símbolo dentro de uma forma, e é por isso que se confundem — mas o IconTile marca uma CATEGORIA e o Avatar marca uma PESSOA. Ladrilho de pessoa apaga a identidade que o Avatar existe para mostrar.",
+      "escolha": "Quem abriu, quem analisou, quem respondeu."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz, com o tamanho por modificador. As iniciais são texto no markup — o CSS não as deriva do nome.",
+      "raiz": ".ucam-avatar",
+      "nota": "Sem variante de cor. Havia .ucam-avatar--1 a --4 (a nota prometia até --6, que nunca existiu) reaproveitando os pares de tinta do feedback; saíram na ADR-022 porque um disco verde ao lado de um prazo vencido lia como contradição, não como variação. O avatar nasce neutro — tinta alfa que compõe sobre painel e moldura nos dois temas — e a identidade vem da foto ou das iniciais. É o que o Trilho B sempre fez (bg-accent)."
+    }
+  }
+}

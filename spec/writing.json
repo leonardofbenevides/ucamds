@@ -1,0 +1,445 @@
+{
+  "$description": "O texto é interface. Rótulo, mensagem de erro, nome de botão e frase de vazio são a parte do sistema que a pessoa realmente lê — e a única que o parque legado escreveu sem regra nenhuma. Esta fundação declara a voz, o vocabulário e a forma de cada tipo de texto; o texto ESPECÍFICO de cada componente continua no contrato dele, e chega a esta página agregado, não copiado.",
+  "_meta": {
+    "origem": "Os 46 contratos já declaravam um bloco 'conteudo' com regras e exemplos bom/ruim. Eram 178 regras espalhadas por 46 arquivos, sem nenhuma página que as somasse e sem nada acima delas dizendo de que voz elas saem — cada contrato reinventava o princípio junto com o exemplo. Esta fundação é a camada que faltava POR CIMA: os contratos continuam donos do texto de cada componente, e passam a herdar daqui a voz.",
+    "regra": "Regra de texto que vale para mais de um componente mora AQUI. Regra que só vale para um mora no contrato dele. A duplicata é o defeito: repetida em dois lugares, diverge no primeiro que alguém editar.",
+    "evidencia": "Levantamento das telas de APPSUCAM/Protocolo, APPSUCAM/SIGFIN, do Portal Universitário e do redesenho interno do SIGU (09/2026). As ocorrências citadas em cada princípio são as mesmas registradas nos campos 'evidencia' dos contratos — não há observação nova inventada aqui."
+  },
+  "voz": {
+    "resumo": "Clara, direta e sem entusiasmo. A pessoa do outro lado está no meio de uma tarefa administrativa com prazo — matrícula, requerimento, prestação de contas — e não veio conversar com o sistema.",
+    "eixos": [
+      {
+        "eixo": "Formal, não solene",
+        "regra": "O registro é o de uma secretaria acadêmica competente: trata por você, sem gírias e sem 'prezado usuário'.",
+        "bom": "Confira os dados e tente novamente.",
+        "ruim": "Prezado(a) usuário(a), solicitamos a gentileza de conferir os dados informados."
+      },
+      {
+        "eixo": "Objetivo, não simpático",
+        "regra": "Sem exclamação, sem emoji, sem 'Ops'. Uma falha não fica menor por ser anunciada com alegria — fica mais difícil de levar a sério.",
+        "bom": "Não foi possível salvar o requerimento.",
+        "ruim": "Ops! Algo deu errado :("
+      },
+      {
+        "eixo": "Específico, não genérico",
+        "regra": "Diga QUAL dado, QUAL prazo, QUAL registro. Texto genérico é o mesmo trabalho de escrita gasto sem entregar informação.",
+        "bom": "O caixa de 03/09 já foi fechado.",
+        "ruim": "Operação não permitida."
+      },
+      {
+        "eixo": "Do domínio, não do banco",
+        "regra": "As palavras são as da secretaria e do financeiro — requerimento, deferido, natureza, campus, lançamento. Nunca as da tabela.",
+        "bom": "Indeferido",
+        "ruim": "Status 3"
+      }
+    ]
+  },
+  "principios": [
+    {
+      "id": "caixa-natural",
+      "titulo": "Caixa natural, sempre",
+      "regra": "Nenhum texto do sistema usa caixa alta forçada — nem cabeçalho de tabela, nem barra de seção, nem título de página, nem item de menu, nem rótulo de selo. Só a caixa que a palavra teria numa frase.",
+      "porque": "Caixa alta remove o contorno das palavras e derruba a velocidade de leitura justamente onde o parque a usa: menu de cem itens e cabeçalho de tabela, que são lugares de VARRER. É também o recurso de ênfase mais gasto do legado — quando tudo é caixa alta, ela deixa de significar qualquer coisa.",
+      "adr": "ADR-003",
+      "bom": [
+        "Aguardando análise",
+        "Situação",
+        "Movimento de caixa"
+      ],
+      "ruim": [
+        "AGUARDANDO ANÁLISE",
+        "SITUAÇÃO",
+        "MOVIMENTO DE CAIXA"
+      ],
+      "ocorrencias": [
+        "SIGFIN — menu: 19 grupos e mais de cem itens, todos em caixa alta, com uma busca de menus própria",
+        "Protocolo — todas as tabelas: cabeçalho em caixa alta sobre barra cinza-escuro",
+        "SIGFIN — todas as telas: título centralizado em caixa alta sobre barra com gradiente verde",
+        "Portal — grade de módulos: barras cinza-escuro em caixa alta ocupando a largura toda",
+        "Protocolo — Setor e Natureza: ações em texto cinza pequeno em caixa alta no canto superior direito",
+        "Protocolo — Análise: opções de select em caixa alta numa lista que ocupa seis páginas"
+      ]
+    },
+    {
+      "id": "nomeie-o-dado",
+      "titulo": "Nomeie o dado, não o gesto",
+      "regra": "Rótulo de campo é o nome do dado, em substantivo curto: CPF, Nome completo, Data de nascimento. Nunca uma instrução do que fazer com o campo, nunca uma pergunta.",
+      "porque": "A instrução só serve uma vez — antes de digitar. O nome do dado serve sempre, inclusive na hora de conferir o que foi preenchido e na hora de o leitor de tela anunciar o campo. Foi por escrever a instrução no lugar do nome que o parque acabou com metade dos rótulos dentro de placeholder, onde eles somem ao primeiro caractere.",
+      "adr": "ADR-004",
+      "bom": [
+        "CPF",
+        "Data de nascimento",
+        "Assunto do requerimento"
+      ],
+      "ruim": [
+        "Digite aqui para pesquisar",
+        "Clique aqui para digitar...",
+        "Nascido em",
+        "Do que se trata esta solicitação"
+      ],
+      "ocorrencias": [
+        "Protocolo — Pesquisa de Requerimento: 'Digite aqui para pesquisar' é placeholder fazendo papel de rótulo",
+        "Protocolo — Novo Requerimento: 'Clique aqui para digitar...' na área de texto, e com contraste insuficiente",
+        "Protocolo — Novo Requerimento: 'Nascido em' descreve uma frase, não o dado",
+        "Protocolo — Novo Requerimento: a área de texto rotulada 'Do que se trata esta solicitação' parece cabeçalho de seção, não rótulo de campo"
+      ]
+    },
+    {
+      "id": "acao-nomeia-o-efeito",
+      "titulo": "A ação nomeia o efeito, não a confirmação",
+      "regra": "Rótulo de botão é verbo no infinitivo mais o objeto, quando o objeto não é óbvio na frase ao lado: Salvar requerimento, Excluir setor, Enviar para análise. 'Confirmar', 'OK' e 'Sim' só existem onde a pergunta imediatamente acima já disse o que vai acontecer — e em confirmação destrutiva nem aí.",
+      "porque": "Em confirmação destrutiva o rótulo do botão é a última chance de dizer o que será destruído, e é o único texto que quem varre a tela lê antes de clicar. 'Confirmar' obriga a voltar e reler a pergunta; quem não volta, apaga no escuro.",
+      "adr": "ADR-002",
+      "bom": [
+        "Excluir setor",
+        "Salvar e enviar",
+        "Fechar o caixa de 03/09"
+      ],
+      "ruim": [
+        "Confirmar",
+        "OK",
+        "SIM / NÃO como par de botões pintados"
+      ],
+      "ocorrencias": [
+        "Protocolo — Análise de Requerimento: escolha booleana implementada como botão alternando SIM/NÃO; não se sabe se NÃO é o estado atual ou a ação de mudar para não",
+        "SIGFIN — Cálculo de mensalidade: escolha binária com dois botões pintados, sem rótulo do que está sendo perguntado"
+      ]
+    },
+    {
+      "id": "o-que-e-depois-o-que-fazer",
+      "titulo": "Primeiro o que aconteceu, depois o que fazer",
+      "regra": "Toda mensagem tem duas frases, nesta ordem: a primeira diz o estado, a segunda diz a saída. Quem lê só a primeira ainda entende o que houve; quem precisa agir encontra a saída sem procurar.",
+      "porque": "A ordem inversa — instrução antes do fato — obriga a ler a mensagem inteira para saber se ela é sobre você. Em tela de lista, com quatro avisos, é a diferença entre varrer e parar.",
+      "bom": [
+        "Matrícula ou senha incorreta. Confira os dados e tente novamente.",
+        "O prazo deste requerimento vence hoje. Depois das 23h59 ele será encerrado sem análise."
+      ],
+      "ruim": [
+        "Tente novamente.",
+        "Erro ao processar a requisição."
+      ],
+      "ocorrencias": [
+        "Portal — Login: o erro de autenticação aparece como texto vermelho solto acima do formulário, sem ícone, sem superfície e sem anúncio para leitor de tela",
+        "SIGFIN — Movimento de caixa: o estado 'caixa fechado' é comunicado apenas pela ausência de botões, sem nenhuma frase dizendo o que está acontecendo nem o que fazer"
+      ]
+    },
+    {
+      "id": "sujeito-e-o-sistema",
+      "titulo": "O sujeito é o sistema; a culpa não é de ninguém",
+      "regra": "Voz ativa com sujeito explícito, e o sujeito é o sistema. Não se diz o que a pessoa fez de errado — diz-se o que o sistema encontrou e o que fazer agora.",
+      "porque": "'Você digitou a senha errada' acusa e não ajuda; 'Confira a senha' resolve. E na maioria dos erros de sistema administrativo a pessoa não errou coisa nenhuma: o dado estava desatualizado, o prazo virou, o registro é de outro campus.",
+      "bom": [
+        "O sistema não encontrou essa matrícula.",
+        "Confira a senha."
+      ],
+      "ruim": [
+        "Você digitou a senha errada.",
+        "Matrícula não encontrada.",
+        "Usuário inválido"
+      ]
+    },
+    {
+      "id": "um-estado-um-nome",
+      "titulo": "Um estado, um nome, em todo o parque",
+      "regra": "O mesmo estado de domínio usa exatamente o mesmo rótulo em todos os módulos, em todas as telas e em todos os selos. Sinônimo é estado novo aos olhos de quem lê.",
+      "porque": "O parque tem o mesmo requerimento chamado de um jeito na aba, de outro no selo e de um terceiro no relatório. Quem cruza as três telas não tem como saber se são o mesmo estado — e nas listagens de triagem esse é o dado mais consultado da tabela.",
+      "bom": [
+        "Aguardando análise",
+        "Em análise",
+        "Deferido",
+        "Indeferido",
+        "Arquivado"
+      ],
+      "ruim": [
+        "Pendente/Aguardando",
+        "Aprovado no sistema",
+        "OK",
+        "Status 3"
+      ],
+      "ocorrencias": [
+        "Protocolo — Pesquisa de Requerimento: a coluna SITUAÇÃO é texto simples, sem distinção visual, e é a informação mais consultada da tabela",
+        "Protocolo — Análise: os estados do fluxo existem como abas, mas não há vocabulário visual consistente para eles em nenhum outro lugar",
+        "Protocolo — Análise de Requerimento: segunda redação para a mesma situação de vazio, no mesmo sistema"
+      ]
+    },
+    {
+      "id": "sem-codigo-interno",
+      "titulo": "Nenhum código interno na superfície",
+      "regra": "Código de natureza, id de registro, número de status e stack trace não aparecem no texto principal. Se o suporte precisa do código, ele vai numa segunda linha, em caption, depois da frase que a pessoa precisa ler.",
+      "porque": "O código não ajuda a decidir nada e ocupa o lugar do que ajudaria. Pior: quando o código VIRA o rótulo — como na escolha da natureza do requerimento — a pessoa escolhe errado e só descobre depois do envio, quando o requerimento cai no setor errado.",
+      "bom": [
+        "Trancamento de matrícula",
+        "Não foi possível salvar. Código do erro: PRT-4021 (para o suporte)."
+      ],
+      "ruim": [
+        "NAT-0417",
+        "Erro 500",
+        "Exceção não tratada em br.ucam.protocolo..."
+      ],
+      "ocorrencias": [
+        "Protocolo — Novo Requerimento: a natureza é um select de lista longa cujos rótulos são códigos internos"
+      ]
+    },
+    {
+      "id": "vazio-explica-e-oferece",
+      "titulo": "O vazio explica a causa e oferece a saída",
+      "regra": "Texto de estado vazio diz o que não há, por que não há, e o que fazer. E distingue as duas causas: não existe nada ainda, ou o filtro não encontrou nada.",
+      "porque": "'Nenhum registro encontrado' cabe nas duas causas e não resolve nenhuma. Quando é filtro, a saída é limpar o filtro; quando é ausência real, a saída é criar o primeiro registro — e oferecer 'criar' a quem só filtrou errado manda a pessoa cadastrar em duplicidade.",
+      "bom": [
+        "Nenhum requerimento aguardando análise. Novos requerimentos aparecem aqui assim que forem enviados.",
+        "Nenhum resultado para essa busca. Revise os termos ou limpe os filtros."
+      ],
+      "ruim": [
+        "Nenhum registro encontrado",
+        "Sem dados"
+      ],
+      "ocorrencias": [
+        "Protocolo — Natureza, Pesquisa e Setor: texto solto, em cinza-claro, sem contexto nem saída"
+      ]
+    },
+    {
+      "id": "nome-acessivel-e-texto",
+      "titulo": "O nome acessível é texto, e é o mesmo texto",
+      "regra": "Todo controle tem nome em palavras — inclusive o que só mostra um ícone. Quando há rótulo visível, o nome acessível COMEÇA por ele: quem fala com o sistema por voz diz o que está escrito na tela.",
+      "porque": "O glifo × é anunciado como sinal de multiplicação. Quatro botões de paginação só com glifo viram quatro botões anônimos, e a tabela deixa de ser navegável — é a falha bloqueante mais repetida do parque, uma vez por tabela.",
+      "bom": [
+        "Fechar o diálogo",
+        "Próxima página",
+        "Adicionar aos favoritos, com o estado anunciado"
+      ],
+      "ruim": [
+        "×",
+        "botão de paginação só com glifo",
+        "aria-label que troca de texto sem anunciar que o controle tem estado"
+      ],
+      "ocorrencias": [
+        "Protocolo — Natureza, Pesquisa, Setor: quatro botões apenas com glifo, sem nome acessível, uma vez por tabela",
+        "Protocolo — diálogos: botão × sem nome acessível",
+        "SIGU — Meus sistemas (09/2026): a estrela de favorito troca o aria-label entre 'Adicionar' e 'Remover', mas nada anuncia que o controle TEM estado"
+      ]
+    },
+    {
+      "id": "cor-nunca-carrega-sozinha",
+      "titulo": "Nenhuma informação viaja só na cor",
+      "regra": "Todo significado carregado por cor tem palavra junto: saldo negativo diz que é negativo, selo de estado traz o nome do estado, erro traz a frase do erro.",
+      "porque": "É WCAG 1.4.1, e no parque é literal: o saldo negativo do SIGFIN é comunicado por vermelho e nada mais. Quem não distingue a matiz lê um número comum; quem imprime em preto e branco também.",
+      "bom": [
+        "Saldo negativo, com o sinal no número e a palavra no rótulo",
+        "Selo Indeferido com o nome escrito"
+      ],
+      "ruim": [
+        "número em vermelho, sem palavra",
+        "linha pintada de amarelo sem legenda"
+      ],
+      "ocorrencias": [
+        "SIGFIN — Movimento de Caixa: saldo negativo comunicado por vermelho e nada mais"
+      ]
+    },
+    {
+      "id": "tamanho-do-texto",
+      "titulo": "Cada peça tem um tamanho, e ele é curto",
+      "regra": "Selo: uma ou duas palavras. Botão: uma a três. Título de alerta: uma linha, e só quando a mensagem passa de duas frases. Texto de apoio de campo: uma frase. Descrição de vazio: uma frase.",
+      "porque": "O limite não é estético — é o que a peça comporta antes de quebrar em duas linhas, girar o rótulo ou cortar o texto. Um alerta de uma frase com título repete a frase no título.",
+      "bom": [
+        "Deferido",
+        "Enviar para análise",
+        "Use dd/mm/aaaa."
+      ],
+      "ruim": [
+        "AGUARDANDO ANÁLISE DO SETOR RESPONSÁVEL",
+        "Clique neste botão para enviar o requerimento para análise"
+      ]
+    },
+    {
+      "id": "apoio-ajuda-a-preencher",
+      "titulo": "O apoio do campo ajuda a preencher o campo",
+      "regra": "Texto de apoio diz FORMATO, LIMITE ou CONSEQUÊNCIA de preencher: \"PDF, JPG ou PNG de até 10 MB\", \"Recebe a senha provisória\", \"Vem do cadastro e não se edita aqui\". Não responde pergunta que o campo não fez, não manda a pessoa resolver noutro sistema e não explica a decisão de desenho da tela. Se o dado não existe ainda, quem diz isso é o vazio da busca, no momento em que a busca falha — não um aviso permanente debaixo de um campo já preenchido.",
+      "porque": "Apoio que explica o ecossistema vira paisagem em três dias, do mesmo jeito que o alerta permanente de instrução (alert.json), e ocupa a única linha que o campo tem para dizer o que o dado precisa ser. Pior: descreve um desvio — \"o cadastro é no Gerencial\" — para quem, na maioria das vezes, está justamente preenchendo o caso normal.",
+      "bom": [
+        "dd/mm/aaaa",
+        "Recebe a senha provisória.",
+        "A pessoa só vê requerimentos das unidades marcadas."
+      ],
+      "evite": [
+        "Sem conta no SIGU? O cadastro é no Gerencial, e depois a pessoa aparece aqui.",
+        "Menos marcadores na linha, mais assunto visível."
+      ]
+    }
+  ],
+  "vocabulario": {
+    "regra": "A palavra do domínio ganha da palavra técnica, e ganha da tradução literal do inglês. Quando as duas existem no parque, esta tabela decide qual fica.",
+    "termos": [
+      {
+        "use": "Requerimento",
+        "evite": "Solicitação, Processo, Chamado",
+        "nota": "É o nome do registro no Protocolo. 'Processo' é outra coisa no vocabulário acadêmico."
+      },
+      {
+        "use": "Deferido / Indeferido",
+        "evite": "Aprovado / Reprovado, Aceito / Negado",
+        "nota": "É o par que a secretaria usa e o que aparece no documento oficial."
+      },
+      {
+        "use": "Aguardando análise",
+        "evite": "Pendente, Em aberto, Na fila",
+        "nota": "Um estado, um nome — ver o princípio."
+      },
+      {
+        "use": "Natureza",
+        "evite": "Tipo, Categoria, Assunto",
+        "nota": "É o campo do domínio, e tem cadastro próprio no Protocolo."
+      },
+      {
+        "use": "Campus",
+        "evite": "Unidade, Polo, Filial",
+        "nota": "O plural é campi. É o recorte que muda o dado da tela inteira."
+      },
+      {
+        "use": "Matrícula",
+        "evite": "Registro do aluno, RA, ID",
+        "nota": "É o número que a pessoa sabe de cor."
+      },
+      {
+        "use": "Lançamento",
+        "evite": "Movimento, Transação, Entrada",
+        "nota": "SIGFIN. 'Movimento de caixa' é a tela; 'lançamento' é a linha."
+      },
+      {
+        "use": "Setor",
+        "evite": "Departamento, Área, Célula",
+        "nota": "É para onde o requerimento é encaminhado, e tem cadastro próprio."
+      },
+      {
+        "use": "Entrar / Sair",
+        "evite": "Login / Logout, Acessar / Desconectar",
+        "nota": "Verbo em português, no infinitivo, nos dois botões."
+      },
+      {
+        "use": "Salvar",
+        "evite": "Gravar, Confirmar, Submeter",
+        "nota": "'Gravar' é o verbo do legado e sobrevive só nas telas antigas do SIGFIN."
+      },
+      {
+        "use": "Excluir",
+        "evite": "Deletar, Remover, Apagar",
+        "nota": "Um verbo só para a ação irreversível — e ele vem acompanhado do objeto (ADR-002)."
+      },
+      {
+        "use": "Anexo",
+        "evite": "Arquivo anexado, Upload",
+        "nota": "'Anexar' é o verbo; 'anexo' é o substantivo."
+      }
+    ]
+  },
+  "formas": [
+    {
+      "id": "rotulo-de-campo",
+      "peca": "Rótulo de campo",
+      "forma": "Substantivo curto em caixa natural, sem dois-pontos.",
+      "bom": "Nome completo",
+      "ruim": "NOME COMPLETO:",
+      "componente": "field"
+    },
+    {
+      "id": "apoio-de-campo",
+      "peca": "Texto de apoio",
+      "forma": "Uma frase, persistente, com o formato ou a restrição. Nunca dentro do placeholder.",
+      "bom": "Use dd/mm/aaaa.",
+      "ruim": "(informe corretamente)",
+      "componente": "field"
+    },
+    {
+      "id": "erro-de-campo",
+      "peca": "Erro de campo",
+      "forma": "O que está errado e qual é o esperado, na mesma frase.",
+      "bom": "Data inválida. Use dd/mm/aaaa.",
+      "ruim": "Campo inválido",
+      "componente": "field"
+    },
+    {
+      "id": "obrigatorio",
+      "peca": "Marca de obrigatoriedade",
+      "forma": "Marcada no campo obrigatório, com a legenda declarada uma vez no formulário. Nunca descoberta no submit.",
+      "bom": "Nome completo, com a marca de obrigatório e a legenda no topo do formulário",
+      "ruim": "nenhuma indicação; o usuário só descobre ao tentar salvar",
+      "componente": "field"
+    },
+    {
+      "id": "acao-primaria",
+      "peca": "Botão de ação",
+      "forma": "Infinitivo mais objeto quando o objeto não é óbvio.",
+      "bom": "Enviar requerimento",
+      "ruim": "Enviar / Confirmar / OK",
+      "componente": "button"
+    },
+    {
+      "id": "confirmacao-destrutiva",
+      "peca": "Confirmação destrutiva",
+      "forma": "A pergunta nomeia o registro; o botão nomeia o efeito. Sem foco inicial na ação destrutiva.",
+      "bom": "Excluir o setor Secretaria Acadêmica? Os requerimentos encaminhados a ele ficam sem destino. Botões: Excluir setor · Cancelar",
+      "ruim": "Tem certeza? Botões: Sim · Não",
+      "componente": "dialog"
+    },
+    {
+      "id": "selo-de-estado",
+      "peca": "Selo de estado",
+      "forma": "Uma ou duas palavras do domínio, em caixa natural, iguais em todos os módulos.",
+      "bom": "Em análise",
+      "ruim": "EM ANÁLISE",
+      "componente": "badge"
+    },
+    {
+      "id": "titulo-de-pagina",
+      "peca": "Título de página",
+      "forma": "O nome do que a tela mostra, em caixa natural. Sem o nome do sistema junto — a faixa já o diz.",
+      "bom": "Movimento de caixa",
+      "ruim": "SIGFIN - MOVIMENTO DE CAIXA",
+      "componente": "page-header"
+    },
+    {
+      "id": "cabecalho-de-coluna",
+      "peca": "Cabeçalho de coluna",
+      "forma": "O nome do dado, no singular, em caixa natural.",
+      "bom": "Situação",
+      "ruim": "SITUAÇÃO",
+      "componente": "data-table"
+    },
+    {
+      "id": "vazio",
+      "peca": "Estado vazio",
+      "forma": "Título dizendo o que não há; uma frase explicando e orientando; ação quando houver saída.",
+      "bom": "Nenhum requerimento aguardando análise",
+      "ruim": "Nenhum registro encontrado",
+      "componente": "empty-state"
+    },
+    {
+      "id": "mensagem",
+      "peca": "Alerta",
+      "forma": "Fato na primeira frase, saída na segunda. Título só acima de duas frases.",
+      "bom": "O caixa de 03/09 já foi fechado. Para lançar nesta data, reabra o caixa em Movimento de caixa.",
+      "ruim": "Operação não permitida!",
+      "componente": "alert"
+    },
+    {
+      "id": "ausencia-de-valor",
+      "peca": "Célula sem valor",
+      "forma": "Escrever o motivo da ausência em palavras, em vez de deixar a célula em branco.",
+      "bom": "Sem responsável",
+      "ruim": "célula vazia",
+      "componente": "data-table"
+    }
+  ],
+  "proibido": [
+    "Caixa alta forçada em qualquer peça (ADR-003).",
+    "Placeholder no lugar do rótulo (ADR-004).",
+    "Ponto de exclamação, emoji e 'Ops' em mensagem de sistema.",
+    "'Clique aqui' — como rótulo de campo, de link ou de botão.",
+    "Culpar quem usa: 'você digitou errado', 'usuário inválido'.",
+    "Código interno, número de erro ou rastro de exceção no texto principal.",
+    "Dois nomes para o mesmo estado de domínio em módulos diferentes.",
+    "Informação que só existe na cor.",
+    "Controle sem nome acessível em palavras.",
+    "Aviso de navegador recomendado no rodapé.",
+    "Apoio de campo que manda resolver noutro sistema ou que explica a decisão de desenho da tela."
+  ]
+}

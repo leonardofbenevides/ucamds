@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="DSUCAM">
+  <!-- Versão branca, para fundo escuro e para a faixa bordô. Mesma geometria de
+       dsucam-simbolo.svg — ver o comentário de lá.
+
+       Quem consome isto pela trilha das telas legadas (a custom property
+       ucam-rail-marca) usa o arquivo como MÁSCARA DE ALFA: lá a tinta vem do
+       "background: currentColor" do .ucam-rail__marca, e o branco daqui não é
+       lido. O hex importa só para quem abrir o arquivo direto ou usá-lo em
+       elemento img.
+
+       NÃO ESCREVA O NOME DA VARIÁVEL COM OS DOIS HÍFENS AQUI DENTRO. Comentário
+       XML não pode conter dois hífens seguidos, e SVG é XML: com eles o arquivo
+       deixa de ser decodificável como imagem. Foi o que aconteceu — e falhou em
+       SILÊNCIO, porque máscara que não carrega não dá erro nenhum. O
+       getComputedStyle devolvia a URL certa, a cor certa e a medida certa, o
+       elemento ocupava os 44px reservados, e nada era pintado. Só a captura
+       denunciava. -->
+  <path fill="#FFFFFF" fill-rule="evenodd" d="M8 2H16A6 6 0 0 1 22 8V16A6 6 0 0 1 16 22H8A6 6 0 0 1 2 16V8A6 6 0 0 1 8 2ZM14.1 11.5H16.9A2.6 2.6 0 0 1 19.5 14.1V16.9A2.6 2.6 0 0 1 16.9 19.5H14.1A2.6 2.6 0 0 1 11.5 16.9V14.1A2.6 2.6 0 0 1 14.1 11.5Z"/>
+</svg>

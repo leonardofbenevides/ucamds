@@ -1,0 +1,371 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "chart",
+  "name": "Chart",
+  "selector": "ucam-chart",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "dados",
+  "description": "Gráfico de série: linha, área, barra ou pizza. Serve para ver a FORMA de um conjunto — a tendência, a diferença entre categorias, o pico fora da curva. O número exato nunca vem do desenho: vem da tabela equivalente, que acompanha o gráfico e é a fonte acessível dos mesmos dados.",
+  "quando_usar": [
+    "A pergunta é sobre o comportamento de um conjunto ao longo do tempo: os requerimentos abertos por mês subiram ou caíram?",
+    "É preciso comparar categorias de relance: qual campus concentra os indeferimentos.",
+    "Um ponto fora da curva precisa saltar antes de qualquer leitura de número."
+  ],
+  "evidencia": {
+    "origem": "Redesenho interno de 2026 (protocolo-redesign-ux) e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "redesenho interno, Analytics",
+        "problema": "dois gráficos desenhados com div e altura em porcentagem, sem eixo rotulado, sem valor legível e sem equivalente textual — quem usa leitor de tela não recebe nada"
+      },
+      {
+        "tela": "redesenho interno, Analytics",
+        "problema": "as séries se distinguem apenas por cor, e as cores escolhidas ficam a menos de 3:1 entre si"
+      },
+      {
+        "tela": "APPSUCAM/Protocolo",
+        "problema": "não existe visualização de volume no sistema atual: a informação de carga por natureza só é obtida exportando e abrindo em planilha"
+      },
+      {
+        "tela": "APPSUCAM/SIGFIN",
+        "problema": "evolução de mensalidade e movimento de caixa são lidos linha a linha em tabela paginada; não há forma nenhuma de ver a tendência do período"
+      }
+    ],
+    "conclusao": "Gráfico entra no design system com a tabela junto, não como imagem decorativa. Sem equivalente textual, não é dado — é enfeite."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Figura. Carrega o nome acessível que descreve medida, recorte e período.",
+      "classe": "ucam-chart"
+    },
+    {
+      "parte": "plotagem",
+      "obrigatorio": true,
+      "descricao": "Área do desenho, renderizada pelo ECharts em SVG. Altura fixa; a escala do eixo de valor é derivada dos dados.",
+      "classe": "ucam-chart__plot"
+    },
+    {
+      "parte": "legenda",
+      "obrigatorio": true,
+      "descricao": "Uma entrada por série, com a marca de cor e o nome. Obrigatória a partir de duas séries; com uma só, o rótulo do gráfico já a nomeia e a caixa de legenda é ruído. Desenhada pelo <z-chart-legend> da ZardUI, dentro do gráfico: não há classe nossa para endereçar."
+    },
+    {
+      "parte": "dica",
+      "obrigatorio": false,
+      "descricao": "Tooltip por ponto (eixo, em linha e área) ou por marca (barra e pizza). É camada de conveniência: o que ela mostra também está na tabela. Desenhada pelo <z-chart-tooltip> da ZardUI: não há classe nossa para endereçar."
+    },
+    {
+      "parte": "tabela",
+      "obrigatorio": true,
+      "descricao": "Os mesmos dados em <table>, com <caption>. Aberta por padrão em um <details>; nunca ausente do DOM. A classe estava ausente aqui e nomeada em duas irmãs que não existem — o <details> da tabela é a única parte do gráfico com classe nossa.",
+      "classe": "ucam-chart__tabela"
+    }
+  ],
+  "props": [
+    {
+      "nome": "type",
+      "tipo": "'line' | 'area' | 'bar' | 'pie'",
+      "default": "'line'",
+      "descricao": "A forma. Escolhida pela pergunta que o dado responde, não por gosto.",
+      "valores": {
+        "line": {
+          "uso": "Mudança ao longo do tempo, com o eixo em ordem cronológica.",
+          "limite": "Só quando o eixo horizontal for contínuo e ordenado. Categoria sem ordem natural ligada por linha inventa uma tendência que não existe."
+        },
+        "area": {
+          "uso": "Mudança ao longo do tempo quando o VOLUME acumulado importa tanto quanto a curva.",
+          "limite": "Uma série, ou séries empilhadas que somam um todo. Áreas sobrepostas não empilhadas escondem umas às outras."
+        },
+        "bar": {
+          "uso": "Comparação de magnitude entre categorias.",
+          "limite": "O eixo de valor começa em zero, sempre. Barra truncada mente sobre a proporção."
+        },
+        "pie": {
+          "uso": "Parte de um todo, quando as partes somam 100% e são poucas.",
+          "limite": "No máximo TRÊS fatias — é o teto da paleta em pareamento de todos-contra-todos. Quatro ou mais, use barra."
+        }
+      }
+    },
+    {
+      "nome": "data",
+      "tipo": "ChartRow[]",
+      "obrigatorio": true,
+      "descricao": "As linhas, na ordem de leitura. Cada linha traz a categoria e um valor por série. Até doze linhas em barra e pizza; acima disso os rótulos giram e param de ser lidos."
+    },
+    {
+      "nome": "series",
+      "tipo": "ChartSeries[]",
+      "obrigatorio": true,
+      "descricao": "Quais chaves da linha viram série, na ordem. Até SEIS: a sétima não ganha cor nova — vira 'Outros' ou o gráfico vira pequenos múltiplos."
+    },
+    {
+      "nome": "categoryKey",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A chave da linha que dá o rótulo do eixo (ou o nome da fatia, em pizza)."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O que o gráfico mostra, em uma frase. Vira o nome acessível da figura e a legenda da tabela: 'Requerimentos abertos e concluídos por mês, de janeiro a dezembro de 2026'."
+    },
+    {
+      "nome": "unit",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Unidade dos valores, para o cabeçalho da tabela e para a dica: 'requerimentos', 'dias', 'R$'."
+    },
+    {
+      "nome": "categoryLabel",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Título da coluna de categoria na tabela. Sem ele o título é derivado da chave, e derivar perde acento: \"mes\" vira \"Mes\". Cabeçalho de tabela é conteúdo — sai errado em português e é lido em voz alta assim."
+    },
+    {
+      "nome": "stacked",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Empilha as séries. Só quando a soma significar alguma coisa — empilhar coisas que não somam um todo produz um total sem sentido."
+    },
+    {
+      "nome": "horizontal",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Barra deitada. É o certo quando os rótulos de categoria são longos: deitado eles cabem sem girar. Ignorado fora de type='bar'."
+    },
+    {
+      "nome": "height",
+      "tipo": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "sm 8rem dentro de cartão; md 12rem em seção própria; lg 18rem quando o gráfico é o conteúdo principal da tela."
+    },
+    {
+      "nome": "showTable",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "A tabela equivalente aparece aberta. Passar false apenas a fecha em <details> — ela nunca deixa de existir no DOM."
+    },
+    {
+      "nome": "state",
+      "tipo": "'idle' | 'loading' | 'empty' | 'error'",
+      "default": "'idle'",
+      "descricao": "O mesmo vocabulário da DataTable. loading desenha o esqueleto na altura do plot; empty e error trocam o plot E a tabela pelo EmptyState pequeno, o de erro com \"Tentar novamente\", que emite retry. O rótulo continua nomeando a figura nos quatro. Antes de 13/09/2026 o contrato declarava loading e empty sem prop nenhuma que os ligasse."
+    },
+    {
+      "nome": "valueFormatter",
+      "tipo": "((value: number) => string) | null",
+      "default": "null",
+      "descricao": "Formata o valor no eixo, na dica e na tabela — os três, sempre juntos. Sem ele o valor sai em pt-BR pelo Intl."
+    }
+  ],
+  "schemas": {
+    "ChartSeries": {
+      "key": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "A chave da linha que carrega o valor desta série."
+      },
+      "name": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Nome da série, como aparece na legenda, na dica e no cabeçalho da coluna da tabela."
+      },
+      "slot": {
+        "tipo": "1 | 2 | 3 | 4 | 5 | 6",
+        "descricao": "Fixa o slot de cor desta série. Existe para uma razão só: a cor tem de seguir a ENTIDADE, não a posição. Num painel onde um filtro tira uma série, sem slot fixo as sobreviventes seriam repintadas e o leitor entenderia que mudaram de identidade. Sem slot, a série recebe o slot da própria ordem."
+      },
+      "stack": {
+        "tipo": "string",
+        "descricao": "Nome do grupo de empilhamento, para empilhar só um subconjunto das séries."
+      }
+    },
+    "ChartRow": {
+      "[key: string]": {
+        "tipo": "string | number",
+        "descricao": "A chave de categoria traz o rótulo; as chaves de série trazem números. Chave de série ausente numa linha é buraco na série (o traço interrompe), não zero."
+      }
+    }
+  },
+  "estados": [
+    "default",
+    "loading",
+    "empty",
+    "error"
+  ],
+  "limites": {
+    "regras": [
+      "Não passar de SEIS séries: acima disso não há paleta que mantenha os pares vizinhos separáveis, inclusive para daltonismo. A sétima série vira 'Outros' ou o gráfico vira pequenos múltiplos.",
+      "Não passar de TRÊS fatias em pizza, nem de três séries em dispersão e pequenos múltiplos: nessas formas todas as cores se comparam com todas, e não só as vizinhas. O terceiro slot era um palpite e agora é medida — no tema claro a paleta aguenta três séries comparadas duas a duas, no ESCURO aguenta duas: wine.400 e ochre.400 colidem sob tritanopia a d=0,038. Em pizza no tema escuro, portanto, o teto real é dois.",
+      "Não usar DOIS eixos de valor no mesmo gráfico. Duas medidas de escala diferente viram dois gráficos, ou uma indexação a uma base comum.",
+      "Não usar pizza para comparar categorias que não somam um todo — isso é barra.",
+      "Não usar gráfico para 'quanto de um limite foi consumido': isso é Progress.",
+      "Não publicar o gráfico sem a tabela equivalente.",
+      "Não distinguir séries só por cor: a legenda dá o nome, a ordem é fixa e a dica nomeia a série."
+    ],
+    "motivo": "Um gráfico sem equivalente textual exclui quem usa leitor de tela e some para quem imprime em preto e branco. Uma paleta esticada além do que foi verificado exclui quem não distingue as matizes."
+  },
+  "acessibilidade": {
+    "papel": "img",
+    "requisitos": [
+      "O desenho é uma figura com nome acessível descrevendo medida, recorte e período; o conteúdo gráfico é aria-hidden.",
+      "A tabela equivalente existe SEMPRE, com <caption>, cabeçalho de linha e de coluna. Ela é o único caminho de leitura por voz — o ECharts desenha vetor, e vetor não se lê.",
+      "Contraste de cada série contra a superfície mínimo 3:1, verificado nos dois temas.",
+      "Séries VIZINHAS separadas com folga também sob simulação de daltonismo (protanopia, deuteranopia, tritanopia), não só à vista normal. Verificado por tools/check-daltonismo.mjs no build, com mínimo de 0,100 de distância em OKLab sobre a cor simulada; o pior par vizinho hoje é 0,106. Até 07/09/2026 este requisito não tinha portão nenhum e a ordem vigente já o violava — ver ADR-016.",
+      "Para pares NÃO-vizinhos a garantia não existe, e nenhuma ordem de slots a produz: a separação entre dois slots quaisquer não muda quando se troca a ordem. Medido: no tema claro há par confundível a partir de QUATRO séries em cena; no escuro, a partir de TRÊS. Quem carrega a leitura sem cor é a tabela equivalente, não a paleta.",
+      "Identidade nunca por cor sozinha: legenda a partir de duas séries, ordem fixa das marcas e nome da série dentro da dica.",
+      "Sem animação de entrada quando prefers-reduced-motion está ativo.",
+      "Rótulo de eixo com contraste de texto mínimo 4.5:1: ele é conteúdo, não moldura.",
+      "O valor e o rótulo vestem tinta de texto, nunca a cor da série.",
+      "Em loading a região declara aria-busy=true e o esqueleto é aria-hidden, com o texto \"Carregando\" para quem ouve. O erro diz em palavra que a carga falhou, e tentar de novo é um <button> de verdade. A mensagem de vazio só aparece com a carga concluída — dizer \"nada\" enquanto os dados não chegaram é afirmar o que ainda não se sabe."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "1.4.11",
+      "2.3.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O rótulo do gráfico diz o quê, por quê e quando: medida, recorte e período.",
+      "O nome da série é o que ela conta, no plural: 'Abertos', 'Concluídos'.",
+      "A legenda da tabela repete o rótulo do gráfico — quem chega pela tabela precisa do mesmo contexto.",
+      "Número no desenho é exceção: rótulo direto só no ponto que a frase do texto cita. Número em todo ponto vira ruído e o gráfico deixa de ter forma."
+    ],
+    "exemplos": {
+      "bom": [
+        "Requerimentos abertos e concluídos por mês — 2026",
+        "Prazo médio de atendimento por setor, em dias — últimos 90 dias"
+      ],
+      "ruim": [
+        "Gráfico 1",
+        "Volume"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [],
+    "usada_por": [
+      "padrao-painel-indicadores",
+      "ucam-stat"
+    ]
+  },
+  "dependencia": {
+    "base": "ZardUI chart (z-chart), instalado por `zard-cli add chart`",
+    "runtime": [
+      "echarts",
+      "ngx-echarts"
+    ],
+    "nota": "É a PRIMEIRA dependência de execução de terceiros do @ucam/ui. As outras peças da base ZardUI são código copiado; esta traz um motor junto. Carregado sob demanda por provideZardCharts(): a aplicação que não desenha gráfico não paga o megabyte. Ver ADR sobre o assunto.",
+    "trilho_a": "não entrega — o gráfico não existe em @ucam/css. Não há como desenhar isto sem JavaScript, e o legado em AngularJS continua exportando para planilha até migrar a tela."
+  },
+  "migracao": {
+    "de": "Exportação para planilha",
+    "mapa": [
+      {
+        "legado": "exportar CSV e montar gráfico fora do sistema",
+        "novo": "data + series + categoryKey",
+        "nota": "A leitura de volume passa a existir dentro do sistema, com a tabela junto."
+      },
+      {
+        "legado": "div com height em porcentagem",
+        "novo": "type + series",
+        "nota": "A escala deixa de ser calculada por tela e passa a ter eixo rotulado."
+      },
+      {
+        "legado": "tone: 'success' | 'warning' | 'danger' por série",
+        "novo": "slot 1..6",
+        "nota": "Cor de feedback deixou de ser identidade de série. Verde significa sucesso, e gastá-lo como 'série 3' apaga o significado nos dois lugares."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Volume por mês, duas séries",
+      "codigo": "<ucam-chart\n  type=\"line\"\n  label=\"Requerimentos abertos e concluídos por mês — 2026\"\n  unit=\"requerimentos\"\n  categoryKey=\"mes\"\n  categoryLabel=\"Mês\"\n  [data]=\"volume()\"\n  [series]=\"[\n    { key: 'abertos', name: 'Abertos' },\n    { key: 'concluidos', name: 'Concluídos' }\n  ]\" />"
+    },
+    {
+      "titulo": "Barra deitada, rótulo longo",
+      "codigo": "<ucam-chart\n  type=\"bar\"\n  horizontal\n  label=\"Prazo médio de atendimento por setor, em dias — últimos 90 dias\"\n  unit=\"dias\"\n  categoryKey=\"setor\"\n  [data]=\"prazo()\"\n  [series]=\"[{ key: 'dias', name: 'Prazo médio' }]\" />"
+    },
+    {
+      "titulo": "Dentro de cartão, tabela recolhida",
+      "codigo": "<ucam-chart height=\"sm\" [showTable]=\"false\" label=\"Movimento de caixa por dia — setembro de 2026\" categoryKey=\"dia\" [data]=\"caixa()\" [series]=\"[{ key: 'saldo', name: 'Saldo' }]\" />"
+    },
+    {
+      "titulo": "Série com slot fixo, porque o painel filtra",
+      "codigo": "<!-- Com o filtro tirando uma natureza, as que ficam NÃO podem trocar de cor. -->\n<ucam-chart\n  type=\"bar\"\n  label=\"Requerimentos por natureza — 2026\"\n  categoryKey=\"mes\"\n  categoryLabel=\"Mês\"\n  [data]=\"porNatureza()\"\n  [series]=\"[\n    { key: 'trancamento', name: 'Trancamento', slot: 1 },\n    { key: 'revisao',     name: 'Revisão de nota', slot: 2 },\n    { key: 'declaracao',  name: 'Declaração', slot: 3 }\n  ]\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Publicar a tabela equivalente junto do gráfico.",
+      "evite": "Gráfico sozinho, com os números só no desenho.",
+      "porque": "O ECharts desenha vetor. Vetor não é lido por voz e some na impressão em preto e branco — sem a tabela, o dado não existe para quem não enxerga o desenho."
+    },
+    {
+      "faca": "Escrever no rótulo a medida, o recorte e o período.",
+      "evite": "'Volume' como título do gráfico.",
+      "porque": "Um número sem período não é comparável, e é o rótulo que vira o nome acessível da figura."
+    },
+    {
+      "faca": "Deixar a cor ser atribuída pelo slot, na ordem.",
+      "evite": "Escolher a cor de cada série na aplicação.",
+      "porque": "A ordem dos slots é o mecanismo que mantém os pares vizinhos separáveis para daltonismo. Cor escolhida a olho na aplicação desfaz a verificação sem ninguém perceber."
+    },
+    {
+      "faca": "Fixar o slot quando um filtro pode mudar quantas séries aparecem.",
+      "evite": "Deixar a cor seguir a posição num painel filtrável.",
+      "porque": "Cor segue a entidade, não o ranking. Se tirar uma série repinta as outras, o leitor entende que elas mudaram de identidade."
+    },
+    {
+      "faca": "Usar barra quando o eixo horizontal for categoria sem ordem natural.",
+      "evite": "Ligar categorias por linha.",
+      "porque": "A linha afirma continuidade entre um ponto e o seguinte. Entre 'Campos' e 'Rio' não há continuidade nenhuma."
+    },
+    {
+      "faca": "Dois gráficos para duas medidas de escala diferente.",
+      "evite": "Segundo eixo de valor do lado direito.",
+      "porque": "Com dois eixos, o cruzamento das curvas é decidido pela escala escolhida, não pelo dado — dá para fazer duas séries quaisquer parecerem correlacionadas."
+    },
+    {
+      "faca": "Usar Progress para parte de um limite.",
+      "evite": "Gráfico para mostrar quanto de uma cota foi consumido.",
+      "porque": "São perguntas diferentes: o gráfico compara ou mostra tendência, a barra de progresso mede quanto de um limite foi tomado."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "chart.json",
+      "raiz": "não entrega",
+      "nota": "Sem versão em CSS puro. Um gráfico em @ucam/css seria uma casca sem dados — o que existe para o legado continua sendo a tabela e a exportação."
+    },
+    "trilho_b": "Envelope sobre o z-chart do ZardUI (ECharts). O wrapper acrescenta o que o contrato exige e a base não dá: a tabela equivalente sempre no DOM, a paleta por slot em ordem fixa (a base CICLA as cores a partir do quinto item — o wrapper recusa em vez de ciclar), formatação pt-BR por Intl, e animação desligada sob prefers-reduced-motion. Liga o eixo de valor, que a base deixa desligado por seguir o desenho do shadcn — \"gráfico sem eixo rotulado\" é uma das falhas que a evidência registra — e com ele reserva o espaço do rótulo na grade (containLabel), senão o eixo sai cortado na borda. Renderiza em SVG, não em canvas: o volume de dado aqui é pequeno e o SVG imprime e amplia sem borrar. NÃO entrega: zoom por arrasto, pincel de seleção, caixa de ferramentas, radar e radial — a base tem os cinco, e nenhum tem evidência no parque."
+  },
+  "vs": [
+    {
+      "componente": "stat",
+      "diferenca": "Stat exibe UM número já apurado; Chart mostra a FORMA de um conjunto — a tendência, a diferença entre categorias, o ponto fora da curva. Número exato nunca sai do desenho.",
+      "escolha": "A resposta é um comportamento: cresceu, caiu, concentrou-se num campus."
+    },
+    {
+      "componente": "data-table",
+      "diferenca": "Chart entrega forma; DataTable entrega valor exato e ordenável. Não é escolha entre os dois: todo gráfico do sistema tem a tabela equivalente ao lado, que é a fonte acessível dos mesmos dados.",
+      "escolha": "A pergunta é sobre o conjunto: está subindo? qual campus destoa?"
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "retry",
+      "payload": "void",
+      "descricao": "Pedido de nova carga, do botão \"Tentar novamente\" do estado de erro. O componente não busca dados: quem consome decide o que refazer."
+    }
+  ]
+}

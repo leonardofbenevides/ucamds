@@ -1,0 +1,293 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "section-bar",
+  "name": "SectionBar",
+  "selector": "ucam-section-bar",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "layout",
+  "description": "Cabeçalho de seção dentro de uma tela: agrupa blocos de conteúdo com um rótulo e, quando faz sentido, uma ação de escopo local ou o gatilho que recolhe o grupo.",
+  "quando_usar": [
+    "Uma tela longa se divide em blocos e cada bloco precisa de rótulo.",
+    "Um grupo de campos ou de cartões tem uma ação de escopo local — adicionar um item àquele grupo.",
+    "Um bloco pode ser recolhido para encurtar uma tela de formulário longa."
+  ],
+  "evidencia": {
+    "origem": "Portal Universitário, Protocolo e SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "Portal — grade de módulos",
+        "rotulo": "RIO · CAMPOS",
+        "problema": "barras cinza-escuro em caixa alta ocupando a largura toda; peso visual maior que o dos próprios cartões que agrupam"
+      },
+      {
+        "tela": "Protocolo — Análise",
+        "rotulo": "Requerimentos",
+        "problema": "mesma barra cinza-escuro, agora agrupando uma tabela — o mesmo peso para conteúdos de importância diferente"
+      },
+      {
+        "tela": "SIGFIN — Movimento de Caixa",
+        "rotulo": "MOVIMENTO DE CAIXA",
+        "problema": "barra com gradiente verde e texto centralizado em caixa alta"
+      },
+      {
+        "tela": "SIGFIN — Processar Acordo",
+        "rotulo": "Consulta · Arquivo · Resultado",
+        "problema": "no mesmo app, outra forma de cabeçalho de seção: texto com fio embaixo. Dois estilos concorrentes na mesma tela"
+      },
+      {
+        "tela": "SIGU — Meus sistemas (redesenho interno, 09/2026)",
+        "rotulo": "EAD · Presencial · ITECAM · Rio",
+        "problema": "as quatro seções recolhem, e o gatilho é uma div com role=\"button\" e tabindex=\"0\" que ENVOLVE o h2 do grupo — o conteúdo de um botão é achatado no nome acessível, então o cabeçalho desaparece da árvore de títulos e a lista de marcos da página fica sem as quatro entradas que a organizam. Falta aria-controls, e o botão \"Recolher todas\" carrega um aria-expanded que não aponta região nenhuma"
+      }
+    ],
+    "conclusao": "Quatro tratamentos para a mesma função. A barra pesada some: a hierarquia passa a vir de peso tipográfico e de um fio, não de um bloco de cor. E quando a seção recolhe, quem recolhe é um botão DENTRO do cabeçalho — nunca um cabeçalho dentro de um botão."
+  },
+  "anatomia": [
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "Cabeçalho no nível correto da hierarquia da página."
+    },
+    {
+      "parte": "count",
+      "obrigatorio": false,
+      "descricao": "Quantos itens a seção agrupa. Permanece visível com a seção recolhida: é ela que responde se vale a pena abrir."
+    },
+    {
+      "parte": "description",
+      "obrigatorio": false
+    },
+    {
+      "parte": "rule",
+      "obrigatorio": false,
+      "descricao": "Fio que se estende até a borda. Substitui a barra preenchida."
+    },
+    {
+      "parte": "actions",
+      "obrigatorio": false,
+      "descricao": "Ação de escopo da seção, nunca da página."
+    },
+    {
+      "parte": "gatilho",
+      "obrigatorio": false,
+      "descricao": "Só existe com collapsible. É um button DENTRO do elemento de cabeçalho, envolvendo o título e a contagem, com aria-expanded e aria-controls apontando a região. O inverso — cabeçalho dentro de um div com role=button — apaga o título da árvore de acessibilidade, e foi o que o redesenho do SIGU produziu.",
+      "classe": "ucam-section__gatilho"
+    },
+    {
+      "parte": "regiao",
+      "obrigatorio": false,
+      "descricao": "O conteúdo que o gatilho mostra e esconde, com id estável apontado pelo aria-controls. Recolhido é hidden, não opacidade zero nem altura zero: conteúdo invisível que continua focável é armadilha de teclado. A região é um <div hidden> sem classe própria: quem a esconde é o atributo, e quem a anuncia é o aria-controls do gatilho."
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "level",
+      "tipo": "2 | 3 | 4",
+      "default": "2",
+      "descricao": "Nível do cabeçalho. Precisa respeitar a hierarquia da página — nunca pular níveis."
+    },
+    {
+      "nome": "count",
+      "tipo": "number | string | null",
+      "default": "null",
+      "descricao": "undefined Aceita texto para trazer a unidade junto — '17 sistemas', '3 ocorrências' —, que é o que o Trilho A sempre escreveu na contagem: número sozinho ao lado de um título não diz do que ele é contagem."
+    },
+    {
+      "nome": "description",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "rule",
+      "tipo": "boolean",
+      "default": "true"
+    },
+    {
+      "nome": "collapsible",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Transforma o cabeçalho em gatilho de recolhimento. Padrão desligado: recolher é para tela cuja seção é longa o bastante para a próxima ficar fora da vista — a grade de 58 sistemas em quatro unidades é o caso; três campos num formulário não é."
+    },
+    {
+      "nome": "open",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Estado da região. Nasce aberta, sempre: seção que abre fechada esconde conteúdo de quem chegou pela primeira vez, e o preço é pago por todo mundo para beneficiar quem já sabe onde está. Fechar é decisão de quem usa, e ela persiste por preferência — não por regra da tela."
+    }
+  ],
+  "estados": [
+    "default",
+    "collapsed",
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Não é PageHeader: o título da tela é um só, e é h1.",
+      "Não carrega ação primária da página.",
+      "Sem preenchimento de cor: a barra cinza do legado dá à seção mais peso visual que ao conteúdo que ela agrupa.",
+      "Acima de quatro seções irmãs numa tela, o problema é a tela — provavelmente são abas ou páginas distintas.",
+      "A contagem NÃO some com a seção recolhida. Recolher para esconder o número de itens tira exatamente a informação que decide se vale abrir — e transforma a seção fechada num rótulo sem conteúdo.",
+      "Busca ativa reabre a seção que tem resultado, e o estado recolhido volta quando a busca é limpa. Resultado escondido dentro de grupo fechado lê como \"não encontrado\".",
+      "Não recolher a única seção da tela: um gatilho que só pode esconder tudo não organiza nada.",
+      "Recolher é preferência de quem usa, não faca de produto. Conteúdo que o produto julga secundário não vira seção fechada por padrão — vira outra aba, outra tela, ou sai.",
+      "Um botão \"Recolher todas\" atua sobre várias regiões e por isso NÃO leva aria-expanded, que descreve a relação com uma região só. Ele é um interruptor de dois estados, e o que ele anuncia é o próximo verbo: Recolher todas / Expandir todas."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Renderiza h2, h3 ou h4 conforme level, sem pular níveis (WCAG 1.3.1).",
+      "O fio é decorativo e não entra na árvore de acessibilidade.",
+      "A contagem faz parte do nome acessível do cabeçalho.",
+      "Caixa natural, nunca text-transform (ADR-003).",
+      "Com collapsible, o gatilho é um button DENTRO do h2/h3/h4 — nunca um heading dentro de um elemento com role=\"button\". O conteúdo de um botão é achatado no seu nome acessível, e o cabeçalho some da lista de títulos que quem usa leitor de tela navega para se situar.",
+      "O gatilho leva aria-expanded refletindo open e aria-controls com o id da região. aria-expanded sem aria-controls diz que algo abriu e não diz o quê.",
+      "A região recolhida usa hidden (ou display:none), nunca altura zero com overflow escondido: conteúdo de altura zero continua focável e produz foco que sai da tela.",
+      "O ícone de seta gira, e é decorativo: quem anuncia o estado é o aria-expanded. Seta sem aria-expanded é estado que só existe para quem enxerga."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.4.10",
+      "2.4.6",
+      "4.1.2"
+    ],
+    "papel": "heading (nativo) + button no gatilho, quando collapsible",
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "O gatilho recebe foco. Recolhida, a região sai da ordem de tabulação inteira — é hidden, não invisível."
+      },
+      {
+        "tecla": "Enter",
+        "comportamento": "Alterna a região."
+      },
+      {
+        "tecla": "Space",
+        "comportamento": "Alterna a região. Como o gatilho é button nativo, não é preciso interceptar a rolagem da barra de espaço."
+      }
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Substantivo curto que nomeia o agrupamento: Rio de Janeiro, Campos, Aluno, Resultado.",
+      "Sem caixa alta e sem repetir o título da página."
+    ],
+    "exemplos": {
+      "bom": [
+        "Rio de Janeiro",
+        "Campos",
+        "Dados do aluno",
+        "Resultado"
+      ],
+      "ruim": [
+        "RIO",
+        "CAMPOS",
+        "MOVIMENTO DE CAIXA",
+        "Seção 1"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-button",
+      "ucam-chip",
+      "ucam-segmented"
+    ],
+    "usada_por": [
+      "padrao-formulario-entidade",
+      "padrao-shell-aplicacao"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / barras cinza e verdes",
+    "mapa": [
+      {
+        "legado": "barra cinza RIO/CAMPOS",
+        "novo": "ucam-section-bar level=\"2\"",
+        "nota": "O peso sai da cor e vai para a tipografia."
+      },
+      {
+        "legado": "barra cinza Requerimentos",
+        "novo": "ucam-section-bar"
+      },
+      {
+        "legado": "barra verde com gradiente (SIGFIN)",
+        "novo": "ucam-page-header",
+        "nota": "Era título de tela travestido de seção."
+      },
+      {
+        "legado": "texto com fio (Consulta/Arquivo)",
+        "novo": "ucam-section-bar level=\"3\"",
+        "nota": "Este já era o tratamento certo; passa a ser o único."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Agrupando conteúdo",
+      "codigo": "<ucam-section-bar title=\"Rio de Janeiro\" [count]=\"modulos.length\" />"
+    },
+    {
+      "titulo": "Com ação de escopo",
+      "codigo": "<ucam-section-bar title=\"Funcionários\" level=\"3\">\n  <ucam-button variant=\"secondary\" size=\"sm\">Adicionar funcionário</ucam-button>\n</ucam-section-bar>"
+    },
+    {
+      "titulo": "Grupo recolhível numa grade longa",
+      "codigo": "<ucam-section-bar title=\"EAD\" [count]=\"modulos.length\" collapsible [open]=\"aberta()\" (openChange)=\"aberta.set($event)\">\n  <div class=\"ucam-grid\">…</div>\n</ucam-section-bar>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Hierarquia por peso tipográfico e um fio.",
+      "evite": "Barra preenchida de cor ocupando a largura toda.",
+      "porque": "A barra cinza-escuro do legado dá à seção mais peso visual do que ao conteúdo que ela agrupa."
+    },
+    {
+      "faca": "Um único tratamento de seção por sistema.",
+      "evite": "Barra cinza numa seção e texto com fio na seção vizinha.",
+      "porque": "Há quatro tratamentos para a mesma função, dois deles na mesma tela."
+    },
+    {
+      "faca": "Manter o h1 no PageHeader e começar a seção no nível 2.",
+      "evite": "SectionBar competindo com o título da tela.",
+      "porque": "Dois títulos de mesmo peso desmontam a árvore de cabeçalhos para o leitor de tela."
+    },
+    {
+      "faca": "Repensar a tela acima de quatro seções irmãs.",
+      "evite": "Empilhar seis seções na mesma página.",
+      "porque": "Nesse ponto o problema não é a seção: provavelmente são abas ou páginas distintas."
+    },
+    {
+      "faca": "Botão dentro do cabeçalho, com aria-controls apontando a região.",
+      "evite": "Cabeçalho dentro de uma div com role=\"button\" e tabindex=\"0\".",
+      "porque": "O nome acessível de um botão achata o que está dentro dele: o h2 deixa de ser título e a página perde os marcos que a organizam. O redesenho do SIGU tem os quatro grupos assim."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "tabs",
+      "diferenca": "Tabs mostra UMA seção por vez e esconde as outras; section-bar recolhe e expande cada seção independentemente, e várias podem estar abertas juntas.",
+      "escolha": "Se a pessoa precisa ver duas ao mesmo tempo, ou imprimir a página inteira, é section-bar."
+    },
+    {
+      "componente": "page-header",
+      "diferenca": "PageHeader titula a TELA e carrega as ações principais dela; SectionBar titula um BLOCO dentro da tela e carrega, no máximo, uma ação de escopo local. Um por tela, vários do outro.",
+      "escolha": "O rótulo que agrupa um conjunto de campos ou de cartões dentro dela."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Seção recolhível: o cabeçalho é o gatilho, e a região que ele abre vem logo abaixo.",
+      "raiz": ".ucam-section com .ucam-section__gatilho",
+      "nota": "O estado mora no aria-expanded do botão e no hidden da região, não em classe. A anatomia deste contrato ainda cita .ucam-section__regiao, que a folha não emite — a região é um <div hidden> sem classe própria."
+    }
+  }
+}

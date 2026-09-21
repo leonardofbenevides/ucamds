@@ -1,0 +1,471 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Camada 1 — primitivos. Valores brutos, sem significado de uso. NENHUM componente pode referenciar esta camada diretamente.",
+  "_meta": {
+    "origem": "Rampa da marca derivada do bordô oficial da logo institucional (#6C1E2B, arquivo de marca UCAM-SITE). Degraus construídos em OKLCH com matiz constante.",
+    "pendencia": "As rampas semânticas (green, amber, red, blue) ainda são escolha do DS, não valor institucional."
+  },
+  "wine": {
+    "50": {
+      "$value": "#FFF4F4"
+    },
+    "100": {
+      "$value": "#FEE4E5"
+    },
+    "200": {
+      "$value": "#FCC9CB"
+    },
+    "300": {
+      "$value": "#F1A1A7"
+    },
+    "400": {
+      "$value": "#DB6F7A",
+      "$description": "Ação primária no tema escuro. Acumula dois papéis lá — é PREENCHIMENTO do botão (com tinta escura em cima) e é TINTA de item de nav ativo, aba selecionada e link de ação sobre o card. O L* 67 é o piso que atende os dois: 5,61:1 com a tinta escura e 4,73:1 como texto sobre surface.default do escuro."
+    },
+    "500": {
+      "$value": "#BC4657",
+      "$description": "Anel de foco e superfície elevada da marca. Branco sobre ele dá 5,06:1."
+    },
+    "600": {
+      "$value": "#8D293A",
+      "$description": "Bordô de aplicação: faixa de marca e ação primária. É o degrau que domina a tela, e por isso ele — não o 700 — é o que define se a interface lê pesada. Branco sobre ele dá 8,36:1."
+    },
+    "700": {
+      "$value": "#6C1E2B",
+      "$description": "Bordô oficial da logo institucional (arquivo de marca UCAM-SITE, seção Brand). Âncora da marca — não deriva de ninguém. É o hover do primário e a tinta da logo sobre fundo claro, onde a reprodução exata da marca importa."
+    },
+    "800": {
+      "$value": "#52151F",
+      "$description": "Active do primário e faixa de marca no tema escuro."
+    },
+    "900": {
+      "$value": "#350D13"
+    },
+    "$type": "color",
+    "$description": "Rampa da marca em matiz OKLCH constante (15°), com lightness em passos parelhos. A âncora institucional #6C1E2B é o 700. O 600, mais claro e mais saturado, é o degrau que a interface mostra o tempo todo — faixa e botão primário: em L* 36, altura de um degrau 800, uma superfície de marca lê como marrom escuro e não como bordô."
+  },
+  "neutral": {
+    "0": {
+      "$value": "#FFFFFF"
+    },
+    "50": {
+      "$value": "#F8FAFC"
+    },
+    "100": {
+      "$value": "#F2F6F9"
+    },
+    "150": {
+      "$value": "#E6ECF3",
+      "$description": "Degrau de FIO, entre o 100 (#F5F5F5, fundo) e o 200 (#E4E4E4, contorno). É o degrau do divisor de linha de tabela e da borda de card: no 200 essas linhas desenham uma grade cinza-média, que é o que mais data uma tela administrativa. As referências modernas fecham o fio em torno de #EDEDED — visível, sem virar régua."
+    },
+    "200": {
+      "$value": "#DEE5EE"
+    },
+    "300": {
+      "$value": "#C6D2E0"
+    },
+    "400": {
+      "$value": "#7A8BA4",
+      "$description": "Piso de contraste para limites de componente: 3.45:1 sobre branco (WCAG 1.4.11)."
+    },
+    "500": {
+      "$value": "#62758F"
+    },
+    "550": {
+      "$value": "#56687F",
+      "$description": "Degrau intermediário, criado em 10/09/2026 para o texto secundário do tema claro. O 600 (7,2:1) ficava perto demais do primário (18:1) e os dois liam como o mesmo cinza-escuro — a hierarquia entre nome e apoio, entre valor e rótulo, vinha só do peso. Este degrau dá 5,70:1 sobre branco, 5,25:1 sobre surface.subtle e 4,78:1 sobre a tinta do avatar: AA em toda superfície clara em que o secundário aparece, com um degrau visível abaixo do primário. Mesma matiz e croma do slate; só a luminosidade muda."
+    },
+    "600": {
+      "$value": "#485870"
+    },
+    "700": {
+      "$value": "#314157"
+    },
+    "800": {
+      "$value": "#1B263A"
+    },
+    "900": {
+      "$value": "#0E162A"
+    },
+    "$matiz": "Rampa FRIA, na matiz e no croma do slate do Tailwind v4 (248° a 266°, croma de 0,003 nos claros a 0,046 no meio). Adotados matiz e croma; a LIGHTNESS continua sendo a da UCAM, degrau por degrau, porque cada degrau está amarrado a uma decisão de contraste já auditada — e porque o slate não tem o 150, que aqui é border.subtle, o filete mais usado da interface. Variação máxima de contraste sobre branco em toda a rampa: 0,06.\n\nPor que frio e não quente: cinza quente ao lado de um bordô quente harmoniza e embaça — os dois puxam para o mesmo lado e a marca deixa de se destacar do fundo. Cinza frio faz o bordô ler como acento. É o contraste de matiz trabalhando a favor da identidade em vez de diluí-la, que é o que Attio e Linear fazem com as respectivas marcas.\n\nO 400 é onde as escalas mais divergem: slate-400 fica em L 70,4 e daria 2,5:1 contra branco, abaixo do piso de 3:1 do texto desabilitado. O da UCAM fica em 63,3. Mantido.",
+    "$type": "color",
+    "$description": "Cinza neutro, sem viés de matiz — a mesma base \"neutral\" que o ZardUI instala. Cinza com viés quente deixa o fundo encardido; a temperatura da tela vem da marca, não da neutra."
+  },
+  "grafite": {
+    "600": {
+      "$value": "#4D535B",
+      "$description": "Texto de apoio. 7,77:1 sobre branco, 7,15:1 sobre o chão (neutral.100), 6,12:1 sobre neutral.200. AAA sobre as duas superfícies em que o apoio aparece."
+    },
+    "900": {
+      "$value": "#15181E",
+      "$description": "Texto de leitura. 17,78:1 sobre branco, 16,36:1 sobre o chão."
+    },
+    "$type": "color",
+    "$description": "Tinta de TEXTO do tema claro, criada em 14/09/2026 (ADR-034). Dois degraus só, porque só há dois papéis: texto de leitura e texto de apoio. Mesma matiz do slate (~260°) com um terço do croma — o slate a 0,04 de croma lia azul-marinho no texto corrido; o grafite lê preto quente de impressão. As superfícies e as bordas continuam na rampa neutral: é o contraste entre tinta sem cor e chão frio que dá a nitidez."
+  },
+  "green": {
+    "100": {
+      "$value": "#DCF5E7"
+    },
+    "400": {
+      "$value": "#40A177",
+      "$description": "Tinta de NÚMERO de indicador no tema escuro (color.feedback.success.numeral), criado em 14/09/2026 (ADR-034). Mesma matiz e croma do 500, luminosidade subida até passar de 4,5:1: 4,75:1 sobre neutral.800 (o ladrilho) e 5,64:1 sobre neutral.900. O número tem 22px com peso 560 — não é texto grande pela WCAG, então vale o 4,5 e não o 3. Sem o fundo tinto no ladrilho, o 100 do escuro lia branco e o tom sumia; o 500 dava 3,16 (verde) e 4,03 (âmbar)."
+    },
+    "500": {
+      "$value": "#17825A"
+    },
+    "600": {
+      "$value": "#0F6A48"
+    },
+    "700": {
+      "$value": "#0B4F36"
+    },
+    "900": {
+      "$value": "#172F26",
+      "$description": "Tinta escura: a matiz a 22% sobre o canvas escuro. Fundo de feedback no tema escuro — NÃO é a cor cheia."
+    },
+    "$type": "color",
+    "$description": "Semântica de sucesso. Não é cor de marca."
+  },
+  "amber": {
+    "100": {
+      "$value": "#FDF0D5"
+    },
+    "400": {
+      "$value": "#C28423",
+      "$description": "Tinta de NÚMERO de indicador no tema escuro (color.feedback.warning.numeral), criado em 14/09/2026 (ADR-034). Mesma matiz e croma do 500, luminosidade subida até passar de 4,5:1: 4,78:1 sobre neutral.800 (o ladrilho) e 5,67:1 sobre neutral.900. O número tem 22px com peso 560 — não é texto grande pela WCAG, então vale o 4,5 e não o 3. Sem o fundo tinto no ladrilho, o 100 do escuro lia branco e o tom sumia; o 500 dava 3,16 (verde) e 4,03 (âmbar)."
+    },
+    "500": {
+      "$value": "#B4770A"
+    },
+    "600": {
+      "$value": "#8F5D06"
+    },
+    "700": {
+      "$value": "#6B4504"
+    },
+    "900": {
+      "$value": "#3A2C14",
+      "$description": "Tinta escura: a matiz a 22% sobre o canvas escuro. Fundo de feedback no tema escuro — NÃO é a cor cheia."
+    },
+    "$type": "color",
+    "$description": "Semântica de atenção. Dourada, e não oliva: ao lado do cinza neutro, o oliva lê como sujeira e não como aviso."
+  },
+  "red": {
+    "100": {
+      "$value": "#FFE9E5",
+      "$description": "Tinta clara: fundo do tom danger no claro (hover de secondary e ghost) e fundo de feedback. L95 é o piso que o texto red.600 exige para 4,5:1 (dá 4,76) — e é por isso que ela nunca vai ficar a 0,06 do wine.50: duas tintas que carregam texto a 4,5:1 moram na mesma faixa de luminosidade (ADR-026)."
+    },
+    "200": {
+      "$value": "#FFA191",
+      "$description": "Ação destrutiva no tema escuro. NÃO tem a altura do wine.400: fica 13 pontos de L acima. \"Mesmo peso\" era L 67 para os dois, e sob tritanopia o par dava d=0,006 — a mesma cor. Tinta escura em cima 9,22:1; como texto sobre o card 7,77:1. É também o filete e a barra de feedback no escuro, porque o red.500 (L 61) encosta no wine.400 lá."
+    },
+    "300": {
+      "$value": "#D86F5F",
+      "$description": "Hover do destrutivo no escuro. ESCURECE em vez de clarear, ao contrário do primário: clarear cai em cima do wine.300 (hover do primário) e do wine.200, e acima disso o botão vira branco. Tinta escura em cima 5,45:1."
+    },
+    "400": {
+      "$value": "#DF5240",
+      "$description": "Active do destrutivo no escuro. Tinta escura em cima 4,7:1 — é o piso; um ponto de L abaixo o rótulo reprova."
+    },
+    "500": {
+      "$value": "#E04938",
+      "$description": "Filete e barra de feedback no claro. Fica na folga entre o wine.500 (anel de foco, a 0,067) e o wine.400 — e a 0,159 do wine.600. Sobre branco 4,05:1."
+    },
+    "600": {
+      "$value": "#B44334",
+      "$description": "Ação destrutiva no claro. Dez pontos de L acima do wine.600: é o degrau de luminosidade, não a matiz, que separa marca de destruição sob protanopia — girar a matiz foi medido e não rende nada (ADR-026). Branco em cima 5,54:1; como texto sobre branco 5,54:1 e sobre o hover red.100 4,76:1."
+    },
+    "700": {
+      "$value": "#9F2F23",
+      "$description": "Hover do destrutivo no claro e tinta de feedback: 11 pontos de L acima do wine.700. Branco em cima 7,23:1; sobre red.100 6,21:1."
+    },
+    "800": {
+      "$value": "#7F2A1F",
+      "$description": "Active do destrutivo no claro: 11 pontos de L acima do wine.800. Branco em cima 9,32:1."
+    },
+    "900": {
+      "$value": "#55120B",
+      "$description": "Tinta escura: fundo de feedback e fundo do tom danger no tema escuro — NÃO é a cor cheia. Subiu de L 28 para L 30 e ganhou croma para sair de cima do realce de busca (wine.700), a 0,067."
+    },
+    "$type": "color",
+    "$description": "Semântica de erro e destruição APENAS. Distinto do bordô da marca de propósito — ver ADR-002. Rampa refeita na ADR-026: todo degrau que aparece ao lado de um degrau do wine no mesmo estado fica a pelo menos dez pontos de L dele, porque sob protanopia e deuteranopia o arco vinho→laranja colapsa num eixo e só a luminosidade separa."
+  },
+  "blue": {
+    "100": {
+      "$value": "#DDEBFA"
+    },
+    "400": {
+      "$value": "#4A8FDA",
+      "$description": "Só gráfico, no tema escuro: é a série 2 sobre a superfície escura. Não é degrau de link nem de feedback — o azul de informação continua sendo 500/600."
+    },
+    "500": {
+      "$value": "#1A6FC4"
+    },
+    "600": {
+      "$value": "#14589E"
+    },
+    "700": {
+      "$value": "#0E4174"
+    },
+    "900": {
+      "$value": "#182A3D",
+      "$description": "Tinta escura: a matiz a 22% sobre o canvas escuro. Fundo de feedback no tema escuro — NÃO é a cor cheia."
+    },
+    "$type": "color",
+    "$description": "Semântica de informação e links."
+  },
+  "ochre": {
+    "400": {
+      "$value": "#B78B10"
+    },
+    "500": {
+      "$value": "#A47F10"
+    },
+    "$type": "color",
+    "$description": "Série de gráfico, slot 3. Puxado para o amarelo (matiz OKLCH ~85°) e NÃO para o laranja: no laranja ele colidia com o vinho no tema escuro (ΔE de visão normal 12,5, abaixo do piso 15). Não confundir com a rampa amber, que é feedback de atenção e não pode virar série."
+  },
+  "teal": {
+    "400": {
+      "$value": "#17A18F"
+    },
+    "500": {
+      "$value": "#0E8F80"
+    },
+    "$type": "color",
+    "$description": "Série de gráfico, slot 4. O croma é o mínimo que passa no piso de 0,1 — abaixo disso a cor lê cinza sobre o branco."
+  },
+  "violet": {
+    "400": {
+      "$value": "#9179DC"
+    },
+    "500": {
+      "$value": "#6D46B8"
+    },
+    "$type": "color",
+    "$description": "Série de gráfico, slot 5. Vizinho perigoso do azul: os dois só se separam com folga quando NÃO ficam lado a lado (por isso a ordem dos slots põe ocre e turquesa entre eles)."
+  },
+  "olive": {
+    "400": {
+      "$value": "#6D9A38"
+    },
+    "500": {
+      "$value": "#4A7C1F"
+    },
+    "$type": "color",
+    "$description": "Série de gráfico, slot 6. Distinto da rampa green de propósito: verde de feedback significa sucesso e não pode ser gasto como identidade de série."
+  },
+  "space": {
+    "0": {
+      "$value": "0rem"
+    },
+    "1": {
+      "$value": "0.25rem"
+    },
+    "2": {
+      "$value": "0.5rem"
+    },
+    "3": {
+      "$value": "0.75rem"
+    },
+    "4": {
+      "$value": "1rem"
+    },
+    "5": {
+      "$value": "1.25rem"
+    },
+    "6": {
+      "$value": "1.5rem"
+    },
+    "8": {
+      "$value": "2rem"
+    },
+    "10": {
+      "$value": "2.5rem"
+    },
+    "12": {
+      "$value": "3rem"
+    },
+    "16": {
+      "$value": "4rem"
+    },
+    "$type": "dimension",
+    "$description": "Escala base 4px."
+  },
+  "radius": {
+    "$type": "dimension",
+    "none": {
+      "$value": "0rem"
+    },
+    "sm": {
+      "$value": "0.25rem"
+    },
+    "md": {
+      "$value": "0.375rem"
+    },
+    "lg": {
+      "$value": "0.5rem"
+    },
+    "full": {
+      "$value": "9999px"
+    },
+    "xl": {
+      "$value": "0.75rem"
+    },
+    "2xl": {
+      "$value": "1rem",
+      "$description": "O degrau mais macio da escala. Nenhum papel semântico o usa hoje: a moldura desceu para xl quando a escala foi recalibrada. Fica disponível, não obrigatório — papel novo que precise de um recorte mais macio que a moldura pede este, em vez de inventar um valor."
+    },
+    "$description": "Escala de raio: 4 · 6 · 8 · 12 · 16px.\n\nCalibrada para aplicação de dados, não para template: um cartão branco com 14px de raio, sombra e recuo generoso é a assinatura de um dashboard genérico, não a de um sistema administrativo. As aplicações de dados de referência trabalham em 6 / 8 / 12.\n\nA base ZardUI segue estes valores, e não os do shadcn: a ponte escreve a escala inteira degrau por degrau. Ver o comentário da ponte em build-tokens.mjs."
+  },
+  "breakpoint": {
+    "$type": "dimension",
+    "$description": "Escala de viewport: 480 · 640 · 768 · 960 · 1024px, em rem.\n\nExiste porque não existia. Até 09/09/2026 as 28 media queries do @ucam/css eram literais escritos dentro de tools/build-css.mjs, em sete medidas — 30, 34, 40, 48, 60, 64 e 82rem — e em três dialetos de borda no mesmo arquivo: 47.99, 47.999, 63.99, 63.999 e 29.999rem. Duas delas se sobrepunham: `max-width: 64rem` e `min-width: 64rem` valiam ao mesmo tempo em exatamente 1024px, e a caixa de entrada ficava de duas colunas e de uma coluna na mesma largura.\n\nA escala é em rem e não em px de propósito: quem aumenta a fonte do navegador precisa que o layout mude de arranjo junto, e um breakpoint em px ignora esse ajuste.\n\nBreakpoint NÃO é var(). Media query não enxerga custom property — é uma restrição do CSS, não uma escolha. O valor é lido daqui pelo gerador e sai literal na folha, do mesmo jeito que a ADR-007 trata qualquer token: a fonte é o spec, o literal é saída.",
+    "xs": {
+      "$value": "30rem",
+      "$description": "480px. A menor largura que o sistema atende de verdade. Abaixo dela a faixa de marca já cedeu tudo que era dispensável."
+    },
+    "sm": {
+      "$value": "40rem",
+      "$description": "640px. Aparelho na horizontal e o menor tablet na vertical."
+    },
+    "md": {
+      "$value": "48rem",
+      "$description": "768px. Tablet na vertical — a largura do iPad clássico."
+    },
+    "lg": {
+      "$value": "60rem",
+      "$description": "960px. Tablet na horizontal e o notebook pequeno. É onde uma segunda coluna de conteúdo passa a caber sem espremer a primeira."
+    },
+    "xl": {
+      "$value": "64rem",
+      "$description": "1024px. Desktop. É o degrau que mais carrega peso na folha: onze das media queries do @ucam/css dependem só dele."
+    }
+  },
+  "fontSize": {
+    "$type": "dimension",
+    "$description": "Escala tipográfica: 12 · 13 · 14 · 16 · 18 · 22 · 28px.\n\nO corpo é 14px, não 16. 16px é o padrão do NAVEGADOR, feito para texto corrido, e é o que faz uma aplicação de dados parecer um site; as referências do gênero ficam em 13–14px no corpo. A densidade se resolve aqui, na escala primitiva, e não nos papéis: os sete papéis tipográficos mantêm suas referências e preservam as PROPORÇÕES entre título, corpo e legenda.\n\nEm rem, e não em px, de propósito: quem aumenta o corpo do navegador aumenta a interface inteira. Densidade não é motivo para cravar pixel.",
+    "xs": {
+      "$value": "0.75rem"
+    },
+    "sm": {
+      "$value": "0.8125rem"
+    },
+    "base": {
+      "$value": "0.875rem",
+      "$description": "14px. O nome continua \"base\" porque é o corpo do sistema — não porque é 1rem."
+    },
+    "lg": {
+      "$value": "1rem"
+    },
+    "xl": {
+      "$value": "1.125rem"
+    },
+    "2xl": {
+      "$value": "1.375rem"
+    },
+    "3xl": {
+      "$value": "1.75rem"
+    }
+  },
+  "fontWeight": {
+    "$type": "fontWeight",
+    "regular": {
+      "$value": 400
+    },
+    "medium": {
+      "$value": "500"
+    },
+    "semibold": {
+      "$value": "560"
+    },
+    "bold": {
+      "$value": "650"
+    },
+    "$description": "Pesos do eixo variável da Geist. semibold e bold saem dos 600/700 redondos porque, num eixo contínuo, 560 e 650 pesam certo ao lado do texto — 700 fica pesado demais em título grande."
+  },
+  "duration": {
+    "$type": "duration",
+    "instant": {
+      "$value": "0ms"
+    },
+    "fast": {
+      "$value": "120ms"
+    },
+    "normal": {
+      "$value": "200ms"
+    },
+    "slow": {
+      "$value": "320ms"
+    }
+  },
+  "easing": {
+    "$type": "cubicBezier",
+    "$description": "Curvas de SAÍDA, sempre. Movimento de interface responde a um gesto que já aconteceu: sai rápido e desacelera na chegada. A curva simétrica do ease do CSS acelera no começo, e é o que faz painel parecer que hesitou antes de abrir. Família ease-out clássica — a mesma que a Linear usa na interface inteira.",
+    "standard": {
+      "$value": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+      "$description": "ease-out-quad. Curva de trabalho: cor, filete, fundo, hover. Quase toda transição da interface é esta."
+    },
+    "entrance": {
+      "$value": "cubic-bezier(0.215, 0.61, 0.355, 1)",
+      "$description": "ease-out-cubic. Para o que APARECE — menu, diálogo, dica. Desacelera mais no fim que a standard, e é isso que faz a superfície parecer assentar em vez de estancar."
+    },
+    "emphasized": {
+      "$value": "cubic-bezier(0.165, 0.84, 0.44, 1)",
+      "$description": "ease-out-quart. Só para percurso longo: gaveta atravessando a tela. Aplicada a distância curta, lê como lentidão."
+    }
+  },
+  "fontFamily": {
+    "$type": "fontFamily",
+    "$description": "Geist, auto-hospedada em dist/fonts/ — a mesma fonte da ZardUI. Não é CDN: o arquivo sai do servidor da própria aplicação, que era a razão real da regra anterior de \"sem webfont\" (rede interna, máquinas de secretaria). A pilha de sistema continua atrás como degradação: se o woff2 não carregar, o texto aparece, só que na fonte do sistema.",
+    "sans": {
+      "$value": "\"Geist Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif"
+    },
+    "mono": {
+      "$value": "\"Geist Mono Variable\", ui-monospace, \"Cascadia Mono\", \"Segoe UI Mono\", Consolas, \"Liberation Mono\", monospace"
+    }
+  },
+  "alpha": {
+    "$type": "color",
+    "$description": "Tintas translúcidas para ESTADO de superfície. Fundo sólido de hover só funciona sobre o fundo para o qual foi calculado: o mesmo cinza que lê bem sobre branco some sobre a faixa do cabeçalho da tabela. Tinta com alfa se compõe com o que estiver embaixo, e o estado passa a valer em qualquer superfície.",
+    "ink-weak": {
+      "$value": "rgb(14 22 42 / 0.045)",
+      "$description": "neutral.900 a 4,5% — hover de linha, item de lista, item de menu."
+    },
+    "ink-strong": {
+      "$value": "rgb(14 22 42 / 0.085)",
+      "$description": "neutral.900 a 8,5% — pressionado e selecionado."
+    },
+    "paper-weak": {
+      "$value": "rgb(248 250 252 / 0.06)",
+      "$description": "neutral.50 a 6% — o mesmo papel, no tema escuro."
+    },
+    "paper-strong": {
+      "$value": "rgb(248 250 252 / 0.11)",
+      "$description": "neutral.50 a 11%."
+    }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "$description": "Sombra em preto neutro. Preto amarronzado — rgb(23 21 20) — suja a borda de tudo que eleva.",
+    "none": {
+      "$value": "none"
+    },
+    "xs": {
+      "$value": "0 1px 2px 0 rgb(0 0 0 / 0.05)"
+    },
+    "sm": {
+      "$value": "0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05)"
+    },
+    "md": {
+      "$value": "0 4px 12px -2px rgb(0 0 0 / 0.09), 0 2px 6px -2px rgb(0 0 0 / 0.05)"
+    },
+    "stack": {
+      "$value": "0 16px 48px -12px rgb(0 0 0 / 0.10), 0 8px 24px -8px rgb(0 0 0 / 0.08), 0 3px 8px -3px rgb(0 0 0 / 0.06), 0 1px 1px 0 rgb(0 0 0 / 0.04)",
+      "$description": "Sombra EMPILHADA para o que flutua. Uma sombra só precisa de alfa alto para existir, e alfa alto suja a beirada — é o defeito do lg. Quatro camadas de alfa baixo somam a mesma presença com a borda limpa: as curtas ancoram o painel na superfície, a longa e difusa dá a distância. É a construção do menu de comando da Linear."
+    },
+    "lg": {
+      "$value": "0 12px 32px -8px rgb(0 0 0 / 0.14), 0 4px 10px -4px rgb(0 0 0 / 0.07)"
+    }
+  }
+}

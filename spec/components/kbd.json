@@ -1,0 +1,184 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "kbd",
+  "name": "Kbd",
+  "selector": "ucam-kbd",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "conteudo",
+  "description": "A tecla desenhada, para anunciar um atalho que existe. Só faz sentido ao lado da explicação do que a tecla faz — uma tecla sozinha na tela não ensina nada. É o elemento menos importante da faixa em que aparece, e o desenho reflete isso.",
+  "quando_usar": [
+    "Uma linha de ajuda ou de menu anuncia o atalho ao lado do que ele faz.",
+    "A paleta de comando mostra, em cada item, a combinação que o dispara.",
+    "A documentação de uma tela ensina a navegação por teclado."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo e APPSUCAM/SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "SIGFIN — navegação",
+        "problema": "o sistema tem mais de cem itens de menu e inventou uma Busca de menus própria, sem atalho anunciado. O recurso existe e a descoberta depende de alguém contar"
+      },
+      {
+        "tela": "Protocolo — Caixa de entrada",
+        "problema": "triar uma fila é trabalho de teclado, e a tela atual não anuncia nenhum atalho — cada requerimento tratado custa uma ida ao mouse"
+      },
+      {
+        "tela": "primeira versão do rodapé da fila",
+        "problema": "a tecla foi desenhada com filete de currentColor e opacidade no bloco inteiro: uma moldura quase preta em volta de duas letras, dentro de um campo claro. O elemento menos importante da faixa era o mais contrastado dela"
+      }
+    ],
+    "conclusao": "Atalho não anunciado é atalho que não existe para quem não foi avisado. A tecla desenhada é o anúncio — discreta, porque quem já sabe do atalho não precisa reler o rodapé todo dia."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento kbd, desenhado como pastilha: preenchimento leve, filete no mesmo degrau de repouso do resto da faixa e tinta esmaecida. Sem opacidade no bloco — ela apagava texto e borda na mesma medida, sem deixar escolher qual dos dois precisava ceder.",
+      "classe": "ucam-kbd"
+    },
+    {
+      "parte": "explicacao",
+      "obrigatorio": true,
+      "descricao": "O que a tecla faz, ao lado dela. Não é parte do componente e é obrigatório mesmo assim: tecla sem explicação é ruído tipográfico."
+    }
+  ],
+  "props": [
+    {
+      "nome": "keys",
+      "tipo": "string[]",
+      "obrigatorio": true,
+      "descricao": "As teclas do atalho, uma pastilha por tecla. Combinação vem como itens separados — Ctrl e K, não Ctrl+K numa string — para que cada tecla seja lida como tecla e o sinal de mais não vire uma delas."
+    },
+    {
+      "nome": "platform",
+      "tipo": "'auto' | 'mac' | 'windows'",
+      "default": "'auto'",
+      "descricao": "auto troca Ctrl por Cmd em macOS. Anunciar Ctrl a quem usa Mac é anunciar um atalho que não funciona — e o parque tem uso nos dois sistemas."
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para representar um botão da interface. A tecla desenhada é uma tecla física; para dizer clique em Salvar, escreva o nome do botão.",
+      "Não usar sem explicação ao lado. A tecla informa o gesto, nunca o efeito.",
+      "Não anunciar atalho que não existe. É o único jeito de fazer alguém perder a confiança no rodapé inteiro.",
+      "Não desenhar tecla em texto corrido de ajuda longa. Ali o nome da tecla escrito por extenso lê melhor.",
+      "Máximo de três teclas por atalho. Combinação de quatro não se executa com uma mão e ninguém decora."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O elemento é kbd de verdade, não span estilizado: o papel semântico é o que faz o leitor de tela anunciar aquilo como entrada de teclado.",
+      "A explicação ao lado é o que carrega o significado — a pastilha sozinha é forma sem informação (WCAG 1.3.1).",
+      "Contraste do texto da tecla sobre o próprio preenchimento mínimo 4.5:1. A tecla é discreta por hierarquia, nunca por contraste insuficiente — foi o erro da primeira versão, que resolvia o peso com opacidade.",
+      "Todo atalho anunciado tem de ser desligável ou remapeável quando for de tecla única sem modificador (WCAG 2.1.4) — R e E na caixa de entrada entram nessa regra.",
+      "O atalho nunca é o único caminho para a ação: tudo que uma tecla faz precisa existir também como controle visível (WCAG 2.1.1).",
+      "Setas desenhadas usam o caractere, não uma imagem, para que o leitor de tela as pronuncie."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.1.1",
+      "2.1.4"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "A explicação é um verbo no infinitivo, curto: navegar, responder, encaminhar.",
+      "Teclas de letra em maiúscula sem sugerir Shift: R, não r nem Shift+R, quando o atalho é só a letra.",
+      "Modificador escrito por extenso e capitalizado: Ctrl, Alt, Shift, Cmd.",
+      "Setas como caractere, não como palavra."
+    ],
+    "exemplos": {
+      "bom": [
+        "↑ ↓ navegar",
+        "R responder",
+        "Ctrl K buscar no menu"
+      ],
+      "ruim": [
+        "CTRL+K",
+        "tecla R",
+        "K (sem dizer o que faz)"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-app-shell",
+      "ucam-combobox",
+      "ucam-command",
+      "ucam-list-item"
+    ]
+  },
+  "migracao": {
+    "de": "Nenhum precedente — o parque não anuncia atalhos",
+    "mapa": [
+      {
+        "legado": "atalho existente e não documentado em lugar nenhum",
+        "novo": "tecla desenhada no rodapé da região que o atalho governa",
+        "nota": "A migração aqui é de descoberta, não de markup: o trabalho é levantar quais atalhos já existem antes de desenhá-los."
+      },
+      {
+        "legado": "Busca de menus do SIGFIN, sem atalho",
+        "novo": "campo de busca no menu com o atalho anunciado ao lado",
+        "nota": "Exige implementar o atalho, não só desenhá-lo. Tecla anunciada que não funciona é pior que atalho não anunciado."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Rodapé de fila",
+      "codigo": "<p class=\"ucam-list-rodape\">\n  <span><kbd class=\"ucam-kbd\">↑</kbd><kbd class=\"ucam-kbd\">↓</kbd> navegar</span>\n  <span><kbd class=\"ucam-kbd\">R</kbd> responder</span>\n</p>"
+    },
+    {
+      "titulo": "Atalho com modificador",
+      "codigo": "<ucam-kbd [keys]=\"['Ctrl', 'K']\" /> buscar no menu"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Escrever ao lado o que a tecla faz.",
+      "evite": "Pastilha solta com uma letra dentro.",
+      "porque": "A tecla informa o gesto e nunca o efeito; sozinha, é forma sem informação."
+    },
+    {
+      "faca": "Resolver o peso por hierarquia — preenchimento leve, filete de repouso, tinta esmaecida.",
+      "evite": "Baixar a opacidade do bloco inteiro.",
+      "porque": "A opacidade apaga texto e borda na mesma medida, e derruba o contraste do texto abaixo do piso — foi o defeito da primeira versão."
+    },
+    {
+      "faca": "Trocar Ctrl por Cmd em macOS.",
+      "evite": "Anunciar Ctrl para todo mundo.",
+      "porque": "Um atalho anunciado que não funciona na máquina de quem lê custa mais confiança do que ganha em descoberta."
+    },
+    {
+      "faca": "Oferecer o mesmo comando também como controle visível.",
+      "evite": "Ação que só existe por atalho.",
+      "porque": "WCAG 2.1.1: quem não usa teclado precisa chegar ao mesmo lugar — e quem usa leitor de tela pode ter a tecla capturada pelo próprio leitor."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe no elemento kbd. Uma pastilha por tecla.",
+      "raiz": ".ucam-kbd",
+      "estado": "Sem estado — a tecla desenhada não é controle.",
+      "variaveis": [
+        "--ucam-font-mono",
+        "--ucam-radius-sm"
+      ],
+      "nota": "As cores saem das derivadas da faixa (appbar-fg, appbar-control-line, appbar-muted) porque o uso dominante é dentro dela. Fora da faixa, a pastilha herda o que o contexto der — e é por isso que a classe não crava tinta própria."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/kbd/ucam-kbd.ts — pronto. Recebe a sequência de teclas e troca Ctrl/Alt/Shift pelos símbolos do Mac quando a plataforma é Apple, com platform=\"auto\" por padrão. É a troca que estava sendo copiada de tela em tela."
+  },
+  "vs": [
+    {
+      "componente": "command",
+      "diferenca": "Kbd DESENHA a tecla; Command é a paleta que a tecla abre. O Kbd anuncia um atalho que já existe — desenhar a tecla não cria o atalho, e atalho sem paleta por trás não leva a lugar nenhum.",
+      "escolha": "Você precisa mostrar, ao lado da explicação, qual é a combinação."
+    }
+  ]
+}

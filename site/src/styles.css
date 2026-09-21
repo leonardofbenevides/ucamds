@@ -1,0 +1,1218 @@
+@import 'tailwindcss';
+/* Geist auto-hospedada — os woff2 saem de src/assets/fonts, que é a raiz
+   pública do site. Sem CDN, igual ao que os produtos vão consumir. */
+@import './generated/fonts.css';
+@import './generated/tokens.css';
+/* @ucam/css — o CSS REAL do Trilho A, o mesmo arquivo que um app legado
+   carrega. Entra aqui para que o preview do catálogo seja o componente de
+   verdade, não uma imitação escrita à mão. Tudo ali é escopado sob .ucam:
+   nada alcança a cromagem deste site. */
+@import './generated/componentes.css';
+
+/* --- ponte para os componentes reais de @ucam/ui ------------------------ */
+/* Os componentes da base escrevem classes no vocabulário shadcn
+   (bg-popover, border-input, text-muted-foreground). Duas coisas fazem elas
+   funcionarem aqui: o @source manda o Tailwind varrer a fonte da lib, e a
+   ponte gerada dá a essas variáveis os valores dos tokens da UCAM.
+
+   NÃO importamos o styles.css da lib de propósito: ele traz um @layer base
+   que repinta body e *, e a cromagem deste site é nossa. Também não precisa
+   de bloco escuro — a ponte aponta para tokens UCAM, que já trocam sozinhos
+   por [data-theme] e prefers-color-scheme. */
+@source '../../ui/projects/ui/src/lib';
+/* ATENÇÃO: esta ponte faz @import da CÓPIA de ucam-tokens.css que vive em
+   ui/, e vem depois de ./generated/tokens.css — na cascata, quem vence é a
+   cópia. Uma cópia desatualizada repinta o site inteiro com tokens velhos, em
+   silêncio (foi assim que o fundo continuou cinza depois de a spec já dizer
+   branco). Por isso `pnpm generate` do site roda tools/sync-ui.mjs. */
+@import '../../ui/projects/ui/src/tokens/ucam-zard-bridge.css';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  /* Cada degrau vem do token que a spec declara — nada de derivar por
+     aritmética a partir de --radius, que é o padrão do shadcn e que dava
+     sm=6px e md=8px onde a spec pede 4px e 6px. A ponte gerada declara os
+     quatro; aqui só os expomos ao Tailwind. */
+  --radius-sm: var(--ucam-radius-sm);
+  --radius-md: var(--ucam-radius-md);
+  --radius-lg: var(--ucam-radius-lg);
+  --radius-xl: var(--ucam-radius-xl);
+}
+
+/* A cromagem do site é documentação, não produto — mas consome os mesmos
+   tokens. Se um token ficar ilegível, esta página quebra junto, que é
+   exatamente o sinal que queremos. */
+
+:root {
+  /* Uma família só. A hierarquia vem de peso e tamanho — trocar para serifa
+     no título era o que mais datava a página. */
+  --f-display: var(--ucam-font-body);
+  --f-body: var(--ucam-font-body);
+  --f-mono: var(--ucam-font-mono);
+
+  /* 15rem, e não 17. A coluna da aplicação encolheu para 80rem (ver
+     --app-max) e a lateral que cabia numa tela de 1600px passaria a comer um
+     sexto de 1280. Os rótulos mais longos da navegação — "Skills e pacotes",
+     "Migrar uma tela" — cabem em 15rem sem quebrar em duas linhas. */
+  --nav-w: 15rem;
+  /* O cabeçalho tem DOIS andares: a faixa da marca e, a partir de 60rem, a
+     faixa das abas da área aberta (.subtopo em app.component). Abaixo disso o
+     segundo andar não existe — vai para a gaveta com o primeiro — e o
+     cabeçalho é só --topo-h.
+
+     --header-h é o que TODO MUNDO lê — rolagem de âncora, topo da
+     lateral, altura da coluna de índice — e é o único lugar onde a soma
+     acontece. Ninguém soma --subtopo-h por conta própria: quem precisa da
+     altura do cabeçalho lê --header-h e recebe a resposta certa para a
+     largura em que está. Foi o esquecer de um desses seis pontos que já
+     quebrou a rolagem de âncora uma vez. */
+  --topo-h: 3rem;
+  --subtopo-h: 2.25rem;
+  --header-h: var(--topo-h);
+  /* 68ch a 16px cai em ~65 caracteres por linha — a faixa em que o olho não
+     perde a volta. A 15px o 72ch dava a mesma medida física; o número mudou
+     porque o corpo cresceu, não a régua. */
+  --measure: 68ch;
+  /* Régua única: marca do header, texto da lateral e conteúdo caem todos
+     nesta linha. Os itens da lateral descontam o próprio padding para o
+     TEXTO alinhar, não a caixa. */
+  --gutter: 1.5rem;
+
+  /* --- régua VERTICAL ------------------------------------------------------
+     Havia três ritmos de seção no site e nenhum aqui: o catálogo separava com
+     filete + 2,75rem, /comecar usava margem de 3rem, e as onze páginas
+     restantes não tinham regra nenhuma — o vão entre duas seções era o que
+     sobrasse da margem do último bloco (1,05rem depois de um parágrafo,
+     2rem depois de uma tabela, 1,5rem depois de um bloco de código). Daí "os
+     espaçamentos estão confusos": não eram confusos, eram ACIDENTAIS.
+
+     Os números vêm das duas referências, MEDIDAS por CDP, não estimadas: a
+     Vibe (monday) põe 72px antes do h2 e 18px antes do h3 — razão 4:1; a Ant
+     Design põe 38px e 29px — razão 1,3:1. Fica a razão da Vibe, porque o
+     defeito daqui é exatamente falta de contraste entre os degraus. E nenhuma
+     das duas usa filete entre seções: o vão sozinho separa. */
+  --ritmo-secao: 4.5rem;
+  --ritmo-sub: 2.5rem;
+  --ritmo-bloco: 1.5rem;
+  /* Largura máxima da aplicação. O header é faixa de largura total (o filete
+     de baixo precisa atravessar a tela), mas o CONTEÚDO dele tem de cair na
+     mesma coluna do corpo — senão, acima de 100rem, a marca fica colada na
+     borda enquanto a lateral já começou recuada. Quem usa isso é --recuo-app. */
+  /* 80rem = 1280px, e não as 100rem (1600px) de antes. 100rem não era uma
+     coluna: numa tela de 1440 o valor nunca era atingido, então a régua efetiva
+     era a borda da janela e o site não tinha container nenhum — marca colada na
+     esquerda, tema colado na direita, e nada dizendo onde a página começa. O
+     número saiu MEDIDO da referência (me-vibe-design.vercel.app: container de
+     1280px, com a faixa do cabeçalho de largura total por fora), não estimado
+     no olho. */
+  --app-max: 80rem;
+  /* Recuo que alinha qualquer faixa de largura total à coluna da aplicação.
+     Abaixo de --app-max vale o gutter; acima, soma-se a sobra de cada lado. */
+  --recuo-app: max(var(--gutter), calc((100% - var(--app-max)) / 2 + var(--gutter)));
+
+  /* --- camada de cromagem ---------------------------------------------------
+     Tudo aqui NASCE de token — color-mix sobre os semânticos, nunca hex solto.
+     É o que garante que o tema escuro continue certo sem uma segunda tabela:
+     o mix é recalculado com o valor novo do token quando [data-theme] troca.
+
+     Por que existe: o site tinha só filete e vão para hierarquizar, e num
+     canvas branco isso deixa card, painel e tabela todos com o mesmo peso. As
+     variáveis abaixo dão os degraus que faltavam — realce (fundo tingido de
+     marca), sombra (elevação) e vidro (a faixa translúcida do cabeçalho) —
+     sem trazer de volta o fundo cinza que os legados já têm. */
+  --realce-marca: color-mix(in oklab, var(--ucam-color-action-primary-default) 7%, transparent);
+  --realce-marca-forte: color-mix(in oklab, var(--ucam-color-action-primary-default) 14%, transparent);
+  --borda-marca: color-mix(in oklab, var(--ucam-color-action-primary-default) 34%, var(--ucam-color-border-subtle));
+  /* Sombra curta e de baixa opacidade: o suficiente para o card descolar do
+     papel no hover, longe do drop-shadow difuso que data um layout. */
+  --sombra-repouso: 0 1px 2px -1px color-mix(in oklab, var(--ucam-color-text-primary) 8%, transparent);
+  --sombra-hover:
+    0 2px 4px -2px color-mix(in oklab, var(--ucam-color-text-primary) 10%, transparent),
+    0 10px 24px -10px color-mix(in oklab, var(--ucam-color-text-primary) 16%, transparent);
+
+  /* Vidro do cabeçalho. O fundo semitransparente só funciona COM o blur: sem
+     ele, o texto que passa por baixo continua legível através da faixa. */
+  --vidro: color-mix(in oklab, var(--ucam-color-surface-default) 76%, transparent);
+
+  /* Raios de superfície. A spec já declara os três degraus (control/surface/
+     frame) e o site usava só os de controle — daí cantos de 6px em cards de
+     20rem, que é a proporção que faz um layout parecer de 2014. */
+  --r-controle: var(--ucam-radius-control);
+  --r-superficie: var(--ucam-radius-surface);
+  --r-moldura: var(--ucam-radius-frame);
+
+  --transicao: var(--ucam-duration-fast) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* A soma vive AQUI e só aqui, na mesma largura em que o .subtopo passa a
+   existir. Se um dia a faixa mudar de ponto de corte, os dois têm de mudar
+   juntos — é a única coordenação escondida entre os dois arquivos. */
+@media (min-width: 60rem) {
+  :root {
+    --header-h: calc(var(--topo-h) + var(--subtopo-h));
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* O cabeçalho é fixo: sem isto, um link de âncora esconde o próprio título. */
+  scroll-padding-top: calc(var(--header-h) + 1.5rem);
+}
+
+/* Abaixo de 82rem a navegação de âncoras é uma FAIXA grudada logo abaixo do
+   cabeçalho — some mais uma altura a descontar. Acima disso ela é coluna à
+   direita e não cobre nada, então o recuo volta ao normal. O :has é o que
+   permite pagar esse preço só nas páginas que têm a faixa. */
+@media (max-width: 81.999rem) {
+  html:has(.nesta-pagina) {
+    scroll-padding-top: calc(var(--header-h) + 2.75rem + 1.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  /* O Geist é variável: deixar o navegador escolher o tamanho óptico é de
+     graça e é o que mantém o título grande sem a haste engordar. */
+  font-optical-sizing: auto;
+  font-variant-ligatures: common-ligatures contextual;
+  /* Branco, e não o cinza de antes: surface.canvas mudou na spec. O fundo
+     cinza com cards brancos era o desenho que os sistemas legados já têm —
+     documentar a saída deles numa página com a mesma cara não convence
+     ninguém. A hierarquia aqui é feita de filete, respiro e peso. */
+  background: var(--ucam-color-surface-canvas);
+  color: var(--ucam-color-text-primary);
+  font-family: var(--f-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Foco visível em tudo, com os valores que a própria spec define. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: var(--ucam-focus-ring-offset);
+  border-radius: var(--ucam-radius-sm);
+}
+
+a {
+  color: inherit;
+}
+
+/* A seleção também é da marca. Detalhe pequeno, mas é o tipo de coisa que
+   separa um site com tema de um site com identidade. */
+::selection {
+  background: var(--realce-marca-forte);
+  color: var(--ucam-color-text-primary);
+}
+
+/* Barra fina em tudo que rola POR DENTRO. A do documento fica com o
+   navegador — repintá-la é onde o CSS de barra costuma quebrar o cromo. */
+:where(*) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ucam-color-border-default) transparent;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--f-mono);
+  /* Zero cortado e um só avanço para os dígitos: numa página que compara
+     valores de token em coluna, é o que faz a coluna existir. */
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* ------------------------------------------------------------- tipografia */
+
+.display {
+  font-family: var(--f-display);
+  font-weight: 650;
+  letter-spacing: -0.028em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+/* O rótulo de seção é o degrau mais alto da hierarquia e o menor da página:
+   só funciona se for legível. Saiu do placeholder (4,7:1) para o secundário
+   (7,4:1) — o mesmo cinza dos rótulos de tabela, uma voz só para "isto é
+   metadado". */
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 580;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ucam-color-text-secondary);
+}
+
+/* O rótulo de seção do CONTEÚDO ganha um traço curto na tinta da marca antes
+   do texto. É o único enfeite da página, e ele trabalha: dá ao degrau mais
+   alto da hierarquia a única coisa que ele não tinha, que é presença. Fica
+   fora do .eyebrow genérico de propósito — na lateral e no índice o mesmo
+   traço viraria ruído repetido oito vezes por tela. */
+.eyebrow-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.eyebrow-marca::before {
+  content: '';
+  inline-size: 1.25rem;
+  block-size: 2px;
+  border-radius: var(--ucam-radius-full);
+  background: var(--ucam-color-action-primary-default);
+}
+
+.lede {
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: -0.008em;
+  color: var(--ucam-color-text-secondary);
+  max-inline-size: var(--measure);
+  text-wrap: pretty;
+}
+
+.muted {
+  color: var(--ucam-color-text-secondary);
+}
+
+.small {
+  font-size: 0.8125rem;
+}
+
+.num {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.k {
+  color: var(--ucam-color-text-primary);
+  font-weight: 600;
+}
+
+/* ------------------------------------------- arranjo da página de conteúdo */
+
+/* Toda página que tem navegação de âncora aplica .pagina no próprio host
+   (host: { class: 'pagina' }). A grade estava escrita dentro da página de
+   componente, a única que tinha índice; com dez páginas ganhando o mesmo
+   arranjo, deixá-la lá seria repetir dez vezes — o mesmo erro que produziu os
+   três ritmos de seção diferentes.
+
+   Abaixo de 82rem não há grade nenhuma: a navegação vira faixa horizontal e
+   ocupa a largura toda. A coluna de 12rem só entra quando sobra largura para
+   ela, porque conteúdo estreito é pior do que rolar. */
+@media (min-width: 82rem) {
+  .pagina {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 12rem;
+    column-gap: 3rem;
+    align-items: start;
+  }
+  /* Tudo cai na coluna do conteúdo por padrão. Sem isto, o auto-placement
+     espalharia os blocos da página pelas duas colunas. */
+  .pagina > * {
+    grid-column: 1;
+  }
+  /* O cabeçalho atravessa: o filete dele é a régua da página inteira. */
+  .pagina > ucam-page-header {
+    grid-column: 1 / -1;
+  }
+  /* `span 100` e não `2` porque a navegação é sticky: um item de grade que
+     ocupa uma linha só pode grudar dentro da altura DAQUELA linha, e a
+     navegação pararia de acompanhar no primeiro bloco. O excesso de linhas
+     implícitas tem altura zero e não custa nada. */
+  .pagina > ucam-nesta-pagina {
+    grid-column: 2;
+    grid-row: 2 / span 100;
+  }
+}
+
+/* ------------------------------------------------------------------ prosa */
+
+.prose {
+  max-inline-size: var(--measure);
+}
+
+/* A medida vale para o parágrafo, não para a seção: tabela e palco ocupam a
+   largura toda, o texto continua com 65 caracteres. */
+.prose p {
+  margin: 0 0 1.05rem;
+  max-inline-size: var(--measure);
+  text-wrap: pretty;
+}
+
+/* O ritmo da seção mora AQUI, não em cada página.
+   O par que existia antes — `.prose > * + h2` — nunca casou com nada: toda
+   página embrulha a seção num <section>, então o h2 não é filho direto de
+   .prose. A regra estava escrita, era lida por quem editava o arquivo, e não
+   pintava um pixel. As duas formas ficam cobertas agora: seção embrulhada
+   (o caso de 15 das 21 páginas) e h2 solto. */
+.prose > section + section {
+  margin-block-start: var(--ritmo-secao);
+}
+
+/* h2 solto, para as páginas que não embrulham. Não vale para o primeiro
+   h2 de uma seção, que já recebeu o vão da própria seção. */
+.prose > * + h2 {
+  margin-block-start: var(--ritmo-secao);
+}
+
+/* O h3 é degrau interno: vão curto, para ler como filho do h2 e não como
+   irmão dele. É a razão 4:1 da Vibe. */
+.prose h3:not([class*='ucam-']) {
+  margin-block-start: var(--ritmo-sub);
+}
+.prose > h3:first-child,
+.prose section > h3:first-child,
+.prose h2 + h3 {
+  margin-block-start: 0;
+}
+
+/* Uma seção nunca começa com margem própria: quem dá o vão é a regra de
+   irmãs acima. Sem isto, a margem do h2 escaparia por colapso e o primeiro
+   bloco da página desceria sozinho. */
+.prose > section > :first-child {
+  margin-block-start: 0;
+}
+
+/* Quatro degraus, quatro pesos — 650 / 620 / 560 / 600-menor. Num eixo
+   variável a diferença de peso separa mais que a de corpo, e sem inflar o
+   título. Por isso os saltos de tamanho são curtos e o tracking fecha à
+   medida que o corpo cresce. */
+/* CABEÇALHO DE COMPONENTE NÃO É CABEÇALHO DE PROSA. O título de um
+   ucam-section-bar carrega .ucam-section__title, e a tipografia dele sai dos
+   tokens do design system — 16px/560. Sem este corte, a prosa desta página
+   vencia a classe do componente nos DOIS trilhos e cada um por uma regra
+   diferente: 24px pelo h2 na demo viva, 17px pelo h3 no preview. O mesmo
+   vazamento já tinha acontecido pelo sublinhado de link (13/09/2026); a
+   diferença é que aqui o remédio não é revert-layer, e sim a prosa não se
+   meter com quem já tem classe do sistema. */
+.prose h2:not([class*='ucam-']) {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  /* margin-block-END, não o shorthand: o shorthand zera o topo e mataria o
+     vão de seção definido acima — que é a regra que veio depois na cascata. */
+  margin-block-end: 1rem;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.prose h3:not([class*='ucam-']) {
+  font-size: 1.0625rem;
+  font-weight: 560;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  margin-block-end: 0.5rem;
+}
+
+.prose h4:not([class*='ucam-']) {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  color: var(--ucam-color-text-primary);
+  margin-block: var(--ritmo-bloco) 0.5rem;
+}
+
+/* O sublinhado do link do texto corrido nasce de um gradiente de 1px e não do
+   text-decoration: assim ele é FINO (o padrão do navegador acompanha o peso
+   da fonte e engrossa junto), fica abaixo das descidas do g e do p, e cresce
+   até a cor cheia no hover. */
+.prose a:not(.plain) {
+  color: var(--ucam-color-text-link);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  padding-block-end: 1px;
+  opacity: 0.92;
+  transition:
+    opacity var(--transicao),
+    background-size var(--transicao);
+}
+
+.prose a:not(.plain):hover {
+  opacity: 1;
+  background-size: 100% 2px;
+}
+
+/* O preview do catálogo é HTML injetado por [innerHTML]: não recebe o
+   _ngcontent do componente, então nenhum style de componente o alcança — e a
+   prosa do site alcança. Estas regras cortam esse vazamento. Dentro de .ucam
+   quem manda é @ucam/css, senão o preview deixa de ser prova. */
+.prose .ucam p {
+  margin: 0;
+  max-inline-size: none;
+}
+.prose .ucam a {
+  color: inherit;
+  /* O sublinhado por gradiente da prosa é background-image — sem esta linha
+     ele pinta um filete embaixo de todo link DENTRO do preview, e o preview
+     deixa de ser prova do componente. O reset de cor sozinho não bastava
+     porque a regra nova não usa color. */
+  background-image: none;
+  padding-block-end: 0;
+  opacity: 1;
+}
+/* A demo VIVA não é HTML injetado, é componente Angular montado dentro da
+   prosa, e a prosa o alcança do mesmo jeito. O link esticado do ListItem
+   (absolute inset-0, sem texto) herdava o sublinhado por gradiente e pintava
+   um filete azul-link de 1px no pé de cada linha, por cima do fio
+   border-subtle: o divisor "escuro" da página do catálogo não era do
+   componente (medido em 13/09/2026: borda #E6ECF3, gradiente #14589E).
+   revert-layer, e não valores fixos: as utilitárias do Trilho B moram em
+   camada e perdem para esta folha, que não mora; reverter devolve a palavra
+   a elas em vez de impor um desenho de link por cima do componente. */
+.prose .palco-vivo a:not(.plain),
+.prose .palco-vivo a:not(.plain):hover {
+  color: revert-layer;
+  text-decoration: revert-layer;
+  background-image: revert-layer;
+  background-position: revert-layer;
+  background-size: revert-layer;
+  background-repeat: revert-layer;
+  padding-block-end: revert-layer;
+  opacity: revert-layer;
+  transition: revert-layer;
+}
+.prose .ucam :not(pre) > code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* O buraco que faltava fechar: os TÍTULOS.
+   O vazamento cobria parágrafo, link e código, e deixava passar h1–h6 — que é
+   justamente o que o preview de um Dialog tem. O header do diálogo aparecia
+   com 104px de altura e 56px de vão acima do título, com padding declarado de
+   16/16: os 40px extras eram o `.prose h3 { margin-block-start: 2.5rem }`
+   desta folha caindo dentro do <h3 class="ucam-dialog__title">. Foi lido como
+   defeito do componente e não era — o componente nunca teve esse espaço.
+
+   :where() de propósito: especificidade zero, então qualquer regra de
+   @ucam/css sobre o mesmo elemento (o tamanho do .ucam-dialog__title, por
+   exemplo) continua vencendo sem precisar de !important. É o que mantém o
+   preview sendo prova do componente, e não do reset. */
+.prose .ucam :where(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+}
+
+/* -------------------------------------------------------------- inventário */
+
+.list {
+  /* O marcador precisa ser DEVOLVIDO: o preflight do Tailwind zera
+     list-style em ul e ol, e por isso a regra .list li::marker logo abaixo
+     nunca pintou um pixel — o marcador que ela colore não existia. O recuo de
+     1.1rem já estava aqui reservando o lugar dele. */
+  list-style: disc;
+  margin: 0 0 1rem;
+  padding-inline-start: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.list li::marker {
+  color: var(--ucam-color-text-secondary);
+}
+
+.steps {
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.steps li {
+  counter-increment: step;
+  padding-inline-start: 2rem;
+  position: relative;
+}
+
+/* Disco na tinta da marca, não quadrado cinza: o número passa a ler como
+   marcador de passo e não como célula de tabela solta na margem. */
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  inset-inline-start: 0;
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  text-align: center;
+  font-family: var(--f-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.4rem;
+  color: var(--ucam-color-action-primary-default);
+  background: var(--realce-marca);
+  border-radius: var(--ucam-radius-full);
+}
+
+/* ------------------------------------------------------------------ chips */
+
+/* Cápsula, não retângulo de canto vivo. Um selo de estado é rótulo, não
+   caixa de dado — a forma arredondada é o que o diz sem legenda, e é o que
+   separa visualmente o selo da célula de tabela ao lado dele. O corpo subiu
+   de 0,65rem para 0,6875rem: a 10,4px o mono ficava abaixo do piso de
+   legibilidade que a própria página de acessibilidade cobra. */
+.pill,
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--f-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--ucam-radius-full);
+  border: 1px solid var(--ucam-color-border-subtle);
+  background: var(--ucam-color-surface-subtle);
+  color: var(--ucam-color-text-secondary);
+  white-space: nowrap;
+}
+
+.pill-draft {
+  border-color: var(--ucam-color-feedback-warning-border);
+  background: var(--ucam-color-feedback-warning-background);
+  color: var(--ucam-color-feedback-warning-foreground);
+}
+
+.pill-stable,
+.pill-aceita {
+  border-color: var(--ucam-color-feedback-success-border);
+  background: var(--ucam-color-feedback-success-background);
+  color: var(--ucam-color-feedback-success-foreground);
+}
+
+.pill-deprecated {
+  border-color: var(--ucam-color-feedback-danger-border);
+  background: var(--ucam-color-feedback-danger-background);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+
+.chip-good {
+  border-color: var(--ucam-color-feedback-success-border);
+  color: var(--ucam-color-feedback-success-foreground);
+  background: var(--ucam-color-feedback-success-background);
+}
+
+.chip-warn {
+  border-color: var(--ucam-color-feedback-warning-border);
+  color: var(--ucam-color-feedback-warning-foreground);
+  background: var(--ucam-color-feedback-warning-background);
+}
+
+.chip-bad {
+  border-color: var(--ucam-color-feedback-danger-border);
+  color: var(--ucam-color-feedback-danger-foreground);
+  background: var(--ucam-color-feedback-danger-background);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+/* ---------------------------------------------------------------- tabelas */
+
+/* A tabela ganhou MOLDURA. Antes ela sangrava na página: as linhas começavam
+   e terminavam no nada, e a única pista de onde a tabela acabava era a última
+   régua horizontal. Com a moldura arredondada ela lê como um objeto — que é o
+   que ela é — e o cabeçalho passa a ter onde se apoiar.
+
+   O overflow-x e o radius ficam os dois no .scroller, então o clip acontece
+   na moldura e não em cada célula: é o arranjo que sobrevive à tabela larga
+   que rola por dentro. */
+.scroller {
+  overflow-x: auto;
+  margin: 0 0 2rem;
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--r-superficie);
+  background: var(--ucam-color-surface-default);
+}
+
+table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* O cabeçalho é a única faixa tingida da tabela. Era isso ou a zebra — as
+   duas juntas dão três tons de cinza em quatro linhas. */
+thead th {
+  background: var(--ucam-color-surface-subtle);
+}
+
+th {
+  text-align: start;
+  font-family: var(--f-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  /* ADR-003: nenhum papel tipográfico usa caixa alta forçada — nem aqui. */
+  text-transform: none;
+  font-weight: 600;
+  color: var(--ucam-color-text-secondary);
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--ucam-color-border-subtle);
+  white-space: nowrap;
+}
+
+td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid var(--ucam-color-border-subtle);
+  vertical-align: top;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* A zebra SAIU. Ela resolvia rastrear a linha numa tabela sem hover, e o
+   preço era metade das linhas com fundo diferente do papel — o que, num
+   canvas branco, é o mesmo cinza dos legados voltando pela porta dos fundos.
+   O realce de hover faz o mesmo trabalho, e só quando o olho precisa dele.
+   Quem lê por teclado ou toque não perde nada: as réguas continuam lá. */
+tbody tr {
+  transition: background var(--transicao);
+}
+
+tbody tr:hover {
+  background: var(--ucam-color-surface-subtle);
+}
+
+/* Nome de token não quebra no meio. A tabela de espaçamento saía com
+   "space.inline-" numa linha e "xs" na outra: o algoritmo automático encolhe
+   a coluna até o menor pedaço quebrável, e um <code> quebra em qualquer
+   lugar. Com nowrap, o mínimo da coluna passa a ser o token inteiro — e se a
+   soma não couber, quem resolve é o overflow-x do .scroller, que é o
+   comportamento certo para uma tabela larga. */
+td code,
+th code {
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ código */
+
+/* Bloco de código com moldura, e não só fundo tingido: no tema escuro o
+   surface-subtle é o MESMO valor do canvas, então o bloco sumia — virava um
+   parágrafo em mono no meio da página, sem nenhuma borda dizendo onde ele
+   começa. A borda resolve os dois temas com uma regra só. */
+.code {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  background: var(--ucam-color-surface-subtle);
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--r-superficie);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+}
+
+.code code {
+  white-space: pre;
+}
+
+/* Sem borda: o fundo já separa. A borda fazia de cada termo técnico uma
+   caixinha, e uma página de contrato tem dezenas deles — era a maior fonte de
+   ruído visual do site. */
+:not(pre) > code {
+  background: var(--ucam-color-surface-subtle);
+  border-radius: var(--ucam-radius-sm);
+  padding: 0.08em 0.32em;
+  font-size: 0.85em;
+  color: var(--ucam-color-text-primary);
+}
+
+/* --------------------------------------------------------------- callouts */
+
+/* O callout tem MOLDURA FECHADA mais a barra de acento — não a barra
+   sozinha. A barra isolada num fundo quase branco não desenha caixa nenhuma:
+   o bloco ficava com três lados abertos e o texto dentro dele lia como
+   simplesmente indentado. A cor de acento continua dizendo o TIPO do aviso; a
+   moldura é o que diz que existe um aviso.
+
+   O tingido nasce por color-mix do próprio token de acento, então o mesmo
+   bloco serve nos dois temas — no escuro, o token já é escuro e o mix apenas
+   o aproxima do papel. */
+.callout {
+  --acento: var(--ucam-color-action-primary-default);
+  position: relative;
+  padding: 1rem 1.15rem 1rem 1.35rem;
+  border: 1px solid color-mix(in oklab, var(--acento) 22%, var(--ucam-color-border-subtle));
+  border-radius: var(--r-superficie);
+  background: color-mix(in oklab, var(--acento) 6%, var(--ucam-color-surface-default));
+  margin: 0 0 1.75rem;
+  overflow: hidden;
+}
+
+/* A barra vive num ::before para não brigar com a borda de 1px do bloco —
+   border-inline-start substituiria o lado esquerdo da moldura e o canto
+   arredondado sairia cortado. */
+.callout::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 3px;
+  background: var(--acento);
+}
+
+.callout > :last-child {
+  margin-bottom: 0;
+}
+
+/* O rótulo herda a tinta do acento: é o que dá ao bloco um título sem
+   precisar de ícone — e ícone aqui seria a quarta coisa a manter em dia. */
+.callout .eyebrow {
+  color: color-mix(in oklab, var(--acento) 72%, var(--ucam-color-text-primary));
+  margin-block-end: 0.35rem;
+}
+
+.callout-warn {
+  --acento: var(--ucam-color-feedback-warning-border);
+  color: var(--ucam-color-feedback-warning-foreground);
+}
+
+.callout-limit {
+  --acento: var(--ucam-color-feedback-danger-border);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+
+/* ----------------------------------------------------------------- cartões */
+
+/* O card subiu de raio (6px → 12px) e ganhou sombra de repouso. Os 6px vinham
+   do raio de CONTROLE, que é a medida de um botão de 32px de altura: numa
+   caixa de 20rem o mesmo canto lê como quina. A spec já declarava
+   radius.surface exatamente para este caso, e o site não o usava em lugar
+   nenhum. */
+.card {
+  display: block;
+  padding: 1.05rem 1.15rem;
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--r-superficie);
+  background: var(--ucam-color-surface-default);
+  box-shadow: var(--sombra-repouso);
+  text-decoration: none;
+  transition:
+    border-color var(--transicao),
+    box-shadow var(--transicao),
+    transform var(--transicao);
+}
+
+/* Card que é LINK reage; card que é só caixa de texto, não. O seletor já era
+   a.card antes — o que mudou é para onde ele reage: borda na tinta da marca,
+   sombra que levanta e a seta aparecendo. */
+a.card {
+  position: relative;
+}
+
+a.card:hover {
+  border-color: var(--borda-marca);
+  box-shadow: var(--sombra-hover);
+  transform: translateY(-2px);
+}
+
+a.card:active {
+  transform: translateY(0);
+  box-shadow: var(--sombra-repouso);
+}
+
+/* A seta é a affordance que faltava: num grid de seis caixas iguais, nada
+   distinguia as clicáveis das descritivas. Só existe em card-link, desliza no
+   hover, e some para quem pediu menos movimento. */
+a.card::after {
+  content: '\2192';
+  position: absolute;
+  inset-block-start: 1.05rem;
+  inset-inline-end: 1.15rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  color: var(--ucam-color-text-placeholder);
+  opacity: 0;
+  translate: -0.25rem 0;
+  transition:
+    opacity var(--transicao),
+    translate var(--transicao),
+    color var(--transicao);
+}
+
+a.card:hover::after,
+a.card:focus-visible::after {
+  opacity: 1;
+  translate: 0 0;
+  color: var(--ucam-color-action-primary-default);
+}
+
+/* Miniatura é RETRATO, não cena: nada dentro do palco de um CARD anima.
+
+   Escopado em .card de propósito: o palco de Fundamentos e o de Layout são
+   demonstração, e em Movimento a animação É o assunto. Miniatura de catálogo
+   é a única que precisa ficar parada.
+
+   Tem de ser regra GLOBAL. O preview entra por innerHTML, então seus nós não
+   carregam o atributo de encapsulamento do componente — a mesma regra escrita
+   em styles: do .page.ts vira ".palco[_ngcontent-x] *[_ngcontent-x]" e não
+   casa com nada lá dentro. Foi por isso que ela não teve efeito nenhum na
+   primeira tentativa.
+
+   O que ela conserta não é gosto, é MEDIDA. O preview do Drawer entra
+   deslizando pela borda, com easing longo: rastreado quadro a quadro em
+   10/09/2026, o painel estava em x=240 aos 393ms, 128 aos 472ms e ainda
+   convergia para 61 aos 689ms. encaixar() mede na primeira renderização, ou
+   seja no meio do deslize, e gravava --x: 34px em vez de 122px — painel
+   encostado na esquerda com 210px de vazio à direita, congelado assim até
+   alguém redimensionar a janela. Sem estado transitório não há instante
+   errado para medir.
+
+   De quebra, a grade para de piscar 46 entradas de uma vez ao abrir. */
+.card .palco *,
+.card .palco *::before,
+.card .palco *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* Card que abre com um PALCO não recebe seta. O ::after fica ancorado no
+   canto superior direito do card, e nesses dois catálogos (componentes e
+   telas) esse canto é a miniatura da amostra — a seta pousaria em cima do
+   preview. Ali a afordância já existe e é maior: a miniatura inteira. */
+a.card:has(.palco)::after {
+  display: none;
+}
+
+/* Sem seta e sem levantar: o hover vira só a borda, que é o que sobra de
+   informação útil quando o movimento está desligado. */
+@media (prefers-reduced-motion: reduce) {
+  a.card:hover {
+    transform: none;
+  }
+  a.card::after {
+    display: none;
+  }
+}
+
+/* O título do card não é degrau da prosa — é rótulo de caixa. Sem isto ele
+   herda o margin-block-start de .prose h3 e abre 2,5rem dentro do card. */
+.card > h3 {
+  margin-block: 0 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  /* Espaço para a seta não encostar no título mais longo. */
+  padding-inline-end: 1.25rem;
+}
+
+/* A GRADE DE CARTÕES das páginas de índice. Chamava-se .grid e colidia com a
+   utilitária do Tailwind: sem camada, ganhava dela dentro de todo componente
+   do Trilho B que usa "grid" — a linha do tempo da demo viva saía com o nó
+   empilhado sobre o texto, numa coluna só (19/09/2026). */
+.grade-cartoes {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+}
+
+/* ------------------------------------------------------ largura do conteúdo */
+
+/* .largo ESTAVA COPIADA EM QUINZE PÁGINAS, uma regra de duas linhas repetida
+   verbatim no bloco styles de cada fundação. Funcionava — o estilo de
+   componente do Angular é encapsulado e a regra local pega —, e é justamente
+   por funcionar que ninguém a trouxe para cá em quinze oportunidades.
+
+   O preço da cópia apareceu em /comecar: lá a marcação pede "prose largo" e
+   a página não traz a regra, então o índice e a página de migrar ficam presos
+   nos 68ch da medida enquanto as quinze irmãs ocupam a coluna inteira. Medido
+   a 1600px de janela: 721px contra 752px. Uma regra copiada quinze vezes é
+   uma regra que vai faltar na décima sexta, e a décima sexta não avisa.
+
+   O teto sai do CONTÊINER, não do parágrafo. A medida continua valendo onde
+   ela tem trabalho a fazer — .prose p e .lede já a carregam por conta
+   própria, e a linha de texto segue nos 65 caracteres. O que ganha a largura
+   é o que nunca deveria ter sido medido em caracteres: tabela, grade de
+   cartões, palco de demonstração, bloco de pontos, figura.
+
+   O que esta regra NÃO faz é alargar a aplicação: --app-max continua em
+   80rem. Aquele número é medido, e a volta de 100rem foi o que produziu um
+   site sem contêiner nenhum numa tela de 1440 — marca colada na esquerda,
+   tema colado na direita. A largura que faltava nas páginas não vem de
+   esticar a moldura, vem de ENCHER a coluna: é o trabalho de .pontos e da
+   grade de cartões, aqui embaixo. */
+.prose.largo {
+  max-inline-size: none;
+}
+
+/* A lista também é texto, e por não ser <p> escapava da medida. Com o teto
+   solto ela passaria a correr a largura inteira — que é exatamente o que
+   nenhuma linha de leitura pode fazer. */
+.prose.largo :is(p, .lede, .list, blockquote) {
+  max-inline-size: var(--measure);
+}
+
+/* ---------------------------------------------------------------- pontos */
+
+/* O BLOCO DE PONTOS: a lista de marcadores quando cada item é uma ideia
+   inteira, e não um item de enumeração.
+
+   A régua para escolher entre um e outro: se os itens são variações da mesma
+   coisa (uma lista de tokens, uma lista de sinônimos), continuam em .list —
+   virar cartão ali só acrescenta moldura a uma enumeração que já se lê. Se
+   cada item é uma REGRA com nome próprio e consequência própria, vira ponto:
+   o ícone dá a silhueta, o título dá o nome, e o corpo explica. É o que
+   transforma seis linhas de marcador indistinguíveis em seis coisas que se
+   localizam de relance e se citam por nome numa conversa.
+
+   auto-fit e não auto-fill: com três pontos numa coluna larga, o auto-fill
+   deixaria a quarta célula vazia e os três apertados à esquerda. */
+.pontos {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  margin: 0 0 1.75rem;
+}
+
+/* Duas colunas por ponto: a pastilha do ícone e o texto. A pastilha é a
+   .ucam-icon-tile do próprio sistema, e não um quadrado desenhado aqui —
+   documentação que inventa a própria peça é o primeiro passo para o site
+   deixar de parecer o que ele documenta. */
+.ponto {
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--r-superficie);
+  background: var(--ucam-color-surface-default);
+  box-shadow: var(--sombra-repouso);
+}
+
+/* O título do ponto é um h3 de verdade, para entrar no sumário do leitor de
+   tela — mas não pode carregar o vão de degrau interno que .prose h3 dá, que
+   existe para separar seções e aqui abriria um buraco dentro do cartão.
+
+   O .prose na frente não é enfeite: .prose h3:not([class*='ucam-']) tem um
+   :not() a mais e vence um .ponto h3 solto por especificidade. Sem ele o
+   --ritmo-sub de 2,5rem continuava valendo, e o título do cartão ficava
+   flutuando 40px abaixo da própria pastilha — medido na tela, não no papel. */
+.prose .ponto :is(h3, h4) {
+  margin: 0 0 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--ucam-color-text-primary);
+}
+
+.ponto p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--ucam-color-text-secondary);
+  max-inline-size: none;
+}
+
+/* O gap da grade já separa os parágrafos: a margem entre eles somaria um
+   degrau por cima do outro. Fica só o respiro do "porque", que carrega o
+   filete e precisa de ar antes dele. */
+.ponto p + p {
+  margin-block-start: 0;
+}
+
+/* EMPILHADO, E NÃO ÍCONE AO LADO DO TEXTO.
+   A primeira versão punha a pastilha numa coluna e o texto noutra. Duas
+   armadilhas, as duas medidas: com três filhos de texto, o terceiro caía na
+   PRÓXIMA célula livre — a coluna do ícone, na linha de baixo — e o cartão saía
+   com a coluna do ícone em 320px, a do texto em ZERO e as palavras empilhadas
+   uma letra por linha na beirada. Prender o texto à coluna 2 resolvia isso e
+   descobria a segunda: o título descia para a linha 2, longe da pastilha que
+   deveria ilustrá-lo.
+
+   Empilhar não tem célula livre para preencher errado, e serve a qualquer
+   número de filhos — o ponto com título e duas razões e o ponto de uma linha
+   só saem do mesmo molde. O ícone passa a ser o que sempre foi num cartão:
+   a primeira coisa que se vê, em cima do nome. */
+/* O texto estica na largura do cartão; a pastilha, não. Com justify-items em
+   start o parágrafo encolheria para o tamanho da maior palavra; com tudo em
+   100% a pastilha vira uma barra colorida de ponta a ponta — que foi o que
+   saiu na primeira tentativa. O certo é o padrão da grade (esticar) com a
+   pastilha pedindo exceção. */
+.ponto > .ucam-icon-tile {
+  justify-self: start;
+}
+
+/* TOM DO PONTO. O ícone é o portador — um por cartão, como manda a regra de
+   um portador de cor por linha. A moldura e o fundo do cartão não mudam: o
+   bloco de pontos não é um alerta, é uma lista, e uma lista inteira de
+   cartões tintos vira um semáforo sem trânsito. */
+.ponto[data-tom='bom'] > .ucam-icon-tile {
+  background: var(--ucam-color-feedback-success-background);
+  color: var(--ucam-color-feedback-success-foreground);
+}
+
+.ponto[data-tom='atencao'] > .ucam-icon-tile {
+  background: var(--ucam-color-feedback-warning-background);
+  color: var(--ucam-color-feedback-warning-foreground);
+}
+
+.ponto[data-tom='ruim'] > .ucam-icon-tile {
+  background: var(--ucam-color-feedback-danger-background);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+
+.ponto[data-tom='marca'] > .ucam-icon-tile {
+  background: var(--ucam-color-action-primary-subtle);
+  color: var(--ucam-color-action-primary-default);
+}
+
+/* O SEGUNDO ANDAR DO PONTO: a regra em cima, a razão dela embaixo, um degrau
+   menor e separado por filete. Sem ele os dois parágrafos do cartão têm o
+   mesmo peso e o cartão deixa de ter um ponto de entrada.
+
+   Nasceu na página de Estados e subiu para cá quando /comecar/migrar precisou
+   do mesmo andar — antes que a segunda cópia virasse a décima quinta, que é o
+   que acabou de acontecer com .largo. */
+.ponto .porque {
+  font-size: 0.75rem;
+  color: var(--ucam-color-text-secondary);
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+  padding-block-start: 0.5rem;
+}
+
+/* Um ponto pode ocupar a fileira inteira quando o texto dele é longo demais
+   para caber ao lado dos irmãos sem empurrar a grade para uma altura
+   desproporcional. */
+.ponto--largo {
+  grid-column: 1 / -1;
+}
+
+/* --------------------------------------------------------------- divisor */
+
+/* DIVISOR COM RÓTULO. O site tinha dois separadores: o filete do cabeçalho de
+   página e o vão de 4,5rem entre seções. Faltava o do meio — o que parte uma
+   seção longa em dois assuntos sem promovê-los a seção própria, que criaria
+   âncora, entrada no índice lateral e uma promessa de simetria que o conteúdo
+   não tem.
+
+   Sem rótulo é só o filete. Com rótulo, o filete se abre para a palavra. */
+.divisor {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block: 2.25rem 1.25rem;
+  color: var(--ucam-color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 560;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.divisor::after {
+  content: '';
+  block-size: 1px;
+  background: var(--ucam-color-border-subtle);
+}
+
+.divisor:empty {
+  grid-template-columns: 1fr;
+  margin-block: 1.75rem;
+}
+
+/* ------------------------------------------------------- utilidades curtas */
+
+/* A amostra de cor é um DISCO. Como quadradinho de 12px com raio de 4px ela
+   lia como um checkbox desmarcado — a única forma da página com essa
+   silhueta era, justamente, o controle. */
+.dot {
+  display: inline-block;
+  inline-size: 0.8125rem;
+  block-size: 0.8125rem;
+  border-radius: var(--ucam-radius-full);
+  border: 1px solid var(--ucam-color-border-default);
+  vertical-align: -1px;
+  margin-inline-end: 0.4rem;
+}
+
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 560;
+  text-decoration: none;
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-brand);
+  border-radius: var(--r-controle);
+  box-shadow: var(--sombra-hover);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}

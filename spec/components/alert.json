@@ -1,0 +1,338 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "alert",
+  "name": "Alert",
+  "selector": "ucam-alert",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "feedback",
+  "description": "Mensagem no fluxo da página, ancorada ao conteúdo a que se refere. Diz o que aconteceu ou o que precisa ser sabido antes de agir. Não flutua, não some sozinha e não interrompe: mensagem que desaparece é toast, mensagem que bloqueia é diálogo, e nenhum dos dois é este componente.",
+  "quando_usar": [
+    "Uma operação terminou e a confirmação precisa sobreviver à tela: o requerimento foi deferido, o lote foi processado, a matrícula foi efetivada.",
+    "A pessoa precisa saber de algo ANTES de agir no formulário abaixo — prazo encerrado, campus sem vaga, documento pendente.",
+    "O envio falhou e o motivo precisa ficar visível ao lado do que o causou, não numa faixa que some.",
+    "O sistema está em estado excepcional que dura enquanto durar a tela: manutenção programada, dados de outro semestre, modo somente leitura."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Portal, APPSUCAM/Protocolo e APPSUCAM/SIGFIN",
+    "ocorrencias": [
+      {
+        "tela": "Portal — Login",
+        "problema": "erro de autenticação aparece como texto vermelho solto acima do formulário, sem ícone, sem superfície e sem anúncio para leitor de tela: quem não vê a cor não sabe que algo falhou"
+      },
+      {
+        "tela": "Protocolo — Novo requerimento",
+        "problema": "avisos de regra de negócio (prazo, documentação exigida) só aparecem depois de enviar, em modal de erro — a informação existia antes do envio e foi guardada até o pior momento para dá-la"
+      },
+      {
+        "tela": "SIGFIN — Movimento de caixa",
+        "problema": "o estado caixa fechado é comunicado apenas pela ausência de botões, sem nenhuma frase dizendo o que está acontecendo nem o que fazer"
+      }
+    ],
+    "conclusao": "O parque tem três formas de dar a mesma notícia — texto colorido, modal e ausência de controle — e nenhuma delas é anunciada. O contrato unifica em uma superfície ancorada, com ícone e texto, e define quando o anúncio é vivo."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "A superfície: fundo do tom, filete de 3px na borda inicial e recuo médio. A barra lateral é o que faz o alerta ser reconhecido como alerta mesmo em preto e branco.",
+      "classe": "ucam-alert"
+    },
+    {
+      "parte": "indicador",
+      "obrigatorio": true,
+      "descricao": "Ícone do tom, decorativo (aria-hidden). Obrigatório, e sempre o mesmo por tom: info no info, circleCheck no success, triangleAlert no warning, circleAlert no danger. É o terceiro canal, ao lado da cor e da palavra."
+    },
+    {
+      "parte": "corpo",
+      "obrigatorio": true,
+      "descricao": "Embrulha título e mensagem e toma a sobra da fileira, para o botão de fechar encostar na borda direita. Zera a margem do primeiro e do último filho: o <p> do navegador abriria vão dentro do alerta.",
+      "classe": "ucam-alert__corpo"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": false,
+      "descricao": "Uma linha em peso de rótulo, quando a mensagem tem mais de duas frases. Alerta de uma frase não leva título — o título repetiria a frase.",
+      "classe": "ucam-alert__titulo"
+    },
+    {
+      "parte": "mensagem",
+      "obrigatorio": true,
+      "descricao": "O texto. Diz o que aconteceu e, quando há o que fazer, o que fazer."
+    },
+    {
+      "parte": "acoes",
+      "obrigatorio": false,
+      "descricao": "No máximo duas ações, em variante secundária ou ghost. Ação primária dentro de alerta compete com a ação primária da tela."
+    },
+    {
+      "parte": "fechar",
+      "obrigatorio": false,
+      "descricao": "Botão de ícone para dispensar. Só existe quando dismissible é verdadeiro — e nunca em alerta de erro que bloqueia o envio, porque fechar não resolve o problema e a pessoa perde a única pista do que houve. No Trilho A quem dispensa é a CLASSE: o comportamento das telas escuta .ucam-alert__fechar em qualquer aviso, tira o alerta e leva o foco para o título da região — foco que some junto com o elemento cai no começo do documento.",
+      "classe": "ucam-alert__fechar"
+    }
+  ],
+  "props": [
+    {
+      "nome": "tone",
+      "tipo": "'info' | 'success' | 'warning' | 'danger'",
+      "default": "'info'",
+      "descricao": "A natureza da mensagem. Determina cor, ícone e — indiretamente — o modo de anúncio: danger e warning anunciam com assertividade, info e success de forma educada.",
+      "valores": {
+        "info": {
+          "uso": "Contexto que a pessoa precisa antes de agir: prazo da solicitação, regra do setor, o que acontece depois do envio.",
+          "tokens": {
+            "fundo": "color.feedback.info.background",
+            "texto": "color.feedback.info.foreground",
+            "barra": "color.feedback.info.border"
+          }
+        },
+        "success": {
+          "uso": "Confirmação de algo que já terminou e continua visível: requerimento registrado sob o número 2026/00841.",
+          "limite": "Confirmação de ação rápida NÃO vira alerta persistente empilhado no topo da página. E também não vira toast: toast está fora do catálogo por decisão (ver limites). O caminho é o próprio controle dizer que terminou — o botão sai de loading, a linha salva pisca o realce, o contador do cabeçalho muda. Alerta só entra quando a confirmação carrega informação que a pessoa vai precisar depois, como o número do protocolo gerado. Nas telas de referência isso é o que o comportamento faz desde 21/09/2026: as ações cuja confirmação carrega um fato que não está em lugar nenhum da tela — o e-mail de redefinição (\"o link vale por uma hora\") e a reemissão do cartão (\"o anterior deixou de valer agora\") — montam um alerta na região, um por região, com o X que dispensa. As demais seguem no eco do próprio controle. O alerta não leva role=status: quem fala é a região de anúncio, que já recebeu a mesma frase, e dois anúncios da mesma coisa é pior que um.",
+          "tokens": {
+            "fundo": "color.feedback.success.background",
+            "texto": "color.feedback.success.foreground",
+            "barra": "color.feedback.success.border"
+          }
+        },
+        "warning": {
+          "uso": "A operação vai continuar, mas com consequência que a pessoa precisa conhecer: o prazo vence hoje, o valor foi calculado com multa.",
+          "limite": "Não usar para o estado normal de espera.",
+          "tokens": {
+            "fundo": "color.feedback.warning.background",
+            "texto": "color.feedback.warning.foreground",
+            "barra": "color.feedback.warning.border"
+          }
+        },
+        "danger": {
+          "uso": "A operação falhou ou está impedida: credencial inválida, documento obrigatório ausente, caixa já fechado.",
+          "limite": "Erro de UM campo pertence ao campo (errorMessage do text-field), não a um alerta no topo — o alerta obriga a pessoa a procurar qual campo é.",
+          "tokens": {
+            "fundo": "color.feedback.danger.background",
+            "texto": "color.feedback.danger.foreground",
+            "barra": "color.feedback.danger.border"
+          }
+        }
+      }
+    },
+    {
+      "nome": "title",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Título de uma linha. Só quando a mensagem passa de duas frases."
+    },
+    {
+      "nome": "dismissible",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Mostra o botão de fechar. Falso por padrão: a maioria dos alertas descreve uma condição que continua verdadeira depois de fechada, e fechá-la só esconde a explicação."
+    },
+    {
+      "nome": "live",
+      "tipo": "'off' | 'polite' | 'assertive'",
+      "default": "'off'",
+      "descricao": "Como o leitor de tela anuncia. off é o padrão porque a maior parte dos alertas já está na página quando ela carrega — declarar região viva nesse caso não anuncia nada e ainda faz o alerta ser relido a cada mudança vizinha. polite para alerta que aparece em resposta a uma ação sem urgência; assertive para o que impede a pessoa de continuar.",
+      "valores": {
+        "off": {
+          "quando": "O alerta já existe na carga da página.",
+          "como": "Sem role e sem aria-live. A leitura acontece na ordem do documento."
+        },
+        "polite": {
+          "quando": "O alerta surge em resposta a uma ação e a pessoa pode terminar o que está fazendo antes de ouvi-lo.",
+          "como": "role=status. Anuncia na primeira pausa."
+        },
+        "assertive": {
+          "quando": "O alerta impede o prosseguimento — erro de envio, sessão expirada.",
+          "como": "role=alert. Interrompe a leitura corrente; por isso não se usa em alerta que já estava na tela."
+        }
+      }
+    },
+    {
+      "nome": "icon",
+      "tipo": "UcamIconName | null",
+      "default": "null",
+      "descricao": "Sobrescreve o ícone do tom. Existe para o caso raro em que o domínio tem um símbolo mais preciso (um relógio para prazo). Não serve para trocar o ícone por gosto: um tom, um ícone, em todo o parque."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "dismiss",
+      "payload": "void",
+      "descricao": "Emitido quando a pessoa fecha o alerta. O componente não se remove sozinho — quem controla a visibilidade é a aplicação, porque só ela sabe se a condição ainda vale."
+    }
+  ],
+  "estados": [
+    "default",
+    "dismissed"
+  ],
+  "limites": {
+    "$descricao": "Alerta é o componente que absorve toda mensagem sem dono. Estas regras devolvem cada mensagem ao seu lugar.",
+    "regras": [
+      "Erro de um campo pertence ao campo. Um alerta no topo dizendo Verifique os campos obrigatórios obriga a pessoa a procurar quais são — e é o que o Protocolo faz hoje.",
+      "Alerta não é confirmação de ação destrutiva. Isso é diálogo, porque precisa de resposta antes de continuar (padrão confirmacao-destrutiva).",
+      "Alerta não é notificação transitória. Se some sozinho depois de alguns segundos, é toast — e toast não está no catálogo, porque mensagem que some não pode carregar informação necessária.",
+      "Máximo de um alerta visível por região. Dois alertas empilhados anulam-se: nenhum dos dois é lido.",
+      "Não usar alerta permanente para explicar como a tela funciona. Instrução que aparece toda vez vira paisagem em três dias; se a tela precisa dela, a tela precisa mudar.",
+      "Não usar danger para desfecho de negócio desfavorável (Indeferido). Isso é badge — o requerimento indeferido não é um erro do sistema (ADR-002)."
+    ]
+  },
+  "acessibilidade": {
+    "papel": "Depende de live: nenhum quando off, status quando polite, alert quando assertive.",
+    "requisitos": [
+      "O tom nunca é o único portador do significado (WCAG 1.4.1): o ícone dá a forma e o texto dá a palavra. Foi a ausência dos dois que deixou o erro de login do Portal legível só para quem enxerga a cor.",
+      "Contraste do texto sobre o fundo do tom mínimo 4.5:1, verificado no build para os quatro tons.",
+      "Alerta que já está na página quando ela carrega NÃO declara região viva. role=alert em conteúdo estático não anuncia nada e faz o texto ser relido a cada alteração próxima.",
+      "Alerta assertivo aparece imediatamente após a ação que o causou e o mais perto possível dela no DOM — anunciar um erro que está a 2000px de distância no fim da página não ajuda ninguém.",
+      "O botão de fechar tem nome acessível próprio (Fechar aviso) e alvo mínimo de 24px.",
+      "Ícone com aria-hidden=true. Quem nomeia é o texto.",
+      "Quando o alerta lista campos com problema, cada item é link que leva o foco ao campo (WCAG 3.3.1 e 2.4.3)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "3.3.1",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Primeira frase diz o que aconteceu; segunda, o que fazer. Nesta ordem — quem lê só a primeira ainda entende.",
+      "Voz ativa e sujeito explícito: O sistema não encontrou essa matrícula, não Matrícula não encontrada.",
+      "Não culpar quem usa: Confira a senha, não Você digitou a senha errada.",
+      "Sem código de erro no texto principal. Se o suporte precisa dele, vai numa segunda linha em caption.",
+      "Caixa natural, sem ponto de exclamação (ADR-003)."
+    ],
+    "exemplos": {
+      "bom": [
+        "Matrícula ou senha incorreta. Confira os dados e tente novamente.",
+        "O prazo deste requerimento vence hoje. Depois das 23h59 ele será encerrado sem análise.",
+        "O caixa de 03/09 já foi fechado. Para lançar movimento nesta data, peça reabertura ao setor financeiro."
+      ],
+      "ruim": [
+        "ERRO!",
+        "Verifique os campos obrigatórios",
+        "Falha na operação (cod. 0x8007)",
+        "Você preencheu errado"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-button",
+      "ucam-icon",
+      "ucam-icon-button"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-formulario-entidade",
+      "padrao-listagem-crud",
+      "ucam-dialog"
+    ]
+  },
+  "migracao": {
+    "de": "Texto colorido solto, $mdToast e modal de erro do Angular Material",
+    "mapa": [
+      {
+        "legado": "span com color vermelho acima do formulário",
+        "novo": "<ucam-alert tone=\"danger\" live=\"assertive\">",
+        "nota": "A conversão só está completa quando o texto é reescrito: cor sozinha era o problema, e trocar o span pelo componente sem mexer na frase mantém ERRO! como mensagem."
+      },
+      {
+        "legado": "$mdDialog.alert() com uma frase e um botão OK",
+        "novo": "alerta ancorado no lugar onde o problema está",
+        "nota": "Não é 1:1: o modal exigia um clique para sumir e roubava o contexto. O alerta ancorado não pede clique nenhum."
+      },
+      {
+        "legado": "$mdToast.show()",
+        "novo": "alerta persistente, ou nada",
+        "nota": "Toast não entrou no catálogo. Se a mensagem é necessária, ela não pode sumir sozinha; se pode sumir, provavelmente não era necessária."
+      },
+      {
+        "legado": "modal de erro após submit listando campos inválidos",
+        "novo": "errorMessage em cada campo, mais um alerta de resumo com links para os campos",
+        "nota": "O resumo sozinho não basta — sem a marca no campo, a pessoa procura."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Erro de autenticação",
+      "codigo": "@if (erro()) {\n  <ucam-alert tone=\"danger\" live=\"assertive\">\n    Matrícula ou senha incorreta. Confira os dados e tente novamente.\n  </ucam-alert>\n}"
+    },
+    {
+      "titulo": "Contexto antes de agir",
+      "codigo": "<ucam-alert tone=\"info\">\n  Requerimentos abertos após as 17h entram na fila do dia seguinte.\n</ucam-alert>"
+    },
+    {
+      "titulo": "Com título e ação",
+      "codigo": "<ucam-alert tone=\"warning\" title=\"O prazo vence hoje\">\n  Depois das 23h59 o requerimento será encerrado sem análise.\n  <ucam-button variant=\"secondary\" (click)=\"prorrogar()\">Pedir prorrogação</ucam-button>\n</ucam-alert>"
+    },
+    {
+      "titulo": "Dispensável, em resposta a uma ação",
+      "codigo": "<ucam-alert tone=\"success\" live=\"polite\" dismissible (dismiss)=\"aviso.set(null)\">\n  Requerimento registrado sob o número 2026/00841.\n</ucam-alert>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Deixar live em off para alerta que já está na página na carga.",
+      "evite": "role=alert em tudo, por precaução.",
+      "porque": "role=alert em conteúdo estático não anuncia nada na carga e faz o texto ser relido a cada mudança vizinha — ruído constante para quem usa leitor de tela."
+    },
+    {
+      "faca": "Marcar o erro no campo e usar o alerta apenas como resumo com links.",
+      "evite": "Um alerta no topo dizendo Verifique os campos obrigatórios.",
+      "porque": "O resumo sem a marca no campo transfere para a pessoa o trabalho de procurar — que é o que o Novo requerimento faz hoje."
+    },
+    {
+      "faca": "Escrever o que aconteceu e depois o que fazer, nesta ordem.",
+      "evite": "Mensagem de uma palavra ou código de erro como texto principal.",
+      "porque": "Quem lê só a primeira frase ainda precisa entender a situação; o código serve ao suporte, não a quem está tentando terminar a tarefa."
+    },
+    {
+      "faca": "Manter um alerta por região.",
+      "evite": "Empilhar três avisos no topo da tela.",
+      "porque": "Alertas empilhados se anulam — a atenção que o primeiro pedia é dividida por todos, e nenhum é lido."
+    },
+    {
+      "faca": "Usar badge para desfecho de negócio desfavorável.",
+      "evite": "Alerta danger dizendo Requerimento indeferido.",
+      "porque": "Indeferido é resultado correto do processo, não falha do sistema. Vermelho gasto em desfecho normal corrói o sinal onde ele importa (ADR-002)."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "citacao",
+      "diferenca": "O alerta é o sistema falando com quem usa a tela. A citação é uma pessoa falando, reproduzida pelo sistema.",
+      "escolha": "Quem fala é o sistema: aviso, erro, confirmação."
+    },
+    {
+      "componente": "dialog",
+      "diferenca": "Alert informa dentro do fluxo da página e não exige nada; dialog bloqueia a página e exige decisão.",
+      "escolha": "Mensagem que a pessoa precisa ler mas não precisa responder fica na página, ancorada ao que ela descreve."
+    },
+    {
+      "componente": "empty-state",
+      "diferenca": "Alert é uma mensagem ao lado do conteúdo que existe; empty-state ocupa a área inteira porque não há conteúdo nenhum.",
+      "escolha": "Se há dado na tela e algo precisa ser dito sobre ele, é alert."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Superfície com filete lateral, mais o ícone do tom no markup. O CSS não injeta ícone — quem escreve o markup coloca o svg do tom.",
+      "raiz": ".ucam-alert",
+      "estado": "Tom por modificador. Sem estado de interação: o alerta não é controle.",
+      "variaveis": [
+        "--ucam-color-feedback-info-background",
+        "--ucam-color-feedback-success-background",
+        "--ucam-color-feedback-warning-background",
+        "--ucam-color-feedback-danger-background",
+        "--ucam-space-inset-md"
+      ],
+      "nota": "O Trilho A NÃO entrega o anúncio: role e aria-live são atributos do markup e precisam ser escritos pela aplicação. Um alerta legado sem eles fica invisível ao leitor de tela mesmo com o visual correto."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/alert/ucam-alert.ts — pronto. Resolve o papel a partir da prop live (off não declara região viva nenhuma, polite vira role=status, assertive vira role=alert) e escolhe o ícone do tom — as duas partes que o Trilho A deixa para a aplicação errar. Tem título opcional, ações dentro do corpo e dispensa com nome acessível próprio. O padrão é off de propósito: a maioria dos alertas já está na página quando ela carrega, e role=alert em conteúdo estático não anuncia nada."
+  }
+}

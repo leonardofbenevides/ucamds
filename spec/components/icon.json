@@ -1,0 +1,237 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "icon",
+  "name": "Icon",
+  "selector": "ucam-icon",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "conteudo",
+  "description": "O único jeito de pôr um ícone numa tela do sistema. Aceita apenas nomes do conjunto curado em icons.json e recusa qualquer outro em tempo de compilação. É sempre decorativo: quem nomeia é o texto ao lado ou o ariaLabel do controle que o contém.",
+  "quando_usar": [
+    "Um botão, item de menu ou rótulo ganha um símbolo ao lado do texto que já o nomeia.",
+    "Um estado precisa de um terceiro canal além de cor e palavra — o ícone do tom no badge.",
+    "É o único jeito admitido de pôr símbolo em tela: qualquer outro caminho é recusado na compilação."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Portal e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "Portal — Grade de módulos",
+        "problema": "o mesmo capelo identifica três módulos diferentes. Um ícone que não distingue não informa nada e ainda ocupa o lugar de um que informaria"
+      },
+      {
+        "tela": "Portal — Grade de módulos",
+        "problema": "vários módulos exibem o ícone quebrado do navegador: são bitmaps servidos por caminho que não existe mais em produção, e a falha só aparece para quem usa o sistema"
+      },
+      {
+        "tela": "Protocolo — listagens",
+        "problema": "ícones de ação em tamanhos diferentes na mesma fileira, porque cada tela escolheu o seu"
+      }
+    ],
+    "conclusao": "Ícone sem conjunto fechado degenera em três direções ao mesmo tempo: significado duplicado, arquivo ausente e tamanho arbitrário. O contrato fecha as três — nome tipado, sprite embutido, escala de três valores."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Elemento inline que não encolhe (shrink-0) e carrega aria-hidden fixo. O não-encolher importa: dentro de um flex apertado, um ícone sem essa trava vira uma elipse achatada em vez de empurrar a quebra do texto."
+    },
+    {
+      "parte": "desenho",
+      "obrigatorio": true,
+      "descricao": "O traço, vindo do Lucide — a mesma base que a ZardUI já usa, então não há segunda dependência de ícones. Traço de 2px em grade de 24, nunca alterado: ícone com espessura diferente destoa ao lado dos outros mesmo quando ninguém sabe dizer por quê."
+    }
+  ],
+  "props": [
+    {
+      "nome": "name",
+      "tipo": "UcamIconName",
+      "obrigatorio": true,
+      "descricao": "Nome do conjunto curado. O tipo é gerado de icons.json, então um nome fora do conjunto derruba o build em vez de virar um quadrado vazio em produção — que é o defeito que o Portal tem hoje. Ícone novo é PEDIDO ao design system, não escolha local."
+    },
+    {
+      "nome": "size",
+      "tipo": "'xs' | 'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "Escala fechada de quatro degraus. Fora dela é pedido ao DS, não valor local — foi cada tela escolher o próprio tamanho que produziu ícones de alturas diferentes na mesma fileira. O degrau de 12 entrou depois dos outros três (20/09/2026): a folha do Trilho A já o tinha numa regra de contexto — o símbolo dentro da pastilha —, e o Trilho B, sem contexto para consultar, saía com 16 no mesmo selo. Dois trilhos desenhando a mesma peça com símbolos de tamanhos diferentes é o defeito que a escala existe para impedir.",
+      "valores": {
+        "xs": {
+          "uso": "12px. DENTRO DA PASTILHA e na pontuação: selo, prazo, chip — caixa de 22px com rótulo de 12, onde o símbolo de 16 fica mais alto que as letras — e a seta que liga dois valores na linha do tempo, que é pontuação e não assunto.",
+          "tokens": {
+            "tamanho": "size.icon-xs"
+          }
+        },
+        "sm": {
+          "uso": "16px. Linha de tabela, botão pequeno, marcador ao lado de texto de apoio.",
+          "tokens": {
+            "tamanho": "size.icon-sm"
+          }
+        },
+        "md": {
+          "uso": "20px. O padrão: botão, item de navegação, campo.",
+          "tokens": {
+            "tamanho": "size.icon-md"
+          }
+        },
+        "lg": {
+          "uso": "24px. Cabeçalho de seção e estado vazio, onde o ícone é a âncora do bloco.",
+          "limite": "Não usar para dar importância a um ícone dentro de uma fileira de irmãos — ali o que muda o peso é o desenho, não o tamanho.",
+          "tokens": {
+            "tamanho": "size.icon-lg"
+          }
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Um ícone, um significado, em todo o parque. O capelo é graduação; pós-graduação usa bookOpen. Reaproveitar desenho para conceito diferente anula a função do ícone — é o defeito do Portal.",
+      "Nunca é o único portador de significado (WCAG 1.4.1). Ícone sozinho só em ação convencional, e mesmo aí com ariaLabel no controle, nunca no ícone.",
+      "Não usar emoji como ícone de interface: renderiza diferente por sistema operacional e é lido em voz alta pelo leitor de tela.",
+      "Não redesenhar ícone do conjunto nem misturar com outro pacote.",
+      "Não colorir ícone por decoração. A tinta vem de currentColor, ou seja, do contexto — um ícone que escolhe a própria cor deixa de acompanhar tema, estado e variante do controle que o contém.",
+      "Não usar ícone como imagem de conteúdo. Ilustração e foto não são ícones e não passam por aqui."
+    ]
+  },
+  "acessibilidade": {
+    "papel": "nenhum — aria-hidden=true fixo",
+    "requisitos": [
+      "aria-hidden=true é fixo no host e NÃO é configurável. Um ícone que pudesse virar conteúdo acessível seria a porta para nome acessível duplicado — o leitor de tela anunciando o desenho e o texto ao lado, um atrás do outro.",
+      "O nome acessível de um controle com ícone vem do texto visível ou do ariaLabel do controle (ver icon-button).",
+      "A tinta vem de currentColor, o que faz o ícone herdar o contraste já verificado do texto que acompanha.",
+      "Ícone não é alvo de ponteiro. Quem recebe clique é o controle em volta, com os 24px que a WCAG 2.5.8 pede.",
+      "O conjunto é monocromático de propósito: ícone que depende de cor para distinguir estado repetiria a violação de 1.4.1 em escala."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.4.1",
+      "1.4.11"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O nome do ícone descreve o DESENHO, não o uso: chevronDown, não abrirMenu. O mesmo desenho serve a vários usos e um nome de uso trava o reaproveitamento.",
+      "Ícone acompanha texto por padrão. A exceção é a ação convencional em fileira densa — e ali o contrato é o icon-button."
+    ],
+    "exemplos": {
+      "bom": [
+        "name=\"circleCheck\" ao lado de Deferido",
+        "name=\"chevronDown\" no ramo do menu",
+        "name=\"graduationCap\" para graduação e bookOpen para pós"
+      ],
+      "ruim": [
+        "name=\"ok\"",
+        "o mesmo graduationCap em três módulos diferentes",
+        "emoji no lugar do ícone"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-alert",
+      "ucam-anexo",
+      "ucam-app-shell",
+      "ucam-badge",
+      "ucam-button",
+      "ucam-chip",
+      "ucam-command",
+      "ucam-empty-state",
+      "ucam-file-field",
+      "ucam-icon-button",
+      "ucam-icon-tile",
+      "ucam-input-group",
+      "ucam-link",
+      "ucam-list-item",
+      "ucam-prazo",
+      "ucam-segmented",
+      "ucam-stat"
+    ]
+  },
+  "migracao": {
+    "de": "md-icon do Angular Material e <img> apontando para bitmap",
+    "mapa": [
+      {
+        "legado": "<md-icon>done</md-icon>",
+        "novo": "<ucam-icon name=\"check\" />",
+        "nota": "A conversão não é 1:1 de nome: o Material Icons tem milhares de nomes e o conjunto curado tem 59. Nome sem equivalente vira pedido ao design system, não ícone de outro pacote."
+      },
+      {
+        "legado": "<img src=\"/assets/icones/modulo-x.png\">",
+        "novo": "<ucam-icon name=\"…\" />",
+        "nota": "Resolve junto o ícone quebrado em produção: nome inexistente passa a derrubar o build em vez de aparecer quebrado para quem usa."
+      },
+      {
+        "legado": "md-icon com style=\"font-size:18px\"",
+        "novo": "size=\"sm\" ou size=\"md\"",
+        "nota": "Não há 18px. O valor mais próximo da escala é escolhido uma vez, por contexto, não por tela."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Acompanhando texto",
+      "codigo": "<ucam-icon name=\"circleCheck\" size=\"sm\" />\n<span>Deferido</span>"
+    },
+    {
+      "titulo": "Dentro de um botão",
+      "codigo": "<ucam-button variant=\"primary\" iconStart=\"plus\">Novo requerimento</ucam-button>"
+    },
+    {
+      "titulo": "Âncora de estado vazio",
+      "codigo": "<ucam-icon name=\"inbox\" size=\"lg\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Manter um desenho para um significado em todo o parque.",
+      "evite": "Reaproveitar o capelo para graduação, pós e extensão.",
+      "porque": "É o que a grade de módulos do Portal faz hoje, e o resultado é que o ícone deixa de distinguir — vira ornamento em 25 ladrilhos."
+    },
+    {
+      "faca": "Deixar a tinta vir de currentColor.",
+      "evite": "Passar cor no ícone.",
+      "porque": "Ícone que escolhe a própria cor não acompanha tema escuro, estado desabilitado nem variante do botão que o contém."
+    },
+    {
+      "faca": "Pedir ícone novo ao design system quando faltar.",
+      "evite": "Importar um desenho de outro pacote porque o conjunto não tinha.",
+      "porque": "Traço e grade diferentes destoam ao lado dos outros, e o conjunto deixa de ser conjunto no primeiro empréstimo."
+    },
+    {
+      "faca": "Escrever o nome do ícone pelo desenho.",
+      "evite": "Nomear pelo uso (abrirMenu, salvar).",
+      "porque": "O mesmo desenho serve a vários usos; nome de uso trava o reaproveitamento e produz dois nomes para um traço só."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "No legado o ícone é um svg com use apontando o sprite embutido na página, com a classe de tamanho. Não há componente — o que o Trilho A garante é o desenho e a escala.",
+      "raiz": ".ic",
+      "estado": "Sem estado. A tinta é currentColor e vem do contexto.",
+      "variaveis": [
+        "--ucam-size-icon-xs",
+        "--ucam-size-icon-sm",
+        "--ucam-size-icon-md",
+        "--ucam-size-icon-lg"
+      ],
+      "nota": "As regras de tamanho vivem em tools/lib/icon-css.mjs, importadas pelos dois geradores. Já foi bug: quando moravam dentro de um só gerador, o outro emitia svg sem tamanho — e svg sem inline-size não tem tamanho intrínseco, estica até o contêiner e as sete telas saíam com ícones do tamanho da coluna."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/icon/ucam-icon.ts — pronto. O tipo UcamIconName é gerado de icons.json em ucam-icons.generated.ts, e é ele que recusa nome fora do conjunto na compilação. O degrau é escrito em --ng-icon__size (input size do <ng-icon>), com o token var(--ucam-size-icon-*) — nunca por classe utilitária: a folha do <ng-icon> não tem camada e ganha de @layer utilities, e foi assim que a escala inteira ficou inerte até a ADR-041, com todo ícone em 1em do contexto."
+  },
+  "vs": [
+    {
+      "componente": "icon-tile",
+      "diferenca": "Icon é o traço; IconTile é o FUNDO atrás do traço. O ladrilho existe quando um ícone de 20px precisa ter presença numa fileira de vinte e cinco irmãos.",
+      "escolha": "O ícone acompanha um texto que já o nomeia: dentro de botão, de item de menu, ao lado de um rótulo."
+    },
+    {
+      "componente": "avatar",
+      "diferenca": "Icon representa uma COISA ou uma ação e é sempre decorativo; Avatar representa uma PESSOA e é identificação. Pessoa nunca vira ícone genérico — sem foto, o Avatar mostra as iniciais dela.",
+      "escolha": "Documento, pasta, calendário, engrenagem: símbolos de conceito."
+    }
+  ]
+}

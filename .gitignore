@@ -1,0 +1,35 @@
+node_modules/
+
+# Saídas geradas. Nada aqui é fonte — tudo nasce em spec/ e é reconstruído
+# por `pnpm build`. Commitar significaria ter duas verdades.
+dist/
+site/dist/
+site/.vercel/
+site/.nitro/
+site/.angular/
+site/src/generated/
+site/out-tsc/
+
+# Também geradas, só que moram dentro de pastas de fonte:
+# `pnpm telas` escreve as telas autônomas nos dois lugares, `pnpm fonts`
+# copia os .woff2 do @fontsource. Provado: apagando as quatro pastas,
+# `pnpm build` devolve todas idênticas.
+site/src/assets/t/
+site/src/assets/fonts/
+docs/*
+!docs/superpowers/
+
+# Skills de terceiros, baixadas do GitHub. São dependência, não fonte:
+# skills-lock.json guarda origem e hash de cada uma, e as restaura.
+.claude/skills/
+.agents/skills/
+
+# Investigação: sondas, capturas e scripts de uma sessão só.
+scratchpad/
+
+.vercel/
+*.log
+*.err
+.env
+.env.*
+.DS_Store

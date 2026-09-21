@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="DSUCAM">
+  <!-- A PLACA sólida é o componente; o TOKEN é o VAZADO nela, perto do canto
+       inferior direito. O fundo aparece pelo buraco — por isso o desenho
+       sobrevive sobre claro, escuro e sobre a faixa bordô sem uma segunda
+       versão e sem filete de separação.
+
+       Um path só, com fill-rule="evenodd": o subpath interno recorta sem
+       precisar de <mask> e de id. Isso é o que permite ao MESMO desenho servir
+       inline, como máscara de alfa (.ucam-rail__marca) e como data URI no
+       favicon. Geometria espelhada em site/src/app/shell/simbolo.component.ts,
+       dsucam-simbolo-inverso.svg, tools/lib/marca.mjs e site/index.html. -->
+  <path fill="#8D293A" fill-rule="evenodd" d="M8 2H16A6 6 0 0 1 22 8V16A6 6 0 0 1 16 22H8A6 6 0 0 1 2 16V8A6 6 0 0 1 8 2ZM14.1 11.5H16.9A2.6 2.6 0 0 1 19.5 14.1V16.9A2.6 2.6 0 0 1 16.9 19.5H14.1A2.6 2.6 0 0 1 11.5 16.9V14.1A2.6 2.6 0 0 1 14.1 11.5Z"/>
+</svg>

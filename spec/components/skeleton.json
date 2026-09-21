@@ -1,0 +1,213 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "skeleton",
+  "name": "Skeleton",
+  "selector": "ucam-skeleton",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "feedback",
+  "description": "Marcador de conteúdo em carregamento, com a forma aproximada do que vai chegar. Existe para substituir o overlay bloqueante de tela cheia do legado — ver ADR-005.",
+  "quando_usar": [
+    "Uma tabela, lista ou painel está carregando e a forma do que vem já é conhecida.",
+    "A espera é de duração desconhecida — se a fração fosse conhecida, seria progress.",
+    "O legado cobria a tela inteira com um overlay bloqueante e isso vai sair (ADR-005)."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 6, 8 (Análise de Requerimento)",
+        "rotulo": "CARREGANDO — Aguarde enquanto as informações estão sendo processadas...",
+        "problema": "modal bloqueia a tela inteira para carregar uma lista; impede cancelar, navegar ou entender o que ocorre"
+      },
+      {
+        "tela": "image 6",
+        "problema": "o overlay aparece sobre uma tabela que já mostra TOTAL DE REQUERIMENTOS: 0, dando informação contraditória enquanto carrega"
+      },
+      {
+        "tela": "image 8",
+        "problema": "spinner genérico sem indicação de progresso nem de qual parte da tela está sendo atualizada"
+      }
+    ],
+    "conclusao": "O overlay é removido do catálogo. O carregamento passa a acontecer no lugar do conteúdo que está chegando."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Container com as dimensões aproximadas do conteúdo final."
+    },
+    {
+      "parte": "shimmer",
+      "obrigatorio": false,
+      "descricao": "Animação sutil de varredura. Desligada sob prefers-reduced-motion."
+    }
+  ],
+  "props": [
+    {
+      "nome": "variant",
+      "tipo": "'text' | 'heading' | 'block' | 'circle' | 'table-row'",
+      "default": "'text'",
+      "descricao": "Forma do marcador.",
+      "valores": {
+        "text": {
+          "uso": "Linha de texto corrido. Última linha com largura reduzida, imitando fim de parágrafo."
+        },
+        "heading": {
+          "uso": "Título."
+        },
+        "block": {
+          "uso": "Card, imagem ou área retangular."
+        },
+        "circle": {
+          "uso": "Avatar."
+        },
+        "table-row": {
+          "uso": "Linha de tabela completa, com células proporcionais às colunas reais.",
+          "limite": "Requer que a DataTable passe a definição de colunas, para as células não ficarem arbitrárias."
+        }
+      }
+    },
+    {
+      "nome": "lines",
+      "tipo": "number",
+      "default": "1",
+      "descricao": "Quantidade de linhas em variant=text."
+    },
+    {
+      "nome": "count",
+      "tipo": "number",
+      "default": "1",
+      "descricao": "Repetições. Em tabela, use a quantidade de linhas da página anterior para evitar salto de layout."
+    },
+    {
+      "nome": "width",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Largura CSS. Omitir para ocupar o container."
+    }
+  ],
+  "estados": [
+    "loading"
+  ],
+  "limites": {
+    "regras": [
+      "Nunca em tela cheia sobre conteúdo existente. Skeleton ocupa o lugar do que está chegando, não cobre o que já está lá.",
+      "Não usar para operação disparada por botão — quem indica é a prop loading do próprio botão.",
+      "Não usar para esperas abaixo de ~300ms: o piscar incomoda mais do que a espera.",
+      "Acima de ~10 segundos, skeleton deixa de ser adequado; use indicador de progresso com etapa nomeada e possibilidade de cancelar.",
+      "Recarregar dados já visíveis não usa skeleton: mantenha o conteúdo antigo com aria-busy e uma indicação discreta, para não fazer a tela piscar."
+    ],
+    "motivo": "ADR-005. O overlay CARREGANDO existia porque não havia alternativa especificada."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O skeleton em si é decorativo: aria-hidden=true. Quem comunica o carregamento é a região que o contém, com aria-busy=true.",
+      "A região que carrega tem aria-live=polite e anuncia a conclusão com o resultado: 12 requerimentos carregados. Nunca anunciar Carregando repetidamente.",
+      "Nunca usar aria-live=assertive para carregamento — interrompe a leitura em curso sem necessidade.",
+      "A animação de shimmer é desligada sob prefers-reduced-motion (WCAG 2.3.3).",
+      "O skeleton reserva a altura aproximada do conteúdo final, evitando deslocamento de layout quando o conteúdo chega.",
+      "Contraste do marcador contra o fundo mantido baixo de propósito: é ausência de conteúdo, não conteúdo. Por isso precisa ser aria-hidden — do contrário seria conteúdo com contraste reprovado."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.3.3",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "O skeleton não tem texto.",
+      "O anúncio de conclusão pertence à região que carrega e informa o resultado, não o processo.",
+      "Fim do Aguarde enquanto as informações estão sendo processadas — o usuário não precisa ser instruído a esperar."
+    ],
+    "exemplos": {
+      "bom": [
+        "12 requerimentos carregados",
+        "Nenhum requerimento encontrado"
+      ],
+      "ruim": [
+        "CARREGANDO",
+        "Aguarde enquanto as informações estão sendo processadas...",
+        "Processando..."
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-data-table",
+      "ucam-description-list"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / $mdDialog de carregamento",
+    "mapa": [
+      {
+        "legado": "overlay CARREGANDO em listagem",
+        "novo": "DataTable state=loading",
+        "nota": "Renderiza table-row skeletons no corpo da tabela."
+      },
+      {
+        "legado": "overlay CARREGANDO em ação de botão",
+        "novo": "Button loading",
+        "nota": "Não usa skeleton."
+      },
+      {
+        "legado": "overlay CARREGANDO em carga de formulário",
+        "novo": "skeleton por campo",
+        "nota": "Mantém o layout do formulário estável."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Linhas de tabela",
+      "codigo": "<ucam-skeleton variant=\"table-row\" [count]=\"10\" />"
+    },
+    {
+      "titulo": "Bloco de texto",
+      "codigo": "<ucam-skeleton variant=\"text\" [lines]=\"3\" />"
+    },
+    {
+      "titulo": "Região que carrega",
+      "codigo": "<div [attr.aria-busy]=\"carregando()\" aria-live=\"polite\">\n  @if (carregando()) { <ucam-skeleton variant=\"table-row\" [count]=\"10\" /> }\n  @else { <ucam-data-table ... /> }\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Ocupar o lugar do conteúdo que está chegando.",
+      "evite": "Overlay de tela cheia sobre o que já está na tela.",
+      "porque": "O modal CARREGANDO do Protocolo impede cancelar, navegar ou entender o que ocorre. É a ADR-005."
+    },
+    {
+      "faca": "Usar a prop loading do próprio botão para operação disparada por clique.",
+      "evite": "Skeleton para ação de botão.",
+      "porque": "O feedback pertence ao controle que disparou, onde o olho do usuário já está."
+    },
+    {
+      "faca": "Reservar o skeleton para esperas entre ~300ms e ~10s.",
+      "evite": "Skeleton em espera curta, e skeleton em espera muito longa.",
+      "porque": "Abaixo de 300ms o piscar incomoda mais que a espera; acima de 10s é preciso etapa nomeada e cancelamento."
+    },
+    {
+      "faca": "Anunciar o resultado quando o conteúdo chega: 12 requerimentos carregados.",
+      "evite": "'Aguarde enquanto as informações estão sendo processadas...'",
+      "porque": "O usuário não precisa ser instruído a esperar; precisa saber o que chegou."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "empty-state",
+      "diferenca": "Skeleton é ENQUANTO carrega; empty-state é quando não há o que carregar. Um é ignorância temporária do sistema, o outro é um fato sobre os dados.",
+      "escolha": "Se a requisição ainda não voltou, skeleton. Trocar por empty-state antes da resposta chegar informa \"não há nada\" sobre algo que talvez exista."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Bloco de carregamento, com a forma dada por modificador.",
+      "raiz": ".ucam-skeleton",
+      "nota": "A animação respeita prefers-reduced-motion na própria folha. O anúncio do carregamento é do markup — o esqueleto sozinho é invisível para quem ouve."
+    }
+  }
+}

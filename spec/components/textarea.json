@@ -1,0 +1,275 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "textarea",
+  "name": "Textarea",
+  "selector": "ucam-textarea",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Entrada de texto de múltiplas linhas, com rótulo persistente, contador opcional e crescimento automático. Para descrição de requerimento, justificativa e observação.",
+  "quando_usar": [
+    "A resposta tem frases: descrição do requerimento, justificativa, parecer, observação.",
+    "O texto pode crescer e não deve ficar preso numa caixa de altura fixa com rolagem interna.",
+    "Há limite real de caracteres validado no servidor e o contador vai refleti-lo."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "Novo Requerimento",
+        "rotulo": "Do que se trata esta solicitação",
+        "problema": "o rótulo parece cabeçalho de seção, não rótulo de campo — está separado do controle e com peso de título"
+      },
+      {
+        "tela": "Novo Requerimento",
+        "campo": "texto",
+        "problema": "Clique aqui para digitar... é placeholder fazendo papel de rótulo, e some ao digitar"
+      },
+      {
+        "tela": "Novo Requerimento",
+        "campo": "texto",
+        "problema": "ROLAGEM ANINHADA: a área de texto tem barra própria e o diálogo tem outra, lado a lado"
+      },
+      {
+        "tela": "Novo Requerimento",
+        "campo": "texto",
+        "problema": "altura fixa e pequena para o campo mais importante do formulário"
+      }
+    ],
+    "conclusao": "A rolagem aninhada é consequência de espremer um campo de texto longo dentro de um diálogo. O contrato do Dialog já proíbe; aqui o campo cresce em vez de rolar."
+  },
+  "anatomia": [
+    {
+      "parte": "label",
+      "obrigatorio": true
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": false
+    },
+    {
+      "parte": "control",
+      "obrigatorio": true,
+      "descricao": "Elemento textarea nativo."
+    },
+    {
+      "parte": "contador",
+      "obrigatorio": false,
+      "descricao": "Aparece a partir de 80% do limite; antes disso é ruído."
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "placeholder",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Exemplo do que escrever, nunca instrução. Clique aqui para digitar não é placeholder, é ausência de rótulo."
+    },
+    {
+      "nome": "rows",
+      "tipo": "number",
+      "default": "4",
+      "descricao": "Altura inicial. Com autoGrow, é o piso."
+    },
+    {
+      "nome": "maxRows",
+      "tipo": "number | null",
+      "default": "12",
+      "descricao": "Teto do crescimento. Depois disso rola dentro do campo — nunca dentro de um diálogo que também rola."
+    },
+    {
+      "nome": "autoGrow",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Cresce com o conteúdo. Evita a barra de rolagem interna no caso comum."
+    },
+    {
+      "nome": "maxLength",
+      "tipo": "number | null",
+      "default": "null"
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "readonly",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Texto visível e copiável, não editável — a justificativa já enviada, o parecer de outro setor. Permanece focável, ao contrário de disabled. O estado constava do contrato sem prop que o ligasse até 13/09/2026."
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "errorMessage",
+      "tipo": "string | null",
+      "default": "null"
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string",
+      "descricao": "Texto atual."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "filled",
+    "invalid",
+    "disabled",
+    "readonly"
+  ],
+  "rolagem": {
+    "regra": "Com autoGrow, o campo cresce até maxRows antes de rolar.",
+    "motivo": "Duas barras de rolagem adjacentes — a do campo e a do diálogo — deixam o usuário sem saber qual manipular. É o que acontece no Novo Requerimento.",
+    "consequencia": "Formulário com texto longo é PÁGINA, não diálogo. Ver limites do contrato de Dialog."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "label associado por for/id, acima do controle (ADR-004).",
+      "O contador usa aria-live=polite e só é anunciado ao aproximar do limite — anunciar cada caractere é insuportável.",
+      "maxLength não trunca em silêncio: a mensagem diz que o limite foi atingido.",
+      "Redimensionamento manual permitido no eixo vertical; o usuário decide o quanto quer ver.",
+      "Contraste da borda e anel de foco iguais aos do TextField.",
+      "O campo permanece utilizável com zoom de 200% (WCAG 1.4.10).",
+      "readonly mantém o controle na ordem de foco e o texto selecionável; disabled tira os dois. Texto que precisa ser lido e não editado é readonly."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.10",
+      "1.4.11",
+      "2.1.1",
+      "3.3.1",
+      "3.3.2",
+      "4.1.2",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Nomeia o conteúdo esperado: Descrição da solicitação.",
+      "Do que se trata esta solicitação vira Descrição da solicitação — rótulo é substantivo, não pergunta."
+    ],
+    "exemplos": {
+      "bom": [
+        "Descrição da solicitação",
+        "Justificativa",
+        "Observações internas"
+      ],
+      "ruim": [
+        "Do que se trata esta solicitação",
+        "Clique aqui para digitar...",
+        "Texto"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-formulario-entidade",
+      "ucam-compositor"
+    ],
+    "usa": [
+      "ucam-field"
+    ]
+  },
+  "migracao": {
+    "de": "AngularJS / textarea em md-input-container",
+    "mapa": [
+      {
+        "legado": "rótulo com peso de cabeçalho",
+        "novo": "prop label",
+        "nota": "Passa a ter peso de rótulo e a ficar colado ao campo."
+      },
+      {
+        "legado": "Clique aqui para digitar...",
+        "novo": "prop label + placeholder de exemplo"
+      },
+      {
+        "legado": "altura fixa com rolagem interna",
+        "novo": "autoGrow com maxRows"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Padrão",
+      "codigo": "<ucam-textarea label=\"Descrição da solicitação\" placeholder=\"Descreva o pedido com o máximo de detalhes.\" required />"
+    },
+    {
+      "titulo": "Com limite",
+      "codigo": "<ucam-textarea label=\"Observações internas\" [maxLength]=\"500\" hint=\"Visível apenas para a equipe do setor.\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Deixar o campo crescer com autoGrow até maxRows.",
+      "evite": "Altura fixa pequena no campo mais importante do formulário.",
+      "porque": "A descrição do requerimento é o dado central da tela e hoje cabe em quatro linhas."
+    },
+    {
+      "faca": "Manter o campo numa página quando o texto é longo.",
+      "evite": "Textarea com barra de rolagem própria dentro de diálogo que também rola.",
+      "porque": "Duas barras lado a lado: o usuário rola a errada. O contrato do Dialog já proíbe formulário longo em modal."
+    },
+    {
+      "faca": "Rótulo como substantivo, com o peso tipográfico de rótulo: Descrição da solicitação.",
+      "evite": "Pergunta ('Do que se trata esta solicitação') ou rótulo com peso de título de seção.",
+      "porque": "No legado o rótulo se lê como cabeçalho de seção e se desprende visualmente do campo."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "text-field",
+      "diferenca": "TextField é UMA linha; Textarea é várias, e a diferença não é de tamanho: é de qual resposta se espera. Linha única promete um dado curto e fechado; a caixa alta promete que se pode escrever.",
+      "escolha": "Justificativa, descrição do requerimento, observação: o texto tem frases."
+    },
+    {
+      "componente": "compositor",
+      "diferenca": "O Textarea é o controle: texto longo que é ATRIBUTO do registro, salvo com o resto do formulário. O Compositor é o ato de responder — o texto sai da tela e vira item do histórico —, e por isso traz as ações dentro da própria caixa.",
+      "escolha": "A observação do cadastro, gravada com o formulário."
+    }
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para resposta de uma linha só. A caixa alta é uma promessa de que se pode escrever; oferecê-la para um nome faz a pessoa hesitar sobre o quanto se espera dela.",
+      "Não usar altura fixa pequena com rolagem interna para texto longo: o legado fazia isso na justificativa e obrigava a rolar dentro de uma caixa dentro da página. O crescimento automático existe para isso.",
+      "Não usar para texto formatado. Não há editor rico no sistema, e simular um com textarea entrega marcação crua ao banco.",
+      "Não usar contador sem limite real. Contador que não corresponde a uma validação do servidor é ruído que ensina a pessoa a ignorar contadores."
+    ],
+    "motivo": "A caixa de várias linhas comunica quanto se espera que a pessoa escreva. Usada fora dessa faixa, ela ou intimida quem só tinha um dado curto, ou aperta quem tinha muito a dizer."
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "O mesmo .ucam-field do campo de texto, com <textarea class=\"ucam-textarea\"> no lugar do input.",
+      "raiz": ".ucam-field com .ucam-textarea",
+      "nota": "A altura mínima é da classe; o redimensionamento vertical fica com o navegador de propósito, porque texto longo é o caso normal deste controle."
+    }
+  }
+}

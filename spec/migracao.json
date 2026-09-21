@@ -1,0 +1,329 @@
+{
+  "$description": "Guia de migração: a ordem das operações para levar uma tela ou um app do parque legado ao DSUCAM. O mapa legado→novo de cada componente vive no contrato dele. Se uma regra aparece aqui e num contrato, a do contrato vale.",
+  "_meta": {
+    "publico": "Desenvolvedor de aplicação, não mantenedor do design system.",
+    "regra": "Todo passo deste guia tem de ser verificável por quem executa. Passo que termina em 'use o bom senso' é passo mal escrito."
+  },
+
+  "escolhaDoTrilho": {
+    "$descricao": "A primeira decisão, e a que mais economiza retrabalho. Não é sobre qual trilho é melhor: é sobre o que a aplicação consegue receber hoje.",
+    "trilhos": [
+      {
+        "id": "a",
+        "nome": "Trilho A — @ucam/css",
+        "quando": "A aplicação é AngularJS, Angular ≤ 14, ou qualquer coisa que não vá subir de versão nos próximos meses.",
+        "entrega": "Identidade visual, tokens, tipografia, espaçamento e o desenho de todos os componentes, por classe CSS.",
+        "naoEntrega": "Comportamento. Nada de foco gerenciado, navegação por seta, roving tabindex, anúncio ARIA ou estado. O CSS desenha; quem escreve o markup é responsável por for/id, aria-describedby, aria-current, role e nome acessível.",
+        "custo": "Uma tag de link e uma classe no elemento raiz. Zero build, zero dependência, zero risco de conflito: tudo é escopado sob .ucam, sem reset global e sem preflight.",
+        "armadilha": "É o trilho em que a migração PARECE pronta e não está. Uma tela com o visual certo e sem a fiação ARIA é uma tela que ficou bonita e continua inacessível — e o defeito fica mais difícil de encontrar do que era antes, porque agora nada mais chama atenção."
+      },
+      {
+        "id": "a-mais",
+        "nome": "Trilho A+ — custom elements",
+        "quando": "A aplicação é legada mas a tela precisa de um componente que depende de JavaScript: combobox, diálogo, tabela com ordenação, paginação.",
+        "entrega": "O componente do Trilho B empacotado como elemento customizado, utilizável em qualquer HTML.",
+        "naoEntrega": "Integração com o formulário do framework hospedeiro. O valor entra e sai por atributo e evento, não por ngModel nem por FormControl.",
+        "custo": "Um script a mais na página. Ver ADR-010.",
+        "armadilha": "Não usar A+ para o que o Trilho A já resolve. Um botão não precisa de JavaScript; carregá-lo para isso paga o custo sem receber nada."
+      },
+      {
+        "id": "b",
+        "nome": "Trilho B — @ucam/ui",
+        "quando": "Aplicação Angular moderna, nova ou já migrada.",
+        "entrega": "Tudo: desenho, comportamento, foco, teclado, ARIA e a API tipada que o contrato descreve.",
+        "naoEntrega": "Layout de tela. Os blocos de arranjo continuam sendo classes — layout é camada própria, com contrato próprio (ADR-012).",
+        "custo": "A biblioteca como dependência, e a versão de Angular que ela pede.",
+        "armadilha": "Importar da base em vez do wrapper. A regra não tem exceção: a aplicação usa <ucam-*>, nunca <z-*> (ADR-006)."
+      }
+    ],
+    "misturar": "Os trilhos convivem na mesma aplicação e até na mesma tela — é o caso comum durante a migração. O que não convive é o mesmo componente vindo dos dois lados: um botão por classe ao lado de um <ucam-button> diverge no primeiro ajuste de contrato."
+  },
+
+  "ordem": {
+    "$descricao": "A sequência importa. Cada passo abaixo torna o seguinte mais barato, e pular um deles cobra juros na tela seguinte.",
+    "passos": [
+      {
+        "n": 1,
+        "titulo": "Tokens antes de tudo",
+        "o_que": "Carregar ucam-tokens.css e trocar por variável todo hex, todo px de espaçamento e todo tamanho de fonte cravado no CSS da aplicação.",
+        "por_que": "É o passo que faz o resto valer. Enquanto houver #7A1C2C escrito à mão, o tema escuro não funciona, a marca não muda em um lugar só e cada tela continua um dialeto.",
+        "verificar": "Buscar no CSS do app por # seguido de seis dígitos hexadecimais. O resultado tem de ser zero fora dos arquivos gerados."
+      },
+      {
+        "n": 2,
+        "titulo": "A moldura, antes das telas",
+        "o_que": "Trocar o cabeçalho, o menu e o contêiner de conteúdo pelo app-shell.",
+        "por_que": "A moldura é a única coisa que aparece em TODAS as telas. Migrada primeiro, ela já entrega skip-link, marcos de navegação e a régua de espaçamento que as telas seguintes vão herdar — e migrada por último obriga a refazer o topo de cada tela já migrada.",
+        "verificar": "Tab a partir da barra de endereço: o primeiro elemento focável é o skip-link, e ele leva o foco ao conteúdo — não só a rolagem."
+      },
+      {
+        "n": 3,
+        "titulo": "Uma tela inteira, não um componente de cada vez",
+        "o_que": "Escolher UMA tela representativa e migrá-la até o fim, incluindo o texto.",
+        "por_que": "Migrar botão em vinte telas deixa vinte telas meio migradas e não ensina nada sobre o que falta. Uma tela inteira revela os buracos reais — o componente que não existe, o dado que o endpoint não devolve, o texto que ninguém sabe reescrever.",
+        "verificar": "A tela não tem nenhum style inline de cor, espaçamento ou tamanho."
+      },
+      {
+        "n": 4,
+        "titulo": "O texto é parte da migração",
+        "o_que": "Reescrever rótulos, mensagens de erro e estados vazios seguindo a seção conteudo de cada contrato.",
+        "por_que": "É o passo que mais se pula e o que mais rende. Trocar o componente e manter ERRO! ou Digite aqui para pesquisar migra a aparência do defeito, não o defeito.",
+        "verificar": "Nenhum rótulo em caixa alta (ADR-003), nenhum placeholder fazendo papel de rótulo (ADR-004), nenhuma mensagem de uma palavra."
+      },
+      {
+        "n": 5,
+        "titulo": "A fiação de acessibilidade, com a tela aberta",
+        "o_que": "Conferir for/id, aria-describedby, aria-current, aria-invalid, nome acessível de todo botão de ícone e ordem de foco.",
+        "por_que": "No Trilho A nada disso vem de graça, e no Trilho B o que vem de graça é só o que o componente controla — a ordem entre componentes continua sendo da tela.",
+        "verificar": "Percorrer a tela inteira só com o teclado, sem tocar no mouse, e completar a tarefa principal."
+      },
+      {
+        "n": 6,
+        "titulo": "Só então, as telas irmãs",
+        "o_que": "Repetir nas telas do mesmo padrão.",
+        "por_que": "A segunda tela do mesmo padrão custa uma fração da primeira — desde que a primeira tenha ido até o fim.",
+        "verificar": "As duas telas usam o mesmo padrão declarado em patterns.json, e não duas soluções parecidas."
+      }
+    ]
+  },
+
+  "mudancasVisiveis": {
+    "$descricao": "Cinco mudanças que quem usa o sistema VAI notar no primeiro dia. Precisam ser comunicadas antes da migração, não descobertas depois — e cada uma tem uma ADR que responde ao porquê quando alguém perguntar.",
+    "itens": [
+      {
+        "mudanca": "Rótulo de campo sai de dentro do campo e passa a ficar sempre acima.",
+        "adr": "ADR-004",
+        "resposta": "O rótulo flutuante encolhe e perde contraste exatamente quando a pessoa quer conferir o que digitou. E foi ele que empurrou o time a usar placeholder como rótulo, que é o que produziu campos sem nome nenhum depois do primeiro caractere."
+      },
+      {
+        "mudanca": "Botões, cabeçalhos de tabela e navegação saem da CAIXA ALTA.",
+        "adr": "ADR-003",
+        "resposta": "Caixa alta elimina o contorno da palavra, reduz a velocidade de leitura e é soletrada por parte dos leitores de tela. A distinção passa a vir de peso e tamanho, que não custam legibilidade."
+      },
+      {
+        "mudanca": "A ação principal fica bordô em todas as telas.",
+        "adr": "ADR-001",
+        "resposta": "Hoje a mesma intenção usa quatro cores: preto em SALVAR, azul em ENTRAR, verde em PRIMEIRO ACESSO, cinza em NOVO REQUERIMENTO. Uma cor só para a ação principal resolve hierarquia e marca de uma vez."
+      },
+      {
+        "mudanca": "Vermelho some de quase todo lugar.",
+        "adr": "ADR-002",
+        "resposta": "O REDEFINIR SENHA vermelho da tela de login ensina a ignorar vermelho. Reservado à destruição irreversível, o vermelho volta a significar alguma coisa."
+      },
+      {
+        "mudanca": "O modal CARREGANDO deixa de existir.",
+        "adr": "ADR-005",
+        "resposta": "Ele bloqueia a tela inteira para uma operação de lista, impedindo cancelar, navegar ou entender o que acontece. O carregamento passa a ser estado do componente que o originou."
+      }
+    ]
+  },
+
+  "anatomiaDeTela": {
+    "$descricao": "Uma tela do DSUCAM tem quatro camadas, e confundi-las é a causa mais comum de tela que fica quase certa. De fora para dentro:",
+    "camadas": [
+      {
+        "camada": "Moldura",
+        "quem": "ucam-app-shell",
+        "responde": "Onde estou no sistema. Marca, troca de módulo, navegação, identidade, sair.",
+        "erro_comum": "Recriar o cabeçalho dentro da tela porque ele precisava de um botão a mais. O botão da tela vai no page-header."
+      },
+      {
+        "camada": "Arranjo",
+        "quem": "os blocos de layouts.json — stack, cluster, grid, split, section, content, inbox, stats",
+        "responde": "Onde as coisas ficam. Só posiciona: bloco de layout não pinta, não desenha borda e não define tipografia.",
+        "erro_comum": "Resolver espaçamento com margem no componente. A margem pertence ao arranjo — um componente que traz a própria margem não se reaproveita em outro ritmo."
+      },
+      {
+        "camada": "Padrão",
+        "quem": "os padrões de patterns.json — listagem-crud, formulario-entidade, triagem-lista-detalhe, listagem-inspetor, painel-indicadores, consulta-relatorio, confirmacao-destrutiva, shell-aplicacao",
+        "responde": "Como esta tarefa se resolve. É a composição já decidida de componentes para uma tarefa inteira.",
+        "erro_comum": "Inventar uma composição nova para uma tarefa que já tem padrão. Se a tela lista, filtra e edita registros, ela é listagem-crud — e sair do padrão precisa de motivo escrito."
+      },
+      {
+        "camada": "Componente",
+        "quem": "os contratos de spec/components/",
+        "responde": "O que cada peça faz, com quais props e quais limites.",
+        "erro_comum": "Escolher pelo desenho e não pelo papel. Card, choice-card, list-item e stat parecem retângulos com texto dentro; o que os separa é o que prometem ao ser clicados."
+      }
+    ]
+  },
+
+  "checklistDeTela": {
+    "$descricao": "Roda com a tela aberta no navegador. Cada item é verificável em menos de um minuto, e nenhum depende de opinião.",
+    "grupos": [
+      {
+        "grupo": "Estrutura",
+        "itens": [
+          "Um h1 por tela, e é o título da tela.",
+          "Os níveis de heading descem sem pular (h1, h2, h3), e o nível escolhido vem da hierarquia, não do tamanho que pareceu certo.",
+          "Nenhum style inline de cor, espaçamento ou tamanho de fonte.",
+          "Nenhum valor fora da escala de espaçamento — nada de 13px, 22px, 7px.",
+          "Cada bloco de arranjo é um bloco de layout declarado, não um flex escrito na hora."
+        ]
+      },
+      {
+        "grupo": "Teclado",
+        "itens": [
+          "A tarefa principal se completa sem tocar no mouse.",
+          "O anel de foco é visível em todo elemento focável, inclusive dentro de tabela e de sobreposição.",
+          "A ordem de foco segue a ordem visual.",
+          "Nada focável está escondido, e nada visível é impossível de alcançar.",
+          "Em diálogo e gaveta: o foco entra, fica preso dentro, e volta ao gatilho ao fechar."
+        ]
+      },
+      {
+        "grupo": "Nome acessível",
+        "itens": [
+          "Todo campo tem <label> ligado por for/id — aria-label não substitui, porque não fica visível para quem usa comando de voz.",
+          "Todo botão de ícone tem nome acessível que NOMEIA O OBJETO: Excluir a natureza Financeiro, não Excluir.",
+          "Nenhum link se chama Ver detalhes, Saiba mais ou Clique aqui.",
+          "Toda imagem ou ícone decorativo tem aria-hidden.",
+          "Toda tabela tem caption ou aria-label dizendo o que ela lista."
+        ]
+      },
+      {
+        "grupo": "Cor e significado",
+        "itens": [
+          "Nenhuma informação depende só de cor: situação, prazo, saldo negativo e linha destacada têm palavra ou forma junto (WCAG 1.4.1).",
+          "Texto normal atinge 4.5:1; texto grande e elemento gráfico atingem 3:1.",
+          "A tela funciona em tema escuro — abrir e olhar, não deduzir.",
+          "Nenhum vermelho fora de destruição irreversível."
+        ]
+      },
+      {
+        "grupo": "Estados",
+        "itens": [
+          "A tela tem estado vazio, e ele tem saída — estado vazio sem ação é beco.",
+          "A tela distingue vazio de sem-resultado-de-filtro: as duas mensagens e as duas ações são diferentes.",
+          "A tela tem estado de carregando que não bloqueia a página inteira (ADR-005).",
+          "A tela tem estado de erro, com o que houve e o que fazer.",
+          "Erro de campo aparece NO campo, não só num resumo no topo."
+        ]
+      },
+      {
+        "grupo": "Texto",
+        "itens": [
+          "Nenhum rótulo em caixa alta.",
+          "Nenhum placeholder fazendo papel de rótulo.",
+          "Mensagens de erro dizem o que houve e o que fazer, nessa ordem, sem culpar quem preencheu.",
+          "O vocabulário é o do domínio acadêmico: Deferido, Indeferido, Em análise.",
+          "Nenhum código de erro como texto principal."
+        ]
+      },
+      {
+        "grupo": "Largura",
+        "itens": [
+          "Em 390px a tela não rola na horizontal — exceto tabela, que rola dentro da própria moldura.",
+          "Nada de texto quebrando no meio da palavra.",
+          "Alvos de ponteiro com pelo menos 24px, inclusive os botões de ícone dentro de linha de tabela."
+        ]
+      }
+    ]
+  },
+
+  "errosQueSobrevivem": {
+    "$descricao": "Defeitos do parque que uma migração literal preserva, porque o componente novo aceita o uso errado sem reclamar. São os que mais aparecem em revisão.",
+    "itens": [
+      {
+        "erro": "Trocar o span vermelho pelo alerta e manter o texto ERRO!.",
+        "porque_sobrevive": "O componente aceita qualquer string.",
+        "certo": "A frase é parte da migração. Diz o que houve e o que fazer."
+      },
+      {
+        "erro": "Trocar md-input-container por ucam-text-field e manter o placeholder como rótulo.",
+        "porque_sobrevive": "placeholder continua sendo uma prop legítima.",
+        "certo": "O placeholder mostra um exemplo de formato. O nome do dado vai no label, sempre."
+      },
+      {
+        "erro": "Pintar o valor negativo de vermelho com tone=danger e não escrever nada.",
+        "porque_sobrevive": "A prop existe e faz exatamente o que se pediu.",
+        "certo": "Tom fora de neutral pede a palavra junto. É a violação de 1.4.1 que o SIGFIN tem hoje, reproduzida com componente novo."
+      },
+      {
+        "erro": "Converter os botões de ícone da linha de tabela mantendo aria-label=Excluir em todos.",
+        "porque_sobrevive": "O nome acessível existe; ele só não distingue.",
+        "certo": "O nome nomeia o objeto: Excluir a natureza Financeiro."
+      },
+      {
+        "erro": "Manter as abas recarregando a consulta e devolvendo a pessoa ao topo.",
+        "porque_sobrevive": "O componente não sabe de onde vêm os dados.",
+        "certo": "Recorte sobre o dado já carregado, ou activation=manual quando a consulta é inevitável."
+      },
+      {
+        "erro": "Empilhar cartão dentro de cartão porque o legado tinha painel dentro de painel.",
+        "porque_sobrevive": "Nada impede aninhar.",
+        "certo": "Uma moldura só. Dentro dela, separar por espaço ou filete."
+      },
+      {
+        "erro": "Transformar o modal CARREGANDO num diálogo do DS.",
+        "porque_sobrevive": "O diálogo existe e abre.",
+        "certo": "Não migrar: o carregamento vira estado do componente que o originou (ADR-005). Dois dos usos de diálogo no Protocolo são uso indevido, e a spec diz isso nos limites."
+      },
+      {
+        "erro": "Levar o LIMPAR que apaga todos os filtros e não mostrar quais estão aplicados.",
+        "porque_sobrevive": "O botão funciona.",
+        "certo": "Chips mostrando o recorte aplicado, com remoção individual. O botão global continua, como complemento."
+      },
+      {
+        "erro": "Dar a tela do Relatórios Acadêmicos por migrada porque o adaptador já a pintou com os tokens.",
+        "porque_sobrevive": "O adaptador re-tinge os 74 templates sem editar nenhum: cor, fonte, anel de foco e caixa alta ficam certos, e a tela passa a parecer do DS.",
+        "certo": "Adaptador é o Trilho A de quem já tem CSS próprio, não a migração. O que ele não alcança está nomeado em spec/adapters/relatorios-academicos.json, seção pendentes, e cada item se resolve na tela (ADR-025)."
+      },
+      {
+        "erro": "Manter o carregamento.js porque o overlay ficou transparente e já não atrapalha.",
+        "porque_sobrevive": "O adaptador tirou o fundo e o bloqueio de clique do .loading-overlay. Ele continua lá: gira sobre a página e desabilita a exportação.",
+        "certo": "Remover o overlay na migração da tela. O botão Gerar relatório assume loading e o formulário fica inerte (ADR-005, padrão consulta-relatorio)."
+      },
+      {
+        "erro": "Desabilitar o link de exportação só com .botao--desabilitado.",
+        "porque_sobrevive": "pointer-events: none e a opacidade bloqueiam o clique e parecem desabilitados para quem vê.",
+        "certo": "aria-disabled=\"true\" na marcação e o href retirado enquanto durar. Sem isso o leitor de tela anuncia um link ativo que não responde."
+      },
+      {
+        "erro": "Continuar escondendo o h1 repetido com :has() e escrevendo a ajuda do formulário em content: de pseudo-elemento.",
+        "porque_sobrevive": "Os dois truques funcionam na tela e pouparam editar 74 templates.",
+        "certo": "Tirar o h1 repetido do template e escrever a frase de ajuda na marcação. Texto gerado por content: não se seleciona, não se traduz e parte dos leitores de tela não o lê."
+      },
+      {
+        "erro": "Portar o acumulador do filtro-dinamico.js como está.",
+        "porque_sobrevive": "O script funciona e o endpoint de validar já existe.",
+        "certo": "Combobox, lista com botão de remover e um input hidden por item, cada item validado ao entrar E de novo ao confirmar — a regra do padrão consulta-relatorio."
+      },
+      {
+        "erro": "Manter os ícones de exportação em data: URI com a cor gravada.",
+        "porque_sobrevive": "O adaptador não alcança cor dentro de uma URL, e no tema claro o ícone parece certo.",
+        "certo": "Sprite do DS com currentColor. Ícone com cor gravada não troca no tema escuro."
+      }
+    ]
+  },
+
+  "ondeEstaOQue": {
+    "$descricao": "Onde procurar cada resposta, para não perguntar o que a spec já respondeu.",
+    "itens": [
+      { "pergunta": "Quais props este componente tem, e o que cada valor significa?", "onde": "spec/components/<id>.json, seção props" },
+      { "pergunta": "Quando NÃO usar este componente?", "onde": "seção limites do contrato — é a seção mais útil e a menos lida" },
+      { "pergunta": "Como converter o componente do Angular Material equivalente?", "onde": "seção migracao do contrato, campo mapa" },
+      { "pergunta": "Que texto escrever no rótulo, no erro, no estado vazio?", "onde": "seção conteudo do contrato, com exemplos bom e ruim" },
+      { "pergunta": "Por que a regra é essa?", "onde": "seção evidencia do contrato — traz a tela de origem e o problema observado —, e a ADR citada" },
+      { "pergunta": "Qual token usar para esta cor ou este espaço?", "onde": "spec/tokens/semantic.json. Nunca primitive.json: componente que lê a camada primitiva quebra tema e marca (ADR-007)" },
+      { "pergunta": "Como esta tela inteira deveria ficar?", "onde": "spec/templates.json e as telas renderizadas em docs/t/ — são HTML de verdade, com o CSS de produção, não maquete" },
+      { "pergunta": "Que composição usar para esta tarefa?", "onde": "spec/patterns/patterns.json" },
+      { "pergunta": "O componente já existe em Angular?", "onde": "campo implementacao.trilho_b do contrato" }
+    ]
+  },
+
+  "aindaNaoExiste": {
+    "$descricao": "O que o design system ainda não entrega. Cada lacuna abaixo muda o que a tela precisa resolver por conta própria.",
+    "regra": "Contrato sem implementação Angular NÃO é impedimento: o Trilho A desenha todos eles hoje. O que falta é o comportamento, e é isso que precisa ser escrito na tela — ou adiado com a lacuna registrada.",
+    "avisos": [
+      "Nenhum contrato está em stable. A promoção exige dois consumidores reais em produção, e ainda não há dois. Props podem mudar em 0.x.",
+      "O modo empilhado da data-table em tela estreita está descrito no contrato e não existe: enquanto não existir, a tabela rola na horizontal dentro da própria moldura.",
+      "Toast não está no catálogo e não vai estar: mensagem que some sozinha não pode carregar informação necessária. Ver o contrato do alert.",
+      "Tabela agrupada com subtotal não tem contrato. Relatório que agrupa por curso, ou por grupo e subgrupo com subtotal (AlunosMatriculadosCurso e HorasPac, no Relatórios Acadêmicos), não cabe na data-table, que é grade plana e não tem linha de grupo nem de total. Até existir, cada grupo vira uma seção com título e tabela própria, como a origem já faz; linha de total dentro do corpo da tabela fica de fora até o contrato decidir como anunciá-la.",
+      "Grade de horário dia × horário (MapaHorarios) não tem componente nem padrão. Não é data-table: as células não comparam registros pelos mesmos atributos. No catálogo de relatórios, Grade horária por sala ainda é um cartão desabilitado.",
+      "Análise curricular não tem padrão: progresso por período, pré-requisito pendente, filtro de só pendentes e navegação por âncora entre até dez períodos. Progress e alert cobrem as peças; a composição, não.",
+      "Documento que imita papel oficial não tem padrão. O verso do histórico reproduz em tela a página em paisagem do PDF — duas tabelas lado a lado, equilibradas por altura por script, com coluna de assinatura. O bloco de impressão da folha só remove a moldura; não resolve documento.",
+      "O DS não publica a assinatura horizontal da marca nem a versão rasterizada que o timbre de PDF, Excel e Word precisa (o JasperReports não lê SVG sem dependência extra). O padrão consulta-relatorio pede exportação com timbre; até o arquivo existir, cada sistema usa o seu — o Relatórios Acadêmicos tem logo-ucam-timbre.png."
+    ]
+  }
+}

@@ -1,0 +1,290 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Camada 3 — tema escuro. Sobrescreve APENAS tokens semânticos, remapeando-os para outros degraus dos mesmos primitivos. Nenhum valor novo é introduzido aqui.",
+  "_meta": {
+    "regra": "Tema escuro não é inversão. Superfícies escuras precisam de escadas mais curtas (o olho distingue menos degraus no escuro) e cores de marca precisam clarear para manter contraste sobre fundo escuro.",
+    "verificacao": "tools/build-tokens.mjs calcula o contraste de cada par nos DOIS temas e falha o build se algum reprovar."
+  },
+  "color": {
+    "$type": "color",
+    "surface": {
+      "canvas": {
+        "$value": "{neutral.900}"
+      },
+      "default": {
+        "$value": "{neutral.800}",
+        "$description": "No escuro, card é MAIS claro que o fundo — elevação por luz, não por sombra."
+      },
+      "subtle": {
+        "$value": "{neutral.900}",
+        "$description": "Zebra escurece em vez de clarear, para não competir com a superfície elevada."
+      },
+      "raised": {
+        "$value": "{neutral.700}",
+        "$description": "Diálogo sobe mais um degrau."
+      },
+      "sunken": {
+        "$value": "{neutral.700}",
+        "$description": "A faixa do cabeçalho SOBE no escuro em vez de descer. A lógica do tema é elevação por luz: o painel está no 800, e uma faixa mais escura leria como buraco no painel, não como fileira de rótulos. O 700 é o mesmo degrau do diálogo — aqui não significa 'flutua', significa 'não é dado'."
+      },
+      "chrome": {
+        "$value": "{neutral.900}",
+        "$description": "A moldura segue recuando: no escuro isso é ficar no nível do canvas enquanto o painel de conteúdo sobe para o 800. O item ativo da navegação sobe para surface.default e a separação continua sendo de luz, como no resto do tema."
+      },
+      "inverse": {
+        "$value": "{neutral.50}"
+      },
+      "brand": {
+        "$value": "{wine.800}",
+        "$description": "O bordô escurece para não vibrar contra o fundo escuro."
+      },
+      "chao": {
+        "$value": "{neutral.800}",
+        "$description": "O mesmo 800 que o painel de conteúdo já tinha no escuro. O tema escuro separa por luz — moldura no 900, conteúdo no 800 — e isso já é o chão com superfícies por cima; nada muda aqui (ADR-034)."
+      }
+    },
+    "text": {
+      "primary": {
+        "$value": "{neutral.50}",
+        "$description": "Não usar branco puro: reduz o halo em texto claro sobre fundo escuro."
+      },
+      "secondary": {
+        "$value": "{neutral.200}"
+      },
+      "placeholder": {
+        "$value": "{neutral.300}",
+        "$description": "No escuro o placeholder CLAREIA. Não pode reusar o mesmo degrau da borda: borda precisa de 3:1 e texto de 4.5:1 — requisitos opostos no mesmo primitivo produzem margem frágil."
+      },
+      "disabled": {
+        "$value": "{neutral.400}",
+        "$description": "4,37:1 sobre surface.default. Era {neutral.600}, que sobre o card do tema escuro dava 2,10:1 — o pior par de texto do sistema, e invisível para o portão porque a conta de então media contra surface.subtle do tema claro. Fica pouco abaixo de 4,5:1 e o portão nomeia o desvio: o degrau acima ({neutral.300}) dá 9,89:1 sobre o card e devolve ao desabilitado o brilho de texto ativo, que é justamente o que o estado não pode ter. Aqui o limite não é o contraste, é o teto por cima dele."
+      },
+      "on-brand": {
+        "$value": "{neutral.0}"
+      },
+      "on-action": {
+        "$value": "{neutral.900}",
+        "$description": "No escuro o preenchimento de ação clareia, e branco sobre preenchimento claro é ilegível: a ação vira preenchimento CLARO com tinta ESCURA — a mesma saída de Material 3, Atlassian e Polaris. Vale para rótulo de botão, marca do checkbox e ponto do radio, que é tudo que consome este token. text.on-brand continua branco: a faixa de marca não clareia."
+      },
+      "link": {
+        "$value": "{blue.100}"
+      }
+    },
+    "action": {
+      "primary": {
+        "default": {
+          "$value": "{wine.400}",
+          "$description": "Preenchimento claro com tinta escura (ver text.on-action). Subiu de wine.500 porque este token também pinta TEXTO — item de nav ativo, aba selecionada — e o 500 dava 2,99:1 sobre o card escuro, reprovando a 1.4.3 em silêncio: nenhum par de texto do tema escuro passava pelo portão do build. Agora 4,73:1."
+        },
+        "hover": {
+          "$value": "{wine.300}",
+          "$description": "No escuro, hover CLAREIA — o inverso do tema claro. Agora isso é possível sem quebrar contraste, porque a tinta escureceu junto."
+        },
+        "active": {
+          "$value": "{wine.200}"
+        },
+        "subtle": {
+          "$value": "{wine.900}"
+        }
+      },
+      "secondary": {
+        "default": {
+          "$value": "{neutral.800}"
+        },
+        "hover": {
+          "$value": "{neutral.700}"
+        },
+        "active": {
+          "$value": "{neutral.600}"
+        },
+        "border": {
+          "$value": "{neutral.700}"
+        }
+      },
+      "danger": {
+        "default": {
+          "$value": "{red.200}",
+          "$description": "Treze pontos de L acima do primário, e não \"a mesma altura\": com L igual o par primário × destrutivo dava d=0,006 sob tritanopia (ADR-026). Tinta escura em cima 9,22:1; como texto sobre o card 7,77:1."
+        },
+        "hover": {
+          "$value": "{red.300}",
+          "$description": "Hover do destrutivo no escuro ESCURECE, ao contrário do primário: clarear cai em cima do wine.300 e do wine.200, e acima disso o botão vira branco. Tinta escura em cima 5,45:1."
+        },
+        "active": {
+          "$value": "{red.400}",
+          "$description": "Continua escurecendo sob pressão. Tinta escura em cima 4,7:1, o piso."
+        },
+        "subtle": {
+          "$value": "{red.900}",
+          "$description": "Fundo sutil do destrutivo no escuro: {red.900}, espelhando a claridade do tema como primary.subtle faz com {wine.900}. É o fundo de hover do tom danger (ADR-015); o texto {red.200} em cima dá 7,23:1."
+        }
+      },
+      "disabled": {
+        "background": {
+          "$value": "{neutral.700}",
+          "$description": "O chão único do controle desabilitado no escuro (ADR-042). O tema escuro separa por luz, e o controle bloqueado SOBE um degrau em relação ao card — não desce: no escuro, descer lê como buraco no painel, o mesmo argumento que já tinha levantado surface.sunken."
+        },
+        "text": {
+          "$value": "{neutral.300}",
+          "$description": "6,77:1 contra action.disabled.background. Subiu de {neutral.400}, que dava 2,99:1 — o desvio que a descrição do tema claro já nomeava e que ninguém tinha voltado para resolver."
+        }
+      }
+    },
+    "interaction": {
+      "hover": {
+        "$value": "{alpha.paper-weak}"
+      },
+      "active": {
+        "$value": "{alpha.paper-strong}"
+      },
+      "selected": {
+        "$value": "{alpha.paper-strong}"
+      }
+    },
+    "realce": {
+      "background": {
+        "$value": "{wine.700}",
+        "$description": "No escuro a lavagem SOBE em vez de descer, como todo o resto do tema. O 700 dá 1,34 de degrau contra o painel; o 800 dá 1,07 e desaparece."
+      },
+      "foreground": {
+        "$value": "{neutral.0}",
+        "$description": "11,30:1 sobre o preenchimento."
+      }
+    },
+    "feedback": {
+      "$description": "No escuro o fundo é uma TINTA da matiz (degrau 900), não a cor cheia: com o tom 700 saturado, cinco badges viram uma fileira de blocos berrantes, cada um disputando atenção com o conteúdo. O foreground fica no 100, e o par se mantém acima de 12:1.",
+      "success": {
+        "background": {
+          "$value": "{green.900}"
+        },
+        "foreground": {
+          "$value": "{green.100}"
+        },
+        "border": {
+          "$value": "{green.500}"
+        },
+        "numeral": {
+          "$value": "{green.400}",
+          "$description": "Degrau com croma acima de 4,5:1 sobre neutral.800. O 100 do foreground tiraria a cor do número, que é o único lugar em que o tom aparece no ladrilho (ADR-034)."
+        }
+      },
+      "warning": {
+        "background": {
+          "$value": "{amber.900}"
+        },
+        "foreground": {
+          "$value": "{amber.100}"
+        },
+        "border": {
+          "$value": "{amber.500}"
+        },
+        "numeral": {
+          "$value": "{amber.400}",
+          "$description": "Degrau com croma acima de 4,5:1 sobre neutral.800. O 100 do foreground tiraria a cor do número, que é o único lugar em que o tom aparece no ladrilho (ADR-034)."
+        }
+      },
+      "danger": {
+        "background": {
+          "$value": "{red.900}"
+        },
+        "foreground": {
+          "$value": "{red.100}"
+        },
+        "border": {
+          "$value": "{red.200}",
+          "$description": "No escuro o filete sobe para o red.200, o mesmo degrau da ação: o red.500 (L 61) fica a 0,016 do wine.400 (L 67) e o botão primário ao lado de um campo em erro perdia a distinção. Sobre o card 7,77:1."
+        },
+        "graphic": {
+          "$value": "{red.200}",
+          "$description": "Barra, coluna e fatia acompanham o filete — mesmo motivo."
+        },
+        "numeral": {
+          "$value": "{red.300}",
+          "$description": "Degrau com croma acima de 4,5:1 sobre neutral.800. O 100 do foreground tiraria a cor do número, que é o único lugar em que o tom aparece no ladrilho (ADR-034)."
+        }
+      },
+      "info": {
+        "background": {
+          "$value": "{blue.900}"
+        },
+        "foreground": {
+          "$value": "{blue.100}"
+        },
+        "border": {
+          "$value": "{blue.500}"
+        }
+      }
+    },
+    "border": {
+      "subtle": {
+        "$value": "{alpha.paper-weak}",
+        "$description": "FIO translúcido, não valor sólido. Era {neutral.800} — exatamente o valor de surface.default —, e o resultado era um fio invisível: o painel de conteúdo do app-shell É surface.default, então todo cartão dentro dele ficava sem nenhuma aresta. Medido no navegador na grade de 58 módulos: cartão, borda e painel os três em #1B263A, 1,00:1 entre quaisquer dois. A grade inteira desaparecia no escuro.\n\nO papel a 6% dá 1,19:1 contra o painel — o MESMO degrau que o fio do tema claro (#E6ECF3 sobre branco, 1,19:1). Translúcido pelo motivo da ADR-013: o fio divide linha de tabela, borda de cartão e separador de grupo, e essas três superfícies não são a mesma cor. Valor sólido só acerta a superfície para a qual foi calculado; sobre o canvas mais escuro a mesma tinta sobe sozinha para 1,42:1, que é o que se quer."
+      },
+      "default": {
+        "$value": "{neutral.700}"
+      },
+      "strong": {
+        "$value": "{neutral.500}"
+      },
+      "focus": {
+        "$value": "{wine.300}",
+        "$description": "O anel de foco CLAREIA no escuro para manter os 3:1 exigidos pela 1.4.11."
+      }
+    },
+    "chart": {
+      "$description": "Os mesmos seis matizes, redegrauados para a superfície escura — não é o claro invertido nem clareado por conta. O conjunto foi verificado de novo contra {neutral.800}: a banda de lightness do escuro é mais estreita (L 0,48–0,67) que a do claro (0,43–0,77), e slot que ficasse fora dela reprovava.",
+      "series-1": {
+        "$value": "{wine.400}"
+      },
+      "series-2": {
+        "$value": "{blue.400}"
+      },
+      "series-3": {
+        "$value": "{ochre.400}"
+      },
+      "series-4": {
+        "$value": "{violet.400}"
+      },
+      "series-5": {
+        "$value": "{teal.400}"
+      },
+      "series-6": {
+        "$value": "{olive.400}"
+      }
+    },
+    "categoria": {
+      "$description": "Mesma regra das séries: o degrau 400 de cada rampa, que é a banda em que o escuro separa. O financeiro fica no 500 porque a rampa verde não tem 400.",
+      "academico": {
+        "$value": "{blue.400}"
+      },
+      "financeiro": {
+        "$value": "{green.500}"
+      },
+      "atendimento": {
+        "$value": "{wine.400}"
+      },
+      "gestao": {
+        "$value": "{violet.400}"
+      },
+      "pessoas": {
+        "$value": "{teal.400}"
+      },
+      "acervo": {
+        "$value": "{ochre.400}"
+      }
+    }
+  },
+  "elevation": {
+    "$type": "shadow",
+    "$description": "No escuro a sombra quase não se vê: a separação vem da superfície mais clara. A sombra fica só como reforço de profundidade em sobreposição.",
+    "raised": {
+      "$value": "{shadow.none}"
+    },
+    "sticky": {
+      "$value": "{shadow.sm}"
+    },
+    "overlay": {
+      "$value": "{shadow.lg}"
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dsucam/spec/schema/adapter.schema.json",
+  "title": "Adaptador de trilho legado",
+  "description": "Contrato de um adaptador que reveste um sistema com CSS próprio (o tema Aristo do PrimeFaces, o main.css do Relatórios Acadêmicos) com os tokens semânticos do DS, sem tocar no código do sistema. Gera uma folha CSS de override em dist/css/ucam-<id>.css, uma por arquivo deste diretório.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "status",
+    "version",
+    "alvo",
+    "regras"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "review",
+        "stable",
+        "deprecated"
+      ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "since": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "alvo": {
+      "type": "object",
+      "required": [
+        "framework",
+        "versao"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "framework": {
+          "type": "string"
+        },
+        "versao": {
+          "type": "string"
+        },
+        "tema": {
+          "type": "string"
+        },
+        "plataforma": {
+          "type": "string"
+        },
+        "carregar_apos": {
+          "type": "string"
+        }
+      }
+    },
+    "evidencia": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "origem": {
+          "type": "string"
+        },
+        "achados": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conclusao": {
+          "type": "string"
+        }
+      }
+    },
+    "principios": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "regras": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "seletor",
+          "props"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "seletor": {
+            "type": "string"
+          },
+          "nota": {
+            "type": "string"
+          },
+          "props": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "object",
+              "oneOf": [
+                {
+                  "required": [
+                    "token"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "literal"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "literal": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "pendentes": {
+      "description": "O que o adaptador NÃO alcança e fica para a migração da tela: widget ainda não capturado, comportamento que é JavaScript, marcação sem ARIA. Dados, não CSS — aparecem no cabeçalho da folha gerada.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

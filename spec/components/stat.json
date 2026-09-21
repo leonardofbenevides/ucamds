@@ -1,0 +1,326 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "stat",
+  "name": "Stat",
+  "selector": "ucam-stat",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "dados",
+  "description": "Um número que responde a uma pergunta, com o rótulo que diz qual pergunta é e o contexto que diz se o número é bom. Não é cartão genérico nem gráfico: exibe UM valor já apurado. Quando o dado só faz sentido comparado ao longo do tempo, o componente é o chart.",
+  "quando_usar": [
+    "Um painel responde a uma pergunta de acompanhamento com UM número: quantos requerimentos em análise.",
+    "O número já foi apurado e precisa do rótulo que diz qual pergunta ele responde.",
+    "Há contexto que diz se o número é bom: variação, meta, comparação com o período anterior."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/SIGFIN e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "SIGFIN — Movimento de Caixa",
+        "campo": "Saldo do dia",
+        "problema": "o saldo aparece como mais uma linha de uma lista rótulo/valor, com o mesmo corpo e o mesmo peso do número de lançamentos ao lado. O dado que a tela existe para responder tem exatamente o mesmo destaque do dado acessório"
+      },
+      {
+        "tela": "SIGFIN — Movimento de Caixa",
+        "campo": "valores monetários",
+        "problema": "saldo negativo é comunicado por vermelho e nada mais. Cor como único portador de significado (WCAG 1.4.1) — e é a razão de o tom deste contrato exigir texto junto"
+      },
+      {
+        "tela": "Protocolo — Gerencial",
+        "rotulo": "Requerimentos abertos / Atrasados / Urgentes sem resposta",
+        "problema": "as contagens de fila não existem na tela atual; o gestor as obtém filtrando a listagem uma vez por estado e lendo o total do rodapé da paginação"
+      }
+    ],
+    "conclusao": "O parque tem números de decisão apresentados como texto corrido. O contrato fixa a hierarquia — rótulo pequeno, valor grande, contexto abaixo — e proíbe a cor sozinha de julgar o número."
+  },
+  "anatomia": [
+    {
+      "parte": "grupo",
+      "obrigatorio": false,
+      "descricao": "Contêiner de irmãos. Não é parte do componente: é o bloco de arranjo declarado em layouts.json. Grade contínua quando os números se somam (o caixa do dia); cartões separados, com vão, quando são leituras independentes (as quatro contagens de fila).",
+      "classe": "ucam-stats"
+    },
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O ladrilho. Desenha o próprio anel de 1px em vez de deixar o vão do contêiner aparecer — é o que impede a última fileira incompleta de mostrar um bloco cinza onde não há dado.",
+      "classe": "ucam-stat"
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "A pergunta que o número responde, em caption e tinta secundária. Vem ANTES do valor na ordem do DOM, para que o leitor de tela anuncie a pergunta antes da resposta.",
+      "classe": "ucam-stat__label"
+    },
+    {
+      "parte": "value",
+      "obrigatorio": true,
+      "descricao": "O número. Corpo de título de página, entrelinha 1.1 e tabular-nums — valor monetário em coluna só se confere quando os dígitos alinham.",
+      "classe": "ucam-stat__value"
+    },
+    {
+      "parte": "delta",
+      "obrigatorio": false,
+      "descricao": "Variação desde a leitura anterior, em texto ao lado do número, sem pastilha. Neutra de propósito: para cima nem sempre é bom — 118 pendências a mais não é boa notícia — e pintar de verde por ser positivo seria a cor mentindo. Num ladrilho com tom, recebe a tinta do tom (ADR-035).",
+      "classe": "ucam-stat__delta"
+    },
+    {
+      "parte": "meta",
+      "obrigatorio": false,
+      "descricao": "A linha de contexto embaixo: recorte, comparação ou selo. É onde entra o texto que acompanha o tom, e é ela que impede o tom de ser o único portador do julgamento. Num ladrilho com tom, é ela que recebe a tinta (ADR-035).",
+      "classe": "ucam-stat__meta"
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A pergunta. Frase nominal curta em caixa natural, sem dois-pontos: Saldo do dia, não SALDO DO DIA:."
+    },
+    {
+      "nome": "value",
+      "tipo": "string | number",
+      "obrigatorio": true,
+      "descricao": "O valor já formatado. O componente NÃO formata — moeda, data e percentual chegam prontos do pipe da aplicação, porque o formato é decisão de domínio (BRL, casas decimais, sinal) e não de apresentação."
+    },
+    {
+      "nome": "meta",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Contexto de uma linha: recorte (em 6 setores), comparação (4% abaixo do anterior) ou base (fechamento de 27/08/2026). Quando tone é diferente de neutral, esta prop passa a ser obrigatória na prática — é ela que diz em palavra o que a cor diz em tinta."
+    },
+    {
+      "nome": "delta",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Variação desde a leitura anterior, com sinal explícito: +118, -4%. Fica em pastilha ao lado do número para não ser lida como parte dele."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'success' | 'warning' | 'danger' | 'marca'",
+      "default": "'neutral'",
+      "descricao": "Julgamento sobre o número. Pinta o CONTEXTO — a variação e a meta —, e o número fica na tinta de texto principal (ADR-035). O ladrilho é sempre branco (ADR-034): quatro ladrilhos lado a lado, um bom e três ruins, continuam quatro superfícies iguais com quatro números na mesma tinta, e quem difere é a linha que diz o julgamento em palavra. O tom vem do DADO, nunca da posição, e a meta em palavra continua obrigatória com qualquer tom.",
+      "valores": {
+        "neutral": {
+          "uso": "O padrão. Número que não é bom nem ruim por si — contagem, total, base de comparação.",
+          "tokens": {
+            "valor": "color.text.primary"
+          }
+        },
+        "success": {
+          "uso": "O número é desfecho favorável e há decisão pendurada nele: concluídos no mês, total recebido, prazo médio dentro da meta.",
+          "limite": "Não usar só porque o número subiu. Subir não é bom em contagem de atraso.",
+          "tokens": {
+            "valor": "color.feedback.success.numeral"
+          }
+        },
+        "warning": {
+          "uso": "O número pede atenção sem ser desfecho: atrasados, a vencer, prazo curto, trancados.",
+          "tokens": {
+            "valor": "color.feedback.warning.numeral"
+          }
+        },
+        "danger": {
+          "uso": "O número é desfecho desfavorável: saldo negativo, vencidos, urgentes sem resposta, fila acima do limite operacional.",
+          "limite": "Não é erro de sistema; é leitura ruim de um número correto.",
+          "tokens": {
+            "valor": "color.feedback.danger.numeral"
+          }
+        },
+        "marca": {
+          "uso": "O número-título do painel — o total, os abertos, o saldo do dia. É o que o resto do painel qualifica. Pinta só o número, sem fundo: action.primary.subtle ao lado do fundo de danger lê como o mesmo rosa (ADR-026).",
+          "limite": "Um por painel. Dois ladrilhos de marca no mesmo grupo é dois títulos.",
+          "tokens": {
+            "valor": "color.action.primary.default"
+          }
+        }
+      }
+    },
+    {
+      "nome": "layout",
+      "tipo": "'stack' | 'row'",
+      "default": "'stack'",
+      "descricao": "stack empilha rótulo e valor; row põe os dois na mesma linha, com o valor à direita. row só serve a contagem curta — valor monetário não cabe deitado, R$ 12.890,45 ao lado de Total recebido estoura o ladrilho em qualquer largura de painel. Em compensação, row rende quatro ladrilhos numa faixa de 56px em vez de 96, e essa altura volta para a tabela logo abaixo.",
+      "valores": {
+        "row": {
+          "uso": "Rótulo e valor na mesma linha, com o valor no fim. Para o indicador que fecha uma lista — o total em caixa embaixo do saldo por forma de pagamento.",
+          "limite": "Em fileira de indicadores, não: a comparação entre eles depende de os números alinharem em coluna.",
+          "classe": ".ucam-stat--linha"
+        }
+      }
+    },
+    {
+      "nome": "state",
+      "tipo": "'idle' | 'loading' | 'empty' | 'error'",
+      "default": "'idle'",
+      "descricao": "loading troca o valor por uma barra do tamanho do número; empty mostra o traço; error mostra o traço e, no lugar do contexto, \"Não foi possível carregar\" com ícone. O tom de fundo só vale com dado (idle). Sem botão no ladrilho: tentar de novo é da seção inteira, senão quatro ladrilhos que falharam juntos viram quatro botões iguais."
+    }
+  ],
+  "estados": [
+    "default",
+    "loading",
+    "empty",
+    "error"
+  ],
+  "limites": {
+    "regras": [
+      "Um valor por ladrilho. Dois números no mesmo ladrilho é tabela mal desenhada — use description-list.",
+      "Não é botão. Ladrilho que filtra a tabela abaixo dele precisa de um controle explícito; superfície clicável sem afordância promete uma ação que a forma não anuncia.",
+      "Máximo de seis ladrilhos numa faixa. Acima disso ninguém compara — vira ornamento, e o que se procura passa a ser encontrado pela ordem, não pelo destaque.",
+      "Não usar para série temporal. Um número não mostra tendência; para isso existe o chart.",
+      "Não usar tone para categorizar (verde igual a receita, vermelho igual a despesa). O tom julga, não classifica."
+    ],
+    "motivo": "O painel de indicadores existe para responder três ou quatro perguntas de uma olhada. Cada ladrilho a mais divide a atenção que os primeiros precisavam ter."
+  },
+  "acessibilidade": {
+    "papel": "group",
+    "requisitos": [
+      "Rótulo e valor ficam no mesmo elemento agrupador, com o rótulo ANTES do valor na ordem do DOM — sem isso o leitor de tela anuncia um número solto.",
+      "O tom nunca é o único meio de dizer que o número é bom ou ruim (WCAG 1.4.1). Quando tone sai de neutral, meta traz a leitura em palavra: abaixo da meta, saldo negativo. É a correção direta do vermelho sozinho dos valores do SIGFIN.",
+      "Contraste do valor colorido sobre a superfície do ladrilho mínimo 4.5:1, verificado no build para success e danger.",
+      "Ícone dentro de delta ou meta é decorativo (aria-hidden=true).",
+      "Valor com tabular-nums para que a coluna de números confira à vista; não é requisito WCAG, é legibilidade de dado numérico.",
+      "Quando o valor muda sem recarregar a página, quem anuncia é a região live do painel — não o ladrilho, que se repetiria a cada atualização.",
+      "Rótulo em caixa natural (ADR-003).",
+      "Em error, a frase \"Não foi possível carregar\" carrega o erro em palavra; o ícone é aria-hidden e a tinta só aponta (WCAG 1.4.1). O valor vira o traço, nunca zero."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "1.4.11"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Frase nominal curta, três palavras no máximo: Requerimentos abertos, Prazo médio, Saldo do dia.",
+      "Diz o recorte quando ele não é óbvio: Concluídos no mês, não Concluídos.",
+      "Caixa natural, sem dois-pontos e sem caixa alta (ADR-003)."
+    ],
+    "meta": [
+      "Uma linha, e sempre a mesma natureza dentro de um painel: ou todos comparam com o período anterior, ou nenhum compara.",
+      "Comparação traz a base: 4% abaixo do anterior, não apenas -4%.",
+      "Quando tone não é neutral, a meta diz por quê."
+    ],
+    "exemplos": {
+      "bom": [
+        "Requerimentos abertos · 86 · em 6 setores",
+        "Saldo do dia · R$ 0,00 · Sem movimento",
+        "Prazo médio · 3,4 dias · 9% acima do anterior"
+      ],
+      "ruim": [
+        "TOTAL: · 86",
+        "Qtd. Req. · 86",
+        "Saldo · -R$ 1.240,00 comunicado só em vermelho, sem palavra"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-badge",
+      "ucam-chart",
+      "ucam-icon",
+      "ucam-progress"
+    ],
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-painel-indicadores",
+      "ucam-page-header"
+    ]
+  },
+  "migracao": {
+    "de": "Lista rótulo/valor em texto corrido (SIGFIN) e total lido do rodapé da paginação (Protocolo)",
+    "mapa": [
+      {
+        "legado": "linha Saldo do dia: R$ 0,00 dentro de uma lista de campos",
+        "novo": "<ucam-stat label=\"Saldo do dia\" [value]=\"saldo()\" />",
+        "nota": "A conversão não é 1:1: só os dois ou três números de decisão viram stat. O resto da lista continua sendo description-list."
+      },
+      {
+        "legado": "valor negativo pintado de vermelho por regra de célula",
+        "novo": "tone=\"danger\" mais meta com a leitura em palavra",
+        "nota": "Trocar a cor pela prop sem escrever a meta reproduz a violação de 1.4.1 que motivou o contrato."
+      },
+      {
+        "legado": "total obtido filtrando a listagem e lendo o rodapé",
+        "novo": "ladrilho no cabeçalho da própria listagem",
+        "nota": "Exige endpoint de contagem por estado. Onde ele não existir, o ladrilho não entra — número aproximado num painel gerencial é pior que número nenhum."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Contagem simples",
+      "codigo": "<ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />"
+    },
+    {
+      "titulo": "Valor monetário com julgamento",
+      "codigo": "<ucam-stat\n  label=\"Saldo do dia\"\n  [value]=\"saldoDoDia() | currency:'BRL'\"\n  [tone]=\"saldoDoDia() < 0 ? 'danger' : 'neutral'\"\n  [meta]=\"saldoDoDia() < 0 ? 'Saldo negativo' : 'Sem movimento'\" />"
+    },
+    {
+      "titulo": "Com variação desde a leitura anterior",
+      "codigo": "<ucam-stat label=\"Abertos no período\" [value]=\"1772\" delta=\"+118\" meta=\"4% abaixo do anterior\" />"
+    },
+    {
+      "titulo": "Faixa de contagens deitadas, acima de uma tabela",
+      "codigo": "<div class=\"ucam-stats\">\n  @for (i of indicadores(); track i.id) {\n    <ucam-stat layout=\"row\" [label]=\"i.rotulo\" [value]=\"i.valor\" />\n  }\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Escrever a meta em palavra sempre que o tom sair de neutral.",
+      "evite": "Comunicar que o número é ruim só pintando o valor de vermelho.",
+      "porque": "É exatamente o que o SIGFIN faz com valores monetários hoje, e é violação de WCAG 1.4.1."
+    },
+    {
+      "faca": "Deixar a formatação do valor com a aplicação, via pipe.",
+      "evite": "Passar o número cru e esperar que o componente decida moeda e casas decimais.",
+      "porque": "Formato é decisão de domínio. Um componente que escolhe R$ impõe a moeda a quem exibe percentual e dias."
+    },
+    {
+      "faca": "Usar a grade contínua quando os números se somam e cartões separados quando são leituras independentes.",
+      "evite": "Escolher o arranjo por gosto visual.",
+      "porque": "A linha de 1px entre ladrilhos afirma que eles formam um todo. Quatro contagens de estados diferentes não formam, e o vão diz isso."
+    },
+    {
+      "faca": "Limitar a faixa a quatro ladrilhos em painel de trabalho.",
+      "evite": "Onze indicadores no topo porque todos foram pedidos.",
+      "porque": "Acima de seis ninguém compara, e o destaque que o primeiro ladrilho tinha se dilui em todos."
+    },
+    {
+      "faca": "Colocar o rótulo antes do valor na ordem do DOM, mesmo em layout row.",
+      "evite": "Posicionar por CSS invertendo a ordem do markup.",
+      "porque": "O leitor de tela segue o DOM: valor antes de rótulo anuncia um número sem pergunta."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Estrutura fixa: o ladrilho com rótulo e valor e, opcionalmente, variação e contexto, dentro do contêiner de arranjo.",
+      "raiz": ".ucam-stat",
+      "estado": "Tom por modificador: --success e --danger pintam apenas o valor. Arranjo por --linha no ladrilho e --cartoes no contêiner. empty e error: .ucam-stat__value com o traço; em error, .ucam-stat__erro (svg.ic aria-hidden mais a frase) no lugar de .ucam-stat__meta.",
+      "variaveis": [
+        "--ucam-color-surface-default",
+        "--ucam-color-border-subtle",
+        "--ucam-color-text-secondary",
+        "--ucam-typography-page-title-font-size",
+        "--ucam-typography-caption-font-size"
+      ],
+      "nota": "O CSS entrega a hierarquia visual e nada mais. Ele NÃO impede o uso de tom sem meta — essa regra vive no contrato e na revisão, porque nenhuma folha de estilo consegue verificar se existe uma palavra dizendo o que a cor diz."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/stat/ucam-stat.ts. O input loading, anterior ao state, segue aceito como sinônimo de state=\"loading\"."
+  },
+  "vs": [
+    {
+      "componente": "chart",
+      "diferenca": "Stat exibe UM número já apurado; Chart mostra a FORMA de um conjunto — a tendência, a diferença entre categorias, o ponto fora da curva. Número exato nunca sai do desenho.",
+      "escolha": "A resposta é um valor: 143 requerimentos em análise."
+    },
+    {
+      "componente": "description-list",
+      "diferenca": "Os dois são pares rótulo e valor, e é aí que se confundem: o Stat destaca um número que responde a uma PERGUNTA de acompanhamento; a DescriptionList lista os campos de UM registro em modo leitura.",
+      "escolha": "O valor é medida do sistema e muda com o tempo: total em análise, prazo médio."
+    }
+  ]
+}

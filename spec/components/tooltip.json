@@ -1,0 +1,223 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "tooltip",
+  "name": "Tooltip",
+  "selector": "[ucamTooltip]",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "sobreposicao",
+  "description": "Um rótulo curto que aparece ao apontar ou ao focar um controle, e some ao sair. Serve para tornar VISÍVEL o nome que o controle já tem no ARIA, ou para revelar um texto que a coluna cortou. Nunca é o único lugar onde a informação existe.",
+  "quando_usar": [
+    "Um botão de ícone precisa mostrar, a quem enxerga, o nome que ele já carrega no ariaLabel.",
+    "Uma coluna de tabela cortou o texto e o valor inteiro precisa estar a um apontar de distância.",
+    "A informação existe em outro lugar da tela — a dica é atalho, nunca a única fonte."
+  ],
+  "evidencia": {
+    "origem": "Shell do próprio design system, telas de referência e APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "menu do app-shell, itens sem tela desenhada",
+        "problema": "o shell usa title=\"Sem tela de referência desenhada.\" — a dica NATIVA do navegador. Ela não abre no foco de teclado, não existe em toque, tem atraso de ~1s que ninguém controla, não se estiliza e não atende à 1.4.13 (não é dispensável nem apontável). É uma dica que só quem usa mouse e sabe esperar recebe."
+      },
+      {
+        "tela": "caixa de entrada, coluna da lista",
+        "problema": "nomes longos são cortados com reticências — 'Carlos Eduardo Martins…' — e não há nenhuma forma de ler o nome inteiro sem abrir o requerimento"
+      },
+      {
+        "tela": "APPSUCAM/Protocolo, image 11 (Setor)",
+        "problema": "a paginação são quatro controles só de ícone, |◀ ◀◀ ▶▶ ▶|, sem rótulo visível e sem nome acessível — nada diz a diferença entre 'anterior' e 'primeira'"
+      },
+      {
+        "tela": "APPSUCAM/SIGFIN, Arquivo remessa diário",
+        "problema": "o botão de calendário grudado no campo é só um ícone; o que ele faz depende de reconhecer o desenho"
+      }
+    ],
+    "conclusao": "A dica já é usada — na versão nativa do navegador, que é a pior de todas. O componente existe para substituí-la, não para introduzir um padrão novo."
+  },
+  "anatomia": [
+    {
+      "parte": "gatilho",
+      "obrigatorio": true,
+      "descricao": "O elemento que recebe a diretiva. Tem de ser focável: dica em elemento não focável é dica que só existe para quem usa mouse.",
+      "classe": "ucam-tooltip-gatilho"
+    },
+    {
+      "parte": "wrap",
+      "obrigatorio": false,
+      "descricao": "Só no Trilho A: âncora de posicionamento do balão. No Trilho B o balão vive no contêiner de overlay do CDK e não precisa de âncora no arranjo — por isso a parte é opcional e não existe no wrapper Angular.",
+      "classe": "ucam-tooltip-wrap"
+    },
+    {
+      "parte": "balao",
+      "obrigatorio": true,
+      "descricao": "A caixa com o texto, sobreposta e ligada ao gatilho por aria-describedby. Sem seta: a proximidade já diz de quem ela é, e a seta é mais uma peça para alinhar errado.",
+      "classe": "ucam-tooltip"
+    }
+  ],
+  "props": [
+    {
+      "nome": "ucamTooltip",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O texto da dica. Uma frase curta, sem ponto final — é rótulo, não parágrafo."
+    },
+    {
+      "nome": "tooltipPosition",
+      "tipo": "'top' | 'bottom' | 'left' | 'right'",
+      "default": "'top'",
+      "descricao": "Lado preferido. É preferência, não ordem: perto da borda da janela o balão vira para o lado que couber, senão a dica sai da tela."
+    },
+    {
+      "nome": "tooltipDelay",
+      "tipo": "number",
+      "default": "400",
+      "descricao": "Espera em milissegundos antes de abrir, para o ponteiro poder atravessar uma fileira de botões sem acender todos. Ao FOCAR pelo teclado a dica abre na hora: quem chegou ali por Tab já demonstrou intenção."
+    },
+    {
+      "nome": "tooltipDisabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Desliga a dica sem tirar a diretiva. Serve para o caso em que o texto só é cortado em telas estreitas."
+    }
+  ],
+  "estados": [
+    "default",
+    "open",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Não pôr na dica informação que não exista em outro lugar. Ela some ao mover o ponteiro e nunca chega a quem usa toque — o que só está ali, está perdido para uma parte das pessoas.",
+      "Não usar dica como NOME ACESSÍVEL de botão só de ícone: o nome é aria-label, que existe sempre. A dica torna esse nome visível para quem enxerga e usa mouse, e é isso.",
+      "Não pôr link, botão ou campo dentro da dica. Conteúdo que se opera pede popover, que fica aberto e é alcançável pelo teclado.",
+      "Não usar em elemento não focável. Se o gatilho não recebe foco, a dica só existe para quem usa mouse.",
+      "Não usar para mensagem de erro de formulário: erro fica visível ao lado do campo, sem depender de apontar."
+    ],
+    "motivo": "A dica é reforço. Toda vez que ela vira o portador único da informação, ela exclui quem usa toque, quem usa teclado e quem usa leitor de tela."
+  },
+  "acessibilidade": {
+    "papel": "tooltip",
+    "requisitos": [
+      "O balão é role=tooltip e é ligado ao gatilho por aria-describedby — descreve, não nomeia. Quem nomeia é o rótulo ou o aria-label.",
+      "Abre no hover E no foco de teclado. As duas coisas, sempre: só no hover é a dica nativa de novo.",
+      "Esc fecha a dica sem tirar o foco do gatilho (WCAG 1.4.13, dispensável).",
+      "A dica permanece aberta enquanto o ponteiro estiver sobre ela, para poder ser lida e selecionada (WCAG 1.4.13, apontável).",
+      "Não some sozinha por tempo: só sai quando o ponteiro sai ou o foco vai embora (WCAG 1.4.13, persistente).",
+      "Nunca é a única fonte da informação; some sem perda de função.",
+      "Contraste do texto do balão mínimo 4.5:1 contra o fundo dele.",
+      "Sem animação de entrada quando prefers-reduced-motion está ativo."
+    ],
+    "criterios_wcag": [
+      "1.4.3",
+      "1.4.13",
+      "2.1.1",
+      "2.1.2",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Uma frase curta, sem ponto final. É rótulo, não texto corrido.",
+      "Verbo no infinitivo quando a dica nomeia uma ação: 'Exportar em PDF'.",
+      "Quando a dica repete um texto cortado, ela mostra o texto INTEIRO e nada mais — sem prefixo do tipo 'Nome completo:'.",
+      "Nunca escrever a dica como instrução longa: instrução longa é texto de apoio do campo, que fica visível."
+    ],
+    "exemplos": {
+      "bom": [
+        "Exportar em PDF",
+        "Carlos Eduardo Martins Souza",
+        "Sem tela de referência desenhada"
+      ],
+      "ruim": [
+        "Clique aqui para exportar o relatório completo em formato PDF.",
+        "Ajuda",
+        "?"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [],
+    "usada_por": [
+      "ucam-app-shell",
+      "ucam-data-table",
+      "ucam-icon-button"
+    ]
+  },
+  "migracao": {
+    "de": "Atributo title do navegador",
+    "mapa": [
+      {
+        "legado": "title=\"…\"",
+        "novo": "ucamTooltip=\"…\"",
+        "nota": "A dica nativa não abre no foco de teclado, não existe em toque, não é dispensável por Esc e tem atraso que ninguém controla. Todas as quatro coisas a 1.4.13 exige."
+      },
+      {
+        "legado": "botão só de ícone sem rótulo nenhum",
+        "novo": "aria-label MAIS ucamTooltip com o mesmo texto",
+        "nota": "O aria-label é o nome, e existe sempre. A dica é a versão visível dele."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Tornar visível o nome de um botão de ícone",
+      "codigo": "<ucam-icon-button\n  icon=\"download\"\n  label=\"Exportar em PDF\"\n  ucamTooltip=\"Exportar em PDF\" />\n\n<!-- O aria-label continua sendo o NOME. A dica é a versão visível dele,\n     para quem enxerga e usa mouse. Os dois textos são o mesmo, de propósito. -->"
+    },
+    {
+      "titulo": "Revelar um texto que a coluna cortou",
+      "codigo": "<span class=\"truncado\" [ucamTooltip]=\"aluno.nomeCompleto\">{{ aluno.nomeCompleto }}</span>"
+    },
+    {
+      "titulo": "Item de menu sem destino",
+      "codigo": "<span\n  role=\"link\"\n  aria-disabled=\"true\"\n  tabindex=\"0\"\n  ucamTooltip=\"Sem tela de referência desenhada\"\n  >Funcionários</span>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Abrir no hover e no foco de teclado.",
+      "evite": "Abrir só no hover.",
+      "porque": "Só no hover é a dica nativa do navegador de volta, com outro CSS — quem navega por Tab continua sem receber nada."
+    },
+    {
+      "faca": "Manter aria-label no botão de ícone além da dica.",
+      "evite": "Trocar o aria-label pela dica.",
+      "porque": "A dica é sobreposição temporária; o nome acessível precisa existir o tempo todo, inclusive quando ninguém apontou nada."
+    },
+    {
+      "faca": "Deixar a dica aberta enquanto o ponteiro estiver sobre ela.",
+      "evite": "Fechar assim que o ponteiro sai do gatilho.",
+      "porque": "A 1.4.13 exige que o conteúdo seja apontável — quem usa ampliação de tela precisa mover o ponteiro até o balão para lê-lo."
+    },
+    {
+      "faca": "Usar atraso no hover e abrir na hora no foco.",
+      "evite": "O mesmo atraso nos dois.",
+      "porque": "O atraso existe para o ponteiro atravessar uma fileira de botões sem acender todos. Quem chegou por Tab já escolheu aquele controle."
+    },
+    {
+      "faca": "Repetir na dica o texto inteiro que foi cortado.",
+      "evite": "Dica com rótulo do tipo 'Nome completo: …'.",
+      "porque": "A dica de truncamento é a continuação do texto, não uma legenda dele."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "tooltip.json",
+      "raiz": ".ucam-tooltip",
+      "nota": "Em CSS puro a dica entrega apenas o balão em :hover e :focus-visible por irmão adjacente. NÃO entrega: reposicionamento perto da borda da janela, dispensa por Esc e permanência quando o ponteiro entra no balão — os três precisam de JavaScript. O legado que não puder usar o trilho B fica com um subconjunto que ainda assim é melhor que o title nativo, porque ao menos abre no foco."
+    },
+    "trilho_b": "Diretiva sobre o overlay do CDK, sem envolver o zTooltip da base: diretiva de host é visível ao consumidor e o compilador exigiria exportá-la (NG3001), o que a ADR-006 proíbe. O que a diretiva entrega e a base não dava: abertura imediata no foco de teclado contra atraso no ponteiro, dispensa por Esc sem tirar o foco do gatilho, e permanência enquanto o ponteiro estiver sobre o balão. NÃO entrega: conteúdo interativo dentro da dica, nem dica em elemento não focável — as duas são recusadas, e o motivo está em limites."
+  },
+  "vs": [
+    {
+      "componente": "field",
+      "diferenca": "Tooltip SOME; o texto de apoio do Field fica. Informação necessária para preencher não pode depender de apontar o ponteiro — quem usa teclado ou toque pode nunca ver.",
+      "escolha": "Revelar o nome que o controle já tem no ARIA, ou o texto que a coluna cortou."
+    },
+    {
+      "componente": "icon-button",
+      "diferenca": "O Tooltip torna VISÍVEL o nome que o IconButton já carrega no ariaLabel — ele não cria esse nome. Botão de ícone sem ariaLabel continua mudo para o leitor de tela mesmo com tooltip.",
+      "escolha": "Você quer que quem enxerga também leia o nome do botão ao apontar."
+    }
+  ]
+}

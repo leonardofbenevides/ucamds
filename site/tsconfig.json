@@ -1,0 +1,51 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": ["ES2022", "dom"],
+    "types": ["vite/client", "node"],
+    // A biblioteca entra por FONTE, não pelo pacote construído: assim o
+    // compilador do site (Angular 22) compila tudo, e o descasamento com o
+    // Angular 21 de ui/ deixa de existir. @/* replica o alias interno da lib,
+    // que é como o código dela referencia a base ZardUI.
+    "paths": {
+      // A fonte da lib resolveria @angular/* para o node_modules de ui/, que é
+      // Angular 21 — duas identidades de tipo para a mesma classe, e o
+      // compilador rejeita o import com "Unable to import symbol". Estes paths
+      // prendem TODO import de pacote ao node_modules do site.
+      "@angular/*": ["./node_modules/@angular/*"],
+      "@ng-icons/*": ["./node_modules/@ng-icons/*"],
+      "rxjs": ["./node_modules/rxjs"],
+      "rxjs/*": ["./node_modules/rxjs/*"],
+      "ngx-echarts": ["./node_modules/ngx-echarts"],
+      "echarts": ["./node_modules/echarts"],
+      "echarts/*": ["./node_modules/echarts/*"],
+      "@ucam/ui": ["../ui/projects/ui/src/public-api.ts"],
+      "@/*": ["../ui/projects/ui/src/lib/*"],
+      "@generated/*": ["./src/generated/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "include": ["src/**/*.ts"]
+}

@@ -1,0 +1,256 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "compositor",
+  "name": "Compositor",
+  "selector": "ucam-compositor",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "A caixa de escrever uma resposta: o campo de texto e as ações que a enviam dentro da mesma peça. Não é um Textarea com botões embaixo — é o lugar de responder, e o que diz isso é a caixa em volta dos dois.",
+  "quando_usar": [
+    "A tela tem UMA resposta a escrever e enviar — o requerimento, a solicitação, o chamado.",
+    "As ações de anexar e enviar pertencem àquele texto e a mais nada na tela.",
+    "O texto enviado vira um item da linha do tempo, e não um campo salvo no registro."
+  ],
+  "evidencia": {
+    "origem": "Redesenho do Protocolo (templates.json: analise-requerimento e requerimento-detalhe)",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — Caixa de entrada e Requerimento",
+        "problema": "campo, dica e dois botões eram três peças soltas numa pilha. Nada em volta dizia que os botões pertenciam àquele campo, e no requerimento o vizinho de baixo é uma tabela: \"Enviar resposta\" ficava mais perto dela do que do texto que envia"
+      },
+      {
+        "tela": "Protocolo legado — Análise de requerimento",
+        "problema": "a dica sobre a resposta ser definitiva vinha abaixo dos botões, isto é, no caminho de quem já enviou"
+      }
+    ],
+    "conclusao": "Campo e ações de um mesmo ato pedem uma peça só, e a advertência tem de estar antes do botão, não depois dele."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "classe": "ucam-compositor",
+      "descricao": "A caixa. É ela que carrega o filete, o hover e o anel de foco (por :focus-within), porque o alvo de identificação passou a ser a peça inteira. Vive dentro de um <form> ou de um .ucam-field com a etiqueta acima."
+    },
+    {
+      "parte": "campo",
+      "obrigatorio": true,
+      "classe": "ucam-compositor__campo",
+      "descricao": "O <textarea>. Sem filete e sem anel próprios: dois contornos concêntricos a cada entrada de cursor é o que a peça única desfaz. Redimensionável na vertical, com duas linhas de altura mínima."
+    },
+    {
+      "parte": "barra",
+      "obrigatorio": true,
+      "classe": "ucam-compositor__barra",
+      "descricao": "A fileira de baixo, DENTRO da caixa. Sem filete separando: o que separa é o vão, senão a peça volta a ler como duas."
+    },
+    {
+      "parte": "dica",
+      "obrigatorio": false,
+      "classe": "ucam-compositor__dica",
+      "descricao": "O que é preciso saber ANTES de enviar — o atalho e o efeito de enviar. Fica à esquerda da barra, no caminho de quem vai apertar o botão. É o aria-describedby do campo."
+    },
+    {
+      "parte": "acoes",
+      "obrigatorio": true,
+      "classe": "ucam-compositor__acoes",
+      "descricao": "Os botões, empurrados para o fim da barra. Uma primária só — a que envia; o resto é secundária ou de texto (ADR-015)."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A etiqueta do campo, acima da caixa. Nunca só o placeholder: placeholder some ao digitar."
+    },
+    {
+      "nome": "value",
+      "tipo": "string",
+      "default": "''",
+      "descricao": "O texto escrito. Two-way."
+    },
+    {
+      "nome": "placeholder",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Diz quem vai LER o texto — \"O aluno recebe este texto por e-mail e no portal\" —, não repete a etiqueta."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A dica da barra (parte dica), ligada ao campo por aria-describedby."
+    },
+    {
+      "nome": "submitLabel",
+      "tipo": "string",
+      "default": "'Enviar'",
+      "descricao": "O rótulo do botão que envia. Nomeia o que sai: \"Enviar resposta\", não \"OK\"."
+    },
+    {
+      "nome": "attach",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Mostra o botão de anexar, à esquerda do de enviar."
+    },
+    {
+      "nome": "busy",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Envio em curso: o botão entra em loading e o segundo clique não passa."
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "A caixa inteira fica indisponível — registro concluído, sem permissão de responder."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string",
+      "descricao": "O texto a cada tecla, do two-way de value."
+    },
+    {
+      "nome": "enviar",
+      "payload": "string",
+      "descricao": "O texto a enviar, do botão ou de Ctrl + Enter. NÃO se chama submit: output com nome de evento nativo dispara o handler do consumidor duas vezes (ADR-018). Quem consome decide o que fazer; o compositor não limpa o campo sozinho."
+    },
+    {
+      "nome": "attachClick",
+      "payload": "void",
+      "descricao": "Pedido de anexo. O seletor de arquivo é de quem consome."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "disabled",
+    "busy"
+  ],
+  "acessibilidade": {
+    "papel": "group",
+    "requisitos": [
+      "O campo tem etiqueta visível ligada por for/id — o placeholder não é etiqueta.",
+      "A dica é ligada ao campo por aria-describedby, para ser anunciada ao entrar nele e não depois de enviar.",
+      "O anel de foco é da caixa (:focus-within) e vale 1.4.11; os botões da barra mantêm o anel deles, porque recebem o foco por conta própria.",
+      "Ctrl + Enter envia, e isso está escrito na dica: atalho não anunciado é atalho que só quem escreveu conhece.",
+      "Em busy o botão declara aria-busy e o envio em dobro não acontece.",
+      "O resultado do envio é anunciado por quem recebe o item novo — a linha do tempo —, não pelo compositor."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.11",
+      "2.1.1",
+      "3.3.2",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "A dica diz o efeito, não a mecânica: \"A resposta entra na atividade e não pode ser apagada\".",
+      "O botão nomeia o que sai: \"Enviar resposta\".",
+      "O placeholder diz quem lê o texto."
+    ],
+    "exemplos": {
+      "bom": [
+        "Ctrl + Enter envia. A resposta entra na atividade e não pode ser apagada."
+      ],
+      "ruim": [
+        "Digite aqui...",
+        "Salvar"
+      ]
+    }
+  },
+  "limites": {
+    "regras": [
+      "Não usar como campo de formulário comum: para texto que é ATRIBUTO do registro — observação, justificativa — o certo é o Textarea dentro do Field, com o Salvar do formulário inteiro.",
+      "Não pôr duas primárias na barra. Enviar é a ação; rascunho e cancelar são secundárias.",
+      "Não separar a barra do campo com filete: volta a ler como duas peças.",
+      "Não usar para busca nem para comando: um campo de uma linha com botão é input-group."
+    ],
+    "motivo": "A caixa em volta promete que aquilo é UM ato. Se o que está dentro não é um ato só, a promessa é falsa."
+  },
+  "composicao": {
+    "usa": [
+      "ucam-button",
+      "ucam-textarea"
+    ],
+    "usada_por": [
+      "padrao-triagem-lista-detalhe"
+    ]
+  },
+  "vs": [
+    {
+      "componente": "textarea",
+      "diferenca": "O Textarea é o controle: texto longo que é atributo do registro, salvo com o resto do formulário. O Compositor é o ato de responder: o texto sai da tela e vira um item do histórico, e por isso leva as ações junto.",
+      "escolha": "A resposta ao requerente, que é enviada e não pode ser apagada."
+    },
+    {
+      "componente": "input-group",
+      "diferenca": "O input-group é um campo de uma linha com adorno ou botão colado — busca, filtro. O Compositor é de texto de várias linhas com uma barra de ações própria.",
+      "escolha": "Texto de várias linhas com anexo e envio."
+    }
+  ],
+  "exemplos": [
+    {
+      "titulo": "Resposta ao requerente",
+      "codigo": "<ucam-compositor\n  label=\"Resposta ao requerente\"\n  placeholder=\"O aluno recebe este texto por e-mail e no portal.\"\n  hint=\"Ctrl + Enter envia. A resposta entra na atividade e não pode ser apagada.\"\n  submitLabel=\"Enviar resposta\"\n  [attach]=\"true\"\n  [(value)]=\"resposta\"\n  (enviar)=\"responder($event)\"\n/>"
+    },
+    {
+      "titulo": "Enviando",
+      "codigo": "<ucam-compositor label=\"Resposta\" [busy]=\"enviando()\" [(value)]=\"resposta\" (enviar)=\"responder($event)\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Pôr a advertência na barra, antes do botão.",
+      "evite": "Dica abaixo dos botões.",
+      "porque": "Abaixo do botão, ela é lida depois de enviar — quando já não serve para nada."
+    },
+    {
+      "faca": "Deixar o anel de foco na caixa inteira.",
+      "evite": "Anel no textarea e filete no invólucro.",
+      "porque": "Dois contornos concêntricos a cada clique dizem que há duas peças, e há uma."
+    },
+    {
+      "faca": "Nomear no botão o que vai sair.",
+      "evite": "\"Enviar\" sozinho quando a tela envia mais de uma coisa.",
+      "porque": "Em tela com anexo, parecer e resposta, \"Enviar\" não diz qual dos três."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "compositor.json",
+      "raiz": "<div class=\"ucam-compositor\">",
+      "nota": "A etiqueta fica fora, num .ucam-field acima. O textarea é .ucam-compositor__campo e NÃO leva .ucam-textarea: o filete e o anel são do invólucro.",
+      "estado": "disabled: o textarea e os botões levam disabled; a caixa herda a tinta deles."
+    },
+    "trilho_b": "Ctrl + Enter emite submit com o valor atual. O componente não limpa o campo nem busca nada: quem consome decide. busy só desabilita o envio — o texto continua editável, porque perder o que se escreveu é pior que um clique a mais."
+  },
+  "migracao": {
+    "de": "AngularJS / textarea + barra de botões do formulário",
+    "mapa": [
+      {
+        "legado": "textarea do parecer",
+        "novo": "campo",
+        "nota": "O campo deixa de ser um input do formulário inteiro e passa a ser o do ato de responder."
+      },
+      {
+        "legado": "botão Gravar da barra inferior da tela",
+        "novo": "submit",
+        "nota": "Sai da barra da tela, que gravava tudo, e entra na caixa do texto que envia."
+      },
+      {
+        "legado": "texto de aviso abaixo dos botões",
+        "novo": "hint",
+        "nota": "Sobe para a barra, antes do botão: abaixo dele o aviso chega depois do envio."
+      }
+    ]
+  }
+}

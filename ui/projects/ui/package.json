@@ -1,0 +1,25 @@
+{
+  "name": "@ucam/ui",
+  "version": "0.1.0",
+  "description": "Componentes Angular do Design System da Universidade Candido Mendes. Trilho B: apps novos e migrados.",
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "peerDependencies": {
+    "@angular/cdk": ">=21.0.0 <23.0.0",
+    "@angular/common": ">=21.0.0 <23.0.0",
+    "@angular/core": ">=21.0.0 <23.0.0",
+    "@angular/forms": ">=21.0.0 <23.0.0",
+    "@angular/platform-browser": ">=21.0.0 <23.0.0",
+    "@ng-icons/core": ">=34.0.0",
+    "@ng-icons/lucide": ">=34.0.0",
+    "echarts": "^6.0.0",
+    "ngx-echarts": ">=21.0.0",
+    "rxjs": "^7.8.0"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0",
+    "tslib": "^2.3.0"
+  }
+}

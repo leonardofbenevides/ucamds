@@ -1,0 +1,307 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "radio-group",
+  "name": "RadioGroup",
+  "selector": "ucam-radio-group",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "formulario",
+  "description": "Escolha de UMA opção entre poucas, com todas visíveis ao mesmo tempo e o rótulo do grupo dizendo o que está sendo escolhido. Preenche a lacuna que o catálogo tinha: havia checkbox para o que se marca, switch para o que se liga e segmented para o recorte de duas a quatro opções em trilho, e nenhum controle para a escolha exclusiva de cinco a sete alternativas dentro de um formulário.",
+  "quando_usar": [
+    "Uma escolha exclusiva entre cinco e sete alternativas dentro de um formulário, com todas visíveis para comparação.",
+    "As alternativas precisam ser lidas lado a lado antes da decisão — turno, modalidade, forma de ingresso.",
+    "A escolha é obrigatória e nenhuma alternativa pode vir marcada de fábrica."
+  ],
+  "evidencia": {
+    "origem": "Ausência apurada em 08/09/2026 ao cruzar os contratos de formulário com as telas do parque.",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — Novo requerimento",
+        "problema": "A escolha da natureza do requerimento é um select de 30 itens, mas a escolha do CAMPUS é entre três opções fixas e também está num select. Select esconde as opções atrás de um clique e obriga a lembrar o que existe; com três alternativas, escondê-las custa mais do que mostrá-las."
+      },
+      {
+        "tela": "SIGFIN — Cálculo de mensalidade",
+        "problema": "A forma de pagamento é uma fileira de <input type=radio> sem fieldset e sem legend. O leitor de tela anuncia três controles soltos e não diz que eles são alternativas da mesma pergunta — o mesmo defeito que o segmented corrige no par Sim/Não."
+      }
+    ]
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O fieldset. É ele que amarra as alternativas numa pergunta só: sem fieldset, três rádios são três controles sem relação declarada.",
+      "classe": "ucam-radio-group"
+    },
+    {
+      "parte": "legenda",
+      "obrigatorio": true,
+      "descricao": "A pergunta, em <legend>. Visível por padrão — rótulo persistente é regra do sistema (ADR-004) e vale mais aqui do que em qualquer outro controle, porque a resposta são palavras soltas que fora da pergunta não significam nada.",
+      "classe": "ucam-radio-group__legenda"
+    },
+    {
+      "parte": "opcao",
+      "obrigatorio": true,
+      "descricao": "Uma alternativa: o círculo, o rótulo e, opcionalmente, uma linha de apoio. O alvo de clique é o rótulo INTEIRO, não só o círculo de 16px.",
+      "classe": "ucam-radio"
+    },
+    {
+      "parte": "apoio",
+      "obrigatorio": false,
+      "descricao": "Uma linha explicando a consequência da alternativa, em caption e tinta secundária. É onde mora a diferença entre 'À vista' e 'Parcelado' quando ela não cabe no rótulo.",
+      "classe": "ucam-radio__apoio"
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false,
+      "descricao": "A mensagem de erro do grupo, ligada ao fieldset por aria-describedby. O erro é do GRUPO, não de uma alternativa: não existe rádio individualmente inválido.",
+      "classe": "ucam-radio-group__erro"
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A pergunta, em caixa natural e sem dois-pontos. Vira a <legend> do fieldset."
+    },
+    {
+      "nome": "options",
+      "tipo": "UcamRadioOption[]",
+      "obrigatorio": true,
+      "descricao": "As alternativas: { value, label, hint?, disabled? }. De duas a sete. Acima de sete a escolha vira select, e acima de quinze, combobox com busca."
+    },
+    {
+      "nome": "value",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A alternativa escolhida. Two-way: [(value)]. Diferente do segmented, aqui o vazio é legítimo: um formulário pode começar sem resposta, e pré-marcar uma alternativa é responder pela pessoa — que é como um valor errado atravessa a revisão sem ninguém notar."
+    },
+    {
+      "nome": "orientation",
+      "tipo": "'vertical' | 'horizontal'",
+      "default": "'vertical'",
+      "descricao": "vertical é o padrão porque a leitura de alternativas é uma coluna: o olho compara rótulos alinhados à esquerda. horizontal só quando as alternativas são de uma palavra e cabem numa linha sem quebrar.",
+      "valores": {
+        "vertical": {
+          "uso": "O padrão. Qualquer alternativa com mais de uma palavra, e sempre que houver linha de apoio."
+        },
+        "horizontal": {
+          "uso": "Alternativas de uma palavra, sem apoio, dentro de uma linha de campos.",
+          "limite": "Não usar com apoio: a linha de apoio deitada duplica a altura da fileira e desalinha os campos vizinhos.",
+          "classe": ".ucam-radio-group--horizontal"
+        }
+      }
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Apoio do GRUPO, ligado por aria-describedby. Diferente do apoio de cada alternativa."
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Desabilita o grupo inteiro. Alternativa individualmente indisponível usa o disabled da própria opção — e, ao contrário do segmented, aqui ela PERMANECE visível: numa lista vertical a opção morta explica por que aquele caminho não está disponível, em vez de sumir e deixar a pessoa procurando."
+    },
+    {
+      "nome": "invalid",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "errorMessage",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Mensagem do grupo. Diz o que fazer, não que está errado: 'Escolha uma forma de pagamento', não 'Campo obrigatório'."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string | null",
+      "descricao": "A alternativa escolhida."
+    }
+  ],
+  "estados": [
+    "default",
+    "checked",
+    "hover",
+    "focus-visible",
+    "disabled",
+    "invalid"
+  ],
+  "acessibilidade": {
+    "papel": "radiogroup, realizado pelo fieldset nativo com <input type=radio> — não por role em div",
+    "requisitos": [
+      "fieldset com legend, e não um <span> fazendo as vezes de rótulo. É o fieldset que declara que as alternativas são da mesma pergunta; sem ele o leitor de tela anuncia controles soltos, que é o defeito medido na forma de pagamento do SIGFIN.",
+      "<input type=radio> nativo, nunca div com role=radio. O nativo já traz o grupo por name, a navegação por seta e o anúncio de 'opção 2 de 3'.",
+      "Uma só parada de tabulação no grupo: o comportamento nativo do rádio. Tab entra e sai; quem anda entre alternativas é a seta.",
+      "O alvo de clique é o RÓTULO INTEIRO, pela associação <label for>: o círculo tem 16px e o piso é 24px (WCAG 2.5.8).",
+      "Quando nenhuma alternativa está escolhida, o Tab leva ao PRIMEIRO rádio do grupo — comportamento nativo que uma reimplementação em div perde.",
+      "A escolha não é comunicada só pelo preenchimento do círculo: o estado vive no atributo checked, que é o que o leitor de tela lê (WCAG 1.4.1).",
+      "O erro do grupo é ligado ao fieldset por aria-describedby e aparece ANTES das alternativas na leitura, não depois — quem ouve precisa saber que há erro antes de escolher de novo.",
+      "aria-required no fieldset quando required, além do required nos inputs."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "2.1.1",
+      "2.4.6",
+      "2.5.8",
+      "3.3.1",
+      "3.3.2",
+      "4.1.2"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Entra no grupo (na escolhida, ou na primeira quando não há escolha) e sai dele. Não anda entre alternativas."
+      },
+      {
+        "tecla": "Setas",
+        "comportamento": "Andam entre as alternativas e ESCOLHEM ao mover — comportamento nativo do rádio."
+      },
+      {
+        "tecla": "Espaço",
+        "comportamento": "Escolhe a alternativa focada."
+      }
+    ]
+  },
+  "conteudo": {
+    "legenda": [
+      "A pergunta em caixa natural, sem dois-pontos e sem ponto final: 'Forma de pagamento', não 'FORMA DE PAGAMENTO:'.",
+      "Substantiva, não interrogativa: 'Modalidade do curso', não 'Qual a modalidade do curso?'. A interrogação cabe onde a escolha é uma decisão, não um campo."
+    ],
+    "opcao": {
+      "bom": [
+        "À vista",
+        "Parcelado em até 6 vezes",
+        "Presencial"
+      ],
+      "ruim": [
+        "Sim",
+        "Opção 1",
+        "OUTROS"
+      ]
+    },
+    "apoio": [
+      "Uma linha, dizendo a CONSEQUÊNCIA da alternativa — não repetindo o rótulo com outras palavras.",
+      "Só onde a diferença entre as alternativas não cabe no rótulo. Apoio em toda alternativa é sinal de que os rótulos estão errados."
+    ]
+  },
+  "limites": {
+    "regras": [
+      "Não usar para uma escolha binária que na verdade é ligar ou desligar: isso é switch, e um par Sim/Não em trilho é segmented.",
+      "Não usar acima de sete alternativas. A partir daí a lista ocupa a tela inteira e a comparação entre alternativas deixa de acontecer — é select, ou combobox com busca acima de quinze.",
+      "Não pré-marcar uma alternativa para 'ajudar'. Escolha pré-marcada é resposta dada pela tela, e é assim que um valor errado atravessa a revisão.",
+      "Não usar para marcar vários: rádio é exclusivo por definição, e vários é checkbox.",
+      "Não usar com uma alternativa só. Rádio único não se desmarca e vira um controle que só liga."
+    ],
+    "motivo": "O rádio existe para tornar a comparação entre alternativas visível. Fora dessa faixa, ou não há comparação a fazer, ou ela não cabe na tela."
+  },
+  "vs": [
+    {
+      "componente": "segmented",
+      "diferenca": "segmented é o recorte de duas a quatro opções num trilho, que troca o que a tela MOSTRA e nunca fica vazio; radio-group é a escolha de duas a sete alternativas de um formulário, que é RESPOSTA e pode começar sem resposta."
+    },
+    {
+      "componente": "select",
+      "diferenca": "radio-group mostra todas as alternativas de uma vez, e por isso serve até sete; select as esconde atrás de um clique e é o que serve de oito a quinze — acima disso, combobox com busca."
+    },
+    {
+      "componente": "checkbox",
+      "diferenca": "checkbox marca cada item por si e admite nenhum ou vários; radio-group escolhe UMA alternativa entre as da mesma pergunta."
+    },
+    {
+      "componente": "choice-card",
+      "diferenca": "choice-card é a mesma escolha exclusiva quando cada alternativa precisa de figura, título e parágrafo para ser entendida; radio-group é quando o rótulo e uma linha de apoio bastam."
+    }
+  ],
+  "composicao": {
+    "$descricao": "Dentro do form, o grupo conta como UM campo: o sumário de erros aponta para o fieldset e o foco vai para a primeira alternativa.",
+    "usada_por": []
+  },
+  "migracao": {
+    "de": "AngularJS + Angular Material e HTML puro do parque",
+    "mapa": [
+      {
+        "legado": "<md-radio-group><md-radio-button>",
+        "novo": "<ucam-radio-group [options]>",
+        "nota": "O Material já produzia fieldset; o que se ganha é o rótulo persistente, o apoio por alternativa e a mensagem de erro do grupo."
+      },
+      {
+        "legado": "<input type=radio> soltos com <label> ao lado",
+        "novo": "<ucam-radio-group [options]>",
+        "nota": "É o caso do SIGFIN. O ganho principal é o fieldset com legend: sem ele o leitor de tela nunca anuncia a pergunta."
+      },
+      {
+        "legado": "<select> com três a sete <option>",
+        "novo": "<ucam-radio-group [options]>",
+        "nota": "Só quando as opções são poucas e fixas. Select de trinta naturezas continua sendo select — ou combobox."
+      }
+    ]
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Um fieldset com a classe do grupo e um label por alternativa.",
+      "raiz": ".ucam-radio-group",
+      "estado": "Os estados saem do :checked, :hover, :focus-visible e :disabled do input nativo — nenhum precisa de JavaScript.",
+      "variaveis": [
+        "--ucam-color-action-primary-default",
+        "--ucam-color-border-default",
+        "--ucam-color-surface-default",
+        "--ucam-radius-pill"
+      ],
+      "nota": "O Trilho A entrega o grupo inteiro, inclusive teclado: o rádio nativo já traz a navegação por seta e a parada única de tabulação. É um dos poucos contratos em que os dois trilhos entregam a mesma coisa."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/radio-group/ucam-radio-group.ts — implementa ControlValueAccessor sobre o input nativo. NÃO entrega: alternativa com conteúdo rico, que é o choice-card."
+  },
+  "exemplos": [
+    {
+      "titulo": "Forma de pagamento, com apoio por alternativa",
+      "codigo": "<ucam-radio-group\n  label=\"Forma de pagamento\"\n  [(value)]=\"forma\"\n  [options]=\"[\n    { value: 'vista', label: 'À vista', hint: 'Desconto de 5% sobre o valor da mensalidade' },\n    { value: 'parcelado', label: 'Parcelado em até 6 vezes' },\n    { value: 'boleto', label: 'Boleto mensal' }\n  ]\"\n/>"
+    },
+    {
+      "titulo": "Campus, deitado numa linha de campos",
+      "codigo": "<ucam-radio-group\n  label=\"Campus\"\n  orientation=\"horizontal\"\n  [(value)]=\"campus\"\n  [options]=\"[\n    { value: 'rio', label: 'Rio' },\n    { value: 'campos', label: 'Campos' },\n    { value: 'nova-friburgo', label: 'Nova Friburgo' }\n  ]\"\n/>"
+    },
+    {
+      "titulo": "Obrigatório, com a mensagem que diz o que fazer",
+      "codigo": "<ucam-radio-group\n  label=\"Modalidade\"\n  required\n  [invalid]=\"enviado() && !modalidade()\"\n  errorMessage=\"Escolha uma modalidade\"\n  [(value)]=\"modalidade\"\n  [options]=\"modalidades\"\n/>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Deixar todas as alternativas visíveis ao mesmo tempo, até sete.",
+      "evite": "Esconder alternativas atrás de rolagem ou de um campo que abre.",
+      "porque": "O rádio existe para tornar a comparação visível. Alternativa que não está na tela junto com as outras não é comparada — e aí o controle certo já era o select."
+    },
+    {
+      "faca": "Começar sem nenhuma alternativa marcada.",
+      "evite": "Pré-marcar uma opção para poupar um clique.",
+      "porque": "Escolha pré-marcada é resposta dada pela tela, não pela pessoa. É assim que um valor errado atravessa a revisão sem que ninguém tenha decidido nada."
+    },
+    {
+      "faca": "Escrever a alternativa como a resposta à pergunta do rótulo do grupo.",
+      "evite": "Rótulos que só fazem sentido lidos em sequência (\"Sim\", \"Não\", \"Outro\").",
+      "porque": "O leitor de tela anuncia a alternativa junto com o rótulo do grupo, uma por vez. Alternativa que depende da vizinha para significar algo chega sozinha e vazia."
+    },
+    {
+      "faca": "Usar o grupo inteiro como UM campo do formulário: um rótulo, uma mensagem de erro, um alvo no sumário de erros.",
+      "evite": "Mensagem de erro repetida por alternativa.",
+      "porque": "O erro é da escolha, não de cada opção. Cinco cópias da mesma mensagem empurram o formulário para baixo e não dizem mais do que uma."
+    },
+    {
+      "faca": "Trocar por switch quando a escolha é ligar ou desligar, e por segmented quando é um par Sim/Não em trilho.",
+      "evite": "Rádio com duas alternativas opostas quando o que existe é um estado.",
+      "porque": "Duas alternativas mutuamente exclusivas que só invertem uma da outra são um estado, e estado tem controle próprio — o rádio gasta duas linhas para dizer o que o switch diz numa."
+    }
+  ]
+}

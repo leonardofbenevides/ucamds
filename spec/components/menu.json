@@ -1,0 +1,271 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "menu",
+  "name": "Menu",
+  "selector": "ucam-menu",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "sobreposicao",
+  "description": "Lista de ações ou de escolhas que aparece ancorada no botão que a abriu. Recolhe o que é raro ou secundário sem escondê-lo: o que está no menu continua alcançável por teclado e anunciado por leitor de tela.",
+  "quando_usar": [
+    "Ações secundárias de um registro que não compram espaço permanente na linha.",
+    "A conta da pessoa logada: o nome, as preferências e o sair, ancorados no avatar da faixa.",
+    "A troca de campus, ancorada no chip de contexto do app-shell."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo, SIGFIN e Portal",
+    "ocorrencias": [
+      {
+        "tela": "todas — faixa da aplicação",
+        "problema": "avatar, nome por extenso e botão Sair ocupavam a ponta direita de TODA tela de TODO sistema. O nome de quem está logado é o dado que menos muda na aplicação e sair é ação rara: nenhum dos dois compra rótulo permanente ao lado da marca."
+      },
+      {
+        "tela": "Protocolo — chip de campus",
+        "problema": "o chip de unidade ativa era um botão morto. O contrato do app-shell declara contextOptions e contextChange desde a primeira versão, e a faixa nunca ofereceu como trocar: a promessa estava no contrato e não na tela."
+      },
+      {
+        "tela": "Protocolo — detalhe do requerimento",
+        "problema": "botão de reticências rotulado 'Mais ações do requerimento' que não abria nada. Botão que promete ação e entrega silêncio é pior que botão ausente."
+      },
+      {
+        "tela": "todas",
+        "problema": "não havia componente de sobreposição ancorada no catálogo. Cada tela que precisasse de um menu inventaria o seu, que é como o parque legado chegou a três faixas diferentes para a mesma universidade."
+      }
+    ],
+    "conclusao": "O menu não é enfeite: é o que permite a faixa parar de gastar espaço permanente com ação rara. Mas só vale quando o popover EXISTE — chevron sem menu atrás é mentira desenhada."
+  },
+  "anatomia": [
+    {
+      "parte": "trigger",
+      "obrigatorio": true,
+      "descricao": "O botão que abre. Recebe aria-haspopup=menu, aria-expanded e aria-controls. Nunca é o avatar nem o ícone sozinho: quem recebe o clique é um botão que os contém. Sem classe própria: o gatilho é o botão que já existe na tela, não uma peça nova."
+    },
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O painel. role=menu, aria-labelledby apontando o gatilho, e hidden quando fechado — hidden e não display:none por classe, para o estado morar num lugar só.",
+      "classe": "ucam-menu"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "Ação do menu. role=menuitem e tabindex=-1: o foco entra pelo gatilho e anda por setas, não por Tab. A ação destrutiva leva .ucam-menu__item--perigo — uma por menu, e sempre depois do separador. No painel de notificações (.ucam-menu--notificacoes) o item é o aviso, e a ação dele é abrir o registro de que ele fala. Aviso cujo destino não está desenhado neste conjunto continua na lista como <span role=\"menuitem\"> — alcançável pela seta, sem mão e sem hover —, pela mesma regra que a navegação e a busca global já seguem: fingir o link seria pior, e tirar o aviso faria o selo contar o que a lista não mostra.",
+      "classe": "ucam-menu__item"
+    },
+    {
+      "parte": "item-escolha",
+      "obrigatorio": false,
+      "descricao": "Item que ESCOLHE em vez de executar — trocar de campus, ordenar por. role=menuitemradio com aria-checked. Marca de seleção obrigatória: cor sozinha não diz qual está ativo.",
+      "classe": "ucam-menu__item"
+    },
+    {
+      "parte": "header",
+      "obrigatorio": false,
+      "descricao": "Bloco de identidade no topo — avatar, nome, contexto. É aria-hidden quando repete o que o gatilho já anuncia: para quem ouve seria o nome dito duas vezes seguidas.",
+      "classe": "ucam-menu__conta"
+    },
+    {
+      "parte": "separator",
+      "obrigatorio": false,
+      "descricao": "Separa grupos de natureza diferente. role=separator.",
+      "classe": "ucam-menu__sep"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": false,
+      "descricao": "Rótulo de grupo dentro do menu.",
+      "classe": "ucam-menu__titulo"
+    },
+    {
+      "parte": "vazio",
+      "obrigatorio": false,
+      "classe": "ucam-menu__vazio",
+      "descricao": "A frase que ocupa o lugar dos itens quando não há nenhum. Popover que abre em branco não se distingue de popover quebrado, e o caso existe de verdade: o sino de quem está em dia."
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "UcamMenuItem[]",
+      "obrigatorio": true,
+      "descricao": "Itens do menu. Item sem ação não entra: menu não é lugar de texto informativo. A exceção é o painel de notificações, onde o aviso sem destino desenhado fica visível sem virar link — ver a parte `item` da anatomia."
+    },
+    {
+      "nome": "align",
+      "tipo": "'start' | 'end'",
+      "default": "'end'",
+      "descricao": "De que lado do gatilho o painel alinha.",
+      "valores": {
+        "start": {
+          "uso": "Menu encostado na borda inicial do gatilho. É o alinhamento de quem abre da esquerda — a conta na coluna lateral, o lançador da faixa.",
+          "limite": "—",
+          "classe": ".ucam-menu--inicio"
+        }
+      }
+    },
+    {
+      "nome": "placement",
+      "tipo": "'below' | 'above'",
+      "default": "'below'",
+      "descricao": "Desce do gatilho ou sobe dele. O menu da conta desce na faixa e sobe no pé do rail — mesmo conteúdo, só a classe de posicionamento muda.",
+      "valores": {
+        "above": {
+          "uso": "Abre para cima, quando o gatilho vive no rodapé da moldura e não há altura abaixo dele.",
+          "limite": "Não escolher à mão o que a posição na tela já decide: menu que abre para cima no topo da página perde a lista fora da vista.",
+          "classe": ".ucam-menu--acima"
+        }
+      }
+    },
+    {
+      "nome": "ariaLabel",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome acessível do menu, quando o gatilho é só um ícone e não há texto visível para apontar com aria-labelledby. Com gatilho rotulado, fica nulo — repetir o rótulo em dois atributos faz o leitor de tela dizer a mesma coisa duas vezes."
+    }
+  ],
+  "estados": [
+    "closed",
+    "open",
+    "hover",
+    "focus-visible",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para navegação principal: menu esconde, e o que é caminho frequente fica visível.",
+      "Não abrir no hover. Menu que abre sozinho ao passar o ponteiro dispara sem intenção e é intocável por teclado e toque.",
+      "Não aninhar submenu. Acima de um nível o alvo vira móvel e o teclado vira labirinto — se precisa de dois níveis, é diálogo ou é página.",
+      "Não pôr formulário dentro. Campo dentro de menu que fecha ao clicar fora perde o que foi digitado.",
+      "Nunca desenhar o chevron antes de existir o menu: o indicador promete um popover, e prometer sem entregar é o defeito que este contrato nasceu para corrigir."
+    ]
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O gatilho declara aria-haspopup=menu, aria-expanded e aria-controls apontando o painel.",
+      "O painel é role=menu com aria-labelledby no gatilho; os itens são role=menuitem com tabindex=-1.",
+      "Item que escolhe entre alternativas é role=menuitemradio com aria-checked — e a seleção aparece também por marca, nunca só por cor (1.4.1).",
+      "Teclado: Seta para baixo abre já no primeiro item; setas andam e circulam; Esc fecha e DEVOLVE o foco ao gatilho; Tab fecha.",
+      "Um menu aberto por vez. Dois popovers abertos e o clique fora deixa de ter significado único.",
+      "Bloco de identidade que repete o nome já anunciado pelo gatilho é aria-hidden.",
+      "O nome acessível do gatilho não depende do desenho: quando só o avatar aparece, o nome vive num .ucam-sr-only dentro do botão."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "2.1.1",
+      "2.1.2",
+      "2.4.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Rótulo de item é verbo no infinitivo para ação — Sair, Encaminhar, Excluir requerimento.",
+      "Item que escolhe usa o nome da coisa escolhida, não o verbo: 'Campos', não 'Trocar para Campos'.",
+      "Sem reticências decorativas. Reticência só quando o item abre outra etapa que pede decisão."
+    ],
+    "exemplos": {
+      "bom": [
+        "Sair",
+        "Meus dados",
+        "Encaminhar para outro setor",
+        "Campos"
+      ],
+      "ruim": [
+        "Clique para sair",
+        "Opções",
+        "Trocar para Campos"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-consulta-relatorio",
+      "padrao-shell-aplicacao",
+      "ucam-app-shell"
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Menu de ações",
+      "codigo": "<button aria-haspopup=\"menu\" aria-expanded=\"false\" aria-controls=\"m1\">Mais ações</button>\n<div class=\"ucam-menu\" id=\"m1\" role=\"menu\" hidden>\n  <button class=\"ucam-menu__item\" role=\"menuitem\" tabindex=\"-1\">Encaminhar</button>\n  <button class=\"ucam-menu__item\" role=\"menuitem\" tabindex=\"-1\">Excluir requerimento</button>\n</div>"
+    },
+    {
+      "titulo": "Menu de escolha, com o ativo marcado",
+      "codigo": "<div class=\"ucam-menu\" role=\"menu\" hidden>\n  <button class=\"ucam-menu__item\" role=\"menuitemradio\" aria-checked=\"true\" tabindex=\"-1\">Campos</button>\n  <button class=\"ucam-menu__item\" role=\"menuitemradio\" aria-checked=\"false\" tabindex=\"-1\">Rio de Janeiro</button>\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Recolher no menu o que é raro — sair, trocar de unidade, excluir.",
+      "evite": "Recolher o que é frequente.",
+      "porque": "Menu troca espaço permanente por um clique a mais. O troco só compensa quando o clique é raro."
+    },
+    {
+      "faca": "Devolver o foco ao gatilho quando o menu fecha por Esc.",
+      "evite": "Deixar o foco cair no início do documento.",
+      "porque": "Quem navega por teclado perde o lugar e recomeça a tela inteira."
+    },
+    {
+      "faca": "Desenhar o chevron só quando o menu existe.",
+      "evite": "Chevron decorativo em botão que não abre nada.",
+      "porque": "O indicador é uma promessa de que há mais atrás. Sem menu, é mentira desenhada — e foi exatamente o defeito do chip de campus."
+    },
+    {
+      "faca": "Marcar a escolha ativa com aria-checked e com marca visível.",
+      "evite": "Distinguir o item ativo só por cor ou peso.",
+      "porque": "Cor sozinha não carrega significado (WCAG 1.4.1), e peso de fonte não sobrevive a quem aumenta o zoom."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "select",
+      "diferenca": "Select escolhe um VALOR que fica no formulário; menu dispara uma AÇÃO e não guarda nada.",
+      "escolha": "Se cada item faz algo acontecer — Exportar, Duplicar, Excluir —, é menu. Menu que parece campo faz a pessoa esperar um valor que nunca aparece."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "escolher",
+      "payload": "UcamMenuItem",
+      "descricao": "Item escolhido. É o ÚNICO jeito de o menu falar com a tela: menu que não emite nada é lista decorativa. O contrato dizia select e a implementação sempre emitiu escolher — divergência corrigida a favor do código, porque select é evento do DOM e o portão da ADR-018 o recusa."
+    },
+    {
+      "nome": "openChange",
+      "payload": "boolean",
+      "descricao": "Abriu ou fechou. Quem precisa disso é a tela que carrega o conteúdo do menu sob demanda — a lista de unidades de quem tem acesso a muitas, por exemplo."
+    }
+  ],
+  "migracao": {
+    "de": "AngularJS / faixa da aplicação sem sobreposição ancorada — o parque não tinha componente de menu",
+    "mapa": [
+      {
+        "legado": "avatar + nome por extenso + botão Sair fixos na ponta direita de toda tela",
+        "novo": "ucam-menu ancorado no avatar, com o nome no header do menu",
+        "nota": "O nome é o dado que menos muda e Sair é ação rara: nenhum dos dois compra rótulo permanente ao lado da marca. Ver ucam-app-shell."
+      },
+      {
+        "legado": "chip de campus que parecia botão e não abria nada",
+        "novo": "ucam-menu com item-escolha, ligado a contextOptions e contextChange do app-shell",
+        "nota": "O contrato do app-shell prometia a troca de contexto desde a primeira versão e a faixa nunca ofereceu como fazê-la. É a promessa sendo entregue, não um componente novo."
+      },
+      {
+        "legado": "botão de reticências 'Mais ações do requerimento' que não abria nada",
+        "novo": "ucam-menu com os itens de ação do registro",
+        "nota": "Botão que promete ação e entrega silêncio é pior que botão ausente. Nunca desenhar o chevron ou as reticências antes de o menu existir."
+      },
+      {
+        "legado": "cada tela inventando sua própria sobreposição ancorada",
+        "novo": "ucam-menu",
+        "nota": "É como o parque chegou a três faixas diferentes para a mesma universidade. Sobreposição ancorada passa a ter um contrato só."
+      }
+    ]
+  },
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "O popover e seus itens. Abre e fecha pelo atributo hidden.",
+      "raiz": ".ucam-menu",
+      "nota": "Fecha por hidden e não por classe: o atributo tira o menu da ordem de tabulação e da árvore de acessibilidade de uma vez. Posicionamento, foco e teclado são do markup e do script da página."
+    }
+  }
+}

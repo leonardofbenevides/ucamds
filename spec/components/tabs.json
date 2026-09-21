@@ -1,0 +1,301 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "tabs",
+  "name": "Tabs",
+  "selector": "ucam-tabs",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.0",
+  "category": "navegacao",
+  "description": "Tira de recortes do MESMO conteúdo, onde só um recorte fica visível de cada vez. Troca o que está no painel abaixo sem trocar de página nem perder o contexto. Não é navegação entre destinos — isso é a navegação do app-shell — e não é passo de processo, que é o stepper.",
+  "quando_usar": [
+    "O mesmo assunto tem recortes e só um precisa estar visível: os anexos, o histórico e as mensagens de um requerimento.",
+    "Trocar de recorte não deve trocar de página nem perder o que já foi lido.",
+    "Os recortes são poucos e cabem numa tira sem rolagem."
+  ],
+  "evidencia": {
+    "origem": "APPSUCAM/Protocolo",
+    "ocorrencias": [
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "rotulo": "AGUARDANDO ANÁLISE / ANALISANDO",
+        "problema": "as abas existem e funcionam, mas em caixa alta e sem contagem: não dá para saber quantos itens há em cada recorte sem clicar em cada um"
+      },
+      {
+        "tela": "image 6 (Análise de Requerimento)",
+        "problema": "trocar de aba recarrega a consulta e devolve a pessoa ao topo da lista, o que faz a aba custar o mesmo que uma troca de tela"
+      },
+      {
+        "tela": "Protocolo — detalhe do requerimento",
+        "problema": "os dados do requerente, o requerimento e o histórico ficam empilhados numa página de rolagem longa; não há recorte, e o que se procura está sempre fora da tela"
+      }
+    ],
+    "conclusao": "As abas do parque comunicam recorte mas não comunicam quantidade, e custam uma recarga. O contrato exige contagem no rótulo quando ela existe e trata a troca como filtro local, não como nova consulta de página."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "A tira, com filete de 1px na base. A tira ROLA lateralmente e nunca quebra em duas fileiras: a 390px, quatro abas quebradas partiam os rótulos no meio e o filete passava entre elas, e a tira deixava de ler como tira.",
+      "classe": "ucam-tabs"
+    },
+    {
+      "parte": "tab",
+      "obrigatorio": true,
+      "descricao": "Cada recorte. É um <button>, não um link: a aba não muda de endereço. O selecionado ganha tinta de marca e um filete de 2px que cobre o filete da tira — a seleção é uma continuidade entre a aba e o painel, não um destaque solto.",
+      "classe": "ucam-tabs__tab"
+    },
+    {
+      "parte": "contagem",
+      "obrigatorio": false,
+      "descricao": "O número ao lado do rótulo, em tinta secundária e algarismo tabular: Aguardam você 9. Nem parêntese nem pastilha — o parêntese é pontuação fazendo trabalho de tipografia, e a pastilha cinza é uma terceira superfície numa tira que já tem filete e realce (a mesma que saiu do contador da navegação). Obrigatório sempre que a contagem for conhecida sem custo: é o que resolve ter de clicar em cada aba para saber onde está o trabalho. É aria-hidden; o nome acessível recebe a contagem por texto oculto, como \"9 itens\".",
+      "classe": "ucam-tabs__contagem"
+    },
+    {
+      "parte": "painel",
+      "obrigatorio": true,
+      "descricao": "O conteúdo do recorte selecionado. Fica fora da tira no DOM e é ligado a ela por aria-controls e aria-labelledby. No Trilho A, quando as abas dividem UM painel só — o caso da caixa de entrada —, cada aba traz data-valor com o nome do recorte e cada peça do painel traz data-aba com os recortes a que pertence; o que não traz data-aba é moldura e fica de pé em qualquer recorte. O abasScript esconde o resto, esconde a lista que ficou sem item e reaponta o aria-labelledby do painel para a aba da vez."
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "TabItem[]",
+      "obrigatorio": true,
+      "descricao": "Os recortes, na ordem em que aparecem. A ordem é estável: aba que muda de lugar conforme o dado destrói a memória motora de quem usa a tela todo dia."
+    },
+    {
+      "nome": "value",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O id do recorte selecionado. Two-way: [(value)]. Nunca fica indefinido — tira de abas sem seleção mostra um painel vazio sem explicar por quê."
+    },
+    {
+      "nome": "activation",
+      "tipo": "'automatic' | 'manual'",
+      "default": "'automatic'",
+      "descricao": "Como a seta do teclado age. automatic seleciona ao mover o foco, que é o comportamento esperado quando trocar de aba é barato. manual move o foco e só seleciona no Enter ou Espaço, e é o certo quando cada recorte dispara uma consulta ao servidor — sem isso, atravessar cinco abas com a seta dispara cinco requisições."
+    },
+    {
+      "nome": "ariaLabel",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome da tira, para quem navega por marcos: Recortes da caixa de entrada. Duas tiras de abas na mesma tela sem nome distinto são indistinguíveis no leitor de tela."
+    }
+  ],
+  "schemas": {
+    "TabItem": {
+      "id": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Chave estável do recorte. Entra na URL quando o recorte for endereçável."
+      },
+      "label": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Rótulo em caixa natural, uma ou duas palavras."
+      },
+      "count": {
+        "tipo": "number | null",
+        "default": "null",
+        "descricao": "Contagem do recorte. Quando presente, é renderizada como número esmaecido ao lado do rótulo (parte contagem) e entra no nome acessível da aba como \"N itens\" — nunca entre parênteses, que leitor de tela lê de \"abre parêntese\" a silêncio."
+      },
+      "disabled": {
+        "tipo": "boolean",
+        "default": "false",
+        "descricao": "Recorte indisponível por permissão. Aba desabilitada continua na ordem de tabulação e continua sendo anunciada — sumir com ela faria a tira mudar de tamanho entre perfis."
+      }
+    }
+  },
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string",
+      "descricao": "Emitido quando a seleção muda, com o id do novo recorte."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "active",
+    "disabled",
+    "selected"
+  ],
+  "limites": {
+    "$descricao": "Abas são o componente que mais recebe conteúdo que não é recorte. Estas regras separam recorte de destino e de etapa.",
+    "regras": [
+      "Máximo de seis abas. Acima disso a tira rola e as últimas ficam escondidas — e recorte escondido não é recorte, é menu.",
+      "Não usar abas para navegar entre telas. Destino tem endereço próprio e volta com o botão do navegador; aba não. Isso é a navegação do app-shell.",
+      "Não usar abas para etapas de um processo. Etapa tem ordem e pré-requisito; recorte não tem nem um nem outro. Isso é o stepper.",
+      "Não esconder atrás de aba o campo obrigatório de um formulário. Quem envia sem preencher recebe um erro apontando para um campo que não está na tela.",
+      "Não usar abas em conteúdo que precisa ser comparado. Comparar exige ver os dois ao mesmo tempo; a aba garante que só um esteja visível.",
+      "Não usar abas para filtrar de duas ou três opções na mesma lista — isso é o filtro segmentado, que mostra todas as opções de uma vez e não promete outro conteúdo."
+    ],
+    "criterio": "Se o conteúdo dos painéis tem a mesma forma e muda só o recorte, é aba. Se cada painel tem forma diferente, provavelmente são páginas."
+  },
+  "acessibilidade": {
+    "papel": "tablist na raiz, tab em cada aba, tabpanel no painel",
+    "requisitos": [
+      "A tira é role=tablist com aria-label. Cada aba é role=tab com aria-selected e aria-controls apontando o painel; o painel é role=tabpanel com aria-labelledby apontando a aba.",
+      "Uma só parada de tabulação na tira: a aba selecionada tem tabindex=0 e as demais tabindex=-1. Tab entra e sai da tira; quem anda entre abas é a seta.",
+      "Com activation=manual, a seta move o foco e aria-selected só muda no Enter ou Espaço. É o modo obrigatório quando a troca dispara requisição.",
+      "O painel recebe tabindex=0 quando não contém nenhum elemento focável, para que seja possível chegar ao conteúdo pelo teclado.",
+      "A contagem entra no nome acessível da aba: Aguardam você, 4 itens. Parênteses sozinhos são lidos de formas diferentes por leitor de tela.",
+      "A seleção não é comunicada só pela cor da tinta e do filete: aria-selected carrega o estado para quem não vê nenhum dos dois (WCAG 1.4.1).",
+      "Rótulo em caixa natural — as abas do Protocolo estão em caixa alta hoje (ADR-003).",
+      "Aba desabilitada usa aria-disabled=true e permanece focável, para que seu estado possa ser descoberto."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "2.1.1",
+      "2.4.3",
+      "4.1.2"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Entra na tira pela aba selecionada; o próximo Tab vai para o painel, não para a aba seguinte."
+      },
+      {
+        "tecla": "Seta esquerda / direita",
+        "comportamento": "Move entre as abas, circulando da última para a primeira. Seleciona junto quando activation=automatic."
+      },
+      {
+        "tecla": "Home / End",
+        "comportamento": "Vai para a primeira e para a última aba."
+      },
+      {
+        "tecla": "Enter / Espaço",
+        "comportamento": "Seleciona a aba focada. Único modo de selecionar quando activation=manual."
+      }
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Uma ou duas palavras, em caixa natural: Requerimento, Requerente, Concluídos.",
+      "O rótulo nomeia o RECORTE, não a ação: Concluídos, não Ver concluídos.",
+      "Contagem entre parênteses sempre que ela for conhecida: Protocolos anteriores (4).",
+      "A primeira aba é o recorte de trabalho, não o mais amplo: numa caixa de entrada, Aguardam você vem antes de Todos."
+    ],
+    "exemplos": {
+      "bom": [
+        "Aguardam você (4)",
+        "Minha pauta (0)",
+        "Encaminhados (0)",
+        "Concluídos"
+      ],
+      "ruim": [
+        "AGUARDANDO ANÁLISE",
+        "Aba 1",
+        "Ver requerimentos encaminhados",
+        "Outros"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "padrao-listagem-crud",
+      "padrao-triagem-lista-detalhe",
+      "ucam-page-header"
+    ]
+  },
+  "migracao": {
+    "de": "md-tabs do Angular Material",
+    "mapa": [
+      {
+        "legado": "<md-tabs><md-tab label=\"AGUARDANDO ANÁLISE\">",
+        "novo": "items com label em caixa natural e count",
+        "nota": "Duas mudanças ao mesmo tempo: a caixa alta sai por ADR-003 e a contagem entra, porque ela é a razão de a aba existir."
+      },
+      {
+        "legado": "md-tab que recarrega a consulta ao ser selecionada",
+        "novo": "recorte aplicado sobre o dado já carregado, ou activation=manual",
+        "nota": "Quando a consulta é inevitável, use manual — do contrário atravessar as abas com a seta dispara uma requisição por aba."
+      },
+      {
+        "legado": "md-tabs usado para navegar entre telas do módulo",
+        "novo": "navegação do app-shell",
+        "nota": "Não é troca de componente: é troca de camada. O destino precisa de rota própria para voltar com o botão do navegador."
+      },
+      {
+        "legado": "md-tabs usado como etapas de cadastro",
+        "novo": "ucam-stepper",
+        "nota": "Etapa tem ordem e pré-requisito; aba não."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Recortes da caixa de entrada",
+      "codigo": "<ucam-tabs\n  ariaLabel=\"Recortes da caixa de entrada\"\n  [items]=\"[\n    { id: 'suas', label: 'Aguardam você', count: 4 },\n    { id: 'pauta', label: 'Minha pauta', count: 0 },\n    { id: 'enc', label: 'Encaminhados', count: 0 },\n    { id: 'fim', label: 'Concluídos' }\n  ]\"\n  [(value)]=\"recorte\" />"
+    },
+    {
+      "titulo": "Com consulta por recorte — ativação manual",
+      "codigo": "<ucam-tabs\n  ariaLabel=\"Blocos do requerimento\"\n  activation=\"manual\"\n  [items]=\"blocos()\"\n  [(value)]=\"bloco\"\n  (valueChange)=\"carregar($event)\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Trazer a contagem no rótulo sempre que ela for conhecida.",
+      "evite": "Aba sem número quando o número existe.",
+      "porque": "Sem a contagem, descobrir onde está o trabalho custa um clique por aba — que é exatamente o custo que a tela de análise cobra hoje."
+    },
+    {
+      "faca": "Usar activation=manual quando cada aba dispara uma consulta.",
+      "evite": "Ativação automática em tira ligada ao servidor.",
+      "porque": "Com automática, atravessar cinco abas pela seta dispara cinco requisições e a última resposta pode chegar fora de ordem."
+    },
+    {
+      "faca": "Aplicar o recorte sobre o dado já carregado quando possível.",
+      "evite": "Recarregar a consulta e devolver a pessoa ao topo da lista.",
+      "porque": "A aba deixa de valer a pena quando custa o mesmo que trocar de tela — e é isso que acontece no Protocolo hoje."
+    },
+    {
+      "faca": "Manter uma só parada de tabulação na tira.",
+      "evite": "Deixar cada aba tabulável.",
+      "porque": "Seis abas tabuláveis põem seis paradas entre a busca e a tabela; a norma é Tab para entrar e sair, setas para andar dentro."
+    },
+    {
+      "faca": "Deixar campo obrigatório fora de aba.",
+      "evite": "Esconder metade do formulário atrás da segunda aba.",
+      "porque": "O erro de validação aponta para um campo que não está na tela, e a pessoa não tem como saber onde procurar."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "pagination",
+      "diferenca": "Tabs troca de SEÇÃO dentro da mesma tela; pagination troca de PÁGINA do mesmo conjunto de dados.",
+      "escolha": "Se os painéis mostram coisas diferentes — Dados, Anexos, Histórico —, é tabs."
+    },
+    {
+      "componente": "section-bar",
+      "diferenca": "Tabs mostra UMA seção por vez e esconde as outras; section-bar recolhe e expande cada seção independentemente, e várias podem estar abertas juntas.",
+      "escolha": "Se as seções são alternativas e comparar não faz sentido, é tabs."
+    },
+    {
+      "componente": "segmented",
+      "diferenca": "Tabs troca o conteúdo abaixo dela; segmented escolhe um VALOR que continua valendo — uma ordenação, um recorte, um Sim/Não.",
+      "escolha": "Se cada opção tem um painel próprio associado, é tabs."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "A tira e os botões vêm com estilo pronto, incluindo a rolagem lateral sem barra visível. Os atributos ARIA e a navegação por seta são responsabilidade do markup da aplicação.",
+      "raiz": ".ucam-tabs",
+      "estado": "A seleção é lida de aria-selected=\"true\" no botão — o CSS não tem classe de estado própria de propósito, para que o visual não possa divergir do que o leitor de tela ouve.",
+      "variaveis": [
+        "--ucam-color-border-subtle",
+        "--ucam-color-text-secondary",
+        "--ucam-color-action-primary-default",
+        "--ucam-space-inline-md",
+        "--ucam-typography-label-font-size",
+        "--ucam-typography-caption-font-size",
+        "--ucam-space-inline-xs"
+      ],
+      "nota": "O @ucam/css NÃO entrega roving tabindex nem navegação por seta: folha de estilo não é comportamento, e uma tira legada só estilizada continua exigindo um Tab por aba. Nas telas de exemplo e na documentação quem entrega isso é a camada de comportamento (tools/lib/shell.mjs → abasScript), que cobre só .ucam-tabs — a tira do cromo da documentação tem dono próprio. Numa aplicação, o caminho é o custom element do Trilho A+ (ADR-010) ou o componente do Trilho B."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/tabs/ucam-tabs.ts — entrega roving tabindex, o modo de ativação e a ligação aria-controls/aria-labelledby com o painel. A contagem sai em .ucam-tabs__contagem, o mesmo desenho do Trilho A: número esmaecido, sem pastilha."
+  }
+}
