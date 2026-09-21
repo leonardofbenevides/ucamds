@@ -31,7 +31,45 @@ export const padroes: Padrao[] = SPEC.padroes;
 export const layouts: Layouts = SPEC.layouts;
 export const telas: ProjetoTelas[] = SPEC.telas;
 export const adrs: Adr[] = SPEC.adrs;
-export const recursos: Recursos = SPEC.recursos;
+/**
+ * Os marcadores da spec, resolvidos UMA VEZ, aqui.
+ *
+ * `{versao}` e `{host}` existem em spec/resources.json porque a versão e o
+ * host têm uma fonte só — o package.json da raiz e o próprio campo
+ * `publicacao.host` — e escrevê-los por extenso nos exemplos criaria a
+ * segunda, que envelhece calada no primeiro bump ou na primeira troca de
+ * domínio. tools/build-publicacao.mjs resolve os mesmos dois e confere se a
+ * URL resultante existe na saída publicada.
+ *
+ * POR QUE AQUI, E NÃO NA PÁGINA QUE MOSTRA O EXEMPLO: a página de instalação
+ * resolvia só o campo `codigo`. No dia em que a prosa do Trilho A passou a
+ * ensinar o sprite, o leitor viu "{host}/icons/sprite.svg" — e o portão
+ * aprovou, porque ele resolve o marcador antes de conferir. Pior: a home
+ * também mostra os trilhos, e imprimia o mesmo marcador cru. Resolver no
+ * consumidor é lembrar em cada consumidor; resolver na fronteira é não ter de
+ * lembrar.
+ */
+const MARCADORES: Record<string, string> = {
+  '{versao}': SPEC.meta.versao,
+  '{host}': SPEC.recursos.publicacao.host,
+};
+
+function resolverMarcadores<T>(valor: T): T {
+  if (typeof valor === 'string') {
+    let s: string = valor;
+    for (const [marca, v] of Object.entries(MARCADORES)) s = s.replaceAll(marca, v);
+    return s as T;
+  }
+  if (Array.isArray(valor)) return valor.map(resolverMarcadores) as T;
+  if (valor && typeof valor === 'object') {
+    return Object.fromEntries(
+      Object.entries(valor).map(([k, v]) => [k, resolverMarcadores(v)]),
+    ) as T;
+  }
+  return valor;
+}
+
+export const recursos: Recursos = resolverMarcadores(SPEC.recursos);
 export const migracao: Migracao = SPEC.migracao;
 export const releases: Release[] = SPEC.releases;
 export const busca: ItemBusca[] = SPEC.busca;

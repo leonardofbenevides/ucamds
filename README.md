@@ -106,16 +106,29 @@ A Vercel constrói a partir deste repositório: roda `pnpm dist` e publica
 `site/dist/analog/public`. A configuração está em `vercel.json`. `APPSUCAM/`,
 `spec/` e o resto ficam no repositório.
 
-Vai ao ar o site e mais duas coisas, porque a documentação as promete:
+Vai ao ar o site e mais o design system servido por URL, porque a
+documentação o promete e o parque legado não tem passo de build — o que não
+está numa URL, para ele não existe:
 
-- **`/tokens/`** — o CSS de tokens que o `<link>` do Trilho A carrega. Enquanto
-  não existia, a primeira linha que um dev do parque legado copiava dava 404.
-- **`/pacotes/`** — os tarballs das quatro bibliotecas, que são o artefato
-  instalável enquanto não houver registro privado.
+| Rota | O quê |
+|---|---|
+| `/css/` | `ucam.css` e `ucam-fonts.css`. Dois `<link>` e o Trilho A funciona, sem instalar nada |
+| `/tokens/` | O CSS de tokens, para quem só quer as variáveis. `ucam.css` já o importa |
+| `/fonts/` | Os `.woff2` da Geist, que a folha de fontes carrega |
+| `/icons/` | `sprite.svg`, referenciado por `<use href="…#nome">` |
+| `/elements/` | O bundle do Trilho A+ (ADR-010): um `<link>`, um `<script>`, e `<ucam-combobox>` existe |
+| `/pacotes/` | Os tarballs, o artefato instalável enquanto não houver registro privado |
 
-O `build-publicacao` confere as duas coisas: toda URL ensinada em
-`spec/resources.json` tem de existir como arquivo na saída, e todo pacote
-marcado `gerado` tem de ter tarball baixável. Por isso o comando da Vercel é
+A árvore publicada espelha `dist/`, e isso não é arrumação: `ucam.css` faz
+`@import "../tokens/…"` e a folha de fontes aponta para `../fonts/…`. Publicar
+`css/` longe de `tokens/` e `fonts/` devolveria 200 no `<link>` e 404 em tudo
+que ele carrega.
+
+O `build-publicacao` confere três coisas: toda URL ensinada em
+`spec/resources.json` — no bloco de código e na prosa — tem de existir como
+arquivo na saída; todo pacote marcado `gerado` tem de ter tarball baixável; e
+tudo que as folhas publicadas carregam por caminho relativo tem de estar lá
+também. Por isso o comando da Vercel é
 `pnpm dist` e não `pnpm build` — é o `dist` que constrói a biblioteca Angular
 e empacota.
 

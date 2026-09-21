@@ -41,12 +41,8 @@ import { meta, recursos } from '../spec/spec';
     </div>
 
     <section class="prose">
-      <h2>Dois trilhos</h2>
-      <p>
-        O design system entrega por dois caminhos ao mesmo tempo. Escolha o trilho pelo que a
-        aplicação consegue receber hoje: tokens em CSS no parque legado, biblioteca Angular nos
-        apps novos e migrados.
-      </p>
+      <h2>Os trilhos</h2>
+      <p>{{ descricaoDosTrilhos }}</p>
     </section>
 
     <div class="trilhos">
@@ -67,7 +63,7 @@ import { meta, recursos } from '../spec/spec';
     <div class="grade-cartoes">
       <a class="card" routerLink="/comecar/instalacao">
         <h3>Instalação</h3>
-        <p class="small muted">Como consumir os tokens hoje, nos dois trilhos.</p>
+        <p class="small muted">Como consumir o design system hoje, em cada trilho.</p>
       </a>
       <a class="card" routerLink="/fundamentos/cor">
         <h3>Fundamentos</h3>
@@ -174,6 +170,10 @@ import { meta, recursos } from '../spec/spec';
 export default class IndexPage {
   protected readonly m = meta;
   protected readonly trilhos = recursos.instalacao.trilhos;
+
+  /* A frase vem da spec junto com os trilhos que ela descreve. Escrita à mão
+     aqui, dizia "dois caminhos" no dia em que a spec passou a ter três. */
+  protected readonly descricaoDosTrilhos = recursos.instalacao.$description;
 
   /** Os sete números da grade, na ordem em que respondem "o que já existe?". */
   protected readonly numeros = [

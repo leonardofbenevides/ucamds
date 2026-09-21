@@ -29,7 +29,8 @@ import { recursos } from '../../spec/spec';
           <span class="card-ic" aria-hidden="true"><svg><use href="#i-download" /></svg></span>
           <h3>Instalação</h3>
           <p class="small muted">
-            Como consumir os tokens hoje, nos dois trilhos — legado e apps novos.
+            Como consumir o design system hoje, em cada trilho — do <link> no legado aos
+            pacotes nos apps novos.
           </p>
         </a>
         <a class="card" routerLink="/comecar/migrar">

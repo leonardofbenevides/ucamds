@@ -631,7 +631,18 @@ export interface Trilho {
 export interface Recursos {
   /** Onde o design system é servido. O sitemap, os exemplos de instalação e o
    *  portão tools/build-publicacao.mjs leem daqui — host em um lugar só. */
-  publicacao: { $description: string; host: string; tokens: string; pacotes: string };
+  publicacao: {
+    $description: string;
+    host: string;
+    /** As rotas servidas ao lado do site. Espelham a árvore do dist/, porque
+     *  as folhas publicadas se referem umas às outras por caminho relativo. */
+    tokens: string;
+    css: string;
+    icones: string;
+    fontes: string;
+    elements: string;
+    pacotes: string;
+  };
   pacotes: { $description: string; itens: Pacote[] };
   formatosToken: {
     $description: string;

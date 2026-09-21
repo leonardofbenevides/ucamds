@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, computed } from '@angular/core';
 
-import { recursos, meta } from '../../spec/spec';
+import { recursos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
 
@@ -24,7 +24,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           <h2>{{ t.nome }}</h2>
           <p class="small muted"><strong class="k">Para quem.</strong> {{ t.alvo }}</p>
           <p>{{ t.como }}</p>
-          <pre class="code"><code>{{ codigo(t.codigo) }}</code></pre>
+          <pre class="code"><code>{{ t.codigo }}</code></pre>
           <div class="callout callout-limit">
             <p><strong class="k">Limite.</strong> {{ t.limite }}</p>
           </div>
@@ -81,23 +81,10 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 export default class InstalacaoPage {
   protected readonly r = recursos;
 
-  /**
-   * Nem a versão nem o host são escritos na spec: o exemplo traz os marcadores
-   * {versao} e {host}, resolvidos aqui com o número do package.json da raiz e
-   * com o host de recursos.publicacao. Escrevê-los por extenso no exemplo
-   * criaria uma segunda fonte para cada um, que envelheceria calada no
-   * primeiro bump de versão ou na primeira troca de domínio.
-   *
-   * Os mesmos dois marcadores são resolvidos por tools/build-publicacao.mjs,
-   * que confere se a URL resultante existe na saída publicada. Marcador novo
-   * precisa entrar nos dois lugares — se entrar só aqui, o portão reprova em
-   * vez de deixar passar, que é o lado certo para errar.
-   */
-  protected codigo(trecho: string): string {
-    return trecho
-      .replaceAll('{versao}', meta.versao)
-      .replaceAll('{host}', this.r.publicacao.host);
-  }
+  /* Os marcadores {versao} e {host} já chegam resolvidos: quem os resolve é
+     a fronteira da spec, em spec.ts. Resolver de novo aqui seria a segunda
+     fonte — e resolver SÓ aqui foi como a home passou a imprimir "{host}"
+     cru na cara do leitor. */
 
   /**
    * Os trilhos vêm da spec, então a lista é computada — escrever os dois à mão

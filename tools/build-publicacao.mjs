@@ -229,6 +229,39 @@ for (const { rota, arquivos } of ARVORE) {
   }
 }
 
+/* --------------------------------- marcador que sobrou na cara do leitor --- */
+
+// O portão das URLs resolve `{host}` antes de conferir, e é isso que o faz
+// aprovar uma página onde o marcador aparece cru: ele olha o endereço que a
+// spec QUER dizer, não o texto que o leitor vê. Foi o que aconteceu no dia em
+// que a prosa do Trilho A passou a ensinar o sprite — a página imprimiu
+// "{host}/icons/sprite.svg", a URL existia, e o build passou.
+//
+// Este portão olha a saída pelo outro lado: o HTML publicado não pode conter
+// marcador nenhum. Quem resolve é a fronteira da spec (site/src/app/spec/spec.ts);
+// marcador que chega aqui é consumidor que esqueceu de passar por ela.
+const MARCADOR_CRU = /\{(?:host|versao)\}/;
+
+function varrerHtml(dir) {
+  for (const item of readdirSync(dir, { withFileTypes: true })) {
+    const cheio = join(dir, item.name);
+    if (item.isDirectory()) {
+      varrerHtml(cheio);
+      continue;
+    }
+    if (!item.name.endsWith('.html')) continue;
+    const texto = readFileSync(cheio, 'utf8');
+    const achado = texto.match(MARCADOR_CRU);
+    if (achado) {
+      problemas.push(
+        `${cheio.replace(SAIDA, '').replaceAll('\\', '/')} mostra o marcador ${achado[0]} ao leitor — resolva na fronteira da spec, não no consumidor`,
+      );
+    }
+  }
+}
+
+varrerHtml(SAIDA);
+
 /* ---------------------------------------------------------- o inventário --- */
 
 // Os tokens chegam aqui pelo publicDir do vite (site/src/assets/tokens/), e não
