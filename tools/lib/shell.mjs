@@ -1914,6 +1914,40 @@ export const navScript = `
  * O alvo é lido do próprio rótulo, que já o nomeia: não há segundo atributo
  * para dessincronizar.
  */
+/**
+ * O ECO FALADO, e ele é de MAIS DE UM SCRIPT.
+ *
+ * Estava dentro do estadoScript. Quando as preferências da gaveta — que vivem
+ * no filtroScript, outro IIFE — passaram a confirmar o que salvaram, a chamada
+ * lançou ReferenceError e o handler morreu em silêncio: o navegador não
+ * reclama de erro em ouvinte de evento onde ninguém está olhando.
+ *
+ * Duas cópias resolveriam e divergiriam no primeiro ajuste, que é o defeito
+ * que tools/lib/wcag.mjs existe para evitar. Uma fonte, interpolada em cada
+ * script que precisa — cada um a recebe dentro do próprio IIFE, então não há
+ * colisão de nome.
+ */
+const FN_ANUNCIA = `
+  /**
+   * O ECO FALADO. Uma frase curta, no passado, dizendo o que a tela acabou de
+   * fazer — a mesma coisa que o selo trocado e a linha nova dizem a quem vê.
+   *
+   * Esvazia antes de escrever: repetir a MESMA frase sem limpar não produz
+   * anúncio nenhum, e arquivar duas naturezas seguidas é o caso comum.
+   *
+   * A região é procurada a partir do gatilho porque a página do site mostra
+   * vários shells de uma vez; o primeiro do documento seria o shell errado.
+   */
+  function anuncia(texto, de) {
+    if (!texto) return;
+    var raiz = (de && de.closest && de.closest('.ucam-shell')) || document;
+    var regiao = raiz.querySelector('[data-anuncio]') || document.querySelector('[data-anuncio]');
+    if (!regiao) return;
+    regiao.textContent = '';
+    setTimeout(function () { regiao.textContent = texto; }, 60);
+  }
+`;
+
 export const estadoScript = `
 (function () {
   var RE = /^(Fixar|Remover) (.+) (nos|dos) (.+)$/;
@@ -2148,24 +2182,7 @@ export const estadoScript = `
     setTimeout(function () { el.removeAttribute('data-eco'); }, 1700);
   }
 
-  /**
-   * O ECO FALADO. Uma frase curta, no passado, dizendo o que a tela acabou de
-   * fazer — a mesma coisa que o selo trocado e a linha nova dizem a quem vê.
-   *
-   * Esvazia antes de escrever: repetir a MESMA frase sem limpar não produz
-   * anúncio nenhum, e arquivar duas naturezas seguidas é o caso comum.
-   *
-   * A região é procurada a partir do gatilho porque a página do site mostra
-   * vários shells de uma vez; o primeiro do documento seria o shell errado.
-   */
-  function anuncia(texto, de) {
-    if (!texto) return;
-    var raiz = (de && de.closest && de.closest('.ucam-shell')) || document;
-    var regiao = raiz.querySelector('[data-anuncio]') || document.querySelector('[data-anuncio]');
-    if (!regiao) return;
-    regiao.textContent = '';
-    setTimeout(function () { regiao.textContent = texto; }, 60);
-  }
+${FN_ANUNCIA}
 
   /**
    * O AVISO DA AÇÃO: um .ucam-alert de verdade na região, e só quando a
@@ -2500,6 +2517,12 @@ export const estadoScript = `
           ? 'Etapa 1: confirme quem é o requerente. Trocar abre a busca por matrícula ou nome.'
           : 'Nada é enviado nesta etapa: a revisão vem a seguir. Depois de enviado, o requerimento não pode ser editado.';
     }
+    // O nome da etapa sai do próprio passo, sem o sufixo sr-only que ele
+    // carrega para o leitor de tela — senão a frase sairia "Requerente, etapa
+    // 1 de 3, atual, etapa 1 de 3".
+    var srAtual = passos[j].querySelector('.ucam-sr-only');
+    var nomeEtapa = passos[j].textContent.replace(srAtual ? srAtual.textContent : '', '').replace(/^\\s*\\d+\\s*/, '').trim();
+    anuncia('Etapa ' + (j + 1) + ' de ' + passos.length + ': ' + nomeEtapa + '.', botao);
     eco(passos[j]);
   }
 
@@ -2606,7 +2629,12 @@ export const estadoScript = `
     }
 
     // Protótipo não tem arquivo para entregar: o tile responde, e é só.
-    if (qual === 'baixar-anexo') return eco(botao.closest('.ucam-anexo'));
+    if (qual === 'baixar-anexo') {
+      var tile = botao.closest('.ucam-anexo');
+      var nomeArquivo = (tile && tile.querySelector('.ucam-anexo__nome') || botao).textContent.trim();
+      anuncia('Baixando ' + nomeArquivo + '.', botao);
+      return eco(tile);
+    }
 
     if (qual === 'filtros') {
       var fileira = document.querySelector('.ucam-viewbar__fileira--filtros');
@@ -2840,6 +2868,9 @@ export const estadoScript = `
         anuncia(feitas + ' ' + (feitas === 1 ? emLote.um : emLote.varios), botao);
       }
       marcadas.forEach(function (c) { c.checked = false; });
+      if (!emLote && marcadas.length) {
+        anuncia('Seleção limpa: ' + marcadas.length + (marcadas.length === 1 ? ' registro desmarcado.' : ' registros desmarcados.'), botao);
+      }
       // O mesmo change que a tabela já escuta: a cabeça, a contagem da seção e
       // a própria barra se atualizam por onde sempre se atualizaram.
       if (marcadas.length) marcadas[0].dispatchEvent(new Event('change', { bubbles: true }));
@@ -2940,6 +2971,15 @@ export const estadoScript = `
       })[0];
       if (!resultado) return;
       resultado.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      // A rolagem é o eco de quem vê. Para quem não vê, o resultado só existe
+      // se alguém disser que ele chegou — e o foco vai junto, porque foi ele
+      // que a pessoa pediu.
+      var tituloResultado = resultado.querySelector('.ucam-section__title');
+      if (tituloResultado) {
+        tituloResultado.setAttribute('tabindex', '-1');
+        tituloResultado.focus();
+      }
+      anuncia('Resultado calculado, logo abaixo do formulário.', botao);
       return eco(resultado);
     }
 
@@ -3621,6 +3661,7 @@ export const grupoMenuScript = `
  */
 export const filtroScript = `
 (function () {
+${FN_ANUNCIA}
   function crua(t) {
     return (t || '').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/\\s+/g, ' ').trim();
   }
@@ -3924,6 +3965,7 @@ export const filtroScript = `
       var alvo = barra && barra.querySelector('[data-valor="' + chave + '"]');
       if (alvo && alvo.getAttribute('aria-pressed') !== 'true') alvo.click();
     }
+    anuncia('Preferências salvas. Valem só para você, neste navegador.', b);
   });
 
   /* ---------------------------------------------- marcar todos ---------- */
