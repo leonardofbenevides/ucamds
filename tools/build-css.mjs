@@ -760,6 +760,23 @@ ${abaixo('controle-deitado')} {
   .ucam-form-row { display: flex; flex-direction: column; align-items: stretch; gap: var(--ucam-space-stack-md); }
   .ucam-form-row > .ucam-field { grid-template-rows: none; grid-row: auto; }
   .ucam-form-row > :not(.ucam-field) { align-self: flex-start; }
+
+  /* O CAMPO ESTICAVA E O CONTROLE NÃO.
+   *
+   * align-items: stretch dá a linha inteira ao campo, mas as larguras por
+   * conteúdo — .ucam-field--data e companhia, logo acima — são inline-size
+   * fixo, e stretch não desfaz isso. A 360px o cálculo de mensalidade tinha
+   * um input de 110px boiando num campo de 320px: alvo de toque pequeno ao
+   * lado de um campo de nome que preenchia, lido como defeito de alinhamento
+   * (medido em 21/09/2026).
+   *
+   * Largura por conteúdo existe para pôr CPF ao lado de Nome sem arbitrar —
+   * é uma regra sobre VIZINHANÇA. Em pilha não há vizinho, então ela não tem
+   * o que resolver, e o que resta é o alvo de toque. */
+  .ucam-form-row > .ucam-field :is(.ucam-input, .ucam-select, .ucam-textarea) {
+    inline-size: 100%;
+  }
+
 }
 
 .ucam-field__label {
@@ -10347,6 +10364,27 @@ ${acima('nav-fixa')} {
   white-space: nowrap;
 }
 
+/* EM PILHA O TÍTULO QUEBRA, EM VEZ DE CORTAR.
+ *
+ * As reticências acima existem para o título não empurrar as ações para fora
+ * da fileira. Numa tela estreita a fileira é só dele, e aí cortar não protege
+ * nada: a 360px "Cálculo de mensalidade individual" virava "Cálculo de
+ * mensalidade individu…", e o nome da tela é justamente o que diz à pessoa
+ * onde ela está. Duas linhas custam menos que um nome pela metade.
+ *
+ * MORA AQUI, E NÃO JUNTO DA FILEIRA EMPILHADA, por especificidade: media
+ * query não acrescenta peso nenhum, e a regra acima aparece mil linhas depois
+ * do bloco de formulário. Escrita lá, ela perdia em silêncio — a medição
+ * mostrava o título cortando com a regra aplicada e ignorada. Sobrescrita
+ * anda junto do que sobrescreve. */
+${abaixo('controle-deitado')} {
+  .ucam-viewbar__titulo {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+}
+
 /* A CONTAGEM É NÚMERO, ao lado do título, e não frase abaixo dele.
  *
  * "4 requerimentos aguardam ação sua" custava uma linha inteira de 14px para
@@ -10540,16 +10578,24 @@ ${abaixo('nav-fixa')} {
   max-inline-size: calc(48rem + 2 * var(--ucam-space-inset-lg));
 }
 
-/* Corpo de FORMULÁRIO. As duas telas que usavam a medida de leitura eram
- * formulários — novo usuário e cálculo de mensalidade — e 48rem é medida de
- * PARÁGRAFO: a 1440px o formulário parava em 2/3 do painel e o terço da
- * direita ficava vazio, lido como defeito e não como respiro (16/09/2026).
- * Formulário se lê por fileira de campos, não por linha de texto; 64rem
- * ocupa o painel numa tela comum e ainda segura o campo de nome de virar uma
- * régua de 1.500px num monitor largo. Mesma prumada à esquerda. */
-.ucam-corpo--formulario {
-  max-inline-size: calc(64rem + 2 * var(--ucam-space-inset-lg));
-}
+/* O CORPO DE FORMULÁRIO SAIU, e a história é o argumento.
+ *
+ * Havia aqui um teto para o corpo de formulário. Ele nasceu em 48rem, foi
+ * para 64rem em 16/09/2026 porque "a 1440px o formulário parava em 2/3 do
+ * painel e o terço da direita ficava vazio", e em 21/09/2026 a mesma queixa
+ * voltou num monitor de 2259px. Subir de novo só escolhe o monitor em que a
+ * terceira rodada acontece.
+ *
+ * A razão escrita para o teto era segurar o campo de nome de virar uma régua
+ * de 1.500px. Medido nos três tetos — 1064px, 1464px e sem teto — as colunas
+ * da fileira saem idênticas (480px 84px 110px 110px) e os campos ficam nas
+ * mesmas coordenadas. Quem limita o controle é --ucam-cols e o teto do
+ * próprio campo, logo acima; o teto do corpo não protegia nada disso. O que
+ * ele fazia era encolher tabela e cartão e deixar vão morto à direita — o
+ * defeito que ele dizia evitar, um nível acima.
+ *
+ * Quem precisa de medida de leitura continua tendo .ucam-corpo--leitura:
+ * parágrafo tem comprimento de linha de verdade, fileira de campos não. */
 
 /* Corpo que hospeda um bloco de altura cheia — lista e detalhe, tabela que
  * rola por dentro — não rola por si e não paga recuo: quem rola é o bloco. */
