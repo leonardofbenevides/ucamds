@@ -137,41 +137,41 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="mapa">
         <h2>5. Mapa de conversão</h2>
+        <!-- O ÍNDICE, E NÃO OS TRINTA MAPAS. Esta seção repetia aqui a tabela
+             de conversão de cada componente — 161 linhas ao todo — enquanto
+             cada uma dessas tabelas já vive no contrato do próprio componente,
+             que é a fonte. O resultado era uma página de 41 mil pixels de
+             altura, em que a única forma de achar o mapa do Select era rolar
+             até ele. Aqui fica quem tem mapa e do que ele substitui; o mapa
+             inteiro está a um clique, no lugar onde ele é mantido. -->
         <p>
-          O que cada peça do legado vira, componente por componente. A coluna
-          <strong>Nota</strong> só aparece onde a conversão <em>não</em> é 1:1 — é onde a
-          migração costuma errar.
+          O que cada peça do legado vira. O mapa completo de cada componente vive no
+          contrato dele — abaixo está quem tem mapa, e o que ele substitui.
         </p>
 
-        @for (c of comMigracao(); track c.id) {
-          <section [id]="'mapa-' + c.id">
-            <h3>
-              <a [href]="'/catalogo/' + c.id">{{ c.name }}</a>
-              <code class="small muted">&lt;{{ c.selector }}&gt;</code>
-            </h3>
-            <p class="small muted"><strong class="k">De.</strong> {{ c.migracao!.de }}</p>
-            <div class="scroller">
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Legado</th>
-                    <th scope="col">Novo</th>
-                    <th scope="col">Nota</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (l of c.migracao!.mapa; track l.legado) {
-                    <tr>
-                      <td class="small"><code>{{ l.legado }}</code></td>
-                      <td class="small"><code>{{ l.novo }}</code></td>
-                      <td class="small muted">{{ l.nota ?? '—' }}</td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          </section>
-        }
+        <div class="scroller">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Componente</th>
+                <th scope="col">Substitui</th>
+                <th scope="col">Conversões</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of comMigracao(); track c.id) {
+                <tr>
+                  <td>
+                    <a [href]="'/catalogo/' + c.id">{{ c.name }}</a>
+                    <code class="small muted">&lt;{{ c.selector }}&gt;</code>
+                  </td>
+                  <td class="small muted">{{ c.migracao!.de }}</td>
+                  <td class="num">{{ c.migracao!.mapa.length }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section id="erros">
@@ -360,12 +360,10 @@ export default class MigrarPage {
     { id: 'ordem', rotulo: '2. A ordem das operações' },
     { id: 'mudancas', rotulo: '3. O que quem usa vai notar' },
     { id: 'anatomia', rotulo: '4. As quatro camadas' },
+    // Os trinta sub-itens saíram junto com as trinta tabelas: âncora para
+    // seção que não existe mais é link morto, e índice de uma tabela só é
+    // ruído — o índice tinha mais itens do que a seção tinha linhas.
     { id: 'mapa', rotulo: '5. Mapa de conversão' },
-    ...this.comMigracao().map((c) => ({
-      id: 'mapa-' + c.id,
-      rotulo: c.name,
-      sub: true,
-    })),
     { id: 'erros', rotulo: '6. Erros que sobrevivem' },
     { id: 'checklist', rotulo: '7. Conferência de tela' },
     ...this.m.checklistDeTela.grupos.map((g) => ({
