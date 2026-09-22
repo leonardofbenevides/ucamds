@@ -742,6 +742,50 @@ th code {
   white-space: nowrap;
 }
 
+/* A NOTA DE TOKEN É PROSA, NÃO CÉLULA. O $description de color.text.primary
+   tem 916 caracteres, o de text.secondary 440: papel, contraste em três
+   superfícies e a ADR que explica a troca, tudo numa string só — e numa só
+   porque é o campo do DTCG, que a spec não vai quebrar em três para caber
+   numa tabela. Espremida na última coluna, com as quatro primeiras em
+   nowrap, essa string desce em torre de trinta caracteres: a linha ficava
+   com vinte e cinco linhas de altura ao lado de quatro células de uma.
+
+   Então a nota sai da coluna e vira a LINHA SEGUINTE, com colspan na largura
+   inteira e teto na medida de leitura. Os números continuam empilhados em
+   coluna, que é o que a tabela serve para comparar, e a prosa lê nos mesmos
+   68ch de qualquer parágrafo da página. */
+tr.linha-nota > td {
+  padding-block: 0 0.8rem;
+  color: var(--ucam-color-text-secondary);
+}
+
+/* A medida é redeclarada AQUI, em ch, nos dois canais: a --measure do :root
+   é um comprimento fixo de 586px, medido no ch de 16px, e aplicada a uma nota
+   de 13px daria 80 caracteres por linha em vez dos 68 que o resto da página
+   lê. A variável local existe porque quem ganha nesta célula é a regra de
+   .prose.largo, mais específica que esta; o max-inline-size existe para a
+   tabela que um dia aparecer fora da prosa. Os dois dão o mesmo número. */
+tr.linha-nota p {
+  --measure: 68ch;
+  margin: 0;
+  font-size: 0.8125rem;
+  max-inline-size: 68ch;
+  text-wrap: pretty;
+}
+
+/* A régua separa TOKENS, não o token da sua própria nota — com a borda no
+   meio do par, cada token lia como duas linhas soltas. */
+tbody tr:has(+ tr.linha-nota) > td {
+  border-bottom: 0;
+}
+
+/* E o par acende junto: hover em qualquer das duas metades realça as duas,
+   senão o realce que existe para rastrear a linha passa a cortá-la ao meio. */
+tbody tr:hover + tr.linha-nota,
+tbody tr:has(+ tr.linha-nota:hover) {
+  background: var(--ucam-color-surface-subtle);
+}
+
 /* ------------------------------------------------------------------ código */
 
 /* Bloco de código com moldura, e não só fundo tingido: no tema escuro o

@@ -83,7 +83,6 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <th scope="col">Resolve para</th>
                 <th scope="col">Contraste</th>
                 <th scope="col">WCAG</th>
-                <th scope="col">Nota</th>
               </tr>
             </thead>
             <tbody>
@@ -95,8 +94,12 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   </td>
                   <td class="num">{{ t.razao }}:1</td>
                   <td><span class="chip" [class]="'chip-' + t.wcag.tone">{{ t.wcag.label }}</span></td>
-                  <td class="small">{{ t.descricao }}</td>
                 </tr>
+                @if (t.descricao) {
+                  <tr class="linha-nota">
+                    <td colspan="4"><p>{{ t.descricao }}</p></td>
+                  </tr>
+                }
               }
             </tbody>
           </table>
@@ -115,7 +118,6 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <th scope="col">Valor</th>
                 <th scope="col">Contraste c/ branco</th>
                 <th scope="col">WCAG</th>
-                <th scope="col">Nota</th>
               </tr>
             </thead>
             <tbody>
@@ -127,8 +129,12 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   </td>
                   <td class="num">{{ a.razao }}:1</td>
                   <td><span class="chip" [class]="'chip-' + a.wcag.tone">{{ a.wcag.label }}</span></td>
-                  <td class="small">{{ a.descricao }}</td>
                 </tr>
+                @if (a.descricao) {
+                  <tr class="linha-nota">
+                    <td colspan="4"><p>{{ a.descricao }}</p></td>
+                  </tr>
+                }
               }
             </tbody>
           </table>
