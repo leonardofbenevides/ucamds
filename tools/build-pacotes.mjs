@@ -188,11 +188,15 @@ ancestral \`.ucam\`, nada acontece.
 
 ## Ícones
 
-O sprite fica em \`icons/sprite.svg\`:
+O sprite fica em \`icons/sprite.svg\`, e todo símbolo é prefixado com \`i-\`:
 
 \`\`\`html
-<svg class="ic" aria-hidden="true"><use href="/caminho/sprite.svg#inbox"></use></svg>
+<svg class="ic" aria-hidden="true"><use href="/caminho/sprite.svg#i-inbox"></use></svg>
 \`\`\`
+
+Sirva o arquivo da MESMA origem da página. Referência externa de \`<use>\` é
+same-origin, e CORS não levanta o bloqueio: apontar para o sprite noutro
+domínio não desenha nada, e só aparece uma linha no console.
 
 ## O que este pacote NÃO entrega
 

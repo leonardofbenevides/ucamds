@@ -115,7 +115,7 @@ está numa URL, para ele não existe:
 | `/css/` | `ucam.css` e `ucam-fonts.css`. Dois `<link>` e o Trilho A funciona, sem instalar nada |
 | `/tokens/` | O CSS de tokens, para quem só quer as variáveis. `ucam.css` já o importa |
 | `/fonts/` | Os `.woff2` da Geist, que a folha de fontes carrega |
-| `/icons/` | `sprite.svg`, referenciado por `<use href="…#nome">` |
+| `/icons/` | `sprite.svg`, para o app **baixar e servir da própria origem** — `<use>` externo é same-origin |
 | `/elements/` | O bundle do Trilho A+ (ADR-010): um `<link>`, um `<script>`, e `<ucam-combobox>` existe |
 | `/pacotes/` | Os tarballs, o artefato instalável enquanto não houver registro privado |
 
