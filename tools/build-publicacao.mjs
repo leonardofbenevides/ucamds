@@ -190,7 +190,13 @@ for (const u of urls) {
     problemas.push(`o exemplo de instalação aponta para ${u}, e o host publicado é ${host}`);
     continue;
   }
-  const rota = u.slice(host.length).replace(/^\//, '');
+  // A ÂNCORA NÃO É CAMINHO. `sprite.svg#i-inbox` endereça um símbolo DENTRO do
+  // arquivo, e o servidor nunca vê o `#`. Enquanto isso não estava escrito
+  // aqui, o portão cobrou um arquivo chamado "sprite.svg#nome", não achou, e
+  // derrubou o deploy da branch inteira — a frase que o reprovou era a que
+  // ENSINA a forma certa de referenciar o sprite. A query vai junto pelo mesmo
+  // motivo: ?v=2 é parâmetro, não nome de arquivo.
+  const rota = u.slice(host.length).replace(/^\//, '').replace(/[#?].*$/, '');
   // Diretório (…/pacotes) vale se existir; arquivo tem de existir pelo nome.
   if (!existsSync(join(SAIDA, rota))) {
     problemas.push(`o exemplo de instalação ensina ${u} e /${rota} não existe na saída publicada`);
