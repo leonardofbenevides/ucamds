@@ -1,4 +1,5 @@
 {
+  "$lede": "O texto é interface: rótulo, erro, botão e frase de vazio são a parte do sistema que a pessoa realmente lê.",
   "$description": "O texto é interface. Rótulo, mensagem de erro, nome de botão e frase de vazio são a parte do sistema que a pessoa realmente lê — e a única que o parque legado escreveu sem regra nenhuma. Esta fundação declara a voz, o vocabulário e a forma de cada tipo de texto; o texto ESPECÍFICO de cada componente continua no contrato dele, e chega a esta página agregado, não copiado.",
   "_meta": {
     "origem": "Os 46 contratos já declaravam um bloco 'conteudo' com regras e exemplos bom/ruim. Eram 178 regras espalhadas por 46 arquivos, sem nenhuma página que as somasse e sem nada acima delas dizendo de que voz elas saem — cada contrato reinventava o princípio junto com o exemplo. Esta fundação é a camada que faltava POR CIMA: os contratos continuam donos do texto de cada componente, e passam a herdar daqui a voz.",

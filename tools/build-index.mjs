@@ -62,17 +62,92 @@ const componentes = readdirSync(join(SPEC, 'components'))
   .map((c) => ({ ...c, demo: demoDe(c.id) }))
   .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
 
-// Contratos que o Trilho B ainda não implementa. Lida do diretório da
-// biblioteca, e não de uma lista: um componente novo entra e sai daqui
-// sozinho, no dia em que o arquivo aparece.
+/* ------------------------------------------- disponibilidade por trilho ---
+   Em qual dos três trilhos cada contrato EXISTE hoje.
+
+   Tudo aqui é DERIVADO das fontes que mandam, nunca declarado numa lista à
+   parte: um componente entra e sai sozinho no dia em que a fonte muda. As
+   três perguntas e quem as responde:
+
+     Trilho A   o gerador de demos emitiu preview em CSS puro?
+     Trilho A+  a tag está no REGISTRO de elements/src/main.ts?
+     Trilho B   o id é reexportado por ui/.../public-api.ts?
+
+   O Trilho B era medido pela EXISTÊNCIA DA PASTA em lib/ucam/, e pasta não é
+   API: kbd, link, prazo e radio-group têm o arquivo do componente escrito e
+   não saem no public-api.ts — nenhuma aplicação consegue importá-los, e o
+   site dizia que os 49 estavam prontos. Quem decide o que uma aplicação
+   alcança é o barril, então é o barril que se lê. */
+
+/** Ids exportados por @ucam/ui. Vazio se a lib não estiver no workspace. */
+function idsDoTrilhoB() {
+  const API = join(ROOT, 'ui', 'projects', 'ui', 'src', 'public-api.ts');
+  if (!existsSync(API)) return null;
+  const fonte = readFileSync(API, 'utf8');
+  return new Set([...fonte.matchAll(/\.\/lib\/ucam\/([a-z0-9-]+)'/g)].map((m) => m[1]));
+}
+
+/** Tags registradas pelo bundle de custom elements do Trilho A+. */
+function idsDoTrilhoAMais() {
+  const MAIN = join(ROOT, 'elements', 'src', 'main.ts');
+  if (!existsSync(MAIN)) return null;
+  const fonte = readFileSync(MAIN, 'utf8');
+  const bloco = fonte.match(/const REGISTRO[^=]*=\s*\[([\s\S]*?)\];/);
+  if (!bloco) return null;
+  // A tag é ucam-button; o id do contrato é button. O prefixo é o mesmo para
+  // os seis, então tirá-lo basta — não há mapa a manter.
+  return new Set([...bloco[1].matchAll(/'ucam-([a-z0-9-]+)'/g)].map((m) => m[1]));
+}
+
+const EXPORTADOS = idsDoTrilhoB();
+const REGISTRADOS = idsDoTrilhoAMais();
+
+/**
+ * Os três trilhos de um contrato, na ordem em que a home os apresenta.
+ *
+ * `disponivel: null` quer dizer "não dá para saber daqui" — a fonte não está
+ * no workspace. É diferente de `false`, que afirma ausência, e a página
+ * precisa dessa diferença para não prometer nem negar o que não mediu.
+ */
+function trilhosDe(c) {
+  const temPreview = Boolean(c.demo?.principal?.preview);
+  return [
+    {
+      id: 'a',
+      rotulo: 'Trilho A',
+      meio: 'CSS puro',
+      disponivel: temPreview,
+      detalhe: c.implementacao?.trilho_a?.raiz ?? null,
+    },
+    {
+      id: 'a-mais',
+      rotulo: 'Trilho A+',
+      meio: 'bundle de elements',
+      disponivel: REGISTRADOS ? REGISTRADOS.has(c.id) : null,
+      detalhe: REGISTRADOS?.has(c.id) ? c.selector : null,
+    },
+    {
+      id: 'b',
+      rotulo: 'Trilho B',
+      meio: '@ucam/ui',
+      disponivel: EXPORTADOS ? EXPORTADOS.has(c.id) : null,
+      detalhe: EXPORTADOS?.has(c.id) ? c.selector : null,
+    },
+  ];
+}
+
+// Contratos que o Trilho B ainda não implementa — agora pelo barril, não pela
+// pasta. Ver a nota acima.
 function semAngular() {
-  const LIB = join(ROOT, 'ui', 'projects', 'ui', 'src', 'lib', 'ucam');
-  if (!existsSync(LIB)) return [];
-  const feitos = new Set(readdirSync(LIB));
+  if (!EXPORTADOS) return [];
   return componentes
-    .filter((c) => !feitos.has(c.id))
+    .filter((c) => !EXPORTADOS.has(c.id))
     .map((c) => ({ id: c.id, name: c.name, selector: c.selector }));
 }
+
+// Só AQUI, e não junto da lista: trilhosDe() lê EXPORTADOS e REGISTRADOS, que
+// são const declaradas acima — chamá-la antes cai na zona morta temporal.
+for (const c of componentes) c.trilhos = trilhosDe(c);
 
 const slug = (s) =>
   String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -348,6 +423,9 @@ const fontes = {
 
 const icones = {
   descricao: iconesSpec.$description,
+  // A CHAMADA e o RACIONAL são campos diferentes desde 22/09/2026: o lede curto
+  // abre a página e o $description inteiro passou para o bloco "Por quê".
+  lede: iconesSpec.$lede ?? '',
   regras: iconesSpec.regras_de_uso ?? [],
   meta: iconesSpec._meta ?? {},
   total: iconesSpec.grupos.reduce((n, g) => n + g.icones.length, 0),
@@ -366,6 +444,9 @@ const icones = {
 
 const estados = {
   descricao: estadosSpec.$description,
+  // A CHAMADA e o RACIONAL são campos diferentes desde 22/09/2026: o lede curto
+  // abre a página e o $description inteiro passou para o bloco "Por quê".
+  lede: estadosSpec.$lede ?? '',
   origem: estadosSpec._meta?.origem ?? '',
   divergencia: estadosSpec._meta?.divergencia ?? '',
   // Na ordem em que VENCEM, não na ordem em que foram declarados: a página
@@ -412,6 +493,9 @@ const somaConteudo = (campo) =>
 
 const escrita = {
   descricao: escritaSpec.$description,
+  // A CHAMADA e o RACIONAL são campos diferentes desde 22/09/2026: o lede curto
+  // abre a página e o $description inteiro passou para o bloco "Por quê".
+  lede: escritaSpec.$lede ?? '',
   meta: escritaSpec._meta,
   voz: escritaSpec.voz,
   principios: escritaSpec.principios,
@@ -448,6 +532,9 @@ const propType = chartSpec?.props?.find((p) => p.nome === 'type');
 
 const dados = {
   descricao: dadosSpec.$description,
+  // A CHAMADA e o RACIONAL são campos diferentes desde 22/09/2026: o lede curto
+  // abre a página e o $description inteiro passou para o bloco "Por quê".
+  lede: dadosSpec.$lede ?? '',
   meta: dadosSpec._meta,
   veiculos: dadosSpec.veiculos.map((v) => ({
     ...v,
@@ -472,6 +559,9 @@ const dados = {
 
 const formatos = {
   descricao: formatosSpec.$description,
+  // A CHAMADA e o RACIONAL são campos diferentes desde 22/09/2026: o lede curto
+  // abre a página e o $description inteiro passou para o bloco "Por quê".
+  lede: formatosSpec.$lede ?? '',
   meta: formatosSpec._meta,
   fronteira: formatosSpec.fronteira,
   formatos: formatosSpec.formatos,
@@ -495,6 +585,9 @@ const valorDeSize = (token) => semantic.size?.[token]?.$value ?? null;
 
 const densidade = {
   descricao: densidadeSpec.$description,
+  // A CHAMADA e o RACIONAL são campos diferentes desde 22/09/2026: o lede curto
+  // abre a página e o $description inteiro passou para o bloco "Por quê".
+  lede: densidadeSpec.$lede ?? '',
   meta: densidadeSpec._meta,
   larguras: densidadeSpec.larguras,
   leitura: densidadeSpec.medida_de_leitura,

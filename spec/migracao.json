@@ -1,4 +1,5 @@
 {
+  "$lede": "A ordem das operações para levar uma tela do parque legado ao UCAMDS. Regra que também está num contrato: vale a do contrato.",
   "$description": "Guia de migração: a ordem das operações para levar uma tela ou um app do parque legado ao UCAMDS. O mapa legado→novo de cada componente vive no contrato dele. Se uma regra aparece aqui e num contrato, a do contrato vale.",
   "_meta": {
     "publico": "Desenvolvedor de aplicação, não mantenedor do design system.",

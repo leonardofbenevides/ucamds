@@ -9,7 +9,7 @@
   },
   "description": "Design System da Universidade Candido Mendes",
   "scripts": {
-    "validate": "node tools/check-crases.mjs && node tools/validate-spec.mjs",
+    "validate": "node tools/check-crases.mjs && node tools/validate-spec.mjs && node tools/check-lede.mjs",
     "tokens": "node tools/build-tokens.mjs && node tools/check-daltonismo.mjs",
     "marca": "node tools/check-marca-vs-destrutivo.mjs",
     "css": "node tools/build-css.mjs",

@@ -28,6 +28,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       secao="Layout"
       [titulo]="'Blocos de layout'"
       [lede]="lede"
+      [porque]="porque"
     />
 
     <ucam-nesta-pagina [secoes]="secoes" />
@@ -426,7 +427,8 @@ export default class LayoutPage {
     { id: 'praticas', rotulo: 'Faça e evite' },
   ];
   protected readonly regra = layouts._meta.regra;
-  protected readonly lede = layouts.$description;
+  protected readonly lede = layouts.$lede;
+  protected readonly porque = layouts.$description;
 
   /**
    * `bypassSecurityTrustHtml` é deliberado, como no catálogo: a origem é este

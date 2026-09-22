@@ -1,4 +1,5 @@
 {
+  "$lede": "As MEDIDAS do sistema: largura de coluna, linha de texto, altura de controle e a área que o dedo realmente acerta.",
   "$description": "As MEDIDAS do sistema: quanto mede uma coluna, até onde uma linha de texto pode crescer, que altura tem um controle e qual é a área que o dedo realmente acerta. A camada de layout diz onde as coisas ficam; esta diz o tamanho delas. As duas juntas são a razão de nenhuma tela do sistema precisar de um número escrito à mão.",
   "_meta": {
     "regra": "O sistema tem UMA densidade. Não há chave de compacto/confortável, e a alternativa ao aperto não é encolher tudo — é escolher o papel certo de altura para cada peça.",

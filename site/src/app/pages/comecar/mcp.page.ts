@@ -11,7 +11,8 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     <ucam-page-header
       secao="Começar"
       [titulo]="'Conectar MCP'"
-      [lede]="mcp.$description"
+      [lede]="mcp.$lede"
+      [porque]="mcp.$description"
     />
 
     <div class="prose">

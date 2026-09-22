@@ -27,7 +27,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <ucam-page-header
       secao="Fundamentos"
       [titulo]="'Densidade e grade'"
-      [lede]="d.descricao"
+      [lede]="d.lede"
+      [porque]="d.descricao"
     />
 
     <ucam-nesta-pagina [secoes]="secoes" />

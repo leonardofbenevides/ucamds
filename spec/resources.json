@@ -67,6 +67,7 @@
     ]
   },
   "mcp": {
+    "$lede": "Os contratos do design system entregues a agentes de IA como DADO, não prosa: API, tokens, padrões e telas.",
     "$description": "Servidor MCP que entrega os contratos do design system a agentes de IA: a API exata de cada componente, os tokens resolvidos por tema, os padrões, as telas de referência, as decisões e os mapas de migração — dados, não prosa. Vem no pacote @ucam/ds-mcp, roda em stdio e não tem dependência: sobe em qualquer máquina com Node 18 ou mais novo, sem alcançar o registro público.",
     "config": {
       "mcpServers": {
@@ -132,6 +133,7 @@
     ]
   },
   "skills": {
+    "$lede": "O MCP entrega os dados; a skill entrega o método. Três, geradas da spec e instaladas no projeto.",
     "$description": "Skills empacotam o uso do design system para agentes. O MCP entrega os dados; a skill entrega o método. As três vêm no @ucam/ds-mcp, geradas da spec, e npx ucam-ds instalar as copia para o projeto.",
     "itens": [
       {
@@ -152,6 +154,7 @@
     ]
   },
   "instalacao": {
+    "$lede": "Três caminhos de consumo. Escolha pelo que a aplicação recebe hoje — o primeiro não pede instalação nenhuma.",
     "$description": "Três caminhos de consumo. Escolha pelo que a aplicação consegue receber hoje: o primeiro não pede instalação nenhuma — duas tags no <head> e a aparência da UCAM aparece.",
     "trilhos": [
       {

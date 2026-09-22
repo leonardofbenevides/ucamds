@@ -13,7 +13,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <ucam-page-header
       secao="Começar"
       [titulo]="'Instalação'"
-      [lede]="r.instalacao.$description"
+      [lede]="r.instalacao.$lede"
+      [porque]="r.instalacao.$description"
     />
 
     <ucam-nesta-pagina [secoes]="secoes()" />

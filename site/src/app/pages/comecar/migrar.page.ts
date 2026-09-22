@@ -22,7 +22,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <ucam-page-header
       secao="Começar"
       [titulo]="'Migrar uma tela'"
-      [lede]="m.$description"
+      [lede]="m.$lede"
+      [porque]="m.$description"
     />
 
     <ucam-nesta-pagina [secoes]="secoes()" />

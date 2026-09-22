@@ -87,10 +87,18 @@
   --topo-h: 3rem;
   --subtopo-h: 2.25rem;
   --header-h: var(--topo-h);
-  /* 68ch a 16px cai em ~65 caracteres por linha — a faixa em que o olho não
-     perde a volta. A 15px o 72ch dava a mesma medida física; o número mudou
-     porque o corpo cresceu, não a régua. */
-  --measure: 68ch;
+  /* A régua é 68 CARACTERES; o número aqui é 48 porque `ch` não mede um
+     caractere — mede o avanço do algarismo ZERO. No Geist o `0` ocupa
+     0,673em e o caractere médio de prosa portuguesa ocupa 0,482em: razão de
+     1,40. Medido no navegador por Range, `68ch` entregava 93–97 caracteres
+     por linha em TODOS os níveis de texto (lede 19px, corpo 16px, nota 13px)
+     — acima do teto de 80 da WCAG 1.4.8 e longe dos 65 que o comentário
+     anterior afirmava. 68 ÷ 1,40 = 48,5.
+
+     A unidade é `ch` e não `rem` de propósito: `ch` é relativa ao font-size
+     do ELEMENTO, então a nota de 13px e o lede de 19px chegam na mesma
+     contagem de caracteres com uma declaração só. */
+  --measure: 48ch;
   /* Régua única: marca do header, texto da lateral e conteúdo caem todos
      nesta linha. Os itens da lateral descontam o próprio padding para o
      TEXTO alinhar, não a caixa. */
@@ -350,17 +358,24 @@ kbd {
   .pagina > * {
     grid-column: 1;
   }
-  /* O cabeçalho atravessa: o filete dele é a régua da página inteira. */
+  /* O CABEÇALHO NÃO ATRAVESSA MAIS. Ele atravessava para que o filete fosse a
+     régua da página inteira, e o preço era meia tela vazia ao lado do título:
+     o lede para em 68ch, o índice só começava na linha 2, e entre um e outro
+     não havia nada. Agora o filete mede a coluna do texto — que é o que ele
+     está separando — e a régua continua sendo uma só. */
   .pagina > ucam-page-header {
-    grid-column: 1 / -1;
+    grid-column: 1;
   }
   /* `span 100` e não `2` porque a navegação é sticky: um item de grade que
      ocupa uma linha só pode grudar dentro da altura DAQUELA linha, e a
      navegação pararia de acompanhar no primeiro bloco. O excesso de linhas
-     implícitas tem altura zero e não custa nada. */
+     implícitas tem altura zero e não custa nada.
+
+     Começa na linha 1, junto do cabeçalho, e não na 2: é a linha 1 que tinha
+     o vão. */
   .pagina > ucam-nesta-pagina {
     grid-column: 2;
-    grid-row: 2 / span 100;
+    grid-row: 1 / span 100;
   }
 }
 
@@ -436,17 +451,24 @@ kbd {
   text-wrap: balance;
 }
 
+/* 20px sobre corpo de 16px. Estava em 1,0625rem = 17px: um degrau de UM
+   pixel sobre o texto que o título encabeça, com a hierarquia inteira
+   apoiada no peso 560 — que some numa página de 12 mil pixels. Primer põe o
+   h3 em 20 sobre 16; Carbon em 20 sobre 14. */
 .prose h3:not([class*='ucam-']) {
-  font-size: 1.0625rem;
-  font-weight: 560;
-  line-height: 1.35;
-  letter-spacing: -0.012em;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.014em;
   margin-block-end: 0.5rem;
 }
 
+/* O h4 é o último degrau: mesmo corpo do texto, separado só pelo peso. Em
+   0,9375rem ele era MENOR que o parágrafo que encabeçava, e indistinguível
+   do h3 de 17px que vinha acima. */
 .prose h4:not([class*='ucam-']) {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 650;
   letter-spacing: -0.005em;
   text-transform: none;
   color: var(--ucam-color-text-primary);
@@ -759,17 +781,17 @@ tr.linha-nota > td {
   color: var(--ucam-color-text-secondary);
 }
 
-/* A medida é redeclarada AQUI, em ch, nos dois canais: a --measure do :root
-   é um comprimento fixo de 586px, medido no ch de 16px, e aplicada a uma nota
-   de 13px daria 80 caracteres por linha em vez dos 68 que o resto da página
-   lê. A variável local existe porque quem ganha nesta célula é a regra de
-   .prose.largo, mais específica que esta; o max-inline-size existe para a
-   tabela que um dia aparecer fora da prosa. Os dois dão o mesmo número. */
+/* A medida vem da variável, e não de um número repetido aqui. Este bloco já
+   redeclarou `--measure` local sob a ideia de que a do :root era comprimento
+   fixo, medido no ch de 16px — não é: propriedade customizada não registrada
+   é substituída como token, então `ch` resolve no font-size DESTE elemento, e
+   a nota de 13px já chegava na mesma contagem de caracteres sozinha. O número
+   repetido só criava o risco de ficar para trás quando a régua mudasse, que
+   foi exatamente o que aconteceu no dia em que ela virou 48ch. */
 tr.linha-nota p {
-  --measure: 68ch;
   margin: 0;
   font-size: 0.8125rem;
-  max-inline-size: 68ch;
+  max-inline-size: var(--measure);
   text-wrap: pretty;
 }
 
@@ -829,8 +851,18 @@ tbody tr:has(+ tr.linha-nota:hover) {
    O tingido nasce por color-mix do próprio token de acento, então o mesmo
    bloco serve nos dois temas — no escuro, o token já é escuro e o mix apenas
    o aproxima do papel. */
+/* O callout é PROSA numa caixa, e por isso segue a régua de 68 caracteres
+   como qualquer parágrafo. Sem isto ele herdava a largura do container: na
+   home o aviso "Como ler esta documentação" abria 1130px e virava a linha
+   mais longa do site — 140 caracteres, quase o dobro do teto da WCAG 1.4.8,
+   num bloco cuja função é ser lido primeiro.
+
+   O teto é na CAIXA e não no texto de dentro: limitar só o parágrafo deixava
+   600px de fundo tingido vazio à direita dele. O acréscimo é o padding
+   horizontal declarado logo abaixo, para a medida valer no TEXTO. */
 .callout {
   --acento: var(--ucam-color-action-primary-default);
+  max-inline-size: calc(var(--measure) + 2.5rem);
   position: relative;
   padding: 1rem 1.15rem 1rem 1.35rem;
   border: 1px solid color-mix(in oklab, var(--acento) 22%, var(--ucam-color-border-subtle));
