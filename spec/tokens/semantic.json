@@ -562,6 +562,10 @@
       "$value": "52rem",
       "$description": "A partir daqui o bloco de divisão põe o painel de apoio ao lado do conteúdo. 52rem = 30rem para o conteúdo (uma tabela de cinco colunas sem cortar a última) + 22rem do painel de apoio mais largo em uso. Abaixo, empilha: painel de apoio espremido em 12rem não apoia nada, e tabela em 24rem esconde coluna."
     },
+    "indicadores-empilhados": {
+      "$value": "20rem",
+      "$description": "Abaixo desta largura do grupo (.ucam-stats), um grupo de quatro ou mais deixa de ir a 2 + 2 e empilha um por fileira. Medido a 375px em 24/09/2026 no movimento de caixa: dentro do cartão o grupo media 301px, cada ladrilho ficava com 118px de conteúdo e 'R$ 4.969,25' quebrava em duas linhas, com o 'R$' sozinho na primeira. A 20rem cada ladrilho ainda tem 9rem de conteúdo, o que segura um valor monetário de sete dígitos; abaixo, não. O grupo de quatro do Analytics, no corpo de 335px, fica acima do degrau e segue em 2 + 2."
+    },
     "indicadores-em-fileira": {
       "$value": "47rem",
       "$description": "Largura do PRÓPRIO grupo de indicadores (.ucam-stats é contêiner 'indicadores') a partir da qual quatro ladrilhos de 11rem cabem numa fileira: 4 × 11rem + 3 vãos de 1rem. Abaixo, um grupo de quatro vai a 2 + 2 em vez de 3 + 1 — o quarto sozinho na largura inteira lia como o mais importante. Grupo de três não muda: três cabem até 35rem e abaixo disso já caem em 2 + 1 sozinhos."
