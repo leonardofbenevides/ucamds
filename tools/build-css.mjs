@@ -5692,8 +5692,11 @@ ${abaixo('nav-fixa')} {
   border-block-end: 1px solid var(--ucam-color-border-subtle);
 }
 .ucam-nav__gaveta-sistema {
-  font-size: var(--ucam-typography-section-title-font-size);
-  font-weight: var(--ucam-typography-section-title-font-weight);
+  /* O MESMO tipo de .ucam-appbar__system: a gaveta cobre a faixa, e o nome
+   * do sistema não pode mudar de tamanho só porque a gaveta abriu. */
+  font-size: var(--ucam-appbar-system-size);
+  font-weight: var(--ucam-typography-action-font-weight);
+  letter-spacing: -0.01em;
   color: var(--ucam-color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -5703,9 +5706,12 @@ ${acima('nav-fixa')} {
   .ucam-nav__gaveta { display: none; }
 }
 
-/* A gaveta leva a ASSINATURA da universidade (ADR-033): a faixa dos sistemas
- * passou a abrir com a marquinha do módulo, e a gaveta é um dos lugares em
- * que o lockup continua — com o nome do sistema ao lado, como era na faixa. */
+/* A gaveta abre com a IDENTIDADE DA FAIXA: marquinha do módulo e nome do
+ * sistema (o markup reaproveita .ucam-appbar__marca). ADR-033 dizia que o
+ * lockup continuava aqui; revista em 24/09/2026 — a gaveta cobre a faixa, e
+ * a faixa mostrando a marquinha enquanto a gaveta mostrava o lockup era o
+ * mesmo lugar com duas identidades. O lockup só fica quando a própria faixa
+ * é lockup (.ucam-nav__gaveta-marca, abaixo). */
 .ucam-nav__gaveta-id {
   display: flex;
   align-items: center;
@@ -7361,7 +7367,8 @@ dialog.ucam-dialog:not([open]) { display: none; }
 @supports (animation-timeline: scroll()) {
   .ucam-tabs,
   .ucam-segmented,
-  .ucam-topnav__scroll {
+  .ucam-topnav__scroll,
+  .ucam-viewbar__chips {
     mask-image: linear-gradient(to right,
       transparent, #000 var(--ucam-rolo-ini),
       #000 calc(100% - var(--ucam-rolo-fim)), transparent);
@@ -7376,7 +7383,7 @@ dialog.ucam-dialog:not([open]) { display: none; }
      * pela cadeia de rolagem dele. */
     pointer-events: none;
   }
-  :is(.ucam-tabs, .ucam-segmented, .ucam-topnav__scroll) > * { pointer-events: auto; }
+  :is(.ucam-tabs, .ucam-segmented, .ucam-topnav__scroll, .ucam-viewbar__chips) > * { pointer-events: auto; }
 }
 
 .ucam-tabs__tab { white-space: nowrap; }
@@ -10593,6 +10600,24 @@ ${abaixo('controle-deitado')} {
     overflow: visible;
     text-overflow: clip;
   }
+  /* A META desce para a linha de baixo do título, sem o ponto médio: o
+   * separador que abre a linha quebrada lia como um marcador de lista
+   * ("· Abertura interna, em nome de um aluno"). Ela alinha com o texto do
+   * título, e não com o botão de voltar, e cola no título com o vão pequeno
+   * — o vão de linha da fileira é para controles, e isto é uma frase. */
+  .ucam-viewbar__fileira .ucam-viewbar__meta {
+    flex: 1 1 100%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    margin-block-start: calc(var(--ucam-space-inline-xs) - var(--ucam-viewbar-vao-linha, var(--ucam-space-inline-sm)));
+  }
+  .ucam-viewbar__fileira .ucam-viewbar__meta::before { content: none; }
+  .ucam-viewbar__voltar ~ .ucam-viewbar__meta { padding-inline-start: var(--ucam-size-control-md); }
+  /* A ORDENAÇÃO ocupa a linha inteira: medido a 375px, o segmented e o botão
+   * de filtros cabiam numa linha e o ⋮ caía sozinho na seguinte, pendurado à
+   * esquerda. Com o segmented numa linha própria, os botões descem juntos. */
+  .ucam-viewbar__acoes > .ucam-segmented { flex: 1 1 100%; }
 }
 
 /* A CONTAGEM É NÚMERO, ao lado do título, e não frase abaixo dele.
@@ -10607,6 +10632,19 @@ ${abaixo('controle-deitado')} {
   font-weight: var(--ucam-typography-label-font-weight);
   color: var(--ucam-color-text-secondary);
   font-variant-numeric: tabular-nums;
+}
+
+/* A ÁREA DOS CHIPS é um contêiner próprio, e o "Limpar filtros" fica fora
+ * dele. Na largura cheia ela quebra linha como a fileira quebrava; sob toque
+ * ela ROLA numa linha só (ver o bloco de ponteiro grosso) e o botão continua
+ * parado na ponta, sempre ao alcance, sem se sobrepor a chip nenhum. */
+.ucam-viewbar__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: inherit;
+  flex: 1 1 auto;
+  min-inline-size: 0;
 }
 
 /* O empurrão. Tudo que vier depois dele assenta na ponta contrária — é como as
@@ -10682,8 +10720,16 @@ ${abaixo('controle-deitado')} {
  * empurrão os grupos se juntam à esquerda em vez de disputar as pontas, e o
  * que não couber desce para a linha seguinte inteiro, em vez de encolher. */
 ${abaixo('nav-fixa')} {
-  .ucam-viewbar__fileira { flex-wrap: wrap; }
+  .ucam-viewbar__fileira { flex-wrap: wrap; row-gap: var(--ucam-viewbar-vao-linha, var(--ucam-space-inline-sm)); }
   .ucam-viewbar__folga { display: none; }
+  /* RESPIRO NO FIM DA BARRA. As fileiras centram o conteúdo em 44px e, com
+   * um controle que mede os 44 inteiros (segmented, botão sob toque), o
+   * controle assentava em cima do fio que fecha a barra — e em cima do fio
+   * que abre a fileira de filtros. A fileira que encosta num fio ganha o vão
+   * padrão embaixo; a de filtros não, porque já recua por dentro. */
+  .ucam-viewbar__fileira:not(.ucam-viewbar__fileira--filtros):is(:last-child, :has(+ .ucam-viewbar__fileira--filtros)) {
+    padding-block-end: var(--ucam-space-inline-sm);
+  }
   /* O grupo de ações também quebra por dentro. Com flex: none ele media a
    * soma de ordenação, filtros e ⋮, e a 390px o ⋮ passava 4px da borda. */
   .ucam-viewbar__acoes { flex-shrink: 1; flex-wrap: wrap; min-inline-size: 0; }
@@ -11368,7 +11414,7 @@ ${acima('nav-fixa')} {
    * Na fileira de filtros, dois chips empilhados com 8px entre eles faziam o
    * × de baixo roubar o de cima. O desenho não cresce; cresce o vão. */
   .ucam-appbar { column-gap: calc(var(--ucam-alvo-min) - var(--ucam-size-control-sm)); }
-  .ucam-viewbar__fileira { row-gap: calc(var(--ucam-alvo-min) - var(--ucam-size-control-sm)); }
+  .ucam-viewbar__fileira { --ucam-viewbar-vao-linha: calc(var(--ucam-alvo-min) - var(--ucam-size-control-sm)); row-gap: var(--ucam-viewbar-vao-linha); }
   /* Com o vão maior, a fileira quebrada deixava o primeiro chip encostado no
    * fio de cima: a altura mínima centrava UMA linha e, com duas, não sobrava
    * recuo. Metade do vão em cima e embaixo põe o fio longe do chip. */
@@ -11381,6 +11427,37 @@ ${acima('nav-fixa')} {
    * a metade de cima do alvo acertava a faixa. A fileira ganha a altura do
    * alvo e centra o degrau nela. */
   .ucam-viewbar__fileira--trilha { min-block-size: var(--ucam-alvo-min); padding-block-start: 0; }
+
+  /* FILTROS APLICADOS NUMA LINHA QUE ROLA, e não empilhados.
+   *
+   * Empilhar exigia 22px entre as linhas de chips (alvo − marcador, senão o ×
+   * de baixo rouba o de cima) contra 11px de recuo em cima e embaixo — a
+   * fileira lia inchada e o "Limpar filtros" ficava pendurado ao lado do
+   * último chip. Numa linha só não há × sobre ×: cada chip tem os 44 de
+   * altura da fileira para si, e a linha rola como as abas. O "Limpar
+   * filtros" GRUDA na ponta direita por cima do que rola, com o fundo da
+   * barra, para nunca sair do alcance. */
+  .ucam-viewbar__fileira--filtros {
+    flex-wrap: nowrap;
+    min-block-size: var(--ucam-alvo-min);
+    padding-block: 0;
+    row-gap: 0;
+  }
+  /* A área mede os 44 da fileira para o extensor do × caber inteiro dentro
+   * do rolo — overflow recorta o que passa da caixa (armadilha 8). */
+  .ucam-viewbar__chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    min-block-size: var(--ucam-alvo-min);
+  }
+  .ucam-viewbar__chips::-webkit-scrollbar { display: none; }
+  .ucam-viewbar__chips > * { flex: none; }
+
+  /* A LEGENDA DE ATALHOS (↑ ↓ navegar, R responder, E encaminhar) fala de
+   * teclado. Sob ponteiro grosso não há teclado para atender ao que ela
+   * promete, e ela gastava uma linha da lista para dizer isso. */
+  .ucam-inbox__lista-rodape { display: none; }
 }
 
 /* LINK: RECUO, NÃO EXTENSOR.

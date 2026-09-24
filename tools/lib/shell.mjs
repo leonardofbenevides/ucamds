@@ -1018,15 +1018,22 @@ export function renderShell(cfg = {}, conteudo = '') {
   // sistema e sem fechar. A cabeça devolve os dois; o botão de fechar é o
   // primeiro focável, para que quem abre pelo teclado saiba sair antes de
   // andar. O arranjo `lateral` já tem o topo com marca e não precisa disto.
-  // A gaveta leva a ASSINATURA da universidade ao lado do nome do sistema
-  // (ADR-033) e, abaixo de faixa-minima — onde o select saiu da faixa —, o
-  // campus ativo: contexto que muda o significado da tela não some, muda de
-  // lugar.
+  // A gaveta abre com a MESMA identidade da faixa que ela cobre: a marquinha
+  // do módulo e o nome do sistema (ADR-033, revista em 24/09/2026 — o lockup
+  // aqui, com a faixa mostrando a marquinha, era o mesmo lugar com duas
+  // identidades; "não faz sentido isso aqui, padronize"). O lockup só fica
+  // quando a própria faixa o usa. Abaixo de faixa-minima — onde o select saiu
+  // da faixa — entra o campus ativo: contexto que muda o significado da tela
+  // não some, muda de lugar.
   const cabecaGaveta =
     !lateral && temNav
       ? '<div class="ucam-nav__gaveta">' +
         '<span class="ucam-nav__gaveta-id">' +
-        '<span class="ucam-nav__gaveta-marca" aria-hidden="true"></span>' +
+        (logo
+          ? '<span class="ucam-nav__gaveta-marca" aria-hidden="true"></span>'
+          : moduloIcone
+            ? `<span class="ucam-icon-tile ucam-appbar__marca${moduloCategoria ? ` ucam-icon-tile--${esc(moduloCategoria)}` : ''}" aria-hidden="true">${ic(moduloIcone)}</span>`
+            : '') +
         `<span class="ucam-nav__gaveta-sistema">${esc(sistema)}</span>` +
         '</span>' +
         `<button class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-nav__fechar" type="button" aria-label="Fechar navegação" aria-controls="${esc(navId)}">` +
