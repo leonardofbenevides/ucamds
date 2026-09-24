@@ -61,73 +61,95 @@ function montarCena(): Face[] {
   const cena: Face[] = [];
   const Z = 14; // altura do chão
 
+  // A ordem de pintura é do fundo para a frente: quem tem x + y maior está
+  // mais perto de quem olha e entra por último. Em 24/09/2026 o gráfico
+  // entrava ANTES da tela e ficava com a base coberta por ela, e as três
+  // esferas caíam em cima do cartão e do canto da tela. As posições abaixo
+  // foram conferidas por um verificador de silhuetas (casco convexo de cada
+  // peça em espaço de tela, separação por eixos): nenhuma peça toca outra.
+
   // O CHÃO: a placa das fundações, onde tudo assenta.
   cena.push(...caixa(0, 0, 0, 500, 380, Z, 'chao'));
 
-  // O GRÁFICO: cinco barras extrudadas, atrás à direita. A quarta é o acento.
-  cena.push(plano(452, 40, Z + 0.5, 38, 156, 'plinto'));
-  const alturas = [34, 62, 48, 92, 74];
-  alturas.forEach((h, i) => cena.push(...caixa(460, 46 + i * 30, Z, 22, 22, h, i === 3 ? 'acento' : '')));
+  // O INDICADOR: bloco atrás à esquerda, com a variação em bordô.
+  const [ix, iy] = [12, 108];
+  cena.push(...caixa(ix, iy, Z, 92, 64, 26, 'bloco'));
+  const I = Z + 26.5;
+  cena.push(plano(ix + 10, iy + 8, I, 36, 5, 'traco'));
+  cena.push(plano(ix + 10, iy + 22, I, 52, 12, 'traco-forte'));
+  cena.push(plano(ix + 10, iy + 44, I, 60, 5, 'traco'));
+  cena.push(plano(ix + 68, iy + 22, I, 16, 12, 'acento-plano'));
 
   // A TELA: a laje central com coluna de navegação, indicadores e tabela.
-  cena.push(...caixa(140, 56, Z, 300, 220, 10, 'tela'));
+  // O conteúdo é relativo à laje: coluna de 76, margem de 16, três ladrilhos
+  // com vão 8 e quantas linhas de tabela couberem.
+  const [tx, ty, tw, td] = [130, 56, 260, 204];
+  cena.push(...caixa(tx, ty, Z, tw, td, 10, 'tela'));
   const T = Z + 10.5;
-  cena.push(plano(140, 56, T, 300, 24, 'faixa'));
-  cena.push(plano(150, 62, T, 6, 6, 'ponto'), plano(160, 62, T, 6, 6, 'ponto'), plano(170, 62, T, 6, 6, 'ponto'));
-  cena.push(plano(140, 80, T, 76, 196, 'coluna'));
-  cena.push(plano(150, 92, T, 56, 14, 'realce'));
-  cena.push(plano(154, 96, T, 30, 5, 'traco-forte'));
-  [118, 138, 158, 178].forEach((y, i) => cena.push(plano(154, y, T, [28, 40, 22, 34][i], 5, 'traco')));
-  [228, 296, 364].forEach((x) => {
-    cena.push(plano(x, 90, T, 60, 38, 'ladrilho'));
-    cena.push(plano(x + 8, 98, T, 24, 4, 'traco'));
-    cena.push(plano(x + 8, 110, T, 36, 8, 'traco-forte'));
+  cena.push(plano(tx, ty, T, tw, 24, 'faixa'));
+  cena.push(plano(tx + 10, ty + 6, T, 6, 6, 'ponto'), plano(tx + 20, ty + 6, T, 6, 6, 'ponto'), plano(tx + 30, ty + 6, T, 6, 6, 'ponto'));
+  cena.push(plano(tx, ty + 24, T, 76, td - 24, 'coluna'));
+  cena.push(plano(tx + 10, ty + 36, T, 56, 14, 'realce'));
+  cena.push(plano(tx + 14, ty + 40, T, 30, 5, 'traco-forte'));
+  [62, 82, 102, 122].forEach((y, i) => cena.push(plano(tx + 14, ty + y, T, [28, 40, 22, 34][i], 5, 'traco')));
+  const cx0 = tx + 88;
+  const cw = tw - 88 - 16;
+  const lad = (cw - 2 * 8) / 3;
+  [0, 1, 2].forEach((i) => {
+    const x = cx0 + i * (lad + 8);
+    cena.push(plano(x, ty + 34, T, lad, 38, 'ladrilho'));
+    cena.push(plano(x + 8, ty + 42, T, 24, 4, 'traco'));
+    cena.push(plano(x + 8, ty + 54, T, Math.min(36, lad - 16), 8, 'traco-forte'));
   });
-  cena.push(plano(228, 140, T, 196, 14, 'cabecalho'));
-  [162, 188, 214, 240].forEach((y) => {
-    cena.push(plano(236, y + 4, T, 10, 10, 'avatar-mini'));
-    cena.push(plano(252, y + 3, T, 52, 5, 'traco-forte'));
-    cena.push(plano(252, y + 11, T, 78, 4, 'traco'));
-    cena.push(plano(372, y + 3, T, 44, 11, 'selo'));
-    cena.push(plano(228, y + 22, T, 196, 1, 'fio'));
-  });
+  cena.push(plano(cx0, ty + 84, T, cw, 14, 'cabecalho'));
+  const linhas = Math.floor((td - 84 - 14 - 8) / 26);
+  for (let k = 0; k < linhas; k++) {
+    const y = ty + 106 + k * 26;
+    cena.push(plano(cx0 + 8, y + 4, T, 10, 10, 'avatar-mini'));
+    cena.push(plano(cx0 + 24, y + 3, T, 52, 5, 'traco-forte'));
+    cena.push(plano(cx0 + 24, y + 11, T, 78, 4, 'traco'));
+    cena.push(plano(cx0 + cw - 52, y + 3, T, 44, 11, 'selo'));
+    cena.push(plano(cx0, y + 22, T, cw, 1, 'fio'));
+  }
 
-  // O INDICADOR: bloco à esquerda, com a variação em bordô.
-  cena.push(...caixa(30, 110, Z, 92, 64, 26, 'bloco'));
-  const I = Z + 26.5;
-  cena.push(plano(40, 118, I, 36, 5, 'traco'));
-  cena.push(plano(40, 132, I, 52, 12, 'traco-forte'));
-  cena.push(plano(40, 154, I, 60, 5, 'traco'));
-  cena.push(plano(98, 132, I, 16, 12, 'acento-plano'));
+  // O GRÁFICO: cinco barras extrudadas à direita da tela, e à frente dela na
+  // projeção — por isso entra depois. A quarta é o acento.
+  const [gx, gy] = [452, 90];
+  cena.push(plano(gx, gy, Z + 0.5, 38, 156, 'plinto'));
+  [26, 46, 34, 62, 50].forEach((h, i) => cena.push(...caixa(gx + 8, gy + 6 + i * 30, Z, 22, 22, h, i === 3 ? 'acento' : '')));
 
   // O FORMULÁRIO: rótulo, campo e interruptor ligado.
-  cena.push(...caixa(30, 210, Z, 100, 74, 8, 'bloco'));
+  const [fx, fy] = [10, 220];
+  cena.push(...caixa(fx, fy, Z, 100, 74, 8, 'bloco'));
   const F = Z + 8.5;
-  cena.push(plano(40, 218, F, 30, 5, 'traco-forte'));
-  cena.push(plano(40, 230, F, 80, 18, 'campo'));
-  cena.push(plano(46, 236, F, 40, 5, 'traco'));
-  cena.push(plano(40, 260, F, 26, 12, 'acento-plano'));
-  cena.push(plano(56, 262, F, 8, 8, 'knob'));
-  cena.push(plano(74, 264, F, 40, 5, 'traco'));
-
-  // O CARTÃO DE ESCOLHA, marcado: figura, título, apoio e o check em bordô.
-  cena.push(...caixa(330, 300, Z, 110, 62, 8, 'bloco escolhido'));
-  const C = Z + 8.5;
-  cena.push(plano(340, 310, C, 20, 20, 'ladrilho'));
-  cena.push(plano(368, 312, C, 44, 5, 'traco-forte'));
-  cena.push(plano(368, 322, C, 60, 4, 'traco'));
-  cena.push(plano(340, 342, C, 80, 4, 'traco'));
-  cena.push(plano(424, 308, C, 8, 8, 'acento-plano'));
+  cena.push(plano(fx + 10, fy + 8, F, 30, 5, 'traco-forte'));
+  cena.push(plano(fx + 10, fy + 20, F, 80, 18, 'campo'));
+  cena.push(plano(fx + 16, fy + 26, F, 40, 5, 'traco'));
+  cena.push(plano(fx + 10, fy + 50, F, 26, 12, 'acento-plano'));
+  cena.push(plano(fx + 26, fy + 52, F, 8, 8, 'knob'));
+  cena.push(plano(fx + 44, fy + 54, F, 40, 5, 'traco'));
 
   // O SELO, deitado no chão: ponto e palavra.
-  cena.push(...caixa(190, 326, Z, 88, 22, 5, 'bloco'));
-  cena.push(plano(198, 332, Z + 5.5, 8, 8, 'acento-plano'));
-  cena.push(plano(212, 333, Z + 5.5, 50, 6, 'traco'));
+  const [sx, sy] = [176, 330];
+  cena.push(...caixa(sx, sy, Z, 88, 22, 5, 'bloco'));
+  cena.push(plano(sx + 8, sy + 6, Z + 5.5, 8, 8, 'acento-plano'));
+  cena.push(plano(sx + 22, sy + 7, Z + 5.5, 50, 6, 'traco'));
 
-  // AS PESSOAS: três esferas na frente, para quem tudo isso existe.
-  cena.push(...esfera(470, 290, Z, 20));
-  cena.push(...esfera(460, 338, Z, 15));
-  cena.push(...esfera(420, 350, Z, 12));
+  // O CARTÃO DE ESCOLHA, marcado: figura, título, apoio e o check em bordô.
+  const [kx, ky] = [296, 296];
+  cena.push(...caixa(kx, ky, Z, 110, 62, 8, 'bloco escolhido'));
+  const C = Z + 8.5;
+  cena.push(plano(kx + 10, ky + 10, C, 20, 20, 'ladrilho'));
+  cena.push(plano(kx + 38, ky + 12, C, 44, 5, 'traco-forte'));
+  cena.push(plano(kx + 38, ky + 22, C, 60, 4, 'traco'));
+  cena.push(plano(kx + 10, ky + 42, C, 80, 4, 'traco'));
+  cena.push(plano(kx + 94, ky + 8, C, 8, 8, 'acento-plano'));
+
+  // AS PESSOAS: três esferas no canto da frente, à direita do cartão e à
+  // frente do gráfico, para quem tudo isso existe.
+  cena.push(...esfera(474, 290, Z, 17));
+  cena.push(...esfera(492, 334, Z, 12));
+  cena.push(...esfera(460, 346, Z, 10));
 
   return cena;
 }
