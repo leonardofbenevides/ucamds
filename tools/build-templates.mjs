@@ -36,6 +36,7 @@ import {
   gavetaScript,
   inboxScript,
   navScript,
+  contadorScript,
 } from './lib/shell.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -264,6 +265,7 @@ ${sprite}
 <script>${grupoMenuScript}</script>
 <script>${confirmaScript}</script>
 <script>${dialogoScript}</script>
+<script>${contadorScript}</script>
 <script>${gavetaScript}</script>
 <script>${inboxScript}</script>
 </body>

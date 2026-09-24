@@ -2533,6 +2533,42 @@ ${FN_ANUNCIA}
     eco(passos[j]);
   }
 
+  /* ISENÇÃO DE DISCIPLINAS (spec docs/superpowers/specs/2026-09-24-isencao-design.md).
+   * Os totais da tabela de decisões ([data-decisoes]) e o registro na
+   * atividade ([data-atividade]) são o que os tratadores abaixo compartilham. */
+  function totaisIsencao(de) {
+    var tabela = document.querySelector('[data-decisoes]');
+    var t = { total: 0, isentas: 0, nao: 0, pendentes: 0 };
+    if (!tabela) return t;
+    Array.prototype.forEach.call(tabela.querySelectorAll('tr[data-disciplina]'), function (tr) {
+      t.total++;
+      var v = tr.getAttribute('data-decidida');
+      if (v === 'isentar') t.isentas++; else if (v === 'nao') t.nao++; else t.pendentes++;
+    });
+    var alvo = document.querySelector('[data-totais]');
+    if (alvo) alvo.textContent = t.total + ' disciplinas · ' + t.isentas + ' isentas · ' + t.nao + ' não isentas · ' + t.pendentes + ' pendentes';
+    var fim = document.querySelector('[data-acao="finalizar-analise"]');
+    if (fim) fim.setAttribute('data-pendentes', String(t.pendentes));
+    return t;
+  }
+  function registraAtividade(de, titulo, corpo, icone, tom) {
+    var lista = document.querySelector('ol[data-atividade]');
+    if (!lista) return;
+    var li = document.createElement('li');
+    li.className = 'ucam-timeline__item';
+    li.setAttribute('data-tipo', 'evento');
+    li.innerHTML = '<span class="ucam-timeline__trilho" aria-hidden="true"><span class="ucam-timeline__no ucam-timeline__no--' + tom + '"><svg class="ic" aria-hidden="true"><use href="#i-' + icone + '"/></svg></span><span class="ucam-timeline__linha"></span></span>' +
+      '<div class="ucam-timeline__conteudo"><p class="ucam-timeline__cabecalho"><span class="ucam-timeline__autor">Você</span><span class="ucam-timeline__papel">Coordenação</span><time class="ucam-timeline__tempo">agora, ' + hora() + '</time></p>' +
+      '<p class="ucam-timeline__corpo">' + titulo + '</p>' + (corpo ? '<p class="ucam-timeline__corpo ucam-timeline__corpo--mensagem">' + corpo + '</p>' : '') + '</div>';
+    lista.insertBefore(li, lista.firstElementChild);
+    eco(li);
+  }
+  function seloIsencao(el, tom, texto) {
+    if (!el) return;
+    el.className = 'ucam-badge ucam-badge--' + tom;
+    el.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>' + texto;
+  }
+
   function agir(botao, qual) {
     if (qual === 'imprimir') return window.print();
 
@@ -3047,6 +3083,98 @@ ${FN_ANUNCIA}
       corpo.insertBefore(nova, corpo.firstElementChild);
       anuncia('Lançamento novo na primeira linha da tabela, em edição.', botao);
       return eco(nova);
+    }
+
+    /* --- ISENÇÃO DE DISCIPLINAS -------------------------------------------- */
+    if (qual === 'decidir') {
+      var linhaD = botao.closest('tr');
+      var grupo = botao.closest('[data-decisao]');
+      if (!linhaD || !grupo) return;
+      Array.prototype.forEach.call(grupo.querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', b === botao ? 'true' : 'false'); });
+      var valor = botao.getAttribute('data-valor') || '';
+      seloIsencao(linhaD.querySelector('[data-situacao-disciplina]'),
+        valor === 'isentar' ? 'success' : valor === 'nao' ? 'danger' : 'neutral',
+        valor === 'isentar' ? 'Isenta' : valor === 'nao' ? 'Não isenta' : 'Pendente');
+      linhaD.setAttribute('data-decidida', valor);
+      var nomeD = linhaD.querySelector('.ucam-card__titulo, td');
+      totaisIsencao(botao);
+      anuncia((nomeD ? nomeD.textContent.trim() : 'Disciplina') + ': ' + (valor === 'isentar' ? 'isenta.' : valor === 'nao' ? 'não isenta.' : 'pendente.'), botao);
+      return;
+    }
+
+    if (qual === 'aplicar-sugestoes') {
+      var tabelaS = document.querySelector('[data-decisoes]');
+      if (!tabelaS) return;
+      var feitas = 0;
+      Array.prototype.forEach.call(tabelaS.querySelectorAll('tr[data-disciplina]'), function (tr) {
+        if (tr.getAttribute('data-decidida')) return;
+        var sug = tr.getAttribute('data-sugestao');
+        if (sug !== 'isentar' && sug !== 'nao') return;
+        var alvoB = tr.querySelector('[data-decisao] button[data-valor="' + sug + '"]');
+        if (alvoB) { agir(alvoB, 'decidir'); feitas++; }
+      });
+      anuncia(feitas
+        ? feitas + (feitas === 1 ? ' decisão preenchida pela sugestão. ' : ' decisões preenchidas pela sugestão. ') + 'As marcadas para revisar continuam pendentes.'
+        : 'Nenhuma decisão pendente com sugestão de isentar ou não isentar.', botao);
+      return rotuloTemporario(botao, feitas ? 'Aplicadas' : 'Nada a aplicar');
+    }
+
+    if (qual === 'salvar-rascunho') {
+      var rasc = document.querySelector('[data-rascunho]');
+      if (rasc) { rasc.hidden = false; rasc.textContent = 'Rascunho salvo às ' + hora() + '.'; }
+      anuncia('Rascunho salvo às ' + hora() + '. A análise continua aberta.', botao);
+      return rotuloTemporario(botao, 'Salvo');
+    }
+
+    if (qual === 'finalizar-analise') {
+      var tot = totaisIsencao(botao);
+      var seloS = document.querySelector('[data-selo-situacao]');
+      seloIsencao(seloS, 'success', 'Concluída');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-acao="salvar-rascunho"], [data-acao="finalizar-analise"], [data-acao="aplicar-sugestoes"], [data-acao="enviar-observacao"], [data-decisao] button'), function (b) {
+        b.setAttribute('aria-disabled', 'true'); b.setAttribute('title', 'Análise concluída');
+      });
+      anuncia('Análise concluída: ' + tot.isentas + ' isentas e ' + tot.nao + ' não isentas. O candidato recebe o resultado.', botao);
+      return eco(seloS);
+    }
+
+    if (qual === 'enviar-observacao') {
+      var campoO = document.querySelector('textarea[data-observacao]');
+      if (!campoO || !campoO.value.trim()) { anuncia('Escreva a observação antes de enviar.', botao); if (campoO) campoO.focus(); return; }
+      seloIsencao(document.querySelector('[data-selo-situacao]'), 'warning', 'Aguardando candidato');
+      registraAtividade(botao, 'Observação enviada ao candidato', campoO.value.trim(), 'send', 'warning');
+      anuncia('Observação enviada. A situação passou a Aguardando candidato.', botao);
+      return rotuloTemporario(botao, 'Enviada');
+    }
+
+    if (qual === 'notificar-candidato') {
+      registraAtividade(botao, 'Candidato notificado por e-mail e SMS', 'Pedido de envio do histórico escolar e das ementas.', 'send', 'info');
+      anuncia('Candidato notificado por e-mail e SMS. O aviso entrou na atividade.', botao);
+      return rotuloTemporario(botao, 'Notificado');
+    }
+
+    if (qual === 'tentar-analise') {
+      var caixaT = botao.closest('td, .ucam-card') || botao.parentElement;
+      var seloT = caixaT && caixaT.querySelector('.ucam-badge');
+      if (seloT) { seloT.className = 'ucam-badge ucam-badge--neutral'; seloT.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>Em processamento'; }
+      botao.hidden = true;
+      anuncia('Análise automatizada pedida de novo. O resultado chega em alguns minutos.', botao);
+      return eco(seloT);
+    }
+
+    if (qual === 'reabrir-analise') {
+      var seloR = document.querySelector('[data-selo-situacao]');
+      seloIsencao(seloR, 'info', 'Aguardando análise');
+      Array.prototype.forEach.call(document.querySelectorAll('[aria-disabled="true"][title="Análise concluída"]'), function (b) {
+        b.removeAttribute('aria-disabled'); b.removeAttribute('title');
+      });
+      registraAtividade(botao, 'Análise reaberta', 'As decisões voltam a poder ser alteradas.', 'refreshCw', 'warning');
+      anuncia('Análise reaberta. A situação voltou a Aguardando análise.', botao);
+      return eco(seloR);
+    }
+
+    if (qual === 'baixar-parecer') {
+      anuncia('Baixando o parecer em PDF.', botao);
+      return rotuloTemporario(botao, 'Baixando…');
     }
   }
 
@@ -4415,6 +4543,16 @@ export const confirmaScript = `
       rotulo: 'Reemitir cartão',
       tom: 'danger',
     },
+    'finalizar-analise': {
+      corpo: 'A análise fecha com as decisões como estão e o candidato recebe o resultado. Depois de concluída, só reabrindo dá para mudar.',
+      rotulo: 'Finalizar análise',
+      tom: 'primary',
+    },
+    'reabrir-analise': {
+      corpo: 'A solicitação volta a Aguardando análise e as decisões podem ser alteradas. O candidato é avisado da reabertura.',
+      rotulo: 'Reabrir análise',
+      tom: 'danger',
+    },
   };
 
   var caixa = null;
@@ -4460,9 +4598,28 @@ export const confirmaScript = `
     var texto = TEXTOS[acao];
     if (!texto) return;
 
+    // BARREIRA DAS PENDENTES (isenção): com decisão faltando, o diálogo é
+    // aviso, não confirmação — diz quantas faltam e tem uma saída só.
+    var pend = parseInt(botao.getAttribute('data-pendentes') || '0', 10);
+    if (pend > 0) {
+      var da = monta();
+      da.querySelector('.ucam-dialog__title').textContent = (pend === 1 ? 'Falta 1 decisão' : 'Faltam ' + pend + ' decisões');
+      da.querySelector('.ucam-dialog__texto').textContent = 'A análise só fecha com todas as disciplinas decididas. Decida as pendentes ou marque-as como não isentas.';
+      var okA = da.querySelector('[data-confirmar-ok]'); okA.hidden = true;
+      var canc = da.querySelector('[data-cancelar]'); canc.textContent = 'Entendi';
+      da.onclose = function () { da.onclose = null; okA.hidden = false; canc.textContent = 'Cancelar'; devolveFoco(botao, botao.closest('section') || botao.closest('main')); };
+      da.showModal(); canc.focus();
+      return;
+    }
+
     var d = monta();
     d.querySelector('.ucam-dialog__title').textContent = (botao.getAttribute('aria-label') || botao.textContent.trim()) + '?';
     d.querySelector('.ucam-dialog__texto').textContent = texto.corpo;
+    // Finalizar nomeia os números: o resumo da tabela ([data-totais]) abre o corpo.
+    if (acao === 'finalizar-analise') {
+      var totais = document.querySelector('[data-totais]');
+      if (totais) d.querySelector('.ucam-dialog__texto').textContent = totais.textContent.trim() + '. ' + texto.corpo;
+    }
     var ok = d.querySelector('[data-confirmar-ok]');
     ok.textContent = texto.rotulo;
     // O tom destrutivo é data-tone, não modificador: ver a nota do .ucam-btn.
@@ -4917,3 +5074,25 @@ export const menuContaScript = `
   });
 })();
 `.trim();
+
+/**
+ * O CONTADOR do textarea (contrato textarea, parte contador): 'n de m
+ * caracteres' num <span data-contador> que está no aria-describedby do campo.
+ * Quem ouve recebe o limite antes de escrever; quem vê, o restante a cada tecla.
+ */
+export const contadorScript = `
+(function () {
+  document.addEventListener('input', function (e) {
+    var campo = e.target;
+    if (!campo.matches || !campo.matches('textarea[maxlength][aria-describedby]')) return;
+    var ids = campo.getAttribute('aria-describedby').split(' ');
+    var alvo = null;
+    for (var i = 0; i < ids.length && !alvo; i++) {
+      var el = document.getElementById(ids[i]);
+      if (el && el.hasAttribute('data-contador')) alvo = el;
+    }
+    if (!alvo) return;
+    alvo.textContent = campo.value.length + ' de ' + campo.getAttribute('maxlength') + ' caracteres';
+  });
+})();
+`;
