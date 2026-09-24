@@ -40,12 +40,19 @@
  *   3. Comentário com chave — `/* ... { ... *\/` fazia o scanner achar que
  *      começava um bloco. Os comentários saem antes de qualquer varredura.
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const ENTRADA = join(ROOT, 'site', 'src', 'generated', 'componentes.css');
+// Lê a SAÍDA REAL do build-css (dist/css/ucam.css), não a cópia que o
+// build-index faz em site/src/generated/componentes.css: essa cópia só nasce
+// no passo `indice`, que roda DEPOIS de `css`. Numa árvore limpa — o clone
+// que a Vercel constrói — ela ainda não existe quando este gerador roda, e o
+// build morria aqui (24/09/2026). Localmente passava porque a cópia sobrava
+// de builds anteriores. E o diretório de saída pode ainda não existir pela
+// mesma razão: é criado na hora.
+const ENTRADA = join(ROOT, 'dist', 'css', 'ucam.css');
 const SAIDA = join(ROOT, 'site', 'src', 'generated', 'estados.css');
 
 /** Os estados que o espelho cobre, na ordem em que a matriz os mostra. */
@@ -269,6 +276,7 @@ if (abre !== fecha || vazios) {
   process.exit(1);
 }
 
+mkdirSync(dirname(SAIDA), { recursive: true });
 writeFileSync(SAIDA, saida, 'utf8');
 
 const total = Object.values(contagem).reduce((a, b) => a + b, 0);
