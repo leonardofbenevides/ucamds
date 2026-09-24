@@ -34,6 +34,7 @@ import {
   confirmaScript,
   dialogoScript,
   gavetaScript,
+  inboxScript,
   navScript,
 } from './lib/shell.mjs';
 
@@ -264,6 +265,7 @@ ${sprite}
 <script>${confirmaScript}</script>
 <script>${dialogoScript}</script>
 <script>${gavetaScript}</script>
+<script>${inboxScript}</script>
 </body>
 </html>`;
 

@@ -4640,6 +4640,90 @@ export const gavetaScript = `
 })();
 `;
 
+/**
+ * A CAIXA DE ENTRADA NO CELULAR: um painel de cada vez.
+ *
+ * Abaixo de controle-deitado a lista e o detalhe não cabem lado a lado, e
+ * empilhá-los com a lista presa a 24rem cortava o quarto item numa rolagem
+ * interna dentro de outra rolagem (visto a 375px em 24/09/2026). Aqui a lista
+ * ocupa a página inteira e escolher um item TROCA o painel: o detalhe entra no
+ * lugar dela com "Voltar à lista" no alto, e voltar devolve o foco ao item
+ * escolhido. É o padrão de mestre-detalhe de todo telefone.
+ *
+ * O item é <button class="ucam-list-item__alvo"> como o contrato do ListItem
+ * manda quando escolher governa um painel: aria-pressed no controle,
+ * aria-current no <li>, que é por onde a folha pinta. Em largura cheia o
+ * clique só move a escolha; o painel continua ao lado.
+ */
+export const inboxScript = `
+(function () {
+  var ESTREITO = window.matchMedia('(max-width: 39.999rem)');
+
+  function escolhe(alvo) {
+    var lista = alvo.closest('.ucam-list');
+    Array.prototype.forEach.call(lista.querySelectorAll('.ucam-list-item__alvo'), function (b) {
+      var esc = b === alvo;
+      b.setAttribute('aria-pressed', String(esc));
+      var li = b.closest('.ucam-list-item');
+      if (esc) li.setAttribute('aria-current', 'true'); else li.removeAttribute('aria-current');
+    });
+  }
+
+  function garanteVoltar(inbox) {
+    Array.prototype.forEach.call(inbox.querySelectorAll('.ucam-inbox__detalhe'), function (d) {
+      if (d.querySelector('.ucam-inbox__voltar')) return;
+      d.insertAdjacentHTML('afterbegin',
+        '<p class="ucam-inbox__voltar-linha"><button class="ucam-btn ucam-btn--ghost ucam-btn--sm ucam-inbox__voltar" type="button">' +
+        '<svg class="ic" aria-hidden="true"><use href="#i-arrowLeft"/></svg> Voltar à lista</button></p>');
+    });
+  }
+
+  /** O que fica grudado no alto e cobriria o começo do detalhe. */
+  function topoGrudado() {
+    var soma = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-appbar, .ucam-mobilebar, .ucam-viewbar'), function (el) {
+      if (getComputedStyle(el).position === 'sticky') soma += el.getBoundingClientRect().height;
+    });
+    return soma;
+  }
+
+  function abre(inbox) {
+    garanteVoltar(inbox);
+    inbox.setAttribute('data-painel', 'detalhe');
+    var y = inbox.getBoundingClientRect().top + window.scrollY - topoGrudado();
+    window.scrollTo({ top: Math.max(0, y) });
+    var detalhe = inbox.querySelector('.ucam-inbox__detalhe:not([hidden])');
+    var voltar = detalhe && detalhe.querySelector('.ucam-inbox__voltar');
+    if (voltar) voltar.focus({ preventScroll: true });
+  }
+
+  function fecha(inbox) {
+    inbox.removeAttribute('data-painel');
+    var atual = inbox.querySelector('.ucam-list-item__alvo[aria-pressed="true"]');
+    if (atual) atual.focus({ preventScroll: true });
+  }
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest) return;
+    var alvo = e.target.closest('.ucam-inbox .ucam-list-item__alvo');
+    if (alvo) {
+      escolhe(alvo);
+      if (ESTREITO.matches) abre(alvo.closest('.ucam-inbox'));
+      return;
+    }
+    var voltar = e.target.closest('.ucam-inbox__voltar');
+    if (voltar) fecha(voltar.closest('.ucam-inbox'));
+  });
+
+  // Alargou a janela com o detalhe aberto: os dois painéis voltam a conviver.
+  var aoMudar = function (m) {
+    if (m.matches) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-inbox[data-painel]'), function (i) { i.removeAttribute('data-painel'); });
+  };
+  if (ESTREITO.addEventListener) ESTREITO.addEventListener('change', aoMudar); else ESTREITO.addListener(aoMudar);
+})();
+`.trim();
+
 export const menuContaScript = `
 (function () {
   // Um seletor para os TRÊS gatilhos de popover do shell: a conta, o lançador

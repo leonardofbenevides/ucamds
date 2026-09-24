@@ -9936,6 +9936,51 @@ ${abaixo('nav-fixa')} {
   .ucam-inbox__lista { max-block-size: 24rem; }
 }
 
+/* NO CELULAR, UM PAINEL DE CADA VEZ (24/09/2026).
+ *
+ * Empilhados, a lista presa a 24rem cortava o quarto item numa rolagem interna
+ * dentro da rolagem da página, e o detalhe ficava abaixo de tudo. Abaixo de
+ * controle-deitado a lista toma a página, sem teto e sem rolo próprio, e o
+ * detalhe só aparece quando um item é escolhido — no LUGAR da lista, com
+ * "Voltar à lista" no alto (inboxScript em lib/shell.mjs põe o botão e troca
+ * o data-painel). O botão de voltar não existe fora desta faixa. */
+.ucam-inbox__voltar-linha { display: none; }
+
+${abaixo('controle-deitado')} {
+  .ucam-inbox {
+    display: block;
+    block-size: auto;
+    min-block-size: 0;
+  }
+  .ucam-inbox__lista,
+  .ucam-inbox__rolagem,
+  .ucam-inbox__detalhe,
+  .ucam-inbox__detalhe-corpo {
+    max-block-size: none;
+    overflow: visible;
+    flex: none;
+  }
+  .ucam-inbox__detalhe { display: none; }
+  .ucam-inbox[data-painel="detalhe"] > .ucam-inbox__lista { display: none; }
+  .ucam-inbox[data-painel="detalhe"] > .ucam-inbox__detalhe:not([hidden]) { display: flex; }
+  .ucam-inbox__voltar-linha {
+    display: block;
+    margin: 0;
+    padding: var(--ucam-space-inline-sm) var(--ucam-space-inset-sm);
+    border-block-end: 1px solid var(--ucam-color-border-subtle);
+    /* Gruda logo abaixo da faixa: o detalhe é longo e o caminho de volta
+     * não pode ficar duas telas acima. */
+    position: sticky;
+    inset-block-start: var(--ucam-appbar-height);
+    z-index: var(--ucam-z-sticky);
+    background: var(--ucam-color-surface-default);
+  }
+  /* NO TELEFONE A BARRA NÃO GRUDA. Faixa (4.5rem) mais barra de três fileiras
+   * (11.7rem) grudadas levariam 40% de uma tela de 667px; as abas e os
+   * filtros rolam com a página e o conteúdo fica com a tela. */
+  .ucam-main .ucam-viewbar { position: static; }
+}
+
 /* ---------------------------------------------------------------- dica --- */
 /* Contrato: tooltip.json. O balão é o MESMO nos dois trilhos: no Trilho B ele
  * é criado pela diretiva ucamTooltip dentro do contêiner de overlay do CDK, no
@@ -10722,6 +10767,21 @@ ${abaixo('controle-deitado')} {
 ${abaixo('nav-fixa')} {
   .ucam-viewbar__fileira { flex-wrap: wrap; row-gap: var(--ucam-viewbar-vao-linha, var(--ucam-space-inline-sm)); }
   .ucam-viewbar__folga { display: none; }
+  /* Abaixo de nav-fixa quem rola é a PÁGINA, não o painel, e a faixa também
+   * gruda no alto com z maior: a barra grudada em 0 ia por baixo dela e a
+   * primeira fileira (as abas) sumia assim que a página rolava — medido a
+   * 375px em 24/09/2026, scrollY 72 e as abas atrás da faixa. Ela gruda
+   * logo abaixo do que já está grudado. */
+  .ucam-appbar ~ .ucam-main .ucam-viewbar { inset-block-start: var(--ucam-appbar-height); }
+  .ucam-mobilebar ~ .ucam-main .ucam-viewbar { inset-block-start: 3.5rem; }
+  /* E para grudar de verdade: overflow: hidden faz do painel um contêiner
+   * de rolagem (que não rola), e sticky gruda em relação a ELE — nunca à
+   * janela. Medido a 768px: barra "sticky" a −156px com a página rolada
+   * 300. clip recorta o mesmo estouro horizontal sem virar contêiner. */
+  .ucam-main { overflow: clip; }
+  /* O corpo também: .ucam-corpo--pleno recorta com hidden e é ele quem
+   * segurava o Voltar à lista da caixa de entrada no telefone. */
+  .ucam-main .ucam-corpo { overflow: clip; }
   /* RESPIRO NO FIM DA BARRA. As fileiras centram o conteúdo em 44px e, com
    * um controle que mede os 44 inteiros (segmented, botão sob toque), o
    * controle assentava em cima do fio que fecha a barra — e em cima do fio
@@ -11020,6 +11080,11 @@ ${acima('respiro-completo')} {
  * lado da senha, tirados da mesma lista que o lançador da moldura monta. Não é
  * depoimento de usuário: um design system que fabrica elogio de gente que não
  * existe ensina a fabricar. */
+${abaixo('controle-deitado')} {
+  .ucam-login__apoio { flex-direction: column; align-items: flex-start; gap: var(--ucam-space-inline-xs); }
+  .ucam-login__apoio > [aria-hidden] { display: none; }
+}
+
 .ucam-login__institucional {
   display: none;
   background: var(--ucam-color-surface-brand);
@@ -11030,6 +11095,14 @@ ${acima('respiro-completo')} {
   --ucam-login-recuo: 2.5rem;
   padding: var(--ucam-login-recuo);
   min-inline-size: 0;
+  /* PAINEL RECUADO (24/09/2026, referência de login em duas colunas): a
+   * coluna deixa de sangrar até a borda e vira um bloco com raio dentro da
+   * moldura branca — o mesmo ar que o formulário tem à esquerda. Quem
+   * recorta a janela que sangra pela direita passa a ser este raio. */
+  margin: var(--ucam-space-inset-md) var(--ucam-space-inset-md) var(--ucam-space-inset-md) 0;
+  border-radius: var(--ucam-radius-surface);
+  overflow: hidden;
+  position: relative;
 }
 
 ${acima('nav-fixa')} {
@@ -11046,11 +11119,81 @@ ${acima('nav-fixa')} {
      * centrado na dele: as duas fileiras de 1fr em volta dividem a sobra por
      * igual. A legenda de campi que ocupava uma quinta fileira saiu em
      * 13/09/2026 — era texto solto numa tela de dois campos. */
-    grid-template-rows: 1fr auto auto 1fr;
+    grid-template-rows: 1fr auto auto 1fr auto;
     gap: 0;
   }
   .ucam-login__discurso { grid-row: 2; }
-  .ucam-login__janela { grid-row: 3; margin-block-start: var(--ucam-space-stack-lg); }
+  .ucam-login__figura { grid-row: 3; margin-block-start: var(--ucam-space-stack-lg); }
+  /* A fila dos sistemas fica no pé, como a fila de marcas da referência:
+   * o que o acesso abre, em ladrilhos monocromáticos sobre o bordô. */
+  .ucam-login__sistemas { grid-row: 5; }
+}
+
+/* A FIGURA: a janela e, por cima dela, um cartão que flutua — profundidade,
+ * como a referência faz com o cartão de login sobre o produto. Tudo
+ * decorativo (aria-hidden no bloco): o argumento está na frase. */
+.ucam-login__figura {
+  position: relative;
+  min-inline-size: 0;
+  /* A sobra embaixo é onde o cartão pendura. */
+  padding-block-end: var(--ucam-space-inset-lg);
+}
+
+.ucam-login__flutuante {
+  position: absolute;
+  inset-inline-start: calc(-1 * var(--ucam-space-inset-md));
+  inset-block-end: 0;
+  inline-size: 17rem;
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-md);
+  padding: var(--ucam-space-inset-sm) var(--ucam-space-inset-md);
+  background: var(--ucam-color-surface-default);
+  color: var(--ucam-color-text-primary);
+  border-radius: var(--ucam-radius-surface);
+  box-shadow: var(--ucam-elevation-overlay);
+}
+
+.ucam-login__flutuante-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-inline-size: 0;
+}
+
+.ucam-login__flutuante-titulo {
+  font-size: var(--ucam-typography-body-sm-font-size);
+  font-weight: var(--ucam-typography-action-font-weight);
+}
+
+.ucam-login__flutuante-apoio {
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+
+.ucam-login__sistemas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-inline-sm) var(--ucam-space-inset-lg);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ucam-login__sistema {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-sm);
+  font-size: var(--ucam-typography-caption-font-size);
+  font-weight: var(--ucam-typography-label-font-weight);
+  color: color-mix(in srgb, var(--ucam-color-text-on-brand) 82%, transparent);
+}
+
+/* Ladrilho monocromático sobre o bordô: a cor da categoria fica para a
+ * janela, onde ela é dado; aqui é uma fila de marcas. */
+.ucam-login__sistema .ucam-icon-tile {
+  background: color-mix(in srgb, var(--ucam-color-text-on-brand) 14%, transparent);
+  color: var(--ucam-color-text-on-brand);
 }
 
 /* O bloco do meio: a frase e o que ela promete, no eixo óptico da coluna. */
@@ -11072,6 +11215,17 @@ ${acima('nav-fixa')} {
   font-weight: var(--ucam-typography-page-title-font-weight);
   line-height: var(--ucam-typography-page-title-line-height);
   letter-spacing: -0.02em;
+}
+
+/* A linha de apoio da frase: uma só, no tom rebaixado do texto sobre marca.
+ * É o "Enter your credentials" da referência — diz o que fazer, e não repete
+ * o que a frase já afirma. */
+.ucam-login__subfrase {
+  margin: 0;
+  max-inline-size: 44ch;
+  font-size: var(--ucam-typography-body-font-size);
+  line-height: var(--ucam-typography-body-line-height);
+  color: color-mix(in srgb, var(--ucam-color-text-on-brand) 82%, transparent);
 }
 
 /* A frase de apoio e a linha de campi saíram em 13/09/2026: a janela abaixo
