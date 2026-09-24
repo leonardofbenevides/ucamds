@@ -889,6 +889,11 @@
               "icone": "graduationCap"
             },
             {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao"
+            },
+            {
               "rotulo": "Financeiro",
               "icone": "wallet",
               "projeto": "sigfin"
@@ -1379,6 +1384,11 @@
               "icone": "graduationCap"
             },
             {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao"
+            },
+            {
               "rotulo": "Financeiro",
               "icone": "wallet",
               "projeto": "sigfin"
@@ -1695,6 +1705,11 @@
             {
               "rotulo": "Acadêmico",
               "icone": "graduationCap"
+            },
+            {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao"
             },
             {
               "rotulo": "Financeiro",
@@ -2129,6 +2144,11 @@
             {
               "rotulo": "Acadêmico",
               "icone": "graduationCap"
+            },
+            {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao"
             },
             {
               "rotulo": "Financeiro",
@@ -2772,6 +2792,11 @@
               "icone": "graduationCap"
             },
             {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao"
+            },
+            {
               "rotulo": "Financeiro",
               "icone": "wallet",
               "projeto": "sigfin"
@@ -2889,6 +2914,99 @@
           }
         ]
       }
+    },
+    {
+      "id": "isencao",
+      "nome": "Isenção de disciplinas",
+      "icone": "clipboardCheck",
+      "categoria": "academico",
+      "descricao": "Análise de isenção de disciplinas para quem entra com histórico de outra instituição: a fila da coordenação, a análise por disciplina com a sugestão automatizada e o acompanhamento do candidato. Chegou ao design system em 24/09/2026 como protótipo HTML autônomo (isencao-v2-prototipo.html), com dados fictícios e sem backend; a spec de design está em docs/superpowers/specs/2026-09-24-isencao-design.md.",
+      "stack_atual": "Protótipo HTML autônomo (Source Sans 3, tokens próprios, toast como único feedback), sem @ucam/ui nem @ucam/css",
+      "shell": {
+        "sistema": "Isenção",
+        "campus": "Rio de Janeiro",
+        "usuario": "Leonardo F. Benevides",
+        "nav": [
+          {
+            "titulo": "Trabalho",
+            "itens": [
+              {
+                "id": "fila",
+                "rotulo": "Fila de análise",
+                "icone": "inbox",
+                "contagem": 8
+              },
+              {
+                "id": "concluidas",
+                "rotulo": "Concluídas",
+                "icone": "circleCheck"
+              }
+            ]
+          },
+          {
+            "titulo": "Cadastros",
+            "itens": [
+              {
+                "id": "matrizes",
+                "rotulo": "Matrizes curriculares",
+                "icone": "bookOpen"
+              },
+              {
+                "id": "cursos",
+                "rotulo": "Cursos",
+                "icone": "graduationCap"
+              }
+            ]
+          }
+        ],
+        "busca": "Buscar candidato, inscrição ou curso",
+        "buscaAtalho": "/",
+        "rail": {
+          "icone": "clipboardCheck",
+          "itens": [
+            {
+              "rotulo": "Meus sistemas",
+              "icone": "layoutGrid",
+              "projeto": "portal"
+            },
+            {
+              "rotulo": "Protocolo",
+              "icone": "clipboardList",
+              "projeto": "protocolo"
+            },
+            {
+              "rotulo": "Acadêmico",
+              "icone": "graduationCap"
+            },
+            {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao",
+              "ativo": true
+            },
+            {
+              "rotulo": "Financeiro",
+              "icone": "wallet",
+              "projeto": "sigfin"
+            },
+            {
+              "rotulo": "Relatórios",
+              "icone": "chartColumn",
+              "projeto": "relatorios"
+            },
+            {
+              "rotulo": "Gerencial",
+              "icone": "lock",
+              "projeto": "gerencial"
+            },
+            {
+              "rotulo": "Arquivo permanente",
+              "icone": "archive"
+            }
+          ]
+        }
+      },
+      "templates": []
     }
   ]
 }
