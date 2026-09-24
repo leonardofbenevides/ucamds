@@ -10,6 +10,8 @@ import { LooseBlockComponent } from '../../docs/loose-block.component';
 import { DemoVivaComponent, TEM_DEMO_VIVA } from '../../docs/demo-viva.component';
 import { DemoPainelComponent } from '../../docs/demo-painel.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { AnatomiaDiagramaComponent } from '../../docs/anatomia-diagrama.component';
+import { EstadosGradeComponent } from '../../docs/estados-grade.component';
 
 @Component({
   selector: 'ucam-componente',
@@ -22,6 +24,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     DemoVivaComponent,
     DemoPainelComponent,
     NestaPaginaComponent,
+    AnatomiaDiagramaComponent,
+    EstadosGradeComponent,
   ],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +46,34 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <span>desde {{ c.since }}</span>
           }
         </p>
+        @if (c.trilhos?.length) {
+          <!-- ONDE ESTE COMPONENTE EXISTE, numa linha só (23/09/2026).
+               Em quais dos três trilhos ele existe é a primeira pergunta de
+               quem chega — uma tela do SIGU em JSF não pode consumir o que só
+               existe em @ucam/ui. A resposta era uma matriz de três colunas,
+               com o meio de cada trilho e as classes do Trilho A em código,
+               e lia como três cartões de decisão no topo de toda página
+               ("esse negócio de trilho é confuso"). Agora é uma frase: o
+               rótulo "Disponível em" e três chips, cada um com o nome do
+               trilho e o que ele é. O sinal de ausente é UM: o chip desce
+               para a tinta secundária e o check vira traço (ADR-022). As
+               classes do Trilho A não entram aqui — a anatomia, mais abaixo,
+               já diz qual classe é cada parte. -->
+          <p class="disponivel">
+            <span class="disponivel-rotulo">Disponível em</span>
+            @for (t of c.trilhos; track t.id) {
+              <span class="chip-trilho" [class.ausente]="!t.disponivel">
+                <svg class="ic" aria-hidden="true">
+                  <use [attr.href]="t.disponivel ? '#i-check' : '#i-minus'" />
+                </svg>
+                <span class="chip-trilho__nome">{{ t.rotulo }}</span>
+                <span class="sr-only">{{ t.disponivel ? 'disponível' : 'indisponível' }}</span>
+                <span class="chip-trilho__meio">{{ t.meio }}</span>
+              </span>
+            }
+            <a class="disponivel-ajuda" routerLink="/comecar/migrar" fragment="trilho">O que é cada trilho</a>
+          </p>
+        }
       </ucam-page-header>
 
       <!-- O índice desta página virou o componente compartilhado: era o único
@@ -53,6 +85,11 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       <ucam-nesta-pagina [secoes]="indice()" />
 
       <div class="prose">
+        <div class="area" id="area-ver">
+          <p class="area-nome">Ver</p>
+          <p class="area-nota">O componente rodando, e cada aparência que ele tem.</p>
+        </div>
+
         <!-- O exemplo abre a página, sempre. Quem chega aqui quer ver o
              componente antes de ler sobre ele; a prosa vem depois.
 
@@ -81,6 +118,79 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <p class="small muted nota">{{ c.demo?.$nota }}</p>
           }
         </section>
+
+
+        <!-- O Trilho A não é rascunho do Trilho B: é o que o parque legado
+             carrega hoje, CSS puro, sem framework. Continua na página porque é
+             entregável — mas com nome, e com o limite dito na cara. -->
+        @if (temDemoViva() && c.demo?.principal) {
+          <section id="trilho-a">
+            <h2>O mesmo componente em CSS puro</h2>
+            <p>
+              O Trilho A é o que uma tela AngularJS ou Angular 14 do parque consegue carregar hoje:
+              uma folha de estilo e mais nada. Mesma marca, mesmos tokens, sem JavaScript.
+            </p>
+            <ucam-demo-painel [painel]="c.demo!.principal!" />
+            @if (temListaNativa()) {
+              <div class="callout callout-limit">
+                <p>
+                  <strong>A lista aberta aqui é a do sistema operacional.</strong> Sem JavaScript o
+                  controle é um <code>&lt;select&gt;</code> nativo, e navegador nenhum permite
+                  estilizar a lista que ele abre — só o campo fechado. Em tela nova use o componente
+                  de cima, que resolve isso com um painel próprio (ADR-011).
+                </p>
+              </div>
+            }
+          </section>
+        }
+
+
+        @if (c.demo?.exemplos?.length) {
+          <section id="variacoes">
+            <h2>Variações</h2>
+            @for (e of c.demo?.exemplos; track e.titulo ?? $index) {
+              <ucam-demo-painel [painel]="e" />
+            }
+          </section>
+        }
+
+
+        <!-- Aparência antes da API, não dentro dela. O contrato já diz, por
+             valor de enum, PARA QUE serve cada variante e qual o limite de
+             uso; isso é orientação de design e vinha espremido em cartões
+             dentro da tabela de props. Aqui cada valor ganha o espaço de uma
+             subseção, com âncora própria no índice. -->
+        @for (p of propsComValores(); track p.nome) {
+          <section [id]="'variantes-' + p.nome">
+            <h2>
+              Aparência <span class="por">por <code>{{ p.nome }}</code></span>
+            </h2>
+            @for (v of p.valores | keyvalue; track v.key) {
+              <article class="variante" [id]="'v-' + p.nome + '-' + v.key">
+                <h3><code>{{ v.key }}</code></h3>
+                <p>{{ v.value.uso }}</p>
+
+                @if (v.value.limite) {
+                  <p class="limite"><strong class="k">Limite.</strong> {{ v.value.limite }}</p>
+                }
+
+                @if (v.value.tokens) {
+                  <p class="small muted tokens">
+                    @for (t of v.value.tokens | keyvalue; track t.key) {
+                      <span class="par"><strong>{{ t.key }}</strong> <code>{{ t.value }}</code></span>
+                    }
+                  </p>
+                }
+              </article>
+            }
+          </section>
+        }
+
+
+        <div class="area" id="area-decidir">
+          <p class="area-nome">Decidir</p>
+          <p class="area-nota">Se é este o componente, e como usá-lo sem errar.</p>
+        </div>
 
         <!-- QUANDO USAR e QUANDO NÃO USAR, juntos e ANTES de props e anatomia.
              O contrato só tinha a segunda metade: nasceu como resposta a uso
@@ -116,36 +226,91 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                     <svg class="ic" aria-hidden="true"><use href="#i-circleAlert" /></svg>
                     Não use quando
                   </p>
-                  <ucam-loose-block [bloco]="c.limites" [semRotulo]="['regras', 'regra']" />
+                  <ucam-loose-block
+                    [bloco]="c.limites"
+                    [semRotulo]="['regras', 'regra']"
+                    [exceto]="['motivo']"
+                  />
                 </div>
+              }
+            </div>
+            <!-- O porquê sai do par e vira prosa: dentro da caixa ele
+                 desequilibrava o do/don't e se lia como se fosse mais uma
+                 regra a consultar. -->
+            @if (motivoDoLimite(); as motivo) {
+              <p class="quando-motivo"><strong class="k">Por quê.</strong> {{ motivo }}</p>
+            }
+          </section>
+        }
+
+
+        @if (c.boas_praticas; as praticas) {
+          <section id="boas-praticas">
+            <h2>Boas práticas</h2>
+            <p class="small muted">
+              O que fazer e o que evitar em cada situação, com o motivo. É o que se cobra em
+              revisão de código.
+            </p>
+            <ul class="praticas">
+              @for (p of praticas; track p.faca) {
+                <li>
+                  <p class="lado faca"><span class="rotulo">Faça</span> {{ p.faca }}</p>
+                  <p class="lado evite"><span class="rotulo">Evite</span> {{ p.evite }}</p>
+                  @if (p.porque) {
+                    <p class="porque small muted">{{ p.porque }}</p>
+                  }
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+
+        @if (c.vs; as vizinhos) {
+          <section id="vs">
+            <h2>Qual dos dois eu uso?</h2>
+            <p class="small muted">
+              Componentes próximos a este, e o critério para escolher entre eles.
+            </p>
+            <ul class="vs-lista">
+              @for (v of vizinhos; track v.componente) {
+                <li>
+                  <a class="vs-alvo" [routerLink]="['/catalogo', v.componente]">
+                    {{ v.componente }}
+                  </a>
+                  <p class="vs-diferenca">{{ v.diferenca }}</p>
+                  @if (v.escolha) {
+                    <p class="vs-escolha small muted">{{ v.escolha }}</p>
+                  }
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+
+        @if (decisoes().length) {
+          <section id="decisoes">
+            <h2>Decisões que governam este componente</h2>
+            <div class="grade-cartoes">
+              @for (a of decisoes(); track a.slug) {
+                <a class="card cartao-adr plain" [routerLink]="'/decisoes/' + a.slug">
+                  <span class="ucam-icon-tile" aria-hidden="true">
+                    <svg class="ic"><use href="#i-scrollText" /></svg>
+                  </span>
+                  <code class="adr-id">{{ a.id }}</code>
+                  <span class="adr-titulo">{{ a.titulo }}</span>
+                </a>
               }
             </div>
           </section>
         }
 
-        <!-- O Trilho A não é rascunho do Trilho B: é o que o parque legado
-             carrega hoje, CSS puro, sem framework. Continua na página porque é
-             entregável — mas com nome, e com o limite dito na cara. -->
-        @if (temDemoViva() && c.demo?.principal) {
-          <section id="trilho-a">
-            <h2>O mesmo componente em CSS puro</h2>
-            <p>
-              O Trilho A é o que uma tela AngularJS ou Angular 14 do parque consegue carregar hoje:
-              uma folha de estilo e mais nada. Mesma marca, mesmos tokens, sem JavaScript.
-            </p>
-            <ucam-demo-painel [painel]="c.demo!.principal!" />
-            @if (temListaNativa()) {
-              <div class="callout callout-limit">
-                <p>
-                  <strong>A lista aberta aqui é a do sistema operacional.</strong> Sem JavaScript o
-                  controle é um <code>&lt;select&gt;</code> nativo, e navegador nenhum permite
-                  estilizar a lista que ele abre — só o campo fechado. Em tela nova use o componente
-                  de cima, que resolve isso com um painel próprio (ADR-011).
-                </p>
-              </div>
-            }
-          </section>
-        }
+
+        <div class="area" id="area-construir">
+          <p class="area-nome">Construir</p>
+          <p class="area-nota">Instalar, ligar as props, compor com os vizinhos.</p>
+        </div>
 
         @if (c.demo?.instalacao) {
           <section id="instalacao">
@@ -161,45 +326,6 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           </section>
         }
 
-        @if (c.demo?.exemplos?.length) {
-          <section id="variacoes">
-            <h2>Variações</h2>
-            @for (e of c.demo?.exemplos; track e.titulo ?? $index) {
-              <ucam-demo-painel [painel]="e" />
-            }
-          </section>
-        }
-
-        <!-- Aparência antes da API, não dentro dela. O contrato já diz, por
-             valor de enum, PARA QUE serve cada variante e qual o limite de
-             uso; isso é orientação de design e vinha espremido em cartões
-             dentro da tabela de props. Aqui cada valor ganha o espaço de uma
-             subseção, com âncora própria no índice. -->
-        @for (p of propsComValores(); track p.nome) {
-          <section [id]="'variantes-' + p.nome">
-            <h2>
-              Aparência <span class="por">por <code>{{ p.nome }}</code></span>
-            </h2>
-            @for (v of p.valores | keyvalue; track v.key) {
-              <article class="variante" [id]="'v-' + p.nome + '-' + v.key">
-                <h3><code>{{ v.key }}</code></h3>
-                <p>{{ v.value.uso }}</p>
-
-                @if (v.value.limite) {
-                  <p class="limite"><strong class="k">Limite.</strong> {{ v.value.limite }}</p>
-                }
-
-                @if (v.value.tokens) {
-                  <p class="small muted tokens">
-                    @for (t of v.value.tokens | keyvalue; track t.key) {
-                      <span class="par"><strong>{{ t.key }}</strong> <code>{{ t.value }}</code></span>
-                    }
-                  </p>
-                }
-              </article>
-            }
-          </section>
-        }
 
         <section id="props">
           <h2>Props</h2>
@@ -234,36 +360,78 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
         </section>
 
+
+        <section id="uso">
+          <h2>Uso em código</h2>
+          @for (e of c.exemplos; track e.titulo) {
+            <h4>{{ e.titulo }}</h4>
+            <pre class="code"><code>{{ e.codigo }}</code></pre>
+          }
+        </section>
+
+
+        <section id="composicao">
+          <h2>Composição</h2>
+          @if (c.composicao?.$descricao) {
+            <p>{{ c.composicao?.$descricao }}</p>
+          }
+          @if (c.composicao?.usa?.length) {
+            <h4>Usa</h4>
+            <div class="chips">
+              @for (u of c.composicao?.usa; track u) {
+                <span class="chip">{{ u }}</span>
+              }
+            </div>
+          }
+          @if (dependentes().length) {
+            <h4>Quem quebra se este mudar</h4>
+            <div class="chips">
+              @for (d of dependentes(); track d.id) {
+                <a class="chip" [routerLink]="'/catalogo/' + d.id">{{ d.name }}</a>
+              }
+            </div>
+          } @else {
+            <p class="small muted">Nenhum contrato declara depender deste.</p>
+          }
+        </section>
+
+
+        <div class="area" id="area-garantir">
+          <p class="area-nome">Garantir</p>
+          <p class="area-nota">As partes, o teclado, o texto e o caminho do legado.</p>
+        </div>
+
         <section id="anatomia">
           <h2>Anatomia</h2>
-          <div class="scroller">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Parte</th>
-                  <th scope="col">Obrigatória</th>
-                  <th scope="col">Descrição</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (a of c.anatomia; track a.parte) {
-                  <tr>
-                    <td><code>{{ a.parte }}</code></td>
-                    <td>{{ a.obrigatorio ? 'sim' : 'não' }}</td>
-                    <td>{{ a.descricao }}</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
+          <!-- DESENHO, não tabela de três colunas.
+               O contrato já diz qual classe do Trilho A é cada parte; o
+               diagrama mede onde essa classe caiu no preview e põe a chamada
+               ali. Ver anatomia-diagrama.component.ts para o porquê e para
+               como ele degrada quando a parte não declara classe. -->
+          <ucam-anatomia-diagrama
+            [partes]="c.anatomia"
+            [preview]="c.demo?.principal?.preview ?? ''"
+          />
 
           <h3>Estados</h3>
-          <div class="chips">
-            @for (e of c.estados; track e) {
-              <span class="chip">{{ e }}</span>
-            }
-          </div>
+          <!-- A MATRIZ, não a lista de nomes.
+               Eram chips com as palavras "hover", "active", "disabled" — a
+               pergunta repetida em vez de respondida. Ver a nota em
+               estados-grade.component.ts para como o palco liga um estado que
+               o CSS só entrega por pseudo-classe. -->
+          <ucam-estados-grade
+            [estados]="c.estados"
+            [preview]="c.demo?.principal?.preview ?? ''"
+          />
+          @if (!c.demo?.principal?.preview) {
+            <div class="chips">
+              @for (e of c.estados; track e) {
+                <span class="chip">{{ e }}</span>
+              }
+            </div>
+          }
         </section>
+
 
         <section id="acessibilidade">
           <h2>Acessibilidade</h2>
@@ -312,48 +480,6 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           </div>
         </section>
 
-        @if (c.boas_praticas; as praticas) {
-          <section id="boas-praticas">
-            <h2>Boas práticas</h2>
-            <p class="small muted">
-              O que fazer e o que evitar em cada situação, com o motivo. É o que se cobra em
-              revisão de código.
-            </p>
-            <ul class="praticas">
-              @for (p of praticas; track p.faca) {
-                <li>
-                  <p class="lado faca"><span class="rotulo">Faça</span> {{ p.faca }}</p>
-                  <p class="lado evite"><span class="rotulo">Evite</span> {{ p.evite }}</p>
-                  @if (p.porque) {
-                    <p class="porque small muted">{{ p.porque }}</p>
-                  }
-                </li>
-              }
-            </ul>
-          </section>
-        }
-
-        @if (c.vs; as vizinhos) {
-          <section id="vs">
-            <h2>Qual dos dois eu uso?</h2>
-            <p class="small muted">
-              Componentes próximos a este, e o critério para escolher entre eles.
-            </p>
-            <ul class="vs-lista">
-              @for (v of vizinhos; track v.componente) {
-                <li>
-                  <a class="vs-alvo" [routerLink]="['/catalogo', v.componente]">
-                    {{ v.componente }}
-                  </a>
-                  <p class="vs-diferenca">{{ v.diferenca }}</p>
-                  @if (v.escolha) {
-                    <p class="vs-escolha small muted">{{ v.escolha }}</p>
-                  }
-                </li>
-              }
-            </ul>
-          </section>
-        }
 
         @if (c.conteudo) {
           <section id="conteudo">
@@ -361,6 +487,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <ucam-loose-block [bloco]="c.conteudo" />
           </section>
         }
+
 
         <!-- As seções de extensão eram as únicas sem id da página: ficavam
              fora do índice e sem endereço para linkar. O id sai do mesmo campo
@@ -372,55 +499,6 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           </section>
         }
 
-        <section id="uso">
-          <h2>Uso em código</h2>
-          @for (e of c.exemplos; track e.titulo) {
-            <h4>{{ e.titulo }}</h4>
-            <pre class="code"><code>{{ e.codigo }}</code></pre>
-          }
-        </section>
-
-        <section id="composicao">
-          <h2>Composição</h2>
-          @if (c.composicao?.$descricao) {
-            <p>{{ c.composicao?.$descricao }}</p>
-          }
-          @if (c.composicao?.usa?.length) {
-            <h4>Usa</h4>
-            <div class="chips">
-              @for (u of c.composicao?.usa; track u) {
-                <span class="chip">{{ u }}</span>
-              }
-            </div>
-          }
-          @if (dependentes().length) {
-            <h4>Quem quebra se este mudar</h4>
-            <div class="chips">
-              @for (d of dependentes(); track d.id) {
-                <a class="chip" [routerLink]="'/catalogo/' + d.id">{{ d.name }}</a>
-              }
-            </div>
-          } @else {
-            <p class="small muted">Nenhum contrato declara depender deste.</p>
-          }
-        </section>
-
-        @if (decisoes().length) {
-          <section id="decisoes">
-            <h2>Decisões que governam este componente</h2>
-            <div class="grade-cartoes">
-              @for (a of decisoes(); track a.slug) {
-                <a class="card cartao-adr plain" [routerLink]="'/decisoes/' + a.slug">
-                  <span class="ucam-icon-tile" aria-hidden="true">
-                    <svg class="ic"><use href="#i-scrollText" /></svg>
-                  </span>
-                  <code class="adr-id">{{ a.id }}</code>
-                  <span class="adr-titulo">{{ a.titulo }}</span>
-                </a>
-              }
-            </div>
-          </section>
-        }
 
         <!-- Evidência e migração ficam recolhidas no rodapé de propósito.
              São o histórico de como o componente nasceu e o caminho de saída
@@ -526,9 +604,14 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       border-block-start: 0;
       padding-block-start: 0.25rem;
     }
+    /* Cada variante tem âncora própria no índice lateral — é subseção de
+       navegação, e por isso entra no degrau de 17px, não no corpo de 16 em
+       que estava. */
     .variante h3 {
       margin: 0 0 0.4rem;
-      font-size: 1rem;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.012em;
     }
     .variante h3 code {
       font-size: 0.9em;
@@ -580,6 +663,99 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       margin: 0.85rem 0 0;
     }
 
+    /* Grade e não flex-wrap: em 750px os três itens somam mais que a linha e
+       o flex quebrava 2 + 1, com o terceiro trilho pendurado sozinho. Numa
+       grade eles caem em colunas alinhadas e quebram todos juntos. */
+    /* ------------------------------------------------------------ áreas ---
+
+       As dezesseis seções desta página vinham numa fileira só, separadas por
+       4,5rem IGUAIS — doze mil pixels de rolagem sem um degrau de hierarquia,
+       e um índice de dezoito entradas como único mapa. O agrupamento é o que
+       Spectrum faz com os seus H2 fixos por componente: quem chega para ESCOLHER
+       lê Decidir, quem já escolheu vai para Construir.
+
+       Aqui elas ficam TODAS na página, em quatro áreas. Não é aba: nada some,
+       nenhuma âncora mudou de destino e o prerender continua entregando o texto
+       inteiro no primeiro HTML. A lição do segundo andar de abas continua valendo
+       — alcance não é presença. */
+    .area {
+      margin-block: 5.5rem 0;
+      padding-block-end: 0.75rem;
+      border-block-end: 2px solid var(--ucam-color-border-default);
+    }
+    /* A primeira área abre logo abaixo do cabeçalho, que já trouxe o filete. */
+    .prose > .area:first-child {
+      margin-block-start: 0;
+    }
+    .area-nome {
+      margin: 0;
+      font-family: var(--f-display);
+      font-size: 1.75rem;
+      font-weight: 650;
+      letter-spacing: -0.026em;
+      line-height: 1.15;
+    }
+    .area-nota {
+      margin: 0.15rem 0 0;
+      font-size: 0.875rem;
+      color: var(--ucam-color-text-secondary);
+      max-inline-size: var(--measure);
+    }
+    /* A primeira seção de uma área encosta no divisor: o vão de 4,5rem separa
+       IRMÃS, e a primeira não tem irmã acima — tinha o divisor, que é mais
+       forte. Sem isto o título da área flutuava sozinho no meio do branco. */
+    .prose > .area + * {
+      margin-block-start: 2rem;
+    }
+    /* "Disponível em" + três chips numa fileira que quebra. O chip é contorno
+       de filete, sem fundo (nada de fundo cinza em chip: 09/09); o ausente
+       desce para a tinta secundária e não ganha borda de cor. */
+    .disponivel {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem 0.5rem;
+      margin: 0.9rem 0 0;
+      font-size: 0.8125rem;
+    }
+    .disponivel-rotulo {
+      color: var(--ucam-color-text-secondary);
+      margin-inline-end: 0.25rem;
+    }
+    .chip-trilho {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-block-size: 1.625rem;
+      padding: 0 0.6rem 0 0.45rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-full);
+      color: var(--ucam-color-text-primary);
+      white-space: nowrap;
+    }
+    .chip-trilho .ic {
+      inline-size: 0.875rem;
+      block-size: 0.875rem;
+      flex: none;
+      color: var(--ucam-color-feedback-success-border);
+    }
+    .chip-trilho__nome {
+      font-weight: 600;
+    }
+    .chip-trilho__meio {
+      color: var(--ucam-color-text-secondary);
+    }
+    .chip-trilho.ausente,
+    .chip-trilho.ausente .ic,
+    .chip-trilho.ausente .chip-trilho__nome {
+      color: var(--ucam-color-text-secondary);
+      font-weight: 500;
+    }
+    .disponivel-ajuda {
+      margin-inline-start: 0.25rem;
+      color: var(--ucam-color-text-secondary);
+      font-size: 0.75rem;
+    }
     .meta {
       display: flex;
       flex-wrap: wrap;
@@ -635,6 +811,13 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       border-radius: var(--r-superficie);
       background: var(--ucam-color-surface-default);
       overflow: hidden;
+    }
+    /* Largura de prosa, não a do grid: o motivo é texto corrido e segue a
+       régua de 68 caracteres do resto da página. O vão de topo é o mesmo
+       vão do par acima, para o parágrafo ler como parte do bloco. */
+    .quando-motivo {
+      max-inline-size: var(--measure);
+      margin-block: 1.25rem 0;
     }
     .quando-lado::before {
       content: '';
@@ -766,10 +949,13 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
        (WCAG 1.4.1). */
     .praticas .rotulo {
       flex: none;
-      min-inline-size: 2.6rem;
+      min-inline-size: 3rem;
       font-family: var(--f-mono);
-      font-size: 0.65rem;
-      line-height: 1.55rem;
+      /* 12px, não 0,65rem = 10,4px. Dez pixels e meio está abaixo do piso de
+         toda referência (Carbon, Polaris e Primer param em 12), e o valor não
+         era escolha: caía de um arredondamento. */
+      font-size: 0.75rem;
+      line-height: 1.5rem;
       letter-spacing: 0.04em;
       text-transform: uppercase;
       font-weight: 650;
@@ -869,6 +1055,18 @@ export default class ComponentePage {
   );
 
   /**
+   * O `motivo` de `limites`, quando existe e é prosa.
+   *
+   * Sai da caixa "Não use quando" e vira parágrafo sob o par — ver a nota em
+   * loose-block.component.ts. A checagem de tipo não é defensiva à toa: 28 dos
+   * 49 contratos têm a chave, e o schema não obriga que seja string.
+   */
+  protected readonly motivoDoLimite = computed(() => {
+    const m = (this.componente()?.limites as Record<string, unknown> | undefined)?.['motivo'];
+    return typeof m === 'string' && m.trim() ? m : null;
+  });
+
+  /**
    * O índice da página.
    *
    * Espelha, na ordem, as condições do template. Fica aqui e não numa varredura
@@ -881,19 +1079,19 @@ export default class ComponentePage {
     const c = this.componente();
     if (!c) return [];
 
-    const itens: Ancora[] = [{ id: 'exemplo', rotulo: 'Exemplo' }];
+    const itens: Ancora[] = [];
     const põe = (cond: unknown, id: string, rotulo: string, sub = false) => {
       if (cond) itens.push({ id, rotulo, sub });
     };
+    const area = (id: string, rotulo: string) => itens.push({ id: `area-${id}`, rotulo, grupo: true });
 
-    põe(c.quando_usar?.length || c.limites, 'quando', 'Quando usar');
-
+    // ---- Ver: o componente rodando, e cada aparência que ele tem.
+    area('ver', 'Ver');
+    itens.push({ id: 'exemplo', rotulo: 'Exemplo' });
     // Mesma condição do template, palavra por palavra: a seção do Trilho A só
     // existe quando há demo viva E preview, porque só aí ela distingue algo.
     põe(this.temDemoViva() && c.demo?.principal, 'trilho-a', 'Em CSS puro');
-    põe(c.demo?.instalacao, 'instalacao', 'Instalação');
     põe(c.demo?.exemplos?.length, 'variacoes', 'Variações');
-
     for (const p of this.propsComValores()) {
       itens.push({ id: `variantes-${p.nome}`, rotulo: `Aparência por ${p.nome}` });
       for (const chave of Object.keys(p.valores ?? {})) {
@@ -901,17 +1099,26 @@ export default class ComponentePage {
       }
     }
 
-    itens.push({ id: 'props', rotulo: 'Props' });
-    itens.push({ id: 'anatomia', rotulo: 'Anatomia' });
-    itens.push({ id: 'acessibilidade', rotulo: 'Acessibilidade' });
-
+    // ---- Decidir: se é este o componente, e como usá-lo sem errar.
+    area('decidir', 'Decidir');
+    põe(c.quando_usar?.length || c.limites, 'quando', 'Quando usar');
     põe(c.boas_praticas, 'boas-praticas', 'Boas práticas');
     põe(c.vs, 'vs', 'Qual dos dois eu uso?');
-    põe(c.conteudo, 'conteudo', 'Conteúdo');
-    for (const ext of this.extensoes()) itens.push({ id: `ext-${ext.rotulo}`, rotulo: ext.rotulo });
+    põe(this.decisoes().length, 'decisoes', 'Decisões');
+
+    // ---- Construir: instalar, ligar as props, compor com os vizinhos.
+    area('construir', 'Construir');
+    põe(c.demo?.instalacao, 'instalacao', 'Instalação');
+    itens.push({ id: 'props', rotulo: 'Props' });
     itens.push({ id: 'uso', rotulo: 'Uso em código' });
     itens.push({ id: 'composicao', rotulo: 'Composição' });
-    põe(this.decisoes().length, 'decisoes', 'Decisões');
+
+    // ---- Garantir: as partes, o teclado, o texto e o caminho do legado.
+    area('garantir', 'Garantir');
+    itens.push({ id: 'anatomia', rotulo: 'Anatomia' });
+    itens.push({ id: 'acessibilidade', rotulo: 'Acessibilidade' });
+    põe(c.conteudo, 'conteudo', 'Conteúdo');
+    for (const ext of this.extensoes()) itens.push({ id: `ext-${ext.rotulo}`, rotulo: ext.rotulo });
     põe(c.evidencia, 'evidencia', 'Legado e migração');
 
     return itens;

@@ -1,4 +1,5 @@
 {
+  "$lede": "O conjunto oficial de ícones, sobre Lucide — a mesma base da ZardUI, sem segunda dependência.",
   "$description": "Conjunto oficial de ícones do Design System UCAM. Base: Lucide, via @ng-icons/lucide — a mesma que a ZardUI já usa, então não há segunda dependência.",
   "_meta": {
     "regra": "Só ícone deste conjunto. Precisar de um novo é PEDIDO ao design system, não escolha local — foi a ausência dessa regra que produziu no Portal o mesmo capelo identificando três módulos diferentes.",

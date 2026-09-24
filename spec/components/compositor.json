@@ -82,7 +82,7 @@
       "nome": "hint",
       "tipo": "string | null",
       "default": "null",
-      "descricao": "A dica da barra (parte dica), ligada ao campo por aria-describedby."
+      "descricao": "A dica da barra (parte dica), ligada ao campo por aria-describedby. Opcional e ausente por padrão: a demo e as telas não a usam."
     },
     {
       "nome": "submitLabel",
@@ -137,9 +137,8 @@
     "papel": "group",
     "requisitos": [
       "O campo tem etiqueta visível ligada por for/id — o placeholder não é etiqueta.",
-      "A dica é ligada ao campo por aria-describedby, para ser anunciada ao entrar nele e não depois de enviar.",
       "O anel de foco é da caixa (:focus-within) e vale 1.4.11; os botões da barra mantêm o anel deles, porque recebem o foco por conta própria.",
-      "Ctrl + Enter envia, e isso está escrito na dica: atalho não anunciado é atalho que só quem escreveu conhece.",
+      "Ctrl + Enter envia, como atalho. O botão de envio continua na barra e é o caminho anunciado: o atalho é comodidade de quem já conhece, nunca o único jeito. Se houver dica (parte opcional), ela é ligada ao campo por aria-describedby.",
       "Em busy o botão declara aria-busy e o envio em dobro não acontece.",
       "O resultado do envio é anunciado por quem recebe o item novo — a linha do tempo —, não pelo compositor."
     ],
@@ -153,13 +152,14 @@
   },
   "conteudo": {
     "regras": [
-      "A dica diz o efeito, não a mecânica: \"A resposta entra na atividade e não pode ser apagada\".",
+      "Sem dica por padrão (23/09/2026): a barra leva só o campo e os botões. A advertência de que a resposta é definitiva, quando existir, é da tela que confirma o envio, não do compositor.",
       "O botão nomeia o que sai: \"Enviar resposta\".",
       "O placeholder diz quem lê o texto."
     ],
     "exemplos": {
       "bom": [
-        "Ctrl + Enter envia. A resposta entra na atividade e não pode ser apagada."
+        "Enviar resposta",
+        "O aluno recebe este texto por e-mail e no portal."
       ],
       "ruim": [
         "Digite aqui...",
@@ -200,7 +200,7 @@
   "exemplos": [
     {
       "titulo": "Resposta ao requerente",
-      "codigo": "<ucam-compositor\n  label=\"Resposta ao requerente\"\n  placeholder=\"O aluno recebe este texto por e-mail e no portal.\"\n  hint=\"Ctrl + Enter envia. A resposta entra na atividade e não pode ser apagada.\"\n  submitLabel=\"Enviar resposta\"\n  [attach]=\"true\"\n  [(value)]=\"resposta\"\n  (enviar)=\"responder($event)\"\n/>"
+      "codigo": "<ucam-compositor\n  label=\"Resposta ao requerente\"\n  placeholder=\"O aluno recebe este texto por e-mail e no portal.\"\n  submitLabel=\"Enviar resposta\"\n  [attach]=\"true\"\n  [(value)]=\"resposta\"\n  (enviar)=\"responder($event)\"\n/>"
     },
     {
       "titulo": "Enviando",

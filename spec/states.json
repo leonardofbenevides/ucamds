@@ -1,4 +1,5 @@
 {
+  "$lede": "O que cada estado significa, qual vence quando dois se aplicam, e como o movimento acompanha a mudança.",
   "$description": "Modelo de estados do design system: o que cada estado significa, qual vence quando dois se aplicam, e como o movimento acompanha a mudança. Vale para todo componente interativo.",
   "_meta": {
     "origem": "A precedência veio da skill design-system (nextlevelbuilder/ui-ux-pro-max-skill). Era lacuna real: os contratos listavam estados sem dizer qual ganha quando coincidem.",

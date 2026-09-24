@@ -85,7 +85,7 @@
     {
       "parte": "description",
       "obrigatorio": false,
-      "descricao": "Uma frase explicando a tela, quando o título não basta.",
+      "descricao": "Uma frase explicando a tela, quando o título não basta. Matrícula ou protocolo citado na frase vai em .ucam-id (ADR-047).",
       "classe": "ucam-page-header__description"
     },
     {

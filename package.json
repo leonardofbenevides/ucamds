@@ -1,5 +1,5 @@
 {
-  "name": "dsucam",
+  "name": "ucamds",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -9,10 +9,10 @@
   },
   "description": "Design System da Universidade Candido Mendes",
   "scripts": {
-    "validate": "node tools/check-crases.mjs && node tools/validate-spec.mjs",
+    "validate": "node tools/check-crases.mjs && node tools/validate-spec.mjs && node tools/check-lede.mjs",
     "tokens": "node tools/build-tokens.mjs && node tools/check-daltonismo.mjs",
     "marca": "node tools/check-marca-vs-destrutivo.mjs",
-    "css": "node tools/build-css.mjs",
+    "css": "node tools/build-css.mjs && node tools/build-estados.mjs",
     "ui": "node tools/check-geometria.mjs && node tools/sync-ui.mjs",
     "site": "pnpm --dir site build",
     "legado": "node tools/build-docs.mjs",
@@ -25,6 +25,7 @@
     "fonts": "node tools/build-fonts.mjs",
     "elements": "pnpm --filter @ucam/elements build",
     "prova": "node elements/prova.mjs",
+    "acabamento": "node tools/check-acabamento.mjs",
     "lib": "pnpm --dir ui run build",
     "pacotes": "node tools/check-agentes.mjs && node tools/build-pacotes.mjs",
     "indice": "node tools/build-index.mjs",

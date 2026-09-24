@@ -14,14 +14,14 @@
     "Vários arquivos lado a lado, em que cada um precisa ser reconhecido pelo nome e pelo formato sem ser aberto."
   ],
   "evidencia": {
-    "origem": "APPSUCAM/Protocolo e as telas de referência do próprio DSUCAM",
+    "origem": "APPSUCAM/Protocolo e as telas de referência do próprio UCAMDS",
     "ocorrencias": [
       {
-        "tela": "Telas de referência do DSUCAM — Requerimento 2026-0311",
+        "tela": "Telas de referência do UCAMDS — Requerimento 2026-0311",
         "problema": "a solicitação do aluno termina com 'Anexei o comprovante da prova.' e a tela não mostra anexo nenhum: nem na citação, nem nos dados do requerimento, nem na atividade. Quem analisa uma revisão de nota não tem como abrir a prova que motiva o pedido."
       },
       {
-        "tela": "Telas de referência do DSUCAM — Novo requerimento",
+        "tela": "Telas de referência do UCAMDS — Novo requerimento",
         "problema": "a prévia lateral lista 'Anexos: —' como texto. Com arquivo escolhido, a prévia teria de repetir o nome em prosa, e o arquivo passaria a ter duas caras na mesma tela: a linha do campo e a frase da prévia."
       },
       {

@@ -90,7 +90,7 @@ export class UcamCompositor {
     this.value.set((e.target as HTMLTextAreaElement).value);
   }
 
-  /** Ctrl + Enter envia, e isso está escrito na dica — atalho calado não existe. */
+  /** Ctrl + Enter envia, como atalho; o botão da barra continua sendo o caminho anunciado. */
   protected tecla(e: KeyboardEvent): void {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();

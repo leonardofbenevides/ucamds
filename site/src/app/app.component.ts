@@ -18,7 +18,16 @@ import { ViewportScroller } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { filter, map } from 'rxjs';
 
-import { componentes, padroes, adrs, meta, layouts, telas, releases } from './spec/spec';
+import {
+  componentes,
+  padroes,
+  adrs,
+  meta,
+  layouts,
+  telas,
+  releases,
+  componentesPorCategoria,
+} from './spec/spec';
 import { SPRITE } from '../generated/sprite';
 import { ligarListbox, ligarMenuConta, ligarEstado, ligarDescricao, ligarLinhaDoTempo, ligarAbas } from '../generated/listbox';
 import { SearchComponent } from './shell/search.component';
@@ -37,6 +46,15 @@ interface ItemNav {
   estado?: string;
   /** Texto extra que o filtro considera além do rótulo. */
   busca?: string;
+  /**
+   * Rótulo da categoria a que o item pertence, para a lateral agrupar.
+   *
+   * Não vira item da lista: o cabeçalho é desenhado no template quando o
+   * grupo MUDA entre um item e o anterior. Assim o filtro continua operando
+   * só sobre itens, e um grupo cujos itens todos sumiram some junto — sem
+   * nenhuma lógica a mais para isso.
+   */
+  grupo?: string;
   /** Como o routerLinkActive decide se este item é o atual. Preenchido em
    *  secoesVisiveis(), porque a resposta depende dos IRMÃOS — ver ali.
    *
@@ -76,10 +94,9 @@ interface Secao {
   /** Se os itens aparecem. Só o grupo da aba aberta expande; os irmãos ficam
    *  no título. Com filtro digitado, todos expandem. */
   aberta?: boolean;
-  /** Estado majoritário do grupo, preenchido em tempo de render. */
-  estadoComum?: string;
-  /** Se a maioria é a totalidade — muda "18 draft" para "todos draft". */
-  estadoTodos?: boolean;
+  /** O estado do grupo dito uma vez no rótulo: "todos draft", "26 draft" ou
+   *  "26 draft · 23 review". Preenchido em tempo de render por comEstadoComum. */
+  estadoResumo?: string;
   itens: ItemNav[];
 }
 
@@ -149,7 +166,7 @@ const normaliza = (s: string) =>
         </svg>
       </button>
 
-      <!-- A assinatura: símbolo do DSUCAM, o nome, e a logo da universidade
+      <!-- A assinatura: símbolo do UCAMDS, o nome, e a logo da universidade
            como endosso depois do filete.
 
            Três objetos, e uma hierarquia que agora existe no CSS e não só
@@ -174,13 +191,13 @@ const normaliza = (s: string) =>
         <!-- aria-hidden no nome VISÍVEL, não só no filete e na logo. O link
              tem um nome acessível só, montado no .sr-only abaixo; sem o
              aria-hidden aqui o leitor de tela anunciava o nome duas vezes —
-             "DSUCAM Design System DSUCAM — Design System da Universidade
+             "UCAMDS Design System UCAMDS — Design System da Universidade
              Candido Mendes" —, que é o que este comentário já afirmava estar
              resolvido enquanto o <strong> seguia exposto. -->
-        <strong class="marca-nome" aria-hidden="true">DSUCAM</strong>
+        <strong class="marca-nome" aria-hidden="true">UCAMDS</strong>
         <span class="marca-divisor" aria-hidden="true"></span>
         <span class="marca-ucam" aria-hidden="true"></span>
-        <span class="sr-only">DSUCAM — Design System da Universidade Candido Mendes</span>
+        <span class="sr-only">UCAMDS — Design System da Universidade Candido Mendes</span>
       </a>
 
       <!-- Primeiro andar: as três ÁREAS. Seis abas aqui era o que havia antes,
@@ -337,24 +354,28 @@ const normaliza = (s: string) =>
             @if (s.link) {
               <a class="grupo-titulo eyebrow" [routerLink]="s.link">
                 {{ s.titulo }}
-                @if (s.estadoComum) {
-                  <span class="eyebrow-estado">
-                    · {{ s.estadoTodos ? 'todos' : s.itens.length - 1 }} {{ s.estadoComum }}
-                  </span>
+                @if (s.estadoResumo) {
+                  <span class="eyebrow-estado">{{ s.estadoResumo }}</span>
                 }
               </a>
             } @else {
               <span class="eyebrow">
                 {{ s.titulo }}
-                @if (s.estadoComum) {
-                  <span class="eyebrow-estado">
-                    · {{ s.estadoTodos ? 'todos' : s.itens.length - 1 }} {{ s.estadoComum }}
-                  </span>
+                @if (s.estadoResumo) {
+                  <span class="eyebrow-estado">{{ s.estadoResumo }}</span>
                 }
               </span>
             }
             @if (s.aberta) {
-              @for (i of s.itens; track i.link + '#' + (i.fragmento ?? '')) {
+              @for (i of s.itens; track i.link + '#' + (i.fragmento ?? ''); let idx = $index) {
+              <!-- O cabeçalho do grupo nasce da MUDANÇA, não de um item na
+                   lista: aparece quando este item pertence a um grupo
+                   diferente do anterior. Com filtro digitado, um grupo que
+                   perdeu todos os itens some sozinho, porque não sobrou item
+                   dele para disparar o cabeçalho. -->
+              @if (i.grupo && i.grupo !== s.itens[idx - 1]?.grupo) {
+                <p class="grupo-categoria">{{ i.grupo }}</p>
+              }
               <a
                 [routerLink]="i.link"
                 [fragment]="i.fragmento"
@@ -444,7 +465,7 @@ const normaliza = (s: string) =>
 
       <div class="rodape-fila">
         <p class="rodape-assinatura">
-          Universidade Candido Mendes © {{ ano }} · DSUCAM {{ versao }}
+          Universidade Candido Mendes © {{ ano }} · UCAMDS {{ versao }}
         </p>
       </div>
     </footer>
@@ -681,7 +702,7 @@ const normaliza = (s: string) =>
         /* As três áreas passam a flutuar no VÃO entre a marca e as ações, em
            vez de encostadas na marca. É o arranjo da referência, e resolve uma
            leitura errada que o encosto produzia: coladas na assinatura, as
-           áreas liam como parte do lockup — "DSUCAM Docs Catálogo Projeto" —
+           áreas liam como parte do lockup — "UCAMDS Docs Catálogo Projeto" —
            em vez de como a navegação primária que são.
 
            As duas margens automáticas só distribuem o vão se NINGUÉM MAIS na
@@ -1053,10 +1074,31 @@ const normaliza = (s: string) =>
        contra uma classe e um tipo (0,1,1) — a diferença é essa, e é de
        propósito. Sem ela o título de grupo viraria mais um item da lista, que
        é exatamente a hierarquia que ele existe para não ter. */
+    /* Cabeçalho de CATEGORIA dentro do grupo da lateral — um degrau abaixo
+       do título do grupo ("Catálogo · 49"). Mesmo problema de especificidade
+       resolvido acima: precisa vencer o ".nav a" que desenha o item de lista,
+       senão as oito categorias viram mais oito itens navegáveis. Duas classes
+       contra uma classe e um tipo. */
+    .grupo > .grupo-categoria {
+      margin: 1rem 0 0.25rem;
+      padding-inline-start: calc(var(--gutter) - 0.55rem);
+      font-size: 0.6875rem;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ucam-color-text-secondary);
+    }
+    /* O primeiro não leva respiro: acima dele está o título do grupo, não um
+       irmão de que ele precise se separar. */
+    .grupo > .grupo-categoria:first-of-type {
+      margin-block-start: 0.35rem;
+    }
+
     .grupo > .grupo-titulo {
       display: flex;
+      flex-wrap: wrap;
       align-items: baseline;
-      gap: 0.3rem;
+      gap: 0 0.3rem;
       margin-block-end: 0.4rem;
       padding: 0.2rem 0.5rem;
       border-radius: var(--r-controle);
@@ -1144,8 +1186,11 @@ const normaliza = (s: string) =>
       background: var(--ucam-color-feedback-danger-background);
       color: var(--ucam-color-feedback-danger-foreground);
     }
-    /* O fato que valia para todos, dito uma vez no rótulo do grupo. */
+    /* O fato que valia para todos, dito uma vez no rótulo do grupo — na
+       LINHA DE BAIXO. Ao lado do título, "26 draft · 23 review" não cabe nos
+       15rem da coluna e partia "Catálogo · 49" ao meio. */
     .eyebrow-estado {
+      flex-basis: 100%;
       font-weight: 400;
       opacity: 0.75;
       text-transform: none;
@@ -1524,11 +1569,25 @@ export class AppComponent {
     {
       id: 'catalogo',
       titulo: `Catálogo · ${meta.componentes}`,
-      itens: componentes.map((c) => ({
-        rotulo: c.name,
-        link: `/catalogo/${c.id}`,
-        estado: c.status,
-      })),
+      /* MESMA ordem e MESMOS grupos da página do catálogo.
+         A lateral listava os 49 em ordem alfabética enquanto o conteúdo à
+         direita vinha agrupado em oito categorias: quem navegava por uma
+         taxonomia lia por outra, e "Chip" ficava entre "Checkbox" e
+         "ChoiceCard" na lateral e dentro de "Formulário" na página.
+         Sai de componentesPorCategoria(), a mesma função que a página chama —
+         categoria nova entra nos dois lugares de uma vez, e nenhum dos dois
+         pode discordar do outro. */
+      itens: componentesPorCategoria().flatMap((g) =>
+        g.itens.map((c) => ({
+          rotulo: c.name,
+          link: `/catalogo/${c.id}`,
+          estado: c.status,
+          grupo: g.rotulo,
+          // A categoria entra na busca: quem digita "formulário" acha os
+          // quinze, e quem digita "chip" continua achando o Chip.
+          busca: g.rotulo,
+        })),
+      ),
     },
     // Layout entra ENTRE catálogo e padrões, na ordem de composição: um
     // componente resolve um controle, um bloco resolve o arranjo, uma tela
@@ -1594,6 +1653,12 @@ export class AppComponent {
    * ("Catálogo · 19 · todos draft"; com dois estados, "· 18 draft") e some dos
    * itens; quem destoa ganha o selo. Quando o primeiro componente virar
    * `stable`, aparece UM selo — exatamente o que mudou.
+   *
+   * E O SELO SÓ DISTINGUE QUANDO A EXCEÇÃO É RARA (23/09/2026): até um quarto
+   * do grupo. Com 26 draft e 23 review, "review" não era exceção, era metade
+   * da lista — 23 cápsulas amarelas em mono, a maior fonte de ruído do site.
+   * Acima do quarto, o rótulo do grupo diz os dois números ("26 draft · 23
+   * review") e nenhum item leva selo. Continua palavra, nunca ponto.
    */
   private comEstadoComum(s: Secao): Secao {
     const comEstado = s.itens.filter((i) => i.estado);
@@ -1602,15 +1667,28 @@ export class AppComponent {
     const contagem = new Map<string, number>();
     for (const i of comEstado) contagem.set(i.estado!, (contagem.get(i.estado!) ?? 0) + 1);
 
-    const [maioria, quantos] = [...contagem].sort((a, b) => b[1] - a[1])[0];
-    // Empate entre dois estados não tem maioria: aí todo selo distingue.
-    if (quantos <= s.itens.length / 2) return s;
+    // `quantos` é o número que o rótulo mostra. Ele mostrava `itens.length - 1`,
+    // que só acerta quando UM item destoa — com 26 draft contra 23 review o
+    // catálogo anunciava "48 draft" onde há 26, e o número mais visível da
+    // navegação era o único errado da página.
+    const ordem = [...contagem].sort((a, b) => b[1] - a[1]);
+    const [maioria, quantos] = ordem[0];
+    const total = s.itens.length;
+    const raro = total - quantos <= total / 4;
+
+    const estadoResumo =
+      quantos === total
+        ? `todos ${maioria}`
+        : raro
+          ? `${quantos} ${maioria}`
+          : ordem.map(([estado, n]) => `${n} ${estado}`).join(' · ');
 
     return {
       ...s,
-      estadoComum: maioria,
-      estadoTodos: quantos === s.itens.length,
-      itens: s.itens.map((i) => (i.estado === maioria ? { ...i, estado: undefined } : i)),
+      estadoResumo,
+      // Exceção rara: só quem destoa leva selo. Sem exceção rara: ninguém —
+      // o rótulo do grupo já disse os números.
+      itens: s.itens.map((i) => (raro && i.estado !== maioria ? i : { ...i, estado: undefined })),
     };
   }
 

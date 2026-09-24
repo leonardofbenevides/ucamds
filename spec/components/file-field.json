@@ -14,7 +14,7 @@
     "Vários arquivos podem ser enviados e cada um precisa poder ser removido sozinho."
   ],
   "evidencia": {
-    "origem": "APPSUCAM/SIGFIN, APPSUCAM/Protocolo e as telas de referência do próprio DSUCAM",
+    "origem": "APPSUCAM/SIGFIN, APPSUCAM/Protocolo e as telas de referência do próprio UCAMDS",
     "ocorrencias": [
       {
         "tela": "SIGFIN — Processar Acordo",
@@ -29,7 +29,7 @@
         "problema": "o botão Anexar aparece na barra de resposta, ao lado de Enviar resposta. Não há lista: quem anexa dois arquivos por engano não descobre antes de enviar."
       },
       {
-        "tela": "Telas de referência do DSUCAM — Novo requerimento",
+        "tela": "Telas de referência do UCAMDS — Novo requerimento",
         "problema": "a própria tela de referência desenha um fieldset Anexos com o botão Anexar arquivo e o apoio 'PDF, JPG ou PNG de até 10 MB', sem contrato nenhum por trás — e o campo codigo do template, que é o exemplo que o desenvolvedor copia, omite o fieldset inteiro. O portão 4c do validador só olha o codigo, então a divergência atravessou em silêncio."
       }
     ],

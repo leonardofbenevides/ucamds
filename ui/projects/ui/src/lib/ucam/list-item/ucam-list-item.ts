@@ -64,7 +64,10 @@ let seq = 0;
         <!-- Tamanhos pelos PAPÉIS de tipografia, não por text-sm e text-xs: a
              régua do Tailwind dava 14px ao título e ao assunto, onde o Trilho A
              usa 13, e a mesma linha media alturas diferentes nos dois trilhos. -->
-        <span class="leading-5 truncate" style="font-size: var(--ucam-typography-label-font-size); font-weight: var(--ucam-typography-label-font-weight)" [id]="idTitulo">{{ title() }}</span>
+        <!-- O escolhido sobe o título ao peso de ação: é o segundo sinal, ao
+             lado do realce, que o Trilho A pinta por .ucam-list-item__titulo
+             (ADR-046). -->
+        <span class="leading-5 truncate" [style.font-size]="'var(--ucam-typography-label-font-size)'" [style.font-weight]="selected() ? 'var(--ucam-typography-action-font-weight)' : 'var(--ucam-typography-label-font-weight)'" [id]="idTitulo">{{ title() }}</span>
         @if (time()) {
           <time class="ml-auto shrink-0 text-muted-foreground tabular-nums" style="font-size: var(--ucam-typography-caption-font-size)" [attr.datetime]="timeValue()">
             {{ time() }}
@@ -127,12 +130,12 @@ export class UcamListItem {
   );
 
   /**
-   * O escolhido se diz por realce TINTO mais uma barra de 4px na borda de
-   * entrada (19/09/2026). Era a tinta alfa de seleção — o mesmo cinza do
-   * hover, um degrau acima —, e numa coluna de oito itens ela não dizia qual
-   * estava aberto. A barra não é a que a ADR-022 removeu: aquela repetia o
-   * TOM da linha e havia uma por linha; esta diz SELEÇÃO e há uma por lista.
-   * Ver o bloco .ucam-list-item[aria-current] em build-css.mjs.
+   * O escolhido se diz por realce TINTO e pelo título em peso de ação
+   * (ADR-046, 23/09/2026): um sinal de superfície, um de tipografia. A barra
+   * de 4px na borda de entrada, que viveu aqui de 19/09 a 23/09, saiu junto
+   * com a do Trilho A — o fundo sozinho mede 1,08:1, e o que compensa é o
+   * peso, não uma tarja. Ver o bloco .ucam-list-item[aria-current] em
+   * build-css.mjs.
    */
   protected readonly classes = computed(() => {
     // Recuo pelos tokens e fio por sombra interna, como no Trilho A: a borda
@@ -141,7 +144,7 @@ export class UcamListItem {
     const base =
       'relative flex items-start gap-[var(--ucam-space-inline-sm)] px-[var(--ucam-space-inset-md)] py-[var(--ucam-space-inset-sm)] shadow-[inset_0_-1px_0_var(--ucam-color-border-subtle)] last:shadow-none text-foreground transition-colors';
     const estado = this.selected()
-      ? 'bg-[var(--ucam-color-action-primary-subtle)] before:content-[""] before:absolute before:inset-y-0 before:start-0 before:w-1 before:bg-[var(--ucam-color-action-primary-default)] before:pointer-events-none'
+      ? 'bg-[var(--ucam-color-action-primary-subtle)]'
       : 'hover:bg-[var(--ucam-color-interaction-hover)]';
     return `${base} ${estado} ${this.href() ? 'cursor-pointer active:bg-[var(--ucam-color-interaction-active)]' : ''}`;
   });

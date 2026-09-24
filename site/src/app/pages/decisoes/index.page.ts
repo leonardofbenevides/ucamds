@@ -69,9 +69,19 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       font-weight: 600;
       text-wrap: balance;
     }
+    /* DUAS LINHAS, e o resto na página da ADR. A lista servia a decisão
+       INTEIRA de cada uma das 42 — mediana de 141 palavras, uma delas com 530
+       —, e isso sozinho dava 1.096 linhas renderizadas: um quarto do texto do
+       site inteiro numa página que existe para ESCOLHER qual ADR ler. O texto
+       não foi cortado; ele está em /decisoes/<id>, que é o destino do link
+       que envolve cada item. */
     p {
       margin: 0;
       max-inline-size: var(--measure);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
   `,
 })

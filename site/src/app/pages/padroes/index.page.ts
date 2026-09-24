@@ -12,7 +12,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     <ucam-page-header
       secao="Padrões"
       [titulo]="'Composições recorrentes'"
-      [lede]="'Um padrão resolve uma tarefa inteira, não um controle. Vira código em @ucam/patterns quando aparece em três ou mais telas.'"
+      [lede]="'Um padrão resolve uma tarefa inteira, não um controle. Vira código gerado quando aparece em três ou mais telas.'"
     />
 
     <div class="grade-cartoes">
@@ -54,7 +54,10 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       display: flex;
       gap: 0.9rem;
       font-family: var(--f-mono);
-      font-size: 0.65rem;
+      /* 0,75rem: a régua de metadado do site, a mesma do .meta da página de
+         componente. Estava em 10,4px, abaixo do piso que este próprio site
+         cobra das telas que documenta. */
+      font-size: 0.75rem;
       color: var(--ucam-color-text-secondary);
       margin-bottom: 0;
     }

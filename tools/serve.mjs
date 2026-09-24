@@ -1,6 +1,6 @@
 // Servidor local do site LEGADO (docs/index.html), o de navegação lateral.
 //
-// Não é O site do DSUCAM: esse mora em site/ (Analog, cabeçalho com abas) e
+// Não é O site do UCAMDS: esse mora em site/ (Analog, cabeçalho com abas) e
 // roda com `pnpm dev`. Este aqui é `pnpm dev:legado`, e existe enquanto o
 // legado seguir sendo reconstruído pelo `pnpm build`.
 //
@@ -142,7 +142,7 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(PORTA, () => {
-  console.log(`\nDSUCAM (site LEGADO) em http://localhost:${PORTA}`);
+  console.log(`\nUCAMDS (site LEGADO) em http://localhost:${PORTA}`);
   console.log(`  /            navegação lateral — o site atual é: pnpm dev`);
   console.log(`  /prova.html  antes e depois do Trilho A`);
   console.log(`\nobservando spec/ e tools/ — a aba recarrega sozinha.\n`);

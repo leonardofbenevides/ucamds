@@ -8,6 +8,10 @@
    verdade, não uma imitação escrita à mão. Tudo ali é escopado sob .ucam:
    nada alcança a cromagem deste site. */
 @import './generated/componentes.css';
+/* Espelho das regras de estado, só para a matriz de /catalogo/<id>. Vem DEPOIS
+   do componentes.css de propósito: mesma especificidade perderia para o
+   original em empate, e o palco precisa vencer. */
+@import './generated/estados.css';
 
 /* --- ponte para os componentes reais de @ucam/ui ------------------------ */
 /* Os componentes da base escrevem classes no vocabulário shadcn
@@ -87,10 +91,22 @@
   --topo-h: 3rem;
   --subtopo-h: 2.25rem;
   --header-h: var(--topo-h);
-  /* 68ch a 16px cai em ~65 caracteres por linha — a faixa em que o olho não
-     perde a volta. A 15px o 72ch dava a mesma medida física; o número mudou
-     porque o corpo cresceu, não a régua. */
-  --measure: 68ch;
+  /* A MEDIDA DO TEXTO É A COLUNA (23/09/2026, decisão do Leonardo, ADR-046).
+     "Deixar texto full, tela inteira": o texto corrido para na borda da
+     coluna da página, como os blocos — faixa de números, cartões, tabelas,
+     palcos — já paravam. `none` aqui solta de uma vez todo
+     `max-inline-size: var(--measure)` do site: .prose, .prose p, .prose li,
+     .lede e os usos locais das páginas. A coluna continua tendo limite: o
+     contêiner de 80rem e, nas páginas com índice, a grade de .pagina.
+
+     O que se perde, e foi aceito: a 1440px uma linha de 16px chega a ~130
+     caracteres, acima dos 80 da WCAG 1.4.8 — que é técnica suficiente do
+     nível AAA, não critério A/AA. Antes disso a régua era 57ch (= 80
+     caracteres reais, porque `ch` mede o avanço do ZERO e não do caractere
+     médio: 0,673em contra 0,482em no Geist, razão 1,40). O callout já tinha
+     saído da régua em 23/09; agora tudo sai, e é uma decisão só. Se a régua
+     voltar, o valor é 57ch e a conta está aqui. */
+  --measure: none;
   /* Régua única: marca do header, texto da lateral e conteúdo caem todos
      nesta linha. Os itens da lateral descontam o próprio padding para o
      TEXTO alinhar, não a caixa. */
@@ -350,17 +366,24 @@ kbd {
   .pagina > * {
     grid-column: 1;
   }
-  /* O cabeçalho atravessa: o filete dele é a régua da página inteira. */
+  /* O CABEÇALHO NÃO ATRAVESSA MAIS. Ele atravessava para que o filete fosse a
+     régua da página inteira, e o preço era meia tela vazia ao lado do título:
+     o lede para em 68ch, o índice só começava na linha 2, e entre um e outro
+     não havia nada. Agora o filete mede a coluna do texto — que é o que ele
+     está separando — e a régua continua sendo uma só. */
   .pagina > ucam-page-header {
-    grid-column: 1 / -1;
+    grid-column: 1;
   }
   /* `span 100` e não `2` porque a navegação é sticky: um item de grade que
      ocupa uma linha só pode grudar dentro da altura DAQUELA linha, e a
      navegação pararia de acompanhar no primeiro bloco. O excesso de linhas
-     implícitas tem altura zero e não custa nada. */
+     implícitas tem altura zero e não custa nada.
+
+     Começa na linha 1, junto do cabeçalho, e não na 2: é a linha 1 que tinha
+     o vão. */
   .pagina > ucam-nesta-pagina {
     grid-column: 2;
-    grid-row: 2 / span 100;
+    grid-row: 1 / span 100;
   }
 }
 
@@ -371,11 +394,24 @@ kbd {
 }
 
 /* A medida vale para o parágrafo, não para a seção: tabela e palco ocupam a
-   largura toda, o texto continua com 65 caracteres. */
+   largura toda, o texto continua na régua. */
 .prose p {
   margin: 0 0 1.05rem;
   max-inline-size: var(--measure);
   text-wrap: pretty;
+}
+
+/* E vale para o ITEM DE LISTA, que é prosa igual. Só o <p> tinha a regra, e
+   as listas de boas práticas de todo componente liam 98 caracteres por linha
+   — as mais longas do site depois do callout.
+
+   O max-inline-size vai no <li> e não no <ul> de propósito: "ch" resolve
+   contra o font-size do ELEMENTO, e a medida posta no contêiner vira um
+   comprimento fixo que os filhos menores herdam. Foi assim que um parágrafo
+   de 13px acabou com a largura de um de 16px em /telas — 96 caracteres onde
+   a régua pede 80. */
+.prose li {
+  max-inline-size: var(--measure);
 }
 
 /* O ritmo da seção mora AQUI, não em cada página.
@@ -436,17 +472,24 @@ kbd {
   text-wrap: balance;
 }
 
+/* 20px sobre corpo de 16px. Estava em 1,0625rem = 17px: um degrau de UM
+   pixel sobre o texto que o título encabeça, com a hierarquia inteira
+   apoiada no peso 560 — que some numa página de 12 mil pixels. Primer põe o
+   h3 em 20 sobre 16; Carbon em 20 sobre 14. */
 .prose h3:not([class*='ucam-']) {
-  font-size: 1.0625rem;
-  font-weight: 560;
-  line-height: 1.35;
-  letter-spacing: -0.012em;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.014em;
   margin-block-end: 0.5rem;
 }
 
+/* O h4 é o último degrau: mesmo corpo do texto, separado só pelo peso. Em
+   0,9375rem ele era MENOR que o parágrafo que encabeçava, e indistinguível
+   do h3 de 17px que vinha acima. */
 .prose h4:not([class*='ucam-']) {
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 650;
   letter-spacing: -0.005em;
   text-transform: none;
   color: var(--ucam-color-text-primary);
@@ -742,6 +785,50 @@ th code {
   white-space: nowrap;
 }
 
+/* A NOTA DE TOKEN É PROSA, NÃO CÉLULA. O $description de color.text.primary
+   tem 916 caracteres, o de text.secondary 440: papel, contraste em três
+   superfícies e a ADR que explica a troca, tudo numa string só — e numa só
+   porque é o campo do DTCG, que a spec não vai quebrar em três para caber
+   numa tabela. Espremida na última coluna, com as quatro primeiras em
+   nowrap, essa string desce em torre de trinta caracteres: a linha ficava
+   com vinte e cinco linhas de altura ao lado de quatro células de uma.
+
+   Então a nota sai da coluna e vira a LINHA SEGUINTE, com colspan na largura
+   inteira e teto na medida de leitura. Os números continuam empilhados em
+   coluna, que é o que a tabela serve para comparar, e a prosa lê nos mesmos
+   68ch de qualquer parágrafo da página. */
+tr.linha-nota > td {
+  padding-block: 0 0.8rem;
+  color: var(--ucam-color-text-secondary);
+}
+
+/* A medida vem da variável, e não de um número repetido aqui. Este bloco já
+   redeclarou `--measure` local sob a ideia de que a do :root era comprimento
+   fixo, medido no ch de 16px — não é: propriedade customizada não registrada
+   é substituída como token, então `ch` resolve no font-size DESTE elemento, e
+   a nota de 13px já chegava na mesma contagem de caracteres sozinha. O número
+   repetido só criava o risco de ficar para trás quando a régua mudasse, que
+   foi exatamente o que aconteceu no dia em que ela virou 48ch. */
+tr.linha-nota p {
+  margin: 0;
+  font-size: 0.8125rem;
+  max-inline-size: var(--measure);
+  text-wrap: pretty;
+}
+
+/* A régua separa TOKENS, não o token da sua própria nota — com a borda no
+   meio do par, cada token lia como duas linhas soltas. */
+tbody tr:has(+ tr.linha-nota) > td {
+  border-bottom: 0;
+}
+
+/* E o par acende junto: hover em qualquer das duas metades realça as duas,
+   senão o realce que existe para rastrear a linha passa a cortá-la ao meio. */
+tbody tr:hover + tr.linha-nota,
+tbody tr:has(+ tr.linha-nota:hover) {
+  background: var(--ucam-color-surface-subtle);
+}
+
 /* ------------------------------------------------------------------ código */
 
 /* Bloco de código com moldura, e não só fundo tingido: no tema escuro o
@@ -770,7 +857,14 @@ th code {
   background: var(--ucam-color-surface-subtle);
   border-radius: var(--ucam-radius-sm);
   padding: 0.08em 0.32em;
-  font-size: 0.85em;
+  /* 0,85em COM PISO. O encolhimento existe porque o mono tem avanço fixo de
+     0,60em contra 0,482 médio do sans — é compensação de LARGURA, não de
+     altura: Geist e Geist Mono têm a mesma altura-x (0,53) e a mesma
+     maiúscula (0,71), medidas no navegador.
+     Sem piso, o mesmo 0,85em se aplicava sobre metadado de 12px e produzia
+     10,2px — mono encolhendo dentro de mono, abaixo do piso que este site
+     cobra das telas que documenta. */
+  font-size: max(0.85em, 11px);
   color: var(--ucam-color-text-primary);
 }
 
@@ -785,6 +879,31 @@ th code {
    O tingido nasce por color-mix do próprio token de acento, então o mesmo
    bloco serve nos dois temas — no escuro, o token já é escuro e o mix apenas
    o aproxima do papel. */
+/* O callout é um BLOCO, e o texto acompanha a caixa — ver os dois parágrafos
+   abaixo, nesta ordem: primeiro por que a CAIXA é larga, depois por que o
+   TEXTO não para na medida dentro dela.
+
+   A página tem DUAS bordas direitas e não quatro: blocos (faixa de números,
+   grades de cartão, tabelas, palcos, callouts) alinham na coluna; texto
+   corrido para na medida. Medido na home antes disto: a faixa de números
+   terminava em 1331px, os cartões em 1331, o lede em 704 e o callout em 648 —
+   quatro réguas na mesma tela, e a do callout era minha.
+
+   O callout NÃO é exceção: ele tem fundo, moldura e barra de acento, e é
+   isso que o define aqui — um bloco, lido na mesma borda da faixa de números
+   e dos cartões que vêm logo abaixo dele. Uma caixa mais estreita que os
+   blocos vizinhos abre um degrau que nada explica, e ele é o primeiro bloco
+   da home: o degrau aparece antes de a página começar.
+
+   E o TEXTO acompanha a caixa. Limitar só o parágrafo devolvia o defeito
+   pelo outro lado: a linha morria em 617px e sobrava meio callout de fundo
+   tingido à direita do ponto final. A borda que se enxerga aqui é a da
+   CAIXA — desenhada, com moldura e barra de acento — e é nela que o texto
+   tem de terminar; num parágrafo solto ninguém vê onde a coluna acabaria.
+
+   O preço está dito: em monitor largo a linha passa dos 80 caracteres da
+   WCAG 1.4.8. Vale só para o callout, e vale porque ele é curto por
+   contrato — duas ou três linhas de aviso, nunca um corpo de página. */
 .callout {
   --acento: var(--ucam-color-action-primary-default);
   position: relative;
@@ -806,6 +925,12 @@ th code {
   inset-inline-start: 0;
   inline-size: 3px;
   background: var(--acento);
+}
+
+/* `none` e não a simples ausência da regra: quase todo callout vive dentro de
+   um .prose, e o `.prose p` lá de cima poria a medida de volta. */
+.callout p {
+  max-inline-size: none;
 }
 
 .callout > :last-child {
@@ -831,7 +956,11 @@ th code {
 
 /* ----------------------------------------------------------------- cartões */
 
-/* O card subiu de raio (6px → 12px) e ganhou sombra de repouso. Os 6px vinham
+/* PLANO EM REPOUSO (23/09/2026). O card do site levitava com uma sombra
+   curta enquanto o contrato do cartão diz, desde a ADR-019, que cartão é
+   plano e só o hover levanta: o site contradizia a regra que documenta. A
+   sombra ficou para o hover, onde ela significa distância. */
+/* O card subiu de raio (6px → 12px). Os 6px vinham
    do raio de CONTROLE, que é a medida de um botão de 32px de altura: numa
    caixa de 20rem o mesmo canto lê como quina. A spec já declarava
    radius.surface exatamente para este caso, e o site não o usava em lugar
@@ -842,7 +971,6 @@ th code {
   border: 1px solid var(--ucam-color-border-subtle);
   border-radius: var(--r-superficie);
   background: var(--ucam-color-surface-default);
-  box-shadow: var(--sombra-repouso);
   text-decoration: none;
   transition:
     border-color var(--transicao),
@@ -865,7 +993,7 @@ a.card:hover {
 
 a.card:active {
   transform: translateY(0);
-  box-shadow: var(--sombra-repouso);
+  box-shadow: none;
 }
 
 /* A seta é a affordance que faltava: num grid de seis caixas iguais, nada
@@ -1035,7 +1163,6 @@ a.card:has(.palco)::after {
   border: 1px solid var(--ucam-color-border-subtle);
   border-radius: var(--r-superficie);
   background: var(--ucam-color-surface-default);
-  box-shadow: var(--sombra-repouso);
 }
 
 /* O título do ponto é um h3 de verdade, para entrar no sumário do leitor de

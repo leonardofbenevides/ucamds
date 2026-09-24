@@ -46,7 +46,7 @@
     {
       "parte": "figura",
       "obrigatorio": false,
-      "descricao": "Ícone em chip. Decorativo — o título nomeia a opção.",
+      "descricao": "Ícone em chip, neutro no marcado e no não marcado. Decorativo — o título nomeia a opção, e decoração que muda de cor com o estado seria um portador de cor a mais (ADR-046).",
       "classe": "ucam-choice-card__figura"
     },
     {
@@ -64,7 +64,7 @@
     {
       "parte": "marca",
       "obrigatorio": true,
-      "descricao": "Sinal de escolhido: check no canto. Reforça a borda, que sozinha é sutil demais em tela de secretaria.",
+      "descricao": "Sinal de escolhido: check no canto. É o segundo dos DOIS sinais do marcado — a borda em tinta de ação diz o estado em cor, o check diz em forma (WCAG 1.4.1) e é o que sobrevive a um monitor de secretaria com brilho baixo. Fundo e chip não mudam (ADR-046).",
       "classe": "ucam-choice-card__marca"
     }
   ],
@@ -277,7 +277,7 @@
     "trilho_a": {
       "contrato": "choice-card.json",
       "raiz": "<label class=\"ucam-choice-card\"> com <input type=radio|checkbox> dentro",
-      "estado": ":has(input:checked) pinta borda, fundo e a marca de escolhido",
+      "estado": ":has(input:checked) pinta a borda em action.primary.default e acende a marca de escolhido; fundo e figura não mudam (ADR-046)",
       "nota": "A grade é .ucam-choice-grid, um <fieldset> com <legend>."
     },
     "trilho_b": "O host usa display:contents e renderiza um <label> real com o input dentro, escondido por opacity mas focável — as setas do grupo de radio continuam sendo as do navegador e nada reimplementa comportamento nativo. O anel de foco é desenhado no cartão inteiro por has-[:focus-visible]. NÃO entrega: o <fieldset> e a <legend> do grupo, que são responsabilidade de quem compõe a pergunta."

@@ -23,6 +23,12 @@ export interface Anatomia {
   parte: string;
   obrigatorio: boolean;
   descricao: string;
+  /**
+   * A classe do Trilho A que É esta parte. 193 das 313 partes a declaram, e é
+   * ela que o diagrama de anatomia procura no preview para saber onde pôr a
+   * chamada numerada — ver anatomia-diagrama.component.ts.
+   */
+  classe?: string;
 }
 
 export interface ValorProp {
@@ -121,8 +127,27 @@ export interface Demo {
   importacao?: string;
   principal?: DemoPainel;
   exemplos?: DemoPainel[];
+  /**
+   * Retrato ESTÁTICO para o card do catálogo, só onde o Trilho A não desenha
+   * o componente (chart, combobox, command). Não é preview: não conta como
+   * Trilho A disponível e não entra na página do componente.
+   */
+  miniatura?: string;
   /** Por que este componente não tem preview estático, quando não tem. */
   $nota?: string;
+}
+
+/**
+ * Em qual trilho o componente existe hoje. Derivado no build a partir das
+ * fontes que mandam — ver trilhosDe() em tools/build-index.mjs.
+ */
+export interface TrilhoDisponivel {
+  id: 'a' | 'a-mais' | 'b';
+  rotulo: string;
+  meio: string;
+  /** `null` = a fonte não estava no workspace. Não é o mesmo que `false`. */
+  disponivel: boolean | null;
+  detalhe: string | null;
 }
 
 export interface Composicao {
@@ -150,6 +175,7 @@ export interface Componente {
   boas_praticas?: BoaPratica[];
   vs?: Desambiguacao[];
   demo?: Demo;
+  trilhos?: TrilhoDisponivel[];
 
   evidencia?: Evidencia;
   migracao?: Migracao;
@@ -327,6 +353,9 @@ export interface GrupoIcones {
 
 export interface Icones {
   descricao: string;
+  /** A chamada curta do cabeçalho. O racional longo é o outro campo, e vai
+   *  para o bloco "Por quê" — ver tools/check-lede.mjs. */
+  lede: string;
   regras: string[];
   meta: Record<string, string>;
   total: number;
@@ -343,6 +372,9 @@ export interface Estado {
 
 export interface Estados {
   descricao: string;
+  /** A chamada curta do cabeçalho. O racional longo é o outro campo, e vai
+   *  para o bloco "Por quê" — ver tools/check-lede.mjs. */
+  lede: string;
   origem: string;
   divergencia: string;
   lista: Estado[];
@@ -423,6 +455,9 @@ export interface ConteudoDeComponente {
 
 export interface Escrita {
   descricao: string;
+  /** A chamada curta do cabeçalho. O racional longo é o outro campo, e vai
+   *  para o bloco "Por quê" — ver tools/check-lede.mjs. */
+  lede: string;
   meta: Record<string, string>;
   voz: { resumo: string; eixos: EixoDeVoz[] };
   principios: PrincipioDeEscrita[];
@@ -465,6 +500,9 @@ export interface RegraDeIntegridade {
 
 export interface Dados {
   descricao: string;
+  /** A chamada curta do cabeçalho. O racional longo é o outro campo, e vai
+   *  para o bloco "Por quê" — ver tools/check-lede.mjs. */
+  lede: string;
   meta: Record<string, string>;
   veiculos: VeiculoDeDado[];
   /** Lida do contrato do chart, não recopiada. */
@@ -507,6 +545,9 @@ export interface Formato {
 
 export interface Formatos {
   descricao: string;
+  /** A chamada curta do cabeçalho. O racional longo é o outro campo, e vai
+   *  para o bloco "Por quê" — ver tools/check-lede.mjs. */
+  lede: string;
   meta: Record<string, string>;
   fronteira: { modelo: string; tela: string; regra: string };
   formatos: Formato[];
@@ -546,6 +587,9 @@ export interface PapelDeAltura {
 
 export interface Densidade {
   descricao: string;
+  /** A chamada curta do cabeçalho. O racional longo é o outro campo, e vai
+   *  para o bloco "Por quê" — ver tools/check-lede.mjs. */
+  lede: string;
   meta: Record<string, string>;
   larguras: { regra: string; papeis: PapelDeLargura[] };
   leitura: { regra: string; medidas: { medida: string; onde: string; porque: string }[] };
@@ -619,28 +663,45 @@ export interface Skill {
   onde: string;
 }
 
+/**
+ * Como se consome o design system num trilho. PARA QUEM ele é não mora aqui:
+ * mora em migracao.escolhaDoTrilho, que é o seletor único, e a página de
+ * instalação casa os dois pelo id.
+ */
 export interface Trilho {
   id: string;
   nome: string;
-  alvo: string;
   como: string;
   codigo: string;
   limite: string;
+  /** Quantos contratos este trilho entrega hoje. Derivado no build. */
+  componentes?: number;
 }
 
 export interface Recursos {
   /** Onde o design system é servido. O sitemap, os exemplos de instalação e o
    *  portão tools/build-publicacao.mjs leem daqui — host em um lugar só. */
-  publicacao: { $description: string; host: string; tokens: string; pacotes: string };
+  publicacao: {
+    $description: string;
+    host: string;
+    /** As rotas servidas ao lado do site. Espelham a árvore do dist/, porque
+     *  as folhas publicadas se referem umas às outras por caminho relativo. */
+    tokens: string;
+    css: string;
+    icones: string;
+    fontes: string;
+    elements: string;
+    pacotes: string;
+  };
   pacotes: { $description: string; itens: Pacote[] };
   formatosToken: {
     $description: string;
     referencia: string;
     itens: { formato: string; arquivo: string; para: string }[];
   };
-  mcp: { $description: string; config: unknown; ferramentas: FerramentaMcp[] };
-  skills: { $description: string; itens: Skill[] };
-  instalacao: { $description: string; trilhos: Trilho[] };
+  mcp: { $lede: string; $description: string; config: unknown; ferramentas: FerramentaMcp[] };
+  skills: { $lede: string; $description: string; itens: Skill[] };
+  instalacao: { $lede: string; $description: string; trilhos: Trilho[] };
   figma: { $description: string; estado: string };
 }
 
@@ -703,6 +764,7 @@ export interface Shell {
 }
 
 export interface Layouts {
+  $lede: string;
   $description: string;
   _meta: { regra: string; prefixo: string; taxonomia: string };
   shell: Shell;
@@ -805,9 +867,20 @@ export interface ItemBusca {
  * partir de `componentes`.
  */
 export interface Migracao {
+  $lede: string;
   $description: string;
+  /**
+   * O seletor de trilho, e o único: a pergunta que decide, o papel de cada
+   * trilho e o para-quem de cada um. A home e a página de instalação leem
+   * daqui — antes, `alvo` em resources.json dizia o mesmo com outras palavras,
+   * e as duas versões já divergiam.
+   */
   escolhaDoTrilho: {
+    /** A pergunta que decide. Uma só, e vem antes dos cartões. */
+    pergunta: string;
     $descricao: string;
+    /** Ponte e destino: por que são três e não um. */
+    nota: string;
     trilhos: {
       id: string;
       nome: string;

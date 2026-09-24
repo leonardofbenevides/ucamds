@@ -157,7 +157,7 @@
       "parte": "nav-group",
       "classe": "ucam-nav__group",
       "obrigatorio": false,
-      "descricao": "Agrupamento de itens, com rótulo em caixa alta. A caixa alta vale para o RÓTULO DO GRUPO e para mais nada: no SIGFIN os mais de cem itens estão em caixa alta, o que apaga a distinção entre título e destino navegável."
+      "descricao": "Agrupamento de itens, com rótulo em caixa natural, 12px e tinta secundária. Até 23/09/2026 o rótulo era a única exceção à ADR-003 (caixa alta com tracking, para se distinguir dos itens do SIGFIN, que são todos em caixa alta); a distinção passa a ser tamanho e tinta, que é como Repliq e Attio separam título de grupo de destino navegável (ADR-046)."
     },
     {
       "parte": "nav-favoritos",
@@ -169,7 +169,7 @@
       "parte": "nav-sub",
       "obrigatorio": false,
       "classe": "ucam-nav__sub",
-      "descricao": "Subitens de um item de navegação, pendurados num filete vertical. Quem os contém é <button aria-expanded>, nunca <a>: ramo não é destino, e um link que só abre a lista promete uma página que não existe. O filete não é enfeite — com o pai rolado para fora do campo de visão, uma lista apenas indentada é uma lista de nomes soltos, e a linha é o que continua dizendo de quem eles são. O ramo que guarda o item ativo nasce aberto."
+      "descricao": "Subitens de um item de navegação, pendurados num filete vertical. Quem os contém é <button aria-expanded>, nunca <a>: ramo não é destino, e um link que só abre a lista promete uma página que não existe. O filete não é enfeite — com o pai rolado para fora do campo de visão, uma lista apenas indentada é uma lista de nomes soltos, e a linha é o que continua dizendo de quem eles são. O ramo que guarda o item ativo nasce aberto. O subitem ativo fala a mesma língua do item de primeiro nível: realce tinto e peso de ação, sem borda (ADR-046)."
     },
     {
       "parte": "nav-footer",

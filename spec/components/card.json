@@ -68,7 +68,7 @@
     {
       "parte": "apoio",
       "obrigatorio": false,
-      "descricao": "Uma linha dizendo o que cai neste cartão, em caption e tinta secundária. Sem margem, pelo mesmo motivo do título. Substitui o ucam-field__hint que as telas emprestavam para descrever um setor ou um módulo — um rótulo de formulário fora de qualquer formulário.",
+      "descricao": "Uma linha dizendo o que cai neste cartão, em caption e tinta secundária. Sem margem, pelo mesmo motivo do título. Substitui o ucam-field__hint que as telas emprestavam para descrever um setor ou um módulo — um rótulo de formulário fora de qualquer formulário. Matrícula ou protocolo dentro do apoio vai em .ucam-id, um degrau de peso acima (ADR-047).",
       "classe": "ucam-card__apoio"
     },
     {

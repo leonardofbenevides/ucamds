@@ -15,6 +15,8 @@ export interface Ancora {
   id: string;
   rotulo: string;
   sub?: boolean;
+  /** Cabeçalho de área: organiza a lista, não é destino de leitura. */
+  grupo?: boolean;
 }
 
 /**
@@ -52,7 +54,7 @@ export interface Ancora {
         <p class="eyebrow" id="nesta-pagina-titulo">Nesta página</p>
         <ol>
           @for (s of secoes(); track s.id) {
-            <li [class.sub]="s.sub">
+            <li [class.sub]="s.sub" [class.grupo]="s.grupo">
               <!-- routerLink vazio + fragment, e NÃO href="#id".
                    O documento declara <base href="/">, e um href de fragmento
                    resolve contra a BASE, não contra a URL atual: em
@@ -113,7 +115,11 @@ export interface Ancora {
       position: sticky;
       inset-block-start: var(--header-h);
       z-index: 30;
-      margin-block: 0 var(--ritmo-secao);
+      /* 2rem, e não --ritmo-secao. O ritmo de 4,5rem separa SEÇÕES de
+         conteúdo; esta faixa é navegação, e no celular os 72px empurravam o
+         primeiro título da página um décimo de tela para baixo — em 844px de
+         altura é espaço que não sobra. */
+      margin-block: 0 2rem;
       /* Vidro, igual às duas faixas do cabeçalho logo acima — é a terceira
          camada da mesma pilha grudada, e uma opaca no meio de duas
          translúcidas aparece como degrau. */
@@ -144,10 +150,28 @@ export interface Ancora {
       display: flex;
       gap: 0.25rem;
       overflow-x: auto;
-      /* A barra do DOCUMENTO fica com o navegador; a de um contêiner que rola
-         por dentro é nossa — mesma regra que o @ucam/css aplica. */
-      scrollbar-width: thin;
-      scrollbar-color: var(--ucam-color-border-default) transparent;
+      /* Aqui a barra SOME, e é a única exceção à regra de que contêiner que
+         rola por dentro desenha a própria barra.
+         A regra existe para contêiner de CONTEÚDO, onde nada mais avisa que há
+         mais adiante. Numa faixa de abas de 40px de altura, a barra ocupa um
+         quinto dela e corre encostada no filete de 2px que marca a aba atual —
+         dois traços horizontais quase colados, e só um deles quer dizer algo.
+         A afordância aqui é a aba cortada na borda, que é como Carbon e
+         Atlassian resolvem a mesma faixa.
+         O esmaecimento vem de mask-image no PRÓPRIO elemento, nunca de um
+         pseudo-elemento por cima: sobreposto, ele roubaria o toque da primeira
+         e da última aba. */
+      scrollbar-width: none;
+      mask-image: linear-gradient(
+        to right,
+        transparent 0,
+        #000 0.75rem,
+        #000 calc(100% - 0.75rem),
+        transparent 100%
+      );
+    }
+    .nesta-pagina ol::-webkit-scrollbar {
+      display: none;
     }
     /* Segundo nível não entra na faixa: quinze abas já é o limite do que se
        varre de olho, e as subseções de variante somariam quarenta. */
@@ -157,6 +181,13 @@ export interface Ancora {
     .nesta-pagina a {
       padding: 0.6rem 0.7rem;
       border-block-end: 2px solid transparent;
+    }
+    /* Na FAIXA o cabeçalho de área some. Ela é rolável e curta; repetir
+       "Ver", "Decidir", "Construir" entre os destinos dobraria o número de
+       paradas sem levar a lugar nenhum de novo. Na coluna ele fica, porque
+       ali a lista é vertical e o agrupamento se lê de relance. */
+    .nesta-pagina li.grupo {
+      display: none;
     }
     .nesta-pagina a.ativo {
       border-block-end-color: var(--ucam-color-action-primary-default);
@@ -191,6 +222,33 @@ export interface Ancora {
       }
       .nesta-pagina li.sub {
         display: list-item;
+      }
+      /* Na coluna o cabeçalho de área VOLTA, e continua sendo link: ele é o
+         destino do divisor lá na página, e clicar nele é o jeito de pular uma
+         área inteira. O que muda é a forma — caixa alta miúda e um respiro
+         acima —, para que a lista leia como quatro grupos e não como vinte
+         irmãos. */
+      .nesta-pagina li.grupo {
+        display: list-item;
+      }
+      .nesta-pagina li.grupo + li a {
+        padding-block-start: 0.35rem;
+      }
+      .nesta-pagina li.grupo a {
+        margin-block-start: 0.9rem;
+        font-size: 0.6875rem;
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ucam-color-text-secondary);
+      }
+      /* O primeiro grupo encosta no topo da lista: o respiro separa grupos, e
+         acima dele há o rótulo "Nesta página", não um grupo. */
+      .nesta-pagina li.grupo:first-child a {
+        margin-block-start: 0;
+      }
+      .nesta-pagina li.grupo a.ativo {
+        color: var(--ucam-color-action-primary-default);
       }
       .nesta-pagina li.sub a {
         padding-inline-start: 1.5rem;

@@ -1,17 +1,20 @@
 {
-  "$description": "Guia de migração: a ordem das operações para levar uma tela ou um app do parque legado ao DSUCAM. O mapa legado→novo de cada componente vive no contrato dele. Se uma regra aparece aqui e num contrato, a do contrato vale.",
+  "$lede": "A ordem das operações para levar uma tela do parque legado ao UCAMDS. Regra que também está num contrato: vale a do contrato.",
+  "$description": "Guia de migração: a ordem das operações para levar uma tela ou um app do parque legado ao UCAMDS. O mapa legado→novo de cada componente vive no contrato dele. Se uma regra aparece aqui e num contrato, a do contrato vale.",
   "_meta": {
     "publico": "Desenvolvedor de aplicação, não mantenedor do design system.",
     "regra": "Todo passo deste guia tem de ser verificável por quem executa. Passo que termina em 'use o bom senso' é passo mal escrito."
   },
 
   "escolhaDoTrilho": {
+    "pergunta": "A aplicação tem passo de build?",
     "$descricao": "A primeira decisão, e a que mais economiza retrabalho. Não é sobre qual trilho é melhor: é sobre o que a aplicação consegue receber hoje.",
+    "nota": "O Trilho B é o destino: todo sistema novo ou migrado termina nele. O Trilho A é a ponte que veste o parque legado enquanto ele não atravessa, e chega por URL porque JSF/PrimeFaces e AngularJS não têm onde instalar pacote. Os três saem do mesmo contrato em spec/, com a mesma cor e a mesma medida cobradas no build — escolher trilho nunca é escolher aparência.",
     "trilhos": [
       {
         "id": "a",
         "nome": "Trilho A — @ucam/css",
-        "quando": "A aplicação é AngularJS, Angular ≤ 14, ou qualquer coisa que não vá subir de versão nos próximos meses.",
+        "quando": "A aplicação é AngularJS, JSF/PrimeFaces, Angular ≤ 14 — qualquer coisa que aceite um <link> e não vá subir de versão nos próximos meses.",
         "entrega": "Identidade visual, tokens, tipografia, espaçamento e o desenho de todos os componentes, por classe CSS.",
         "naoEntrega": "Comportamento. Nada de foco gerenciado, navegação por seta, roving tabindex, anúncio ARIA ou estado. O CSS desenha; quem escreve o markup é responsável por for/id, aria-describedby, aria-current, role e nome acessível.",
         "custo": "Uma tag de link e uma classe no elemento raiz. Zero build, zero dependência, zero risco de conflito: tudo é escopado sob .ucam, sem reset global e sem preflight.",
@@ -119,7 +122,7 @@
   },
 
   "anatomiaDeTela": {
-    "$descricao": "Uma tela do DSUCAM tem quatro camadas, e confundi-las é a causa mais comum de tela que fica quase certa. De fora para dentro:",
+    "$descricao": "Uma tela do UCAMDS tem quatro camadas, e confundi-las é a causa mais comum de tela que fica quase certa. De fora para dentro:",
     "camadas": [
       {
         "camada": "Moldura",

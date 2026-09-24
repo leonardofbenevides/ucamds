@@ -134,7 +134,7 @@ for (const { dir } of DESTINOS) if (!existsSync(dir)) mkdirSync(dir, { recursive
 // horizontal não cabe em 72px), e a moldura com faixa usa o lockup. Uma tela
 // que declarasse o rail sem o símbolo copiado ganharia uma máscara apontando
 // para 404 — que não dá erro nenhum, só não pinta.
-const MARCAS = ['ucam-logo-horizontal.svg', 'dsucam-simbolo-inverso.svg'];
+const MARCAS = ['ucam-logo-horizontal.svg', 'ucamds-simbolo-inverso.svg'];
 for (const d of DESTINOS.map((x) => join(x.dir, '..', 'marca'))) {
   if (!existsSync(d)) mkdirSync(d, { recursive: true });
   for (const m of MARCAS) copyFileSync(join(ROOT, 'site/src/assets/marca', m), join(d, m));
@@ -148,7 +148,7 @@ for (const proj of projetos) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(t.nome)} — ${esc(proj.nome)} · DSUCAM</title>
+<title>${esc(t.nome)} — ${esc(proj.nome)} · UCAMDS</title>
 <meta name="description" content="${esc(t.descricao)}">
 <style>
 ${fontFaceCss('../fonts')}
@@ -165,25 +165,25 @@ ${fontFaceCss('../fonts')}
      sistema em produção. Sem ela alguém confunde o protótipo com a tela real.
      Fica no fim do DOM e no rodapé da tela: se viesse antes, seria o primeiro
      elemento focável do documento, na frente do skip-link. */
-  .dsucam-bar{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;
+  .ucamds-bar{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;
     /* 40px INTEIROS: 12px/1.4 dava 16,8 de linha, mais 16 de recuo, mais 1 de
        filete = 41,8px — e a fração empurrava a tela INTEIRA acima dela para
        y=x,1. Linha de 16, filete por sombra, e a barra fecha em 40. */
     block-size:2.5rem;padding:0 .9rem;font:500 12px/16px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     background:var(--ucam-color-surface-default);color:var(--ucam-color-text-secondary);
     box-shadow:inset 0 1px 0 var(--ucam-color-border-subtle)}
-  .dsucam-bar strong{color:var(--ucam-color-text-primary)}
+  .ucamds-bar strong{color:var(--ucam-color-text-primary)}
   /* padding-block: o link da barra media 16,8px de alvo. Em elemento em linha
      o recuo cresce a caixa de acerto sem mexer na altura da faixa — mesmo
      recurso que o .ucam-link usa na folha. */
-  .dsucam-bar a{color:var(--ucam-color-action-primary-default);text-decoration:none;padding-block:.25rem}
-  .dsucam-bar a:hover{text-decoration:underline}
-  .dsucam-bar .sep{opacity:.4}
+  .ucamds-bar a{color:var(--ucam-color-action-primary-default);text-decoration:none;padding-block:.25rem}
+  .ucamds-bar a:hover{text-decoration:underline}
+  .ucamds-bar .sep{opacity:.4}
   /* Modo embutido: esta mesma página é o preview dentro da moldura de
      dispositivo da documentação. Ali a barra de contexto é ruído — a página
      em volta já diz que é template do design system — e ainda roubaria altura
      da viewport que a moldura anuncia. Ver deviceFrame() em build-docs.mjs. */
-  html.embed .dsucam-bar{display:none}
+  html.embed .ucamds-bar{display:none}
 /* Sem isto o <svg class='ic'> não tem tamanho e estica até o contêiner. */
 ${iconCss}
 ${tokensCss}
@@ -242,8 +242,8 @@ var pal=p.get('paleta');if(pal==='comum'||pal==='moldura')document.documentEleme
 <body>
 ${sprite}
 <div class="ucam">${listboxSelects(renderShell(shellDaTela(proj, t, destinosDe(proj)), promoveTitulo(religaPreview(t.preview))))}</div>
-<div class="dsucam-bar">
-  <strong>DSUCAM</strong><span class="sep">·</span>
+<div class="ucamds-bar">
+  <strong>UCAMDS</strong><span class="sep">·</span>
   <span>${esc(proj.nome)}</span><span class="sep">/</span>
   <span>${esc(t.nome)}</span>
   <span style="margin-inline-start:auto">Template do design system — não é o sistema em produção.</span>

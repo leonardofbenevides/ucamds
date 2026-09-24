@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 
-import { UcamIcon } from '../icon/ucam-icon';
+import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
 
 /**
  * Contrato: spec/components/stat.json
@@ -40,45 +41,60 @@ const TOM: Record<UcamStatTone, string> = {
 @Component({
   selector: 'ucam-stat',
   exportAs: 'ucamStat',
-  imports: [UcamIcon],
+  imports: [UcamIcon, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { class: 'contents' },
   template: `
     <div [class]="classes()">
-      <!-- O rótulo vem ANTES do valor na ordem do DOM para que o leitor de
-           tela anuncie a pergunta antes da resposta. Em row o valor aparece
-           à direita, mas por ordem visual da linha — nunca invertendo o DOM. -->
-      <span class="ucam-stat__label">{{ label() }}</span>
+      @if (icon(); as ic) {
+        <!-- Ladrilho NEUTRO, sempre (ADR-046): a ADR-034 tirou o fundo tinto
+             do stat e vale para o ladrilho de dentro — quatro figuras coloridas
+             seriam o mosaico de volta. Decorativo: quem nomeia é o rótulo. -->
+        <span class="ucam-stat__figura" aria-hidden="true"><ucam-icon [name]="ic" size="sm" /></span>
+      }
+      <!-- O corpo só existe com figura, para o DOM dos stats sem figura não
+           mudar. É o mesmo arranjo do Trilho A (.ucam-stat__corpo). -->
+      <ng-container *ngTemplateOutlet="icon() ? comCorpo : semCorpo" />
+      <ng-template #comCorpo><span class="ucam-stat__corpo"><ng-container *ngTemplateOutlet="miolo" /></span></ng-template>
+      <ng-template #semCorpo><ng-container *ngTemplateOutlet="miolo" /></ng-template>
 
-      @if (carregando()) {
-        <!-- Sem dado ainda: uma barra do tamanho do número, não um "0". Zero é
-             um valor, e mostrá-lo enquanto se carrega faz a pessoa decidir
-             sobre um número que não existe. -->
-        <span class="ucam-stat__value ucam-stat__value--esqueleto" aria-hidden="true">&nbsp;</span>
-        <span class="ucam-sr-only">Carregando {{ label() }}</span>
-      } @else {
-        <span class="ucam-stat__valor-linha">
+      <ng-template #miolo>
+        <!-- O rótulo vem ANTES do valor na ordem do DOM para que o leitor de
+             tela anuncie a pergunta antes da resposta. Em row o valor aparece
+             à direita, mas por ordem visual da linha — nunca invertendo o DOM. -->
+        <span class="ucam-stat__label">{{ label() }}</span>
+
+        @if (carregando()) {
+          <!-- Sem dado ainda: uma barra do tamanho do número, não um "0". Zero é
+               um valor, e mostrá-lo enquanto se carrega faz a pessoa decidir
+               sobre um número que não existe. -->
+          <span class="ucam-stat__value ucam-stat__value--esqueleto" aria-hidden="true">&nbsp;</span>
+          <span class="ucam-sr-only">Carregando {{ label() }}</span>
+        } @else {
+          <!-- Valor e delta são irmãos diretos do ladrilho, como no Trilho A:
+               o wrapper __valor-linha que existia aqui não constava da
+               anatomia e era o primeiro ponto de drift entre os dois trilhos. -->
           <span class="ucam-stat__value" [style.color]="semValor() ? 'var(--ucam-color-text-secondary)' : null">{{ valorExibido() }}</span>
           @if (delta(); as d) {
             <!-- Texto, sem pastilha (ADR-034). Neutro sem tom: para cima nem
                  sempre é bom. Com tom, acompanha a tinta do valor. -->
             <span class="ucam-stat__delta" [style.color]="tone() === 'neutral' ? null : cor()">{{ d }}</span>
           }
-        </span>
-      }
+        }
 
-      @if (state() === 'error') {
-        <!-- A palavra carrega o erro; ícone e tinta só apontam. Sem botão: quem
-             tenta de novo é a seção, senão quatro ladrilhos que falharam juntos
-             viram quatro botões iguais. -->
-        <span class="ucam-stat__erro" role="status">
-          <ucam-icon name="circleAlert" size="sm" aria-hidden="true" />
-          Não foi possível carregar
-        </span>
-      } @else if (meta(); as m) {
-        <span class="ucam-stat__meta" [style.color]="tone() === 'neutral' ? null : cor()">{{ m }}</span>
-      }
+        @if (state() === 'error') {
+          <!-- A palavra carrega o erro; ícone e tinta só apontam. Sem botão: quem
+               tenta de novo é a seção, senão quatro ladrilhos que falharam juntos
+               viram quatro botões iguais. -->
+          <span class="ucam-stat__erro" role="status">
+            <ucam-icon name="circleAlert" size="sm" aria-hidden="true" />
+            Não foi possível carregar
+          </span>
+        } @else if (meta(); as m) {
+          <span class="ucam-stat__meta" [style.color]="tone() === 'neutral' ? null : cor()">{{ m }}</span>
+        }
+      </ng-template>
     </div>
   `,
   styles: `
@@ -87,7 +103,10 @@ const TOM: Record<UcamStatTone, string> = {
       flex: 1 1 11rem;
       min-inline-size: 0;
       flex-direction: column;
-      gap: 0.15rem;
+      /* 0.125rem, 1.5rem de entrelinha e delta sem recuo: os números da folha
+         do Trilho A. Eram 0.15rem, 1.1 e 1px/5px — medido em 23/09/2026, o
+         mesmo ladrilho saía 1px mais alto aqui (ADR-046). */
+      gap: 0.125rem;
       padding: var(--ucam-space-inset-md);
       background: var(--ucam-color-surface-default);
       /* Anel próprio de 1px em vez de deixar o vão do contêiner aparecer: é o
@@ -99,28 +118,50 @@ const TOM: Record<UcamStatTone, string> = {
       font-size: var(--ucam-typography-caption-font-size);
       color: var(--ucam-color-text-secondary);
     }
-    ucam-stat .ucam-stat__valor-linha {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5rem;
-      min-inline-size: 0;
-    }
     ucam-stat .ucam-stat__value {
       font-size: var(--ucam-typography-page-title-font-size);
       font-weight: var(--ucam-typography-page-title-font-weight);
-      line-height: 1.1;
+      line-height: 1.5rem;
       letter-spacing: -0.02em;
       /* Valor monetário em coluna só se confere se os dígitos alinharem. */
       font-variant-numeric: tabular-nums;
     }
     ucam-stat .ucam-stat__delta {
-      display: inline-block;
-      padding: 0.0625rem 0.3125rem;
+      display: inline-flex;
+      align-items: center;
+      align-self: start;
+      min-block-size: var(--ucam-size-marcador);
+      padding: 0.1875rem 0;
+      line-height: var(--ucam-typography-caption-line-height);
       color: var(--ucam-color-text-secondary);
       font-size: var(--ucam-typography-caption-font-size);
-      font-weight: 500;
+      font-weight: var(--ucam-typography-label-font-weight);
       font-variant-numeric: tabular-nums;
-      white-space: nowrap;
+    }
+
+    /* Figura e corpo — ver .ucam-stat--figura na folha do Trilho A. */
+    ucam-stat .ucam-stat--figura {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--ucam-space-inline-sm);
+    }
+    ucam-stat .ucam-stat__figura {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      inline-size: var(--ucam-size-control-md);
+      block-size: var(--ucam-size-control-md);
+      border-radius: var(--ucam-radius-control);
+      background: var(--ucam-color-surface-sunken);
+      color: var(--ucam-color-text-secondary);
+    }
+    ucam-stat .ucam-stat__corpo {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-inline-size: 0;
+      flex: 1 1 auto;
     }
     ucam-stat .ucam-stat__meta {
       font-size: var(--ucam-typography-caption-font-size);
@@ -129,18 +170,14 @@ const TOM: Record<UcamStatTone, string> = {
 
     /* O arranjo em linha rende quatro ladrilhos numa faixa de 56px em vez de 96, e essa
        altura volta para a tabela logo abaixo. Só serve a contagem curta. */
-    ucam-stat .ucam-stat--row {
+    ucam-stat .ucam-stat--linha {
       flex-direction: row;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 0.75rem;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--ucam-space-inline-sm);
     }
-    ucam-stat .ucam-stat--row .ucam-stat__value {
+    ucam-stat .ucam-stat--linha .ucam-stat__label { margin-inline-end: auto; }
+    ucam-stat .ucam-stat--linha .ucam-stat__value {
       font-size: var(--ucam-typography-section-title-font-size);
-    }
-    ucam-stat .ucam-stat--row .ucam-stat__meta {
-      flex-basis: 100%;
     }
 
     ucam-stat .ucam-stat__value--esqueleto {
@@ -189,6 +226,8 @@ export class UcamStat {
   readonly delta = input<string | null>(null);
   readonly tone = input<UcamStatTone>('neutral');
   readonly layout = input<UcamStatLayout>('stack');
+  /** Ladrilho de ícone neutro à esquerda do bloco de texto. Decorativo (ADR-046). */
+  readonly icon = input<UcamIconName | null>(null);
   /** @deprecated Desde 13/09/2026: use state="loading". Segue aceito como sinônimo. */
   readonly loading = input(false);
   /** loading, empty e error, no vocabulário da DataTable. Ver stat.json. */
@@ -213,7 +252,7 @@ export class UcamStat {
 
   protected readonly classes = computed(
     () =>
-      `ucam-stat${this.layout() === 'row' ? ' ucam-stat--row' : ''}${this.tone() === 'neutral' ? '' : ' ucam-stat--' + this.tone()}`,
+      `ucam-stat${this.layout() === 'row' ? ' ucam-stat--linha' : ''}${this.icon() ? ' ucam-stat--figura' : ''}${this.tone() === 'neutral' ? '' : ' ucam-stat--' + this.tone()}`,
   );
 
   constructor() {

@@ -31,7 +31,7 @@
         "problema": "a busca é um link 'PESQUISAR' com lupa SEPARADO do campo, no canto oposto do cabeçalho — a ação que opera sobre o campo não tem relação visual nenhuma com ele"
       },
       {
-        "tela": "testeira do próprio DSUCAM, nas 11 telas de referência",
+        "tela": "testeira do próprio UCAMDS, nas 11 telas de referência",
         "problema": "a busca do shell é um grupo montado à mão em .ucam-appbar__search — lupa, campo e selo de tecla dentro de uma caixa com borda. Medido no navegador, o <input> tinha 20px de altura dentro de um invólucro de 32: sobravam 6px em cima e 6 embaixo onde o clique não focava nada. É o defeito que um componente de grupo existe para tornar impossível."
       }
     ],

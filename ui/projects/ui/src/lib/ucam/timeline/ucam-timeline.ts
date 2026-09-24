@@ -169,7 +169,7 @@ export function relativoDe(iso: string, agora = new Date()): string {
                 <span class="size-2 shrink-0 rounded-full bg-[var(--ucam-color-border-strong)]"></span>
                 <span class="w-px flex-1 min-h-4 bg-[var(--ucam-color-border-subtle)]"></span>
               </span>
-              <p class="m-0 pt-1 pb-2 text-xs font-medium uppercase tracking-[0.06em] text-muted-foreground">
+              <p class="m-0 pt-1 pb-2 text-xs font-medium text-muted-foreground">
                 <span class="sr-only">Fase: </span>{{ e.rotulo }}
               </p>
             </li>
@@ -178,7 +178,7 @@ export function relativoDe(iso: string, agora = new Date()): string {
             <span class="flex flex-col items-center w-7" aria-hidden="true">
               <span class="w-px flex-1 min-h-4 bg-[var(--ucam-color-border-subtle)]"></span>
             </span>
-            <p class="m-0 py-1 text-xs font-medium uppercase tracking-[0.06em] text-muted-foreground">{{ e.rotulo }}</p>
+            <p class="m-0 py-1 text-xs font-medium text-muted-foreground">{{ e.rotulo }}</p>
           </li>
           }
         } @else {

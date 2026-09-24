@@ -1,4 +1,5 @@
 {
+  "$lede": "Como um dado vira texto na tela. Data, dinheiro, documento e identificador têm uma forma para quem lê e outra no modelo.",
   "$description": "Como um dado vira texto na tela. Data, hora, dinheiro, número, percentual, documento e identificador têm uma forma só em todo o parque — a de quem lê, em português do Brasil — e uma forma só no modelo, que quase nunca é a mesma. Esta fundação declara as duas e a fronteira entre elas.",
   "_meta": {
     "regra": "Formatar é decisão de DOMÍNIO, não de apresentação. O componente recebe o texto pronto: um componente que escolhe R$ impõe a moeda a quem exibe percentual, e um que escolhe duas casas impõe o arredondamento a quem exibe dias.",
@@ -136,7 +137,7 @@
       "exemplo": "20261234567",
       "modelo": "20261234567",
       "onde": "Identificação do aluno em toda tela do parque.",
-      "regra": "Não recebe separador de milhar — é identificador, não quantidade. Pela mesma razão nunca alinha à direita nem recebe tabular-nums por ser 'número'."
+      "regra": "Não recebe separador de milhar — é identificador, não quantidade. Pela mesma razão nunca alinha à direita nem recebe tabular-nums por ser 'número'. Em texto corrido vai em .ucam-id, um degrau de peso acima do texto em volta (ADR-047)."
     },
     {
       "id": "protocolo",
@@ -145,7 +146,7 @@
       "exemplo": "2026/0004821",
       "modelo": "idêntico",
       "onde": "Fila de triagem, detalhe do requerimento, confirmação de envio.",
-      "regra": "É o número que a pessoa anota e usa para cobrar. Não se abrevia, não se trunca na coluna e não muda de forma entre módulos."
+      "regra": "É o número que a pessoa anota e usa para cobrar. Não se abrevia, não se trunca na coluna e não muda de forma entre módulos. Em texto corrido e em link vai em .ucam-id, um degrau de peso acima do texto em volta (ADR-047)."
     },
     {
       "id": "tamanho-de-arquivo",
@@ -197,6 +198,11 @@
       "id": "sem-reformatar-identificador",
       "regra": "Identificador não é quantidade: matrícula, protocolo e código não recebem separador de milhar nem arredondamento.",
       "porque": "É a confusão que transforma a matrícula 20261234567 em 20.261.234.567 na primeira vez que alguém aplica o formatador de número à coluna errada."
+    },
+    {
+      "id": "identificador-destacado",
+      "regra": "Identificador em texto corrido — matrícula, protocolo, número de documento — vai em .ucam-id: um degrau de peso acima do texto em volta (500), e nada mais. Onde ele já é o título, a classe não entra.",
+      "porque": "É o que a pessoa procura numa lista e anota de um registro, e na linha 20401123 · Mensalidade 08/2026 era o trecho de menor destaque. Peso, e não família nem alinhamento: a matrícula não pode receber tabular-nums, e o mono (.ucam-codigo) é para o que se copia dígito a dígito. Um degrau só, porque 560 é do título e do escolhido (ADR-046, ADR-047)."
     }
   ],
   "onde_formata": {

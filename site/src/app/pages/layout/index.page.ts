@@ -28,6 +28,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       secao="Layout"
       [titulo]="'Blocos de layout'"
       [lede]="lede"
+      [porque]="porque"
     />
 
     <ucam-nesta-pagina [secoes]="secoes" />
@@ -386,7 +387,10 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       display: inline-block;
       margin-block-end: 0.25rem;
       font-family: var(--f-mono);
-      font-size: 0.65rem;
+      /* 0,75rem: a régua de metadado do site, a mesma do .meta da página de
+         componente. Estava em 10,4px, abaixo do piso que este próprio site
+         cobra das telas que documenta. */
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
@@ -426,7 +430,8 @@ export default class LayoutPage {
     { id: 'praticas', rotulo: 'Faça e evite' },
   ];
   protected readonly regra = layouts._meta.regra;
-  protected readonly lede = layouts.$description;
+  protected readonly lede = layouts.$lede;
+  protected readonly porque = layouts.$description;
 
   /**
    * `bypassSecurityTrustHtml` é deliberado, como no catálogo: a origem é este

@@ -26,24 +26,24 @@ function gravarSeNovo(caminho, conteudo, rotulo) {
 
 function instalar() {
   const caminhoServidor = relative(alvo, join(RAIZ, 'mcp', 'server.mjs')).replace(/\\/g, '/');
-  console.log(`DSUCAM → ${alvo}`);
+  console.log(`UCAMDS → ${alvo}`);
 
   // 1. MCP para Claude Code (.mcp.json), mesclando com o que houver.
   const mcpJson = join(alvo, '.mcp.json');
   const atual = existsSync(mcpJson) ? JSON.parse(readFileSync(mcpJson, 'utf8')) : {};
   atual.mcpServers ??= {};
-  atual.mcpServers.dsucam = { command: 'node', args: [caminhoServidor] };
+  atual.mcpServers.ucamds = { command: 'node', args: [caminhoServidor] };
   writeFileSync(mcpJson, JSON.stringify(atual, null, 2) + '\n', 'utf8');
-  console.log('  ✓ .mcp.json (servidor dsucam)');
+  console.log('  ✓ .mcp.json (servidor ucamds)');
 
   // 2. MCP para VS Code / Copilot (.vscode/mcp.json), mesclando.
   mkdirSync(join(alvo, '.vscode'), { recursive: true });
   const vscode = join(alvo, '.vscode', 'mcp.json');
   const v = existsSync(vscode) ? JSON.parse(readFileSync(vscode, 'utf8')) : {};
   v.servers ??= {};
-  v.servers.dsucam = { type: 'stdio', command: 'node', args: ['${workspaceFolder}/' + caminhoServidor] };
+  v.servers.ucamds = { type: 'stdio', command: 'node', args: ['${workspaceFolder}/' + caminhoServidor] };
   writeFileSync(vscode, JSON.stringify(v, null, 2) + '\n', 'utf8');
-  console.log('  ✓ .vscode/mcp.json (servidor dsucam)');
+  console.log('  ✓ .vscode/mcp.json (servidor ucamds)');
 
   // 3. Skills em .claude/skills/ (Claude Code) e .agents/skills/ (demais agentes).
   for (const base of ['.claude', '.agents']) {
@@ -63,16 +63,16 @@ function instalar() {
   // 4. AGENTS.md: o do DS entra como arquivo próprio; o do projeto só ganha a referência.
   const agentesDs = join(alvo, 'AGENTS.ucam.md');
   gravarSeNovo(agentesDs, readFileSync(join(RAIZ, 'AGENTS.md'), 'utf8'), 'AGENTS.ucam.md');
-  const referencia = '\n\n## Design System da UCAM\n\nToda interface deste projeto segue o DSUCAM. Leia `AGENTS.ucam.md` e use o servidor MCP `dsucam` antes de escrever tela ou componente.\n';
+  const referencia = '\n\n## Design System da UCAM\n\nToda interface deste projeto segue o UCAMDS. Leia `AGENTS.ucam.md` e use o servidor MCP `ucamds` antes de escrever tela ou componente.\n';
   for (const nome of ['AGENTS.md', 'CLAUDE.md']) {
     const arq = join(alvo, nome);
     const txt = existsSync(arq) ? readFileSync(arq, 'utf8') : '';
     if (txt.includes('AGENTS.ucam.md')) {
-      console.log(`  · ${nome}: já referencia o DSUCAM`);
+      console.log(`  · ${nome}: já referencia o UCAMDS`);
       continue;
     }
     writeFileSync(arq, (txt ? txt.trimEnd() : `# ${nome.replace('.md', '')}`) + referencia, 'utf8');
-    console.log(`  ✓ ${nome} (referência ao DSUCAM)`);
+    console.log(`  ✓ ${nome} (referência ao UCAMDS)`);
   }
   console.log('\nReinicie o cliente (Claude Code, VS Code) para ele enxergar o servidor e as skills.');
 }

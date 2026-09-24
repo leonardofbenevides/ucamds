@@ -144,7 +144,7 @@ const INDICE = busca.map((i) => ({ item: i, chave: semAcento(`${i.titulo} ${i.su
       background: var(--ucam-color-surface-default);
     }
     kbd {
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       padding: 0.1rem 0.3rem;
       border: 1px solid var(--ucam-color-border-subtle);
       border-radius: var(--ucam-radius-sm);
@@ -212,7 +212,7 @@ const INDICE = busca.map((i) => ({ item: i, chave: semAcento(`${i.titulo} ${i.su
     .tipo {
       grid-row: span 2;
       font-family: var(--f-mono);
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       color: var(--ucam-color-text-secondary);
       padding-top: 0.15rem;
     }

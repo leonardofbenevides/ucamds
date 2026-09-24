@@ -191,7 +191,7 @@ export type UcamSystemCategory =
                 <!-- Caixa alta VALE para o rótulo do grupo e para mais nada:
                      ele é etiqueta de gaveta, não texto de leitura. -->
                 <p
-                  class="m-0 mb-[var(--ucam-space-inline-xs)] px-[var(--ucam-space-inline-sm)] text-[length:var(--ucam-typography-caption-font-size)] font-medium uppercase tracking-[0.06em] text-[var(--ucam-color-text-secondary)]"
+                  class="m-0 mb-[var(--ucam-space-inline-xs)] px-[var(--ucam-space-inline-sm)] text-[length:var(--ucam-typography-caption-font-size)] font-medium text-[var(--ucam-color-text-secondary)]"
                 >
                   {{ grupo.label }}
                 </p>

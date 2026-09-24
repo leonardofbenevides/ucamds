@@ -1,4 +1,4 @@
-# DSUCAM — Design System da Universidade Candido Mendes
+# UCAMDS — Design System da Universidade Candido Mendes
 
 Um contrato em JSON, muitos consumidores gerados a partir dele: CSS puro para os
 sistemas legados, componentes Angular para os novos, o site de documentação, e um
@@ -64,13 +64,23 @@ site/src/generated/ dados que o site consome
 site/dist/          o site construído, que é o que a Vercel publica
 ```
 
-## Os dois trilhos
+## Os trilhos
 
-O mesmo componente existe em duas formas, e elas têm de ser indistinguíveis:
+O mesmo componente existe em mais de uma forma, e elas têm de ser indistinguíveis.
+Quem consome não escolhe por gosto: escolhe pela resposta a **uma pergunta — a
+aplicação tem passo de build?** O seletor é um só e mora em
+`spec/migracao.json` (`escolhaDoTrilho`: a `pergunta`, a `nota` de ponte e destino,
+e o `quando` de cada trilho). Dele saem a home, a página de instalação, o guia de
+migração e o AGENTS.md — ver ADR-045.
 
 - **Trilho A** — folha de estilo pura (`dist/css/ucam.css`). É o que os sistemas
   legados em JSF/PrimeFaces e AngularJS conseguem consumir hoje, sem reescrita.
-- **Trilho B** — componentes Angular em `ui/`. É para onde os sistemas novos vão.
+  É **ponte**: existe enquanto o parque não atravessa.
+- **Trilho A+** — o bundle de custom elements (ADR-010), para as telas do legado
+  que precisam de um componente que CSS não desenha. Não é o A melhorado, e não
+  convive com a biblioteca Angular na mesma página.
+- **Trilho B** — componentes Angular em `ui/`. É o **destino**: para onde os
+  sistemas novos e os migrados vão.
 
 `pnpm ui` traduz os tokens de tamanho da spec para as classes do Tailwind e cobra o
 valor na base do Trilho B. Esse portão existe porque os dois já divergiram: botão com
@@ -106,16 +116,29 @@ A Vercel constrói a partir deste repositório: roda `pnpm dist` e publica
 `site/dist/analog/public`. A configuração está em `vercel.json`. `APPSUCAM/`,
 `spec/` e o resto ficam no repositório.
 
-Vai ao ar o site e mais duas coisas, porque a documentação as promete:
+Vai ao ar o site e mais o design system servido por URL, porque a
+documentação o promete e o parque legado não tem passo de build — o que não
+está numa URL, para ele não existe:
 
-- **`/tokens/`** — o CSS de tokens que o `<link>` do Trilho A carrega. Enquanto
-  não existia, a primeira linha que um dev do parque legado copiava dava 404.
-- **`/pacotes/`** — os tarballs das quatro bibliotecas, que são o artefato
-  instalável enquanto não houver registro privado.
+| Rota | O quê |
+|---|---|
+| `/css/` | `ucam.css` e `ucam-fonts.css`. Dois `<link>` e o Trilho A funciona, sem instalar nada |
+| `/tokens/` | O CSS de tokens, para quem só quer as variáveis. `ucam.css` já o importa |
+| `/fonts/` | Os `.woff2` da Geist, que a folha de fontes carrega |
+| `/icons/` | `sprite.svg`, para o app **baixar e servir da própria origem** — `<use>` externo é same-origin |
+| `/elements/` | O bundle do Trilho A+ (ADR-010): um `<link>`, um `<script>`, e `<ucam-combobox>` existe |
+| `/pacotes/` | Os tarballs, o artefato instalável enquanto não houver registro privado |
 
-O `build-publicacao` confere as duas coisas: toda URL ensinada em
-`spec/resources.json` tem de existir como arquivo na saída, e todo pacote
-marcado `gerado` tem de ter tarball baixável. Por isso o comando da Vercel é
+A árvore publicada espelha `dist/`, e isso não é arrumação: `ucam.css` faz
+`@import "../tokens/…"` e a folha de fontes aponta para `../fonts/…`. Publicar
+`css/` longe de `tokens/` e `fonts/` devolveria 200 no `<link>` e 404 em tudo
+que ele carrega.
+
+O `build-publicacao` confere três coisas: toda URL ensinada em
+`spec/resources.json` — no bloco de código e na prosa — tem de existir como
+arquivo na saída; todo pacote marcado `gerado` tem de ter tarball baixável; e
+tudo que as folhas publicadas carregam por caminho relativo tem de estar lá
+também. Por isso o comando da Vercel é
 `pnpm dist` e não `pnpm build` — é o `dist` que constrói a biblioteca Angular
 e empacota.
 

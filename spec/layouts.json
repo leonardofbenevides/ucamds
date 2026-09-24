@@ -1,4 +1,5 @@
 {
+  "$lede": "O vocabulário de ARRANJO: um componente resolve um controle, um bloco resolve onde as coisas ficam. Quatro camadas, do shell ao template de tela.",
   "$description": "Blocos de layout: o vocabulário de ARRANJO do design system. Um componente resolve um controle; um bloco resolve onde as coisas ficam. Existem porque a alternativa está escrita nos templates antigos deste próprio repositório — flex, gap e max-inline-size decididos por tela, em style inline, com um valor diferente a cada vez. Quatro camadas, do maior para o menor: o shell (a moldura da aplicação), as regiões dentro dele, os blocos de composição e os templates de tela em spec/templates.json.",
   "_meta": {
     "regra": "Bloco de layout NÃO carrega cor de conteúdo, borda decorativa nem tipografia de corpo. Ele posiciona. No instante em que um bloco precisa pintar algo para funcionar, ou virou componente ou está resolvendo o problema errado.",
@@ -367,7 +368,8 @@
         }
       ],
       "variaveis": [],
-      "exemplo": "<div class=\"ucam-stats ucam-stats--cartoes\">\n  <ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />\n  <ucam-stat label=\"Atrasados\" [value]=\"19\" meta=\"22% da fila\" />\n</div>"
+      "exemplo": "<div class=\"ucam-stats ucam-stats--cartoes\">\n  <ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />\n  <ucam-stat label=\"Atrasados\" [value]=\"19\" meta=\"22% da fila\" />\n</div>",
+      "composicao": "Números que se somam sob um título: dentro de .ucam-card com .ucam-card__cabecalho, a grade contínua vira faixa entre dois fios e os ladrilhos perdem o anel — quem emoldura é o cartão (ADR-046). Leituras independentes ficam em --cartoes, sem cabeçalho."
     }
   ],
   "boas_praticas": [

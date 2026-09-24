@@ -13,6 +13,20 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation 
  */
 export type UcamProgressTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger';
 
+/**
+ * Um segmento da barra SEGMENTADA (ADR-046): de que partes é feito um total.
+ * `serie` (1–6) é a paleta de dataviz, para partes sem julgamento; `tone` é
+ * feedback, para segmento que julga (etapa vencida). Um dos dois, nunca ambos.
+ */
+export interface UcamProgressSegment {
+  label: string;
+  value: number;
+  /** Já formatado, como o valor do stat: "R$ 1.437,90". Sem ele, a legenda mostra value. */
+  valueText?: string;
+  serie?: 1 | 2 | 3 | 4 | 5 | 6;
+  tone?: UcamProgressTone;
+}
+
 const PREENCHIMENTO: Record<UcamProgressTone, string> = {
   neutral: 'bg-muted-foreground',
   info: 'bg-[var(--ucam-color-feedback-info-foreground)]',
@@ -31,6 +45,21 @@ let seq = 0;
   /** Ver o porquê do contents em ucam-description-list. */
   host: { class: 'contents' },
   template: `
+    @if (segments(); as segs) {
+      <!-- SEGMENTADA: role=img, não progressbar — não há um valor só. O nome
+           acessível carrega todas as partes, e a legenda abaixo as repete em
+           texto, que é onde o número exato mora (dataviz.json). -->
+      <div class="ucam-progress ucam-progress--segmentada" role="img" [attr.aria-label]="rotuloSegmentos()">
+        @for (s of segs; track s.label) {
+          <span [class]="classeSegmento(s)" [style.--ucam-progress-valor]="percentualDe(s) + '%'"></span>
+        }
+      </div>
+      <ul class="ucam-progress__series">
+        @for (s of segs; track s.label) {
+          <li><span [class]="classePonto(s)" aria-hidden="true"></span>{{ s.label }} <b>{{ s.valueText ?? s.value }}</b></li>
+        }
+      </ul>
+    } @else {
     <div
       role="progressbar"
       class="block w-full bg-muted rounded-full overflow-hidden"
@@ -52,6 +81,7 @@ let seq = 0;
         <span>{{ legendStart() }}</span>
         <span>{{ legendEnd() }}</span>
       </p>
+    }
     }
   `,
 })
@@ -75,6 +105,28 @@ export class UcamProgress {
    */
   readonly legendStart = input<string | null>(null);
   readonly legendEnd = input<string | null>(null);
+
+  /**
+   * Partes de um todo (ADR-046). Com segments, value/max/tone são ignorados:
+   * o total é a soma dos segmentos. Máximo de seis — acima disso a legenda
+   * vira lista e a barra vira ruído; é tabela.
+   */
+  readonly segments = input<UcamProgressSegment[] | null>(null);
+
+  protected readonly totalSegmentos = computed(() => (this.segments() ?? []).reduce((t, s) => t + s.value, 0));
+  protected percentualDe(s: UcamProgressSegment): number {
+    const t = this.totalSegmentos();
+    return t > 0 ? Math.round((s.value / t) * 1000) / 10 : 0;
+  }
+  protected classeSegmento(s: UcamProgressSegment): string {
+    return `ucam-progress__fill ucam-progress__fill--${s.tone ? s.tone : 'serie-' + (s.serie ?? 1)}`;
+  }
+  protected classePonto(s: UcamProgressSegment): string {
+    return `ucam-progress__ponto ucam-progress__ponto--${s.tone ? s.tone : 'serie-' + (s.serie ?? 1)}`;
+  }
+  protected readonly rotuloSegmentos = computed(() =>
+    `${this.label()}: ${(this.segments() ?? []).map((s) => `${s.label} ${s.valueText ?? s.value} (${this.percentualDe(s)}%)`).join(', ')}`,
+  );
 
   protected readonly id = `ucam-pg-${++seq}`;
 

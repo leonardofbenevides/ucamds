@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="DSUCAM">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="UCAMDS">
   <!-- Versão branca, para fundo escuro e para a faixa bordô. Mesma geometria de
-       dsucam-simbolo.svg — ver o comentário de lá.
+       ucamds-simbolo.svg — ver o comentário de lá.
 
        Quem consome isto pela trilha das telas legadas (a custom property
        ucam-rail-marca) usa o arquivo como MÁSCARA DE ALFA: lá a tinta vem do

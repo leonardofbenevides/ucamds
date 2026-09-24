@@ -1,6 +1,6 @@
 // Gera o site LEGADO de documentação (docs/index.html).
 //
-// NÃO é o site publicado. O site do DSUCAM é o app Analog em site/ — cabeçalho
+// NÃO é o site publicado. O site do UCAMDS é o app Analog em site/ — cabeçalho
 // com as áreas no topo, segundo andar de abas, uma rota por página — e é ele
 // que a Vercel publica (vercel.json aponta para site/dist/analog/public).
 // Este arquivo segue no `pnpm build` só para docs/ não apodrecer; roda sozinho
@@ -48,6 +48,32 @@ const demos = read('demos.json').demos;
 const icons = read('icons.json');
 const states = read('states.json');
 const projetos = read('templates.json').projetos;
+
+// Os marcadores {host} e {versao} são resolvidos aqui pela mesma razão que o
+// site os resolve em site/src/app/spec/spec.ts: o host mora em resources.json,
+// a versão no package.json da raiz, e escrevê-los por extenso num exemplo
+// criaria a segunda fonte. Página que mostra "{host}/css/ucam.css" ao leitor é
+// pior que página desatualizada — ela manda copiar um endereço que não é
+// endereço nenhum.
+const { version: VERSAO } = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+const resolverMarcadores = (v, marcadores) => {
+  if (typeof v === 'string') {
+    let t = v;
+    for (const [marca, valor] of Object.entries(marcadores)) t = t.replaceAll(marca, valor);
+    return t;
+  }
+  if (Array.isArray(v)) return v.map((x) => resolverMarcadores(x, marcadores));
+  if (v && typeof v === 'object')
+    return Object.fromEntries(
+      Object.entries(v).map(([k, x]) => [k, resolverMarcadores(x, marcadores)]),
+    );
+  return v;
+};
+const recursosBrutos = read('resources.json');
+const recursos = resolverMarcadores(recursosBrutos, {
+  '{versao}': VERSAO,
+  '{host}': recursosBrutos.publicacao.host,
+});
 
 const components = readdirSync(join(SPEC, 'components'))
   .filter((f) => f.endsWith('.json'))
@@ -332,32 +358,31 @@ function pageIntro() {
 </article>`;
 }
 
+// A PÁGINA SAI DA SPEC, e isto é correção, não arrumação. Enquanto foi HTML
+// digitado aqui, ela envelheceu sozinha: mandava carregar
+// "/assets/ucam-tokens.css" — caminho que só existe dentro da aplicação que
+// consome, servido por ninguém — e ensinava `npx ucam-cli init`, um comando
+// que nunca existiu. Os trilhos moram em spec/resources.json, que é o que o
+// site publicado mostra e o que o portão de publicação confere; a segunda
+// cópia à mão só tinha um destino.
 function pageInstalacao() {
+  const trilho = (t) => `
+  <section class="sec">
+    <h2>${esc(t.nome)}</h2>
+    <p class="muted small"><strong>Para quem.</strong> ${esc(t.alvo)}</p>
+    <p>${esc(t.como)}</p>
+    <div class="panel"><div class="panel-body code"><pre><code>${esc(t.codigo)}</code></pre></div></div>
+    <p class="muted small"><strong>Limite.</strong> ${esc(t.limite)}</p>
+  </section>`;
+
   return `<article class="page" id="/comecar/instalacao">
   <header class="page-head"><div class="page-head-row"><h1>Instalação</h1></div>
-  <p class="lede">Dois caminhos, conforme a versão do Angular do seu sistema.</p></header>
+  <p class="lede">${esc(recursos.instalacao.$description)}</p></header>
+${recursos.instalacao.trilhos.map(trilho).join('\n')}
 
   <section class="sec">
-    <h2>Trilho A — sistemas legados</h2>
-    <p>Angular 14 ou anterior, AngularJS, ou qualquer stack. Duas folhas de estilo e um <code>class="ucam"</code> no container. Não há reset global nem preflight: o CSS existente do sistema continua funcionando.</p>
-    <div class="panel"><div class="panel-body code"><pre><code>&lt;link rel="stylesheet" href="/assets/ucam-tokens.css"&gt;
-&lt;link rel="stylesheet" href="/assets/ucam.css"&gt;
-
-&lt;div class="ucam"&gt;
-  &lt;button class="ucam-btn ucam-btn--primary"&gt;Salvar&lt;/button&gt;
-&lt;/div&gt;</code></pre></div></div>
-    <p class="muted small">A adoção é incremental — uma tela por vez, e uma tela pela metade continua funcionando.</p>
-  </section>
-
-  <section class="sec">
-    <h2>Trilho B — Angular moderno</h2>
-    <p>Angular 21 com Tailwind v4. O CLI copia o código-fonte do componente para o seu projeto.</p>
-    <div class="panel"><div class="panel-body code"><pre><code>npx ucam-cli init
-npx ucam-cli add button text-field data-table</code></pre></div></div>
-    <h3>Tailwind</h3>
-    <div class="panel"><div class="panel-body code"><pre><code>/* styles.css */
-@import "tailwindcss";
-@import "@ucam/tokens/ucam-theme.css";</code></pre></div></div>
+    <h2>Adoção incremental</h2>
+    <p>Uma tela por vez, e uma tela pela metade continua funcionando: não há reset global nem preflight, então o CSS que o sistema já tem segue valendo.</p>
   </section>
 
   <section class="sec">
@@ -700,7 +725,7 @@ function pageTokens() {
 }
 
 function pageMcp() {
-  const cfg = JSON.stringify({ mcpServers: { dsucam: { command: 'npx', args: ['-y', '@ucam/ds-mcp@latest'] } } }, null, 2);
+  const cfg = JSON.stringify({ mcpServers: { ucamds: { command: 'npx', args: ['-y', '@ucam/ds-mcp@latest'] } } }, null, 2);
   return `<article class="page" id="/comecar/mcp">
   <header class="page-head"><div class="page-head-row"><h1>Servidor MCP</h1>${pill('draft')}</div>
   <p class="lede">Serve os contratos dos componentes a agentes de IA, para que eles usem a API real em vez de inventar props.</p></header>
@@ -860,7 +885,7 @@ function pageProjeto(proj) {
 function pagePadroes() {
   return `<article class="page" id="/padroes">
   <header class="page-head"><div class="page-head-row"><h1>Padrões</h1></div>
-  <p class="lede">Um padrão resolve uma tarefa inteira, não um controle. Vira código em <code>@ucam/patterns</code> quando aparece em três ou mais telas.</p></header>
+  <p class="lede">Um padrão resolve uma tarefa inteira, não um controle. Vira código gerado quando aparece em três ou mais telas.</p></header>
   ${patterns.map((p) => `<section class="sec" id="p-${esc(p.id)}">
     <div class="page-head-row"><h2>${esc(p.nome)}</h2>${pill(p.status)}</div>
     <p class="muted"><strong>Frequência:</strong> ${esc(p.frequencia)}</p>
@@ -1474,7 +1499,7 @@ const html = `<!doctype html>
 <html lang="pt-BR">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DSUCAM</title>
+<title>UCAMDS</title>
 <style>
 ${CSS}
 </style>
@@ -1493,12 +1518,12 @@ ${sprite}
 <div class="shell">
   <div class="topbar">
     <button class="burger" aria-label="Abrir navegação">&#9776;</button>
-    <span class="topbar-marca">${simbolo()}<strong>DSUCAM</strong></span>
+    <span class="topbar-marca">${simbolo()}<strong>UCAMDS</strong></span>
   </div>
 
   <nav class="side" aria-label="Documentação">
     <div class="mark">
-      <a href="#/">${simbolo()}<span class="mark-txt"><strong>DSUCAM</strong><span>Design System UCAM</span></span></a>
+      <a href="#/">${simbolo()}<span class="mark-txt"><strong>UCAMDS</strong><span>Design System UCAM</span></span></a>
       <button class="theme-toggle" type="button" aria-label="Tema claro. Alternar." title="Alternar tema"><svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M3 12h2M19 12h2M5.6 18.4 7 17M17 7l1.4-1.4"/></svg><svg class="lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg></button>
     </div>
     <button class="search-trigger" type="button" aria-label="Buscar na documentação">

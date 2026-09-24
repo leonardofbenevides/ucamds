@@ -688,6 +688,14 @@ for (const { file, spec } of components) {
     if (!html) continue;
     conferaMarcacao(`demos.json (${spec.id}${i ? ` · exemplo ${i}` : ''})`, html);
   }
+  // A miniatura é retrato estático para o card do catálogo, onde o Trilho A
+  // não desenha o componente. Passa pela mesma conferência — e só faz sentido
+  // onde NÃO há preview: com os dois, o card mostraria o retrato no lugar do
+  // componente real.
+  if (d.miniatura) {
+    conferaMarcacao(`demos.json (${spec.id} · miniatura)`, d.miniatura);
+    if (d.principal?.preview) falha('demos.json', `"${spec.id}" tem miniatura E preview — a miniatura existe só onde o Trilho A não desenha`);
+  }
 
   // O código da demo não pode citar prop que o contrato não declara.
   const props = new Set(spec.props.map((p) => p.nome));
@@ -953,6 +961,51 @@ for (const { file, spec } of components) {
         file,
         `${prop.nome}: "${valor}" não acha tinta no Trilho A — nem .${esperada}, nem nada da família .ucam-${id}* terminando em --${valor}. Se a classe existe com outro nome, declare-a em valores.${valor}.classe`,
       );
+    }
+  }
+}
+
+/* ------------------------------------------- 7. a escolha entre trilhos --- */
+// O seletor de trilho é UM: migracao.escolhaDoTrilho. A página de instalação e
+// a home imprimem a pergunta e o `quando` de lá; o kit de agentes gera o mesmo
+// bloco. O defeito que este portão registra é de 23/09/2026: resources.json
+// tinha um campo `alvo` por trilho dizendo, com outras palavras, o mesmo
+// `quando` — e as duas versões já divergiam, porque só uma citava
+// JSF/PrimeFaces. Quem lia a instalação nunca via a pergunta que decide.
+
+const recursos = read('resources.json');
+const migracao = read('migracao.json');
+const escolha = migracao.escolhaDoTrilho;
+
+if (!escolha?.pergunta || !escolha?.nota) {
+  falha(
+    'migracao.json',
+    'escolhaDoTrilho precisa de "pergunta" (a que decide o trilho) e "nota" (qual é ponte e qual é destino) — é o que a home e a página de instalação imprimem antes dos trilhos',
+  );
+}
+
+// As duas listas de trilho têm de falar dos mesmos trilhos. O Trilho A+ nasceu
+// e a home ficou meses dizendo "dois trilhos" em prosa escrita à mão; do lado
+// da escolha, um trilho a mais em resources.json sairia como linha vazia na
+// tabela que decide.
+const idsInstalacao = (recursos.instalacao?.trilhos ?? []).map((t) => t.id);
+const idsEscolha = (escolha?.trilhos ?? []).map((t) => t.id);
+for (const id of idsInstalacao) {
+  if (!idsEscolha.includes(id)) {
+    falha('migracao.json', `o trilho "${id}" se instala em resources.json e não aparece em escolhaDoTrilho: a tabela que decide o trilho o deixaria de fora`);
+  }
+}
+for (const id of idsEscolha) {
+  if (!idsInstalacao.includes(id)) {
+    falha('resources.json', `o trilho "${id}" é escolhível em escolhaDoTrilho e não tem instalação em resources.json: a tabela mandaria para uma âncora que não existe`);
+  }
+}
+
+// E o para-quem não volta a morar em dois lugares.
+for (const t of recursos.instalacao?.trilhos ?? []) {
+  for (const campo of ['alvo', 'resposta']) {
+    if (t[campo]) {
+      falha('resources.json', `trilho "${t.id}": "${campo}" descreve para quem o trilho é, e isso mora em migracao.escolhaDoTrilho.trilhos[].quando — duas versões da mesma frase divergem`);
     }
   }
 }

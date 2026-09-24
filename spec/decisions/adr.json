@@ -275,7 +275,7 @@
         "Atualizar a ZardUI ficou mais caro NESTE ponto: uma major do echarts passa a poder quebrar o chart, o que não acontece com badge ou button.",
         "Em troca, o design system ganhou eixo rotulado, dica, empilhamento, barra deitada e pizza sem escrever nenhum deles.",
         "A fronteira da ADR-006 continua verificada pelo sync-ui: nenhum z-* aparece na API pública, que segue sendo ucam-chart.",
-        "O wrapper NÃO é fino, e cada coisa que ele acrescenta é algo que a base faz de um jeito que este design system não aceita: a tabela equivalente sempre no DOM; a paleta por slot em ordem fixa (a base CICLA as cores a partir do quinto item, e ciclar quebra a verificação de daltonismo); formatação pt-BR no eixo, na dica e na tabela; animação desligada sob prefers-reduced-motion; releitura das cores quando o data-theme do DSUCAM muda, que o serviço de tema da base não observa.",
+        "O wrapper NÃO é fino, e cada coisa que ele acrescenta é algo que a base faz de um jeito que este design system não aceita: a tabela equivalente sempre no DOM; a paleta por slot em ordem fixa (a base CICLA as cores a partir do quinto item, e ciclar quebra a verificação de daltonismo); formatação pt-BR no eixo, na dica e na tabela; animação desligada sob prefers-reduced-motion; releitura das cores quando o data-theme do UCAMDS muda, que o serviço de tema da base não observa.",
         "O trilho A perdeu o gráfico que tinha. A tela estática de Analytics passou a mostrar a tabela equivalente, com um alerta dizendo por quê — o que é a verdade sobre o legado, não uma degradação."
       ],
       "afeta": [
@@ -496,7 +496,7 @@
         "Primitivo neutral.550 entra na rampa; text.secondary (claro) aponta para ele. O 600 continua existindo para quem precisar de mais peso.",
         ".ucam-card passa de inset-lg para inset-md. Diálogo mantém inset-lg: é moldura própria, não superfície dentro da moldura.",
         "A tela autônoma de docs/t/ ganhou barra de contexto de 40px inteiros (era 41,8) — a fração dela empurrava toda tela acima para y=x,1.",
-        "O login refaz a coluna institucional: sai o símbolo do DSUCAM (marca do design system, não do Portal), entra a grade de módulos real como figura, e o bloco frase + janela fica centrado como o formulário ao lado.",
+        "O login refaz a coluna institucional: sai o símbolo do UCAMDS (marca do design system, não do Portal), entra a grade de módulos real como figura, e o bloco frase + janela fica centrado como o formulário ao lado.",
         "Saem os três style inline que davam 14, 15 e 17px a títulos: viram classe ou regra do arranjo. O título do registro aberto no painel da caixa de entrada é título de seção.",
         "O botão de recolher a coluna não fica na faixa: mora na barra do pé da coluna (.ucam-nav__recolher-barra), na régua de 20 quando aberta e centrado quando recolhida. Decisão do usuário em 10/09/2026."
       ],
@@ -514,7 +514,7 @@
       "titulo": "Contribuição de sistema entra como evidência, padrão e adaptador — nunca como segunda folha",
       "status": "aceita",
       "data": "2026-09-10",
-      "contexto": "Em 08/09/2026 o desenvolvedor do Relatórios Acadêmicos (Spring Boot + Thymeleaf, 74 templates de relatório em 37 pares filtro/resultado) entregou uma skill \"design-system-ucam\": main.css de 3.077 linhas, nove scripts vanilla, templates Thymeleaf e sete referências em prosa, destilados de um redesign aprovado em 03/09/2026. É o quarto sistema inventariado e o primeiro em que alguém do time já tomou decisões de desenho por conta própria. Medido em 10/09/2026 com as réguas deste repositório: a paleta tem um terceiro bordô (#a91733; o site institucional usa outro e o DSUCAM usa wine.600 #8D293A), e o vermelho de erro dele (#a3242f) fica a 0,018 do bordô em visão normal e a 0,005 em deuteranopia — marca e destrutivo são a mesma cor, o caso que a ADR-002 existe para impedir. O texto fraco (#8a94a3) rende 3,07:1 sobre branco em legendas de 11 a 13px; o link do tema escuro rende 3,93:1. Só um seletor tem :focus-visible em 3.077 linhas — o botão primário não tem anel de foco. Rótulo de campo em caixa alta com letter-spacing (ADR-003), overlay de carregamento de tela cheia (ADR-005), sombra colorida sob o botão primário e degradê na faixa (ADR-019), 460 medidas em px contra 61 em rem, texto de ajuda injetado por content: de pseudo-elemento, e link desabilitado por pointer-events: none sem aria-disabled. Do outro lado, o material resolve coisas que o catálogo não tinha: o par filtro → resultado com resumo dos filtros aplicados e volta para alterá-los, exportação em três formatos com timbre, paginação sempre no servidor, nota de atualidade do dado, impressão sem o cromo da aplicação, seleção em cascata, e o acumulador de itens antes de confirmar.",
+      "contexto": "Em 08/09/2026 o desenvolvedor do Relatórios Acadêmicos (Spring Boot + Thymeleaf, 74 templates de relatório em 37 pares filtro/resultado) entregou uma skill \"design-system-ucam\": main.css de 3.077 linhas, nove scripts vanilla, templates Thymeleaf e sete referências em prosa, destilados de um redesign aprovado em 03/09/2026. É o quarto sistema inventariado e o primeiro em que alguém do time já tomou decisões de desenho por conta própria. Medido em 10/09/2026 com as réguas deste repositório: a paleta tem um terceiro bordô (#a91733; o site institucional usa outro e o UCAMDS usa wine.600 #8D293A), e o vermelho de erro dele (#a3242f) fica a 0,018 do bordô em visão normal e a 0,005 em deuteranopia — marca e destrutivo são a mesma cor, o caso que a ADR-002 existe para impedir. O texto fraco (#8a94a3) rende 3,07:1 sobre branco em legendas de 11 a 13px; o link do tema escuro rende 3,93:1. Só um seletor tem :focus-visible em 3.077 linhas — o botão primário não tem anel de foco. Rótulo de campo em caixa alta com letter-spacing (ADR-003), overlay de carregamento de tela cheia (ADR-005), sombra colorida sob o botão primário e degradê na faixa (ADR-019), 460 medidas em px contra 61 em rem, texto de ajuda injetado por content: de pseudo-elemento, e link desabilitado por pointer-events: none sem aria-disabled. Do outro lado, o material resolve coisas que o catálogo não tinha: o par filtro → resultado com resumo dos filtros aplicados e volta para alterá-los, exportação em três formatos com timbre, paginação sempre no servidor, nota de atualidade do dado, impressão sem o cromo da aplicação, seleção em cascata, e o acumulador de itens antes de confirmar.",
       "decisao": "Três destinos, por natureza do que veio. (1) O que o sistema resolveu e o catálogo não tinha vira CONTRATO ou PADRÃO: o padrão consulta-relatorio em patterns.json, três telas de referência em templates.json (catálogo, filtros, resultado) e a impressão como bloco da folha, com @media print escopado sob .ucam. (2) O CSS dele NÃO entra no catálogo — classes em português sem prefixo (.botao, .campo-formulario), variáveis fora do DTCG e uma terceira paleta são exatamente a deriva que a ADR-008 fechou. Entra um ADAPTADOR, spec/adapters/relatorios-academicos.json, que redeclara as variáveis --cor-* dele a partir dos tokens semânticos e corrige por seletor o que CSS alcança: caixa alta do rótulo, sombra e degradê, anel de foco, fonte. A folha carrega depois do main.css e re-tinge os 74 templates de uma vez, sem editar nenhum — é o Trilho A aplicado a um sistema que já tem CSS próprio, o mesmo mecanismo do adaptador PrimeFaces. (3) O que contradiz ADR anterior e CSS não alcança — overlay, acumulador, link com pointer-events — fica registrado como pendência nomeada no adaptador e no guia de migração, para a migração da tela, não para o adaptador. Regra geral que fica: contribuição de sistema é evidência e mapeamento; a fonte da verdade continua sendo uma.",
       "consequencias": [
         "O gerador de adaptadores deixa de ser específico do PrimeFaces: tools/build-adapters.mjs varre spec/adapters/*.json e emite dist/css/ucam-<id>.css para cada um. O comando continua sendo pnpm run adaptador.",
@@ -913,6 +913,74 @@
         "data-table",
         "checkbox",
         "empty-state"
+      ]
+    },
+    {
+      "id": "ADR-045",
+      "titulo": "O seletor de trilho é um só, e a pergunta que decide vem antes dos caminhos",
+      "status": "aceita",
+      "data": "2026-09-23",
+      "contexto": "A pergunta veio de fora: \"qual trilho o dev deve usar, e não era melhor ter só um?\". A documentação não respondia. A página de instalação abria com três seções de prosa e deixava o leitor se classificar lendo as três; a pergunta que de fato decide — a aplicação tem passo de build? — não estava escrita em lugar nenhum do site; e qual trilho é ponte e qual é destino morava no README, não na página onde se escolhe. Três cartões lado a lado na home liam como três opções permanentes. Pior: o PARA QUEM de cada trilho existia duas vezes na spec, em `instalacao.trilhos[].alvo` (resources.json) e em `escolhaDoTrilho.trilhos[].quando` (migracao.json), e as duas versões já divergiam — só uma citava JSF/PrimeFaces, que é metade do parque legado.",
+      "decisao": "O seletor de trilho é um: `migracao.escolhaDoTrilho`, o mesmo que o guia de migração abre inteiro e que o kit de agentes gera. Ele ganha `pergunta` (a única que decide) e `nota` (qual trilho é ponte, qual é destino, e por que os três não podem ser um). O `alvo` sai de resources.json: aquele contrato ensina a INSTALAR cada trilho, não para quem ele é. Home, página de instalação, guia de migração e AGENTS.md imprimem a mesma pergunta e o mesmo `quando`.",
+      "consequencias": [
+        "A página de instalação abre pela tabela que decide — \"quando\" de um lado, trilho do outro — e cada seção de trilho começa pelo mesmo \"quando\": quem chega pelo índice lateral reconhece a própria aplicação antes de ler o código.",
+        "A home deixa de ler como um cardápio: a pergunta e a frase de ponte e destino vêm antes dos três cartões, e cada cartão abre pela linha que decide.",
+        "O agente recebe a mesma pergunta que o dev lê no site, na primeira linha da skill de migração.",
+        "Um portão em validate-spec cobra as três pontas: `pergunta` e `nota` existem; as duas listas de trilho falam dos mesmos ids, senão a tabela manda para uma âncora que não existe ou deixa um trilho de fora; e nenhum campo de para-quem volta a nascer em resources.json."
+      ],
+      "afeta": [
+        "*"
+      ]
+    },
+    {
+      "id": "ADR-046",
+      "titulo": "Escolhido tem um sinal de superfície e um de tipografia; a caixa alta sai da moldura; a tabela ganha densidade compacta e a célula de pessoa",
+      "status": "aceita",
+      "data": "2026-09-23",
+      "contexto": "Revisão visual das 23 telas de referência em 23/09/2026, por captura de página inteira a 1440px e leitura contra seis referências do gênero (Repliq, Attio, Untitled UI, AlignUI, um painel de portfólio e um de restaurante em tablet). O sistema já era do mesmo gênero; o que o separava das referências era acabamento. (1) O estado escolhido tinha dois sinais na linha de tabela e no item de lista — realce tinto e tarja de 4px na entrada — e quatro no cartão de escolha: borda a 55%, fundo rosado, chip do ícone em tinta cheia e check. É o empilhamento que o usuário recusou na navegação em 09/09 (\"cara de IA\"), e a ADR-022 já dizia que o escolhido se diz pela superfície. A tarja tinha uma medida a favor: o realce sozinho dá 1,08:1 no claro e 1,04:1 no escuro. O número é verdadeiro e a resposta estava errada — a medida pedia um segundo sinal, não uma tarja, e o item ativo da navegação já mostrava qual: o peso. (2) O subitem de navegação ativo subia para surface.default, branco sobre a coluna branca desde a ADR-040: um estado que não se via. (3) Título de grupo da coluna e período/fase da linha do tempo eram as últimas peças em caixa alta com tracking, contra a ADR-003; as referências usam caixa natural em 12px e tinta secundária. (4) As referências trabalham linhas de tabela de 36 a 44px com uma linha; as nossas tinham 67px com duas linhas em toda tabela. O contrato do data-table declarava density compact desde a primeira versão e o Trilho B já emitia a classe; a folha nunca a escreveu. (5) Faltavam quatro peças que as referências têm: barra segmentada com legenda, indicador com ladrilho de ícone, grupo de indicadores com cabeçalho e célula de pessoa com avatar.",
+      "decisao": "Escolhido é UM sinal de superfície (realce action.primary.subtle) e UM de tipografia (peso de ação, 560); a cor fica com o controle que já existe — a caixa marcada, o check do cartão. A tarja de 4px sai da linha de tabela e do item de lista; a célula que nomeia o registro e o título do item sobem ao peso de ação. O cartão de escolha marcado tem borda em tinta cheia de ação e o check, e mais nada: fundo branco, chip neutro. O subitem de navegação ativo fala a mesma língua do item pai: realce tinto e peso, sem borda. Nenhum papel da moldura usa caixa alta forçada: título de grupo da coluna e período/fase da linha do tempo vão a caixa natural, 12px, peso de rótulo e tinta secundária — a exceção que a ADR-003 tolerava deixa de existir. A tabela ganha .ucam-table--compact (8 × 12 na célula, ~36px por linha), só para tabelas em que toda célula tem uma linha. Entram, com contrato e nos dois trilhos: a barra segmentada com legenda (progress, partes de um todo), o indicador com ladrilho de ícone neutro (stat), a composição cartão com cabeçalho + grade contínua para números que se somam, e a célula de pessoa (avatar neutro + nome + apoio na mesma linha).",
+      "consequencias": [
+        "A folha perde dois blocos de tarja (tabela e lista) e o Trilho B perde os espelhos deles. Nenhuma tela muda de marcação por isso.",
+        "A distinção entre título de grupo e item da navegação passa a ser tamanho (12 contra 13), peso e tinta — a mesma das referências. O argumento antigo (os itens do SIGFIN são todos em caixa alta) não se aplica ao DSUCAM, que nunca escreve item em caixa alta.",
+        "A home do site deixa de imprimir a seção dos trilhos e ganha uma ilustração do design system; o seletor único da ADR-045 continua vivendo em migracao.escolhaDoTrilho e sendo impresso na instalação, no guia de migração e no kit de agentes. O texto corrido do site passa a acompanhar a coluna (--measure: none), por pedido do usuário; a 1440px a linha passa dos 80 caracteres da WCAG 1.4.8, que é técnica suficiente e não critério.",
+        "Medido por CDP em 23/09/2026, nos dois temas: o realce da linha e do item escolhido continua a 1,08:1 (claro) e 1,04:1 (escuro) contra a superfície — o que compensa é o peso 560 no nome, presente nos dois temas; a tarja mede 0. A borda do cartão de escolha marcado é action.primary.default sobre branco (8,4:1, acima dos 3:1 da 1.4.11), com fundo branco e chip em surface.sunken.",
+        "A linha compacta fecha em 40,5px com uma linha de texto (24 do avatar ou da caixa de marcação + 8 + 8, e meio filete do border-collapse) e em 44,5px quando há coluna de ações: a ação de linha desce para 28px (ucam-btn--sm), acima dos 24 da 2.5.8. Dois meio-pixels foram achados e tirados no caminho: o avatar alinhado ao meio (caixa de linha de 23,5) e o link dentro da célula de pessoa, que como item de flex passava a contar o recuo de alvo (32 em vez de 24).",
+        "A célula de pessoa NÃO é display:flex no <td>: isso tira a célula da tabela e o filete deixa de casar com as vizinhas. Avatar e texto são inline-flex alinhados ao topo, com a caixa de linha na altura do avatar.",
+        "A barra segmentada usa role=img, não progressbar: não há um aria-valuenow. Legenda a 12px com ponto de 8px; os segmentos separados por vão de 2px, que é o que sobrevive à dicromacia (ADR-016). Fração de um limite (prazo consumido, carga do setor) continua na barra única — dataviz.json.",
+        "O Trilho B saiu igual ao A nos sete componentes tocados: stat perdeu o wrapper __valor-linha e o --row virou --linha, com gap 0.125rem, entrelinha 1.5rem e delta sem recuo; data-table ganhou type=person e a densidade compacta que declarava e não pintava (var(--ucam-space-1) não existia); progress ganhou segments; list-item e choice-card perderam tarja e fundo; app-shell e timeline perderam o uppercase.",
+        "Fica de fora, nomeado: o grupo de indicadores com cabeçalho só existe como composição (cartão + cabeçalho + grade contínua) e o Trilho B a monta com ucam-card e ucam-stat; não há componente novo. A ilustração da home é SVG inline pintado pelos tokens e vira sozinha no tema escuro."
+      ],
+      "afeta": [
+        "data-table",
+        "list-item",
+        "choice-card",
+        "app-shell",
+        "timeline",
+        "stat",
+        "progress",
+        "avatar"
+      ]
+    },
+    {
+      "id": "ADR-047",
+      "titulo": "Identificador se destaca por um degrau de peso, onde quer que apareça",
+      "status": "aceita",
+      "data": "2026-09-24",
+      "contexto": "Levantamento das 23 telas em 24/09/2026: matrícula, número de protocolo e número de documento (REC 4471, CS-2026-00418) aparecem em 58 pontos de texto corrido — linha de apoio da célula de pessoa, coluna de documento do caixa, link de protocolo, valor de lista de descrição, texto de evento da linha do tempo, descrição do cabeçalho — e em todos com o peso do texto em volta (400). O identificador é o que a pessoa procura numa lista e anota de um registro (formats: o protocolo \"é o número que a pessoa anota e usa para cobrar\"), e na linha \"20401123 · Mensalidade 08/2026\" ele era o trecho de menor destaque. A única classe que existia para número, .ucam-codigo, é monoespaçada e serve a outro papel: o que se copia dígito a dígito. E formats.json já proíbe tabular-nums e separador de milhar na matrícula, então o destaque não pode vir da família nem do alinhamento — sobra o peso.",
+      "decisao": "Identificador de registro — matrícula, protocolo, número de documento, código de cartão — vai em .ucam-id, que sobe o peso ao de rótulo (500, fontWeight.medium) e não muda mais nada: herda tamanho, tinta e família de onde mora. Um degrau, não dois: o peso de ação (560) é do título e do escolhido (ADR-046), e um identificador na linha de apoio não pode pesar o que pesa o nome do registro. Onde o identificador já É o título — o cabeçalho \"Requerimento 2026-0311\", a página atual da trilha, a célula que nomeia a linha — a classe não entra: o peso do título carrega o destaque. .ucam-codigo continua para o que se copia; os dois papéis não se acumulam. No Trilho B, a coluna ganha type=id e a célula de pessoa ganha o campo id, que a tabela imprime em .ucam-id antes do apoio.",
+      "consequencias": [
+        "A folha ganha uma utilitária de uma linha ao lado de .ucam-codigo; formats.json ganha a regra geral e as entradas de matrícula e protocolo passam a dizer a classe.",
+        "58 pontos nas telas de referência envolvem o identificador em .ucam-id; nenhum título muda.",
+        "O data-table do Trilho B aceita type=id na coluna e id na célula de pessoa. O apoio continua livre: quem já mandava \"20401123 · Mensalidade\" no support passa a mandar o id separado.",
+        "Toda tela nova que imprima matrícula ou protocolo em texto corrido usa a classe — é o que o contrato de card, description-list, link, timeline e page-header passa a dizer."
+      ],
+      "afeta": [
+        "data-table",
+        "card",
+        "description-list",
+        "link",
+        "timeline",
+        "page-header"
       ]
     }
   ]

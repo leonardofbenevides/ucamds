@@ -19,6 +19,7 @@ import { NgTemplateOutlet } from '@angular/common';
 
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
 import { UcamBadge, type UcamBadgeTone } from '../badge/ucam-badge';
+import { UcamAvatar } from '../avatar/ucam-avatar';
 import { UcamMenu, UcamMenuTrigger, type UcamMenuItem } from '../menu/ucam-menu';
 
 /**
@@ -33,7 +34,7 @@ import { UcamMenu, UcamMenuTrigger, type UcamMenuItem } from '../menu/ucam-menu'
  * listagens, e é por isso que nenhuma delas é navegável por comando de tabela
  * no leitor de tela.
  */
-export type UcamColumnType = 'text' | 'number' | 'date' | 'currency' | 'status' | 'actions';
+export type UcamColumnType = 'text' | 'id' | 'number' | 'date' | 'currency' | 'status' | 'person' | 'actions';
 export type UcamTableState = 'idle' | 'loading' | 'error' | 'empty';
 export type UcamTableResponsive = 'scroll' | 'stack' | 'priority';
 
@@ -81,6 +82,19 @@ export interface UcamCellStatus {
 }
 
 /**
+ * Valor de uma célula type=person (ADR-046): avatar neutro de iniciais, nome
+ * e um apoio — CPF mascarado, e-mail, lotação — na mesma linha. Com href o
+ * nome vira link para o registro.
+ */
+export interface UcamCellPerson {
+  name: string;
+  /** Identificador do registro — matrícula. Sai em .ucam-id antes do apoio (ADR-047). */
+  id?: string;
+  support?: string;
+  href?: string;
+}
+
+/**
  * Molde de célula por coluna. É a saída para o que os dados não descrevem —
  * a coluna de ações, o link da célula identificadora, um valor composto:
  *
@@ -94,19 +108,22 @@ export class UcamCelula {
 
 const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
   text: 'start',
+  // Identificador alinha ao início: não é quantidade (ADR-047).
+  id: 'start',
   number: 'end',
   currency: 'end',
   // Data alinha ao INÍCIO: em pt-BR o dia vem primeiro e é por ele que se
   // varre a coluna. Alinhar ao fim colocaria o ano na prumada.
   date: 'start',
   status: 'start',
+  person: 'start',
   actions: 'end',
 };
 
 @Component({
   selector: 'ucam-data-table',
   exportAs: 'ucamDataTable',
-  imports: [NgTemplateOutlet, UcamIcon, UcamBadge, UcamMenu, UcamMenuTrigger],
+  imports: [NgTemplateOutlet, UcamIcon, UcamBadge, UcamMenu, UcamMenuTrigger, UcamAvatar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { class: 'ucam-data-table-host' },
@@ -211,6 +228,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                     [style.text-align]="alinhamento(col)"
                     [attr.data-label]="col.header"
                     [class.ucam-table__num]="col.type === 'number' || col.type === 'currency'"
+                    [class.td--pessoa]="col.type === 'person'"
                     [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
                     [class.ucam-col--fixa-fim]="ladoFixo(col) === 'end'"
                     [style.--ucam-col-x]="deslocamento(col)"
@@ -223,6 +241,26 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                     } @else if (col.type === 'status') {
                       @if (comoStatus(linha[col.key]); as s) {
                         <ucam-badge [label]="s.label" [tone]="s.tone" />
+                      }
+                    } @else if (col.type === 'id') {
+                      <!-- Identificador (ADR-047): um degrau de peso, sem
+                           tabular-nums — matrícula não é quantidade. -->
+                      <span class="ucam-id">{{ linha[col.key] }}</span>
+                    } @else if (col.type === 'person') {
+                      @if (comoPessoa(linha[col.key]); as p) {
+                        <!-- Célula de pessoa (ADR-046): a mesma marcação do
+                             Trilho A (.td--pessoa). Avatar decorativo e neutro. -->
+                        <ucam-avatar [name]="p.name" size="sm" decorative />
+                        <span class="td--pessoa__texto">
+                          @if (p.href) {
+                            <a class="ucam-link td--pessoa__nome" [href]="p.href">{{ p.name }}</a>
+                          } @else {
+                            <span class="td--pessoa__nome">{{ p.name }}</span>
+                          }
+                          @if (p.id || p.support) {
+                            <span class="td--apoio">@if (p.id) {<span class="ucam-id">{{ p.id }}</span>}{{ p.id && p.support ? ' · ' : '' }}{{ p.support ?? '' }}</span>
+                          }
+                        </span>
                       }
                     } @else if (vazio(linha[col.key])) {
                       <!-- Célula sem valor NUNCA fica muda: o travessão é para
@@ -317,6 +355,13 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     }
     .ucam-table tbody tr:last-child td { border-block-end: 0; }
     .ucam-table__num { font-variant-numeric: tabular-nums; }
+    /* Célula de pessoa — os mesmos números da folha do Trilho A (.td--pessoa). */
+    .ucam-table .td--pessoa { line-height: 1.5rem; }
+    .ucam-table .td--pessoa > ucam-avatar { display: inline-flex; vertical-align: top; margin-inline-end: var(--ucam-space-inline-sm); }
+    .ucam-table .td--pessoa__texto { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--ucam-space-inline-sm); vertical-align: top; line-height: 1.5rem; max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
+    .ucam-table .td--pessoa__texto > .ucam-link { padding-block: 0; }
+    .ucam-table .td--pessoa__nome { font-weight: var(--ucam-typography-label-font-weight); color: var(--ucam-color-text-primary); }
+    .ucam-table .td--apoio { font-size: var(--ucam-typography-caption-font-size); color: var(--ucam-color-text-secondary); white-space: nowrap; }
     .ucam-table__col-min { inline-size: 1%; white-space: nowrap; }
 
     /* O realce da linha sob o ponteiro faz o trabalho da zebra e faz melhor:
@@ -326,21 +371,24 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       background: var(--ucam-color-surface-subtle);
     }
     .ucam-table--zebra tbody tr:hover td { background: var(--ucam-color-interaction-hover); }
-    .ucam-table__linha--marcada td { background: var(--ucam-color-interaction-selected); }
-
-    /* A BARRA NA ENTRADA DA LINHA ESCOLHIDA (21/09/2026), espelho do Trilho A.
-       Medido lá: o fundo tinto sozinho dá 1,08:1 no claro e 1,04:1 no escuro
-       contra a superfície — os mesmos números que fizeram o item de LISTA
-       ganhar a barra. Diz escolha, não estado: só a linha marcada a tem, e a
-       ADR-027 tirou foi a barra de tr[data-estado], que pintava todas.
-       inset box-shadow porque a tabela é border-collapse e a sombra não ocupa
-       espaço — uma borda empurraria a primeira coluna para fora do cabeçalho. */
-    .ucam-table__linha--marcada td:first-child {
-      box-shadow: inset 4px 0 0 0 var(--ucam-color-action-primary-default);
+    /* A linha marcada: realce tinto (o mesmo do Trilho A, action-primary-subtle,
+       e não o cinza alfa de interaction-selected) e a célula que nomeia o
+       registro em peso de ação — um sinal de superfície, um de tipografia
+       (ADR-046, 23/09/2026). A barra de 4px na entrada, posta em 21/09 porque o
+       fundo sozinho dá 1,08:1, saiu junto com a do Trilho A: a medida pedia um
+       segundo sinal, não uma tarja. */
+    .ucam-table__linha--marcada td { background: var(--ucam-color-action-primary-subtle); }
+    .ucam-table__linha--marcada td:not(.ucam-table__sel):nth-child(1 of :not(.ucam-table__sel)) {
+      font-weight: var(--ucam-typography-action-font-weight);
     }
 
+    /* Densidade compacta: 8 × 12, os mesmos números da folha do Trilho A
+       (.ucam-table--compact). Antes escrevia var(--ucam-space-1), que não
+       existe nos tokens — a regra estava escrita e não pintava. */
     .ucam-table--compact td,
-    .ucam-table--compact th { padding: var(--ucam-space-1) var(--ucam-space-inset-sm); }
+    .ucam-table--compact th { padding: 0.5rem var(--ucam-space-inset-sm); }
+    .ucam-table--compact thead th { padding-block: 0.375rem; }
+    .ucam-table--compact .ucam-table__acoes .ucam-btn, .ucam-table--compact .td--acoes .ucam-btn { block-size: var(--ucam-size-control-sm); min-inline-size: var(--ucam-size-control-sm); }
 
     /* Largura FIXA, e não 1%: com uma coluna fixa no início, a de seleção gruda
        junto e o deslocamento da fixa é exatamente esta medida. */
@@ -484,6 +532,9 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
         font-size: var(--ucam-typography-caption-font-size);
       }
     }
+
+    /* Identificador (ADR-047): os mesmos números da folha do Trilho A (.ucam-id). */
+    .ucam-table .ucam-id { font-weight: var(--ucam-typography-label-font-weight); }
 
     .ucam-sr-only {
       position: absolute;
@@ -738,6 +789,10 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
 
   protected vazio(v: unknown): boolean {
     return v === null || v === undefined || v === '';
+  }
+
+  protected comoPessoa(v: unknown): UcamCellPerson | null {
+    return v && typeof v === 'object' && 'name' in v ? (v as UcamCellPerson) : null;
   }
 
   protected comoStatus(v: unknown): UcamCellStatus | null {

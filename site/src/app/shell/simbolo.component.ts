@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 /**
- * O símbolo do DSUCAM.
+ * O símbolo do UCAMDS.
  *
  * Uma PLACA sólida — o componente — com o TOKEN vazado nela, perto do canto
  * inferior direito. O token não é desenhado por cima: é o buraco. Componente é

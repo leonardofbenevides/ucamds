@@ -83,12 +83,29 @@ export class LooseBlockComponent {
    */
   readonly semRotulo = input<string[]>([]);
 
+  /**
+   * Chaves que este renderizador NÃO deve imprimir — quem chama cuida delas.
+   *
+   * Existe pela mesma seção "Quando usar". O bloco `limites` traz `regras`
+   * (a lista de limites) e, em 28 dos 49 contratos, `motivo` — um parágrafo
+   * de prosa explicando POR QUE o limite existe. Dentro da caixa "Não use
+   * quando", esse parágrafo triplicava a altura do lado direito contra um
+   * lado esquerdo de três bullets, e misturava dois gêneros: a regra, que se
+   * consulta, e o porquê, que se lê uma vez.
+   *
+   * Atlassian e Polaris separam os dois: a regra fica curta no par do
+   * do/don't, o motivo desce para a prosa abaixo. É o que a página faz agora.
+   */
+  readonly exceto = input<string[]>([]);
+
   protected readonly entradas = computed<Entrada[]>(() => {
     const b = this.bloco();
     if (!b) return [];
 
     const saida: Entrada[] = [];
+    const fora = this.exceto();
     for (const [chave, valor] of Object.entries(b)) {
+      if (fora.includes(chave)) continue;
       // `$descricao` é metadado da seção, não conteúdo — mas vale como texto
       // introdutório, então entra sem o cifrão.
       const rotulo = chave.replace(/^\$/, '').replace(/_/g, ' ');

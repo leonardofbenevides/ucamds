@@ -11,7 +11,8 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     <ucam-page-header
       secao="Começar"
       [titulo]="'Skills e pacotes'"
-      [lede]="r.skills.$description"
+      [lede]="r.skills.$lede"
+      [porque]="r.skills.$description"
     />
 
     <div class="prose">

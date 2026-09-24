@@ -5,7 +5,7 @@
 // template e de um computed protegido.
 //
 // A instrução também estava ERRADA para este uso, não só em inglês: dizia
-// "Escape to clear selection", e na paleta do DSUCAM Esc FECHA o diálogo.
+// "Escape to clear selection", e na paleta do UCAMDS Esc FECHA o diálogo.
 //
 // DÍVIDA: um `npx zard-cli add command` no futuro devolve tudo ao inglês.
 // Mesmo caso já registrado no combobox.

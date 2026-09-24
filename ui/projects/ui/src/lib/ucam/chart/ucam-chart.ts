@@ -32,7 +32,7 @@ import { UcamSkeleton } from '../skeleton/ucam-skeleton';
  *    verificação de daltonismo — aqui a sétima série não recebe cor nenhuma;
  *  - formatação pt-BR por Intl no eixo, na dica e na tabela — os três juntos;
  *  - animação desligada sob prefers-reduced-motion;
- *  - releitura das cores quando o tema muda pelo data-theme do DSUCAM, que é
+ *  - releitura das cores quando o tema muda pelo data-theme do UCAMDS, que é
  *    outro caminho que não o serviço de tema da própria base.
  */
 export type UcamChartType = 'line' | 'area' | 'bar' | 'pie';
@@ -227,7 +227,7 @@ export class UcamChart {
    * Muda de valor a cada troca de tema. Não carrega a cor: existe para dar uma
    * IDENTIDADE nova ao objeto de config, que é o que faz a base reler as
    * custom properties. O serviço de tema da ZardUI não enxerga o data-theme que
-   * o DSUCAM escreve, então quem observa é o wrapper.
+   * o UCAMDS escreve, então quem observa é o wrapper.
    */
   private readonly tema = signal(0);
 

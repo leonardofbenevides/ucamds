@@ -28,7 +28,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <ucam-page-header
       secao="Fundamentos"
       [titulo]="'Escrita'"
-      [lede]="e.descricao"
+      [lede]="e.lede"
+      [porque]="e.descricao"
     />
 
     <ucam-nesta-pagina [secoes]="secoes" />

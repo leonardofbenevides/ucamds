@@ -1,5 +1,5 @@
 {
-  "$description": "Padrões: composições recorrentes de componentes que resolvem uma tarefa inteira. Um padrão vira código em @ucam/patterns quando aparece em três ou mais telas.",
+  "$description": "Padrões: composições recorrentes de componentes que resolvem uma tarefa inteira. Um padrão vira CÓDIGO GERADO quando aparece em três ou mais telas: ponto de partida correto cuspido por ucam-ds gerar, não um componente configurável — a doença que o padrão trata é inconsistência, não repetição (decisão de 21/09/2026). O subcomando ainda não existe.",
   "patterns": [
     {
       "id": "listagem-crud",
@@ -21,7 +21,8 @@
         "Ordenação vive no cabeçalho da coluna, onde é descoberta — não em select separado.",
         "Busca filtra a lista sem recarregar a página e anuncia a nova contagem.",
         "Estado vazio sempre oferece uma saída: criar o primeiro registro ou limpar os filtros.",
-        "Exclusão exige confirmação nomeando o que será destruído."
+        "Exclusão exige confirmação nomeando o que será destruído.",
+        "Tabela em que toda célula tem uma linha usa density=compact (~36px por linha); a listagem de pessoas usa a célula de pessoa para caber numa linha. Tabela com célula de duas linhas fica em comfortable (ADR-046)."
       ],
       "usa": [
         "ucam-alert",
@@ -117,7 +118,7 @@
       "id": "triagem-lista-detalhe",
       "nome": "Triagem em lista e detalhe",
       "status": "draft",
-      "frequencia": "Caixa de entrada de requerimentos, setores com integrantes, inadimplência com extrato do aluno. Aparece em três telas, que é o limite a partir do qual o padrão vira código em @ucam/patterns.",
+      "frequencia": "Caixa de entrada de requerimentos, setores com integrantes, inadimplência com extrato do aluno. Aparece em três telas, que é o limite a partir do qual o padrão vira gabarito de ucam-ds gerar.",
       "problema": "No Protocolo atual, abrir um registro é uma navegação: a lista some, e voltar recarrega a consulta e devolve a pessoa ao topo. Quem trata dezenas de protocolos por dia paga esse trajeto dezenas de vezes, e perde a posição na fila a cada um.",
       "estrutura": [
         "PageHeader com título, contagem e a ação de criar",

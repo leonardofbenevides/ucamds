@@ -54,7 +54,7 @@
     {
       "parte": "valor",
       "obrigatorio": true,
-      "descricao": "<dd>. Tinta primária. Vazio vira travessão, nunca espaço em branco.",
+      "descricao": "<dd>. Tinta primária. Vazio vira travessão, nunca espaço em branco. Quando o valor é identificador — matrícula, protocolo — vai em .ucam-id (ADR-047).",
       "classe": "ucam-descricao__valor"
     },
     {
