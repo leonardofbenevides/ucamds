@@ -56,7 +56,8 @@
     {
       "parte": "contador",
       "obrigatorio": false,
-      "descricao": "Aparece a partir de 80% do limite; antes disso é ruído."
+      "descricao": "Aparece a partir de 80% do limite; antes disso é ruído. É um <span> no aria-describedby do campo, com data-contador; o texto é \"n de m caracteres\" e o script compartilhado o atualiza a cada tecla. Nasceu com a tela de análise da isenção (24/09/2026).",
+      "classe": "ucam-field__contador"
     },
     {
       "parte": "erro",

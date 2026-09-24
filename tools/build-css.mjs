@@ -831,6 +831,22 @@ ${abaixo('controle-deitado')} {
               box-shadow var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
 }
 
+/* CONTADOR do textarea (contrato textarea, parte contador; nasceu com a tela de
+ * análise da isenção em 24/09/2026 — o contrato o prometia sem classe, folha
+ * nem script). A mesma linha de apoio do campo, alinhada ao fim, em tinta
+ * secundária, com dígitos tabulares para o número não pular. Vive no
+ * aria-describedby do campo com data-contador: quem ouve recebe o limite
+ * antes de escrever, e o contadorScript atualiza o restante a cada tecla. */
+.ucam-field__contador {
+  display: block;
+  margin-block-start: var(--ucam-space-inline-xs);
+  font-size: var(--ucam-typography-caption-font-size);
+  line-height: var(--ucam-typography-caption-line-height);
+  color: var(--ucam-color-text-secondary);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Anel suave de 3px, como na base. É ele que carrega a 1.4.11. */
 .ucam-input:focus-visible,
 .ucam-select:focus-visible,
