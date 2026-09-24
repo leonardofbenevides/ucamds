@@ -7682,6 +7682,20 @@ ${contentorAbaixo('indicadores-em-fileira', 'indicadores')} {
   .ucam-stats:has(> :nth-child(4)) > .ucam-stat { flex-basis: calc(50% - var(--ucam-stats-gap)); }
 }
 
+/* E abaixo de indicadores-empilhados, UM por fileira: 2 + 2 num grupo de
+ * 301px deixava 118px de conteúdo por ladrilho e "R$ 4.969,25" quebrava com
+ * o "R$" sozinho na primeira linha (movimento de caixa a 375px). */
+${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
+  .ucam-stats:has(> :nth-child(4)) > .ucam-stat { flex-basis: 100%; }
+  /* Empilhados dentro de cartão, o filete que os separa é HORIZONTAL: o
+   * vertical de "lado a lado" virava uma régua pendurada à esquerda. */
+  .ucam-card .ucam-stats:has(> :nth-child(4)) > .ucam-stat { padding-inline: 0; }
+  .ucam-card .ucam-stats:has(> :nth-child(4)) > .ucam-stat + .ucam-stat {
+    box-shadow: inset 0 1px 0 var(--ucam-color-border-subtle);
+    padding-block-start: var(--ucam-space-inset-sm);
+  }
+}
+
 /* INDICADOR DENTRO DE MOLDURA: filetes, não outra moldura.
  *
  * O painel de apoio do requerimento (.ucam-aside) já tem filete e raio, e o
@@ -8095,6 +8109,10 @@ ${abaixo('controle-deitado')} {
     flex-direction: column;
     align-items: stretch;
     gap: var(--ucam-space-stack-sm);
+    /* A linha inteira, e não os 245px do conteúdo: campo de busca a 245 numa
+     * barra de 335 lia como inacabado (usuários, naturezas, a 375px). */
+    flex: 1 1 100%;
+    inline-size: 100%;
   }
   .ucam-toolbar--compacta .ucam-field .ucam-input,
   .ucam-toolbar--compacta .ucam-field .ucam-select {
@@ -8445,6 +8463,23 @@ a.ucam-list-item:active,
  * O título do item escolhido sobe para o peso de ação — o mesmo degrau do
  * item ativo da coluna — e é isso que sobrevive ao tema escuro, em que 9% de
  * tinta sobre superfície quase não se vê. Nenhum portador de cor a mais. */
+/* NÃO LIDO É REALCE DA LINHA, não só o ponto (24/09/2026: "essa notificação
+ * podia ser um highlight"). O ponto de 8px no recuo era o único sinal, e a
+ * linha não lida passava batida numa fila de nove. A linha inteira ganha o
+ * fundo de realce — o mesmo token do <mark> e do eco da ação, que é o que
+ * "realce" significa no sistema — rebaixado a 35% sobre a superfície, e o
+ * título sobe ao peso de ação. O ponto fica: é ele que carrega o texto
+ * "não lido" para quem não vê a tinta. A linha ABERTA (aria-current) vem
+ * depois na folha e vence: o item aberto é um só, e o realce dele é o da
+ * escolha. */
+.ucam-list-item:has(> .ucam-list-item__indicador),
+.ucam-list-item:has(> .ucam-list-item__alvo > .ucam-list-item__indicador) {
+  background: color-mix(in srgb, var(--ucam-color-realce-background) 35%, var(--ucam-color-surface-default));
+}
+.ucam-list-item:has(.ucam-list-item__indicador) .ucam-list-item__titulo {
+  font-weight: var(--ucam-typography-action-font-weight);
+}
+
 .ucam-list-item[aria-current="true"] {
   position: relative;
   background: var(--ucam-color-action-primary-subtle);
@@ -10659,6 +10694,16 @@ ${abaixo('controle-deitado')} {
   }
   .ucam-viewbar__fileira .ucam-viewbar__meta::before { content: none; }
   .ucam-viewbar__voltar ~ .ucam-viewbar__meta { padding-inline-start: var(--ucam-size-control-md); }
+  /* O TÍTULO fica na linha da seta. Com base automática (largura do texto
+   * inteiro) um título longo não cabia ao lado da seta e caía para a linha
+   * de baixo, deixando a seta sozinha em cima (filtros do relatório a
+   * 375px). Base de 12rem cabe ao lado dela e cresce até a ponta; o que
+   * passa quebra dentro do próprio título. */
+  .ucam-viewbar__voltar + .ucam-viewbar__titulo { flex: 1 1 12rem; }
+  /* O separador vertical entre grupos de controle é desenho de fileira
+   * única: com os grupos quebrando linha ele aparecia pendurado no fim de
+   * uma linha ou no começo da seguinte (grade de módulos, usuário). */
+  .ucam-viewbar__sep { display: none; }
   /* A ORDENAÇÃO ocupa a linha inteira: medido a 375px, o segmented e o botão
    * de filtros cabiam numa linha e o ⋮ caía sozinho na seguinte, pendurado à
    * esquerda. Com o segmented numa linha própria, os botões descem juntos. */
@@ -11119,74 +11164,53 @@ ${acima('nav-fixa')} {
      * centrado na dele: as duas fileiras de 1fr em volta dividem a sobra por
      * igual. A legenda de campi que ocupava uma quinta fileira saiu em
      * 13/09/2026 — era texto solto numa tela de dois campos. */
-    grid-template-rows: 1fr auto auto 1fr auto;
+    grid-template-rows: 1fr auto auto 1fr;
     gap: 0;
   }
   .ucam-login__discurso { grid-row: 2; }
-  .ucam-login__figura { grid-row: 3; margin-block-start: var(--ucam-space-stack-lg); }
-  /* A fila dos sistemas fica no pé, como a fila de marcas da referência:
-   * o que o acesso abre, em ladrilhos monocromáticos sobre o bordô. */
-  .ucam-login__sistemas { grid-row: 5; }
+  /* A lista do que o acesso abre vem logo abaixo da frase, com o degrau
+   * maior entre elas: é o único apoio do discurso (24/09/2026). */
+  .ucam-login__sistemas { grid-row: 3; }
 }
 
-/* A FIGURA: a janela e, por cima dela, um cartão que flutua — profundidade,
- * como a referência faz com o cartão de login sobre o produto. Tudo
- * decorativo (aria-hidden no bloco): o argumento está na frase. */
-.ucam-login__figura {
-  position: relative;
-  min-inline-size: 0;
-  /* A sobra embaixo é onde o cartão pendura. */
-  padding-block-end: var(--ucam-space-inset-lg);
-}
 
-.ucam-login__flutuante {
-  position: absolute;
-  inset-inline-start: calc(-1 * var(--ucam-space-inset-md));
-  inset-block-end: 0;
-  inline-size: 17rem;
-  display: flex;
-  align-items: center;
-  gap: var(--ucam-space-inline-md);
-  padding: var(--ucam-space-inset-sm) var(--ucam-space-inset-md);
-  background: var(--ucam-color-surface-default);
-  color: var(--ucam-color-text-primary);
-  border-radius: var(--ucam-radius-surface);
-  box-shadow: var(--ucam-elevation-overlay);
-}
 
-.ucam-login__flutuante-texto {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  min-inline-size: 0;
-}
 
-.ucam-login__flutuante-titulo {
-  font-size: var(--ucam-typography-body-sm-font-size);
-  font-weight: var(--ucam-typography-action-font-weight);
-}
 
-.ucam-login__flutuante-apoio {
-  font-size: var(--ucam-typography-caption-font-size);
-  color: var(--ucam-color-text-secondary);
-}
 
+/* O QUE O ACESSO ABRE (24/09/2026): uma lista vertical, cada sistema com o
+ * que a pessoa faz nele. É o único apoio da frase — a miniatura do Portal e o
+ * cartão flutuante que ocupavam este lugar saíram (ver a nota da tela). */
 .ucam-login__sistemas {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--ucam-space-inline-sm) var(--ucam-space-inset-lg);
-  margin: 0;
+  flex-direction: column;
+  gap: var(--ucam-space-stack-sm);
+  /* O degrau maior entre a frase e a lista mora AQUI: a regra da grade (acima)
+   * vinha antes e este margin: 0 a apagava — medido 0px em 24/09/2026. */
+  margin: var(--ucam-space-stack-lg) 0 0;
   padding: 0;
   list-style: none;
 }
-
 .ucam-login__sistema {
   display: flex;
   align-items: center;
-  gap: var(--ucam-space-inline-sm);
-  font-size: var(--ucam-typography-caption-font-size);
+  gap: var(--ucam-space-inline-md);
+  color: var(--ucam-color-text-on-brand);
+}
+.ucam-login__sistema-texto {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+.ucam-login__sistema-nome {
+  font-size: var(--ucam-typography-body-sm-font-size);
   font-weight: var(--ucam-typography-label-font-weight);
-  color: color-mix(in srgb, var(--ucam-color-text-on-brand) 82%, transparent);
+  line-height: var(--ucam-typography-body-sm-line-height);
+}
+.ucam-login__sistema-apoio {
+  font-size: var(--ucam-typography-caption-font-size);
+  line-height: var(--ucam-typography-caption-line-height);
+  color: color-mix(in srgb, var(--ucam-color-text-on-brand) 78%, transparent);
 }
 
 /* Ladrilho monocromático sobre o bordô: a cor da categoria fica para a
@@ -11228,116 +11252,13 @@ ${acima('nav-fixa')} {
   color: color-mix(in srgb, var(--ucam-color-text-on-brand) 82%, transparent);
 }
 
-/* A frase de apoio e a linha de campi saíram em 13/09/2026: a janela abaixo
- * ilustra o que a frase de apoio repetia, e os campi não eram informação de
- * quem vem entrar. A frase fica sozinha, e é o único texto da coluna. */
 
-/* ------------------------------------------- a janela do Portal --- */
-/* O que existe do outro lado da senha, mostrado como a pessoa vai vê-lo: a
- * grade de módulos de "Meus sistemas", com os MESMOS cartões, ladrilhos e
- * estrelas daquela tela. Era uma caixa de entrada do Protocolo — um sistema
- * só — ao lado de uma frase que promete todos.
- *
- * É FIGURA: aria-hidden inteira, e por isso feita só de <span>. O que a
- * coluna afirma está na frase, no apoio e na linha de campi.
- *
- * SANGRA pela direita: 80px além do recuo do painel, o que corta a terceira
- * coluna da grade no meio. Uma tela cortada pelo quadro diz que continua além
- * dele — que é exatamente o que a coluna promete. Quem corta é o raio do
- * painel (overflow do .ucam-login), não a janela. */
-.ucam-login__janela {
-  --ucam-janela-sangria: 5rem;
-  align-self: start;
-  background: var(--ucam-color-surface-chrome);
-  color: var(--ucam-color-text-primary);
-  border-radius: var(--ucam-radius-surface);
-  box-shadow: var(--ucam-elevation-overlay);
-  overflow: hidden;
-  margin-inline-end: calc((var(--ucam-login-recuo) + var(--ucam-janela-sangria)) * -1);
-}
 
-/* A testeira da janela: ponto de marca, sistema e trilha. Mesma anatomia da
- * faixa real, na escala da figura; 40px, o mesmo da fileira de seções. */
-.ucam-login__janela-topo {
-  display: flex;
-  align-items: center;
-  gap: var(--ucam-space-inline-sm);
-  block-size: 2.5rem;
-  padding-inline: var(--ucam-space-inset-md) calc(var(--ucam-space-inset-md) + var(--ucam-janela-sangria));
-  background: var(--ucam-color-surface-default);
-  box-shadow: inset 0 -1px 0 var(--ucam-color-border-subtle);
-  font-size: var(--ucam-typography-caption-font-size);
-  font-weight: var(--ucam-typography-label-font-weight);
-}
 
-.ucam-login__janela-ponto {
-  inline-size: 1rem;
-  block-size: 1rem;
-  flex: none;
-  border-radius: var(--ucam-radius-miudo);
-  background: var(--ucam-color-surface-brand);
-}
 
-.ucam-login__janela-sep,
-.ucam-login__janela-onde,
-.ucam-login__janela-conta {
-  color: var(--ucam-color-text-secondary);
-  font-weight: var(--ucam-typography-body-font-weight);
-}
 
-.ucam-login__janela-corpo {
-  padding: var(--ucam-space-inset-md) calc(var(--ucam-space-inset-md) + var(--ucam-janela-sangria)) var(--ucam-space-inset-md) var(--ucam-space-inset-md);
-}
 
-/* Título de seção da grade, na escala da figura: rótulo e contagem, como o
- * cabeçalho de seção real. */
-.ucam-login__janela-titulo {
-  display: flex;
-  align-items: baseline;
-  gap: var(--ucam-space-inline-sm);
-  margin-block-end: var(--ucam-space-inline-sm);
-  font-size: var(--ucam-typography-body-sm-font-size);
-  font-weight: var(--ucam-typography-section-title-font-weight);
-}
 
-/* Quatro colunas de largura FIXA, e não auto-fit: a quarta tem de existir
- * para ser cortada. 10rem por cartão dá 4 × 160 + 3 × 12 = 676px de grade
- * numa janela que mostra 600: a última coluna entra 68px no quadro — o
- * ladrilho inteiro e o começo do nome —, o bastante para ler como cartão
- * cortado e não como sobra. */
-.ucam-login__grade {
-  display: grid;
-  grid-template-columns: repeat(4, 10rem);
-  gap: var(--ucam-space-inline-md);
-}
-
-/* O cartão de módulo da grade real, sem ser acionável: mesma moldura, mesmo
- * ladrilho, mesmo par título/apoio. Empilhado por dentro porque aqui é span. */
-.ucam-login__modulo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ucam-space-inline-sm);
-}
-
-.ucam-login__modulo .ucam-card__titulo,
-.ucam-login__modulo .ucam-card__apoio { display: block; }
-
-/* A estrela é o mesmo desenho do interruptor da grade — solta em traço,
- * fixa em bordô cheio — sem ser interruptor. Caixa de 28 como o botão sm,
- * para o ladrilho e a estrela fecharem na mesma linha que na tela real. */
-.ucam-login__estrela {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 1.75rem;
-  block-size: 1.75rem;
-  color: var(--ucam-color-text-secondary);
-}
-
-.ucam-login__estrela--fixa {
-  color: var(--ucam-color-action-primary-default);
-  --ucam-icon-fill: currentColor;
-}
 
 /* ------------------------------------------ entrada alternativa --- */
 /* O DIVISOR do "ou entre com". Fio dos dois lados de uma palavra, e não uma
