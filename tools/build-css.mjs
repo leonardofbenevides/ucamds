@@ -1866,12 +1866,27 @@ ${selectChevronCss}
  *
  * Cor sozinha não informa (WCAG 1.4.1): quem carrega o estado é o
  * aria-selected no <tr> e o nome do registro no título do painel ao lado. */
-.ucam-table tbody tr[aria-selected="true"],
-.ucam-table tbody tr[aria-selected="true"]:hover {
-  background-image: linear-gradient(
-    var(--ucam-color-action-primary-subtle),
-    var(--ucam-color-action-primary-subtle)
-  );
+/* REVISTO EM 24/09/2026 ("o highlight podia ser só um traço no canto
+ * direito, um shape no lado direito"): a superfície tinta SAIU da linha
+ * marcada da tabela. Numa listagem com várias linhas marcadas, a tinta em
+ * bloco pintava faixas inteiras de rosa e o olho perdia a caixa marcada, que
+ * é o controle. O sinal de superfície vira um TRAÇO na borda direita da
+ * linha: 3px, com as pontas arredondadas e recuado 6px em cima e embaixo —
+ * um shape encostado na borda, não uma tarja que atravessa a altura. A
+ * tipografia (peso de ação na célula que nomeia o registro) fica. O traço
+ * mora na última célula porque é a única que tem borda direita de verdade;
+ * a linha ganha o hover normal, já que não há mais tom de escolha para o
+ * hover cobrir. */
+.ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child { position: relative; }
+.ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child::after {
+  content: "";
+  position: absolute;
+  inset-block: 0.375rem;
+  inset-inline-end: 0;
+  inline-size: 0.1875rem;
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-action-primary-default);
+  pointer-events: none;
 }
 
 /* A LINHA ESCOLHIDA TEM UM SINAL DE SUPERFÍCIE E UM DE TIPOGRAFIA (ADR-046,
@@ -2188,11 +2203,8 @@ ${selectChevronCss}
   background-image: linear-gradient(var(--ucam-color-interaction-hover), var(--ucam-color-interaction-hover));
 }
 
-.ucam-table tbody tr[aria-selected="true"] > .ucam-col--fixa-inicio,
-.ucam-table tbody tr[aria-selected="true"] > .ucam-col--fixa-fim {
-  background-color: var(--ucam-color-action-primary-subtle);
-  background-image: none;
-}
+/* A coluna fixa da linha marcada não tem mais tom próprio: o sinal da
+ * escolha é o traço na borda direita (ver a regra de aria-selected). */
 
 /* A borda do bloco fixo é um FILETE, só na última fixa de cada lado — é o que
  * diz onde a parte que rola começa. Sombra de lado exigiria cor literal, e a
