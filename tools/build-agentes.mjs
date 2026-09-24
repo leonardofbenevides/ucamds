@@ -67,8 +67,10 @@ const checklist = () =>
     .map((g) => `**${g.grupo}**\n\n${(g.itens ?? []).map((i) => `- [ ] ${umaLinha(itemTexto(i), 300)}`).join('\n')}`)
     .join('\n\n');
 
-/** Os três trilhos saem do guia de migração, que é quem os decide, e não da
- *  página de instalação: aquela ainda aponta um endereço público que não existe. */
+/** Os três trilhos saem do guia de migração, que é quem os DECIDE. A página de
+ *  instalação ensina a instalar cada um e lê o mesmo seletor: a pergunta que
+ *  decide e o "quando" de cada trilho existem uma vez só, e o agente recebe a
+ *  mesma frase que o dev lê no site. */
 const trilhos = () => {
   const itens = (migracao.escolhaDoTrilho?.trilhos ?? [])
     .map(
@@ -76,7 +78,9 @@ const trilhos = () => {
         `- **${t.nome}.** Quando: ${umaLinha(t.quando, 260)} Entrega: ${umaLinha(t.entrega, 260)} Não entrega: ${umaLinha(t.naoEntrega, 260)}${t.armadilha ? ` Armadilha: ${umaLinha(t.armadilha, 260)}` : ''}`,
     )
     .join('\n');
-  return `${umaLinha(migracao.escolhaDoTrilho?.$descricao ?? '', 400)}
+  return `**${umaLinha(migracao.escolhaDoTrilho?.pergunta ?? '', 120)}** ${umaLinha(migracao.escolhaDoTrilho?.$descricao ?? '', 400)}
+
+${umaLinha(migracao.escolhaDoTrilho?.nota ?? '', 500)}
 
 ${itens}
 
@@ -310,6 +314,8 @@ const skillMigrate =
 ${fonteDeDados}
 
 ## Primeiro: qual trilho
+
+${umaLinha(migracao.escolhaDoTrilho?.pergunta ?? '', 120)}
 
 ${lista(migracao.escolhaDoTrilho).map((t) => `- **${t.nome ?? t.id}** — quando: ${umaLinha(t.quando, 200)} Não entrega: ${umaLinha(t.naoEntrega ?? '', 200)}`).join('\n')}
 

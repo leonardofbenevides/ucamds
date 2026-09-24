@@ -100,11 +100,22 @@
     },
     {
       "parte": "row",
-      "obrigatorio": true
+      "obrigatorio": true,
+      "descricao": "A linha. Escolhida (aria-selected=true) tem um sinal de superfície e um de tipografia: realce tinto (action.primary.subtle) e a primeira célula de dado em peso de ação; quem carrega a cor é a caixa de marcação marcada. Sem tarja na entrada (ADR-046) e sem barra de estado por linha (ADR-027)."
     },
     {
       "parte": "cell",
       "obrigatorio": true
+    },
+    {
+      "parte": "cell-person",
+      "obrigatorio": false,
+      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047)."
+    },
+    {
+      "parte": "cell-support",
+      "obrigatorio": false,
+      "descricao": "Apoio de célula em linha (.td--apoio): caption em tinta secundária ao lado do dado principal — a continuação de um grupo, o motivo de uma situação, o e-mail ao lado do nome. Não quebra no meio; quando não cabe, desce inteiro. Substitui o ucam-card__apoio em bloco dentro da célula, que fazia toda linha ter duas alturas (ADR-046)."
     },
     {
       "parte": "selection-column",
@@ -211,7 +222,8 @@
     {
       "nome": "density",
       "tipo": "'comfortable' | 'compact'",
-      "default": "'comfortable'"
+      "default": "'comfortable'",
+      "descricao": "compact põe 8 × 12 na célula (~36px por linha com uma linha de texto): a densidade das referências, e o que devolve a dobra a uma listagem de trinta linhas. SÓ para tabela em que toda célula tem uma linha — célula de duas linhas com 8px em volta vira bloco sem ar. A ação de linha continua com alvo de 28px (ADR-046)."
     },
     {
       "nome": "stickyHeader",
@@ -262,9 +274,9 @@
         "descricao": "Rótulo em caixa natural. O legado usa CAIXA ALTA — ver ADR-003."
       },
       "type": {
-        "tipo": "'text' | 'number' | 'date' | 'currency' | 'status' | 'actions'",
+        "tipo": "'text' | 'id' | 'number' | 'date' | 'currency' | 'status' | 'person' | 'actions'",
         "default": "'text'",
-        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge; number e currency recebem tabular-nums e alinham à direita."
+        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge; number e currency recebem tabular-nums e alinham à direita. id é a coluna de identificador — matrícula, número de documento — em .ucam-id: um degrau de peso, sem tabular-nums e alinhada ao início (ADR-047). person é a célula de pessoa com avatar, nome e apoio (ADR-046)."
       },
       "width": {
         "tipo": "'auto' | 'min' | number",
@@ -365,7 +377,8 @@
       "ucam-pagination",
       "ucam-prazo",
       "ucam-realce",
-      "ucam-skeleton"
+      "ucam-skeleton",
+      "ucam-avatar"
     ],
     "usada_por": [
       "padrao-consulta-relatorio",

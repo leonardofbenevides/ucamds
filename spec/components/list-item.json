@@ -122,7 +122,7 @@
       "nome": "selected",
       "tipo": "boolean",
       "default": "false",
-      "descricao": "Item aberto no painel de detalhe ao lado. Reflete em aria-current=true, não só na pintura. Desde 19/09/2026 o escolhido se diz por realce TINTO (action.primary.subtle) mais uma barra de 4px na borda de entrada, e não mais pelo cinza de interaction.selected — cinza translúcido era o mesmo sinal do hover um degrau acima, e numa coluna de oito itens não dizia qual estava aberto. A barra não recria a que a ADR-022 removeu: aquela repetia o TOM da linha, esta diz SELEÇÃO e existe uma por lista."
+      "descricao": "Item aberto no painel de detalhe ao lado. Reflete em aria-current=true, não só na pintura. O escolhido se diz por realce TINTO (action.primary.subtle) e pelo título em peso de ação: um sinal de superfície e um de tipografia, a mesma língua do item ativo da navegação (ADR-046). Não é o cinza de interaction.selected — cinza translúcido era o mesmo sinal do hover um degrau acima, e numa coluna de oito itens não dizia qual estava aberto. Entre 19/09 e 23/09/2026 houve uma barra de 4px na borda de entrada; saiu porque tarja é o desenho que a navegação recusou, e a medida que a justificava (realce a 1,08:1) pedia um segundo sinal, não uma tarja."
     },
     {
       "nome": "unread",

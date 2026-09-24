@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
@@ -19,7 +20,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-icones',
-  imports: [PageHeaderComponent, NestaPaginaComponent, FormsModule],
+  imports: [PageHeaderComponent, NestaPaginaComponent, FormsModule, RouterLink],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -94,7 +95,9 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           </p>
           <p>
             A regra passou a morar em um lugar só — a seção <em>escala de ícone por papel</em> do
-            gerador da folha, no Trilho A, e o <code>input size</code> do
+            gerador da folha, no
+            <a routerLink="/comecar/migrar" fragment="trilho">Trilho A</a>, e o
+            <code>input size</code> do
             <code>&lt;ucam-icon&gt;</code>, no Trilho B, que já entregava 20px por omissão. Os três
             degraus saem dos tokens <code>size.icon-sm/md/lg</code>, e escrever o degrau na
             marcação reprova o build.

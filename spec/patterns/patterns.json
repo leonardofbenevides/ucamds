@@ -21,7 +21,8 @@
         "Ordenação vive no cabeçalho da coluna, onde é descoberta — não em select separado.",
         "Busca filtra a lista sem recarregar a página e anuncia a nova contagem.",
         "Estado vazio sempre oferece uma saída: criar o primeiro registro ou limpar os filtros.",
-        "Exclusão exige confirmação nomeando o que será destruído."
+        "Exclusão exige confirmação nomeando o que será destruído.",
+        "Tabela em que toda célula tem uma linha usa density=compact (~36px por linha); a listagem de pessoas usa a célula de pessoa para caber numa linha. Tabela com célula de duas linhas fica em comfortable (ADR-046)."
       ],
       "usa": [
         "ucam-alert",

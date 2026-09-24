@@ -368,7 +368,8 @@
         }
       ],
       "variaveis": [],
-      "exemplo": "<div class=\"ucam-stats ucam-stats--cartoes\">\n  <ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />\n  <ucam-stat label=\"Atrasados\" [value]=\"19\" meta=\"22% da fila\" />\n</div>"
+      "exemplo": "<div class=\"ucam-stats ucam-stats--cartoes\">\n  <ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />\n  <ucam-stat label=\"Atrasados\" [value]=\"19\" meta=\"22% da fila\" />\n</div>",
+      "composicao": "Números que se somam sob um título: dentro de .ucam-card com .ucam-card__cabecalho, a grade contínua vira faixa entre dois fios e os ladrilhos perdem o anel — quem emoldura é o cartão (ADR-046). Leituras independentes ficam em --cartoes, sem cabeçalho."
     }
   ],
   "boas_praticas": [

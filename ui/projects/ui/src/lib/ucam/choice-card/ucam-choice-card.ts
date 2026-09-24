@@ -43,7 +43,7 @@ let seq = 0;
       />
       @if (icon(); as ic) {
         <span
-          class="shrink-0 w-9 h-9 rounded-[var(--ucam-radius-control)] inline-flex items-center justify-center bg-accent text-accent-foreground"
+          class="shrink-0 w-8 h-8 rounded-[var(--ucam-radius-control)] inline-flex items-center justify-center bg-[var(--ucam-color-surface-sunken)] text-[var(--ucam-color-text-secondary)]"
           aria-hidden="true"
         >
           <ucam-icon [name]="ic" />
@@ -89,7 +89,9 @@ export class UcamChoiceCard {
       'relative flex items-start gap-2 p-4 rounded-[var(--ucam-radius-surface)] border bg-card transition-[border-color,background-color]';
     const estado = this.disabled()
       ? 'border-[var(--ucam-color-border-subtle)] bg-[var(--ucam-color-action-disabled-background)] text-[var(--ucam-color-action-disabled-text)] cursor-not-allowed'
-      : 'cursor-pointer border-[var(--ucam-color-border-subtle)] hover:bg-[var(--ucam-color-interaction-hover)] has-[:checked]:border-primary has-[:checked]:bg-accent';
+      // Marcado: só a borda em tinta de ação e o check (ADR-046). O fundo
+      // rosado saiu — era o terceiro sinal do mesmo estado.
+      : 'cursor-pointer border-[var(--ucam-color-border-subtle)] hover:bg-[var(--ucam-color-interaction-hover)] has-[:checked]:border-[var(--ucam-color-action-primary-default)]';
     // O anel de foco aparece no cartão inteiro, não no input escondido.
     const foco =
       'has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--ucam-color-border-focus)]';

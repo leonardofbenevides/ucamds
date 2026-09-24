@@ -35,7 +35,7 @@
     {
       "parte": "root",
       "obrigatorio": true,
-      "descricao": "O trilho. É o elemento com role=progressbar e os três valores ARIA.",
+      "descricao": "O trilho. É o elemento com role=progressbar e os três valores ARIA. Com --segmentada, é role=img com aria-label que nomeia todas as partes — não há um valor só para progressbar (ADR-046).",
       "classe": "ucam-progress"
     },
     {
@@ -49,6 +49,18 @@
       "obrigatorio": false,
       "descricao": "Par de textos abaixo do trilho: o que foi medido à esquerda, a referência à direita.",
       "classe": "ucam-progress__legenda"
+    },
+    {
+      "parte": "series",
+      "obrigatorio": false,
+      "descricao": "A legenda da barra segmentada: uma lista com ponto, nome e valor de cada parte. Obrigatória quando há segmentos — a barra sozinha não diz de quanto é a parte, e é aqui que o número exato mora (dataviz.json).",
+      "classe": "ucam-progress__series"
+    },
+    {
+      "parte": "ponto",
+      "obrigatorio": false,
+      "descricao": "O ponto de 8px que liga cada item da legenda ao segmento, na mesma série ou tom. Decorativo: o nome ao lado é quem identifica.",
+      "classe": "ucam-progress__ponto"
     }
   ],
   "props": [
@@ -128,6 +140,12 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "Texto à direita: a referência ou o contexto. \"SLA médio 6,4 dias\"."
+    },
+    {
+      "nome": "segments",
+      "tipo": "{ label, value, valueText?, serie?: 1–6, tone? }[] | null",
+      "default": "null",
+      "descricao": "Partes de um todo (ADR-046). Com segments, value/max/tone são ignorados e o total é a soma. serie usa a paleta de dataviz (partes sem julgamento); tone usa feedback (segmento que julga). Máximo de seis."
     }
   ],
   "estados": [
@@ -138,7 +156,9 @@
     "regras": [
       "Não usar para espera de duração desconhecida — o certo é Skeleton, que preserva o arranjo da tela.",
       "Não usar barra sem referência escrita: o preenchimento sozinho não diz de quanto é a parte.",
-      "Não animar o preenchimento em atualização periódica de painel: a barra pulsando a cada dez segundos rouba atenção do dado."
+      "Não animar o preenchimento em atualização periódica de painel: a barra pulsando a cada dez segundos rouba atenção do dado.",
+      "Barra segmentada com mais de seis partes vira tabela: acima disso a legenda é uma lista e a barra é ruído.",
+      "Segmentada é para PARTES de um todo (o caixa por forma de pagamento). Fração de um limite consumido (prazo, capacidade) continua na barra única — dataviz.json."
     ],
     "motivo": "O legado usa overlay bloqueante para espera e contagem absoluta para carga; nenhum dos dois é proporção."
   },
@@ -162,7 +182,8 @@
       "aria-valuetext quando a leitura numérica crua não é compreensível: '24 de 40 requerimentos' em vez de '60'.",
       "Contraste do preenchimento contra o trilho mínimo 3:1 — é elemento gráfico que carrega informação (WCAG 1.4.11).",
       "O valor aparece em texto ao lado ou abaixo. A barra é reforço visual, nunca o único portador do número.",
-      "Sem transição quando prefers-reduced-motion está ativo."
+      "Sem transição quando prefers-reduced-motion está ativo.",
+      "Segmentada: role=img com aria-label nomeando cada parte e seu valor; a legenda repete tudo em texto. Não é progressbar, porque não há um aria-valuenow."
     ],
     "criterios_wcag": [
       "1.3.1",

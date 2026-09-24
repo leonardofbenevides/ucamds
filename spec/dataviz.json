@@ -38,8 +38,8 @@
     {
       "pergunta": "Quanto de um limite já foi consumido?",
       "componente": "progress",
-      "forma": "Barra de progresso com o valor em texto ao lado.",
-      "evite": "Pizza de duas fatias, anel, medidor.",
+      "forma": "Barra de progresso com o valor em texto ao lado. Quando a pergunta é \"de que PARTES é feito o total\" (o caixa por forma de pagamento), a barra é segmentada, com legenda de ponto, nome e valor — ucam-progress--segmentada (ADR-046).",
+      "evite": "Pizza de duas fatias, anel, medidor. Para partes de um todo: pizza de três fatias e anel de pontos — a barra segmentada diz a mesma coisa em 8px de altura.",
       "porque": "É uma fração de um todo conhecido, não uma comparação entre categorias. A pizza de duas fatias é a forma mais cara de escrever uma porcentagem."
     },
     {

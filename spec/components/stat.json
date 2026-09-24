@@ -38,7 +38,7 @@
     {
       "parte": "grupo",
       "obrigatorio": false,
-      "descricao": "Contêiner de irmãos. Não é parte do componente: é o bloco de arranjo declarado em layouts.json. Grade contínua quando os números se somam (o caixa do dia); cartões separados, com vão, quando são leituras independentes (as quatro contagens de fila).",
+      "descricao": "Contêiner de irmãos. Não é parte do componente: é o bloco de arranjo declarado em layouts.json. Grade contínua quando os números se somam (o caixa do dia); cartões separados, com vão, quando são leituras independentes (as quatro contagens de fila). Números que se SOMAM sob um título: cartão com cabeçalho (.ucam-card > .ucam-card__cabecalho) e a grade contínua dentro dele (.ucam-stats). Dentro do cartão o grupo vira faixa entre dois fios e cada ladrilho perde o anel; quem emoldura é o cartão. É o \"Outreach sent\" do Repliq e o caixa do dia do SigFin (ADR-046). Leituras independentes continuam em --cartoes, sem cabeçalho.",
       "classe": "ucam-stats"
     },
     {
@@ -70,6 +70,18 @@
       "obrigatorio": false,
       "descricao": "A linha de contexto embaixo: recorte, comparação ou selo. É onde entra o texto que acompanha o tom, e é ela que impede o tom de ser o único portador do julgamento. Num ladrilho com tom, é ela que recebe a tinta (ADR-035).",
       "classe": "ucam-stat__meta"
+    },
+    {
+      "parte": "figura",
+      "obrigatorio": false,
+      "descricao": "Ladrilho de ícone à esquerda do bloco de texto, quando há prop icon. SEMPRE neutro (surface.sunken, tinta secundária): a ADR-034 tirou o fundo tinto do ladrilho do stat, e vale para o ladrilho de dentro pelo mesmo motivo — quatro figuras coloridas seriam o mosaico de volta. Decorativa: quem nomeia é o rótulo (ADR-046).",
+      "classe": "ucam-stat__figura"
+    },
+    {
+      "parte": "corpo",
+      "obrigatorio": false,
+      "descricao": "O bloco de rótulo, valor e contexto quando há figura. Só existe com figura, para o DOM dos stats sem figura não mudar.",
+      "classe": "ucam-stat__corpo"
     }
   ],
   "props": [
@@ -156,6 +168,12 @@
       "tipo": "'idle' | 'loading' | 'empty' | 'error'",
       "default": "'idle'",
       "descricao": "loading troca o valor por uma barra do tamanho do número; empty mostra o traço; error mostra o traço e, no lugar do contexto, \"Não foi possível carregar\" com ícone. O tom de fundo só vale com dado (idle). Sem botão no ladrilho: tentar de novo é da seção inteira, senão quatro ladrilhos que falharam juntos viram quatro botões iguais."
+    },
+    {
+      "nome": "icon",
+      "tipo": "UcamIconName | null",
+      "default": "null",
+      "descricao": "Ícone do conjunto curado no ladrilho neutro à esquerda (ADR-046). Dá ao olho uma âncora antes do número quando quatro ladrilhos estão lado a lado; não substitui o rótulo nem carrega tom."
     }
   ],
   "estados": [
@@ -299,7 +317,7 @@
     "trilho_a": {
       "contrato": "Estrutura fixa: o ladrilho com rótulo e valor e, opcionalmente, variação e contexto, dentro do contêiner de arranjo.",
       "raiz": ".ucam-stat",
-      "estado": "Tom por modificador: --success e --danger pintam apenas o valor. Arranjo por --linha no ladrilho e --cartoes no contêiner. empty e error: .ucam-stat__value com o traço; em error, .ucam-stat__erro (svg.ic aria-hidden mais a frase) no lugar de .ucam-stat__meta.",
+      "estado": "Tom por modificador: --success e --danger pintam apenas o valor. Arranjo por --linha no ladrilho, --figura quando há ladrilho de ícone (com o texto dentro de .ucam-stat__corpo) e --cartoes no contêiner. empty e error: .ucam-stat__value com o traço; em error, .ucam-stat__erro (svg.ic aria-hidden mais a frase) no lugar de .ucam-stat__meta.",
       "variaveis": [
         "--ucam-color-surface-default",
         "--ucam-color-border-subtle",

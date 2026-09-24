@@ -100,10 +100,16 @@ let seq = 0;
       flex-direction: column;
       gap: 0.2rem;
     }
+    /* O título do demo é DEGRAU, não rótulo de caixa: ele encabeça um painel
+       com descrição própria. Em 0,9375rem = 15px ficava menor que o corpo da
+       página e a um pixel da descrição de 14px que vem logo abaixo — título e
+       legenda liam como o mesmo nível. 17px é o degrau de subseção da régua:
+       24 (seção) · 20 (degrau) · 17 (subseção) · 16 (corpo) · 15 (rótulo de
+       caixa). */
     .demo-cabeca h3 {
-      font-size: 0.9375rem;
-      font-weight: 560;
-      letter-spacing: -0.01em;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.012em;
       margin: 0;
     }
     .demo-cabeca p {
@@ -127,7 +133,6 @@ let seq = 0;
       border: 1px solid var(--ucam-color-border-subtle);
       border-radius: var(--r-superficie);
       background: var(--ucam-color-surface-default);
-      box-shadow: var(--sombra-repouso);
     }
     /* A barra de abas fica no papel claro e o palco abaixo dela no cinza: a
        inversão é o que faz o painel ler como um objeto com cabeçalho em vez de

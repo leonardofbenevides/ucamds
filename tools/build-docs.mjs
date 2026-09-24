@@ -49,6 +49,32 @@ const icons = read('icons.json');
 const states = read('states.json');
 const projetos = read('templates.json').projetos;
 
+// Os marcadores {host} e {versao} são resolvidos aqui pela mesma razão que o
+// site os resolve em site/src/app/spec/spec.ts: o host mora em resources.json,
+// a versão no package.json da raiz, e escrevê-los por extenso num exemplo
+// criaria a segunda fonte. Página que mostra "{host}/css/ucam.css" ao leitor é
+// pior que página desatualizada — ela manda copiar um endereço que não é
+// endereço nenhum.
+const { version: VERSAO } = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+const resolverMarcadores = (v, marcadores) => {
+  if (typeof v === 'string') {
+    let t = v;
+    for (const [marca, valor] of Object.entries(marcadores)) t = t.replaceAll(marca, valor);
+    return t;
+  }
+  if (Array.isArray(v)) return v.map((x) => resolverMarcadores(x, marcadores));
+  if (v && typeof v === 'object')
+    return Object.fromEntries(
+      Object.entries(v).map(([k, x]) => [k, resolverMarcadores(x, marcadores)]),
+    );
+  return v;
+};
+const recursosBrutos = read('resources.json');
+const recursos = resolverMarcadores(recursosBrutos, {
+  '{versao}': VERSAO,
+  '{host}': recursosBrutos.publicacao.host,
+});
+
 const components = readdirSync(join(SPEC, 'components'))
   .filter((f) => f.endsWith('.json'))
   .map((f) => read(join('components', f)))
@@ -332,32 +358,31 @@ function pageIntro() {
 </article>`;
 }
 
+// A PÁGINA SAI DA SPEC, e isto é correção, não arrumação. Enquanto foi HTML
+// digitado aqui, ela envelheceu sozinha: mandava carregar
+// "/assets/ucam-tokens.css" — caminho que só existe dentro da aplicação que
+// consome, servido por ninguém — e ensinava `npx ucam-cli init`, um comando
+// que nunca existiu. Os trilhos moram em spec/resources.json, que é o que o
+// site publicado mostra e o que o portão de publicação confere; a segunda
+// cópia à mão só tinha um destino.
 function pageInstalacao() {
+  const trilho = (t) => `
+  <section class="sec">
+    <h2>${esc(t.nome)}</h2>
+    <p class="muted small"><strong>Para quem.</strong> ${esc(t.alvo)}</p>
+    <p>${esc(t.como)}</p>
+    <div class="panel"><div class="panel-body code"><pre><code>${esc(t.codigo)}</code></pre></div></div>
+    <p class="muted small"><strong>Limite.</strong> ${esc(t.limite)}</p>
+  </section>`;
+
   return `<article class="page" id="/comecar/instalacao">
   <header class="page-head"><div class="page-head-row"><h1>Instalação</h1></div>
-  <p class="lede">Dois caminhos, conforme a versão do Angular do seu sistema.</p></header>
+  <p class="lede">${esc(recursos.instalacao.$description)}</p></header>
+${recursos.instalacao.trilhos.map(trilho).join('\n')}
 
   <section class="sec">
-    <h2>Trilho A — sistemas legados</h2>
-    <p>Angular 14 ou anterior, AngularJS, ou qualquer stack. Duas folhas de estilo e um <code>class="ucam"</code> no container. Não há reset global nem preflight: o CSS existente do sistema continua funcionando.</p>
-    <div class="panel"><div class="panel-body code"><pre><code>&lt;link rel="stylesheet" href="/assets/ucam-tokens.css"&gt;
-&lt;link rel="stylesheet" href="/assets/ucam.css"&gt;
-
-&lt;div class="ucam"&gt;
-  &lt;button class="ucam-btn ucam-btn--primary"&gt;Salvar&lt;/button&gt;
-&lt;/div&gt;</code></pre></div></div>
-    <p class="muted small">A adoção é incremental — uma tela por vez, e uma tela pela metade continua funcionando.</p>
-  </section>
-
-  <section class="sec">
-    <h2>Trilho B — Angular moderno</h2>
-    <p>Angular 21 com Tailwind v4. O CLI copia o código-fonte do componente para o seu projeto.</p>
-    <div class="panel"><div class="panel-body code"><pre><code>npx ucam-cli init
-npx ucam-cli add button text-field data-table</code></pre></div></div>
-    <h3>Tailwind</h3>
-    <div class="panel"><div class="panel-body code"><pre><code>/* styles.css */
-@import "tailwindcss";
-@import "@ucam/tokens/ucam-theme.css";</code></pre></div></div>
+    <h2>Adoção incremental</h2>
+    <p>Uma tela por vez, e uma tela pela metade continua funcionando: não há reset global nem preflight, então o CSS que o sistema já tem segue valendo.</p>
   </section>
 
   <section class="sec">
@@ -860,7 +885,7 @@ function pageProjeto(proj) {
 function pagePadroes() {
   return `<article class="page" id="/padroes">
   <header class="page-head"><div class="page-head-row"><h1>Padrões</h1></div>
-  <p class="lede">Um padrão resolve uma tarefa inteira, não um controle. Vira código em <code>@ucam/patterns</code> quando aparece em três ou mais telas.</p></header>
+  <p class="lede">Um padrão resolve uma tarefa inteira, não um controle. Vira código gerado quando aparece em três ou mais telas.</p></header>
   ${patterns.map((p) => `<section class="sec" id="p-${esc(p.id)}">
     <div class="page-head-row"><h2>${esc(p.nome)}</h2>${pill(p.status)}</div>
     <p class="muted"><strong>Frequência:</strong> ${esc(p.frequencia)}</p>

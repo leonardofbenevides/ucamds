@@ -53,7 +53,7 @@
     {
       "parte": "periodo",
       "obrigatorio": false,
-      "descricao": "O rótulo do grupo: \"Hoje\", o ano, ou a fase em que o registro estava. Legenda em caixa alta e tinta secundária — é divisória, não acontecimento.",
+      "descricao": "O rótulo do grupo: \"Hoje\", o ano, ou a fase em que o registro estava. Legenda em caixa natural, 12px e tinta secundária — é divisória, não acontecimento; o que a separa dos itens é o tamanho e o marco no trilho, não a caixa alta (ADR-003, ADR-046).",
       "classe": "ucam-timeline__periodo"
     },
     {
@@ -131,7 +131,7 @@
     {
       "parte": "corpo",
       "obrigatorio": false,
-      "descricao": "O texto do acontecimento. Em mensagem, ganha o filete de citação à esquerda e tinta primária, nas duas densidades; evento fica em tinta secundária e sem filete (ADR-036 — antes era balão cinza). A mensagem se distingue por .ucam-timeline__corpo--mensagem — é a forma que separa fala de registro, nunca só a cor.",
+      "descricao": "O texto do acontecimento. Em mensagem, ganha o filete de citação à esquerda e tinta primária, nas duas densidades; evento fica em tinta secundária e sem filete (ADR-036 — antes era balão cinza). A mensagem se distingue por .ucam-timeline__corpo--mensagem — é a forma que separa fala de registro, nunca só a cor. Número de documento citado no texto vai em .ucam-id (ADR-047).",
       "classe": "ucam-timeline__corpo"
     },
     {

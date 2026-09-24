@@ -8,6 +8,10 @@
    verdade, não uma imitação escrita à mão. Tudo ali é escopado sob .ucam:
    nada alcança a cromagem deste site. */
 @import './generated/componentes.css';
+/* Espelho das regras de estado, só para a matriz de /catalogo/<id>. Vem DEPOIS
+   do componentes.css de propósito: mesma especificidade perderia para o
+   original em empate, e o palco precisa vencer. */
+@import './generated/estados.css';
 
 /* --- ponte para os componentes reais de @ucam/ui ------------------------ */
 /* Os componentes da base escrevem classes no vocabulário shadcn
@@ -87,18 +91,22 @@
   --topo-h: 3rem;
   --subtopo-h: 2.25rem;
   --header-h: var(--topo-h);
-  /* A régua é 68 CARACTERES; o número aqui é 48 porque `ch` não mede um
-     caractere — mede o avanço do algarismo ZERO. No Geist o `0` ocupa
-     0,673em e o caractere médio de prosa portuguesa ocupa 0,482em: razão de
-     1,40. Medido no navegador por Range, `68ch` entregava 93–97 caracteres
-     por linha em TODOS os níveis de texto (lede 19px, corpo 16px, nota 13px)
-     — acima do teto de 80 da WCAG 1.4.8 e longe dos 65 que o comentário
-     anterior afirmava. 68 ÷ 1,40 = 48,5.
+  /* A MEDIDA DO TEXTO É A COLUNA (23/09/2026, decisão do Leonardo, ADR-046).
+     "Deixar texto full, tela inteira": o texto corrido para na borda da
+     coluna da página, como os blocos — faixa de números, cartões, tabelas,
+     palcos — já paravam. `none` aqui solta de uma vez todo
+     `max-inline-size: var(--measure)` do site: .prose, .prose p, .prose li,
+     .lede e os usos locais das páginas. A coluna continua tendo limite: o
+     contêiner de 80rem e, nas páginas com índice, a grade de .pagina.
 
-     A unidade é `ch` e não `rem` de propósito: `ch` é relativa ao font-size
-     do ELEMENTO, então a nota de 13px e o lede de 19px chegam na mesma
-     contagem de caracteres com uma declaração só. */
-  --measure: 48ch;
+     O que se perde, e foi aceito: a 1440px uma linha de 16px chega a ~130
+     caracteres, acima dos 80 da WCAG 1.4.8 — que é técnica suficiente do
+     nível AAA, não critério A/AA. Antes disso a régua era 57ch (= 80
+     caracteres reais, porque `ch` mede o avanço do ZERO e não do caractere
+     médio: 0,673em contra 0,482em no Geist, razão 1,40). O callout já tinha
+     saído da régua em 23/09; agora tudo sai, e é uma decisão só. Se a régua
+     voltar, o valor é 57ch e a conta está aqui. */
+  --measure: none;
   /* Régua única: marca do header, texto da lateral e conteúdo caem todos
      nesta linha. Os itens da lateral descontam o próprio padding para o
      TEXTO alinhar, não a caixa. */
@@ -386,11 +394,24 @@ kbd {
 }
 
 /* A medida vale para o parágrafo, não para a seção: tabela e palco ocupam a
-   largura toda, o texto continua com 65 caracteres. */
+   largura toda, o texto continua na régua. */
 .prose p {
   margin: 0 0 1.05rem;
   max-inline-size: var(--measure);
   text-wrap: pretty;
+}
+
+/* E vale para o ITEM DE LISTA, que é prosa igual. Só o <p> tinha a regra, e
+   as listas de boas práticas de todo componente liam 98 caracteres por linha
+   — as mais longas do site depois do callout.
+
+   O max-inline-size vai no <li> e não no <ul> de propósito: "ch" resolve
+   contra o font-size do ELEMENTO, e a medida posta no contêiner vira um
+   comprimento fixo que os filhos menores herdam. Foi assim que um parágrafo
+   de 13px acabou com a largura de um de 16px em /telas — 96 caracteres onde
+   a régua pede 80. */
+.prose li {
+  max-inline-size: var(--measure);
 }
 
 /* O ritmo da seção mora AQUI, não em cada página.
@@ -836,7 +857,14 @@ tbody tr:has(+ tr.linha-nota:hover) {
   background: var(--ucam-color-surface-subtle);
   border-radius: var(--ucam-radius-sm);
   padding: 0.08em 0.32em;
-  font-size: 0.85em;
+  /* 0,85em COM PISO. O encolhimento existe porque o mono tem avanço fixo de
+     0,60em contra 0,482 médio do sans — é compensação de LARGURA, não de
+     altura: Geist e Geist Mono têm a mesma altura-x (0,53) e a mesma
+     maiúscula (0,71), medidas no navegador.
+     Sem piso, o mesmo 0,85em se aplicava sobre metadado de 12px e produzia
+     10,2px — mono encolhendo dentro de mono, abaixo do piso que este site
+     cobra das telas que documenta. */
+  font-size: max(0.85em, 11px);
   color: var(--ucam-color-text-primary);
 }
 
@@ -851,18 +879,33 @@ tbody tr:has(+ tr.linha-nota:hover) {
    O tingido nasce por color-mix do próprio token de acento, então o mesmo
    bloco serve nos dois temas — no escuro, o token já é escuro e o mix apenas
    o aproxima do papel. */
-/* O callout é PROSA numa caixa, e por isso segue a régua de 68 caracteres
-   como qualquer parágrafo. Sem isto ele herdava a largura do container: na
-   home o aviso "Como ler esta documentação" abria 1130px e virava a linha
-   mais longa do site — 140 caracteres, quase o dobro do teto da WCAG 1.4.8,
-   num bloco cuja função é ser lido primeiro.
+/* O callout é um BLOCO, e o texto acompanha a caixa — ver os dois parágrafos
+   abaixo, nesta ordem: primeiro por que a CAIXA é larga, depois por que o
+   TEXTO não para na medida dentro dela.
 
-   O teto é na CAIXA e não no texto de dentro: limitar só o parágrafo deixava
-   600px de fundo tingido vazio à direita dele. O acréscimo é o padding
-   horizontal declarado logo abaixo, para a medida valer no TEXTO. */
+   A página tem DUAS bordas direitas e não quatro: blocos (faixa de números,
+   grades de cartão, tabelas, palcos, callouts) alinham na coluna; texto
+   corrido para na medida. Medido na home antes disto: a faixa de números
+   terminava em 1331px, os cartões em 1331, o lede em 704 e o callout em 648 —
+   quatro réguas na mesma tela, e a do callout era minha.
+
+   O callout NÃO é exceção: ele tem fundo, moldura e barra de acento, e é
+   isso que o define aqui — um bloco, lido na mesma borda da faixa de números
+   e dos cartões que vêm logo abaixo dele. Uma caixa mais estreita que os
+   blocos vizinhos abre um degrau que nada explica, e ele é o primeiro bloco
+   da home: o degrau aparece antes de a página começar.
+
+   E o TEXTO acompanha a caixa. Limitar só o parágrafo devolvia o defeito
+   pelo outro lado: a linha morria em 617px e sobrava meio callout de fundo
+   tingido à direita do ponto final. A borda que se enxerga aqui é a da
+   CAIXA — desenhada, com moldura e barra de acento — e é nela que o texto
+   tem de terminar; num parágrafo solto ninguém vê onde a coluna acabaria.
+
+   O preço está dito: em monitor largo a linha passa dos 80 caracteres da
+   WCAG 1.4.8. Vale só para o callout, e vale porque ele é curto por
+   contrato — duas ou três linhas de aviso, nunca um corpo de página. */
 .callout {
   --acento: var(--ucam-color-action-primary-default);
-  max-inline-size: calc(var(--measure) + 2.5rem);
   position: relative;
   padding: 1rem 1.15rem 1rem 1.35rem;
   border: 1px solid color-mix(in oklab, var(--acento) 22%, var(--ucam-color-border-subtle));
@@ -882,6 +925,12 @@ tbody tr:has(+ tr.linha-nota:hover) {
   inset-inline-start: 0;
   inline-size: 3px;
   background: var(--acento);
+}
+
+/* `none` e não a simples ausência da regra: quase todo callout vive dentro de
+   um .prose, e o `.prose p` lá de cima poria a medida de volta. */
+.callout p {
+  max-inline-size: none;
 }
 
 .callout > :last-child {
@@ -907,7 +956,11 @@ tbody tr:has(+ tr.linha-nota:hover) {
 
 /* ----------------------------------------------------------------- cartões */
 
-/* O card subiu de raio (6px → 12px) e ganhou sombra de repouso. Os 6px vinham
+/* PLANO EM REPOUSO (23/09/2026). O card do site levitava com uma sombra
+   curta enquanto o contrato do cartão diz, desde a ADR-019, que cartão é
+   plano e só o hover levanta: o site contradizia a regra que documenta. A
+   sombra ficou para o hover, onde ela significa distância. */
+/* O card subiu de raio (6px → 12px). Os 6px vinham
    do raio de CONTROLE, que é a medida de um botão de 32px de altura: numa
    caixa de 20rem o mesmo canto lê como quina. A spec já declarava
    radius.surface exatamente para este caso, e o site não o usava em lugar
@@ -918,7 +971,6 @@ tbody tr:has(+ tr.linha-nota:hover) {
   border: 1px solid var(--ucam-color-border-subtle);
   border-radius: var(--r-superficie);
   background: var(--ucam-color-surface-default);
-  box-shadow: var(--sombra-repouso);
   text-decoration: none;
   transition:
     border-color var(--transicao),
@@ -941,7 +993,7 @@ a.card:hover {
 
 a.card:active {
   transform: translateY(0);
-  box-shadow: var(--sombra-repouso);
+  box-shadow: none;
 }
 
 /* A seta é a affordance que faltava: num grid de seis caixas iguais, nada
@@ -1111,7 +1163,6 @@ a.card:has(.palco)::after {
   border: 1px solid var(--ucam-color-border-subtle);
   border-radius: var(--r-superficie);
   background: var(--ucam-color-surface-default);
-  box-shadow: var(--sombra-repouso);
 }
 
 /* O título do ponto é um h3 de verdade, para entrar no sumário do leitor de

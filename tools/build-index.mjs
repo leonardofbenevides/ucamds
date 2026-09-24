@@ -53,6 +53,9 @@ function demoDe(id) {
     ...d,
     principal: comPreview(d.principal),
     exemplos: (d.exemplos ?? []).map(comPreview),
+    // Retrato do catálogo, para quem não tem preview. Passa por listboxSelects
+    // pelo mesmo motivo do preview: um <select> ali seria o controle aposentado.
+    ...(d.miniatura ? { miniatura: listboxSelects(d.miniatura) } : {}),
   };
 }
 
@@ -148,6 +151,14 @@ function semAngular() {
 // Só AQUI, e não junto da lista: trilhosDe() lê EXPORTADOS e REGISTRADOS, que
 // são const declaradas acima — chamá-la antes cai na zona morta temporal.
 for (const c of componentes) c.trilhos = trilhosDe(c);
+
+/* Quantos contratos cada trilho entrega HOJE. Sai da mesma derivação que
+   alimenta a matriz no topo de cada componente, então os dois números nunca
+   discordam: a home diz 46 e a página do Kbd diz que o Trilho B não o tem,
+   e as duas afirmações vêm do mesmo lugar. */
+for (const t of recursos.instalacao?.trilhos ?? []) {
+  t.componentes = componentes.filter((c) => c.trilhos.some((x) => x.id === t.id && x.disponivel)).length;
+}
 
 const slug = (s) =>
   String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

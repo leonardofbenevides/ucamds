@@ -139,7 +139,11 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
       padding-block-start: 0;
       border-block-start: 0;
     }
-    .projeto-texto {
+    /* A medida nos FILHOS, não no contêiner. Em .projeto-texto o "ch" era
+       resolvido no font-size dele (16px) e virava 605px fixos; os parágrafos
+       de 13px herdavam essa largura e liam 96 caracteres, contra os 80 da
+       régua. Cada filho resolve o próprio "ch". */
+    .projeto-texto > * {
       max-inline-size: var(--measure);
     }
     .projeto-cabeca h2 {
@@ -166,7 +170,10 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
     }
     .rotulo {
       font-family: var(--f-mono);
-      font-size: 0.62rem;
+      /* 0,75rem: a régua de metadado do site, a mesma do .meta da página de
+         componente. Estava em 10,4px, abaixo do piso que este próprio site
+         cobra das telas que documenta. */
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       padding: 0.05rem 0.35rem;
@@ -202,7 +209,6 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
       border-radius: var(--r-superficie);
       overflow: hidden;
       background: var(--ucam-color-surface-default);
-      box-shadow: var(--sombra-repouso);
       color: inherit;
       text-decoration: none;
     }
@@ -304,7 +310,7 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
       gap: 0.9rem;
       margin-bottom: 0 !important;
       font-family: var(--f-mono);
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       color: var(--ucam-color-text-secondary);
     }
 
@@ -341,7 +347,7 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
       }
       .card:active {
         transform: translateY(0);
-        box-shadow: var(--sombra-repouso);
+        box-shadow: none;
       }
     }
   `,

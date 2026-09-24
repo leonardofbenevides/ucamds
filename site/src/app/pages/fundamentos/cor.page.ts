@@ -282,6 +282,18 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       display: grid;
       grid-auto-flow: column;
       grid-auto-columns: minmax(0, 1fr);
+      /* A faixa ROLA quando não cabe, em vez de empurrar a página.
+         "minmax(0, 1fr)" deixa a coluna encolher, mas o hex escrito embaixo
+         tem largura mínima intrínseca — "#0E162A" em mono de 11px são 46px
+         mais o respiro. Treze degraus assim pedem 767px, e a 390px a rampa
+         estourava a viewport: o documento inteiro ganhava 9px de rolagem
+         horizontal, que é o defeito que mais incomoda no celular porque move
+         a página toda.
+         Aqui a barra FICA, ao contrário da faixa de abas do índice: este é um
+         contêiner de conteúdo, e nada além dela avisa que há mais degraus. */
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--ucam-color-border-default) transparent;
     }
     .rampa-degrau {
       appearance: none;

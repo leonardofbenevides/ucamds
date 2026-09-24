@@ -154,13 +154,12 @@
     ]
   },
   "instalacao": {
-    "$lede": "Três caminhos de consumo. Escolha pelo que a aplicação recebe hoje — o primeiro não pede instalação nenhuma.",
-    "$description": "Três caminhos de consumo. Escolha pelo que a aplicação consegue receber hoje: o primeiro não pede instalação nenhuma — duas tags no <head> e a aparência da UCAM aparece.",
+    "$lede": "Três caminhos de consumo, e uma pergunta só decide entre eles.",
+    "$description": "Três caminhos de consumo, e uma pergunta só decide entre eles — a tabela de escolha diz qual é a pergunta e para onde cada resposta manda. O primeiro caminho não pede instalação nenhuma: duas tags no <head> e a aparência da UCAM aparece.",
     "trilhos": [
       {
         "id": "a",
         "nome": "Trilho A — legado",
-        "alvo": "AngularJS, JSF/PrimeFaces, Angular 14 ou anterior — qualquer aplicação que aceite um <link>.",
         "como": "Duas tags no <head>, e nada mais: sem instalar pacote, sem passo de build, sem reset global. A folha traz os tokens junto — nenhum terceiro <link> é preciso — e desenha os componentes sob um ancestral .ucam. Os ícones são a única peça que a URL não entrega pronta: <use href=\"{host}/icons/sprite.svg#nome\"> é BLOQUEADO quando a página mora noutro domínio, porque referência externa de <use> é same-origin e CORS não levanta esse bloqueio. Sirva o sprite da PRÓPRIA origem do app — baixe {host}/icons/sprite.svg para junto das suas estáticas, ou instale o tarball @ucam/css, que o traz —, ou injete-o uma vez no documento por fetch e referencie por <use href=\"#nome\">, que é o que o próprio site do design system faz.",
         "codigo": "<link rel=\"stylesheet\" href=\"{host}/css/ucam-fonts.css\">\n<link rel=\"stylesheet\" href=\"{host}/css/ucam.css\">\n\n<div class=\"ucam\">\n  <button class=\"ucam-btn ucam-btn--primary\">Salvar</button>\n</div>",
         "limite": "Aparência e estado que cabem em classe. Comportamento — combobox com busca, diálogo que retém foco, paginação acessível — não vem aqui: é o Trilho A+. A URL não tem versão, de propósito: uma correção de contraste chega ao parque inteiro no deploy seguinte, sem ninguém tocar em aplicação nenhuma. Quem precisa congelar instala o tarball @ucam/css em /pacotes. Máquina sem saída para a internet: baixe os arquivos e sirva do próprio app, mantendo css/ ao lado de tokens/ e fonts/ — os caminhos dentro da folha são relativos. E quem só quer as variáveis, sem componente, carrega {host}/tokens/ucam-tokens.css. Medido em 21/09/2026 numa página servida de outra origem: a folha pinta o botão no bordô da marca e a Geist carrega (o woff2 sai com Access-Control-Allow-Origin: *), e só o <use> externo cai, calado — sem erro na tela, uma linha no console."
@@ -168,7 +167,6 @@
       {
         "id": "a-mais",
         "nome": "Trilho A+ — legado com comportamento",
-        "alvo": "As telas do parque legado que precisam de um componente que CSS não desenha (ADR-010).",
         "como": "Um <link> e um <script type=\"module\">, e <ucam-combobox> passa a existir numa página AngularJS. O bundle é autocontido: não depende do Trilho A ao lado, nem de framework, nem de passo de build.",
         "codigo": "<link rel=\"stylesheet\" href=\"{host}/elements/ucam-elements.css\">\n<script type=\"module\" src=\"{host}/elements/ucam-elements.js\"></script>\n\n<ucam-combobox label=\"Setor\"></ucam-combobox>\n<ucam-dialog></ucam-dialog>",
         "limite": "Seis componentes: ucam-button, ucam-text-field, ucam-select, ucam-combobox, ucam-dialog, ucam-pagination. Não carregue este bundle junto com a biblioteca Angular: o registro do custom element é global no documento e a segunda definição do mesmo nome lança. Ele carrega o runtime do Angular, então continue no Trilho A para tudo que for só aparência."
@@ -176,7 +174,6 @@
       {
         "id": "b",
         "nome": "Trilho B — apps novos e migrados",
-        "alvo": "Angular moderno com Tailwind v4.",
         "como": "Instale os pacotes direto da URL e importe o bloco @theme. Não é preciso baixar arquivo à mão: o pnpm resolve o tarball, grava a URL no package.json e um clone do seu app reinstala sozinho.",
         "codigo": "pnpm add {host}/pacotes/ucam-tokens-{versao}.tgz          {host}/pacotes/ucam-ui-{versao}.tgz\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@ucam/tokens/ucam-theme.css\";",
         "limite": "Aplicações importam <ucam-*>. Nunca <z-*>: o ZardUI é matéria-prima do design system, não dependência das aplicações. Sem registro, a URL fixa a versão — não há faixa semver nem pnpm update, e subir de versão é trocar o número."

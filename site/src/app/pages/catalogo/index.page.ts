@@ -130,7 +130,6 @@ import { noNavegador } from '../../docs/no-navegador';
       border-radius: var(--r-superficie);
       overflow: hidden;
       background: var(--ucam-color-surface-default);
-      box-shadow: var(--sombra-repouso);
       color: inherit;
       text-decoration: none;
     }
@@ -251,13 +250,17 @@ import { noNavegador } from '../../docs/no-navegador';
       font-size: 0.75rem;
       color: var(--ucam-color-text-secondary);
     }
+    /* 11px e SEM opacidade. Estava em 10px com opacity 0,75 — duas formas de
+       enfraquecer o mesmo texto ao mesmo tempo, e a segunda é a que o contrato
+       do Kbd já proíbe: "a opacidade apaga texto e borda na mesma medida, e
+       derruba o contraste do texto abaixo do piso". Quem diz que este rótulo é
+       secundário é a cor; o tamanho e a opacidade não precisam repetir. */
     .sem-preview__marca {
       font-family: var(--f-mono);
-      font-size: 0.625rem;
+      font-size: 0.6875rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--ucam-color-text-secondary);
-      opacity: 0.75;
     }
 
     /* Sem fundo próprio. O surface-subtle que estava aqui existia quando o
@@ -305,7 +308,7 @@ import { noNavegador } from '../../docs/no-navegador';
       }
       .card:active {
         transform: translateY(0);
-        box-shadow: var(--sombra-repouso);
+        box-shadow: none;
       }
     }
   `,
@@ -356,7 +359,10 @@ export default class CatalogoPage {
 
   protected preview(c: Componente): SafeHtml | null {
     if (!this.cache.has(c.id)) {
-      const html = c.demo?.principal?.preview?.trim();
+      // O preview é o componente de verdade. A miniatura é o retrato de quem
+      // não tem preview — chart, combobox, command —, e o validador garante
+      // que nenhum contrato tem os dois.
+      const html = (c.demo?.principal?.preview ?? c.demo?.miniatura)?.trim();
       this.cache.set(c.id, html ? this.sanitizer.bypassSecurityTrustHtml(html) : null);
     }
     return this.cache.get(c.id)!;
@@ -387,7 +393,15 @@ export default class CatalogoPage {
        Badge, Menu…) passaram a encostar na borda do palco. A folga agora está
        aqui, que é o único lugar onde ela é medida junto com o desenho. */
     const MARGEM = 20;
-    const PISO = 0.5;
+    /* 0,8, e não mais 0,5. O piso é o menor tamanho em que a amostra ainda se
+       lê: a 0,5 o texto de 13px vira 6,5px, e as CENAS — AppShell, DataTable,
+       Dialog, Drawer, Menu — saíam todas assim, um retângulo ilegível no meio
+       do palco (a queixa de 23/09/2026: "a thumbnail do AppShell tá ruim").
+       Abaixo de 0,8 a amostra não encolhe mais: fica ancorada no topo e
+       esmaece no pé, que é o que uma miniatura de tela faz. A largura
+       continua nunca sendo sacrificada — a cena que precisa caber é
+       desenhada mais larga e mais baixa na própria demo. */
+    const PISO = 0.8;
     /* O palco era 10,5rem para tudo, de um Chip de 22px a uma DataTable de
        306px. Medido em 10/09/2026: 19 dos 43 previews ocupavam menos de 40%
        da ALTURA, e nove menos de 20% — Stepper 12%, Chip, Prazo e Kbd 13%,
@@ -407,7 +421,11 @@ export default class CatalogoPage {
        inteira perto de 0,6. Átomo não muda: a altura é da LINHA, e linha só
        de átomos continua pedindo o piso. */
     const ALT_MIN = 72;
-    const ALT_MAX = 200;
+    /* 224 desde 23/09/2026 (era 200). Com o piso de escala em 0,8 o palco
+       precisa de mais 24px para as cenas caberem inteiras sem corte — Alert
+       com dois avisos, Stat com dois ladrilhos, ChoiceCard com quatro
+       cartões. Linha só de átomos continua no piso de 72. */
+    const ALT_MAX = 224;
 
     // Array.from e não spread: a lib do site é ['ES2022','dom'], sem
     // dom.iterable — NodeList não tem Symbol.iterator aqui.

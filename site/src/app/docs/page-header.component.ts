@@ -49,6 +49,17 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
       font-size: clamp(1.875rem, 3.4vw, 2.375rem);
       margin: 0;
     }
+    /* O lede da página interna é CORPO (16px), não o lede de capa (19px).
+       Em toda página de componente ele é o $description da spec — duas ou
+       três frases — e a 19px, correndo a coluna inteira, era o maior bloco
+       de texto da tela, acima do próprio conteúdo ("esse texto tá grande",
+       23/09/2026). A capa fica com os 19px; aqui a hierarquia é título,
+       lede em corpo, metadado em 12. */
+    .cabecalho .lede {
+      font-size: 1rem;
+      line-height: 1.55;
+      margin-block: 0;
+    }
     /* Fechado, o bloco é UMA LINHA de texto secundário — não um botão, não uma
        caixa. Caixa fechada no topo de toda página seria outra moldura para o
        olho resolver antes do conteúdo, e o que está aqui dentro é opcional

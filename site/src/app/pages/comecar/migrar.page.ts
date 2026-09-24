@@ -31,7 +31,12 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <div class="prose largo">
       <section id="trilho">
         <h2>1. Escolher o trilho</h2>
+        <!-- A PERGUNTA antes dos cartões: são três cartões de quatro campos
+             cada, e quem chega aqui tem uma dúvida só. A mesma frase abre a
+             página de instalação e a home, do mesmo campo. -->
+        <p class="pergunta">{{ m.escolhaDoTrilho.pergunta }}</p>
         <p>{{ m.escolhaDoTrilho.$descricao }}</p>
+        <p>{{ m.escolhaDoTrilho.nota }}</p>
 
         <div class="trilhos">
           @for (t of m.escolhaDoTrilho.trilhos; track t.id) {
@@ -258,6 +263,12 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     </div>
   `,
   styles: `
+    .pergunta {
+      font-family: var(--f-display);
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+    }
     /* OS DOIS TRILHOS LADO A LADO. minmax de 20rem porque o cartão carrega uma
        lista de definição de quatro linhas: abaixo disso o valor quebra em três
        linhas e a comparação entre os dois vira rolagem vertical. */

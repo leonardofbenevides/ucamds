@@ -37,7 +37,7 @@
     {
       "parte": "root",
       "obrigatorio": true,
-      "descricao": "Elemento âncora. Sempre com href real: <a> sem href não é focável nem anunciado como link, e um span com click é a forma mais rápida de tirar a navegação do teclado.",
+      "descricao": "Elemento âncora. Sempre com href real: <a> sem href não é focável nem anunciado como link, e um span com click é a forma mais rápida de tirar a navegação do teclado. Link cujo texto é um identificador — o número do protocolo na fila — envolve o número em .ucam-id (ADR-047).",
       "classe": "ucam-link"
     },
     {

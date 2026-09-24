@@ -1,20 +1,201 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { meta, recursos } from '../spec/spec';
+import { meta } from '../spec/spec';
+
+/* ------------------------------------------------------------------------
+ * A ILUSTRAÇÃO DA HOME é geometria isométrica CALCULADA, não desenhada à mão.
+ *
+ * Projeção isométrica clássica (30°): um ponto do mundo (x, y, z) vira
+ * (sx, sy) = ((x − y)·cos30, (x + y)·sin30 − z). Cada sólido é uma caixa com
+ * três faces visíveis — o topo e as duas faces da frente — e as peças
+ * assentam num chão que também é uma caixa. Assim todo objeto tem volume de
+ * verdade, as arestas batem umas nas outras e nenhum "rx" precisa fingir
+ * perspectiva. A ordem de pintura vai do fundo para a frente.
+ *
+ * Pedido de 23/09/2026, quarta versão: "algo mais isométrico e menos
+ * gratuito". As peças são o que o sistema entrega — a tela (laje com coluna
+ * de navegação, indicadores e tabela), o gráfico de barras extrudadas, o
+ * indicador, o formulário com interruptor, o cartão de escolha, o selo — e as
+ * pessoas para quem tudo isso existe, como esferas. Uma tinta de traço, duas
+ * tintas de face, bordô só em três acentos.
+ * --------------------------------------------------------------------- */
+const COS = 0.8660254;
+const SEN = 0.5;
+const OX = 452;
+const OY = 36;
+
+type Face = { d: string; classe: string };
+
+function ponto(x: number, y: number, z: number): [number, number] {
+  return [(x - y) * COS + OX, (x + y) * SEN - z + OY];
+}
+function poligono(pontos: [number, number, number][]): string {
+  return pontos.map(([x, y, z], i) => (i ? 'L' : 'M') + ponto(x, y, z).map((n) => n.toFixed(1)).join(' ')).join(' ') + ' Z';
+}
+/** Uma caixa: face esquerda (frente, y + d), face direita (frente, x + w) e topo. */
+function caixa(x: number, y: number, z: number, w: number, d: number, h: number, classe = ''): Face[] {
+  const t = z + h;
+  return [
+    { d: poligono([[x, y + d, z], [x + w, y + d, z], [x + w, y + d, t], [x, y + d, t]]), classe: `face-esq ${classe}` },
+    { d: poligono([[x + w, y, z], [x + w, y + d, z], [x + w, y + d, t], [x + w, y, t]]), classe: `face-dir ${classe}` },
+    { d: poligono([[x, y, t], [x + w, y, t], [x + w, y + d, t], [x, y + d, t]]), classe: `topo ${classe}` },
+  ];
+}
+/** Um retângulo deitado no plano do topo, para o conteúdo das lajes. */
+function plano(x: number, y: number, z: number, w: number, d: number, classe: string): Face {
+  return { d: poligono([[x, y, z], [x + w, y, z], [x + w, y + d, z], [x, y + d, z]]), classe };
+}
+/** Uma esfera assentada em z, com a sombra em crescente das referências. */
+function esfera(x: number, y: number, z: number, r: number): Face[] {
+  const [cx, cy] = ponto(x, y, z + r);
+  const disco = `M ${(cx - r).toFixed(1)} ${cy.toFixed(1)} a ${r} ${r} 0 1 0 ${2 * r} 0 a ${r} ${r} 0 1 0 ${-2 * r} 0 Z`;
+  // O crescente: a metade direita do disco menos um arco de raio maior, que
+  // bojeia menos — o que sobra entre os dois é a sombra das referências.
+  const R = r * 1.7;
+  const crescente = `M ${cx.toFixed(1)} ${(cy - r).toFixed(1)} A ${r} ${r} 0 0 1 ${cx.toFixed(1)} ${(cy + r).toFixed(1)} A ${R} ${R} 0 0 0 ${cx.toFixed(1)} ${(cy - r).toFixed(1)} Z`;
+  return [{ d: disco, classe: 'esfera' }, { d: crescente, classe: 'crescente' }];
+}
+
+function montarCena(): Face[] {
+  const cena: Face[] = [];
+  const Z = 14; // altura do chão
+
+  // O CHÃO: a placa das fundações, onde tudo assenta.
+  cena.push(...caixa(0, 0, 0, 500, 380, Z, 'chao'));
+
+  // O GRÁFICO: cinco barras extrudadas, atrás à direita. A quarta é o acento.
+  cena.push(plano(452, 40, Z + 0.5, 38, 156, 'plinto'));
+  const alturas = [34, 62, 48, 92, 74];
+  alturas.forEach((h, i) => cena.push(...caixa(460, 46 + i * 30, Z, 22, 22, h, i === 3 ? 'acento' : '')));
+
+  // A TELA: a laje central com coluna de navegação, indicadores e tabela.
+  cena.push(...caixa(140, 56, Z, 300, 220, 10, 'tela'));
+  const T = Z + 10.5;
+  cena.push(plano(140, 56, T, 300, 24, 'faixa'));
+  cena.push(plano(150, 62, T, 6, 6, 'ponto'), plano(160, 62, T, 6, 6, 'ponto'), plano(170, 62, T, 6, 6, 'ponto'));
+  cena.push(plano(140, 80, T, 76, 196, 'coluna'));
+  cena.push(plano(150, 92, T, 56, 14, 'realce'));
+  cena.push(plano(154, 96, T, 30, 5, 'traco-forte'));
+  [118, 138, 158, 178].forEach((y, i) => cena.push(plano(154, y, T, [28, 40, 22, 34][i], 5, 'traco')));
+  [228, 296, 364].forEach((x) => {
+    cena.push(plano(x, 90, T, 60, 38, 'ladrilho'));
+    cena.push(plano(x + 8, 98, T, 24, 4, 'traco'));
+    cena.push(plano(x + 8, 110, T, 36, 8, 'traco-forte'));
+  });
+  cena.push(plano(228, 140, T, 196, 14, 'cabecalho'));
+  [162, 188, 214, 240].forEach((y) => {
+    cena.push(plano(236, y + 4, T, 10, 10, 'avatar-mini'));
+    cena.push(plano(252, y + 3, T, 52, 5, 'traco-forte'));
+    cena.push(plano(252, y + 11, T, 78, 4, 'traco'));
+    cena.push(plano(372, y + 3, T, 44, 11, 'selo'));
+    cena.push(plano(228, y + 22, T, 196, 1, 'fio'));
+  });
+
+  // O INDICADOR: bloco à esquerda, com a variação em bordô.
+  cena.push(...caixa(30, 110, Z, 92, 64, 26, 'bloco'));
+  const I = Z + 26.5;
+  cena.push(plano(40, 118, I, 36, 5, 'traco'));
+  cena.push(plano(40, 132, I, 52, 12, 'traco-forte'));
+  cena.push(plano(40, 154, I, 60, 5, 'traco'));
+  cena.push(plano(98, 132, I, 16, 12, 'acento-plano'));
+
+  // O FORMULÁRIO: rótulo, campo e interruptor ligado.
+  cena.push(...caixa(30, 210, Z, 100, 74, 8, 'bloco'));
+  const F = Z + 8.5;
+  cena.push(plano(40, 218, F, 30, 5, 'traco-forte'));
+  cena.push(plano(40, 230, F, 80, 18, 'campo'));
+  cena.push(plano(46, 236, F, 40, 5, 'traco'));
+  cena.push(plano(40, 260, F, 26, 12, 'acento-plano'));
+  cena.push(plano(56, 262, F, 8, 8, 'knob'));
+  cena.push(plano(74, 264, F, 40, 5, 'traco'));
+
+  // O CARTÃO DE ESCOLHA, marcado: figura, título, apoio e o check em bordô.
+  cena.push(...caixa(330, 300, Z, 110, 62, 8, 'bloco escolhido'));
+  const C = Z + 8.5;
+  cena.push(plano(340, 310, C, 20, 20, 'ladrilho'));
+  cena.push(plano(368, 312, C, 44, 5, 'traco-forte'));
+  cena.push(plano(368, 322, C, 60, 4, 'traco'));
+  cena.push(plano(340, 342, C, 80, 4, 'traco'));
+  cena.push(plano(424, 308, C, 8, 8, 'acento-plano'));
+
+  // O SELO, deitado no chão: ponto e palavra.
+  cena.push(...caixa(190, 326, Z, 88, 22, 5, 'bloco'));
+  cena.push(plano(198, 332, Z + 5.5, 8, 8, 'acento-plano'));
+  cena.push(plano(212, 333, Z + 5.5, 50, 6, 'traco'));
+
+  // AS PESSOAS: três esferas na frente, para quem tudo isso existe.
+  cena.push(...esfera(470, 290, Z, 20));
+  cena.push(...esfera(460, 338, Z, 15));
+  cena.push(...esfera(420, 350, Z, 12));
+
+  return cena;
+}
 
 @Component({
   selector: 'ucam-inicio',
   imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <!-- A CAPA EM DUAS COLUNAS (23/09/2026). Era uma pilha: título, faixa
+         de números, callout, ilustração, cartões — e a ilustração, o único
+         desenho da página, só aparecia depois de uma rolagem. Agora o texto e
+         as duas portas ficam à esquerda e a ilustração à direita, na mesma
+         dobra; a faixa de números fecha o bloco por baixo, atravessando as
+         duas colunas. Abaixo de 64rem volta a empilhar.
+
+         Duas portas, um primário: "Começar" leva à instalação, que é onde a
+         pergunta do trilho é respondida (ADR-045); "Ver o catálogo" é a
+         segunda entrada mais pedida e vai contornada. São os botões do
+         próprio sistema — a capa do design system usa o botão que documenta. -->
     <header class="masthead">
-      <p class="eyebrow eyebrow-marca">Universidade Candido Mendes</p>
-      <h1 class="display">Design System UCAM</h1>
-      <p class="lede">
-        Fundamentos, componentes e padrões para as interfaces da UCAM. Cada componente traz
-        API, comportamento, requisitos de acessibilidade e limites de uso.
-      </p>
+      <div class="masthead-texto">
+        <p class="eyebrow eyebrow-marca">Universidade Candido Mendes</p>
+        <h1 class="display">Design System UCAM</h1>
+        <p class="lede">
+          Fundamentos, componentes e padrões para as interfaces da UCAM. Cada componente traz
+          API, comportamento, requisitos de acessibilidade e limites de uso.
+        </p>
+        <p class="masthead-acoes">
+          <a class="ucam-btn ucam-btn--primary ucam-btn--lg" routerLink="/comecar/instalacao">Começar</a>
+          <a class="ucam-btn ucam-btn--secondary ucam-btn--lg" routerLink="/catalogo">Ver o catálogo</a>
+        </p>
+      </div>
+
+      <!-- A geometria da ilustração está no topo deste arquivo; as cores vêm
+           dos tokens, então ela vira sozinha no tema escuro. Decorativa por
+           papel: role=img com um nome que diz o que há nela. -->
+      <figure class="ilustracao">
+        <svg
+          viewBox="0 0 900 500"
+          role="img"
+          aria-label="Ilustração isométrica do design system: sobre uma placa, a tela com coluna de navegação, indicadores e tabela; ao lado, um gráfico de barras, um indicador, um formulário com interruptor, um cartão de escolha marcado, um selo e três pessoas."
+        >
+          <!-- A MALHA isométrica de fundo (pedido de 23/09): losangos na mesma
+               projeção da cena, em filete, esmaecendo para as bordas por uma
+               máscara radial — o chão continua sendo a placa; a malha é o papel
+               quadriculado em que ela foi desenhada. O tile do padrão é UM
+               losango de 24 de altura: 2·cos30·24 por 24. -->
+          <defs>
+            <pattern id="malha-iso" patternUnits="userSpaceOnUse" width="41.57" height="24">
+              <path d="M 0 12 L 20.78 0 L 41.57 12 L 20.78 24 Z" class="malha" />
+            </pattern>
+            <radialGradient id="malha-fade" cx="50%" cy="52%" r="58%">
+              <stop offset="0" stop-color="#fff" stop-opacity="1" />
+              <stop offset="0.7" stop-color="#fff" stop-opacity="0.55" />
+              <stop offset="1" stop-color="#fff" stop-opacity="0" />
+            </radialGradient>
+            <mask id="malha-mascara">
+              <rect x="0" y="0" width="900" height="500" fill="url(#malha-fade)" />
+            </mask>
+          </defs>
+          <rect x="0" y="0" width="900" height="500" fill="url(#malha-iso)" mask="url(#malha-mascara)" class="malha-fundo" />
+          @for (f of cena; track $index) {
+            <path [attr.d]="f.d" [attr.class]="f.classe" />
+          }
+        </svg>
+      </figure>
+
       <!-- Os sete números viraram uma GRADE de células, e não mais uma linha
            corrida de texto. Eram o fato mais forte da home — sete medidas do
            que já existe — e saíam a 13px, em cinza, todos com o mesmo peso do
@@ -30,7 +211,37 @@ import { meta, recursos } from '../spec/spec';
       </ul>
     </header>
 
-    <div class="callout">
+    <!-- A SEÇÃO DOS TRILHOS SAIU DA HOME (23/09/2026, ADR-046). A pergunta que
+         decide o trilho e os dois cartões continuam existindo num lugar só —
+         migracao.escolhaDoTrilho, impresso na instalação, no guia de migração
+         e no kit de agentes (ADR-045). A home deixa de ser a página em que se
+         escolhe: é a capa, e a capa mostra o que o sistema É. -->
+
+    <section class="prose">
+      <h2>Por onde começar</h2>
+    </section>
+
+    <!-- As seis portas levam um LADRILHO DE ÍCONE do próprio sistema, como os
+         blocos de pontos das outras páginas: seis caixas de título e texto
+         eram indistinguíveis entre si e do resto do site. O ladrilho é a
+         .ucam-icon-tile de @ucam/css, não um quadrado desenhado aqui. -->
+    <div class="grade-cartoes">
+      @for (p of portas; track p.link) {
+        <a class="card porta" [routerLink]="p.link">
+          <span class="ucam-icon-tile" aria-hidden="true">
+            <svg class="ic"><use [attr.href]="'#i-' + p.icone" /></svg>
+          </span>
+          <h3>{{ p.titulo }}</h3>
+          <p class="small muted">{{ p.texto }}</p>
+        </a>
+      }
+    </div>
+
+    <!-- A nota de leitura DESCEU para depois das portas (23/09/2026). Ficava
+         entre a faixa de números e a ilustração, e um bloco tingido no meio da
+         capa lia como aviso e a partia em duas. Ela explica como ler o que vem
+         a seguir, e o lugar disso é depois de a capa ter mostrado o que há. -->
+    <div class="callout nota-leitura">
       <p class="eyebrow">Como ler esta documentação</p>
       <p>
         Cada componente tem um contrato: API, estados, tokens, requisitos de acessibilidade e
@@ -38,53 +249,6 @@ import { meta, recursos } from '../spec/spec';
         instalável está em <a routerLink="/comecar/skills">Skills e pacotes</a>; a versão e o
         estado de cada contrato, em <a routerLink="/releases">Releases</a>.
       </p>
-    </div>
-
-    <section class="prose">
-      <h2>Os trilhos</h2>
-      <p>{{ descricaoDosTrilhos }}</p>
-    </section>
-
-    <div class="trilhos">
-      @for (t of trilhos; track t.id) {
-        <article class="card">
-          <h3>{{ t.nome }}</h3>
-          <p class="small muted">{{ t.alvo }}</p>
-          <p>{{ t.como }}</p>
-          <p class="small"><strong class="k">Limite.</strong> {{ t.limite }}</p>
-        </article>
-      }
-    </div>
-
-    <section class="prose">
-      <h2>Por onde começar</h2>
-    </section>
-
-    <div class="grade-cartoes">
-      <a class="card" routerLink="/comecar/instalacao">
-        <h3>Instalação</h3>
-        <p class="small muted">Como consumir o design system hoje, em cada trilho.</p>
-      </a>
-      <a class="card" routerLink="/fundamentos/cor">
-        <h3>Fundamentos</h3>
-        <p class="small muted">Cor, tipografia e espaçamento, com contraste calculado no build.</p>
-      </a>
-      <a class="card" routerLink="/catalogo">
-        <h3>Catálogo</h3>
-        <p class="small muted">{{ m.componentes }} contratos de componente.</p>
-      </a>
-      <a class="card" routerLink="/decisoes">
-        <h3>Decisões</h3>
-        <p class="small muted">O porquê de cada regra, registrado em ADR.</p>
-      </a>
-      <a class="card" routerLink="/comecar/mcp">
-        <h3>Servidor MCP</h3>
-        <p class="small muted">Os contratos servidos a agentes de IA, com a API exata.</p>
-      </a>
-      <a class="card" routerLink="/padroes">
-        <h3>Padrões</h3>
-        <p class="small muted">Composições que resolvem uma tarefa inteira.</p>
-      </a>
     </div>
   `,
   styles: `
@@ -94,11 +258,35 @@ import { meta, recursos } from '../spec/spec';
        agora é o vão — e o degrau de superfície da grade de números, que
        fecha o bloco por baixo sem precisar de régua nenhuma. */
     .masthead {
+      display: grid;
+      gap: 2rem;
+      align-items: center;
       margin-block-end: var(--ritmo-secao);
+    }
+    /* Duas colunas a partir de 64rem: 6/7, porque a ilustração é mais larga
+       do que alta e perde detalhe se ficar com menos da metade. A faixa de
+       números atravessa as duas colunas. */
+    @media (min-width: 64rem) {
+      .masthead {
+        grid-template-columns: minmax(0, 6fr) minmax(0, 7fr);
+        column-gap: 2.5rem;
+      }
+      .masthead > .numeros {
+        grid-column: 1 / -1;
+      }
     }
     .masthead h1 {
       font-size: clamp(2.125rem, 5vw, 3rem);
       margin: 0.6rem 0 1.1rem;
+    }
+    .masthead-texto .lede {
+      margin: 0;
+    }
+    .masthead-acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 1.5rem 0 0;
     }
     /* Grade de células com filete de 1px.
        A divisória NÃO é gap sobre fundo tingido: são sete números e o auto-fit
@@ -115,7 +303,7 @@ import { meta, recursos } from '../spec/spec';
       list-style: none;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
-      margin: 2rem 0 0;
+      margin: 0.5rem 0 0;
       padding: 0;
       background: var(--ucam-color-surface-default);
       border: 1px solid var(--ucam-color-border-subtle);
@@ -143,21 +331,99 @@ import { meta, recursos } from '../spec/spec';
       line-height: 1.35;
       color: var(--ucam-color-text-secondary);
     }
-    .trilhos {
-      display: grid;
-      gap: 0.85rem;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
-      margin-block-end: 2rem;
+
+    /* A ILUSTRAÇÃO ocupa a coluna e mede pela largura; o viewBox fixa a
+       proporção e o teto de 32rem segura a 1440px. Sem fundo e sem moldura:
+       ela é o desenho (ADR-040: nenhum fundo cinza no claro). */
+    .ilustracao {
+      margin: 0;
+      padding: 0;
+      min-inline-size: 0;
     }
-    /* Os dois trilhos são cards de LEITURA, não links: recebem mais respiro
-       por dentro que os do grid de navegação, porque carregam três parágrafos
-       cada um e não uma frase. */
-    .trilhos .card {
-      padding: 1.3rem 1.4rem;
+    .ilustracao svg {
+      display: block;
+      inline-size: 100%;
+      block-size: auto;
+      max-block-size: 32rem;
+      margin-inline: auto;
+      overflow: visible;
+    }
+    /* UMA tinta de traço (border.strong), DUAS tintas de face: o topo é
+       branco, a face esquerda é o rebaixo, a direita o degrau sutil — é o que
+       dá volume sem sombra. Bordô só nos acentos. Tudo por token: vira sozinho
+       no tema escuro. */
+    .ilustracao path {
+      stroke: var(--ucam-color-border-strong);
+      stroke-width: 1;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+    /* A malha: filete de border.subtle, sem preenchimento; o rect que a
+       carrega não tem traço próprio. */
+    .ilustracao .malha { fill: none; stroke: var(--ucam-color-border-subtle); stroke-width: 1; }
+    .ilustracao .malha-fundo { stroke: none; }
+    .ilustracao .topo { fill: var(--ucam-color-surface-default); }
+    .ilustracao .face-esq { fill: var(--ucam-color-surface-sunken); }
+    .ilustracao .face-dir { fill: var(--ucam-color-surface-subtle); }
+    .ilustracao .acento.topo { fill: var(--ucam-color-action-primary-subtle); }
+    .ilustracao .acento.face-esq,
+    .ilustracao .acento.face-dir { fill: var(--ucam-color-action-primary-default); stroke: var(--ucam-color-action-primary-default); }
+    .ilustracao .escolhido { stroke: var(--ucam-color-action-primary-default); }
+    /* Conteúdo deitado nas lajes: sem traço, só tinta. */
+    .ilustracao .plinto,
+    .ilustracao .faixa,
+    .ilustracao .coluna,
+    .ilustracao .realce,
+    .ilustracao .traco,
+    .ilustracao .traco-forte,
+    .ilustracao .ladrilho,
+    .ilustracao .cabecalho,
+    .ilustracao .avatar-mini,
+    .ilustracao .selo,
+    .ilustracao .fio,
+    .ilustracao .knob,
+    .ilustracao .ponto,
+    .ilustracao .acento-plano,
+    .ilustracao .crescente { stroke: none; }
+    .ilustracao .plinto { fill: var(--ucam-color-surface-sunken); }
+    .ilustracao .faixa { fill: var(--ucam-color-surface-subtle); }
+    .ilustracao .coluna { fill: var(--ucam-color-surface-subtle); }
+    .ilustracao .realce { fill: var(--ucam-color-action-primary-subtle); }
+    .ilustracao .traco { fill: var(--ucam-color-border-subtle); }
+    .ilustracao .traco-forte { fill: var(--ucam-color-border-default); }
+    .ilustracao .ladrilho { fill: var(--ucam-color-surface-sunken); }
+    .ilustracao .cabecalho { fill: var(--ucam-color-surface-sunken); }
+    .ilustracao .avatar-mini { fill: var(--ucam-color-border-default); }
+    .ilustracao .selo { fill: var(--ucam-color-surface-sunken); }
+    .ilustracao .fio { fill: var(--ucam-color-border-subtle); }
+    .ilustracao .campo { fill: var(--ucam-color-surface-default); stroke: var(--ucam-color-border-default); }
+    .ilustracao .knob { fill: var(--ucam-color-surface-default); }
+    .ilustracao .ponto { fill: var(--ucam-color-border-default); }
+    .ilustracao .acento-plano { fill: var(--ucam-color-action-primary-default); }
+    .ilustracao .esfera { fill: var(--ucam-color-surface-default); }
+    .ilustracao .crescente { fill: var(--ucam-color-surface-sunken); }
+
+    /* A home lê na mesma coluna das páginas internas. Ela herdava os 80rem
+       inteiros do container, então a faixa de números e as grades de cartão
+       iam a 1232px enquanto o texto parava em 509 — um salto de 2,4×, e a
+       borda direita dos blocos nada tinha a ver com a do texto. */
+    /* 64rem. Tentei 50rem para aproximar a coluna da medida do texto, e a
+       faixa de números quebrou em duas linhas com três células vazias — pior
+       que o vazio que eu queria resolver. A largura dos BLOCOS aqui é ditada
+       pela peça mais larga que a home tem, que são os sete indicadores. */
+    :host {
+      display: block;
+      max-inline-size: 64rem;
+    }
+    .porta > .ucam-icon-tile {
+      margin-block-end: 0.85rem;
     }
     .card h3 {
       margin: 0 0 0.4rem;
       font-size: 1rem;
+    }
+    .nota-leitura {
+      margin-block: var(--ritmo-sub) 0;
     }
     .card p {
       margin: 0 0 0.5rem;
@@ -169,11 +435,19 @@ import { meta, recursos } from '../spec/spec';
 })
 export default class IndexPage {
   protected readonly m = meta;
-  protected readonly trilhos = recursos.instalacao.trilhos;
 
-  /* A frase vem da spec junto com os trilhos que ela descreve. Escrita à mão
-     aqui, dizia "dois caminhos" no dia em que a spec passou a ter três. */
-  protected readonly descricaoDosTrilhos = recursos.instalacao.$description;
+  /** A cena isométrica, calculada uma vez. Ver o cabeçalho do arquivo. */
+  protected readonly cena = montarCena();
+
+  /** As seis portas da capa: destino, ícone do sprite, nome e uma linha. */
+  protected readonly portas = [
+    { link: '/comecar/instalacao', icone: 'download', titulo: 'Instalação', texto: 'Como consumir o design system hoje, em cada trilho.' },
+    { link: '/fundamentos/cor', icone: 'bookOpen', titulo: 'Fundamentos', texto: 'Cor, tipografia e espaçamento, com contraste calculado no build.' },
+    { link: '/catalogo', icone: 'layoutGrid', titulo: 'Catálogo', texto: `${meta.componentes} contratos de componente.` },
+    { link: '/decisoes', icone: 'scrollText', titulo: 'Decisões', texto: 'O porquê de cada regra, registrado em ADR.' },
+    { link: '/comecar/mcp', icone: 'monitor', titulo: 'Servidor MCP', texto: 'Os contratos servidos a agentes de IA, com a API exata.' },
+    { link: '/padroes', icone: 'listChecks', titulo: 'Padrões', texto: 'Composições que resolvem uma tarefa inteira.' },
+  ];
 
   /** Os sete números da grade, na ordem em que respondem "o que já existe?". */
   protected readonly numeros = [

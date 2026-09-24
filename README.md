@@ -64,13 +64,23 @@ site/src/generated/ dados que o site consome
 site/dist/          o site construído, que é o que a Vercel publica
 ```
 
-## Os dois trilhos
+## Os trilhos
 
-O mesmo componente existe em duas formas, e elas têm de ser indistinguíveis:
+O mesmo componente existe em mais de uma forma, e elas têm de ser indistinguíveis.
+Quem consome não escolhe por gosto: escolhe pela resposta a **uma pergunta — a
+aplicação tem passo de build?** O seletor é um só e mora em
+`spec/migracao.json` (`escolhaDoTrilho`: a `pergunta`, a `nota` de ponte e destino,
+e o `quando` de cada trilho). Dele saem a home, a página de instalação, o guia de
+migração e o AGENTS.md — ver ADR-045.
 
 - **Trilho A** — folha de estilo pura (`dist/css/ucam.css`). É o que os sistemas
   legados em JSF/PrimeFaces e AngularJS conseguem consumir hoje, sem reescrita.
-- **Trilho B** — componentes Angular em `ui/`. É para onde os sistemas novos vão.
+  É **ponte**: existe enquanto o parque não atravessa.
+- **Trilho A+** — o bundle de custom elements (ADR-010), para as telas do legado
+  que precisam de um componente que CSS não desenha. Não é o A melhorado, e não
+  convive com a biblioteca Angular na mesma página.
+- **Trilho B** — componentes Angular em `ui/`. É o **destino**: para onde os
+  sistemas novos e os migrados vão.
 
 `pnpm ui` traduz os tokens de tamanho da spec para as classes do Tailwind e cobra o
 valor na base do Trilho B. Esse portão existe porque os dois já divergiram: botão com

@@ -23,6 +23,12 @@ export interface Anatomia {
   parte: string;
   obrigatorio: boolean;
   descricao: string;
+  /**
+   * A classe do Trilho A que É esta parte. 193 das 313 partes a declaram, e é
+   * ela que o diagrama de anatomia procura no preview para saber onde pôr a
+   * chamada numerada — ver anatomia-diagrama.component.ts.
+   */
+  classe?: string;
 }
 
 export interface ValorProp {
@@ -121,6 +127,12 @@ export interface Demo {
   importacao?: string;
   principal?: DemoPainel;
   exemplos?: DemoPainel[];
+  /**
+   * Retrato ESTÁTICO para o card do catálogo, só onde o Trilho A não desenha
+   * o componente (chart, combobox, command). Não é preview: não conta como
+   * Trilho A disponível e não entra na página do componente.
+   */
+  miniatura?: string;
   /** Por que este componente não tem preview estático, quando não tem. */
   $nota?: string;
 }
@@ -651,13 +663,19 @@ export interface Skill {
   onde: string;
 }
 
+/**
+ * Como se consome o design system num trilho. PARA QUEM ele é não mora aqui:
+ * mora em migracao.escolhaDoTrilho, que é o seletor único, e a página de
+ * instalação casa os dois pelo id.
+ */
 export interface Trilho {
   id: string;
   nome: string;
-  alvo: string;
   como: string;
   codigo: string;
   limite: string;
+  /** Quantos contratos este trilho entrega hoje. Derivado no build. */
+  componentes?: number;
 }
 
 export interface Recursos {
@@ -851,8 +869,18 @@ export interface ItemBusca {
 export interface Migracao {
   $lede: string;
   $description: string;
+  /**
+   * O seletor de trilho, e o único: a pergunta que decide, o papel de cada
+   * trilho e o para-quem de cada um. A home e a página de instalação leem
+   * daqui — antes, `alvo` em resources.json dizia o mesmo com outras palavras,
+   * e as duas versões já divergiam.
+   */
   escolhaDoTrilho: {
+    /** A pergunta que decide. Uma só, e vem antes dos cartões. */
+    pergunta: string;
     $descricao: string;
+    /** Ponte e destino: por que são três e não um. */
+    nota: string;
     trilhos: {
       id: string;
       nome: string;

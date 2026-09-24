@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Site de documentação do Design System UCAM. Nada aqui é conteúdo — tudo é gerado de spec/.",
   "scripts": {
-    "generate": "node ../tools/check-crases.mjs && node ../tools/check-ancoras.mjs && node ../tools/check-geometria.mjs && node ../tools/build-tokens.mjs && node ../tools/build-css.mjs && node ../tools/build-fonts.mjs && node ../tools/sync-ui.mjs && node ../tools/build-icons.mjs && node ../tools/build-templates.mjs && node ../tools/build-index.mjs",
+    "generate": "node ../tools/check-crases.mjs && node ../tools/check-ancoras.mjs && node ../tools/check-geometria.mjs && node ../tools/build-tokens.mjs && node ../tools/build-css.mjs && node ../tools/build-estados.mjs && node ../tools/build-fonts.mjs && node ../tools/sync-ui.mjs && node ../tools/build-icons.mjs && node ../tools/build-templates.mjs && node ../tools/build-index.mjs",
     "dev": "pnpm generate && vite",
     "build": "pnpm generate && vite build",
     "preview": "vite preview"
