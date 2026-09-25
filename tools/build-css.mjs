@@ -390,6 +390,11 @@ const css = `/* @ucam/css — Trilho A
 /* Contrato: button.json. ADR-001 (primário é o bordô), ADR-002 (vermelho só
  * para destruição), ADR-003 (sem caixa alta). */
 
+/* Botão com hidden SOME. A regra do botão declara display e vencia o
+ * [hidden] do navegador: o diálogo de decisões pendentes da isenção mostrava
+ * um botão primário vazio ao lado de "Entendi" (25/09/2026). */
+.ucam-btn[hidden] { display: none; }
+
 .ucam-btn {
   display: inline-flex;
   align-items: center;

@@ -39,6 +39,7 @@ import {
   roloScript,
   toastScript,
   copiarScript,
+  criadoScript,
   navScript,
   contadorScript,
 } from './lib/shell.mjs';
@@ -276,6 +277,7 @@ ${sprite}
 <script>${tabelaScript}</script>
 <script>${roloScript}</script>
 <script>${copiarScript}</script>
+<script>${criadoScript}</script>
 </body>
 </html>`;
 

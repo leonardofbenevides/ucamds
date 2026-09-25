@@ -1963,7 +1963,8 @@ const FN_ANUNCIA = `
     // TOAST (ADR-052): a mesma frase, visível, quando quem disparou é uma
     // ação de sistema (data-fluxo="c"). Ordenar, abrir menu e trocar de etapa
     // também falam por aqui, e não viram toast.
-    if (window.ucamToast && de && de.closest && de.closest('[data-fluxo="c"]')) window.ucamToast(texto);
+    // Em lote (várias decisões marcadas de uma vez) só o resumo final vira toast.
+    if (window.ucamToast && !window.ucamEmLote && de && de.closest && de.closest('[data-fluxo="c"]')) window.ucamToast(texto);
   }
 `;
 
@@ -3058,7 +3059,12 @@ ${FN_ANUNCIA}
         tituloResultado.setAttribute('tabindex', '-1');
         tituloResultado.focus();
       }
-      anuncia('Resultado calculado, logo abaixo do formulário.', botao);
+      // O resultado diz que ACABOU de ser calculado: a data antiga ficava, e
+      // nada na tela mudava com o clique (sonda de estado, 25/09/2026).
+      Array.prototype.forEach.call(resultado.querySelectorAll('p, span'), function (n) {
+        if (n.children.length === 0 && /^Calculado em /.test(n.textContent.trim())) n.textContent = 'Calculado agora, às ' + hora() + '.';
+      });
+      anuncia('Resultado calculado às ' + hora() + ', logo abaixo do formulário.', botao);
       return eco(resultado);
     }
 
@@ -3074,6 +3080,40 @@ ${FN_ANUNCIA}
     if (qual === 'email') {
       var linha = (botao.closest('.ucam-section, .ucam-card') || document).querySelector('.ucam-codigo');
       location.href = 'mailto:?subject=' + encodeURIComponent('Boleto da mensalidade') + '&body=' + encodeURIComponent('Linha digitável: ' + (linha ? linha.textContent.trim() : ''));
+      return;
+    }
+
+    /* CRIAR LEVA AO QUE FOI CRIADO (25/09/2026: "ao criar um novo usuário
+     * não acontece nada; deveria jogar para uma tela aonde tem o novo
+     * usuário"). O botão que declara data-destino leva à lista em que o
+     * registro vive, com o nome digitado e os campos cujo rótulo bate com o
+     * cabeçalho de uma coluna; a lista o insere no topo (criadoScript). Nome
+     * vazio para no próprio campo, com a mensagem de erro dele. */
+    if (qual === 'salvar' && botao.hasAttribute('data-destino')) {
+      var campoNome = document.querySelector(botao.getAttribute('data-criado-nome') || '#__nenhum');
+      if (campoNome && !campoNome.value.trim()) return erroDeCampo(campoNome, 'Preencha este campo para salvar.');
+      var raizForm = botao.closest('form') || botao.closest('.ucam-main') || document;
+      var campos = {};
+      // O seletor do sistema é um botão com lista (data-listbox): o valor é o texto dele.
+      Array.prototype.forEach.call(raizForm.querySelectorAll('input[id], select[id], textarea[id], button[data-listbox][id]'), function (c) {
+        if (c.type === 'checkbox' || c.type === 'radio' || c.type === 'hidden') return;
+        var rot = raizForm.querySelector('label[for="' + c.id + '"]');
+        if (!rot) return;
+        var nomeRot = rot.textContent.replace(/\\*/g, '').replace(/\\s+/g, ' ').trim();
+        var valor = c.tagName === 'SELECT' ? (c.options[c.selectedIndex] || {}).text : c.tagName === 'BUTTON' ? c.textContent : c.value;
+        if (nomeRot && valor) campos[nomeRot] = String(valor).trim();
+      });
+      var q = new URLSearchParams(location.search);
+      q.set('criado', campoNome ? campoNome.value.trim() : '');
+      var apoioSel = botao.getAttribute('data-criado-apoio');
+      var campoApoio = apoioSel && document.querySelector(apoioSel);
+      if (campoApoio && campoApoio.value.trim()) q.set('apoio', campoApoio.value.trim());
+      ['situacao', 'tom', 'alvo', 'msg'].forEach(function (k) {
+        var v = botao.getAttribute('data-criado-' + k);
+        if (v) q.set(k, v);
+      });
+      q.set('campos', JSON.stringify(campos));
+      location.href = botao.getAttribute('data-destino') + '?' + q.toString();
       return;
     }
 
@@ -3169,7 +3209,28 @@ ${FN_ANUNCIA}
       Array.prototype.forEach.call(document.querySelectorAll('[data-acao="salvar-rascunho"], [data-acao="finalizar-analise"], [data-acao="aplicar-sugestoes"], [data-acao="enviar-observacao"], [data-decisao] button'), function (b) {
         b.setAttribute('aria-disabled', 'true'); b.setAttribute('title', 'Análise concluída');
       });
-      anuncia('Análise concluída: ' + tot.isentas + ' isentas e ' + tot.nao + ' não isentas. O candidato recebe o resultado.', botao);
+      /* A TELA MUDA COM A ANÁLISE (25/09/2026: "ao finalizar análise o aluno
+       * continua igual, os componentes também, reaja com o estado"). Cada
+       * decisão vira selo fixo — o mesmo desenho da consulta de uma análise
+       * concluída —, os botões de trabalho saem, e um aviso fica com o
+       * resumo, porque o número de isentas é o que se consulta depois. */
+      Array.prototype.forEach.call(document.querySelectorAll('[data-decisao]'), function (g) {
+        var marcado = g.querySelector('button[aria-pressed="true"]');
+        var v = marcado ? marcado.getAttribute('data-valor') : '';
+        var fixo = document.createElement('span');
+        fixo.className = 'ucam-badge ucam-badge--' + (v === 'isentar' ? 'success' : v === 'nao' ? 'danger' : 'neutral');
+        fixo.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>';
+        fixo.appendChild(document.createTextNode(v === 'isentar' ? 'Isenta' : v === 'nao' ? 'Não isenta' : 'Pendente'));
+        g.replaceWith(fixo);
+      });
+      ['salvar-rascunho', 'finalizar-analise', 'aplicar-sugestoes'].forEach(function (a) {
+        Array.prototype.forEach.call(document.querySelectorAll('[data-acao="' + a + '"]'), function (b) { b.hidden = true; });
+      });
+      var textoFim = 'Análise concluída às ' + hora() + ': ' + tot.isentas + (tot.isentas === 1 ? ' isenta' : ' isentas') + ' e ' + tot.nao + (tot.nao === 1 ? ' não isenta' : ' não isentas') + '. O candidato recebeu o resultado por e-mail.';
+      avisa(textoFim, document.querySelector('[data-decisoes]') || seloS || botao, 'success');
+      var tituloTela = document.querySelector('.ucam-viewbar__titulo');
+      if (tituloTela) { tituloTela.setAttribute('tabindex', '-1'); tituloTela.focus(); }
+      anuncia(textoFim, botao);
       return eco(seloS);
     }
 
@@ -5016,6 +5077,101 @@ export const copiarScript = `
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arma); else arma();
+})();
+`.trim();
+
+/**
+ * O REGISTRO CRIADO CHEGA À LISTA (25/09/2026). A tela de destino de um
+ * "Criar" lê ?criado=, clona a primeira linha da tabela (ou o primeiro item
+ * da lista indicada em ?alvo=), põe o nome, as iniciais e o apoio, preenche
+ * as colunas cujo cabeçalho bate com o rótulo de um campo do formulário
+ * (?campos=), troca os selos pela situação de quem acabou de nascer, e o
+ * insere no topo com realce. A contagem da tela sobe um, o toast confirma e
+ * os parâmetros saem do endereço — recarregar não cria de novo.
+ */
+export const criadoScript = `
+(function () {
+  function roda() {
+    var q = new URLSearchParams(location.search);
+    var nome = q.get('criado');
+    if (!nome) return;
+    var campos = {};
+    try { campos = JSON.parse(q.get('campos') || '{}'); } catch (e) {}
+    var main = document.querySelector('.ucam-main') || document;
+    var alvo = q.get('alvo');
+    var SITUACAO = q.get('situacao');
+    var TOM = q.get('tom');
+    var MSG = q.get('msg');
+    var APOIO = q.get('apoio');
+    var cont = alvo ? main.querySelector(alvo) : (main.querySelector('.ucam-table tbody') || main.querySelector('.ucam-list'));
+    var modelo = cont && Array.prototype.filter.call(cont.children, function (r) { return !r.hidden && r.matches('tr, li'); })[0];
+    ['criado', 'apoio', 'situacao', 'tom', 'alvo', 'msg', 'campos'].forEach(function (k) { q.delete(k); });
+    var resto = q.toString();
+    history.replaceState(null, '', location.pathname + (resto ? '?' + resto : '') + location.hash);
+    if (!modelo) return;
+
+    var novo = modelo.cloneNode(true);
+    var nomeEl = novo.querySelector('.td--pessoa__nome, .ucam-list-item__titulo, .ucam-card__titulo');
+    var antigo = nomeEl ? nomeEl.textContent.trim() : '';
+    ['aria-selected', 'aria-current', 'data-eco', 'hidden'].forEach(function (a) { novo.removeAttribute(a); });
+    Array.prototype.forEach.call(novo.querySelectorAll('.ucam-copiar'), function (b) { b.remove(); });
+    Array.prototype.forEach.call(novo.querySelectorAll('input[type=checkbox]'), function (c) { c.checked = false; });
+    if (nomeEl) nomeEl.textContent = nome;
+    var partes = nome.split(/\\s+/).filter(Boolean);
+    var av = novo.querySelector('.ucam-avatar');
+    if (av && partes.length) av.textContent = (partes[0][0] + (partes.length > 1 ? partes[partes.length - 1][0] : '')).toUpperCase();
+    var apoioEl = novo.querySelector('.td--pessoa__texto .td--apoio, .ucam-card__apoio, .ucam-list-item__apoio');
+    if (apoioEl) { if (APOIO) apoioEl.textContent = APOIO; else apoioEl.remove(); }
+
+    function selo() {
+      if (!SITUACAO) return null;
+      var b = document.createElement('span');
+      b.className = 'ucam-badge ucam-badge--' + (TOM || 'neutral');
+      b.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>';
+      b.appendChild(document.createTextNode(SITUACAO));
+      return b;
+    }
+
+    if (novo.tagName === 'TR') {
+      var tabela = cont.closest('table');
+      var ths = Array.prototype.map.call(tabela.querySelectorAll('thead th'), function (h) {
+        var c = h.cloneNode(true);
+        Array.prototype.forEach.call(c.querySelectorAll('.ucam-sr-only, .ucam-menu, svg'), function (n) { n.remove(); });
+        return c.textContent.replace(/\\s+/g, ' ').trim();
+      });
+      Array.prototype.forEach.call(novo.children, function (td, i) {
+        if (td.classList.contains('td--selecao') || td.classList.contains('td--acoes')) return;
+        if (nomeEl && td.contains(nomeEl)) return;
+        var rot = ths[i];
+        if (rot && campos[rot] !== undefined) { td.textContent = campos[rot]; return; }
+        if (td.querySelector('.ucam-badge')) {
+          td.textContent = '';
+          var s = selo();
+          if (s) td.appendChild(s); else td.textContent = '—';
+          return;
+        }
+        td.textContent = '—';
+      });
+    } else {
+      var marc = novo.querySelector('.ucam-list-item__marcadores');
+      if (marc) { marc.textContent = ''; var s2 = selo(); if (s2) marc.appendChild(s2); }
+    }
+    if (antigo) Array.prototype.forEach.call(novo.querySelectorAll('[aria-label]'), function (n) {
+      n.setAttribute('aria-label', n.getAttribute('aria-label').split(antigo).join(nome));
+    });
+    cont.insertBefore(novo, cont.firstChild);
+    novo.setAttribute('data-eco', 'true');
+    setTimeout(function () { novo.removeAttribute('data-eco'); }, 1700);
+    var meta = document.querySelector('.ucam-viewbar__meta');
+    if (meta) meta.textContent = meta.textContent.replace(/^(\\d+)/, function (n) { return String(+n + 1); });
+    novo.scrollIntoView({ block: 'center' });
+    var msg = (MSG || '{nome} criado.').split('{nome}').join(nome);
+    var reg = document.querySelector('[data-anuncio]');
+    if (reg) { reg.textContent = ''; setTimeout(function () { reg.textContent = msg; }, 60); }
+    if (window.ucamToast) window.ucamToast(msg);
+    window.dispatchEvent(new Event('resize'));
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', roda); else roda();
 })();
 `.trim();
 
