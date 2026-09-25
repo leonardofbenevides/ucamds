@@ -488,7 +488,18 @@ e trocar as duas ocorrências de `${SUG[d.sugestao](d.motivo)}` por `${SUG[d.sug
 
 - [ ] **Step 5: Os tratadores em `tools/lib/shell.mjs`**
 
-Por script de leitura e gravação no mesmo instante, `scratchpad/isencao/tratadores-cmp.cjs`, com a mesma função `troca` do Task de tabela (reprova se o trecho não aparecer exatamente uma vez).
+Por script de leitura e gravação no mesmo instante, `scratchpad/isencao/tratadores-cmp.cjs`, que reprova se um trecho antigo não aparecer exatamente uma vez:
+
+```js
+const fs = require('fs');
+const f = 'C:/Users/Leonardo/Documents/DSUCAM/tools/lib/shell.mjs';
+let s = fs.readFileSync(f, 'utf8');
+const troca = (a, b) => { if (s.split(a).length !== 2) { console.error('não achei uma vez:', a.slice(0, 60)); process.exit(1); } s = s.replace(a, b); };
+// troca(antigo, novo) para cada par abaixo, e só então:
+fs.writeFileSync(f, s);
+```
+
+Os pares:
 
 Trecho antigo de `decidir`:
 
@@ -551,7 +562,7 @@ Expected: `todas as provas passaram`.
 
 - [ ] **Step 7: Validador e sondas do repositório**
 
-Run: `pnpm run -s validate && node scratchpad/sonda-mortos.mjs && node scratchpad/sonda-mudas.mjs`
+Run: `pnpm run -s validate && node scratchpad/sonda-mortos.mjs && node scratchpad/sonda-mudas.mjs` (Chrome em 9346 para mortos e 9341 para mudas; conferir com `curl` antes)
 Expected: validação verde; nenhum controle morto nem mudo nas telas da isenção. Se a sonda de mortos contar o gatilho da gaveta como morto, conferir como ela trata `data-abre-gaveta` na caixa de entrada (`ce-prefs`) e seguir o mesmo caminho, sem mudar a sonda.
 
 - [ ] **Step 8: Commit**
@@ -583,7 +594,7 @@ Acrescentar a `prova-analise.mjs`, antes de `fim()`:
   const p = await abre('http://localhost:5214/t/isencao-consulta.html', { espera: 1500 });
   prova('consulta tem os nove gatilhos', (await p.js(`document.querySelectorAll('[data-abre-gaveta^="is-cmp-"]').length`)) === 9);
   prova('gaveta da consulta sem decisão', (await p.js(`document.querySelectorAll('.ucam-drawer [data-decisao]').length`)) === 0);
-  prova('cartão fecha com as linhas', /Sugeriu 4 isentar, 2 revisar e 3 não isentar\. A coordenação seguiu 6 das 7 que não pediam revisão\./.test(await p.texto('#is-sug-t + p, [aria-labelledby="is-sug-t"] .ucam-section__hint')), await p.texto('[aria-labelledby="is-sug-t"] .ucam-section__hint'));
+  prova('cartão fecha com as linhas', /Sugeriu 4 isentar, 2 revisar e 3 não isentar\. A coordenação seguiu 6 das 7 que não pediam revisão\./.test(await p.texto('[aria-labelledby="is-sug-t"] .ucam-section__hint')), await p.texto('[aria-labelledby="is-sug-t"] .ucam-section__hint'));
   prova('atividade conta a aplicação', /Aplicou a sugestão a 6 disciplinas/.test(await p.texto('ol[data-atividade]')));
   await p.fecha();
 }
@@ -616,6 +627,8 @@ Nos `eventos` da consulta, entre o item "Observação enviada ao candidato" e o 
 ```js
       timelineItem({ autor: 'Leonardo F. Benevides', papel: 'Coordenação', tempo: '10/03/2026 às 09:34', datetime: '2026-03-10T09:34', corpo: `Aplicou a sugestão a ${seguidas} disciplinas`, icone: 'listChecks', tom: 'info' }),
 ```
+
+No objeto da tela `consulta`: `usa: [...usaBase, 'ucam-citacao', 'ucam-drawer', 'ucam-realce']`.
 
 - [ ] **Step 4: Gerar e rodar**
 
