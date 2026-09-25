@@ -17,6 +17,24 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { selectChevronCss } from './lib/select-chevron.mjs';
 import { cssDaSubpaleta } from './lib/subpaleta.mjs';
+import { contrast } from './lib/wcag.mjs';
+
+/* A cor de faixa que um projeto declara em templates.json (`cor`). Branco
+ * sobre ela tem de passar de 4.5:1 — é o texto da marca e o placeholder da
+ * busca que vão por cima. */
+function cssDaCorDeFaixa() {
+  const projetos = JSON.parse(readFileSync(new URL('../spec/templates.json', import.meta.url), 'utf8'));
+  const lista = Array.isArray(projetos) ? projetos : projetos.projetos ?? Object.values(projetos).find(Array.isArray) ?? [];
+  const regras = [];
+  for (const p of lista) {
+    if (!p.cor) continue;
+    if (!/^#[0-9A-Fa-f]{6}$/.test(p.cor)) throw new Error(`cor de faixa ilegível em ${p.id}: ${p.cor}`);
+    const r = contrast('#FFFFFF', p.cor);
+    if (r < 4.5) throw new Error(`cor de faixa de ${p.id} (${p.cor}) não segura texto branco: ${r.toFixed(2)}:1`);
+    regras.push(`.ucam-shell[data-projeto="${p.id}"] > .ucam-appbar--marca { --ucam-appbar-bg: ${p.cor.toUpperCase()}; }`);
+  }
+  return regras.join('\n');
+}
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'dist', 'css');
@@ -4017,10 +4035,41 @@ ${cssDaSubpaleta(tokensCss)}
  * traço na tinta sobre ação. Sai da tinta do SISTEMA e não do primário
  * porque no modo moldura o primário continua bordô — e a marquinha é
  * justamente o que precisa dizer em que sistema se está. */
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema] .ucam-appbar__marca {
-  background: var(--ucam-sistema-tinta);
-  color: var(--ucam-color-text-on-action);
+/* A FAIXA É DA COR DO SISTEMA (25/09/2026: "o header pode ser colorido ao
+ * invés de cinza em todos os apps, cada um com a sua cor principal e
+ * subpaleta"). A faixa nasce com .ucam-appbar--marca (lib/shell.mjs), cujo
+ * fundo é --ucam-color-surface-brand — e é esse token que a subpaleta troca
+ * por sistema: bordô no Portal e no Protocolo, verde no SigFin, roxo no
+ * Gerencial, azul no Acadêmico. A ADR-037 tinha tirado a faixa da subpaleta
+ * em 21/09 porque o fundo a 10% dava "cinco cromos para cinco telas e o
+ * Portal branco no meio"; agora é cor cheia, com texto branco, e o Portal
+ * entra no bordô da universidade — nenhum branco no meio.
+ *
+ * A MARQUINHA vira COMPOSIÇÃO TONAL: sobre a faixa da própria cor, um
+ * ladrilho cheio na tinta do sistema sumiria. Ele fica num tom mais claro
+ * da mesma cor — o branco da faixa a 18% sobre o fundo — com o ícone em
+ * branco. Vale para toda faixa de marca, inclusive a do Portal. */
+.ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile,
+:root:not([data-paleta="comum"]) .ucam-shell[data-sistema] .ucam-appbar--marca .ucam-appbar__marca {
+  background: color-mix(in srgb, var(--ucam-appbar-fg) 18%, transparent);
+  color: var(--ucam-appbar-fg);
 }
+
+/* O selo de notificação, na tinta de perigo, sumia sobre a faixa bordô do
+ * Protocolo: um anel na cor da própria faixa o separa do fundo. */
+.ucam-appbar--marca .ucam-appbar__selo {
+  /* INVERTIDO: perigo sobre bordô era bordô sobre bordô, e um anel não
+   * bastava. Branco com o número na cor da faixa lê em toda faixa de marca. */
+  background: var(--ucam-appbar-fg);
+  color: var(--ucam-appbar-bg);
+  box-shadow: 0 0 0 2px var(--ucam-appbar-bg);
+}
+
+/* A COR DE FAIXA DECLARADA PELO PROJETO ('cor' em templates.json). Só a
+ * faixa: a família da ação continua sendo a da categoria, porque um azul a
+ * mais na mesma altura do azul acadêmico não passaria no portão da
+ * subpaleta — e não precisa: o que distingue a isenção é a testeira. */
+${cssDaCorDeFaixa()}
 
 /* A marquinha no degrau do ladrilho do Portal: o nome do sistema é o maior
  * texto da faixa, e o ladrilho de 28px ao lado dele lia como ícone de menu. */

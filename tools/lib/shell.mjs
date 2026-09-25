@@ -193,6 +193,7 @@ export function renderShell(cfg = {}, conteudo = '') {
      * da universidade fica na gaveta e no rodapé. */
     moduloIcone = null,
     moduloCategoria = null,
+    projetoId = null,
     /* Destino da MARCA: o "início" do módulo. Sai de build-templates.mjs, que
      * sabe qual é a primeira tela do projeto. Sem ele a marca vira <span>, e
      * não um link que recarrega a mesma página — que é o defeito do parque. */
@@ -1087,11 +1088,14 @@ export function renderShell(cfg = {}, conteudo = '') {
   // SUBPALETA DO SISTEMA (ADR-037, em teste): a categoria vai no SHELL, e não
   // na faixa, porque a família da ação troca na tela inteira. O Portal
   // (lockup) não declara: é o saguão, e fica no bordô.
-  const sistemaAttr = !logo && moduloCategoria ? ` data-sistema="${esc(moduloCategoria)}"` : '';
+  const sistemaAttr = (!logo && moduloCategoria ? ` data-sistema="${esc(moduloCategoria)}"` : '') + (projetoId ? ` data-projeto="${esc(projetoId)}"` : '');
 
   const faixa = topo || railColuna || lateral || semFaixa
     ? ''
-    : `<header class="ucam-appbar${logo ? ' ucam-appbar--lockup' : ''}">` +
+    // A faixa é de MARCA desde 25/09/2026: fundo na superfície de marca do
+    // sistema (a subpaleta troca --ucam-color-surface-brand por sistema) e
+    // tudo sobre ela em on-brand. O Portal, sem data-sistema, fica no bordô.
+    : `<header class="ucam-appbar ucam-appbar--marca${logo ? ' ucam-appbar--lockup' : ''}">` +
       botaoMenu +
       linkOuMarca(
         inicio,
@@ -1462,6 +1466,10 @@ export function shellDaTela(projeto = {}, template = {}, destinos = {}) {
     // universidade.
     moduloIcone: projeto.icone ?? null,
     moduloCategoria: projeto.categoria ?? null,
+    // O id do projeto vai no shell (data-projeto): é por ele que a folha dá
+    // a um sistema a cor de faixa que ele declara em `cor` (a isenção, em
+    // #22588D), sem tirá-lo da família da sua categoria.
+    projetoId: projeto.id ?? null,
     logo: projeto.lockup === true,
     perfil: porNav.perfil ?? null,
     ...tela,

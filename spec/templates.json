@@ -2916,6 +2916,8 @@
       "nome": "Isenção de disciplinas",
       "icone": "clipboardCheck",
       "categoria": "academico",
+      "cor": "#22588D",
+      "$porque_cor": "Pedido de 25/09/2026: \"para o de isenção, pode usar essa #22588d como cor pro background\". Só a faixa leva esta cor; botões, foco e realce continuam na família da categoria acadêmica, porque um segundo azul na mesma altura não passaria no portão da subpaleta. Branco sobre #22588D mede 7,4:1.",
       "descricao": "Análise de isenção de disciplinas para quem entra com histórico de outra instituição: a fila da coordenação, a análise por disciplina com a sugestão automatizada e o acompanhamento do candidato. Chegou ao design system em 24/09/2026 como protótipo HTML autônomo (isencao-v2-prototipo.html), com dados fictícios e sem backend; a spec de design está em docs/superpowers/specs/2026-09-24-isencao-design.md.",
       "stack_atual": "Protótipo HTML autônomo (Source Sans 3, tokens próprios, toast como único feedback), sem @ucam/ui nem @ucam/css",
       "shell": {
