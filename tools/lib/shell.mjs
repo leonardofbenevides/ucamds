@@ -2499,6 +2499,86 @@ ${FN_ANUNCIA}
     if (primeiro) primeiro.focus();
   }
 
+  /* Leva ao registro criado (ver criadoScript): o nome vem de um campo ou,
+   * quando é um dado já escolhido (a requerente, num cartão), do texto dele. */
+  function vaiParaCriado(botao) {
+    var campoNome = document.querySelector(botao.getAttribute('data-criado-nome') || '#__nenhum');
+    var valorDe = function (c) { return !c ? '' : c.tagName === 'SELECT' ? ((c.options[c.selectedIndex] || {}).text || '') : ('value' in c && c.tagName !== 'BUTTON') ? c.value : c.textContent; };
+    var nome = valorDe(campoNome).replace(/\\s+/g, ' ').trim();
+    if (campoNome && !nome && 'value' in campoNome) return erroDeCampo(campoNome, 'Preencha este campo para salvar.');
+    var raizForm = botao.closest('form') || botao.closest('.ucam-main') || document;
+    var campos = {};
+    Array.prototype.forEach.call(raizForm.querySelectorAll('input[id], select[id], textarea[id], button[data-listbox][id]'), function (c) {
+      if (c.type === 'checkbox' || c.type === 'radio' || c.type === 'hidden') return;
+      var rot = raizForm.querySelector('label[for="' + c.id + '"]');
+      if (!rot) return;
+      var nomeRot = rot.textContent.replace(/\\*/g, '').replace(/\\s+/g, ' ').trim();
+      var valor = valorDe(c).replace(/\\s+/g, ' ').trim();
+      if (nomeRot && valor) campos[nomeRot] = valor;
+    });
+    var q = new URLSearchParams(location.search);
+    q.set('criado', nome);
+    var campoApoio = document.querySelector(botao.getAttribute('data-criado-apoio') || '#__nenhum');
+    var apoio = valorDe(campoApoio).replace(/\\s+/g, ' ').trim();
+    if (apoio) q.set('apoio', apoio);
+    ['situacao', 'tom', 'alvo', 'msg'].forEach(function (k) {
+      var v = botao.getAttribute('data-criado-' + k);
+      if (v) q.set(k, v);
+    });
+    q.set('campos', JSON.stringify(campos));
+    location.href = botao.getAttribute('data-destino') + '?' + q.toString();
+  }
+
+  /* Tira o item aberto da fila em que está e o põe em outra: data-aba muda,
+   * o item some da aba atual, as contagens das duas abas e a da navegação
+   * acompanham, e os marcadores viram o selo da nova situação. */
+  function tiraDaFila(botao, destinoAba, rotulo, tom) {
+    var inbox = botao.closest('.ucam-inbox');
+    var li = inbox && inbox.querySelector('.ucam-list-item[aria-current="true"]');
+    if (!li) return;
+    var origem = li.getAttribute('data-aba');
+    if (origem === destinoAba) return;
+    // Continua ABERTO (aria-current): o detalhe dele vai junto para a aba nova.
+    li.setAttribute('data-aba', destinoAba);
+    li.hidden = true;
+    Array.prototype.forEach.call(li.querySelectorAll('.ucam-list-item__indicador, .ucam-list-item__indicador + .ucam-sr-only'), function (n) { n.remove(); });
+    var marc = li.querySelector('.ucam-list-item__marcadores');
+    if (marc) marc.innerHTML = '<span class="ucam-badge ucam-badge--' + tom + '"><span class="ucam-badge__ponto" aria-hidden="true"></span>' + rotulo + '</span>';
+    var conta = function (aba, d) {
+      var tab = document.querySelector('.ucam-tabs__tab[data-valor="' + aba + '"]');
+      var c = tab && tab.querySelector('.ucam-tabs__contagem');
+      if (!c) return;
+      var n = Math.max(0, (parseInt(c.textContent, 10) || 0) + d);
+      c.textContent = String(n);
+      var sr = tab.querySelector('.ucam-sr-only');
+      if (sr) sr.textContent = ', ' + n + (n === 1 ? ' item' : ' itens');
+    };
+    conta(origem, -1);
+    conta(destinoAba, +1);
+    // O recorte das abas é pelo data-aba de cada peça (abasScript). O vazio da
+    // aba de destino deixa de valer — ela tem item —; o detalhe aberto passa
+    // a pertencer a ela; e o "nenhum requerimento aberto" passa à de origem.
+    var tokensDe = function (el) { return (el.getAttribute('data-aba') || '').split(' ').filter(Boolean); };
+    Array.prototype.forEach.call(inbox.querySelectorAll('.ucam-empty[data-aba]'), function (vazio) {
+      var t = tokensDe(vazio).filter(function (x) { return x !== destinoAba; });
+      if (t.length) vazio.setAttribute('data-aba', t.join(' ')); else vazio.remove();
+    });
+    var detalhe = botao.closest('.ucam-inbox__detalhe');
+    if (detalhe) {
+      detalhe.setAttribute('data-aba', destinoAba);
+      Array.prototype.forEach.call(inbox.querySelectorAll('.ucam-inbox__detalhe[data-aba]'), function (d) {
+        if (d === detalhe) return;
+        var t = tokensDe(d).filter(function (x) { return x !== destinoAba; });
+        if (t.indexOf(origem) < 0) t.push(origem);
+        d.setAttribute('data-aba', t.join(' '));
+      });
+    }
+    if (origem === 'aguardam') {
+      var navC = document.querySelector('.ucam-nav__item[aria-current="page"] .ucam-nav__count');
+      if (navC) navC.textContent = String(Math.max(0, (parseInt(navC.textContent, 10) || 0) - 1));
+    }
+  }
+
   function andarEtapa(botao, destino) {
     var passos = Array.prototype.slice.call(document.querySelectorAll('.ucam-stepper__passo'));
     if (!passos.length) return;
@@ -2734,20 +2814,21 @@ ${FN_ANUNCIA}
       return;
     }
 
-    if (qual === 'encaminhar') {
-      mudarSelo(seloSituacao(botao), 'Encaminhado', 'info');
-      evento('Encaminhou o requerimento ao setor responsável', 'send');
-      anuncia('Requerimento encaminhado ao setor responsável.', botao);
-      return rotuloTemporario(botao, 'Encaminhado');
-    }
+    if ((qual === 'salvar' || qual === 'enviar') && botao.hasAttribute('data-criado-nome')) return vaiParaCriado(botao);
+    if (qual === 'salvar' && botao.hasAttribute('data-destino')) return vaiParaCriado(botao);
 
-    if (qual === 'concluir') {
-      mudarSelo(seloSituacao(botao), 'Concluído', 'success');
-      evento('Concluiu o requerimento', 'check');
-      anuncia('Requerimento concluído.', botao);
-      botao.setAttribute('aria-disabled', 'true');
-      botao.setAttribute('title', 'O requerimento já está concluído');
-      return;
+    /* A FILA ANDA (25/09/2026: "ao finalizar uma ação, mude o estado das
+     * coisas"). Concluir e encaminhar mudavam só o selo do detalhe: o item
+     * seguia em "Aguardam você", a contagem ficava em 9 e "Concluídos" e
+     * "Encaminhados" não recebiam nada. */
+    if (qual === 'concluir' || qual === 'encaminhar') {
+      var concluindo = qual === 'concluir';
+      mudarSelo(seloSituacao(botao), concluindo ? 'Concluído' : 'Encaminhado', concluindo ? 'success' : 'info');
+      evento(concluindo ? 'Concluiu o requerimento' : 'Encaminhou o requerimento ao setor responsável', concluindo ? 'check' : 'send');
+      tiraDaFila(botao, concluindo ? 'concluidos' : 'encaminhados', concluindo ? 'Concluído' : 'Encaminhado', concluindo ? 'success' : 'info');
+      anuncia(concluindo ? 'Requerimento concluído. Ele saiu de Aguardam você e está em Concluídos.' : 'Requerimento encaminhado ao setor responsável. Ele saiu de Aguardam você e está em Encaminhados.', botao);
+      if (concluindo) { botao.setAttribute('aria-disabled', 'true'); botao.setAttribute('title', 'O requerimento já está concluído'); return; }
+      return rotuloTemporario(botao, 'Encaminhado');
     }
 
     if (qual === 'responder') {
@@ -3089,33 +3170,6 @@ ${FN_ANUNCIA}
      * registro vive, com o nome digitado e os campos cujo rótulo bate com o
      * cabeçalho de uma coluna; a lista o insere no topo (criadoScript). Nome
      * vazio para no próprio campo, com a mensagem de erro dele. */
-    if (qual === 'salvar' && botao.hasAttribute('data-destino')) {
-      var campoNome = document.querySelector(botao.getAttribute('data-criado-nome') || '#__nenhum');
-      if (campoNome && !campoNome.value.trim()) return erroDeCampo(campoNome, 'Preencha este campo para salvar.');
-      var raizForm = botao.closest('form') || botao.closest('.ucam-main') || document;
-      var campos = {};
-      // O seletor do sistema é um botão com lista (data-listbox): o valor é o texto dele.
-      Array.prototype.forEach.call(raizForm.querySelectorAll('input[id], select[id], textarea[id], button[data-listbox][id]'), function (c) {
-        if (c.type === 'checkbox' || c.type === 'radio' || c.type === 'hidden') return;
-        var rot = raizForm.querySelector('label[for="' + c.id + '"]');
-        if (!rot) return;
-        var nomeRot = rot.textContent.replace(/\\*/g, '').replace(/\\s+/g, ' ').trim();
-        var valor = c.tagName === 'SELECT' ? (c.options[c.selectedIndex] || {}).text : c.tagName === 'BUTTON' ? c.textContent : c.value;
-        if (nomeRot && valor) campos[nomeRot] = String(valor).trim();
-      });
-      var q = new URLSearchParams(location.search);
-      q.set('criado', campoNome ? campoNome.value.trim() : '');
-      var apoioSel = botao.getAttribute('data-criado-apoio');
-      var campoApoio = apoioSel && document.querySelector(apoioSel);
-      if (campoApoio && campoApoio.value.trim()) q.set('apoio', campoApoio.value.trim());
-      ['situacao', 'tom', 'alvo', 'msg'].forEach(function (k) {
-        var v = botao.getAttribute('data-criado-' + k);
-        if (v) q.set(k, v);
-      });
-      q.set('campos', JSON.stringify(campos));
-      location.href = botao.getAttribute('data-destino') + '?' + q.toString();
-      return;
-    }
 
     if (qual === 'salvar') {
       eco(document.querySelector('tr[aria-selected="true"]'));
@@ -5113,7 +5167,12 @@ export const criadoScript = `
     var novo = modelo.cloneNode(true);
     var nomeEl = novo.querySelector('.td--pessoa__nome, .ucam-list-item__titulo, .ucam-card__titulo');
     var antigo = nomeEl ? nomeEl.textContent.trim() : '';
+    // Nem estado nem DADO do modelo: data-urgencia, data-situacao e afins são
+    // do registro clonado, e o novo não herda (a fila o ordenaria como urgente).
     ['aria-selected', 'aria-current', 'data-eco', 'hidden'].forEach(function (a) { novo.removeAttribute(a); });
+    Array.prototype.slice.call(novo.attributes).forEach(function (at) {
+      if (/^data-/.test(at.name) && at.name !== 'data-aba' && at.name !== 'data-label') novo.removeAttribute(at.name);
+    });
     Array.prototype.forEach.call(novo.querySelectorAll('.ucam-copiar'), function (b) { b.remove(); });
     Array.prototype.forEach.call(novo.querySelectorAll('input[type=checkbox]'), function (c) { c.checked = false; });
     if (nomeEl) nomeEl.textContent = nome;
@@ -5155,6 +5214,27 @@ export const criadoScript = `
     } else {
       var marc = novo.querySelector('.ucam-list-item__marcadores');
       if (marc) { marc.textContent = ''; var s2 = selo(); if (s2) marc.appendChild(s2); }
+    }
+    if (novo.tagName === 'LI') {
+      var tempo = novo.querySelector('.ucam-list-item__tempo');
+      if (tempo) { tempo.textContent = 'agora'; tempo.removeAttribute('datetime'); }
+      var alvoNovo = novo.querySelector('.ucam-list-item__alvo');
+      if (alvoNovo) alvoNovo.setAttribute('aria-pressed', 'false');
+      // Novo é não lido: a marca à esquerda e o texto para o leitor de tela.
+      if (!novo.querySelector('.ucam-list-item__indicador')) {
+        (alvoNovo || novo).insertAdjacentHTML('beforeend', '<span class="ucam-list-item__indicador" aria-hidden="true"></span><span class="ucam-sr-only">não lido</span>');
+      }
+      var aba = novo.getAttribute('data-aba');
+      var tab = aba && document.querySelector('.ucam-tabs__tab[data-valor="' + aba + '"]');
+      var ct = tab && tab.querySelector('.ucam-tabs__contagem');
+      if (ct) {
+        var nT = (parseInt(ct.textContent, 10) || 0) + 1;
+        ct.textContent = String(nT);
+        var srT = tab.querySelector('.ucam-sr-only');
+        if (srT) srT.textContent = ', ' + nT + ' itens';
+      }
+      var navN = document.querySelector('.ucam-nav__item[aria-current="page"] .ucam-nav__count');
+      if (navN && aba === 'aguardam') navN.textContent = String((parseInt(navN.textContent, 10) || 0) + 1);
     }
     if (antigo) Array.prototype.forEach.call(novo.querySelectorAll('[aria-label]'), function (n) {
       n.setAttribute('aria-label', n.getAttribute('aria-label').split(antigo).join(nome));
