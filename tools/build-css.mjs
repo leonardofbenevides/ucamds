@@ -8860,6 +8860,19 @@ a.ucam-list-item:active,
  * pseudo-elemento estica o alvo sobre o <li> (que já é position: relative),
  * o hover da linha diz que ela abre, e o foco desenha o anel na linha, não
  * em volta de duas palavras (catálogo de relatórios, 16/09/2026). */
+/* O TÍTULO QUE É LINK QUEBRA LINHA, não corta (25/09/2026). O link é o nome
+ * da ação — "6 contas aguardam o primeiro acesso" — e a reticência cortava
+ * justamente a frase que diz o que se vai abrir ("6 contas aguardam o
+ * primeiro ac…"), enquanto o marcador ao lado, que é só a origem, ficava
+ * inteiro. Título de NOME (pessoa, setor) continua em uma linha com
+ * reticência: nome cortado ainda identifica; frase cortada não diz nada. */
+a.ucam-list-item__titulo {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  flex: 1 1 auto;
+}
+
 a.ucam-list-item__titulo:not(.ucam-link) {
   color: inherit;
   text-decoration: none;
@@ -11105,8 +11118,13 @@ ${abaixo('nav-fixa')} {
    * um controle que mede os 44 inteiros (segmented, botão sob toque), o
    * controle assentava em cima do fio que fecha a barra — e em cima do fio
    * que abre a fileira de filtros. A fileira que encosta num fio ganha o vão
-   * padrão embaixo; a de filtros não, porque já recua por dentro. */
-  .ucam-viewbar__fileira:not(.ucam-viewbar__fileira--filtros):is(:last-child, :has(+ .ucam-viewbar__fileira--filtros)) {
+   * padrão embaixo; a de filtros não, porque já recua por dentro.
+   *
+   * Em 25/09/2026 a regra passou a valer para TODA fileira que não é trilha
+   * nem filtros: a fileira do título quebra em duas linhas no telefone e os
+   * botões dela encostavam no fim, a 2px do segmented da fileira seguinte
+   * (Usuários a 375px). */
+  .ucam-viewbar__fileira:not(.ucam-viewbar__fileira--filtros, .ucam-viewbar__fileira--trilha) {
     padding-block-end: var(--ucam-space-inline-sm);
   }
   /* O grupo de ações também quebra por dentro. Com flex: none ele media a

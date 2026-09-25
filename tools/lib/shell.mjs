@@ -4844,6 +4844,31 @@ export const gavetaScript = `
  * aria-current no <li>, que é por onde a folha pinta. Em largura cheia o
  * clique só move a escolha; o painel continua ao lado.
  */
+/**
+ * O FOCO QUE ROLA ATÉ O CONTROLE (25/09/2026). Segmented, abas e a área de
+ * chips rolam na horizontal em tela estreita, e o foco que caía num segmento
+ * fora da vista não o trazia: medido a 375px em Usuários, "Aguardando acesso"
+ * focado a 246–387px num rolo que termina em 355 — o anel cortado pela borda
+ * e o rótulo pela metade. Ao receber foco, o controle rola o próprio trilho
+ * até caber inteiro, com uma folga para o esmaecimento da ponta não comer o
+ * anel. Só o eixo horizontal, e só dentro do trilho: a página não se mexe.
+ */
+export const roloScript = `
+(function () {
+  var FOLGA = 24;
+  document.addEventListener('focusin', function (e) {
+    var alvo = e.target;
+    if (!alvo || !alvo.closest) return;
+    var trilho = alvo.closest('.ucam-segmented, .ucam-tabs, .ucam-viewbar__chips, .ucam-topnav__scroll');
+    if (!trilho || trilho === alvo || trilho.scrollWidth <= trilho.clientWidth) return;
+    var t = trilho.getBoundingClientRect();
+    var a = alvo.getBoundingClientRect();
+    if (a.left < t.left + FOLGA) trilho.scrollLeft -= (t.left + FOLGA) - a.left;
+    else if (a.right > t.right - FOLGA) trilho.scrollLeft += a.right - (t.right - FOLGA);
+  });
+})();
+`.trim();
+
 export const inboxScript = `
 (function () {
   var ESTREITO = window.matchMedia('(max-width: 39.999rem)');

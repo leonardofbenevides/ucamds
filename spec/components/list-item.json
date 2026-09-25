@@ -98,7 +98,7 @@
       "nome": "title",
       "tipo": "string",
       "obrigatorio": true,
-      "descricao": "Quem ou o quê. Nome do requerente na fila, nome do setor no painel gerencial."
+      "descricao": "Quem ou o quê. Nome do requerente na fila, nome do setor no painel gerencial. Nome fica em uma linha com reticência; título que é LINK (a frase da ação, como '6 contas aguardam o primeiro acesso') quebra linha em vez de cortar, desde 25/09/2026 — frase cortada não diz o que se vai abrir."
     },
     {
       "nome": "support",

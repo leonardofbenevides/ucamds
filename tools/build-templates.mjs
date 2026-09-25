@@ -36,6 +36,7 @@ import {
   gavetaScript,
   inboxScript,
   tabelaScript,
+  roloScript,
   navScript,
   contadorScript,
 } from './lib/shell.mjs';
@@ -270,6 +271,7 @@ ${sprite}
 <script>${gavetaScript}</script>
 <script>${inboxScript}</script>
 <script>${tabelaScript}</script>
+<script>${roloScript}</script>
 </body>
 </html>`;
 
