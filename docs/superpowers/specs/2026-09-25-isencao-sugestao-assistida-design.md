@@ -60,9 +60,9 @@ Hoje o catálogo não tem padrão para conteúdo gerado por máquina. A
 isenção é o primeiro caso, e o Protocolo e o Gerencial vão pedir o
 mesmo. Entra em `spec/patterns/patterns.json` o padrão
 `sugestao-automatizada`, com status `draft` (uma tela só, abaixo do
-limite de três que vira gabarito), e a ADR-048.
+limite de três que vira gabarito), e a ADR-049.
 
-**ADR-048 — Sugestão de máquina é rotulada, mostra a evidência e nunca
+**ADR-049 — Sugestão de máquina é rotulada, mostra a evidência e nunca
 decide.**
 
 Regras do padrão:
@@ -173,7 +173,7 @@ Regra de tela e componente no mesmo passo.
   termo buscado como fonte, a extensão entra como variante documentada.
 - **segmented, badge, link, timeline, select, chip:** usados como estão.
 - **patterns.json:** padrão novo `sugestao-automatizada`.
-- **adr.json:** ADR-048.
+- **adr.json:** ADR-049.
 - **Tratadores em `tools/lib/shell.mjs`:** novo `ver-comparacao`
   (preenche a gaveta a partir de um `<template>` por disciplina e
   abre); `decidir` passa a achar a linha por `data-disciplina` quando o
