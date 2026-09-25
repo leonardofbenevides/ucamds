@@ -141,8 +141,8 @@ export type UcamSystemCategory =
           @if (systemIcon()) {
             <span
               class="inline-flex size-[var(--ucam-size-control-lg)] shrink-0 items-center justify-center rounded-[var(--ucam-radius-control)]"
-              [style.background]="tintaSistema()"
-              [style.color]="'var(--ucam-color-text-on-action)'"
+              [style.background]="ladrilhoMarca()"
+              [style.color]="appbarAppearance() === 'light' ? 'var(--ucam-color-text-on-action)' : 'currentColor'"
               aria-hidden="true"
             >
               <ucam-icon [name]="systemIcon()!" />
@@ -247,7 +247,11 @@ export class UcamAppShell {
   readonly systemName = input.required<string>();
   readonly systemIcon = input<UcamIconName | null>(null);
   readonly systemCategory = input<UcamSystemCategory | null>(null);
-  readonly appbarAppearance = input<UcamAppbarAppearance>('light');
+  /** 'brand' é o default do CONTRATO e, desde 25/09/2026, o que o Trilho A faz
+   *  em toda faixa: fundo na superfície de marca do sistema (a subpaleta troca
+   *  --ucam-color-surface-brand por data-sistema quando a folha do Trilho A está
+   *  carregada; só com @ucam/ui, é o bordô da universidade). */
+  readonly appbarAppearance = input<UcamAppbarAppearance>('brand');
   readonly navGroups = input<UcamNavGroup[]>([]);
   readonly user = input<{ name: string; photoUrl?: string } | null>(null);
   readonly homeHref = input<string>('/');
@@ -328,6 +332,14 @@ export class UcamAppShell {
     this.systemCategory()
       ? `color-mix(in oklab, var(--ucam-color-categoria-${this.systemCategory()}), var(--ucam-color-text-primary) 28%)`
       : 'var(--ucam-color-action-primary-default)',
+  );
+
+  /** A marquinha sobre a faixa de marca é COMPOSIÇÃO TONAL (25/09/2026): um
+   *  tom mais claro da própria faixa (o texto a 18%) com o ícone em branco —
+   *  o ladrilho cheio na tinta sumiria sobre a faixa da mesma cor. Na faixa
+   *  clara ele continua na tinta do sistema. */
+  protected readonly ladrilhoMarca = computed(() =>
+    this.appbarAppearance() === 'light' ? this.tintaSistema() : 'color-mix(in srgb, currentColor 18%, transparent)',
   );
 
   protected readonly classesFaixa = computed(() =>
