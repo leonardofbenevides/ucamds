@@ -66,6 +66,7 @@
   --ucam-blue-600: #14589E;
   --ucam-blue-700: #0E4174;
   --ucam-blue-900: #182A3D;
+  --ucam-orange-500: #EA6A0A;
   --ucam-ochre-400: #B78B10;
   --ucam-ochre-500: #A47F10;
   --ucam-teal-400: #17A18F;
@@ -163,6 +164,8 @@
   --ucam-color-interaction-hover: rgb(14 22 42 / 0.045);
   --ucam-color-interaction-active: rgb(14 22 42 / 0.085);
   --ucam-color-interaction-selected: rgb(14 22 42 / 0.085);
+  --ucam-color-notificacao-background: #EA6A0A;
+  --ucam-color-notificacao-foreground: #0E162A;
   --ucam-color-realce-background: #FCC9CB;
   --ucam-color-realce-foreground: #0E162A;
   --ucam-color-feedback-success-background: #DCF5E7;
@@ -187,7 +190,7 @@
   --ucam-color-border-subtle: #DEE5EE;
   --ucam-color-border-default: #C6D2E0;
   --ucam-color-border-strong: #62758F;
-  --ucam-color-border-focus: #BC4657;
+  --ucam-color-border-focus: #62758F;
   --ucam-color-border-on-brand: #F1A1A7;
   --ucam-color-chart-series-1: #8D293A;
   --ucam-color-chart-series-2: #1A6FC4;
@@ -222,19 +225,19 @@
   --ucam-typography-body-font-size: 0.875rem;
   --ucam-typography-body-font-weight: 400;
   --ucam-typography-body-line-height: 1.25rem;
-  --ucam-typography-body-sm-font-size: 0.8125rem;
+  --ucam-typography-body-sm-font-size: 0.875rem;
   --ucam-typography-body-sm-font-weight: 400;
   --ucam-typography-body-sm-line-height: 1.25rem;
-  --ucam-typography-label-font-size: 0.8125rem;
+  --ucam-typography-label-font-size: 0.875rem;
   --ucam-typography-label-font-weight: 500;
   --ucam-typography-label-line-height: 1.25rem;
-  --ucam-typography-action-font-size: 0.8125rem;
+  --ucam-typography-action-font-size: 0.875rem;
   --ucam-typography-action-font-weight: 560;
   --ucam-typography-action-line-height: 1rem;
-  --ucam-typography-caption-font-size: 0.75rem;
+  --ucam-typography-caption-font-size: 0.8125rem;
   --ucam-typography-caption-font-weight: 400;
   --ucam-typography-caption-line-height: 1rem;
-  --ucam-typography-table-header-font-size: 0.8125rem;
+  --ucam-typography-table-header-font-size: 0.875rem;
   --ucam-typography-table-header-font-weight: 500;
   --ucam-typography-table-header-line-height: 1.25rem;
   --ucam-typography-table-header-letter-spacing: 0;
@@ -268,6 +271,7 @@
   --ucam-viewport-duas-colunas: 60rem;
   --ucam-viewport-nav-fixa: 64rem;
   --ucam-container-duas-colunas: 52rem;
+  --ucam-container-formulario-em-fileira: 60rem;
   --ucam-container-tabela-empilhada: 30rem;
   --ucam-container-indicadores-empilhados: 20rem;
   --ucam-container-indicadores-em-fileira: 47rem;
@@ -350,7 +354,7 @@
     --ucam-color-border-subtle: rgb(248 250 252 / 0.06);
     --ucam-color-border-default: #314157;
     --ucam-color-border-strong: #62758F;
-    --ucam-color-border-focus: #F1A1A7;
+    --ucam-color-border-focus: #C6D2E0;
     --ucam-color-chart-series-1: #DB6F7A;
     --ucam-color-chart-series-2: #4A8FDA;
     --ucam-color-chart-series-3: #B78B10;
@@ -424,7 +428,7 @@
   --ucam-color-border-subtle: rgb(248 250 252 / 0.06);
   --ucam-color-border-default: #314157;
   --ucam-color-border-strong: #62758F;
-  --ucam-color-border-focus: #F1A1A7;
+  --ucam-color-border-focus: #C6D2E0;
   --ucam-color-chart-series-1: #DB6F7A;
   --ucam-color-chart-series-2: #4A8FDA;
   --ucam-color-chart-series-3: #B78B10;

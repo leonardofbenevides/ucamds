@@ -980,7 +980,7 @@ tbody tr:has(+ tr.linha-nota:hover) {
 
 /* Card que é LINK reage; card que é só caixa de texto, não. O seletor já era
    a.card antes — o que mudou é para onde ele reage: borda na tinta da marca,
-   sombra que levanta e a seta aparecendo. */
+   sombra que levanta. */
 a.card {
   position: relative;
 }
@@ -996,31 +996,9 @@ a.card:active {
   box-shadow: none;
 }
 
-/* A seta é a affordance que faltava: num grid de seis caixas iguais, nada
-   distinguia as clicáveis das descritivas. Só existe em card-link, desliza no
-   hover, e some para quem pediu menos movimento. */
-a.card::after {
-  content: '\2192';
-  position: absolute;
-  inset-block-start: 1.05rem;
-  inset-inline-end: 1.15rem;
-  font-size: 0.875rem;
-  line-height: 1;
-  color: var(--ucam-color-text-placeholder);
-  opacity: 0;
-  translate: -0.25rem 0;
-  transition:
-    opacity var(--transicao),
-    translate var(--transicao),
-    color var(--transicao);
-}
-
-a.card:hover::after,
-a.card:focus-visible::after {
-  opacity: 1;
-  translate: 0 0;
-  color: var(--ucam-color-action-primary-default);
-}
+/* A seta de hover saiu em 25/09/2026. Ela pousava no canto onde o
+   cartão de padrão tinha o selo, e a borda na tinta da marca com a sombra
+   que levanta já dizem que o cartão é clicável. */
 
 /* Miniatura é RETRATO, não cena: nada dentro do palco de um CARD anima.
 
@@ -1053,22 +1031,11 @@ a.card:focus-visible::after {
   transition-delay: 0s !important;
 }
 
-/* Card que abre com um PALCO não recebe seta. O ::after fica ancorado no
-   canto superior direito do card, e nesses dois catálogos (componentes e
-   telas) esse canto é a miniatura da amostra — a seta pousaria em cima do
-   preview. Ali a afordância já existe e é maior: a miniatura inteira. */
-a.card:has(.palco)::after {
-  display: none;
-}
-
-/* Sem seta e sem levantar: o hover vira só a borda, que é o que sobra de
-   informação útil quando o movimento está desligado. */
+/* Sem levantar: o hover vira só a borda, que é o que sobra de informação
+   útil quando o movimento está desligado. */
 @media (prefers-reduced-motion: reduce) {
   a.card:hover {
     transform: none;
-  }
-  a.card::after {
-    display: none;
   }
 }
 
@@ -1342,4 +1309,23 @@ a.card:has(.palco)::after {
 
 .skip-link:focus {
   transform: none;
+}
+
+/* O X de limpar dos campos de busca do PRÓPRIO site (filtro da navegação,
+   paleta, filtros de escrita e ícones), que não usam .ucam-input. Mesmo
+   desenho flat que @ucam/css dá ao .ucam-input[type="search"]: o nativo do
+   Chrome é um X com gradiente azul de sistema operacional. */
+input[type='search']:not(.ucam input, .ucam-input, .ucam-input-group__controle)::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  margin-inline-start: var(--ucam-space-inline-sm);
+  background-color: var(--ucam-color-text-secondary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") no-repeat center / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E") no-repeat center / contain;
+  cursor: pointer;
+}
+input[type='search']:not(.ucam input, .ucam-input, .ucam-input-group__controle)::-webkit-search-cancel-button:hover {
+  background-color: var(--ucam-color-text-primary);
 }

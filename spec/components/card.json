@@ -306,6 +306,11 @@
       "faca": "Cartão div, título como link esticado, controle acima dele.",
       "evite": "Cartão como âncora com um botão dentro — ou como div com role=\"button\".",
       "porque": "A primeira forma é inválida e produz dois alvos sobrepostos; a segunda joga fora o href e obriga a reimplementar teclado em cada ladrilho. A grade de 58 módulos do SIGU faz a segunda, 58 vezes."
+    },
+    {
+      "faca": "Deixar o cartão acionável mostrar a seta de destino na ponta direita, e o sem destino ficar sem ela.",
+      "evite": "Depender do hover para dizer que o cartão abre, ou esmaecer o que não abre até perder contraste.",
+      "porque": "Em repouso o acionável era idêntico ao estático: no catálogo de relatórios os cartões que abrem e os que não abrem tinham a mesma cara, e hover não existe no toque nem antes do ponteiro chegar. A seta é um sinal sem cor e sem peso; o título sem destino continua legível na tinta secundária (ADR-042)."
     }
   ],
   "vs": [

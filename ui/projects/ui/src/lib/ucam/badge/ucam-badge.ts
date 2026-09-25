@@ -28,7 +28,15 @@ export type UcamBadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger
  * dois é só o indicador — ícone no soft, ponto no dot. outline é a pílula
  * branca com filete, preservada para coluna longa.
  */
-export type UcamBadgeVariant = 'soft' | 'dot' | 'outline';
+export type UcamBadgeVariant = 'soft' | 'dot' | 'outline' | 'plain';
+
+/**
+ * PLANO: o estado da MAIORIA, sem tinta (ADR-050). Espelha .ucam-badge--plain.
+ * A caixa fica inteira (borda transparente de 1px, mesmo recuo) para a palavra
+ * cair na vertical das pastilhas tintas vizinhas; sai fundo, filete, indicador
+ * e peso. O tom é ignorado de propósito: plano é justamente "sem cor".
+ */
+const PLAIN_CLASSES = 'bg-transparent border-transparent text-[var(--ucam-color-text-secondary)]';
 
 /**
  * PREENCHIMENTO pastel com o rótulo na tinta do próprio tom — espelha o
@@ -116,7 +124,10 @@ const DOT_CLASS = 'bg-current';
    * lista do site a pastilha media 26,4px, contra os 22 do .ucam-badge do
    * Trilho A (13/09/2026). Como flex, a altura é a da pastilha e só.
    */
-  host: { class: 'inline-flex' },
+  /* data-tone e data-variant existem para o CONTEXTO: dentro de tabela o selo
+   * vira ponto e palavra (ADR-051), e o ponto sai do degrau saturado do tom.
+   * Quem pinta isso é a folha do <ucam-data-table>, que precisa saber o tom. */
+  host: { class: 'inline-flex', '[attr.data-tone]': 'tone()', '[attr.data-variant]': 'variant()' },
   template: `
     <!-- ELEMENTO, não atributo. O seletor da base é 'z-badge, a[z-badge]':
          <span z-badge> não casa com nenhum dos dois, então o componente nunca
@@ -124,7 +135,8 @@ const DOT_CLASS = 'bg-current';
          display — texto com fundo colado. Passou despercebido enquanto só o
          preview do Trilho A aparecia no site. -->
     <z-badge zType="outline" [class]="classes()">
-      @if (variant() === 'dot') {
+      @if (variant() === 'plain') {
+      } @else if (variant() === 'dot') {
         <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0" [class]="dotClass" aria-hidden="true"></span>
       } @else if (iconeEfetivo(); as ic) {
         <!-- 12, o degrau da pastilha: a caixa tem 22px de altura e o rótulo
@@ -158,6 +170,7 @@ export class UcamBadge {
   readonly icon = input<UcamIconName | null>(null);
 
   protected readonly classes = computed(() => {
+    if (this.variant() === 'plain') return `${PLAIN_CLASSES} gap-1 font-normal`;
     const tinta = this.variant() === 'outline' ? OUTLINE_CLASSES : TONE_CLASSES;
     return `${tinta[this.tone()]} gap-1 font-medium`;
   });

@@ -136,6 +136,12 @@
       "classe": "ucam-nav__recolher"
     },
     {
+      "parte": "nav-acao",
+      "obrigatorio": false,
+      "descricao": "A ação do MÓDULO no alto da coluna, fora da rolagem: \"Novo requerimento\" no Protocolo. Uma por módulo; a segunda é navegação disfarçada de ação e volta para a lista. SECUNDÁRIA (ADR-050): o lugar fixo já diz que é a ação do módulo, e o primário em vista é o da tela. Primária, ela fazia duas pastilhas bordô em toda tela que tem a sua. Link quando há tela de destino, botão enquanto não há.",
+      "classe": "ucam-nav__cta"
+    },
+    {
       "parte": "nav-search",
       "obrigatorio": false,
       "descricao": "Busca dentro da navegação. Obrigatória acima de 20 itens.",

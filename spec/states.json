@@ -21,7 +21,7 @@
     {
       "id": "focus-visible",
       "gatilho": "Foco por teclado",
-      "aparencia": "Anel de 2px com offset 2px, cor color.border.focus, mínimo 3:1 contra o fundo adjacente (WCAG 1.4.11).",
+      "aparencia": "Anel de 2px com offset 2px, cor color.border.focus, mínimo 3:1 contra o fundo adjacente (WCAG 1.4.11). Cinza e o mesmo em todo sistema (ADR-048): a subpaleta não o troca. Onde o ancestral rola (tira de abas, trilho do segmented), o anel entra para dentro do controle, porque rolar recorta o que fica fora.",
       "precedencia": 4
     },
     {

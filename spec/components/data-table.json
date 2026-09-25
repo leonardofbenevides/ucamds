@@ -86,7 +86,13 @@
     {
       "parte": "header-cell",
       "obrigatorio": true,
-      "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th."
+      "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th. Na superfície do papel, sem faixa cinza (ADR-051): o que diz que a fileira é rótulo é a tinta secundária, o ícone de coluna e o fio border.default embaixo. Entre colunas, fio border.subtle — no cabeçalho como sombra interna, porque a borda colapsada não acompanha a célula grudada."
+    },
+    {
+      "parte": "column-icon",
+      "obrigatorio": false,
+      "descricao": "Ícone do tipo de dado antes do rótulo (prop icon do ColumnDef, ADR-051). Tinta de placeholder, aria-hidden, e não acende com a ordenação — quem acende é o indicador de ordem, depois do rótulo.",
+      "classe": "ucam-table__icone"
     },
     {
       "parte": "column-menu",
@@ -101,11 +107,12 @@
     {
       "parte": "row",
       "obrigatorio": true,
-      "descricao": "A linha. Escolhida (aria-selected=true) tem um sinal de superfície e um de tipografia: realce tinto (action.primary.subtle) e a primeira célula de dado em peso de ação; quem carrega a cor é a caixa de marcação marcada. Sem tarja na entrada (ADR-046) e sem barra de estado por linha (ADR-027)."
+      "descricao": "A linha. Escolhida (aria-selected=true) tem um sinal de superfície e um de tipografia: fundo branco com um shape sólido de 4px na borda DIREITA, de ponta a ponta da altura, e a primeira célula de dado em peso de ação; quem carrega a cor além do shape é a caixa de marcação marcada. Sem tarja na entrada (ADR-046) e sem barra de estado por linha (ADR-027)."
     },
     {
       "parte": "cell",
-      "obrigatorio": true
+      "obrigatorio": true,
+      "descricao": "Célula de dado. Fio vertical border.subtle entre ela e a vizinha (ADR-051), menos logo depois da coluna de seleção. Selo dentro da célula é ponto e palavra, sem pastilha."
     },
     {
       "parte": "cell-person",
@@ -273,10 +280,14 @@
         "obrigatorio": true,
         "descricao": "Rótulo em caixa natural. O legado usa CAIXA ALTA — ver ADR-003."
       },
+      "icon": {
+        "tipo": "UcamIconName",
+        "descricao": "Ícone do TIPO de dado, antes do rótulo do cabeçalho (ADR-051): user para pessoa, calendar ou clock para data e hora, hash para número e identificador, circleDot para situação, text para o texto que nomeia o registro. Decorativo (aria-hidden) e em tinta de placeholder: quem nomeia a coluna é o rótulo. No Trilho A é <svg class=\"ic ucam-table__icone\"> como primeiro filho do th, ou do botão do cabeçalho quando a coluna tem menu ou ordem. Opcional, mas numa tabela é tudo ou nada: coluna sem ícone ao lado de coluna com ícone lê como esquecimento. A coluna de seleção e a de ações nunca levam."
+      },
       "type": {
         "tipo": "'text' | 'id' | 'number' | 'date' | 'currency' | 'status' | 'person' | 'actions'",
         "default": "'text'",
-        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge; number e currency recebem tabular-nums e alinham à direita. id é a coluna de identificador — matrícula, número de documento — em .ucam-id: um degrau de peso, sem tabular-nums e alinhada ao início (ADR-047). person é a célula de pessoa com avatar, nome e apoio (ADR-046)."
+        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge, que dentro da tabela perde a pastilha e vira ponto e palavra (ADR-051); number e currency recebem tabular-nums e alinham à direita. id é a coluna de identificador — matrícula, número de documento — em .ucam-id: um degrau de peso, sem tabular-nums e alinhada ao início (ADR-047). person é a célula de pessoa com avatar, nome e apoio (ADR-046)."
       },
       "width": {
         "tipo": "'auto' | 'min' | number",
@@ -378,7 +389,8 @@
       "ucam-prazo",
       "ucam-realce",
       "ucam-skeleton",
-      "ucam-avatar"
+      "ucam-avatar",
+      "ucam-icon"
     ],
     "usada_por": [
       "padrao-consulta-relatorio",
@@ -499,6 +511,11 @@
       "faca": "Quando a lista chega inteira e quase tudo entra, trazer as caixas já marcadas e pedir só que se desmarque o que sai.",
       "evite": "Obrigar a marcar cem linhas uma a uma — ou confiar que os ids que voltam no envio são os que a tela mostrou.",
       "porque": "É o inverso do lote comum, e resolve com checkbox nativo: o formulário só envia o que continuou marcado. Quem recebe revalida a lista contra a fonte, porque nada garante que os ids não foram alterados. Evidência: a lista de presença do vestibular no Relatórios Acadêmicos."
+    },
+    {
+      "faca": "Uma coluna de estado com cor por linha. Se a linha tem dois estados, o que decide leva a pastilha tinta e o outro vai em plain ou em texto de apoio.",
+      "evite": "Sugestão e decisão lado a lado, cada uma com a sua pastilha verde, âmbar ou vermelha.",
+      "porque": "Duas faixas de cor paralelas não dizem qual ler, e escondem justamente onde as duas divergem. É a ADR-027 aplicada a colunas, e não só à barra da borda (ADR-050)."
     }
   ],
   "vs": [

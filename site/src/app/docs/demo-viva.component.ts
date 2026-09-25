@@ -551,7 +551,7 @@ export const TEM_DEMO_VIVA = new Set([
                     [tone]="r.tom"
                     [unread]="r.naoLido"
                     [selected]="r.id === abertoNaLista()"
-                    href="#"
+                    selectable
                     (open)="abertoNaLista.set(r.id)"
                   >
                     <ucam-badge [tone]="r.tom" [label]="r.situacao" />

@@ -53,7 +53,8 @@ const DECISIVOS = [
  * estado é a TINTA em cima — que é o primeiro par da lista acima, medido. */
 
 /* Estes não decidem uma ação sozinhos, mas dividem a tela: o realce de busca
- * numa lista que também tem linha em erro, o anel de foco — que é da MARCA —
+ * numa lista que também tem linha em erro, o anel de foco — cinza desde a
+ * ADR-048, e ainda assim vigiado —
  * pousando em cima de um botão destrutivo, o selo de erro ao lado do botão
  * primário. Coexistem, então respondem pelo limiar de coexistência. */
 const COEXISTEM = [

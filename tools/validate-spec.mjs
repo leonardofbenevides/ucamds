@@ -234,6 +234,10 @@ for (const { file, spec } of components) {
 
 const patterns = read('patterns/patterns.json').patterns;
 for (const p of patterns) {
+  // O cartão do catálogo de padrões mostra o resumo, não o problema: o
+  // problema descreve o defeito do legado e passava de 800 caracteres.
+  if (!p.resumo) falha('patterns/patterns.json', `padrão "${p.id}" sem resumo — é a frase do cartão em /padroes`);
+  else if (p.resumo.length > 160) falha('patterns/patterns.json', `padrão "${p.id}": resumo com ${p.resumo.length} caracteres, o teto é 160`);
   for (const dep of p.usa ?? []) {
     if (!selectors.has(dep)) avisa('patterns/patterns.json', `padrão "${p.id}" usa ${dep}, sem contrato ainda`);
   }

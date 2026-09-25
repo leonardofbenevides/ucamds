@@ -64,8 +64,8 @@ Cada item abaixo é uma decisão do UCAMDS já tomada, aplicada aqui. Nada
    (ADR-039, ADR-044, sonda de feedback). O toast deixa de ser o único
    retorno. "Salvar rascunho" muda a situação no cabeçalho e anuncia por
    `aria-live`; "Finalizar análise" abre confirmação que **nomeia os
-   números** (n isentas, n não isentas, n pendentes) e é barrada
-   enquanto houver pendente, dizendo quantas faltam; "Aplicar
+   números** (n isentas, n não isentas) e é barrada enquanto houver
+   disciplina sem decisão, dizendo quais (decisão 11); "Aplicar
    sugestões" preenche só as decisões ainda vazias e diz quantas
    preencheu. O botão "Sem documentos", que não fazia nada, sai: a
    linha do candidato sem documentos abre a mesma análise, com o bloco
@@ -75,7 +75,8 @@ Cada item abaixo é uma decisão do UCAMDS já tomada, aplicada aqui. Nada
 6. **A situação mora no cabeçalho e não muda de nome pelo caminho**
    (ADR-029). Selo ao lado do título, os mesmos rótulos nos dois lados
    do fluxo: Aguardando envio, Aguardando análise, Aguardando candidato,
-   Concluída. Por disciplina: Pendente, Isenta, Não isenta; no lado do
+   Concluída. Por disciplina: sem decisão, Isenta, Não isenta,
+   Aguardando documento (decisão 11); no lado do
    candidato, antes da conclusão, "Em análise" para o que ainda não foi
    decidido e "Aguardando documento" para o que a observação pede.
 
@@ -99,6 +100,32 @@ Cada item abaixo é uma decisão do UCAMDS já tomada, aplicada aqui. Nada
     disponível (selo de marca), falhou (selo de aviso com a ação
     "Tentar de novo", classe c) e sem análise (travessão com motivo por
     voz).
+
+11. **"Pendente" eram duas esperas, e agora são dois estados** (revisão
+    de 25/09/2026). No protótipo, "Pendente" do lado do candidato vinha
+    com o motivo "Aguardando documentação complementar"; a primeira
+    versão desta spec leu a palavra como "decisão que falta" e o aviso
+    de fechamento mandava marcar as pendentes como não isentas, o que
+    indeferiria uma disciplina só porque faltava papel. A regra:
+    - **Sem decisão** é nenhuma posição marcada no segmented. É trabalho
+      da coordenação e barra o fechamento; o aviso nomeia as disciplinas
+      e leva à primeira, e nunca sugere "não isentar".
+    - **Pedir documento** é a terceira posição do segmented (no lugar de
+      "Pendente"). Não barra nada: com uma ou mais disciplinas assim, a
+      ação principal passa de "Finalizar análise" a "Enviar pedido ao
+      candidato", que leva a situação a Aguardando candidato e registra
+      na atividade. Do lado do candidato, a disciplina aparece como
+      "Aguardando documento".
+    - **A solicitação inteira espera**; não há fechamento parcial. As
+      decisões tomadas ficam salvas, e quando o documento chega ela
+      volta a Aguardando análise.
+    - **Prazo visível de 15 dias corridos** a partir do pedido: no alerta
+      do candidato, com o que acontece depois ("a análise segue com o
+      que já foi enviado"), e no apoio da situação na fila.
+    - **Para o time decidir:** o número de dias e o efeito do prazo
+      vencido (seguir com o que há, que pode dar não isenta, ou
+      cancelar a solicitação) são regra da secretaria; os 15 dias e o
+      "segue com o que há" são proposta.
 
 ## As telas
 
@@ -150,9 +177,11 @@ período (1º · 2º · 3º), lista de disciplinas por período. Cada linha:
 nome da disciplina, carga horária, a sugestão automatizada como selo
 (Isentar / Revisar / Não isentar, com o motivo curto em apoio: "Ementa
 compatível: 92%"), e a decisão como segmented de três posições
-(Isentar · Não isentar · Pendente). Decisão tomada muda o selo da
-linha. Rodapé da seção: "9 disciplinas · 4 isentas · 2 não isentas · 3
-pendentes", com `aria-live`.
+(Isentar · Não isentar · Pedir documento; nenhuma marcada é sem
+decisão). Rodapé da seção: "9 disciplinas · 4 isentas · 2 não isentas
+· 1 aguardando documento · 2 sem decisão", com `aria-live`. Direito
+Civil I (ementa parcial, 61%) começa em Pedir documento, por isso a
+ação primária do cabeçalho abre como "Enviar pedido ao candidato".
 
 Painel de apoio: cartão "Solicitação" (lista de descrição: candidato,
 inscrição, curso, período letivo, instituição de origem, matriz
@@ -160,14 +189,17 @@ curricular como select com DIR20222 e DIR20201); cartão "Documentos"
 (anexos: Histórico escolar, Ementas, cada um com nome do arquivo em
 `.ucam-id`, tamanho e "Baixar"); cartão "Sugestão automatizada"
 ("Analisada em 12/09 às 09h40 · 4 isentar, 2 revisar, 3 não isentar",
-ação "Aplicar sugestões" que preenche as pendentes com isentar/não
-isentar e deixa revisar como pendente, e diz quantas preencheu); cartão
+ação "Aplicar sugestões" que preenche as sem decisão com isentar/não
+isentar e deixa revisar sem decisão, e diz quantas preencheu); cartão
 "Observação ao candidato" (textarea com contador de 150, apoio "O
 candidato lê esta observação na tela de acompanhamento", ação "Enviar
 ao candidato" que muda a situação para Aguardando candidato).
 
-Finalizar com pendentes: diálogo "Faltam 3 decisões" explicando que a
-análise só fecha com todas as disciplinas decididas. Sem pendentes:
+Com disciplina sem decisão: diálogo "Faltam 2 decisões" que nomeia as
+disciplinas, lembra que falta de documento é "Pedir documento" e leva
+à primeira. Com documento pedido: confirmação "Enviar pedido ao
+candidato?" que diz o prazo; confirmar muda o selo para Aguardando
+candidato. Tudo decidido:
 diálogo de confirmação "Finalizar análise de João Cutrim?" nomeando os
 números; confirmar muda o selo para Concluída, desabilita as ações e
 anuncia. Voltar é fantasma (ADR-029).
@@ -221,7 +253,7 @@ motivo quando não isenta, "Baixar parecer" (c). Sem ação de envio.
   aguardando candidato; 5 concluídas. Direito 5, Administração 3.
 - João Cutrim, DIR20222: 9 disciplinas = 4 (1º) + 3 (2º) + 2 (3º).
   Sugestões: 4 isentar, 2 revisar, 3 não isentar. Na tela de análise, 4
-  isentas, 2 não isentas, 3 pendentes. No acompanhamento (antes da
+  isentas, 2 não isentas, 1 aguardando documento, 2 sem decisão. No acompanhamento (antes da
   conclusão): 2 isentas, 5 em análise, 2 aguardando documento.
 - Pedro Alves (concluída): 6 de 9 isentas.
 

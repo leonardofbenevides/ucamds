@@ -342,6 +342,18 @@
         {
           "lucide": "listChecks",
           "uso": "Processo seletivo, vestibular, classificação."
+        },
+        {
+          "lucide": "hash",
+          "uso": "Ícone de coluna de tabela (ADR-051) para número e identificador: quantidade, protocolo, matrícula. Só no cabeçalho, em tinta de placeholder; nunca como ação."
+        },
+        {
+          "lucide": "circleDot",
+          "uso": "Ícone de coluna de tabela (ADR-051) para situação, resultado e decisão — a coluna cujo valor é um selo. Só no cabeçalho."
+        },
+        {
+          "lucide": "text",
+          "uso": "Ícone de coluna de tabela (ADR-051) para texto livre que nomeia o registro ou descreve o que aconteceu: natureza, disciplina, histórico, o que fez. Só no cabeçalho."
         }
       ]
     }

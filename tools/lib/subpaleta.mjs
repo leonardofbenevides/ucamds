@@ -143,12 +143,11 @@ export const DESVIO_L = {
  * mesmo motivo, e não uma exceção aberta para um deles. */
 export const HERDA_MARCA = ['atendimento'];
 
-/* O ANEL DE FOCO não acompanha o preenchimento: ele aparece SOBRE a superfície
- * e responde por 3:1 contra ela, não contra o texto da ação. No claro isso o
- * empurra para baixo do primário; no escuro, para cima. Dois papéis, duas
- * alturas — derivar um do outro é como o anel do SigFin escuro chegou a 3,16:1,
- * a um décimo do piso. */
-export const FOCO = { claro: 48, escuro: 72 };
+/* O ANEL DE FOCO SAIU DA SUBPALETA em 25/09/2026 (ADR-048). Ele tinha altura
+ * própria aqui (L 48 no claro, 72 no escuro) e saía na categoria de cada
+ * sistema. Agora é cinza e o mesmo em todo app: foco é estado de interação,
+ * como o hover, e a cor do sistema já está no escolhido, na ação primária e
+ * no realce. Quem responde pelos 3:1 é o portão de tokens, uma vez só. */
 
 /**
  * A subpaleta de um sistema.
@@ -177,7 +176,6 @@ export function subpaleta(cor, tema, ctx, sistema) {
      * menu), e um degrau com croma próprio ali roubaria contraste do texto
      * que ele carrega. Mistura com a superfície, como era. */
     'action-primary-subtle': misturaOklab(ctx.surface, emL(base), d.subtle),
-    'border-focus': emL(FOCO[tema]),
     /* Degrau próprio — ver a nota em DEGRAUS. Carrega texto BRANCO nos dois
      * temas, e é isso que a separa do preenchimento da ação. */
     'surface-brand': emL(d.marca),
@@ -201,7 +199,6 @@ export function subpaletaAntiga(cor, ctx) {
     'action-primary-hover': misturaOklab(cor, ctx.texto, 0.42),
     'action-primary-active': misturaOklab(cor, ctx.texto, 0.54),
     'action-primary-subtle': misturaOklab(ctx.surface, cor, 0.09),
-    'border-focus': cor,
     'surface-brand': misturaOklab(cor, ctx.texto, 0.28),
     tinta: misturaOklab(cor, ctx.texto, 0.28),
   };
@@ -276,7 +273,6 @@ export function cssDaSubpaleta(tokensCss) {
           ['--ucam-color-action-primary-hover', p['action-primary-hover']],
           ['--ucam-color-action-primary-active', p['action-primary-active']],
           ['--ucam-color-action-primary-subtle', p['action-primary-subtle']],
-          ['--ucam-color-border-focus', p['border-focus']],
           ['--ucam-color-surface-brand', p['surface-brand']],
           ['--ucam-color-realce-background', p['realce-background']],
         ]

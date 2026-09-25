@@ -247,6 +247,11 @@
       "faca": "Usar tone=neutral e removable=false em marcador de pertencimento.",
       "evite": "Chip tinto com x numa célula de listagem.",
       "porque": "O tinto diz escolha de quem usa a tela, e o x promete desvincular o registro — duas mentiras numa pastilha só."
+    },
+    {
+      "faca": "Chip para filtro aplicado ou escolha removível.",
+      "evite": "Chip como rótulo de atributo numa linha de lista (Campos · Presencial, Araruama · EAD).",
+      "porque": "O contorno de chip promete que a peça faz alguma coisa. Como rótulo ele não faz nada e, repetido por pessoa, somava dez contornos iguais na lista de integrantes de Setores; ali o atributo é texto de apoio (ADR-050)."
     }
   ],
   "vs": [

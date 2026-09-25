@@ -43,6 +43,11 @@ export interface UcamColumnDef {
   key: string;
   /** Rótulo em CAIXA NATURAL. O legado usa caixa alta — ver ADR-003. */
   header: string;
+  /**
+   * Ícone do TIPO de dado antes do rótulo (ADR-051): user, calendar, hash,
+   * circleDot, text. Decorativo; numa tabela é tudo ou nada.
+   */
+  icon?: UcamIconName;
   type?: UcamColumnType;
   width?: 'auto' | 'min' | number;
   sortable?: boolean;
@@ -187,16 +192,25 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                        column-menu). O indicador fica sempre visível: é ele que
                        diz qual coluna governa a ordem sem abrir nada. -->
                   <button type="button" class="ucam-table__coluna" [ucamMenuTrigger]="menuCol">
+                    @if (col.icon) {
+                      <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
+                    }
                     {{ col.header }}
                     <ucam-icon [name]="iconeColuna(col)" size="sm" aria-hidden="true" />
                   </button>
                   <ucam-menu #menuCol [items]="itensColuna(col)" align="start" (escolher)="agirColuna(col, $event)" />
                 } @else if (col.sortable) {
                   <button type="button" class="ucam-table__ordenar" [attr.aria-label]="rotuloOrdenar(col)" (click)="ordenarPor(col)">
+                    @if (col.icon) {
+                      <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
+                    }
                     {{ col.header }}
                     <ucam-icon [name]="iconeOrdem(col)" size="sm" aria-hidden="true" [style.visibility]="sort()?.column === col.key ? 'visible' : 'hidden'" />
                   </button>
                 } @else {
+                  @if (col.icon) {
+                    <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
+                  }
                   {{ col.header }}
                 }
               </th>
@@ -240,7 +254,9 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                       />
                     } @else if (col.type === 'status') {
                       @if (comoStatus(linha[col.key]); as s) {
-                        <ucam-badge [label]="s.label" [tone]="s.tone" />
+                        <!-- Ponto e palavra (ADR-051): a folha abaixo tira a
+                             pastilha do selo dentro da tabela. -->
+                        <ucam-badge variant="dot" [label]="s.label" [tone]="s.tone" />
                       }
                     } @else if (col.type === 'id') {
                       <!-- Identificador (ADR-047): um degrau de peso, sem
@@ -335,11 +351,40 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       /* Caixa NATURAL no cabeçalho — ADR-003. */
       font-weight: var(--ucam-typography-label-font-weight);
       color: var(--ucam-color-text-secondary);
-      background: var(--ucam-color-surface-subtle);
-      border-block-end: 1px solid var(--ucam-color-border-subtle);
+      /* Branco, sem faixa (ADR-051): o fio default embaixo, a tinta
+         secundária e o ícone de coluna dizem que a fileira é rótulo. */
+      background: var(--ucam-color-surface-default);
+      border-block-end: 1px solid var(--ucam-color-border-default);
       padding: var(--ucam-space-inset-sm) var(--ucam-space-inset-md);
       white-space: nowrap;
     }
+    /* Fio vertical entre colunas (ADR-051), menos logo depois da seleção.
+       :where() segura em (0,1,1), empatado com o "border: 0" do empilhado,
+       que vem depois e por isso vence. */
+    .ucam-table tr > :where(th, td):where(:not(.ucam-table__sel)) + :where(th, td) {
+      border-inline-start: 1px solid var(--ucam-color-border-subtle);
+    }
+    .ucam-table th .ucam-table__icone { color: var(--ucam-color-text-placeholder); }
+    .ucam-table th > .ucam-table__icone {
+      display: inline-flex;
+      vertical-align: -0.1875rem;
+      margin-inline-end: var(--ucam-space-inline-sm);
+    }
+    /* Situação em ponto e palavra (ADR-051), espelho da folha do Trilho A. */
+    .ucam-table ucam-badge:not([data-variant='plain']) > z-badge {
+      background: transparent;
+      border-color: transparent;
+      padding-inline: 0;
+      color: var(--ucam-color-text-primary);
+      font-weight: var(--ucam-typography-body-font-weight);
+      font-size: inherit;
+      gap: var(--ucam-space-inline-sm);
+    }
+    .ucam-table ucam-badge[data-tone='info'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-info-border); }
+    .ucam-table ucam-badge[data-tone='success'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-success-border); }
+    .ucam-table ucam-badge[data-tone='warning'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-warning-border); }
+    .ucam-table ucam-badge[data-tone='danger'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-danger-border); }
+    .ucam-table ucam-badge[data-tone='neutral'] > z-badge > span[aria-hidden] { background: var(--ucam-color-text-placeholder); }
     .ucam-table--sticky thead th {
       position: sticky;
       inset-block-start: 0;
@@ -377,7 +422,19 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        (ADR-046, 23/09/2026). A barra de 4px na entrada, posta em 21/09 porque o
        fundo sozinho dá 1,08:1, saiu junto com a do Trilho A: a medida pedia um
        segundo sinal, não uma tarja. */
-    .ucam-table__linha--marcada td { background: var(--ucam-color-action-primary-subtle); }
+    /* 25/09/2026: o fundo tinto saiu também daqui. Fundo branco e um shape
+       sólido de 4px na borda DIREITA, de ponta a ponta, na última célula —
+       o que a folha do Trilho A e a ADR-046 já diziam. */
+    .ucam-table__linha--marcada > td:last-child { position: relative; }
+    .ucam-table__linha--marcada > td:last-child::after {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: 0;
+      inline-size: 0.25rem;
+      background: var(--ucam-color-action-primary-default);
+      pointer-events: none;
+    }
     .ucam-table__linha--marcada td:not(.ucam-table__sel):nth-child(1 of :not(.ucam-table__sel)) {
       font-weight: var(--ucam-typography-action-font-weight);
     }
@@ -441,7 +498,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table thead .ucam-col--fixa-inicio,
     .ucam-table thead .ucam-col--fixa-fim {
       z-index: 2;
-      background-color: var(--ucam-color-surface-subtle);
+      background-color: var(--ucam-color-surface-default);
     }
     .ucam-table tbody tr:hover td.ucam-col--fixa-inicio,
     .ucam-table tbody tr:hover td.ucam-col--fixa-fim {
@@ -451,11 +508,6 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table--zebra tbody tr:nth-child(even) td.ucam-col--fixa-inicio,
     .ucam-table--zebra tbody tr:nth-child(even) td.ucam-col--fixa-fim {
       background-color: var(--ucam-color-surface-subtle);
-    }
-    .ucam-table__linha--marcada td.ucam-col--fixa-inicio,
-    .ucam-table__linha--marcada td.ucam-col--fixa-fim {
-      background-color: var(--ucam-color-surface-default);
-      background-image: linear-gradient(var(--ucam-color-interaction-selected), var(--ucam-color-interaction-selected));
     }
 
     /* -- colunas ocultas --------------------------------------------------- */

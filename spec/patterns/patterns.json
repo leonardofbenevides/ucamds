@@ -4,6 +4,7 @@
     {
       "id": "listagem-crud",
       "nome": "Listagem CRUD",
+      "resumo": "Registros que se criam, editam e excluem: busca e filtros acima, tabela ordenável, paginação única e estado vazio com saída.",
       "status": "draft",
       "frequencia": "Presente em praticamente todos os módulos do portal. Observado em Natureza do Requerimento, Setor, Pesquisa de Requerimento e Análise de Requerimento.",
       "problema": "Cada tela de listagem do Protocolo resolve a mesma tarefa de um jeito diferente: duas paginações distintas, três redações de estado vazio, ordenação ora no cabeçalho ora num select solto, e o botão de nova entidade ora acima ora abaixo da tabela.",
@@ -43,6 +44,7 @@
     {
       "id": "formulario-entidade",
       "nome": "Formulário de entidade",
+      "resumo": "Criar ou editar um registro: diálogo até cinco campos, página própria acima disso, erro junto ao campo.",
       "status": "draft",
       "frequencia": "Novo Requerimento, Funcionário, Setor, Natureza.",
       "problema": "O Novo Requerimento é um formulário de sete campos mais texto livre espremido num diálogo, o que produz rolagem aninhada e nenhuma saída rotulada além do X. Já o Funcionário, com dois campos, é diálogo apropriado.",
@@ -71,6 +73,7 @@
     {
       "id": "confirmacao-destrutiva",
       "nome": "Confirmação destrutiva",
+      "resumo": "Antes de excluir, um diálogo que diz o que se perde e se tem volta, com um botão que repete o verbo.",
       "status": "draft",
       "frequencia": "Toda ação EXCLUIR do sistema.",
       "problema": "Os botões EXCLUIR do Protocolo aparecem desabilitados e ilegíveis, sem nenhum fluxo de confirmação especificado.",
@@ -95,6 +98,7 @@
     {
       "id": "shell-aplicacao",
       "nome": "Shell da aplicação",
+      "resumo": "A moldura de todo módulo: navegação fixa no desktop, cabeçalho com marca, usuário e campus, e conteúdo que ocupa a tela.",
       "status": "draft",
       "frequencia": "Todos os ~25 módulos do portal.",
       "problema": "A navegação lateral abre como sobreposição escurecendo o resto da tela, mesmo em desktop de 2518px — padrão de modal aplicado à navegação primária. O conteúdo, por sua vez, fica num container estreito centralizado, desperdiçando a tela.",
@@ -117,6 +121,7 @@
     {
       "id": "triagem-lista-detalhe",
       "nome": "Triagem em lista e detalhe",
+      "resumo": "Tratar uma fila registro a registro: lista e detalhe lado a lado, cada um com a própria rolagem, sem perder a posição.",
       "status": "draft",
       "frequencia": "Caixa de entrada de requerimentos, setores com integrantes, inadimplência com extrato do aluno. Aparece em três telas, que é o limite a partir do qual o padrão vira gabarito de ucam-ds gerar.",
       "problema": "No Protocolo atual, abrir um registro é uma navegação: a lista some, e voltar recarrega a consulta e devolve a pessoa ao topo. Quem trata dezenas de protocolos por dia paga esse trajeto dezenas de vezes, e perde a posição na fila a cada um.",
@@ -156,6 +161,7 @@
     {
       "id": "painel-indicadores",
       "nome": "Painel de indicadores",
+      "resumo": "Mostrar onde está o acúmulo: indicadores com base declarada, gráfico com a tabela junto e cada leitura levando a uma ação.",
       "status": "draft",
       "frequencia": "Gerencial e Analytics do Protocolo; Movimento de Caixa do SigFin tem a mesma forma.",
       "problema": "A carga de trabalho e o volume do sistema só existem como contagem absoluta espalhada por telas de listagem, ou como exportação para planilha. Nenhuma tela responde onde está o acúmulo sem que alguém entre setor por setor.",
@@ -189,6 +195,7 @@
     {
       "id": "listagem-inspetor",
       "nome": "Listagem com inspetor",
+      "resumo": "Ajustar registros que já existem e comparar com os vizinhos: tabela e inspetor lado a lado, sem gaveta cobrindo a lista.",
       "status": "draft",
       "frequencia": "Ainda não observado no parque — é padrão PROPOSTO, e o rótulo draft carrega isso. Ele nasce de duas coisas: uma referência visual trazida pelo usuário em 09/09/2026 e um buraco que o próprio repositório já tinha, descrito abaixo.",
       "problema": "A listagem-crud resolve o registro que se cria e se apaga. Ela não resolve o registro que se AFINA: aquele em que ninguém cria linha nova, e o trabalho é ajustar valores de uma linha que já existe e comparar com as vizinhas.\n\nO caso concreto está dentro deste repositório. A tela gerencial mede a carga de cada setor \"contra a capacidade declarada de 40 requerimentos\" — e nenhuma tela declara essa capacidade. O número aparece em seis cartões de um painel e não tem origem. Levado para a listagem-crud, ajustar a capacidade da Secretaria abriria uma gaveta que cobre a lista, e comparar a capacidade dela com a do CPD exigiria abrir, fechar, abrir de novo e guardar o primeiro número de cabeça.",
@@ -223,6 +230,7 @@
     {
       "id": "consulta-relatorio",
       "nome": "Consulta e relatório",
+      "resumo": "Perguntar e ler a resposta: uma tela de filtros, outra de resultado com os filtros à vista, contagem e exportação.",
       "status": "draft",
       "frequencia": "É o padrão mais frequente do parque em número de telas, e não existia no catálogo. O Relatórios Acadêmicos são 74 templates, em 37 pares filtro/resultado, todos com esta forma. No SIGFIN, o movimento de caixa e o cálculo de mensalidade são consultas; no Protocolo, o gerencial e o analytics exportam. Entrou em 10/09/2026, absorvido do design system portátil daquele sistema (ADR-025).",
       "problema": "A listagem-crud resolve o registro que se cria, edita e apaga. Ela não resolve a tela em que NINGUÉM cria nada: a pessoa faz uma pergunta — que alunos, de que curso, em que período — e lê uma resposta, que depois leva embora em papel ou planilha. São dois momentos com necessidades opostas. Na pergunta, o que importa é preencher poucos campos sem errar a combinação; na resposta, é ler uma tabela longa e conferir de onde ela veio. O legado mistura os dois: formulário e tabela na mesma página, ou o formulário inteiro repetido em cima do resultado, e a pessoa rola 40 linhas sem saber se está olhando 2026.1 ou 2025.2. O sistema de origem acertou a separação em duas telas e o resumo dos filtros aplicados na tela de resposta; o que faltava era escrever a regra, porque cada um dos 37 pares reescrevia o mesmo esqueleto.",

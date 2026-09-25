@@ -199,6 +199,8 @@ export interface Padrao {
   id: string;
   nome: string;
   status: Status;
+  /** Uma frase: a tarefa que o padrão resolve. É o texto do cartão em /padroes. */
+  resumo: string;
   frequencia: string;
   problema: string;
   estrutura?: string[];

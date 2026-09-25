@@ -28,6 +28,10 @@ export type UcamCardElevation = 'flat' | 'raised' | 'sticky';
 export type UcamCardPadding = 'lg' | 'md' | 'none';
 export type UcamCardAs = 'div' | 'section' | 'article' | 'a';
 
+/** Chevron do lucide, o mesmo CHEVRON_MASK de tools/build-css.mjs. */
+const CHEVRON =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 18 6-6-6-6'/%3E%3C/svg%3E\")";
+
 const PADDING: Record<UcamCardPadding, string> = {
   lg: 'ucam-card--inset-lg',
   md: 'ucam-card--inset-md',
@@ -223,6 +227,33 @@ let seq = 0;
       outline-offset: var(--ucam-focus-ring-offset);
     }
     ucam-card .ucam-card--acionavel .ucam-card__link:focus-visible { outline: none; }
+
+    /* A SETA DO DESTINO, espelho do Trilho A: o cartão que leva a algum lugar
+       diz isso em repouso, com um chevron na tinta secundária na ponta
+       direita. Sem ação própria: com estrela, a ponta é dela. */
+    ucam-card .ucam-card--acionavel:has(.ucam-card__link):not(:has([ucamCardAcao])) {
+      padding-inline-end: calc(var(--ucam-space-inset-md) + 1rem + var(--ucam-space-inline-sm));
+    }
+    ucam-card .ucam-card--acionavel:has(.ucam-card__link):not(:has([ucamCardAcao]))::before {
+      content: ;
+      position: absolute;
+      inset-inline-end: var(--ucam-space-inset-md);
+      inset-block-start: 50%;
+      inline-size: 1rem;
+      block-size: 1rem;
+      margin-block-start: -0.5rem;
+      background-color: var(--ucam-color-text-secondary);
+      -webkit-mask: ${CHEVRON} no-repeat center / contain;
+      mask: ${CHEVRON} no-repeat center / contain;
+      pointer-events: none;
+      transition:
+        transform var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
+        background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+    }
+    ucam-card .ucam-card--acionavel:has(.ucam-card__link:hover):not(:has([ucamCardAcao]))::before {
+      transform: translateX(2px);
+      background-color: var(--ucam-color-text-primary);
+    }
 
     /* A ação sobe uma camada: sem isto o ::after do link esticado cobre o botão
        e o clique nunca chega nele. */

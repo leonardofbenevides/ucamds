@@ -227,8 +227,8 @@
         "$value": "{neutral.500}"
       },
       "focus": {
-        "$value": "{wine.300}",
-        "$description": "O anel de foco CLAREIA no escuro para manter os 3:1 exigidos pela 1.4.11."
+        "$value": "{neutral.300}",
+        "$description": "Cinza que CLAREIA no escuro (ADR-048). {neutral.300} e não {neutral.400}: o 400 dá 4,37:1 sobre o card mas cai para 2,99:1 sobre o diálogo ({neutral.700}), abaixo dos 3:1 da 1.4.11. O 300 dá 9,89:1 no card e 6,77:1 no diálogo."
       }
     },
     "chart": {

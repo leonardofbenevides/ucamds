@@ -105,7 +105,6 @@ const ESTADOS = [
   ['preenchimento sob o ponteiro', 'action-primary-hover', 'color-text-on-action', 4.5],
   ['preenchimento sob pressão', 'action-primary-active', 'color-text-on-action', 4.5],
   ['superfície de marca', 'surface-brand', 'color-text-on-brand', 4.5],
-  ['anel de foco', 'border-focus', 'color-surface-default', 3],
   ['fundo sutil', 'action-primary-subtle', 'color-text-primary', 4.5],
 ];
 

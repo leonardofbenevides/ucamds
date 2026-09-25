@@ -139,6 +139,7 @@
       "ucam-button",
       "ucam-chip",
       "ucam-command",
+      "ucam-data-table",
       "ucam-empty-state",
       "ucam-file-field",
       "ucam-icon-button",

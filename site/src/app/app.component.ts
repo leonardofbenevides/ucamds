@@ -1613,10 +1613,17 @@ export class AppComponent {
     {
       id: 'telas',
       titulo: `Telas · ${meta.telas}`,
+      /* MESMOS grupos e MESMA ordem da página /telas, que já vem seccionada
+         por projeto. A lateral despejava as 23 telas numa lista só: "Caixa de
+         entrada", "Setores", "Minhas contas" — sem dizer que a primeira é do
+         Protocolo e a última do SigFin. O grupo é o projeto, e nasce de
+         templates.json como os itens: projeto novo entra nos dois lugares
+         de uma vez. */
       itens: telas.flatMap((p) =>
         p.templates.map((t) => ({
           rotulo: t.nome,
           link: `/telas/${p.id}/${t.id}`,
+          grupo: p.nome,
           busca: p.nome,
         }))
       ),

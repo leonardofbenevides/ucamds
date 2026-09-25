@@ -258,8 +258,8 @@
         "$value": "{neutral.500}"
       },
       "focus": {
-        "$value": "{wine.500}",
-        "$description": "Anel de foco. Obrigatório 3:1 contra o fundo adjacente (WCAG 1.4.11)."
+        "$value": "{neutral.500}",
+        "$description": "Anel de foco. CINZA e o mesmo em todo sistema desde 25/09/2026 (ADR-048): foco é estado de interação, da mesma família do hover, e não sinal de marca nem de app. Era {wine.500}, e a subpaleta (ADR-037) o trocava pela categoria de cada sistema — verde no SigFin, azul na Isenção — e ele competia com o escolhido, a ação primária e o realce, que já carregam a cor. {neutral.500} é o degrau da borda forte: 4,71:1 sobre card e 4,33:1 sobre a faixa de rótulos, acima dos 3:1 da WCAG 1.4.11."
       },
       "on-brand": {
         "$value": "{wine.300}",

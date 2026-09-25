@@ -1,7 +1,7 @@
 // GERADO por tools/build-icons.mjs a partir de spec/icons.json.
 // NÃO EDITAR À MÃO. Para adicionar um ícone, edite a spec e rode: pnpm run icons
 //
-// 78 ícones em 4 grupos.
+// 81 ícones em 4 grupos.
 
 import { lucideArchive,
   lucideArrowDownRight,
@@ -28,6 +28,7 @@ import { lucideArchive,
   lucideChevronsUpDown,
   lucideCircleAlert,
   lucideCircleCheck,
+  lucideCircleDot,
   lucideClipboardCheck,
   lucideClipboardList,
   lucideClock,
@@ -42,6 +43,7 @@ import { lucideArchive,
   lucideFile,
   lucideFileText,
   lucideGraduationCap,
+  lucideHash,
   lucideImage,
   lucideInbox,
   lucideInfo,
@@ -74,6 +76,7 @@ import { lucideArchive,
   lucideStar,
   lucideSun,
   lucideTag,
+  lucideText,
   lucideTrash2,
   lucideTriangleAlert,
   lucideUpload,
@@ -109,6 +112,7 @@ export type UcamIconName =
   | 'chevronsUpDown'
   | 'circleAlert'
   | 'circleCheck'
+  | 'circleDot'
   | 'clipboardCheck'
   | 'clipboardList'
   | 'clock'
@@ -123,6 +127,7 @@ export type UcamIconName =
   | 'file'
   | 'fileText'
   | 'graduationCap'
+  | 'hash'
   | 'image'
   | 'inbox'
   | 'info'
@@ -155,6 +160,7 @@ export type UcamIconName =
   | 'star'
   | 'sun'
   | 'tag'
+  | 'text'
   | 'trash2'
   | 'triangleAlert'
   | 'upload'
@@ -243,6 +249,9 @@ export const UCAM_ICONS: Record<string, string> = {
   lucideDoorOpen,
   lucideClipboardCheck,
   lucideListChecks,
+  lucideHash,
+  lucideCircleDot,
+  lucideText,
 };
 
 /** Mapeia o nome público para a chave que o ng-icon espera. */
@@ -325,6 +334,9 @@ export const UCAM_ICON_KEY: Record<UcamIconName, string> = {
   'doorOpen': 'lucideDoorOpen',
   'clipboardCheck': 'lucideClipboardCheck',
   'listChecks': 'lucideListChecks',
+  'hash': 'lucideHash',
+  'circleDot': 'lucideCircleDot',
+  'text': 'lucideText',
 };
 
 /** Uso documentado de cada ícone — alimenta a página de Iconografia. */
@@ -407,4 +419,7 @@ export const UCAM_ICON_USO: Record<UcamIconName, string> = {
   'doorOpen': "Sala, recurso físico reservável.",
   'clipboardCheck': "Avaliação, nota lançada.",
   'listChecks': "Processo seletivo, vestibular, classificação.",
+  'hash': "Ícone de coluna de tabela (ADR-051) para número e identificador: quantidade, protocolo, matrícula. Só no cabeçalho, em tinta de placeholder; nunca como ação.",
+  'circleDot': "Ícone de coluna de tabela (ADR-051) para situação, resultado e decisão — a coluna cujo valor é um selo. Só no cabeçalho.",
+  'text': "Ícone de coluna de tabela (ADR-051) para texto livre que nomeia o registro ou descreve o que aconteceu: natureza, disciplina, histórico, o que fez. Só no cabeçalho.",
 };

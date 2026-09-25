@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { padroes } from '../../spec/spec';
+import { padroes, telas } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 
 @Component({
@@ -18,13 +18,12 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     <div class="grade-cartoes">
       @for (p of lista; track p.id) {
         <a class="card" [routerLink]="'/padroes/' + p.id">
-          <div class="topo">
-            <h2>{{ p.nome }}</h2>
-            <span class="pill" [class]="'pill-' + p.status">{{ p.status }}</span>
-          </div>
-          <p class="small muted">{{ p.problema }}</p>
+          <h2>{{ p.nome }}</h2>
+          <p class="small muted">{{ p.resumo }}</p>
           <p class="rodape small">
-            <span>{{ p.regras.length }} regras</span>
+            @if (rotuloTelas(p.id); as t) {
+              <span>{{ t }}</span>
+            }
             <span>{{ p.usa.length }} componentes</span>
           </p>
         </a>
@@ -35,15 +34,11 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     .grade-cartoes {
       grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
     }
-    .topo {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-block-end: 0.4rem;
-    }
+    /* Sem selo de status: os oito padrões são draft, e um selo igual em
+       todos os cartões não distingue nenhum. O status segue na página do
+       padrão. */
     h2 {
-      margin: 0;
+      margin: 0 0 0.4rem;
       font-size: 1rem;
       font-weight: 600;
     }
@@ -65,4 +60,18 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
 })
 export default class PadroesPage {
   protected readonly lista = padroes;
+
+  /* Quantas telas do catálogo declaram este padrão: é o número que diz se
+     ele já é prática ou ainda é proposta. Regras e componentes são detalhe
+     da página do padrão. Zero não aparece: a confirmação destrutiva vive
+     dentro de outras telas sem ser o padrão delas, e "nenhuma tela" leria
+     como padrão sem uso. */
+  private readonly telasPorPadrao = telas
+    .flatMap((p) => p.templates)
+    .reduce<Record<string, number>>((m, t) => ((m[t.padrao] = (m[t.padrao] ?? 0) + 1), m), {});
+
+  protected rotuloTelas(id: string): string {
+    const n = this.telasPorPadrao[id] ?? 0;
+    return n === 0 ? '' : n === 1 ? 'em 1 tela' : `em ${n} telas`;
+  }
 }

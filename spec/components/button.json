@@ -89,7 +89,7 @@
             "background": "color.action.primary.default",
             "text": "color.text.on-action"
           },
-          "limite": "No máximo uma por tela. Duas primárias significam que a tela não decidiu o que é importante."
+          "limite": "No máximo uma por tela. Duas primárias significam que a tela não decidiu o que é importante. A conta inclui a moldura: a ação do módulo no alto da navegação é secundária, e o primário em vista é o da tela (ADR-050)."
         },
         "secondary": {
           "uso": "Ações de apoio. O padrão.",

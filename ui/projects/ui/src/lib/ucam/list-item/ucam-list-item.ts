@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 
 import { UcamAvatar } from '../avatar/ucam-avatar';
+import { UcamIcon } from '../icon/ucam-icon';
 
 /**
  * Contrato: spec/components/list-item.json
@@ -25,7 +26,7 @@ let seq = 0;
 @Component({
   selector: 'ucam-list-item',
   exportAs: 'ucamListItem',
-  imports: [UcamAvatar],
+  imports: [UcamAvatar, UcamIcon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
@@ -55,6 +56,20 @@ let seq = 0;
         [attr.aria-labelledby]="nomeAcessivel()"
         (click)="open.emit()"
       ></a>
+    } @else if (selectable()) {
+      <!-- O ALVO que ESCOLHE (ucam-list-item__alvo do Trilho A): a linha
+           governa o painel ao lado e não navega. Botão, e não link com
+           href="#" — que era o que a demo fazia, porque sem href o open não
+           tinha de onde sair: um "#" leva o clique do meio a uma aba vazia e
+           se anuncia como link para quem não sai do lugar. aria-pressed é o
+           estado do controle; aria-current, no host, o do item. Sem seta. -->
+      <button
+        type="button"
+        class="absolute inset-0 z-[1] cursor-pointer rounded-[inherit] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
+        [attr.aria-labelledby]="nomeAcessivel()"
+        [attr.aria-pressed]="selected()"
+        (click)="open.emit()"
+      ></button>
     }
     @if (name()) {
       <ucam-avatar class="shrink-0" [name]="name()!" size="md" decorative />
@@ -81,6 +96,18 @@ let seq = 0;
            disso a faixa vira parede de selos e nenhum discrimina. -->
       <span class="flex items-center gap-1 flex-wrap mt-1.5 relative z-[2] empty:hidden"><ng-content /></span>
     </span>
+    @if (href()) {
+      <!-- A SETA DO DESTINO: a linha que leva a outra tela diz isso em
+           repouso, sem esperar o hover. Mesmo desenho e mesma vaga do
+           Trilho A (::before em build-css.mjs), aqui como ícone porque o
+           componente já tem o sprite à mão. O ícone já nasce aria-hidden, e
+           o link já diz que é link. -->
+      <ucam-icon
+        name="chevronRight"
+        size="sm"
+        class="ucam-list-item__seta shrink-0 self-center text-muted-foreground transition-[color,transform] group-hover:translate-x-0.5 group-hover:text-foreground"
+      />
+    }
     @if (unread()) {
       <!-- Forma acompanhada de texto: um círculo de 8px não informa nada
            sozinho (WCAG 1.4.1). Mora no recuo inicial, fora do fluxo
@@ -94,7 +121,7 @@ let seq = 0;
         style="inset-block-start: calc(var(--ucam-space-inset-sm) + 0.375rem); inset-inline-start: calc((var(--ucam-space-inset-md) - 0.5rem) / 2)"
         aria-hidden="true"
       ></span>
-      <span class="sr-only" [id]="idNaoLido" [attr.aria-hidden]="href() ? 'true' : null">não lido</span>
+      <span class="sr-only" [id]="idNaoLido" [attr.aria-hidden]="alvo() ? 'true' : null">não lido</span>
     }
   `,
 })
@@ -115,8 +142,16 @@ export class UcamListItem {
    */
   readonly tone = input<UcamListItemTone>('neutral');
   readonly href = input<string | null>(null);
+  /**
+   * A linha ESCOLHE o que o painel ao lado mostra, sem navegar. Sem href,
+   * desenha um botão esticado que emite open. Com href, o link vence.
+   */
+  readonly selectable = input(false, { transform: booleanAttribute });
 
   readonly open = output<void>();
+
+  /** Há um alvo de clique na linha: link (navega) ou botão (escolhe). */
+  protected readonly alvo = computed(() => !!this.href() || this.selectable());
 
   protected readonly idTitulo = `ucam-li-${++seq}-t`;
   protected readonly idApoio = `ucam-li-${seq}-a`;
@@ -143,9 +178,13 @@ export class UcamListItem {
     // Medido em 13/09/2026: 89,4px aqui contra 92 lá.
     const base =
       'relative flex items-start gap-[var(--ucam-space-inline-sm)] px-[var(--ucam-space-inset-md)] py-[var(--ucam-space-inset-sm)] shadow-[inset_0_-1px_0_var(--ucam-color-border-subtle)] last:shadow-none text-foreground transition-colors';
+    // Hover só onde há alvo: a linha inerte tingia sob o ponteiro igual à
+    // que abre, e o hover respondia "clica" para as duas (25/09/2026).
     const estado = this.selected()
       ? 'bg-[var(--ucam-color-action-primary-subtle)]'
-      : 'hover:bg-[var(--ucam-color-interaction-hover)]';
-    return `${base} ${estado} ${this.href() ? 'cursor-pointer active:bg-[var(--ucam-color-interaction-active)]' : ''}`;
+      : this.alvo()
+        ? 'hover:bg-[var(--ucam-color-interaction-hover)]'
+        : '';
+    return `${base} ${estado} ${this.alvo() ? 'group cursor-pointer active:bg-[var(--ucam-color-interaction-active)]' : ''}`;
   });
 }

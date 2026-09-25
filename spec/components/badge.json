@@ -92,7 +92,7 @@
     },
     {
       "nome": "variant",
-      "tipo": "'soft' | 'dot' | 'outline'",
+      "tipo": "'soft' | 'dot' | 'outline' | 'plain'",
       "default": "'soft'",
       "descricao": "Tratamento da superfície do selo. soft e dot são a mesma pílula PREENCHIDA (fundo no degrau 100 do tom, rótulo no 700) e diferem só no indicador: ícone no soft, ponto no dot. outline é a pílula branca com filete, que foi o padrão entre 03/09 e 09/09/2026 e continua disponível. Até a ADR-020 o contrato declarava solid, que nunca existiu em trilho nenhum, e chamava de soft justamente o desenho de contorno — três camadas com três vocabulários.",
       "valores": {
@@ -114,12 +114,22 @@
         },
         "outline": {
           "uso": "Coluna longa de status — a partir de ~10 linhas visíveis com o mesmo selo repetido.",
-          "limite": "Escolha da TELA, não do componente: ou a coluna inteira é outline, ou nenhuma parte dela é. Misturar os dois tratamentos na mesma tabela inventa uma distinção que não existe no dado.",
+          "limite": "Escolha da TELA, não do componente: ou a coluna inteira é outline, ou nenhuma parte dela é. Misturar os dois tratamentos na mesma tabela inventa uma distinção que não existe no dado. Não confundir com plain (ADR-050): o outline muda o tratamento da coluna inteira; o plain marca só a regra, e se mistura às pastilhas tintas porque a distinção existe no dado.",
           "tokens": {
             "fundo": "color.surface.default",
             "texto": "color.text.primary",
             "filete": "color.feedback.<tom>.border a 30%"
           }
+        },
+        "plain": {
+          "uso": "O estado da MAIORIA numa coluna que precisa de valor em toda linha: Matriculado em 19 de 24. A palavra fica, a tinta sai, e a cor sobra para as linhas que fogem da regra (ADR-050).",
+          "limite": "Só para o estado mais frequente da coluna, e só quando ele não pede ação. Se ninguém saberia dizer qual é a regra da coluna, não há regra: use soft. Nunca em cabeçalho de detalhe, onde o selo está sozinho e a situação tem de ser lida.",
+          "tokens": {
+            "fundo": "transparent",
+            "texto": "color.text.secondary",
+            "filete": "transparent (a borda de 1px continua declarada, para a caixa medir o mesmo que as pastilhas tintas)"
+          },
+          "classe": "ucam-badge--plain"
         }
       }
     }
@@ -133,7 +143,8 @@
       "Não usar para contagem — isso é Counter, componente distinto.",
       "Máximo de cinco tons em uso simultâneo numa mesma tabela; acima disso a cor deixa de discriminar.",
       "Não inventar tom por estado: o mapeamento estado do domínio para tom é decidido uma vez e documentado no módulo.",
-      "Não tem tamanho. A altura sai de --ucam-size-marcador, o MESMO token do chip e do prazo, e é o que faz as três peças fecharem no mesmo topo e na mesma base quando aparecem na mesma linha — que é sempre. Até 09/09/2026 o contrato declarava size: sm | md, que nunca existiu em trilho nenhum; um segundo tamanho quebraria justamente o alinhamento que o token garante."
+      "Não tem tamanho. A altura sai de --ucam-size-marcador, o MESMO token do chip e do prazo, e é o que faz as três peças fecharem no mesmo topo e na mesma base quando aparecem na mesma linha — que é sempre. Até 09/09/2026 o contrato declarava size: sm | md, que nunca existiu em trilho nenhum; um segundo tamanho quebraria justamente o alinhamento que o token garante.",
+      "Dentro de tabela (.ucam-table) o selo não é pastilha: perde fundo, filete e recuo lateral, e fica ponto no degrau saturado do tom mais a palavra em text.primary, peso de corpo (ADR-051). Numa coluna de trinta linhas, trinta pastilhas tintas eram uma faixa de cor. O selo plano (ADR-050) continua plano."
     ]
   },
   "acessibilidade": {
@@ -247,6 +258,11 @@
       "faca": "Colocar um controle de filtro ao lado quando o status precisa ser clicável.",
       "evite": "Badge clicável.",
       "porque": "Badge é rótulo. Se recebe clique, promete uma ação que sua forma não anuncia."
+    },
+    {
+      "faca": "Pintar só o que foge da regra. Na coluna em que quase toda linha diz a mesma coisa, esse estado vai em plain.",
+      "evite": "Uma pastilha tinta por linha quando 19 de 24 dizem Matriculado.",
+      "porque": "Cor repetida em toda linha vira faixa, e a exceção, que é o que se procura ao descer a coluna, some no meio dela. Medido em 25/09/2026: a tela de resultado tinha 19 pastilhas verdes para 5 linhas que interessavam (ADR-050)."
     }
   ],
   "vs": [

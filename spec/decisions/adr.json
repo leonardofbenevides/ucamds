@@ -984,6 +984,71 @@
       ]
     },
     {
+      "id": "ADR-048",
+      "titulo": "O anel de foco é cinza e o mesmo em todo sistema, e entra no controle onde o ancestral rola",
+      "status": "aceita",
+      "data": "2026-09-25",
+      "contexto": "Pedido de 25/09/2026, com a tela de cálculo de mensalidade do SigFin aberta: o destaque de foco \"fica por baixo de componentes, ficando branco às vezes, e não precisa ser na cor da subpaleta de cada app, pode ser sempre cinza, como um hover\". Medido por uma sonda que percorre a tela com Tab e conta os pixels da banda do anel em cada controle focado, em quatro telas e nos dois temas. Três achados. (1) A cor mudava por app: color.border.focus era {wine.500}, e a subpaleta da ADR-037 o reescrevia com a categoria do sistema — verde no SigFin, azul na Isenção, bordô no Protocolo. O anel competia com o escolhido, a ação primária e o realce, que já carregam essa cor. (2) Na faixa de papel, que é a padrão, o anel vinha do fg da faixa — a tinta do texto, quase preta — e saía mais pesado ali do que em qualquer outro ponto da tela. (3) A aba perdia o anel: a tira .ucam-tabs rola no eixo horizontal, overflow num eixo recorta os dois, e do anel de 2px com offset de 2px sobrava 17% — só a borda direita. Os demais controles mediram o anel inteiro nas fotos ampliadas.",
+      "decisao": "color.border.focus passa a {neutral.500} no claro (4,71:1 sobre card, 4,33:1 sobre a faixa de rótulos) e {neutral.300} no escuro (9,89:1 sobre card, 6,77:1 sobre diálogo; o {neutral.400} cairia a 2,99:1 sobre o diálogo). A subpaleta deixa de emitir o anel: ele sai da receita, da folha por sistema e do portão check-subpaleta, e quem responde pelos 3:1 é o portão de tokens, uma vez só. O anel derivado do fg da faixa fica restrito às faixas escura e de marca, onde o cinza não teria contraste contra a tarja. E onde o ancestral rola, o anel entra no controle com offset negativo: a aba ganha o mesmo remédio que o trilho do segmented já usava em tela estreita.",
+      "consequencias": [
+        "O foco lê como estado de interação, da família do hover, e não muda de cor ao trocar de sistema. Nenhuma tela muda de marcação.",
+        "O campo, cujo foco é borda mais halo de 50% do mesmo token, fica cinza junto. O Trilho B segue sem mudança de código: --ring e --sidebar-ring já apontam para color.border.focus.",
+        "A subpaleta perde um papel e a constante FOCO. Os pares de coexistência do anel com o destrutivo continuam no portão marca-vs-destrutivo, agora com folga maior.",
+        "A sonda do anel fica em scratchpad/foco/sonda-anel.mjs: percorre a tela com Tab, mede a banda do anel e diz quem pinta por cima ou recorta cada ponto que falta."
+      ],
+      "afeta": [
+        "tabs",
+        "app-shell",
+        "segmented",
+        "button",
+        "text-field",
+        "select"
+      ]
+    },
+    {
+      "id": "ADR-050",
+      "titulo": "A cor vai para a exceção: o estado da maioria não se pinta, e a ação da moldura é secundária",
+      "status": "aceita",
+      "data": "2026-09-25",
+      "contexto": "Queixa do usuário em 25/09/2026: \"tem hora que parece que tem tanta coisa na tela que o usuário não sabe pra onde olhar\". Medida por CDP na primeira vista (1280×800) das 29 telas de referência, contando o que disputa o olho: texto colorido, pastilha tinta, selo, peso, ícone e primário. As mais carregadas: consulta da isenção (19 selos, 20 textos coloridos), caixa de entrada do Protocolo (17 selos), setores (16 marcadores), fila da isenção (14), resultado de relatório (11). Nenhuma tinha peça errada sozinha; o excesso vinha de quatro hábitos. (1) A cor marcava a REGRA: 19 de 24 alunos com o selo verde \"Matriculado\", e os dois que interessam — Trancado e Evadido — no meio da faixa; \"Em análise\" em azul em quase toda linha de \"Aguardam você\", que é justamente o estado que define a aba; \"Concluído\" em verde em toda linha de Concluídos. (2) Duas colunas de pastilha tinta na mesma linha de tabela (sugestão e decisão na isenção), o que a ADR-027 já proibia e as telas novas não seguiram. (3) Dois primários bordô na mesma vista em toda tela do Protocolo que tem o seu: \"Novo requerimento\" na coluna e \"Novo setor\" na página. A ADR-023 manteve o da coluna primário com o argumento de que \"a moldura já é secundária em cor de fundo\"; desde a moldura branca esse argumento não vale mais. (4) Marcador usado como rótulo: nível e unidades de atuação de cada integrante em selo e chips, quinze contornos iguais na vista.",
+      "decisao": "A cor marca o que foge da regra, não a regra. Onde uma coluna precisa de valor em toda linha, o estado da maioria vai em selo plano (variant plain, .ucam-badge--plain): a mesma caixa, para a palavra cair na mesma vertical, sem fundo, filete, indicador nem peso, em tinta secundária. Onde a linha não precisa de valor — a linha de lista —, o estado que define a aba simplesmente não aparece: linha sem marcador quer dizer \"nada fora do normal\". Numa linha de tabela há no máximo UMA coluna com pastilha tinta (reafirma a ADR-027): uma segunda coluna de estado vai em plano ou em texto. Atributo descritivo (nível, unidade, modalidade) é texto de apoio, não selo nem chip; chip é peça de filtro. A ação do módulo no alto da coluna de navegação é secundária: o primário em vista é sempre o da tela.",
+      "consequencias": [
+        "Revoga em parte a ADR-023: a consequência \"o botão de sidebar Novo requerimento continua primário porque é o da moldura\" deixa de valer. O lugar fixo no alto da coluna continua dizendo que é a ação do módulo; o bordô fica para a tela.",
+        "O badge ganha a variante plain nos dois trilhos. Não é o outline: o outline muda o tratamento da coluna inteira e não pode se misturar ao soft, porque inventaria uma distinção que o dado não tem. O plain mistura DE PROPÓSITO, porque a distinção existe no dado: regra e exceção.",
+        "Resultado de relatório: 19 selos Matriculado viram plano. Caixa de entrada: 3 \"Em análise\" e 3 \"Concluído\" saem da linha; o painel do registro continua abrindo com a situação, porque ali não há densidade. Setores: 6 selos de nível e 10 chips de unidade viram linha de apoio; Coordenação é o único selo que fica.",
+        "Pendente, de propósito: as telas da isenção (consulta e fila), que estão sendo refeitas neste mesmo dia pela frente da ADR-049. Nelas, sugestão e decisão têm cada uma a sua pastilha tinta na mesma linha; pela regra, a decisão leva a cor e a sugestão vai em plano, com o motivo em apoio.",
+        "Fica de fora: a linha de lista com prioridade e prazo juntos (Urgente e \"vence em 1 dia\"). São duas exceções reais, e decidir qual delas cede é uma pergunta para a tela, não para esta regra."
+      ],
+      "afeta": [
+        "badge",
+        "data-table",
+        "list-item",
+        "chip",
+        "app-shell",
+        "button"
+      ]
+    },
+    {
+      "id": "ADR-051",
+      "titulo": "Tabela de grade: cabeçalho branco com ícone de coluna, fio entre colunas e situação em ponto e palavra",
+      "status": "aceita",
+      "data": "2026-09-25",
+      "contexto": "Pedido do usuário em 25/09/2026, com uma referência de tabela densa (Attio, \"Deals\"): \"Pode melhorar as tabelas?\". Capturadas Usuários (gerencial) e Naturezas (protocolo) ao lado da referência, cinco diferenças: linha de 59 a 67px contra ~36; cabeçalho em faixa cinza contra cabeçalho branco com ícone por coluna; nenhum fio entre colunas contra grade de planilha; situação em pastilha tinta contra ponto e palavra; ações sempre visíveis contra ações sob demanda. Duas delas eram decisões escritas na folha — \"filete só horizontal, nunca entre colunas\" e \"o cabeçalho VOLTOU a ser faixa pintada\" —, por isso a escolha foi do usuário, por pergunta: entram cabeçalho branco com ícone, fio vertical, situação em ponto e palavra, e densidade compacta nas tabelas em que toda célula tem uma linha. Ações sob demanda ficaram de fora.",
+      "decisao": "Cabeçalho na superfície do papel (surface.default), separado das linhas pelo fio border.default; a leitura de \"isto é rótulo\" passa para a tinta secundária e para um ícone do tipo de dado antes do rótulo (.ucam-table__icone, prop icon do ColumnDef), em tinta de placeholder e aria-hidden. Fio vertical border.subtle entre colunas, no corpo como borda e no cabeçalho como sombra interna (a borda colapsada não viaja com a célula grudada); sem fio entre a coluna de seleção e a seguinte. Dentro da tabela o selo perde a pastilha: ponto no degrau saturado do tom e palavra em text.primary, peso de corpo; o selo plano da ADR-050 segue plano. Densidade compacta em toda tabela cujas células têm uma linha; a confortável fica para célula de duas linhas (nome e descrição).",
+      "consequencias": [
+        "Revoga a nota \"filete só horizontal\" da base da tabela e a faixa cinza do cabeçalho, nos dois trilhos.",
+        "Ícone de coluna é um terceiro ícone no cabeçalho ordenável, ao lado do indicador de ordem; só o indicador acende na coluna ordenada.",
+        "Três ícones novos no conjunto, só para cabeçalho: hash (número e identificador), circleDot (situação) e text (texto que nomeia ou descreve).",
+        "O Trilho B deixa de pintar a linha marcada de action.primary.subtle e passa ao shape de 4px na borda direita, que a ADR-046 já tinha fixado para o Trilho A em 25/09.",
+        "Fica de fora: ações da linha só no hover. Continuam visíveis em repouso."
+      ],
+      "afeta": [
+        "data-table",
+        "badge",
+        "icon"
+      ]
+    },
+    {
       "id": "ADR-052",
       "titulo": "Toda ação de sistema confirma num toast, e todo identificador se copia no hover",
       "status": "aceita",

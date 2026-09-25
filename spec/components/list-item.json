@@ -162,7 +162,13 @@
       "nome": "href",
       "tipo": "string | null",
       "default": "null",
-      "descricao": "Quando presente, a linha inteira é um link. Sem ele, é <li> inerte e a ação vive num controle interno."
+      "descricao": "Quando presente, a linha NAVEGA: um link esticado cobre a linha inteira e a seta de destino aparece na ponta direita. Sem ele e sem selectable, é <li> inerte, sem hover, e a ação vive num controle interno."
+    },
+    {
+      "nome": "selectable",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "A linha ESCOLHE o que o painel ao lado mostra, sem navegar (mestre-detalhe). Desenha um <button> esticado com aria-pressed — a parte alvo do Trilho A — que emite open; hover sim, seta não, porque não há outra tela. Com href, o link vence. Existe desde 25/09/2026: antes a única forma de a linha emitir open era href, e a demo usava href=\"#\"."
     },
     {
       "nome": "name",
@@ -175,7 +181,7 @@
     {
       "nome": "open",
       "payload": "void",
-      "descricao": "Linha acionada por clique, Enter ou Espaço."
+      "descricao": "Linha acionada por clique, Enter ou Espaço — pelo link (href) ou pelo botão de escolha (selectable). Linha sem nenhum dos dois não emite."
     }
   ],
   "estados": [
@@ -270,7 +276,7 @@
   "exemplos": [
     {
       "titulo": "Fila de triagem",
-      "codigo": "<ul class=\"ucam-list\">\n  @for (r of fila(); track r.id) {\n    <ucam-list-item\n      [title]=\"r.requerente\"\n      [support]=\"r.assunto\"\n      [time]=\"r.relativo\"\n      [timeValue]=\"r.abertoEm\"\n      [tone]=\"r.prazo\"\n      [selected]=\"r.id === aberto()\"\n      (open)=\"abrir(r)\" />\n  }\n</ul>"
+      "codigo": "<ul class=\"ucam-list\">\n  @for (r of fila(); track r.id) {\n    <ucam-list-item\n      [title]=\"r.requerente\"\n      [support]=\"r.assunto\"\n      [time]=\"r.relativo\"\n      [timeValue]=\"r.abertoEm\"\n      [tone]=\"r.prazo\"\n      [selected]=\"r.id === aberto()\"\n      selectable\n      (open)=\"abrir(r)\" />\n  }\n</ul>"
     },
     {
       "titulo": "Sem ação própria, dentro de um painel",
@@ -302,6 +308,16 @@
       "faca": "Deixar a barra de tom acompanhar sempre um selo de situação em palavra.",
       "evite": "Confiar na barra colorida para dizer que o prazo venceu.",
       "porque": "Cor como único portador de significado reprova na WCAG 1.4.1 e some para quem tem baixa visão de cor."
+    },
+    {
+      "faca": "Dar hover e seta de destino só à linha que navega (link, ou título esticado).",
+      "evite": "Deixar a linha inerte tingir sob o ponteiro, ou pôr seta na linha que só escolhe o que o painel ao lado mostra.",
+      "porque": "O hover é a pergunta \"isto clica?\" e respondia sim para os dezessete relatórios sem tela do catálogo. A seta promete outra tela; a linha que escolhe não sai do lugar."
+    },
+    {
+      "faca": "Mostrar marcador só quando há o que ver: prazo, prioridade, ou uma situação que foge da regra da aba.",
+      "evite": "Repetir em toda linha o estado que define a aba: Em análise em \"Aguardam você\", Concluído em Concluídos. E usar selo ou chip para atributo descritivo (nível, unidade), que é texto de apoio.",
+      "porque": "Linha sem marcador passa a querer dizer \"nada fora do normal\", e as que têm marcador aparecem sozinhas na passada do olho. A caixa de entrada tinha 17 marcadores na primeira vista; seis diziam o que a aba já dizia (ADR-050)."
     }
   ],
   "vs": [
