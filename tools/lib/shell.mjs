@@ -2551,9 +2551,14 @@ ${FN_ANUNCIA}
     if (fim) fim.setAttribute('data-pendentes', String(t.pendentes));
     return t;
   }
+  function escapaHtml(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
   function registraAtividade(de, titulo, corpo, icone, tom) {
     var lista = document.querySelector('ol[data-atividade]');
     if (!lista) return;
+    // O que a pessoa digitou (a observação) entra como texto: escapado.
+    titulo = escapaHtml(titulo); corpo = corpo ? escapaHtml(corpo) : corpo;
     var li = document.createElement('li');
     li.className = 'ucam-timeline__item';
     li.setAttribute('data-tipo', 'evento');
@@ -3016,7 +3021,8 @@ ${FN_ANUNCIA}
         sel.value = '';
         sel.dispatchEvent(new Event('change', { bubbles: true }));
       });
-      Array.prototype.forEach.call(document.querySelectorAll('[data-filtra^="dado:"] button[data-valor=""]'), function (todos) {
+      var shellB = busca.closest('.ucam-shell') || document;
+      Array.prototype.forEach.call(shellB.querySelectorAll('[data-filtra^="dado:"] button[data-valor=""]'), function (todos) {
         if (todos.getAttribute('aria-pressed') !== 'true') todos.click();
       });
       return busca.focus();
