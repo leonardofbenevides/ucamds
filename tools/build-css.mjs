@@ -746,9 +746,13 @@ a.ucam-btn { text-decoration: none; }
  * de mais é texto de vários parágrafos, e isso é textarea, que fica de fora.
  *
  * Teto e não largura: o campo continua encolhendo com a coluna. */
-.ucam-form-row > .ucam-field :is(.ucam-input, .ucam-select, .ucam-input-group, [data-listbox]) {
+.ucam-form-row > .ucam-field :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) {
   max-inline-size: 30rem;
 }
+/* O teto vale também para o INVÓLUCRO do select. O chevron é pintado no
+ * .ucam-select-wrap, que tinha a largura da coluna: numa coluna de 1fr com
+ * 600px o select parava em 30rem e o chevron ficava 120px à direita dele,
+ * solto no branco (25/09/2026, Novo usuário a 2000px). */
 
 /* Item que NÃO é campo — um interruptor, um botão — na fileira de campos.
  *
@@ -780,6 +784,16 @@ a.ucam-btn { text-decoration: none; }
  * "pq o cpf tá dessa largura mínima"); agora a própria trilha tem a medida
  * do CPF, e o controle a preenche. */
 .ucam-form-row > .ucam-field--cpf .ucam-input { inline-size: 100%; }
+
+/* NA FILEIRA QUE QUEBRA, O TETO É DA COLUNA. A régua declara colunas de no
+ * máximo 30rem (o mesmo teto do controle) e o controle preenche a sua: a
+ * borda direita de cada campo encosta no vão do vizinho, sem o meio palmo de
+ * branco que sobrava quando a coluna era 1fr e o controle parava em 30rem.
+ * A sobra da largura vai para depois do último campo, uma só. */
+.ucam-form-row--quebra > .ucam-field :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) { inline-size: 100%; }
+/* O campo de duas colunas vai até a borda da segunda: a Unidade termina
+ * alinhada ao Nome, não 8rem antes dele. */
+.ucam-form-row--quebra > .ucam-field--2col :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) { max-inline-size: none; }
 
 /* A FILEIRA QUE QUEBRA (.ucam-form-row--quebra). Quatro campos numa linha
  * enquanto o corpo tem largura para eles (container.formulario-em-fileira);
@@ -5746,8 +5760,10 @@ ${acima('nav-fixa')} {
   block-size: 1.125rem;
   padding-inline: 0.25rem;
   border-radius: var(--ucam-radius-pill);
-  background: var(--ucam-color-action-primary-default);
-  color: var(--ucam-color-text-on-brand);
+  /* Laranja de notificação (color.notificacao), o mesmo em todo app: o bordô
+   * de antes desaparecia contra a faixa colorida. */
+  background: var(--ucam-color-notificacao-background);
+  color: var(--ucam-color-notificacao-foreground);
   font-size: var(--ucam-typography-caption-font-size);
   font-weight: var(--ucam-typography-label-font-weight);
   font-variant-numeric: tabular-nums;
@@ -6343,19 +6359,34 @@ ${acima('nav-fixa')} {
  * tornaria ilegível. O ponto diz que HÁ pendência — que é a informação que
  * faz alguém abrir aquele destino — e o número continua no nome acessível do
  * link, além de voltar inteiro assim que a navegação se expande. */
-.ucam-shell--nav-recolhida .ucam-nav__count {
+/* Um CÍRCULO de 8px mais o anel de 2px, e nada que possa esticá-lo: largura
+ * e altura fixas, sem min-inline-size (o algarismo escondido alargava a caixa
+ * e o ponto virava pílula) e com font-size zero. A regra repete o
+ * [aria-current] porque a do item ativo, mais específica, pintava o ponto de
+ * branco sobre o realce — era a pílula branca da navegação recolhida
+ * (25/09/2026). */
+.ucam-shell--nav-recolhida .ucam-nav__count,
+.ucam-shell--nav-recolhida .ucam-nav__item[aria-current="page"] .ucam-nav__count {
   position: absolute;
   inset-block-start: 0.375rem;
   inset-inline-end: 0.5rem;
-  min-inline-size: 0.5rem;
+  box-sizing: content-box;
+  inline-size: 0.5rem;
+  min-inline-size: 0;
   block-size: 0.5rem;
   padding: 0;
   margin: 0;
   overflow: hidden;
-  text-indent: 100%;
-  background: var(--ucam-color-action-primary-default);
+  font-size: 0;
+  line-height: 0;
+  color: transparent;
+  background: var(--ucam-color-notificacao-background);
   border: 2px solid var(--ucam-color-surface-chrome);
-  border-radius: var(--ucam-radius-pill);
+  border-radius: 50%;
+}
+/* O anel é da cor do chão em que o ponto pousa: no item ativo, o realce. */
+.ucam-shell--nav-recolhida .ucam-nav__item[aria-current="page"] .ucam-nav__count {
+  border-color: var(--ucam-color-action-primary-subtle);
 }
 
 /* O grupo perde o título e ganha um filete: sem um nem outro, os quatro

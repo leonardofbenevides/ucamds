@@ -215,6 +215,14 @@
     "$type": "color",
     "$description": "Semântica de informação e links."
   },
+  "orange": {
+    "500": {
+      "$value": "#EA6A0A",
+      "$description": "O laranja da NOTIFICAÇÃO (color.notificacao). Vivo de propósito: é o único ponto de cor que diz \"chegou algo para você\", e precisa saltar tanto da faixa colorida de cada app quanto do branco da navegação. 3,34:1 contra branco, acima do piso de 3:1 de objeto gráfico (WCAG 1.4.11). Número escrito sobre ele usa tinta escura (neutral.900, 5,1:1), porque branco sobre este laranja dá 3,3:1 e o número tem 12px."
+    },
+    "$type": "color",
+    "$description": "Notificação e nada mais. Não é aviso (amber), não é erro (red) e não é série de gráfico (ochre, que foi puxado para o amarelo justamente para não cair no laranja). Nunca encosta no vinho: o ponto e o selo andam sempre dentro de um anel de 2px da cor do fundo em que pousam."
+  },
   "ochre": {
     "400": {
       "$value": "#B78B10"

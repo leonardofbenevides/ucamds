@@ -149,6 +149,16 @@
         "$value": "{alpha.ink-strong}"
       }
     },
+    "notificacao": {
+      "$description": "O selo e o ponto que dizem \"há algo novo para você\": o número do sino na faixa e o ponto da navegação recolhida. Sempre laranja, em qualquer app e em qualquer tema (25/09/2026). Antes era o bordô da marca, que na faixa colorida de cada app sumia contra a própria faixa e no item ativo virava um branco sobre o realce.",
+      "background": {
+        "$value": "{orange.500}"
+      },
+      "foreground": {
+        "$value": "{neutral.900}",
+        "$description": "O número sobre o laranja: 5,1:1. Fixo nos dois temas, porque o laranja também é fixo."
+      }
+    },
     "realce": {
       "$description": "O rastro de uma BUSCA sobre o texto — o trecho que casou com o que a pessoa digitou. Não é estado do sistema (feedback), não é estado de superfície (interaction) e não é seleção: é a resposta à pergunta \"por que este item está na lista?\".\n\nUsa o bordô da marca, não o âmbar que a intuição pede. Âmbar neste sistema já significa aviso, e um nome de módulo com metade pintada de aviso diz algo que não é verdade. O bordô é o único acento que o sistema tem, e a colisão com o anel de foco não acontece porque o foco é um ANEL de 500 e este é um PREENCHIMENTO de 200.\n\nA lavagem é reforço, não portador: quem responde \"este item casou\" é a própria lista filtrada. Ainda assim ela carrega degrau de luminância além da matiz — 1,46 contra o cartão branco no claro e 1,34 contra o painel no escuro —, então sobrevive à acromatopsia em vez de depender do vermelho.",
       "background": {
