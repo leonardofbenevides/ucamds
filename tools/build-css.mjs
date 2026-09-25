@@ -45,6 +45,9 @@ const OUT = join(ROOT, 'dist', 'css');
  * enxerga o currentColor de quem a usa. */
 const CHECK_MASK =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E\")";
+/* X do lucide, pelo mesmo motivo: o limpar do campo de busca. */
+const X_MASK =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6 6 18M6 6l12 12'/%3E%3C/svg%3E\")";
 const TOKENS_CSS = join(ROOT, 'dist', 'tokens', 'ucam-tokens.css');
 
 if (!existsSync(TOKENS_CSS)) {
@@ -751,8 +754,14 @@ a.ucam-btn { text-decoration: none; }
  * "Referência" e não ao lado da caixa 08/2026. A tela tentava consertar com um
  * padding-block-end de .4rem, que aproximava sem acertar.
  *
- * O lugar de um controle é o trilho do controle. */
-.ucam-form-row > :not(.ucam-field) { grid-row: 2; }
+ * O lugar de um controle é o trilho do controle.
+ *
+ * E no MEIO dele. A fileira alinha pelo início (align-items:start, para os
+ * rótulos de duas linhas), e o interruptor tem 20px num trilho de 40px: ficava
+ * rente ao topo da caixa do select vizinho, com o texto 8px acima do texto do
+ * select, em toda tela que põe interruptor ao lado de campo. Centro com centro
+ * é o que o olho lê como "mesma linha". */
+.ucam-form-row > :not(.ucam-field) { grid-row: 2; align-self: center; }
 
 /* Campo que ocupa a sobra: a coluna já é 1fr, aqui só se garante que o
  * controle acompanhe a largura da trilha. */
@@ -1071,6 +1080,30 @@ ${abaixo('controle-deitado')} {
 .ucam-input-group__controle[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* ------------------------------------------------------ campo de busca --- */
+/* O X NATIVO de limpar do type="search". O Chrome desenha o dele com
+ * gradiente azul de sistema operacional, a mesma tinta alheia das setinhas
+ * acima, e cada navegador desenha um diferente. Fica o comportamento (limpar
+ * o campo e disparar input) e troca o desenho pelo X do lucide em máscara,
+ * flat e na cor secundária do texto. A cor primária no hover diz que ele age. */
+.ucam-input[type="search"]::-webkit-search-cancel-button,
+.ucam-input-group__controle[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  margin-inline-start: var(--ucam-space-inline-sm);
+  background-color: var(--ucam-color-text-secondary);
+  -webkit-mask: ${X_MASK} no-repeat center / contain;
+  mask: ${X_MASK} no-repeat center / contain;
+  cursor: pointer;
+}
+
+.ucam-input[type="search"]::-webkit-search-cancel-button:hover,
+.ucam-input-group__controle[type="search"]::-webkit-search-cancel-button:hover {
+  background-color: var(--ucam-color-text-primary);
 }
 
 /* Quem precisa de passo por ponteiro usa o GRUPO de número: − e + como ações
@@ -11399,6 +11432,7 @@ ${acima('nav-fixa')} {
     gap: 0;
   }
   .ucam-login__discurso { grid-row: 2; }
+  .ucam-login__cena { grid-row: 3; }
   /* A lista do que o acesso abre vem logo abaixo da frase, com o degrau
    * maior entre elas: é o único apoio do discurso (24/09/2026). */
   .ucam-login__sistemas { grid-row: 3; }
@@ -11475,6 +11509,62 @@ ${acima('nav-fixa')} {
 /* A linha de apoio da frase: uma só, no tom rebaixado do texto sobre marca.
  * É o "Enter your credentials" da referência — diz o que fazer, e não repete
  * o que a frase já afirma. */
+/* A CENA (25/09/2026: "a tela de autenticação tem que ser mais interessante,
+ * mais bonita"). É a mesma ilustração isométrica da capa do site — a tela, o
+ * gráfico, o indicador, o formulário, o cartão, o selo e as pessoas — só que
+ * em TONS DO BORDÔ: traço e faces são o branco da coluna em graus de
+ * transparência, o sombreado é o inverso, e os acentos que na capa são bordô
+ * aqui são o branco cheio. É o que o acesso abre, desenhado em vez de
+ * listado, e é a composição tonal que a faixa dos sistemas já faz com a
+ * marquinha. Decorativa (aria-hidden): o argumento continua na frase. A
+ * geometria vem de site/src/app/pages/index.page.ts, gerada, não desenhada. */
+.ucam-login__cena {
+  min-inline-size: 0;
+  margin-block-start: var(--ucam-space-stack-lg);
+  /* Sangra meio recuo de cada lado: a placa da cena mede 85% do viewBox e
+   * dentro do recuo cheio ficava pequena para a coluna. */
+  margin-inline: calc(var(--ucam-login-recuo) / -2);
+}
+.ucam-login__cena-svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  overflow: visible;
+}
+.ucam-login__cena path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 55%, transparent);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.ucam-login__cena .malha { fill: none; stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 12%, transparent); }
+.ucam-login__cena .malha-fundo { stroke: none; }
+.ucam-login__cena .topo { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 12%, transparent); }
+.ucam-login__cena .face-esq { fill: color-mix(in srgb, var(--ucam-color-surface-inverse) 18%, transparent); }
+.ucam-login__cena .face-dir { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 5%, transparent); }
+.ucam-login__cena .acento.topo { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 45%, transparent); }
+.ucam-login__cena .acento.face-esq,
+.ucam-login__cena .acento.face-dir {
+  fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 30%, transparent);
+  stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 75%, transparent);
+}
+.ucam-login__cena .escolhido { stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 90%, transparent); }
+.ucam-login__cena :is(.plinto, .faixa, .coluna, .realce, .traco, .traco-forte, .ladrilho, .cabecalho, .avatar-mini, .selo, .fio, .knob, .ponto, .acento-plano, .crescente) { stroke: none; }
+.ucam-login__cena :is(.plinto, .coluna) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 6%, transparent); }
+.ucam-login__cena :is(.faixa, .ladrilho) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 9%, transparent); }
+.ucam-login__cena :is(.cabecalho, .selo) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 12%, transparent); }
+.ucam-login__cena .realce { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 22%, transparent); }
+.ucam-login__cena :is(.traco, .fio) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 28%, transparent); }
+.ucam-login__cena :is(.traco-forte, .avatar-mini, .ponto) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 55%, transparent); }
+.ucam-login__cena .campo {
+  fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 6%, transparent);
+  stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 45%, transparent);
+}
+.ucam-login__cena :is(.knob, .acento-plano) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 88%, transparent); }
+.ucam-login__cena .esfera { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 16%, transparent); }
+.ucam-login__cena .crescente { fill: color-mix(in srgb, var(--ucam-color-surface-inverse) 16%, transparent); }
+
 .ucam-login__subfrase {
   margin: 0;
   max-inline-size: 44ch;
