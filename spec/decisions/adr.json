@@ -1003,6 +1003,27 @@
         "description-list",
         "page-header"
       ]
+    },
+    {
+      "id": "ADR-054",
+      "titulo": "Texto de trabalho a 14px e legenda a 13px",
+      "status": "aceita",
+      "data": "2026-09-25",
+      "contexto": "Pergunta de 25/09/2026: \"a dimensão das coisas está pequena?\". O corpo corrido já era 14px, mas quase tudo que se LÊ trabalhando não era corpo: célula e cabeçalho de tabela, rótulo de campo, texto de botão e o texto pequeno estavam a 13px, e a legenda — apoio de célula, dica de campo, data, contagem — a 12px. É a densidade de Linear e Attio, feita para quem passa o dia numa ferramenta; o público aqui inclui secretarias e coordenações com monitores de 1366px e gente que lê de mais longe. A resposta foi \"vamos fazer\".",
+      "decisao": "Os papéis sobem um degrau da escala que já existe, sem primitiva nova: body-sm, label, action e table-header passam de fontSize.sm (13px) a fontSize.base (14px); caption passa de fontSize.xs (12px) a fontSize.sm (13px). As alturas de linha ficam — 20px para os de 14, 16px para a legenda —, e com elas a altura das linhas de tabela, dos controles e do selo não muda: sobe o tamanho da letra dentro da mesma caixa. Os títulos e o corpo não mudam.",
+      "consequencias": [
+        "body e body-sm passam a ter o mesmo tamanho; o que os distingue é a cor e o lugar, como já era entre rótulo e corpo.",
+        "Tabelas que cabiam por pouco podem voltar a rolar na largura cheia; a revisão do mesmo dia mediu todas depois da troca.",
+        "A escala primitiva não muda: 12px continua existindo para o que é de fato miúdo (iniciais do avatar, ordinal de etapa), e o texto de trabalho deixa de usá-lo."
+      ],
+      "afeta": [
+        "tokens",
+        "data-table",
+        "field",
+        "button",
+        "badge",
+        "app-shell"
+      ]
     }
   ]
 }

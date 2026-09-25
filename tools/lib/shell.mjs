@@ -4950,7 +4950,9 @@ export const toastScript = `
 export const copiarScript = `
 (function () {
   var EMAIL = /^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$/i;
-  var SELETOR = '.ucam-id, [data-copiar], .ucam-viewbar__voltar ~ .ucam-viewbar__titulo, .td--apoio, .ucam-descricao__valor';
+  // O título da tela ficou de fora: o botão cobria o selo de situação ao
+  // lado dele, e o identificador que se copia já vem na meta com o seu.
+  var SELETOR = '.ucam-id, [data-copiar], .td--apoio, .ucam-descricao__valor';
 
   function texto(el) {
     return (el.getAttribute('data-copiar') || el.textContent || '').replace(/\\s+/g, ' ').trim();
@@ -5005,11 +5007,11 @@ export const copiarScript = `
           }, 1500);
         });
       });
-      // Na tabela o botão entra DENTRO do dado, que é texto corrido: como
-      // irmão ele caía num contêiner flexível, e ali o absoluto vai para o
-      // começo da caixa, por cima do nome. Fora da tabela fica ao lado.
-      if (el.closest('.ucam-table')) el.appendChild(b);
-      else el.insertAdjacentElement('afterend', b);
+      // O botão entra DENTRO do dado, como último filho: ele é absoluto, e
+      // absoluto sem deslocamento fica logo depois do texto — desde que o pai
+      // seja texto corrido. Como irmão, num contêiner flexível, ele ia para o
+      // começo da caixa, por cima do nome.
+      el.appendChild(b);
     });
   }
 
@@ -5150,8 +5152,14 @@ export const tabelaScript = `
     // Mede com o rolo LIGADO, senão a tabela que não cabe alarga o invólucro
     // e passa a caber. O modo empilhado não rola nem fixa nada.
     wrap.removeAttribute('data-rola');
+    tabela.removeAttribute('data-apertada');
     var empilhada = getComputedStyle(tabela).display === 'block';
     var cabe = empilhada || wrap.scrollWidth <= wrap.clientWidth + 1;
+    // Antes de rolar, o arranjo apertado: o apoio desce em todas as linhas.
+    if (!cabe) {
+      tabela.setAttribute('data-apertada', '');
+      cabe = wrap.scrollWidth <= wrap.clientWidth + 1;
+    }
     wrap.setAttribute('data-rola', cabe ? 'nao' : 'sim');
     fixa(tabela, !cabe && !empilhada);
     topoGrudado(wrap);

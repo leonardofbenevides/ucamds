@@ -1811,7 +1811,14 @@ ${selectChevronCss}
  * ela migra para a toolbar). */
 ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   .ucam-table-wrap { overflow: visible; border: 0; border-radius: 0; }
-  .ucam-table { display: block; min-inline-size: 0; }
+  /* O piso por número de colunas (até 56rem) é de tabela EM COLUNAS. Aqui
+   * ele fazia a tabela empilhada mais larga que o telefone, e o cartão
+   * recortava o excesso sem sinal: 211px de cada lançamento do movimento de
+   * caixa sumiam a 375px (25/09/2026). As regras do piso vêm depois e com
+   * :has(), mais específicas que esta — por isso o seletor dobrado. */
+  .ucam-table { display: block; }
+  .ucam-table-wrap .ucam-table.ucam-table,
+  .ucam-split .ucam-table-wrap .ucam-table.ucam-table { --ucam-table-piso: 0px; min-inline-size: 0; }
   .ucam-table caption { display: block; padding-inline: 0; }
   .ucam-table thead {
     position: absolute;
@@ -1873,6 +1880,7 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   .ucam-table tbody .td--pessoa__texto { flex-wrap: wrap; max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
   .ucam-table tbody .td--pessoa__texto > * { flex: 0 1 auto; min-inline-size: 0; }
   .ucam-table tbody .td--pessoa { white-space: normal; }
+  .ucam-table tbody .td--apoio { white-space: normal; }
   .ucam-table tbody .ucam-copiar { position: relative; }
   .ucam-table tbody tr > td:not(.td--selecao):nth-child(1 of :not(.td--selecao)):has(> .ucam-card__titulo) { min-inline-size: 0; }
   /* A linha marcada: o shape de 4px sai da última célula (que virou bloco no
@@ -2204,6 +2212,33 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * célula, e toda linha da tabela ganhava duas alturas por causa de duas. */
 .ucam-table .td--num,
 .ucam-table .th--num { inline-size: 1%; }
+
+/* O ARRANJO APERTADO, antes de rolar (25/09/2026). Quando a tabela não cabe
+ * com o apoio ao lado do nome, o tabelaScript marca data-apertada e o apoio
+ * desce para baixo do nome em TODAS as linhas de uma vez — a tabela troca de
+ * forma inteira, não linha a linha. Só se nem assim couber ela rola. Com o
+ * texto de trabalho a 14px, Usuários passava 49px da largura cheia, o
+ * Resultado do relatório 17 e a fila da isenção 8. */
+.ucam-table[data-apertada] .td--apoio { white-space: normal; }
+/* Recuo lateral de 8px, o degrau inteiro abaixo dos 12: seis colunas
+ * devolvem 48px, o que tira a rolagem a 768px e a reduz a 1024 com a
+ * navegação fixa (área de 666px). */
+.ucam-table[data-apertada] :is(th, td) { padding-inline: var(--ucam-space-inline-sm); }
+/* O rótulo da coluna também pode ir a duas linhas: "Requerimentos" e
+ * "Unidades atendidas" com o ícone de ordenar seguravam 140 e 169px. */
+.ucam-table[data-apertada] thead th,
+.ucam-table[data-apertada] thead .ucam-table__coluna { white-space: normal; text-align: start; }
+.ucam-table[data-apertada] .td--pessoa__texto { flex-direction: column; align-items: flex-start; row-gap: 0; }
+.ucam-table[data-apertada] .td--pessoa__texto > * { flex: none; white-space: normal; }
+/* O avatar fica AO LADO do bloco em toda linha (a célula não quebra); quem
+ * quebra é o nome, dentro do bloco, quando a coluna aperta. */
+.ucam-table[data-apertada] .td--pessoa__texto { max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
+/* Apertada, o piso por colunas sai: ele existe para a tabela não espremer
+ * texto, e o arranjo apertado já é a forma de caber sem espremer. A 768px
+ * era o piso (48rem para seis colunas numa área de 686px) que fazia quatro
+ * tabelas rolarem 42px com o conteúdo cabendo. */
+.ucam-table-wrap .ucam-table[data-apertada],
+.ucam-split .ucam-table-wrap .ucam-table[data-apertada] { min-inline-size: 0; }
 /* O NOME DO REGISTRO TEM PISO. Era ele que cedia largura para as colunas de
  * número — "Introdução ao / Estudo do / Direito" em três linhas na análise
  * da isenção, com as colunas de dias sobrando largas. 8rem segura o nome em
@@ -8641,7 +8676,6 @@ ${abaixo('controle-deitado')} {
  * e trinta botões permanentes numa lista seriam a poluição que se tirou das
  * tabelas; o toque longo nativo copia. */
 .ucam-copiar {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -8665,7 +8699,7 @@ ${abaixo('controle-deitado')} {
   inset: -0.125rem;
 }
 :is(.ucam-id, [data-copiar], .ucam-viewbar__titulo, .td--apoio, .ucam-descricao__valor):hover + .ucam-copiar,
-:is(.ucam-id, [data-copiar], .td--apoio):hover > .ucam-copiar,
+:is(.ucam-id, [data-copiar], .td--apoio, .ucam-viewbar__titulo, .ucam-descricao__valor):hover > .ucam-copiar,
 :is(td, dd, .td--apoio, .ucam-descricao__par):hover > .ucam-copiar,
 :is(td, dd, .ucam-descricao__par):hover > * > .ucam-copiar,
 .ucam-viewbar__fileira:hover > .ucam-copiar,
@@ -8678,11 +8712,12 @@ ${abaixo('controle-deitado')} {
 @media (hover: none) {
   .ucam-copiar { display: none; }
 }
-/* Dentro da TABELA o botão não soma largura: absoluto sem deslocamento fica
- * exatamente onde estaria no texto, mas fora do cálculo da coluna. Ocupa o
- * recuo da célula (12px) e o da vizinha. No fluxo ele fazia o Resultado do
- * relatório passar 8px da borda, com o e-mail de cada aluno. */
-.ucam-table tbody .ucam-copiar { position: absolute; }
+/* EM TODO LUGAR o botão não ocupa espaço: absoluto sem deslocamento fica
+ * exatamente onde estaria no texto, logo depois dele, mas fora do fluxo. No
+ * fluxo ele abria um vão de 24px mesmo invisível ("matrícula 20403345    ·
+ * protocolo", na caixa de entrada) e fazia tabela passar da borda. Quando
+ * aparece por cima do texto vizinho, cobre-o com a superfície. */
+.ucam-copiar { position: absolute; background: var(--ucam-color-surface-default); }
 
 .ucam-chip button {
   display: inline-flex;
