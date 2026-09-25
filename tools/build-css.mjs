@@ -1881,10 +1881,11 @@ ${selectChevronCss}
 .ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child::after {
   content: "";
   position: absolute;
-  inset-block: 0.375rem;
+  /* 25/09/2026: era um pill de 3px recuado 6px em cima e embaixo, e leu como
+   * "bolinha" em vez de traço. Shape SÓLIDO de 4px, de ponta a ponta. */
+  inset-block: 0;
   inset-inline-end: 0;
-  inline-size: 0.1875rem;
-  border-radius: var(--ucam-radius-pill);
+  inline-size: 0.25rem;
   background: var(--ucam-color-action-primary-default);
   pointer-events: none;
 }
@@ -8500,17 +8501,31 @@ a.ucam-list-item:active,
  * "não lido" para quem não vê a tinta. A linha ABERTA (aria-current) vem
  * depois na folha e vence: o item aberto é um só, e o realce dele é o da
  * escolha. */
-.ucam-list-item:has(> .ucam-list-item__indicador),
-.ucam-list-item:has(> .ucam-list-item__alvo > .ucam-list-item__indicador) {
-  background: color-mix(in srgb, var(--ucam-color-realce-background) 35%, var(--ucam-color-surface-default));
-}
+/* REVISTO EM 25/09/2026: "pq o highlight tá como se fosse um fundo da cor
+ * bordô? e pq tem bolinha ao invés de um traço? Queremos fundo branco e com
+ * o highlight no lado (um shape sólido de 4px)". O fundo tinto do não lido
+ * (posto na véspera) e o ponto saem; o que diz "não lido" é o PESO do título,
+ * como toda caixa de e-mail faz, e o texto em sr-only que sempre esteve lá. */
 .ucam-list-item:has(.ucam-list-item__indicador) .ucam-list-item__titulo {
   font-weight: var(--ucam-typography-action-font-weight);
 }
+.ucam-list-item__indicador { display: none; }
 
+/* A LINHA ABERTA tem fundo branco e um shape sólido de 4px na borda direita,
+ * de ponta a ponta da altura — o mesmo desenho da linha marcada da tabela.
+ * A tipografia (peso) continua sendo o segundo sinal. */
 .ucam-list-item[aria-current="true"] {
   position: relative;
-  background: var(--ucam-color-action-primary-subtle);
+  background: none;
+}
+.ucam-list-item[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 0.25rem;
+  background: var(--ucam-color-action-primary-default);
+  pointer-events: none;
 }
 
 .ucam-list-item[aria-current="true"] .ucam-list-item__titulo {
