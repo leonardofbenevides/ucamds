@@ -9013,22 +9013,35 @@ a.ucam-list-item:active,
 }
 .ucam-list-item__indicador { display: none; }
 
-/* A LINHA ABERTA tem fundo branco e um shape sólido de 4px na borda direita,
- * de ponta a ponta da altura — o mesmo desenho da linha marcada da tabela.
- * A tipografia (peso) continua sendo o segundo sinal. */
-.ucam-list-item[aria-current="true"] {
-  position: relative;
-  background: none;
-}
-.ucam-list-item[aria-current="true"]::after {
+/* O DESTAQUE É DO ITEM NOVO, À ESQUERDA (25/09/2026: "na caixa de entrada o
+ * highlight é no lado esquerdo, não no direito" e "o highlight é sobre itens
+ * novos, ou em destaque / notificação"). O shape sólido de 4px, de ponta a
+ * ponta da altura, marca o não lido — é o sinal de notificação da linha —,
+ * junto com o peso do título. O item aberto deixou de usá-lo. */
+.ucam-list-item:has(.ucam-list-item__indicador) { position: relative; }
+.ucam-list-item:has(.ucam-list-item__indicador)::before {
   content: "";
   position: absolute;
   inset-block: 0;
-  inset-inline-end: 0;
+  inset-inline-start: 0;
   inline-size: 0.25rem;
   background: var(--ucam-color-action-primary-default);
   pointer-events: none;
 }
+
+/* O ITEM ABERTO tem o tom da escolha — o fundo sutil da ação, não cinza — e
+ * não muda sob o ponteiro nem com foco ("o item aberto fica cinza em
+ * focus"): depois do clique o ponteiro continua sobre ele, e o hover do item
+ * somado ao do botão que ocupa a linha o deixava cinza. É a mesma decisão da
+ * linha escolhida da tabela e do item ativo do menu: o que já está aberto
+ * está no seu tom final. */
+.ucam-list-item[aria-current="true"],
+.ucam-list-item[aria-current="true"]:hover {
+  position: relative;
+  background: var(--ucam-color-action-primary-subtle);
+}
+.ucam-list-item[aria-current="true"] > .ucam-list-item__alvo:hover,
+.ucam-list-item[aria-current="true"] > .ucam-list-item__alvo:active { background-image: none; }
 
 .ucam-list-item[aria-current="true"] .ucam-list-item__titulo {
   font-weight: var(--ucam-typography-action-font-weight);

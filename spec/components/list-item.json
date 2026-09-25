@@ -89,7 +89,7 @@
     {
       "parte": "indicador",
       "obrigatorio": false,
-      "descricao": "Desde 25/09/2026 NÃO DESENHA: o não lido é dito pelo peso do título e pelo texto em ucam-sr-only, e o ponto saiu (\"pq tem bolinha ao invés de um traço?\"). O elemento continua no markup como âncora do estado para a folha. Até então: ponto de não lido, acompanhado de texto em ucam-sr-only — cor e forma sozinhas não informam. Mora no recuo inicial da linha, fora do fluxo, centrado na linha do título, e não reserva espaço: a hora da linha não lida alinha com a das vizinhas. À direita, como era até 13/09/2026, ele empurrava o tempo 16px para dentro e a coluna da hora serrilhava na fila.",
+      "descricao": "Desde 25/09/2026 NÃO DESENHA o ponto: o não lido é dito por um shape sólido de 4px na borda ESQUERDA da linha, de ponta a ponta, pelo peso do título e pelo texto em ucam-sr-only (\"o highlight é sobre itens novos, ou em destaque / notificação\"). O elemento continua no markup como âncora do estado para a folha. Até então: ponto de não lido, acompanhado de texto em ucam-sr-only — cor e forma sozinhas não informam. Mora no recuo inicial da linha, fora do fluxo, centrado na linha do título, e não reserva espaço: a hora da linha não lida alinha com a das vizinhas. À direita, como era até 13/09/2026, ele empurrava o tempo 16px para dentro e a coluna da hora serrilhava na fila.",
       "classe": "ucam-list-item__indicador"
     }
   ],
@@ -198,7 +198,7 @@
     "papel": "listitem",
     "requisitos": [
       "As linhas vivem dentro de <ul>/<ol> real: contagem e posição são anunciadas sem nenhum atributo extra.",
-      "O item aberto no painel ao lado declara aria-current=true. O shape de 4px na borda direita e o peso do título são reforço, nunca o único sinal; o fundo é branco desde 25/09/2026.",
+      "O item aberto no painel ao lado declara aria-current=true. O fundo sutil da ação e o peso do título são reforço, nunca o único sinal; ele não muda sob o ponteiro nem com foco. O shape de 4px é do item não lido, à esquerda, desde 25/09/2026.",
       "O indicador de não lido tem texto equivalente em ucam-sr-only.",
       "A hora relativa vai em <time datetime> com o valor absoluto.",
       "Quando a linha é um link, o nome acessível é o título mais o assunto, não a linha inteira lida em fragmentos.",
