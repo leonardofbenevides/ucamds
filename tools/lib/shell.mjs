@@ -1960,6 +1960,10 @@ const FN_ANUNCIA = `
     if (!regiao) return;
     regiao.textContent = '';
     setTimeout(function () { regiao.textContent = texto; }, 60);
+    // TOAST (ADR-052): a mesma frase, visível, quando quem disparou é uma
+    // ação de sistema (data-fluxo="c"). Ordenar, abrir menu e trocar de etapa
+    // também falam por aqui, e não viram toast.
+    if (window.ucamToast && de && de.closest && de.closest('[data-fluxo="c"]')) window.ucamToast(texto);
   }
 `;
 
@@ -4866,6 +4870,150 @@ export const roloScript = `
     if (a.left < t.left + FOLGA) trilho.scrollLeft -= (t.left + FOLGA) - a.left;
     else if (a.right > t.right - FOLGA) trilho.scrollLeft += a.right - (t.right - FOLGA);
   });
+})();
+`.trim();
+
+/**
+ * O TOAST (ADR-052, 25/09/2026: "coloque toast pra todas as ações de
+ * sistema"). Até aqui ele estava fora do catálogo por decisão — "mensagem
+ * que some não pode carregar informação necessária" — e a decisão nova
+ * guarda essa razão: o toast CONFIRMA, não informa. Quando a confirmação
+ * carrega algo que a pessoa vai precisar depois (o número do protocolo), o
+ * alerta ancorado continua saindo junto.
+ *
+ * Não é região viva: quem fala é a região de anúncio do shell, que já disse
+ * a mesma frase. Some em 5s, mas PARA enquanto o ponteiro ou o foco estão
+ * nele (2.2.1); tem fechar; no máximo três, o mais antigo sai primeiro.
+ */
+export const toastScript = `
+(function () {
+  var VIDA = 5000;
+  var MAX = 3;
+  var ICONE = { success: 'circleCheck', info: 'info', warning: 'triangleAlert' };
+  var regiao = null;
+
+  function pilha() {
+    if (regiao && regiao.isConnected) return regiao;
+    regiao = document.createElement('div');
+    regiao.className = 'ucam-toasts';
+    (document.querySelector('.ucam') || document.body).appendChild(regiao);
+    return regiao;
+  }
+
+  function sai(el) {
+    if (!el || el.hasAttribute('data-saindo')) return;
+    el.setAttribute('data-saindo', '');
+    clearTimeout(el._t);
+    setTimeout(function () { el.remove(); }, 160);
+  }
+
+  function arma(el) {
+    clearTimeout(el._t);
+    el._t = setTimeout(function () { sai(el); }, VIDA);
+  }
+
+  window.ucamToast = function (texto, tom) {
+    if (!texto) return;
+    tom = ICONE[tom] ? tom : 'success';
+    var p = pilha();
+    while (p.children.length >= MAX) sai(p.firstElementChild) || p.firstElementChild.remove();
+    var el = document.createElement('div');
+    el.className = 'ucam-toast ucam-toast--' + tom;
+    el.innerHTML =
+      '<svg class="ic" aria-hidden="true"><use href="#i-' + ICONE[tom] + '"/></svg>' +
+      '<span class="ucam-toast__texto"></span>' +
+      '<button class="ucam-toast__fechar" type="button" aria-label="Fechar confirmação">' +
+      '<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>';
+    el.querySelector('.ucam-toast__texto').textContent = texto;
+    el.querySelector('.ucam-toast__fechar').addEventListener('click', function () { sai(el); });
+    ['mouseenter', 'focusin'].forEach(function (ev) { el.addEventListener(ev, function () { clearTimeout(el._t); }); });
+    ['mouseleave', 'focusout'].forEach(function (ev) { el.addEventListener(ev, function () { if (!el.matches(':hover, :focus-within')) arma(el); }); });
+    p.appendChild(el);
+    arma(el);
+    return el;
+  };
+})();
+`.trim();
+
+/**
+ * COPIAR NO HOVER (ADR-052, 25/09/2026: "torne padrão os id's ou nomes, ou
+ * coisas que precisam ser copiadas ter um botão de copy no hover"). Entra em:
+ * todo .ucam-id (matrícula, protocolo, inscrição, documento — ADR-047), todo
+ * e-mail impresso numa célula de apoio ou num valor de descrição, o nome do
+ * registro no título das telas de detalhe, e o que pedir data-copiar. Fica de
+ * fora o que está dentro de link ou botão (controle dentro de controle) e o
+ * que vem mascarado — "•••.214.387-••" copiado não serve para nada.
+ *
+ * O botão é IRMÃO do texto, não filho: dentro do título ele entraria no nome
+ * do cabeçalho. Some e aparece por opacidade, e nunca some do teclado.
+ */
+export const copiarScript = `
+(function () {
+  var EMAIL = /^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$/i;
+  var SELETOR = '.ucam-id, [data-copiar], .ucam-viewbar__voltar ~ .ucam-viewbar__titulo, .td--apoio, .ucam-descricao__valor';
+
+  function texto(el) {
+    return (el.getAttribute('data-copiar') || el.textContent || '').replace(/\\s+/g, ' ').trim();
+  }
+
+  function serve(el) {
+    if (el.closest('a, button, label, .ucam-menu, .ucam-copiar')) return false;
+    if (el.querySelector('a, button, input, .ucam-id')) return false;
+    var t = texto(el);
+    if (!t || t.indexOf('•') >= 0) return false;
+    if (el.matches('.td--apoio, .ucam-descricao__valor') && !el.hasAttribute('data-copiar')) return EMAIL.test(t);
+    return true;
+  }
+
+  function copia(t) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t);
+    return new Promise(function (ok, erro) {
+      var a = document.createElement('textarea');
+      a.value = t;
+      a.setAttribute('readonly', '');
+      a.style.position = 'fixed';
+      a.style.opacity = '0';
+      document.body.appendChild(a);
+      a.select();
+      try { document.execCommand('copy') ? ok() : erro(); } catch (e) { erro(e); }
+      a.remove();
+    });
+  }
+
+  function arma() {
+    Array.prototype.forEach.call(document.querySelectorAll(SELETOR), function (el) {
+      if (el.nextElementSibling && el.nextElementSibling.classList.contains('ucam-copiar')) return;
+      if (el.querySelector(':scope > .ucam-copiar')) return;
+      if (!serve(el)) return;
+      var t = texto(el);
+      var b = document.createElement('button');
+      b.className = 'ucam-copiar';
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Copiar ' + t);
+      b.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>';
+      b.addEventListener('click', function (e) {
+        e.stopPropagation();
+        copia(t).then(function () {
+          b.setAttribute('data-copiado', '');
+          b.querySelector('use').setAttribute('href', '#i-check');
+          var regiao = document.querySelector('[data-anuncio]');
+          if (regiao) { regiao.textContent = ''; setTimeout(function () { regiao.textContent = 'Copiado: ' + t; }, 60); }
+          if (window.ucamToast) window.ucamToast('Copiado: ' + t);
+          setTimeout(function () {
+            b.removeAttribute('data-copiado');
+            b.querySelector('use').setAttribute('href', '#i-copy');
+          }, 1500);
+        });
+      });
+      // Na tabela o botão entra DENTRO do dado, que é texto corrido: como
+      // irmão ele caía num contêiner flexível, e ali o absoluto vai para o
+      // começo da caixa, por cima do nome. Fora da tabela fica ao lado.
+      if (el.closest('.ucam-table')) el.appendChild(b);
+      else el.insertAdjacentElement('afterend', b);
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arma); else arma();
 })();
 `.trim();
 

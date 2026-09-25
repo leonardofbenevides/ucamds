@@ -37,6 +37,8 @@ import {
   inboxScript,
   tabelaScript,
   roloScript,
+  toastScript,
+  copiarScript,
   navScript,
   contadorScript,
 } from './lib/shell.mjs';
@@ -253,6 +255,7 @@ ${sprite}
   <span style="margin-inline-start:auto">Template do design system — não é o sistema em produção.</span>
   <a href="__DOC__">Ver documentação</a>
 </div>
+<script>${toastScript}</script>
 <script>${propagaConsultaScript}</script>
 <script>${listboxScript}</script>
 <script>${navScript}</script>
@@ -272,6 +275,7 @@ ${sprite}
 <script>${inboxScript}</script>
 <script>${tabelaScript}</script>
 <script>${roloScript}</script>
+<script>${copiarScript}</script>
 </body>
 </html>`;
 

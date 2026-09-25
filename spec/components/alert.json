@@ -172,7 +172,7 @@
     "regras": [
       "Erro de um campo pertence ao campo. Um alerta no topo dizendo Verifique os campos obrigatórios obriga a pessoa a procurar quais são — e é o que o Protocolo faz hoje.",
       "Alerta não é confirmação de ação destrutiva. Isso é diálogo, porque precisa de resposta antes de continuar (padrão confirmacao-destrutiva).",
-      "Alerta não é notificação transitória. Se some sozinho depois de alguns segundos, é toast — e toast não está no catálogo, porque mensagem que some não pode carregar informação necessária.",
+      "Alerta não é notificação transitória. Se some sozinho depois de alguns segundos, é toast. Desde 25/09/2026 (ADR-052) o toast existe, mas como CONFIRMAÇÃO de ação de sistema, emitido pelo shell: quando a confirmação carrega informação necessária depois (o número de protocolo), este alerta continua saindo junto, porque mensagem que some não pode carregar informação necessária.",
       "Máximo de um alerta visível por região. Dois alertas empilhados anulam-se: nenhum dos dois é lido.",
       "Não usar alerta permanente para explicar como a tela funciona. Instrução que aparece toda vez vira paisagem em três dias; se a tela precisa dela, a tela precisa mudar.",
       "Não usar danger para desfecho de negócio desfavorável (Indeferido). Isso é badge — o requerimento indeferido não é um erro do sistema (ADR-002)."

@@ -982,6 +982,27 @@
         "timeline",
         "page-header"
       ]
+    },
+    {
+      "id": "ADR-052",
+      "titulo": "Toda ação de sistema confirma num toast, e todo identificador se copia no hover",
+      "status": "aceita",
+      "data": "2026-09-25",
+      "contexto": "Dois pedidos de 25/09/2026. \"Coloque toast pra todas as ações de sistema\": o toast estava fora do catálogo por decisão escrita no contrato do alerta — mensagem que some não pode carregar informação necessária —, e o legado $mdToast tinha sido mapeado para \"alerta persistente, ou nada\". O retorno de uma ação era o eco falado na região de anúncio, o realce na peça que mudou e, quando havia informação a guardar, um alerta ancorado. Quem enxerga e não olhava para a peça no momento do clique não tinha confirmação nenhuma. E \"torne padrão os ids ou nomes, ou coisas que precisam ser copiadas, ter um botão de copy no hover\": matrícula, protocolo e inscrição aparecem em 89 pontos das telas (ADR-047) e copiar um deles pedia selecionar à mão um texto dentro de uma linha clicável.",
+      "decisao": "O toast entra como CONFIRMAÇÃO, não como informação. Nasce da mesma função que faz o eco falado, e só quando quem disparou é uma ação de sistema (data-fluxo=\"c\"): 37 ações passam a confirmar sem ninguém caçá-las uma a uma, e ordenar, abrir menu ou trocar de etapa, que também falam por ali, não viram toast. Canto inferior direito, superfície invertida, ícone do tom, fechar; some em 5 s e para enquanto o ponteiro ou o foco estão nele (WCAG 2.2.1); no máximo três. Não é região viva — a região de anúncio já disse a frase — e não rouba foco. Quando a confirmação carrega algo que a pessoa vai precisar depois, o alerta ancorado continua saindo junto: a razão da decisão antiga fica valendo para o que ela protegia. O botão de copiar entra ao lado de todo .ucam-id, de todo e-mail em célula de apoio ou valor de descrição, do nome do registro no título das telas de detalhe e do que pedir data-copiar; fica de fora o que está dentro de link ou botão e o que vem mascarado. Aparece por opacidade com o ponteiro sobre o dado ou a célula e com foco; sob toque não existe. Copiar troca o ícone por um tique por 1,5 s, fala \"Copiado: …\" e confirma num toast.",
+      "consequencias": [
+        "O contrato do alerta deixa de dizer que o toast está fora do catálogo; diz que ele existe como confirmação emitida pelo shell, e que informação necessária continua no alerta.",
+        "O toast é parte do shell (toastScript em lib/shell.mjs, .ucam-toast na folha) e não um componente que a tela instancia: quem quer confirmar chama a mesma função que fala.",
+        "O botão de copiar é injetado por script (copiarScript), e por isso o Trilho B ainda não o tem; o componente Angular equivalente fica como pendência.",
+        "Sob toque não há botão de copiar: trinta botões permanentes numa lista seriam a poluição que a revisão de tabelas do mesmo dia tirou, e o toque longo nativo copia."
+      ],
+      "afeta": [
+        "alert",
+        "app-shell",
+        "data-table",
+        "description-list",
+        "page-header"
+      ]
     }
   ]
 }

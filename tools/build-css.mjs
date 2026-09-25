@@ -1873,6 +1873,7 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   .ucam-table tbody .td--pessoa__texto { flex-wrap: wrap; max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
   .ucam-table tbody .td--pessoa__texto > * { flex: 0 1 auto; min-inline-size: 0; }
   .ucam-table tbody .td--pessoa { white-space: normal; }
+  .ucam-table tbody .ucam-copiar { position: relative; }
   .ucam-table tbody tr > td:not(.td--selecao):nth-child(1 of :not(.td--selecao)):has(> .ucam-card__titulo) { min-inline-size: 0; }
   /* A linha marcada: o shape de 4px sai da última célula (que virou bloco no
    * meio) e vai para a borda direita do bloco inteiro. */
@@ -8563,6 +8564,125 @@ ${abaixo('controle-deitado')} {
   outline-offset: var(--ucam-focus-ring-offset);
 }
 .ucam-badge__acao { margin-inline-start: 0.125rem; opacity: 0.8; }
+
+/* ------------------------------------------------------- toast (ADR-052) --- */
+/* A confirmação que some. Fica no canto de baixo à direita, sobre o que
+ * estiver aberto (diálogo e gaveta incluídos), em superfície invertida: é a
+ * única peça que flutua, e ela não pode se confundir com o conteúdo. No
+ * telefone ocupa a largura, acima da barra de lote quando ela está aberta. */
+.ucam-toasts {
+  position: fixed;
+  inset-block-end: var(--ucam-space-inset-lg);
+  inset-inline-end: var(--ucam-space-inset-lg);
+  z-index: calc(var(--ucam-z-overlay) + 10);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--ucam-space-inline-sm);
+  max-inline-size: min(26rem, calc(100vw - 2 * var(--ucam-space-inset-lg)));
+  pointer-events: none;
+}
+:root:has(.ucam-lote:not([hidden])) .ucam-toasts { inset-block-end: 5.5rem; }
+.ucam-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-sm);
+  min-block-size: 2.75rem;
+  padding: var(--ucam-space-inline-xs) var(--ucam-space-inline-xs) var(--ucam-space-inline-xs) var(--ucam-space-inset-sm);
+  background: var(--ucam-color-surface-inverse);
+  color: var(--ucam-color-text-on-brand);
+  border-radius: var(--ucam-radius-control);
+  box-shadow: var(--ucam-elevation-overlay);
+  font-size: var(--ucam-typography-body-sm-font-size);
+  line-height: 1.25rem;
+  animation: ucam-toast-entra var(--ucam-motion-duration-reveal) var(--ucam-motion-easing-entrance) both;
+}
+.ucam-toast[data-saindo] { animation: ucam-toast-sai var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard) both; }
+.ucam-toast > .ic { flex: none; inline-size: 1rem; block-size: 1rem; }
+.ucam-toast__texto { flex: 1 1 auto; min-inline-size: 0; }
+.ucam-toast__fechar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--ucam-size-control-md);
+  block-size: var(--ucam-size-control-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ucam-radius-control-sm);
+  background: none;
+  color: inherit;
+  opacity: 0.72;
+  cursor: pointer;
+}
+.ucam-toast__fechar:hover { opacity: 1; background: color-mix(in srgb, currentColor 12%, transparent); }
+.ucam-toast__fechar:focus-visible { opacity: 1; outline: var(--ucam-focus-ring-width) solid currentColor; outline-offset: calc(-1 * var(--ucam-focus-ring-width)); }
+.ucam-toast__fechar .ic { inline-size: 1rem; block-size: 1rem; }
+@keyframes ucam-toast-entra { from { opacity: 0; transform: translateY(0.5rem); } }
+@keyframes ucam-toast-sai { to { opacity: 0; transform: translateY(0.25rem); } }
+@media (prefers-reduced-motion: reduce) {
+  .ucam-toast, .ucam-toast[data-saindo] { animation: none; }
+}
+${abaixo('controle-deitado')} {
+  .ucam-toasts {
+    inset-inline: var(--ucam-space-inset-md);
+    inset-block-end: var(--ucam-space-inset-md);
+    max-inline-size: none;
+    align-items: stretch;
+  }
+}
+
+/* ------------------------------------------------- copiar (ADR-052) --- */
+/* O botão de copiar ao lado de identificador, e-mail e nome do registro.
+ * Some por OPACIDADE, não por display: o teclado continua chegando nele e o
+ * texto em volta não salta quando ele aparece. Aparece com o ponteiro sobre
+ * o dado ou sobre a célula, e com foco. Sob toque não existe — não há hover,
+ * e trinta botões permanentes numa lista seriam a poluição que se tirou das
+ * tabelas; o toque longo nativo copia. */
+.ucam-copiar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin-inline-start: var(--ucam-space-inline-xs);
+  padding: 0;
+  border: 0;
+  border-radius: var(--ucam-radius-miudo);
+  background: none;
+  color: var(--ucam-color-text-secondary);
+  vertical-align: middle;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+.ucam-copiar .ic { inline-size: 0.875rem; block-size: 0.875rem; }
+.ucam-copiar::after {
+  content: "";
+  position: absolute;
+  inset: -0.125rem;
+}
+:is(.ucam-id, [data-copiar], .ucam-viewbar__titulo, .td--apoio, .ucam-descricao__valor):hover + .ucam-copiar,
+:is(.ucam-id, [data-copiar], .td--apoio):hover > .ucam-copiar,
+:is(td, dd, .td--apoio, .ucam-descricao__par):hover > .ucam-copiar,
+:is(td, dd, .ucam-descricao__par):hover > * > .ucam-copiar,
+.ucam-viewbar__fileira:hover > .ucam-copiar,
+.ucam-copiar:hover,
+.ucam-copiar:focus-visible,
+.ucam-copiar[data-copiado] { opacity: 1; }
+.ucam-copiar:hover { color: var(--ucam-color-text-primary); background: var(--ucam-color-interaction-hover); }
+.ucam-copiar:focus-visible { outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus); outline-offset: 0; }
+.ucam-copiar[data-copiado] { color: var(--ucam-color-feedback-success-foreground); }
+@media (hover: none) {
+  .ucam-copiar { display: none; }
+}
+/* Dentro da TABELA o botão não soma largura: absoluto sem deslocamento fica
+ * exatamente onde estaria no texto, mas fora do cálculo da coluna. Ocupa o
+ * recuo da célula (12px) e o da vizinha. No fluxo ele fazia o Resultado do
+ * relatório passar 8px da borda, com o e-mail de cada aluno. */
+.ucam-table tbody .ucam-copiar { position: absolute; }
 
 .ucam-chip button {
   display: inline-flex;
