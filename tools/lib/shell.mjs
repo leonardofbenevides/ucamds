@@ -2641,7 +2641,12 @@ ${FN_ANUNCIA}
         });
         eco(grade.lastElementChild);
         var dito = [];
-        if (entraram) dito.push(entraram === 1 ? 'Arquivo anexado.' : entraram + ' arquivos anexados.');
+        // Um arquivo só: o anúncio diz o NOME. "Arquivo anexado" não distingue o
+        // que entrou do que foi recusado, e quem ouve confere pelo nome (isenção,
+        // acompanhamento do candidato, 25/09/2026). Vários: a contagem.
+        var aceitos = Array.prototype.filter.call(entrada.files, function (f) { return !recusaDe(f, regra); });
+        if (entraram === 1) dito.push('Anexado ' + aceitos[0].name + '.');
+        else if (entraram) dito.push(entraram + ' arquivos anexados.');
         anuncia(dito.concat(recusas).join(' '), botao);
         // O foco vai para a primeira linha recusada: a recusa veio de escolha
         // por teclado, e quem escolheu precisa chegar ao motivo.
@@ -3001,6 +3006,19 @@ ${FN_ANUNCIA}
       if (!busca) return;
       busca.value = '';
       busca.dispatchEvent(new Event('input', { bubbles: true }));
+      // E os OUTROS filtros do mesmo corpo (select de coluna, segmented de dado):
+      // o vazio nasce da combinação, e "limpar" que deixa a situação em
+      // "Aguardando envio" devolve 3 linhas em vez de 8 — medido na fila da
+      // isenção em 24/09/2026. Limpar é voltar ao todo.
+      var escopo = busca.closest('.ucam-corpo, .ucam-main') || document;
+      Array.prototype.forEach.call(escopo.querySelectorAll('select[data-filtra^="coluna:"]'), function (sel) {
+        if (sel.value === '') return;
+        sel.value = '';
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-filtra^="dado:"] button[data-valor=""]'), function (todos) {
+        if (todos.getAttribute('aria-pressed') !== 'true') todos.click();
+      });
       return busca.focus();
     }
 
