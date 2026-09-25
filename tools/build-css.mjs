@@ -1679,12 +1679,15 @@ ${selectChevronCss}
  * cantos superiores — que é justamente o que se quer. Mas quando a tabela é a
  * PRIMEIRA coisa do card, os cantos de cima do card ficam sem quem os pinte:
  * a faixa cinza é quem encosta neles. Aí ela herda o raio do card, e só ele. */
+/* O raio de DENTRO da borda de 1px, não o do card: com o raio cheio a curva
+ * da faixa corria por dentro do recorte e deixava uma lasca branca no canto
+ * (medido a 12x em 25/09/2026). */
 .ucam-card > .ucam-table-wrap:first-child thead th:first-child {
-  border-start-start-radius: var(--ucam-radius-surface);
+  border-start-start-radius: calc(var(--ucam-radius-surface) - 1px);
 }
 
 .ucam-card > .ucam-table-wrap:first-child thead th:last-child {
-  border-start-end-radius: var(--ucam-radius-surface);
+  border-start-end-radius: calc(var(--ucam-radius-surface) - 1px);
 }
 
 .ucam-table {
@@ -1751,10 +1754,23 @@ ${selectChevronCss}
   position: sticky;
   inset-block-start: var(--ucam-tabela-topo, 0px);
   z-index: 2;
-  /* TRAÇO EM CIMA, como embaixo: a faixa do cabeçalho tinha fio só no pé e o
-   * alto dela se confundia com o que vem antes ("o topo do header está sem
-   * stroke"). Sombra interna, não borda, para não mexer na altura. */
-  box-shadow: inset 0 1px 0 var(--ucam-color-border-default);
+  /* FIO DO PÉ EM SOMBRA, NÃO EM BORDA. Em tabela de borda colapsada a borda
+   * é da tabela, não da célula: grudado, o cabeçalho deixava o fio para trás
+   * e as linhas passavam por baixo dele sem separação. A sombra interna é da
+   * célula e viaja com ela. Sem a borda, o cabeçalho também para de medir
+   * 32,5px (meia borda colapsada) e as linhas voltam ao pixel inteiro
+   * (Fila de análise, 25/09/2026). */
+  border-block-end-width: 0;
+  box-shadow: inset 0 -1px 0 var(--ucam-color-border-default);
+}
+/* TRAÇO EM CIMA SÓ ONDE NADA O DESENHA. Entrou em 25/09/2026 para toda
+ * tabela ("o topo do header está sem stroke") e, dentro de cartão, pintava um
+ * segundo fio colado na borda do cartão: linha dupla, de duas cores, e uma
+ * meia-lua no canto, porque as curvas não eram concêntricas. Grudado, dobrava
+ * de novo com o filete da barra de visão. Fica só para a tabela fora de
+ * cartão, que não tem outra borda por cima. */
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead th {
+  box-shadow: inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
 }
 .ucam-table thead th:first-child { border-start-start-radius: calc(var(--ucam-radius-surface) - 1px); }
 .ucam-table thead th:last-child { border-start-end-radius: calc(var(--ucam-radius-surface) - 1px); }
