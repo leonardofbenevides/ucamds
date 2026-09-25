@@ -2957,6 +2957,17 @@
         ],
         "busca": "Buscar candidato, inscrição ou curso",
         "buscaAtalho": "/",
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
+        "navRodape": [{"rotulo":"Configurações","icone":"settings"},{"rotulo":"Central de ajuda","icone":"info"}],
+        "campusOpcoes": ["Rio de Janeiro","Campos","Nova Friburgo"],
+        "railComoMenu": true,
+        "$porque_railComoMenu": "A MESMA moldura dos outros cinco sistemas (ver o Protocolo): faixa em cima e coluna à esquerda, com os módulos no lançador da faixa. Entrou em 25/09/2026 porque o projeto nasceu sem esta chave e caía no arranjo de rail sem faixa — a única tela do parque sem busca, campus e conta no alto (\"o isenção ficou em outro modelo de grid dos outros, tá diferente\").",
+        "notificacoes": 2,
+        "notificacoesItens": [{"titulo":"Maria Souza enviou os documentos da inscrição 2026-01158","quando":"há 1h","icone":"paperclip","tela":"analise"},{"titulo":"A análise com sugestão de Carlos Henrique Dias terminou","quando":"hoje, 09h20","icone":"circleCheck","tela":"analise"}],
+        "favoritos": [{"rotulo":"Aguardando análise","icone":"inbox","tela":"fila"},{"rotulo":"Direito · 2026.1","icone":"graduationCap","tela":"fila"}],
+        "$porque_favoritos": "O recorte que a coordenadora abre todo dia (as que esperam por ela) e o curso que mais pede isenção neste período. Mesma regra do Protocolo: filtro salvo e recorte, não repetição do menu.",
+        "buscaResultados": [{"id":"candidato","titulo":"Candidatos","itens":[{"rotulo":"João Cutrim","meta":"Direito · 2026-01187","icone":"user","tela":"analise","recente":true},{"rotulo":"Ana Paula Rocha","meta":"Direito · 2026-01203","icone":"user","tela":"sem-documentos"},{"rotulo":"Maria Souza","meta":"Administração · 2026-01158","icone":"user","tela":"analise"}]},{"id":"inscricao","titulo":"Inscrições","itens":[{"rotulo":"2026-01187 · João Cutrim","meta":"aguardando análise","icone":"clipboardCheck","tela":"analise","recente":true},{"rotulo":"2026-01203 · Ana Paula Rocha","meta":"aguardando envio","icone":"clipboardCheck","tela":"sem-documentos"},{"rotulo":"2026-01102 · Pedro Alves","meta":"concluída · 4 isentas","icone":"clipboardCheck","tela":"consulta"}]},{"id":"curso","titulo":"Cursos","itens":[{"rotulo":"Direito","meta":"5 solicitações na fila","icone":"graduationCap","tela":"fila","recente":true},{"rotulo":"Administração","meta":"3 solicitações na fila","icone":"graduationCap","tela":"fila"}]}],
+        "$porque_buscaResultados": "Candidato, inscrição e curso — os três que o placeholder do campo promete, com o mesmo mecanismo do Protocolo: os destinos saem do menu, o que está aqui é o que o menu não alcança.",
         "rail": {
           "icone": "clipboardCheck",
           "itens": [
