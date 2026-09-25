@@ -562,6 +562,10 @@
       "$value": "52rem",
       "$description": "A partir daqui o bloco de divisão põe o painel de apoio ao lado do conteúdo. 52rem = 30rem para o conteúdo (uma tabela de cinco colunas sem cortar a última) + 22rem do painel de apoio mais largo em uso. Abaixo, empilha: painel de apoio espremido em 12rem não apoia nada, e tabela em 24rem esconde coluna."
     },
+    "formulario-em-fileira": {
+      "$value": "60rem",
+      "$description": "Largura do CORPO (.ucam-corpo) a partir da qual uma fileira de formulário de quatro campos cabe numa linha: a coluna do CPF (14ch mais o recuo), três de no mínimo 14rem, os vãos e o recuo do cartão. Abaixo, a fileira que declara .ucam-form-row--quebra passa a duas colunas por linha, em vez de estourar o cartão. Entrou em 25/09/2026, quando o Novo usuário passou de duas colunas de 22rem — metade de um cartão de 1500px vazio — a uma fileira de quatro."
+    },
     "tabela-empilhada": {
       "$value": "30rem",
       "$description": "Largura do invólucro da tabela (.ucam-table-wrap é contêiner 'tabela') abaixo da qual toda tabela EMPILHA: cada linha vira pares rótulo e valor, o rótulo vindo de data-label. É a estratégia 'stack' do contrato, que até 25/09/2026 só existia em texto: a 375px toda tabela rolava na horizontal e a Auditoria virava três colunas de 90px com cada célula em quatro linhas. 30rem é o telefone; o tablet de 768px, com o corpo a 728px, fica acima e segue rolando com a primeira coluna fixa."

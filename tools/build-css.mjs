@@ -771,6 +771,30 @@ a.ucam-btn { text-decoration: none; }
 /* Campo que ocupa a sobra: a coluna já é 1fr, aqui só se garante que o
  * controle acompanhe a largura da trilha. */
 .ucam-form-row > .ucam-field--grow { inline-size: 100%; }
+
+/* O CAMPO QUE OCUPA DUAS COLUNAS da régua (a Unidade, sob CPF e Nome). */
+.ucam-form-row > .ucam-field--2col { grid-column: span 2; }
+
+/* A COLUNA DO DADO: o controle ocupa a trilha inteira. O CPF tinha 14ch
+ * fixos dentro de uma coluna de 22rem e sobrava um vão até o Nome (25/09/2026:
+ * "pq o cpf tá dessa largura mínima"); agora a própria trilha tem a medida
+ * do CPF, e o controle a preenche. */
+.ucam-form-row > .ucam-field--cpf .ucam-input { inline-size: 100%; }
+
+/* A FILEIRA QUE QUEBRA (.ucam-form-row--quebra). Quatro campos numa linha
+ * enquanto o corpo tem largura para eles (container.formulario-em-fileira);
+ * abaixo, duas colunas por linha — cada campo continua sendo subgrade de
+ * três fileiras (rótulo, controle, dica), e as linhas seguintes nascem
+ * implícitas, então rótulo com rótulo e controle com controle seguem
+ * alinhados. */
+${contentorAbaixo('formulario-em-fileira')} {
+  .ucam-form-row--quebra {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-flow: row;
+    row-gap: var(--ucam-space-stack-md);
+  }
+  .ucam-form-row--quebra > .ucam-field--2col { grid-column: auto; }
+}
 .ucam-form-row > .ucam-field--grow .ucam-input,
 .ucam-form-row > .ucam-field--grow .ucam-select { inline-size: 100%; }
 
