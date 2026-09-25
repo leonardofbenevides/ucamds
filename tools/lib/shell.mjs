@@ -4905,6 +4905,116 @@ export const inboxScript = `
 })();
 `.trim();
 
+/**
+ * A TABELA QUE MEDE (25/09/2026). Três coisas que a folha não sabe sozinha:
+ *
+ * 1. Quanto há grudado acima dela. O cabeçalho da tabela gruda ABAIXO da
+ *    faixa e da barra de visão, e a barra tem de duas a quatro fileiras —
+ *    a soma vai em --ucam-tabela-topo no invólucro.
+ * 2. Se a tabela cabe. Cabendo, o invólucro deixa de rolar (data-rola="nao")
+ *    e o cabeçalho gruda na página; não cabendo, rola, e a primeira coluna
+ *    de dado (e a de seleção, quando há) fica fixa à esquerda com as classes
+ *    de .ucam-col--fixa-inicio.
+ * 3. O rótulo de cada célula, para o modo empilhado: data-label vem do texto
+ *    do th da mesma coluna, sem o que é só para leitor de tela.
+ */
+export const tabelaScript = `
+(function () {
+  function rotulo(th) {
+    var c = th.cloneNode(true);
+    Array.prototype.forEach.call(c.querySelectorAll('.ucam-sr-only, svg, .ucam-menu, [hidden]'), function (n) { n.remove(); });
+    return (c.textContent || '').replace(/\\s+/g, ' ').trim();
+  }
+
+  function rotula(tabela) {
+    var ths = tabela.querySelectorAll('thead th');
+    var nomes = Array.prototype.map.call(ths, rotulo);
+    Array.prototype.forEach.call(tabela.querySelectorAll('tbody tr'), function (tr) {
+      Array.prototype.forEach.call(tr.children, function (td, i) {
+        if (nomes[i] && !td.hasAttribute('data-label')) td.setAttribute('data-label', nomes[i]);
+      });
+    });
+  }
+
+  function topoGrudado(wrap) {
+    var soma = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-appbar, .ucam-mobilebar, .ucam-viewbar'), function (el) {
+      if (getComputedStyle(el).position === 'sticky') soma += el.getBoundingClientRect().height;
+    });
+    wrap.style.setProperty('--ucam-tabela-topo', soma + 'px');
+  }
+
+  function fixa(tabela, liga) {
+    var linhas = tabela.querySelectorAll('tr');
+    Array.prototype.forEach.call(linhas, function (tr) {
+      var celulas = tr.children;
+      var sel = celulas[0] && (celulas[0].classList.contains('td--selecao') || celulas[0].classList.contains('th--selecao')) ? celulas[0] : null;
+      var primeira = sel ? celulas[1] : celulas[0];
+      if (sel) {
+        sel.classList.toggle('ucam-col--fixa-inicio', liga);
+        if (liga) sel.style.setProperty('--ucam-col-x', '0px'); else sel.style.removeProperty('--ucam-col-x');
+      }
+      if (primeira) {
+        primeira.classList.toggle('ucam-col--fixa-inicio', liga);
+        primeira.classList.toggle('ucam-col--borda-inicio', liga);
+        if (liga) primeira.style.setProperty('--ucam-col-x', (sel ? sel.getBoundingClientRect().width : 0) + 'px');
+        else primeira.style.removeProperty('--ucam-col-x');
+      }
+    });
+  }
+
+  function mede(wrap) {
+    var tabela = wrap.querySelector('.ucam-table');
+    if (!tabela) return;
+    // Mede com o rolo LIGADO, senão a tabela que não cabe alarga o invólucro
+    // e passa a caber. O modo empilhado não rola nem fixa nada.
+    wrap.removeAttribute('data-rola');
+    var empilhada = getComputedStyle(tabela).display === 'block';
+    var cabe = empilhada || wrap.scrollWidth <= wrap.clientWidth + 1;
+    wrap.setAttribute('data-rola', cabe ? 'nao' : 'sim');
+    fixa(tabela, !cabe && !empilhada);
+    topoGrudado(wrap);
+  }
+
+  // A barra compacta em cima da tabela: o rótulo vai para o leitor de tela
+  // e o campo herda o texto dele como placeholder, quando não tem um.
+  function rotulosDaBarra() {
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-toolbar--compacta .ucam-field > .ucam-field__label'), function (label) {
+      if (label.querySelector('.ucam-sr-only')) return;
+      var texto = (label.textContent || '').trim();
+      var span = document.createElement('span');
+      span.className = 'ucam-sr-only';
+      span.textContent = texto;
+      label.textContent = '';
+      label.appendChild(span);
+      var id = label.getAttribute('for');
+      var campo = id && document.getElementById(id);
+      if (campo && campo.tagName === 'INPUT' && !campo.getAttribute('placeholder')) campo.setAttribute('placeholder', texto);
+    });
+  }
+
+  function tudo() {
+    rotulosDaBarra();
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-table-wrap'), function (wrap) {
+      var tabela = wrap.querySelector('.ucam-table');
+      if (tabela) rotula(tabela);
+      mede(wrap);
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tudo); else tudo();
+  var agendado = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(agendado);
+    agendado = setTimeout(tudo, 80);
+  });
+  // Ocultar ou fixar coluna pelo menu muda a largura: mede de novo.
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('.ucam-menu--coluna, .ucam-table__ocultas')) setTimeout(tudo, 0);
+  });
+})();
+`.trim();
+
 export const menuContaScript = `
 (function () {
   // Um seletor para os TRÊS gatilhos de popover do shell: a conta, o lançador

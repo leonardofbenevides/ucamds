@@ -35,6 +35,7 @@ import {
   dialogoScript,
   gavetaScript,
   inboxScript,
+  tabelaScript,
   navScript,
   contadorScript,
 } from './lib/shell.mjs';
@@ -268,6 +269,7 @@ ${sprite}
 <script>${contadorScript}</script>
 <script>${gavetaScript}</script>
 <script>${inboxScript}</script>
+<script>${tabelaScript}</script>
 </body>
 </html>`;
 

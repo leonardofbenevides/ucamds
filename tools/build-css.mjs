@@ -1689,6 +1689,119 @@ ${selectChevronCss}
  * a coluna liberada ia inteira para "Natureza" (129 → 301px), medido em
  * 13/09/2026. Ocultar coluna existe para a tabela caber; o piso tem de
  * acompanhar. Mesmo chão de suporte do :has(). */
+/* CABEÇALHO GRUDADO (25/09/2026). O contrato prometia stickyHeader desde a
+ * primeira versão e a folha não tinha uma linha disto: em Usuários, com
+ * trinta linhas, o rótulo das colunas sumia na segunda dobra. Ele gruda
+ * abaixo do que já está grudado — faixa e barra de visão —, e quem sabe
+ * quanto isso mede é o tabelaScript (lib/shell.mjs), que escreve
+ * --ucam-tabela-topo no invólucro. O raio dos cantos volta a ser do próprio
+ * cabeçalho, porque o invólucro deixa de recortar quando não rola. */
+.ucam-table thead th {
+  position: sticky;
+  inset-block-start: var(--ucam-tabela-topo, 0px);
+  z-index: 2;
+  /* TRAÇO EM CIMA, como embaixo: a faixa do cabeçalho tinha fio só no pé e o
+   * alto dela se confundia com o que vem antes ("o topo do header está sem
+   * stroke"). Sombra interna, não borda, para não mexer na altura. */
+  box-shadow: inset 0 1px 0 var(--ucam-color-border-default);
+}
+.ucam-table thead th:first-child { border-start-start-radius: calc(var(--ucam-radius-surface) - 1px); }
+.ucam-table thead th:last-child { border-start-end-radius: calc(var(--ucam-radius-surface) - 1px); }
+.ucam-table thead .ucam-col--fixa-inicio,
+.ucam-table thead .ucam-col--fixa-fim { z-index: 3; }
+
+/* O ROLO SÓ EXISTE QUANDO HÁ O QUE ROLAR. overflow-x: auto faz do invólucro
+ * um contêiner de rolagem nos dois eixos, e um cabeçalho grudado dentro dele
+ * gruda num rolo que não rola. O tabelaScript mede: cabe, e o invólucro fica
+ * visible (o cabeçalho gruda na página); não cabe, e ele rola na horizontal
+ * com a primeira coluna fixa (classes de .ucam-col--fixa-inicio, postas pelo
+ * mesmo script). Até o script correr, o padrão continua sendo rolar. */
+.ucam-table-wrap {
+  /* Variável de BLOCO, declarada aqui para o portão de tokens: o valor real
+   * vem do estilo inline que o tabelaScript escreve no invólucro. */
+  --ucam-tabela-topo: 0px;
+  container: tabela / inline-size;
+}
+.ucam-table-wrap[data-rola="nao"] { overflow: visible; }
+/* O cartão que embrulha uma tabela recorta com clip pelo mesmo motivo do
+ * painel: hidden mataria o cabeçalho grudado dentro dele. */
+.ucam-card:has(.ucam-table-wrap) { overflow: clip; }
+
+/* EMPILHADA abaixo de tabela-empilhada (a estratégia 'stack' do contrato).
+ * A marcação continua sendo <table> — só a pintura muda: cada linha vira um
+ * bloco com o rótulo da coluna (data-label, escrito pelo tabelaScript a
+ * partir do thead) por cima de cada valor. A primeira célula de dado é o
+ * título do bloco e não repete rótulo; a de seleção fica à esquerda, a de
+ * ações à direita, na primeira linha. O cabeçalho sai da pintura mas fica
+ * para o leitor de tela, e a ordenação por cabeçalho sai com ele (contrato:
+ * ela migra para a toolbar). */
+${contentorAbaixo('tabela-empilhada', 'tabela')} {
+  .ucam-table-wrap { overflow: visible; border: 0; border-radius: 0; }
+  .ucam-table { display: block; min-inline-size: 0; }
+  .ucam-table caption { display: block; padding-inline: 0; }
+  .ucam-table thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .ucam-table tbody { display: block; }
+  .ucam-table tbody tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: var(--ucam-space-inline-sm);
+    row-gap: var(--ucam-space-inline-xs);
+    align-items: start;
+    padding-block: var(--ucam-space-inset-sm);
+    border-block-end: 1px solid var(--ucam-color-border-subtle);
+    background-image: none;
+  }
+  .ucam-table tbody tr > :is(th, td) {
+    display: block;
+    grid-column: 2;
+    padding: 0;
+    border: 0;
+    text-align: start;
+    white-space: normal;
+  }
+  /* A célula de seleção mede 1% e a de ações também, para a tabela em
+   * colunas; empilhadas, as duas voltam ao tamanho do conteúdo — senão a
+   * caixa cai em cima do avatar e as ações espremem contra o nome. */
+  .ucam-table tbody tr > .td--selecao { grid-column: 1; grid-row: 1; inline-size: auto; min-inline-size: 1.75rem; padding-block-start: 0.125rem; }
+  .ucam-table tbody tr > .td--acoes { grid-column: 3; grid-row: 1; inline-size: auto; justify-self: end; }
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes)::before {
+    content: attr(data-label);
+    display: block;
+    font-size: var(--ucam-typography-caption-font-size);
+    line-height: var(--ucam-typography-caption-line-height);
+    color: var(--ucam-color-text-secondary);
+  }
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):nth-child(1 of :not(.td--selecao)) {
+    font-weight: var(--ucam-typography-action-font-weight);
+  }
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):nth-child(1 of :not(.td--selecao))::before { content: none; }
+  .ucam-table tbody tr > :is(th, td):empty::before { content: none; }
+  .ucam-table tbody tr > .td--num { text-align: start; padding: 0; }
+  /* A linha marcada: o shape de 4px sai da última célula (que virou bloco no
+   * meio) e vai para a borda direita do bloco inteiro. */
+  .ucam-table tbody tr[aria-selected="true"] { position: relative; }
+  .ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child::after { content: none; }
+  .ucam-table tbody tr[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    inline-size: 0.25rem;
+    background: var(--ucam-color-action-primary-default);
+    pointer-events: none;
+  }
+  /* Coluna fixa não faz sentido empilhada. */
+  .ucam-table .ucam-col--fixa-inicio,
+  .ucam-table .ucam-col--fixa-fim { position: static; background-color: transparent; box-shadow: none; }
+}
+
 .ucam-table:has(thead th:nth-child(4 of :not([hidden]))) { --ucam-table-piso: 30rem; }
 .ucam-table:has(thead th:nth-child(5 of :not([hidden]))) { --ucam-table-piso: 40rem; }
 .ucam-table:has(thead th:nth-child(6 of :not([hidden]))) { --ucam-table-piso: 48rem; }
@@ -6175,7 +6288,14 @@ ${acima('nav-fixa')} {
   display: flex;
   flex-direction: column;
   min-block-size: 0;
-  overflow: hidden;
+  /* CLIP, não hidden (25/09/2026). O shell padrão tem min-block-size na
+   * altura da janela e CRESCE com o conteúdo: quem rola é a página. Com
+   * overflow: hidden o painel virava um contêiner de rolagem que nunca rola,
+   * e tudo que era sticky lá dentro — a barra de visão, o cabeçalho da tabela
+   * — grudava nele em vez de na janela: medido a 1280×700, barra a −228px
+   * com a página rolada 300. clip recorta o mesmo estouro sem virar
+   * contêiner. */
+  overflow: clip;
   /* O CHÃO do conteúdo, BRANCO desde 19/09/2026 (ADR-040). Ele foi cinza claro
    * frio por cinco dias (ADR-034) e voltou ao branco a pedido: um chão cinza
    * com cartão, tabela e indicador brancos por cima é o poço cinza que card,
@@ -8129,6 +8249,23 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   gap: var(--ucam-space-inline-sm);
 }
 
+/* SEM RÓTULO VISÍVEL NA BARRA COMPACTA (25/09/2026: "os filtros em cima das
+ * tabelas estão com label e fica confuso o alinhamento"). "Pesquisar
+ * natureza" ao lado de um campo que diz "Nome da natureza" e "Curso" ao lado
+ * de um select que diz "Todos os cursos" é o mesmo nome dito duas vezes, e
+ * rótulos de comprimentos diferentes desalinhavam a fileira. O rótulo fica
+ * no DOM para o leitor de tela (o tabelaScript embrulha o texto em sr-only)
+ * e o <label> fica com altura zero — NÃO vira sr-only ele mesmo, porque é o
+ * ::after dele que dá ao campo o alvo de 44px sob toque. O campo sem
+ * placeholder recebe o texto do rótulo como placeholder, pelo mesmo script. */
+.ucam-toolbar--compacta .ucam-field__label {
+  display: block;
+  block-size: 0;
+  overflow: visible;
+  margin: 0;
+}
+.ucam-toolbar--compacta .ucam-field { gap: 0; }
+
 /* Abaixo de 40rem o rótulo deitado não cabe: "Pesquisar setor" mais o campo
  * somam mais que a largura de um celular, e o campo encolhia até caber três
  * caracteres. O rótulo volta para cima, que é o arranjo padrão da ADR-004 —
@@ -8137,7 +8274,7 @@ ${abaixo('controle-deitado')} {
   .ucam-toolbar--compacta .ucam-field {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--ucam-space-stack-sm);
+    gap: 0;
     /* A linha inteira, e não os 245px do conteúdo: campo de busca a 245 numa
      * barra de 335 lia como inacabado (usuários, naturezas, a 375px). */
     flex: 1 1 100%;
@@ -10626,6 +10763,11 @@ ${acima('nav-fixa')} {
   border-block-end: 1px solid var(--ucam-color-border-subtle);
 }
 
+/* A faixa também gruda, com z maior: a barra gruda logo ABAIXO dela, em
+ * toda largura. Grudada em 0 ela ia por baixo da faixa assim que a página
+ * rolava (visto a 375px em 24/09/2026 e a 1280px em 25/09). */
+.ucam-appbar ~ .ucam-main .ucam-viewbar { inset-block-start: var(--ucam-appbar-height); }
+
 /* A fileira, e a medida que faz as três lerem como uma peça só. */
 .ucam-viewbar__fileira {
   display: flex;
@@ -10860,16 +11002,7 @@ ${abaixo('nav-fixa')} {
    * primeira fileira (as abas) sumia assim que a página rolava — medido a
    * 375px em 24/09/2026, scrollY 72 e as abas atrás da faixa. Ela gruda
    * logo abaixo do que já está grudado. */
-  .ucam-appbar ~ .ucam-main .ucam-viewbar { inset-block-start: var(--ucam-appbar-height); }
   .ucam-mobilebar ~ .ucam-main .ucam-viewbar { inset-block-start: 3.5rem; }
-  /* E para grudar de verdade: overflow: hidden faz do painel um contêiner
-   * de rolagem (que não rola), e sticky gruda em relação a ELE — nunca à
-   * janela. Medido a 768px: barra "sticky" a −156px com a página rolada
-   * 300. clip recorta o mesmo estouro horizontal sem virar contêiner. */
-  .ucam-main { overflow: clip; }
-  /* O corpo também: .ucam-corpo--pleno recorta com hidden e é ele quem
-   * segurava o Voltar à lista da caixa de entrada no telefone. */
-  .ucam-main .ucam-corpo { overflow: clip; }
   /* RESPIRO NO FIM DA BARRA. As fileiras centram o conteúdo em 44px e, com
    * um controle que mede os 44 inteiros (segmented, botão sob toque), o
    * controle assentava em cima do fio que fecha a barra — e em cima do fio
@@ -10950,11 +11083,17 @@ ${abaixo('nav-fixa')} {
  * porque a barra precisa atravessar o painel de ponta a ponta para que o fio
  * embaixo dela seja uma linha inteira. */
 
+/* Na moldura lateral, de altura exata, é o corpo que rola. */
+.ucam-shell--lateral .ucam-corpo { overflow-y: auto; }
+
 .ucam-corpo {
   flex: 1;
   min-block-size: 0;
   padding: var(--ucam-space-inset-lg);
-  overflow-y: auto;
+  /* clip pelo mesmo motivo do painel: no shell que cresce, o corpo nunca
+   * rola, e overflow-y: auto só servia para matar o sticky do cabeçalho da
+   * tabela. A moldura lateral, acima, devolve o auto. */
+  overflow-y: clip;
   /* O corpo é o CONTÊINER que o bloco de divisão consulta (ver .ucam-split):
    * é a largura dele, e não a da janela, que diz se o painel de apoio cabe ao
    * lado. Só o eixo inline — conter o bloco travaria a altura do rolo. */
@@ -11005,7 +11144,7 @@ ${abaixo('nav-fixa')} {
  * rola por dentro — não rola por si e não paga recuo: quem rola é o bloco. */
 .ucam-corpo--pleno {
   padding: 0;
-  overflow: hidden;
+  overflow: clip;
   display: flex;
   flex-direction: column;
 }

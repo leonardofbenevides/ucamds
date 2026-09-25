@@ -316,11 +316,11 @@
     "estrategias": {
       "scroll": {
         "quando": "Padrão. Muitas colunas, todas necessárias.",
-        "como": "Container com overflow-x auto, primeira coluna fixa, e o container recebe tabindex=0 e role=region para ser rolável por teclado."
+        "como": "Container com overflow-x auto, primeira coluna fixa, e o container recebe tabindex=0 e role=region para ser rolável por teclado. Trilho A desde 25/09/2026: o tabelaScript mede se a tabela cabe; cabendo, o invólucro não rola (data-rola=nao) e o cabeçalho gruda na página abaixo da faixa e da barra de visão; não cabendo, rola e a primeira coluna de dado, mais a de seleção, ficam fixas à esquerda."
       },
       "stack": {
         "quando": "Poucas colunas, leitura registro a registro.",
-        "como": "Abaixo do limiar de contêiner, cada linha vira um cartão de pares rótulo/valor. O rótulo vem de data-label na célula e é impresso por ::before — a marcação continua sendo uma table para o DOM e para o leitor de tela; só a pintura muda. Nada de remontar a lista em divs."
+        "como": "Abaixo do limiar de contêiner, cada linha vira um cartão de pares rótulo/valor. O rótulo vem de data-label na célula e é impresso por ::before — a marcação continua sendo uma table para o DOM e para o leitor de tela; só a pintura muda. Nada de remontar a lista em divs. Trilho A desde 25/09/2026: é o comportamento PADRÃO de toda tabela abaixo de container.tabela-empilhada (30rem do invólucro); o data-label é escrito pelo tabelaScript a partir do thead. 'priority' continua só em texto."
       },
       "priority": {
         "quando": "Muitas colunas com importância desigual.",
