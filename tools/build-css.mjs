@@ -1958,6 +1958,20 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   padding-block: 0.5rem;
 }
 
+/* A LINHA QUE ABRE O REGISTRO (25/09/2026: "em alguns casos poder clicar na
+ * linha da tabela"). É o rowClickable do contrato, e vale só onde a linha
+ * ABRE algo e já traz um link real na primeira célula — fila da isenção,
+ * usuários, protocolos anteriores, grupos do usuário. Não vale onde a linha
+ * não abre nada (trilha de auditoria, resultado de relatório, naturezas,
+ * cujo único destino é o formulário de edição). Com seleção em lote, a
+ * caixa continua marcando e o resto da linha abre, como numa caixa de
+ * e-mail. O
+ * clique na linha segue o link da primeira célula (tabelaScript); o link
+ * continua sendo o alvo de teclado e de leitor de tela, e os controles da
+ * linha (caixa, botões de ação) seguem com o próprio clique. */
+.ucam-table--linha-clicavel tbody tr { cursor: pointer; }
+.ucam-table--linha-clicavel tbody tr:hover > :is(th, td) { background-image: linear-gradient(var(--ucam-color-interaction-hover), var(--ucam-color-interaction-hover)); }
+
 .ucam-table tbody tr {
   transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
               background-image var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);

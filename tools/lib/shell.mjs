@@ -5035,6 +5035,36 @@ export const tabelaScript = `
     });
   }
 
+  /* A LINHA CLICÁVEL: o clique em qualquer ponto da linha que não seja um
+   * controle segue o link da primeira célula de dado. Ctrl/Cmd/Shift ou o
+   * botão do meio abrem em outra aba, como no próprio link. Texto
+   * selecionado não navega: quem arrasta para copiar um CPF não quer sair
+   * da tela. */
+  var CONTROLE = 'a, button, input, select, textarea, label, summary, [role="button"], [role="menuitem"], .ucam-menu';
+  function linkDaLinha(tr) {
+    var celulas = Array.prototype.filter.call(tr.children, function (c) {
+      return !c.classList.contains('td--selecao') && !c.classList.contains('th--selecao');
+    });
+    return celulas.length ? celulas[0].querySelector('a[href]') : null;
+  }
+  function segueLinha(e) {
+    if (!e.target.closest) return;
+    var tr = e.target.closest('.ucam-table--linha-clicavel tbody tr');
+    if (!tr || e.target.closest(CONTROLE)) return;
+    var sel = window.getSelection && String(window.getSelection());
+    if (sel) return;
+    var link = linkDaLinha(tr);
+    if (!link) return;
+    if (e.button === 1 || e.ctrlKey || e.metaKey || e.shiftKey) {
+      e.preventDefault();
+      window.open(link.href, '_blank', 'noopener');
+      return;
+    }
+    if (e.button === 0) link.click();
+  }
+  document.addEventListener('click', segueLinha);
+  document.addEventListener('auxclick', segueLinha);
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tudo); else tudo();
   var agendado = null;
   window.addEventListener('resize', function () {

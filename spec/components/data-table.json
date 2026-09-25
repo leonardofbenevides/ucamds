@@ -211,7 +211,7 @@
       "nome": "rowClickable",
       "tipo": "boolean",
       "default": "false",
-      "descricao": "Quando true, a linha inteira navega. EXIGE que a primeira célula contenha um link real — ver acessibilidade."
+      "descricao": "Quando true, a linha inteira navega. EXIGE que a primeira célula contenha um link real — ver acessibilidade. Trilho A desde 25/09/2026: .ucam-table--linha-clicavel no <table>; o tabelaScript segue o link da primeira célula de dado no clique em qualquer ponto que não seja controle, abre em outra aba com Ctrl/Cmd/Shift ou botão do meio, e não navega se houver texto selecionado. Só onde a linha ABRE um registro, não em tabela de leitura; com seleção em lote, a caixa segue marcando e o resto da linha abre."
     },
     {
       "nome": "zebra",
