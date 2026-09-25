@@ -129,7 +129,7 @@
   ],
   "limites": {
     "regras": [
-      "Não é botão. Se o status for clicável para filtrar, quem recebe o clique é um controle de filtro, não o badge.",
+      "Não é botão. Se o status for clicável para filtrar, quem recebe o clique é um controle de filtro, não o badge. EXCEÇÃO desde 25/09/2026 (.ucam-badge--acao, pedido do usuário: 'ao invés de ter um botão junto que quebra a linha, podia tornar clicável e ter a ação'): quando o estado tem UMA ação que o resolve — 'Falhou' e tentar de novo —, o selo é o <button> dela, com ícone de repetir no fim e nome acessível que começa pelo texto visível. Nunca para filtrar e nunca com mais de uma ação.",
       "Não usar para contagem — isso é Counter, componente distinto.",
       "Máximo de cinco tons em uso simultâneo numa mesma tabela; acima disso a cor deixa de discriminar.",
       "Não inventar tom por estado: o mapeamento estado do domínio para tom é decidido uma vez e documentado no módulo.",

@@ -115,7 +115,7 @@
     {
       "parte": "cell-support",
       "obrigatorio": false,
-      "descricao": "Apoio de célula em linha (.td--apoio): caption em tinta secundária ao lado do dado principal — a continuação de um grupo, o motivo de uma situação, o e-mail ao lado do nome. Não quebra no meio; quando não cabe, desce inteiro. Substitui o ucam-card__apoio em bloco dentro da célula, que fazia toda linha ter duas alturas (ADR-046)."
+      "descricao": "Apoio de célula em linha (.td--apoio): caption em tinta secundária ao lado do dado principal — a continuação de um grupo, o motivo de uma situação, o e-mail ao lado do nome. Não quebra no meio e, desde 25/09/2026, não desce: a célula fica em uma linha e a coluna alarga; se a tabela não cabe, ela rola com a primeira coluna fixa. Descer inteiro dava linhas de duas alturas alternadas na mesma tabela. No modo empilhado volta a quebrar. Substitui o ucam-card__apoio em bloco dentro da célula, que fazia toda linha ter duas alturas (ADR-046)."
     },
     {
       "parte": "selection-column",
@@ -125,7 +125,7 @@
     {
       "parte": "row-actions",
       "obrigatorio": false,
-      "descricao": "Coluna fixa à direita com ações por linha."
+      "descricao": "Coluna fixa à direita com ações por linha. Com ponteiro fino, a tinta das ações aparece só na linha apontada, na que tem foco dentro e na marcada (25/09/2026) — a coluna continua no layout, nada salta; sob toque ficam sempre visíveis. Numa linha clicável, a ação que só repete o destino do link da linha (a seta 'abrir') não entra: é uma segunda parada de Tab para o mesmo lugar."
     },
     {
       "parte": "empty",

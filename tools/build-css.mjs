@@ -1777,6 +1777,13 @@ ${selectChevronCss}
 .ucam-table thead .ucam-col--fixa-inicio,
 .ucam-table thead .ucam-col--fixa-fim { z-index: 3; }
 
+/* Quando o invólucro ROLA na horizontal ele vira contêiner de rolagem, e o
+ * cabeçalho grudado passa a medir o deslocamento a partir DELE: a soma da
+ * faixa com a barra de visão (197px) empurrava o cabeçalho para o meio da
+ * tabela, por cima das linhas (análise da isenção, 25/09/2026). No rolo o
+ * cabeçalho fica no topo da própria tabela. */
+.ucam-table-wrap:not([data-rola="nao"]) .ucam-table thead th { inset-block-start: 0; }
+
 /* O ROLO SÓ EXISTE QUANDO HÁ O QUE ROLAR. overflow-x: auto faz do invólucro
  * um contêiner de rolagem nos dois eixos, e um cabeçalho grudado dentro dele
  * gruda num rolo que não rola. O tabelaScript mede: cabe, e o invólucro fica
@@ -1838,19 +1845,35 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
    * caixa cai em cima do avatar e as ações espremem contra o nome. */
   .ucam-table tbody tr > .td--selecao { grid-column: 1; grid-row: 1; inline-size: auto; min-inline-size: 1.75rem; padding-block-start: 0.125rem; }
   .ucam-table tbody tr > .td--acoes { grid-column: 3; grid-row: 1; inline-size: auto; justify-self: end; }
+  /* FICHA, não pilha (25/09/2026): rótulo à esquerda e valor à direita na
+   * mesma linha. Rótulo em cima e valor embaixo gastava duas linhas por
+   * campo, e um registro da fila da isenção chegava a 250px de altura. */
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 38%) minmax(0, 1fr);
+    column-gap: var(--ucam-space-inline-sm);
+    align-items: baseline;
+  }
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes)::before {
     content: attr(data-label);
-    display: block;
     font-size: var(--ucam-typography-caption-font-size);
     line-height: var(--ucam-typography-caption-line-height);
     color: var(--ucam-color-text-secondary);
   }
+  /* O que a célula carrega vai inteiro para a coluna do valor. */
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) > * { grid-column: 2; justify-self: start; }
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):nth-child(1 of :not(.td--selecao)) {
     font-weight: var(--ucam-typography-action-font-weight);
   }
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):nth-child(1 of :not(.td--selecao))::before { content: none; }
   .ucam-table tbody tr > :is(th, td):empty::before { content: none; }
   .ucam-table tbody tr > .td--num { text-align: start; padding: 0; }
+  /* tbody na frente: este bloco vem ANTES das regras base da célula na
+   * folha, e com a mesma especificidade perderia para elas. */
+  .ucam-table tbody .td--pessoa__texto { flex-wrap: wrap; max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
+  .ucam-table tbody .td--pessoa__texto > * { flex: 0 1 auto; min-inline-size: 0; }
+  .ucam-table tbody .td--pessoa { white-space: normal; }
+  .ucam-table tbody tr > td:not(.td--selecao):nth-child(1 of :not(.td--selecao)):has(> .ucam-card__titulo) { min-inline-size: 0; }
   /* A linha marcada: o shape de 4px sai da última célula (que virou bloco no
    * meio) e vai para a borda direita do bloco inteiro. */
   .ucam-table tbody tr[aria-selected="true"] { position: relative; }
@@ -1908,7 +1931,11 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
    * texto) é o alvo de ponteiro que a WCAG 2.5.5 pede para a ação que vive
    * na linha — e é a densidade das referências, que respiram sem virar
    * lista de celular. */
-  padding: 0.8125rem var(--ucam-space-inset-md);
+  /* 12px na horizontal, não 16 (25/09/2026). Com 16 de cada lado, seis
+   * colunas gastavam 192px só de recuo, e as tabelas que passavam da largura
+   * por 36 a 53px — fila da isenção, Usuários, Parâmetros — rolavam por isso.
+   * 12 é o recuo das referências e o da densidade compacta. */
+  padding: 0.8125rem var(--ucam-space-inset-sm);
   border-block-end: 1px solid var(--ucam-color-border-subtle);
 }
 
@@ -1970,7 +1997,6 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * continua sendo o alvo de teclado e de leitor de tela, e os controles da
  * linha (caixa, botões de ação) seguem com o próprio clique. */
 .ucam-table--linha-clicavel tbody tr { cursor: pointer; }
-.ucam-table--linha-clicavel tbody tr:hover > :is(th, td) { background-image: linear-gradient(var(--ucam-color-interaction-hover), var(--ucam-color-interaction-hover)); }
 
 .ucam-table tbody tr {
   transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
@@ -2146,14 +2172,23 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   vertical-align: top;
   margin-inline-end: var(--ucam-space-inline-sm);
 }
+/* UMA LINHA, SEMPRE (25/09/2026). O apoio ao lado do nome é da ADR-046 —
+ * para toda linha ter a mesma altura —, mas ele DESCIA quando não cabia, e
+ * a tabela ficava com linhas de duas alturas alternadas: na fila da isenção
+ * o número da inscrição ao lado do nome numa linha e embaixo na seguinte.
+ * Agora não desce: a coluna alarga até caber, e se a tabela inteira não
+ * couber ela rola com a primeira coluna fixa. No telefone o modo empilhado
+ * volta a quebrar. */
+.ucam-table .td--pessoa { white-space: nowrap; }
+.ucam-table .td--pessoa__texto > * { flex: none; }
 .ucam-table .td--pessoa__texto {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: baseline;
   column-gap: var(--ucam-space-inline-sm);
   vertical-align: top;
   line-height: 1.5rem;
-  max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm));
+  max-inline-size: none;
 }
 /* Como item de flex, o link vira bloco e o recuo de alvo (4px + 4px) passa a
  * contar na altura: a linha compacta fechava em 48 em vez de 40. A caixa de
@@ -2166,6 +2201,25 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 /* APOIO DE CÉLULA, em linha: a continuação de um grupo, o motivo de uma
  * situação, o e-mail ao lado do nome. Era ucam-card__apoio em bloco dentro da
  * célula, e toda linha da tabela ganhava duas alturas por causa de duas. */
+.ucam-table .td--num,
+.ucam-table .th--num { inline-size: 1%; }
+/* O NOME DO REGISTRO TEM PISO. Era ele que cedia largura para as colunas de
+ * número — "Introdução ao / Estudo do / Direito" em três linhas na análise
+ * da isenção, com as colunas de dias sobrando largas. 8rem segura o nome em
+ * no máximo duas linhas sem fazer tabela que cabe passar a rolar (10rem fez,
+ * e o nome sem quebra também). */
+.ucam-table tbody tr > td:not(.td--selecao):nth-child(1 of :not(.td--selecao)):has(> .ucam-card__titulo) { min-inline-size: 8rem; }
+/* SELO EM CIMA, APOIO EMBAIXO — em TODA linha (25/09/2026: "organize melhor
+ * pra não ficar igual a esse 'Ementa parcial: 61%'"). O apoio vinha colado no
+ * selo, sem espaço, e subia para o lado dele quando cabia e descia quando não:
+ * "Revisar" com o texto grudado numa linha, "Isentar" com ele embaixo na
+ * seguinte. Os dois numa linha só foi tentado e fazia a análise rolar na
+ * horizontal; duas linhas SEMPRE deixam a coluna com uma forma só. */
+.ucam-table td > .ucam-badge + .td--apoio {
+  display: block;
+  margin-block-start: var(--ucam-space-inline-xs);
+}
+
 .ucam-table .td--apoio {
   font-size: var(--ucam-typography-caption-font-size);
   color: var(--ucam-color-text-secondary);
@@ -2226,6 +2280,20 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table .td--acoes > .ucam-cluster {
   flex-wrap: nowrap;
   justify-content: flex-end;
+}
+
+/* AS AÇÕES DA LINHA APARECEM QUANDO A LINHA É APONTADA (25/09/2026: "algumas
+ * estão muito poluídas"). Dois ícones em cada uma das trinta linhas de
+ * Usuários eram sessenta ícones iguais numa coluna — e só um deles interessa
+ * de cada vez. Com ponteiro fino a coluna some e volta sob o ponteiro, com
+ * foco dentro da linha (o teclado chega a elas) e na linha marcada. A coluna
+ * não sai do layout: some só a tinta, e nada salta. Sob toque, onde não há
+ * "apontar", elas ficam sempre visíveis. */
+@media (hover: hover) and (pointer: fine) {
+  .ucam-table tbody tr > .td--acoes > * {
+    transition: opacity var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+  }
+  .ucam-table tbody tr:not(:hover, :focus-within, [aria-selected="true"]) > .td--acoes > * { opacity: 0; }
 }
 
 /* A TINTA DESTRUTIVA espera o ponteiro.
@@ -8169,7 +8237,10 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * então não há mínimo para estourar a caixa. */
 .ucam-segmented--md { block-size: var(--ucam-size-control-md); }
 .ucam-segmented--sm { block-size: var(--ucam-size-control-sm); }
-.ucam-segmented--sm button { padding: 0 0.6rem; }
+/* 0.5rem, não 0.6: 0.6rem são 9,6px, e o texto do segmento assentava em
+ * meio-pixel (25/09/2026). Inteiro também devolve à tabela da análise da
+ * isenção os ~10px que a faziam rolar. */
+.ucam-segmented--sm button { padding: 0 0.5rem; }
 
 /* ------------------------------------------------------ ação em lote --- */
 /* Contrato: data-table.json, prop selectable="multiple".
@@ -8465,6 +8536,33 @@ ${abaixo('controle-deitado')} {
   font-size: var(--ucam-typography-caption-font-size);
   white-space: nowrap;
 }
+
+/* O SELO QUE É A AÇÃO QUE O RESOLVE (25/09/2026: "ao invés de ter um botão
+ * junto que quebra a linha, podia tornar clicável e ter a ação; evite quebrar
+ * a linha de tabela"). Exceção escrita no contrato do badge: quando o estado
+ * tem UMA ação de resolução — falhou, tentar de novo —, o selo é o botão
+ * dela. O ícone de repetir no fim é a pista de que ele age; o nome acessível
+ * começa pelo texto visível ("Falhou. Tentar a análise de novo", 2.5.3).
+ * Alvo de 24px por extensor (2.5.8) e de 44 sob toque, sem crescer o selo. */
+.ucam-badge--acao {
+  position: relative;
+  font: inherit;
+  font-size: var(--ucam-typography-caption-font-size);
+  cursor: pointer;
+  transition: filter var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+.ucam-badge--acao::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block: calc((var(--ucam-alvo-min, 1.5rem) - var(--ucam-size-marcador)) / -2);
+}
+.ucam-badge--acao:hover { filter: brightness(0.94); }
+.ucam-badge--acao:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: var(--ucam-focus-ring-offset);
+}
+.ucam-badge__acao { margin-inline-start: 0.125rem; opacity: 0.8; }
 
 .ucam-chip button {
   display: inline-flex;
