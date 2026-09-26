@@ -2255,14 +2255,14 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * do selo já usa: o argumento do currentColor (o ponto some contra o próprio
  * preenchimento) deixa de valer quando não há preenchimento. O selo plano da
  * ADR-050 continua plano: não casa aqui. */
+/* REVISTO em 25/09/2026 ("coloque mais cor de estado de alguma forma"): o
+ * ponto de 6px sozinho não carregava o estado — a coluna inteira lia como
+ * texto cinza. A pastilha tinta volta, com o tom no fundo e no texto, e o
+ * ponto saturado fica dentro dela. Continua UM portador de cor por célula
+ * (ADR-022), e o selo plano da ADR-050 segue plano para o estado da maioria. */
 .ucam-table .ucam-badge:not(.ucam-badge--plain) {
-  background: transparent;
-  border-color: transparent;
-  padding-inline: 0;
-  color: var(--ucam-color-text-primary);
   font-weight: var(--ucam-typography-body-font-weight);
-  font-size: inherit;
-  gap: var(--ucam-space-inline-sm);
+  gap: var(--ucam-space-inline-xs);
 }
 .ucam-table .ucam-badge--info    .ucam-badge__ponto { background: var(--ucam-color-feedback-info-border); }
 .ucam-table .ucam-badge--success .ucam-badge__ponto { background: var(--ucam-color-feedback-success-border); }
@@ -2339,7 +2339,16 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table .td--pessoa__nome {
   font-weight: var(--ucam-typography-label-font-weight);
   color: var(--ucam-color-text-primary);
+  /* SEM SUBLINHADO EM REPOUSO (25/09/2026: "os nomes não precisam estar com
+   * linha embaixo"). Numa coluna de nomes, oito sublinhados são oito riscos
+   * repetindo o que a linha clicável já diz; o nome se distingue pelo peso e
+   * pela tinta primária, e o sublinhado volta no hover e no foco, onde
+   * confirma o alvo. */
+  text-decoration: none;
 }
+.ucam-table .td--pessoa__nome:hover,
+.ucam-table .td--pessoa__nome:focus-visible,
+.ucam-table--linha-clicavel tbody tr:hover .td--pessoa__nome { text-decoration: underline; }
 /* APOIO DE CÉLULA, em linha: a continuação de um grupo, o motivo de uma
  * situação, o e-mail ao lado do nome. Era ucam-card__apoio em bloco dentro da
  * célula, e toda linha da tabela ganhava duas alturas por causa de duas. */
@@ -2356,11 +2365,22 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 /* Recuo lateral de 8px, o degrau inteiro abaixo dos 12: seis colunas
  * devolvem 48px, o que tira a rolagem a 768px e a reduz a 1024 com a
  * navegação fixa (área de 666px). */
-.ucam-table[data-apertada] :is(th, td) { padding-inline: var(--ucam-space-inline-sm); }
+/* REVOGADO em 25/09/2026 ("cuidado do padding padrão"): o recuo de 8px
+ * deixava o texto encostado no fio da coluna. O arranjo apertado mantém os
+ * 12px da tabela; quem cede largura é o ícone de tipo do cabeçalho, logo
+ * abaixo. */
 /* O rótulo da coluna também pode ir a duas linhas: "Requerimentos" e
  * "Unidades atendidas" com o ícone de ordenar seguravam 140 e 169px. */
-.ucam-table[data-apertada] thead th,
-.ucam-table[data-apertada] thead .ucam-table__coluna { white-space: normal; text-align: start; }
+/* O RÓTULO DA COLUNA NÃO QUEBRA (25/09/2026: "evite deixar o header
+ * quebrado"). Quebrado, "Período" caía para baixo do ícone e "Solicitada em"
+ * ia a duas linhas — a faixa de rótulo subia para 72px. Apertada, quem sai é o
+ * ícone de TIPO (decorativo, ADR-051); o indicador de ordem fica. */
+.ucam-table[data-apertada] thead .ucam-table__icone { display: none; }
+/* O NOME NÃO QUEBRA NO MEIO: apertada, a inscrição desce para baixo do nome,
+ * mas o nome fica numa linha — "Ana / Paula / Rocha" em três linhas a 1024px
+ * era o que a coluna fazia para caber. Se nem assim couber, a tabela rola
+ * com a primeira coluna fixa. */
+.ucam-table[data-apertada] .td--pessoa__texto > .td--pessoa__nome { white-space: nowrap; }
 .ucam-table[data-apertada] .td--pessoa__texto { flex-direction: column; align-items: flex-start; row-gap: 0; }
 .ucam-table[data-apertada] .td--pessoa__texto > * { flex: none; white-space: normal; }
 /* O avatar fica AO LADO do bloco em toda linha (a célula não quebra); quem

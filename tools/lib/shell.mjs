@@ -2027,11 +2027,30 @@ export const estadoScript = `
   // O texto que ORDENA: data em dd/mm/aaaa vira aaaammdd, e travessao ou
   // celula vazia valem como ausente — que vai para o FIM nas duas direcoes
   // (contrato data-table: sort).
+  //
+  // A CÉLULA PODE DIZER O PRÓPRIO VALOR: data-valor, ou um time[datetime]
+  // dentro dela. É o caminho de "hoje, 08h12", "ontem" e do nome do mês, que
+  // pelo texto ordenariam em ordem alfabética.
   function colunaValor(td) {
-    var v = td ? td.textContent.replace(/\\s+/g, ' ').trim() : '';
+    if (td && td.hasAttribute('data-valor')) return td.getAttribute('data-valor');
+    var tm = td && td.querySelector('time[datetime]');
+    if (tm) return tm.getAttribute('datetime');
+    // Célula de pessoa: ordena pelo NOME, não pelo texto inteiro — que começa
+    // pelas iniciais do avatar ("JCJoão Cutrim").
+    var nome = td && td.querySelector('.td--pessoa__nome');
+    var v = (nome || td) ? (nome || td).textContent.replace(/\\s+/g, ' ').trim() : '';
     if (v === '\\u2014' || v === '\\u2013' || v === '-') return '';
     var d = /^(\\d{2})\\/(\\d{2})\\/(\\d{4})/.exec(v);
     return d ? d[3] + d[2] + d[1] + v.slice(10) : v;
+  }
+
+  // NÚMERO COM SINAL, MOEDA E PORCENTAGEM comparados como número: pelo texto,
+  // "+ R$ 1.240,00" vinha antes de "+ R$ 90,00" e a saída (com o menos
+  // tipográfico) ia para o fim sem ordem nenhuma. NaN quando não é número.
+  function colunaNumero(v) {
+    var s = String(v).replace(/R\\$|%|\\s/g, '').replace('\\u2212', '-');
+    if (!/^[+-]?[\\d.]+(,\\d+)?$/.test(s)) return NaN;
+    return Number(s.replace(/\\./g, '').replace(',', '.'));
   }
 
   function colunaOrdenar(tabela, th, dir) {
@@ -2048,7 +2067,9 @@ export const estadoScript = `
       var vb = colunaValor(cel(b));
       if (!va && vb) return 1;
       if (va && !vb) return -1;
-      var r = cmp.compare(va, vb);
+      var na = colunaNumero(va);
+      var nb = colunaNumero(vb);
+      var r = !isNaN(na) && !isNaN(nb) ? na - nb : cmp.compare(va, vb);
       return dir === 'desc' ? -r : r;
     });
     linhas.forEach(function (tr) { tb.appendChild(tr); });

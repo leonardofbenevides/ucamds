@@ -112,7 +112,7 @@
     {
       "parte": "cell",
       "obrigatorio": true,
-      "descricao": "Célula de dado. Fio vertical border.subtle entre ela e a vizinha (ADR-051), menos logo depois da coluna de seleção. Selo dentro da célula é ponto e palavra, sem pastilha."
+      "descricao": "Célula de dado. Fio vertical border.subtle entre ela e a vizinha (ADR-051), menos logo depois da coluna de seleção. Selo dentro da célula é pastilha tinta com ponto: o tom no fundo e no texto (ADR-051, revista em 25/09/2026). O nome da célula de pessoa não é sublinhado em repouso; o sublinhado volta no hover e no foco."
     },
     {
       "parte": "cell-person",
@@ -287,7 +287,7 @@
       "type": {
         "tipo": "'text' | 'id' | 'number' | 'date' | 'currency' | 'status' | 'person' | 'actions'",
         "default": "'text'",
-        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge, que dentro da tabela perde a pastilha e vira ponto e palavra (ADR-051); number e currency recebem tabular-nums e alinham à direita. id é a coluna de identificador — matrícula, número de documento — em .ucam-id: um degrau de peso, sem tabular-nums e alinhada ao início (ADR-047). person é a célula de pessoa com avatar, nome e apoio (ADR-046)."
+        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge em pastilha tinta com ponto (ADR-051, revista em 25/09/2026); number e currency recebem tabular-nums e alinham à direita. id é a coluna de identificador — matrícula, número de documento — em .ucam-id: um degrau de peso, sem tabular-nums e alinhada ao início (ADR-047). person é a célula de pessoa com avatar, nome e apoio (ADR-046)."
       },
       "width": {
         "tipo": "'auto' | 'min' | number",

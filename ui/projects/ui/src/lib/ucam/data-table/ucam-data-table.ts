@@ -254,8 +254,8 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                       />
                     } @else if (col.type === 'status') {
                       @if (comoStatus(linha[col.key]); as s) {
-                        <!-- Ponto e palavra (ADR-051): a folha abaixo tira a
-                             pastilha do selo dentro da tabela. -->
+                        <!-- Pastilha tinta com ponto (ADR-051, revista em
+                             25/09): o tom no fundo e no texto. -->
                         <ucam-badge variant="dot" [label]="s.label" [tone]="s.tone" />
                       }
                     } @else if (col.type === 'id') {
@@ -370,15 +370,11 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       vertical-align: -0.1875rem;
       margin-inline-end: var(--ucam-space-inline-sm);
     }
-    /* Situação em ponto e palavra (ADR-051), espelho da folha do Trilho A. */
+    /* Situação em pastilha tinta com ponto (ADR-051, revista em 25/09:
+       "coloque mais cor de estado"), espelho da folha do Trilho A. */
     .ucam-table ucam-badge:not([data-variant='plain']) > z-badge {
-      background: transparent;
-      border-color: transparent;
-      padding-inline: 0;
-      color: var(--ucam-color-text-primary);
       font-weight: var(--ucam-typography-body-font-weight);
-      font-size: inherit;
-      gap: var(--ucam-space-inline-sm);
+      gap: var(--ucam-space-inline-xs);
     }
     .ucam-table ucam-badge[data-tone='info'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-info-border); }
     .ucam-table ucam-badge[data-tone='success'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-success-border); }
@@ -405,7 +401,10 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table .td--pessoa > ucam-avatar { display: inline-flex; vertical-align: top; margin-inline-end: var(--ucam-space-inline-sm); }
     .ucam-table .td--pessoa__texto { display: inline-flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--ucam-space-inline-sm); vertical-align: top; line-height: 1.5rem; max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
     .ucam-table .td--pessoa__texto > .ucam-link { padding-block: 0; }
-    .ucam-table .td--pessoa__nome { font-weight: var(--ucam-typography-label-font-weight); color: var(--ucam-color-text-primary); }
+    .ucam-table .td--pessoa__nome { font-weight: var(--ucam-typography-label-font-weight); color: var(--ucam-color-text-primary); text-decoration: none; }
+    /* Sublinhado só no hover e no foco: em repouso o nome se distingue pelo peso. */
+    .ucam-table .td--pessoa__nome:hover,
+    .ucam-table .td--pessoa__nome:focus-visible { text-decoration: underline; }
     .ucam-table .td--apoio { font-size: var(--ucam-typography-caption-font-size); color: var(--ucam-color-text-secondary); white-space: nowrap; }
     .ucam-table__col-min { inline-size: 1%; white-space: nowrap; }
 

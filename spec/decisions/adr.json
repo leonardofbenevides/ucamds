@@ -1040,7 +1040,8 @@
         "Ícone de coluna é um terceiro ícone no cabeçalho ordenável, ao lado do indicador de ordem; só o indicador acende na coluna ordenada.",
         "Três ícones novos no conjunto, só para cabeçalho: hash (número e identificador), circleDot (situação) e text (texto que nomeia ou descreve).",
         "O Trilho B deixa de pintar a linha marcada de action.primary.subtle e passa ao shape de 4px na borda direita, que a ADR-046 já tinha fixado para o Trilho A em 25/09.",
-        "Fica de fora: ações da linha só no hover. Continuam visíveis em repouso."
+        "Fica de fora: ações da linha só no hover. Continuam visíveis em repouso.",
+        "REVISTA no mesmo dia (\"coloque mais cor de estado de alguma forma\", sobre a fila da isenção): o ponto de 6px sozinho não carregava o estado, e a coluna lia como texto cinza. A situação volta à pastilha tinta — tom no fundo e no texto, ponto saturado dentro —, um portador por célula (ADR-022); o selo plano da ADR-050 continua para o estado da maioria. Junto: o nome da célula de pessoa perde o sublinhado em repouso, e o arranjo apertado mantém o recuo de 12px e o rótulo do cabeçalho numa linha, tirando o ícone de tipo em vez de quebrar o texto."
       ],
       "afeta": [
         "data-table",
