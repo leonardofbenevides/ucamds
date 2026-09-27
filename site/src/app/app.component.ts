@@ -1081,7 +1081,10 @@ const normaliza = (s: string) =>
        contra uma classe e um tipo. */
     .grupo > .grupo-categoria {
       margin: 1rem 0 0.25rem;
-      padding-inline-start: calc(var(--gutter) - 0.55rem);
+      /* O mesmo recuo do TEXTO do item (.nav a: 0.55rem). Era
+         calc(var(--gutter) - 0.55rem), que com gutter de 1.5rem dava 0.95rem:
+         a categoria ficava 6px para dentro da coluna que ela encabeça. */
+      padding-inline-start: 0.55rem;
       font-size: 0.6875rem;
       font-weight: 650;
       letter-spacing: 0.06em;
