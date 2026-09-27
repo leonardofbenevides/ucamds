@@ -46,7 +46,7 @@ const LARGURAS = [
   template: `
     @if (dados(); as d) {
       <ucam-page-header
-        [secao]="d.projeto.nome"
+        [secao]="d.tela.perfil ? d.projeto.nome + ' · ' + d.tela.perfil : d.projeto.nome"
         [titulo]="d.tela.nome"
         [lede]="d.tela.descricao"
       />
@@ -135,6 +135,10 @@ const LARGURAS = [
             </dd>
             <dt>Sistema</dt>
             <dd>{{ d.projeto.nome }}</dd>
+            @if (d.tela.perfil) {
+              <dt>Quem vê</dt>
+              <dd>{{ d.tela.perfil }}</dd>
+            }
             <dt>Stack hoje</dt>
             <dd>{{ d.projeto.stack_atual }}</dd>
             <dt>Evidência</dt>

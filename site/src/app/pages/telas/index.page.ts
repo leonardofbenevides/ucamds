@@ -68,6 +68,9 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
                 ></iframe>
               </div>
               <div class="corpo">
+                @if (t.perfil) {
+                  <p class="perfil small"><span class="rotulo">Quem vê</span>{{ t.perfil }}</p>
+                }
                 <h3>{{ t.nome }}</h3>
                 <p class="small muted">{{ t.descricao }}</p>
                 <p class="rodape small">
@@ -89,6 +92,9 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
               <thead>
                 <tr>
                   <th scope="col">Tela</th>
+                  @if (temPerfil(p)) {
+                    <th scope="col">Quem vê</th>
+                  }
                   <th scope="col">Chega de</th>
                   <th scope="col">Leva a</th>
                   <th scope="col">Age na tela</th>
@@ -101,6 +107,9 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
                     <th scope="row">
                       <a [routerLink]="'/telas/' + p.id + '/' + t.id">{{ t.nome }}</a>
                     </th>
+                    @if (temPerfil(p)) {
+                      <td>{{ t.perfil ?? '—' }}</td>
+                    }
                     <td>{{ nomes(t.fluxos?.chega_de) }}</td>
                     <td>{{ acoes(t, 'a') }}</td>
                     <td>{{ acoes(t, 'c') }}</td>
@@ -297,6 +306,12 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
       padding: 0.9rem 1.1rem 1.1rem;
       flex: 1;
     }
+    /* Quem vê a tela vem ANTES do nome: num sistema com dois lados, as telas
+       do candidato e as da coordenação têm o mesmo título na trilha, e o
+       nome da tela sozinho não diz de que lado do balcão ela está. */
+    .perfil {
+      color: var(--ucam-color-text-secondary);
+    }
     .corpo h3 {
       margin: 0 0 0.35rem;
       font-size: 1rem;
@@ -377,6 +392,11 @@ export default class TelasPage {
         return (tela && telaPorId(projeto, tela)?.tela.nome) || id;
       })
       .join(', ');
+  }
+
+  /** A coluna Quem vê só existe no sistema que declara perfil em alguma tela. */
+  protected temPerfil(p: { templates: readonly Tela[] }): boolean {
+    return p.templates.some((t) => t.perfil);
   }
 
   protected acoes(t: Tela, classe: AcaoFluxo['classe']): string {

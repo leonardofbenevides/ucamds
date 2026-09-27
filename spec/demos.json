@@ -40,9 +40,9 @@
       },
       "exemplos": [
         {
-          "titulo": "Iniciais identificam; clipart não",
-          "descricao": "O modal Funcionário do Protocolo usa o mesmo desenho genérico para toda pessoa. Ocupa espaço e não distingue ninguém.",
-          "preview": "<div style='display:grid;grid-template-columns:1fr 1fr;gap:2rem'><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes</p><div style='display:flex;gap:.75rem'><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border:1px solid #ccc;background:#eee;color:#999'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border:1px solid #ccc;background:#eee;color:#999'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border:1px solid #ccc;background:#eee;color:#999'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span></div></div><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois</p><div style='display:flex;gap:.75rem'><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:13px;font-weight:650'>LB</span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:13px;font-weight:650'>AS</span><span style='display:inline-flex;align-items:center;justify-content:center;inline-size:40px;block-size:40px;border-radius:999px;background:var(--ucam-color-action-primary-subtle);color:var(--ucam-color-action-primary-default);font-size:13px;font-weight:650'>MC</span></div></div></div>",
+          "titulo": "Iniciais distinguem as pessoas",
+          "descricao": "Cada pessoa com as próprias iniciais, no círculo da marca: três funcionários na mesma lista se distinguem sem foto e sem desenho genérico.",
+          "preview": "<div style='display:flex;gap:.75rem'><span class='ucam-avatar' role='img' aria-label='Leonardo Benevides'>LB</span><span class='ucam-avatar' role='img' aria-label='Ana de Souza'>AS</span><span class='ucam-avatar' role='img' aria-label='Marina Costa'>MC</span></div>",
           "codigo": "<ucam-avatar [name]=\"funcionario.nome\" [photoUrl]=\"funcionario.foto\" />"
         }
       ]
@@ -285,9 +285,9 @@
       },
       "exemplos": [
         {
-          "titulo": "O que ele substitui",
-          "descricao": "A tela de Análise de Requerimento mostra dado em campo desabilitado: caixa cinza, borda de input e cursor bloqueado para informação que ninguém pretende editar. O último par acima também prova a outra regra — ausência vira travessão, nunca célula vazia.",
-          "preview": "<div style='display:flex;gap:1.5rem;flex-wrap:wrap'><div><p class='ucam-descricao__rotulo' style='margin-block-end:.5rem'>Antes</p><div class='ucam-field'><label class='ucam-field__label'>Natureza</label><input class='ucam-input' value='Acadêmico' disabled></div></div><div><p class='ucam-descricao__rotulo' style='margin-block-end:.5rem'>Depois</p><dl class='ucam-descricao ucam-descricao--1'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Natureza</dt><dd class='ucam-descricao__valor'>Acadêmico</dd></div></dl></div></div>",
+          "titulo": "Dado para ler, não para editar",
+          "descricao": "Informação que ninguém vai editar sai como par de rótulo e valor: sem caixa, sem borda de campo e sem cursor bloqueado.",
+          "preview": "<dl class='ucam-descricao ucam-descricao--1'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Natureza</dt><dd class='ucam-descricao__valor'>Acadêmico</dd></div></dl>",
           "codigo": "<!-- antes -->\n<ucam-text-field label=\"Natureza\" value=\"Acadêmico\" disabled />\n\n<!-- depois -->\n<ucam-description-list [items]=\"[{ label: 'Natureza', value: 'Acadêmico' }]\" />"
         },
         {
@@ -490,9 +490,9 @@
       },
       "exemplos": [
         {
-          "titulo": "O que ele unifica",
-          "descricao": "O Protocolo tem três posições para ação: NOVO em texto cinza no topo de uma tela, botão acima da tabela em outra, e SALVAR no rodapé do card numa terceira.",
-          "preview": "<div style='display:grid;gap:1rem'><div style='padding:.75rem;border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-lg)'><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes — ação como texto cinza</p><div style='display:flex;justify-content:space-between;align-items:baseline;border-block-end:1px solid #ddd;padding-block-end:.5rem'><strong style='font-size:1.05rem'>Setor</strong><span style='font-size:.7rem;color:#777;letter-spacing:.05em'>NOVO&nbsp;&nbsp;&nbsp;PESQUISAR</span></div></div><div style='padding:.75rem;border:1px solid var(--ucam-color-border-subtle);border-radius:var(--ucam-radius-lg)'><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois — ação como ação</p><div class='ucam-page-header' style='margin:0;padding-block-end:.5rem'><h3 class='ucam-page-header__title' style='font-size:1.15rem'>Setores</h3><button class='ucam-btn ucam-btn--primary ucam-btn--sm'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Novo setor</button></div></div></div>",
+          "titulo": "A ação ao lado do título",
+          "descricao": "A ação que cria fica à direita do título, como botão, e no mesmo lugar em todas as telas.",
+          "preview": "<div class='ucam-page-header' style='margin:0;padding-block-end:.5rem'><h3 class='ucam-page-header__title' style='font-size:1.15rem'>Setores</h3><button class='ucam-btn ucam-btn--primary ucam-btn--sm'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Novo setor</button></div>",
           "codigo": "<!-- uma posição para ação em todo o sistema -->\n<ucam-page-header title=\"Setores\">\n  <ucam-button variant=\"primary\" iconStart=\"plus\">Novo setor</ucam-button>\n</ucam-page-header>"
         }
       ]
@@ -588,9 +588,9 @@
       },
       "exemplos": [
         {
-          "titulo": "O peso sai da cor",
-          "descricao": "A barra cinza-escuro do legado dá à seção mais peso visual que aos cartões que ela agrupa. A hierarquia passa a vir de tipografia e de um fio.",
-          "preview": "<div style='display:grid;gap:1rem'><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes</p><div style='background:#5A5A5A;color:#fff;padding:.35rem .75rem;font-size:.72rem;letter-spacing:.05em'>RIO</div></div><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois</p><div style='display:flex;align-items:baseline;gap:.5rem;border-block-end:1px solid var(--ucam-color-border-subtle);padding-block-end:.35rem'><h4 style='font-size:.95rem;font-weight:650;margin:0'>Rio de Janeiro</h4></div></div></div>",
+          "titulo": "Hierarquia por tipografia e fio",
+          "descricao": "O título pesa pela tipografia e se separa do conteúdo por um fio; a contagem ao lado diz quantos itens a seção agrupa.",
+          "preview": "<div style='border-block-end:1px solid var(--ucam-color-border-subtle);padding-block-end:.35rem'><h4 class='ucam-section__title' style='margin:0'>Rio de Janeiro <span class='ucam-section__contagem'>13 sistemas</span></h4></div>",
           "codigo": "<ucam-section-bar title=\"Rio de Janeiro\" />"
         }
       ]
@@ -717,9 +717,9 @@
       },
       "exemplos": [
         {
-          "titulo": "O que ele substitui",
-          "descricao": "À esquerda, o controle do legado: um botão mostrando NÃO, sem dizer se esse é o estado atual ou o que acontece ao clicar. À direita, o estado é inequívoco.",
-          "preview": "<div style='display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start'><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Antes</p><div style='display:flex;align-items:center;gap:.6rem'><span style='font-size:.8rem'>Mostrar requerimentos de nível abaixo do meu</span><span style='background:#E8E8E8;color:#444;padding:.35rem .9rem;font-size:.75rem;border:1px solid #ccc'>NÃO</span></div></div><div><p class='ucam-field__hint' style='margin:0 0 .5rem'>Depois</p><label class='ucam-switch'><input type='checkbox' id='sw4'><span class='ucam-check__label'>Mostrar requerimentos de nível abaixo do meu</span></label></div></div>",
+          "titulo": "O estado se lê no controle",
+          "descricao": "Ligado ou desligado aparece no próprio interruptor, e o rótulo diz o que ele controla — sem botão escrito NÃO que não diz se é o estado ou a ação.",
+          "preview": "<label class='ucam-switch'><input type='checkbox' id='sw4'><span class='ucam-check__label'>Mostrar requerimentos de nível abaixo do meu</span></label>",
           "codigo": "<!-- antes: par de botões, estado ambíguo -->\n<!-- depois -->\n<ucam-switch label=\"Mostrar requerimentos de nível abaixo do meu\" [(ngModel)]=\"incluirAbaixo\" />"
         }
       ]

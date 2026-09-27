@@ -781,6 +781,12 @@ export interface Layouts {
 export interface Tela {
   id: string;
   nome: string;
+  /**
+   * Quem vê a tela, quando o sistema tem mais de um lado ("Coordenação",
+   * "Candidato"). Sem ele, duas telas com o mesmo título e a mesma trilha
+   * não dizem de que lado do balcão estão.
+   */
+  perfil?: string;
   padrao: string;
   origem: string;
   descricao: string;

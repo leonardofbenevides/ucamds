@@ -111,6 +111,16 @@ let seq = 0;
       color: var(--ucam-color-text-primary);
     }
 
+    /* O VÃO entre título e contagem. No Trilho A ele é o espaço do próprio
+       texto ("Favoritos <span>5 fixados</span>"); aqui o Angular apaga o
+       espaço entre elementos, e o número colava no título ("Rio de
+       Janeiro13"). O gatilho já tinha gap; o título simples, não. */
+    ucam-section-bar .ucam-section__title:not(:has(> .ucam-section__gatilho)) {
+      display: flex;
+      align-items: baseline;
+      gap: var(--ucam-space-inline-sm);
+    }
+
     ucam-section-bar .ucam-section__gatilho {
       display: inline-flex;
       align-items: center;
