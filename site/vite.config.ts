@@ -129,8 +129,20 @@ export default defineConfig(() => ({
     // .vercel/output/static SEM o config.json que a Build Output API exige —
     // uma saída que parece pronta e a Vercel recusa. Deixando o padrão, os
     // arquivos vão para dist/analog/public e o vercel.json aponta para lá.
+    //
+    // "Deixando o padrão" só vale FORA da Vercel: lá a variável VERCEL existe,
+    // o Nitro detecta a plataforma e troca o destino para .vercel/output/static
+    // mesmo sem preset. O deploy de 27/09/2026 construiu tudo e morreu no
+    // build-publicacao, que não achou dist/analog/public. O destino fica
+    // escrito aqui para não depender de onde o build roda.
     analog({
       static: true,
+      nitro: {
+        output: {
+          dir: join(import.meta.dirname, 'dist', 'analog'),
+          publicDir: join(import.meta.dirname, 'dist', 'analog', 'public'),
+        },
+      },
       prerender: {
         routes: async () => [...fixas, ...specRoutes()],
         sitemap: {
