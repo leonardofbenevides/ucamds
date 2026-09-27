@@ -59,7 +59,9 @@ export type UcamSystemCategory =
   | 'atendimento'
   | 'gestao'
   | 'pessoas'
-  | 'acervo';
+  | 'acervo'
+  | 'pesquisa'
+  | 'comunicacao';
 
 @Component({
   selector: 'ucam-app-shell',

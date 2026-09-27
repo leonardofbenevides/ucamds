@@ -13,6 +13,7 @@ import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { hexParaRgb, rgbLinearParaOklab, hexParaOklch } from './lib/color.mjs';
 import { contrast } from './lib/wcag.mjs';
+import { SISTEMAS } from './lib/subpaleta.mjs';
 
 const paraLinear = (v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
 const paraGama = (v) => (v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055);
@@ -141,11 +142,12 @@ for (const [tema, mapa, fundo] of [['claro', claro, '#FFFFFF'], ['escuro', escur
   });
 
   /* CATEGORIAS DE MÓDULO (ADR-032). Não são séries: não há ordem nem vizinho,
-   * os seis coexistem numa grade. Por isso a conferência é de todos os pares,
+   * todas coexistem numa grade. Por isso a conferência é de todos os pares,
    * e o que sai é DESVIO, não falha — o ícone e o nome escrito carregam a
    * distinção; a cor é reforço. Um par abaixo do limiar registra que aquelas
    * duas categorias se confundem para aquele tipo de visão. */
-  const CATEGORIAS = ['academico', 'financeiro', 'atendimento', 'gestao', 'pessoas', 'acervo'];
+  // A lista é a da receita da subpaleta: uma só, para os dois portões medirem os mesmos pares.
+  const CATEGORIAS = SISTEMAS;
   const cats = CATEGORIAS.map((c) => resolve(`var(--ucam-color-categoria-${c})`, mapa).toUpperCase());
   if (cats.every((h) => /^#[0-9A-F]{6}$/.test(h))) {
     for (const tipo of TIPOS) {
@@ -157,7 +159,7 @@ for (const [tema, mapa, fundo] of [['claro', claro, '#FFFFFF'], ['escuro', escur
         }
       }
     }
-    relatos.push(`  [${tema}] 6 categorias de módulo conferidas entre si`);
+    relatos.push(`  [${tema}] ${CATEGORIAS.length} categorias de módulo conferidas entre si`);
   } else {
     falhas.push(`[${tema}] tokens color.categoria.* incompletos: ${cats.join(', ')}`);
   }

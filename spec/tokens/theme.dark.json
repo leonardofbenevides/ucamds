@@ -271,6 +271,12 @@
       },
       "acervo": {
         "$value": "{ochre.400}"
+      },
+      "pesquisa": {
+        "$value": "{indigo.400}"
+      },
+      "comunicacao": {
+        "$value": "{fuchsia.400}"
       }
     }
   },

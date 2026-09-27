@@ -32,11 +32,24 @@ import { hexParaRgb, rgbParaHex, rgbLinearParaOklab, oklabParaRgbLinear, hexPara
 const paraLinear = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
 const paraGama = (c) => (c <= 0.0031308 ? c * 12.92 : 1.055 * c ** (1 / 2.4) - 0.055);
 
-/* As seis categorias da ADR-032. A ordem é a do token, não alfabética: é a
- * ordem em que o portão de daltonismo já compara os seis entre si, e duas
- * listas com a mesma coisa em ordens diferentes é como um portão passa a
- * medir um par que o outro não mede. */
-export const SISTEMAS = ['academico', 'financeiro', 'atendimento', 'gestao', 'pessoas', 'acervo'];
+/* As categorias de sistema. A ordem é a do token, não alfabética: é a ordem em
+ * que o portão de daltonismo compara as categorias entre si, e duas listas com
+ * a mesma coisa em ordens diferentes é como um portão passa a medir um par que
+ * o outro não mede. Por isso esta é a lista ÚNICA: a folha (ladrilho e
+ * [data-sistema]) e o portão de daltonismo a importam daqui.
+ *
+ * As seis primeiras são da ADR-032. As duas últimas (27/09/2026) vêm da
+ * paleta base do Tailwind, para os apps que virão: índigo (pesquisa) e fúcsia
+ * (comunicação) são as matizes que couberam na roda sem encostar nas seis.
+ * Rosa e pink derivados saem vinho (a marca e o destrutivo), amarelo e âmbar
+ * caem no acervo e no aviso, laranja é da notificação. Lime e sky foram
+ * medidos e recusados: são da família do sucesso e da informação, só podem
+ * DESCER no claro, e o menor desvio que os separava dos vizinhos levava o
+ * botão a L 23 (#112300, #001F34) — preto com um reflexo, não cor de app. */
+export const SISTEMAS = [
+  'academico', 'financeiro', 'atendimento', 'gestao', 'pessoas', 'acervo',
+  'pesquisa', 'comunicacao',
+];
 
 /* `color-mix(in oklab, A, B p%)` — a mesma interpolação que o navegador faz,
  * em OKLab, para o build poder prever o que a folha mostraria. Existe para a
@@ -126,6 +139,13 @@ export const DEGRAUS = {
  * 36,5; no escuro o filete do sucesso (L 54) fecha tudo abaixo de 74. */
 export const DESVIO_L = {
   pessoas: { claro: -8, escuro: +8 },
+  /* Índigo mora entre o azul do acadêmico (257°) e o violeta da gestão
+   * (290°). À altura comum ficava a 0,053 da gestão no claro e a 0,028 no
+   * escuro; o menor par de passos que abre os dois é este (busca exaustiva
+   * em passos de 4, 27/09/2026). No escuro ele DESCE, ao contrário de
+   * pessoas: subindo 8 ele encostava no azul do link (#DDEBFA, ΔL 8,4 na
+   * mesma família). */
+  pesquisa: { claro: -4, escuro: -8 },
 };
 
 /* O SISTEMA QUE NÃO DERIVA.

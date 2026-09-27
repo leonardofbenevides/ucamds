@@ -53,12 +53,12 @@
     },
     {
       "nome": "tone",
-      "tipo": "'neutral' | 'brand' | 'academico' | 'financeiro' | 'atendimento' | 'gestao' | 'pessoas' | 'acervo'",
+      "tipo": "'neutral' | 'brand' | 'academico' | 'financeiro' | 'atendimento' | 'gestao' | 'pessoas' | 'acervo' | 'pesquisa' | 'comunicacao'",
       "default": "'neutral'",
-      "descricao": "neutral é o padrão para irmãos sem classificação. brand destaca UM item de um conjunto — o módulo em que se está, o setor de lotação de quem usa. As seis categorias (ADR-032) discriminam irmãos: cada módulo da grade leva a cor da sua categoria, e a mesma cor identifica o módulo na marquinha da faixa.",
+      "descricao": "neutral é o padrão para irmãos sem classificação. brand destaca UM item de um conjunto — o módulo em que se está, o setor de lotação de quem usa. As oito categorias (ADR-032, e pesquisa e comunicação desde 27/09/2026, da paleta base do Tailwind) discriminam irmãos: cada módulo da grade leva a cor da sua categoria, e a mesma cor identifica o módulo na marquinha da faixa.",
       "valores": {
         "categoria": {
-          "uso": "academico, financeiro, atendimento, gestao, pessoas ou acervo: a categoria do módulo, em toda grade de módulos e na marquinha da faixa. Discrimina irmãos — é o oposto de brand, que destaca um. O ícone e o nome escrito continuam carregando a distinção; a cor é reforço (o portão de daltonismo registra os pares que se confundem).",
+          "uso": "academico, financeiro, atendimento, gestao, pessoas, acervo, pesquisa ou comunicacao: a categoria do módulo, em toda grade de módulos e na marquinha da faixa. Discrimina irmãos — é o oposto de brand, que destaca um. O ícone e o nome escrito continuam carregando a distinção; a cor é reforço (o portão de daltonismo registra os pares que se confundem).",
           "tokens": {
             "fundo": "color.categoria.{nome} a 12%",
             "icone": "color.categoria.{nome}"

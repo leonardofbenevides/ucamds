@@ -263,6 +263,26 @@
     "$type": "color",
     "$description": "Série de gráfico, slot 6. Distinto da rampa green de propósito: verde de feedback significa sucesso e não pode ser gasto como identidade de série."
   },
+  "indigo": {
+    "400": {
+      "$value": "#818CF8"
+    },
+    "600": {
+      "$value": "#4F46E5"
+    },
+    "$type": "color",
+    "$description": "Paleta base do Tailwind CSS (indigo-400 e indigo-600), trazida em 27/09/2026 para as categorias dos apps que virão. Entrada da categoria pesquisa: a subpaleta usa só a matiz e o croma desta cor — a altura (L) é da receita, igual para todos os sistemas. O 600 é o degrau claro porque é o primeiro que passa 3:1 como traço de ícone sobre o branco."
+  },
+  "fuchsia": {
+    "400": {
+      "$value": "#E879F9"
+    },
+    "600": {
+      "$value": "#C026D3"
+    },
+    "$type": "color",
+    "$description": "Paleta base do Tailwind CSS (fuchsia-400 e fuchsia-600), trazida em 27/09/2026 para as categorias dos apps que virão. Entrada da categoria comunicacao: a subpaleta usa só a matiz e o croma desta cor — a altura (L) é da receita, igual para todos os sistemas. O 600 é o degrau claro porque é o primeiro que passa 3:1 como traço de ícone sobre o branco."
+  },
   "space": {
     "0": {
       "$value": "0rem"

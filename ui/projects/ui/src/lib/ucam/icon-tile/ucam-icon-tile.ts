@@ -22,7 +22,9 @@ export type UcamIconTileTone =
   | 'atendimento'
   | 'gestao'
   | 'pessoas'
-  | 'acervo';
+  | 'acervo'
+  | 'pesquisa'
+  | 'comunicacao';
 export type UcamIconTileSize = 'sm' | 'md';
 
 @Component({

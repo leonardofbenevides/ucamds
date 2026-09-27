@@ -75,6 +75,10 @@
   --ucam-violet-500: #6D46B8;
   --ucam-olive-400: #6D9A38;
   --ucam-olive-500: #4A7C1F;
+  --ucam-indigo-400: #818CF8;
+  --ucam-indigo-600: #4F46E5;
+  --ucam-fuchsia-400: #E879F9;
+  --ucam-fuchsia-600: #C026D3;
   --ucam-space-0: 0rem;
   --ucam-space-1: 0.25rem;
   --ucam-space-2: 0.5rem;
@@ -204,6 +208,8 @@
   --ucam-color-categoria-gestao: #6D46B8;
   --ucam-color-categoria-pessoas: #0E8F80;
   --ucam-color-categoria-acervo: #A47F10;
+  --ucam-color-categoria-pesquisa: #4F46E5;
+  --ucam-color-categoria-comunicacao: #C026D3;
   --ucam-space-inline-xs: 0.25rem;
   --ucam-space-inline-sm: 0.5rem;
   --ucam-space-inline-md: 1rem;
@@ -367,6 +373,8 @@
     --ucam-color-categoria-gestao: #9179DC;
     --ucam-color-categoria-pessoas: #17A18F;
     --ucam-color-categoria-acervo: #B78B10;
+    --ucam-color-categoria-pesquisa: #818CF8;
+    --ucam-color-categoria-comunicacao: #E879F9;
     --ucam-elevation-raised: none;
     --ucam-elevation-sticky: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
     --ucam-elevation-overlay: 0 12px 32px -8px rgb(0 0 0 / 0.14), 0 4px 10px -4px rgb(0 0 0 / 0.07);
@@ -441,6 +449,8 @@
   --ucam-color-categoria-gestao: #9179DC;
   --ucam-color-categoria-pessoas: #17A18F;
   --ucam-color-categoria-acervo: #B78B10;
+  --ucam-color-categoria-pesquisa: #818CF8;
+  --ucam-color-categoria-comunicacao: #E879F9;
   --ucam-elevation-raised: none;
   --ucam-elevation-sticky: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.05);
   --ucam-elevation-overlay: 0 12px 32px -8px rgb(0 0 0 / 0.14), 0 4px 10px -4px rgb(0 0 0 / 0.07);

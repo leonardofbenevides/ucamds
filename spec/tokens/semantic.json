@@ -295,7 +295,7 @@
     },
     "categoria": {
       "$type": "color",
-      "$description": "Cor de CATEGORIA de módulo: o que discrimina irmãos numa grade de 58 sistemas em que dez ícones se repetem. Pinta o ladrilho de ícone (fundo a 12%, traço na cor) e a marquinha do módulo na faixa. Categoria classifica; não julga — é a distinção que o contrato do stat faz entre tom e categoria, e por isso nenhum destes papéis reaproveita um par de feedback. Seis papéis, cada um apontando para um primitivo que já existe: nenhuma rampa nova (ADR-032). O portão de daltonismo confere os seis entre si; a distinção que vale para todo mundo é o desenho do ícone e o nome escrito.",
+      "$description": "Cor de CATEGORIA de módulo: o que discrimina irmãos numa grade de 58 sistemas em que dez ícones se repetem. Pinta o ladrilho de ícone (fundo a 12%, traço na cor) e a marquinha do módulo na faixa. Categoria classifica; não julga — é a distinção que o contrato do stat faz entre tom e categoria, e por isso nenhum destes papéis reaproveita um par de feedback. Oito papéis. Os seis primeiros apontam para primitivos que já existiam (ADR-032); os dois últimos — pesquisa e comunicação — vêm da paleta base do Tailwind (27/09/2026), reservados para os apps que virão, e passam pelo mesmo portão da subpaleta. Foram as duas matizes que couberam: lime e sky só abriam distância dos vizinhos com o botão quase preto no tema claro. O portão de daltonismo confere as oito entre si; a distinção que vale para todo mundo é o desenho do ícone e o nome escrito.",
       "academico": {
         "$value": "{blue.500}",
         "$description": "Acadêmico, biblioteca, vestibular, diplomas, estágio."
@@ -319,6 +319,14 @@
       "acervo": {
         "$value": "{ochre.500}",
         "$description": "Arquivo permanente, documentos, impressão."
+      },
+      "pesquisa": {
+        "$value": "{indigo.600}",
+        "$description": "Pós-graduação, pesquisa, iniciação científica, produção acadêmica."
+      },
+      "comunicacao": {
+        "$value": "{fuchsia.600}",
+        "$description": "Comunicação, eventos, site institucional, marketing."
       }
     }
   },

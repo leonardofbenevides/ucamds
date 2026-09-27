@@ -248,6 +248,57 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         </div>
       </section>
 
+      <section id="sistemas">
+        <h2>Cor por sistema</h2>
+        <p>
+          Cada sistema tem uma categoria, e a categoria vira a faixa e o botão primário do
+          sistema. As cores semânticas (feedback, link, desabilitado) são as mesmas em todos. A
+          receita usa só a matiz da categoria: a altura é a mesma para todos os sistemas, e o
+          portão da subpaleta exige distância mínima entre cada par.
+        </p>
+
+        <div class="sistemas">
+          @for (s of sistemas(); track s.id) {
+            <div class="sistema">
+              <span class="sistema-faixa" [style.background]="s.faixa">
+                <span class="sistema-tile" [style.background]="s.categoria"></span>
+                <code>{{ s.id }}</code>
+              </span>
+              <div class="sistema-corpo">
+                <p class="small">{{ s.descricao }}</p>
+                <dl class="sistema-valores small">
+                  <div><dt>Categoria</dt><dd><code class="num">{{ s.categoria }}</code> <span class="muted">{{ s.origem }}</span></dd></div>
+                  <div><dt>Faixa</dt><dd><code class="num">{{ s.faixa }}</code></dd></div>
+                  <div>
+                    <dt>Ação</dt>
+                    <dd>
+                      <span class="sistema-botao" [style.background]="s.acao"></span>
+                      <code class="num">{{ s.acao }}</code>
+                      @if (s.herdaMarca) {
+                        <span class="muted">herda a marca</span>
+                      } @else if (s.desvioL) {
+                        <span class="muted">L {{ s.desvioL > 0 ? '+' : '' }}{{ s.desvioL }}</span>
+                      }
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="callout">
+          <p>
+            <strong>Pesquisa e comunicação vêm da paleta base do Tailwind</strong> (índigo 600 e
+            fúcsia 600), reservadas para os apps que virão. Foram as matizes que couberam: rosa e
+            pink derivados saem vinho, a cor da marca e do destrutivo; amarelo e âmbar caem no
+            acervo e no aviso; laranja é da notificação; lime e sky só se separavam dos vizinhos
+            com o botão quase preto. A cor não é o único sinal do sistema: o nome escrito na faixa
+            e o ícone carregam a distinção.
+          </p>
+        </div>
+      </section>
+
       <section id="escuro">
         <h2>Tema escuro</h2>
         <p>{{ f.temaEscuro.descricao }}</p>
@@ -438,6 +489,70 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       background: var(--ucam-color-surface-subtle);
       border: 1px solid var(--ucam-color-border-subtle);
     }
+    /* COR POR SISTEMA. A faixa é a amostra: o fundo que o sistema pinta no
+       topo, com o ladrilho da categoria dentro, como a marquinha real. */
+    .sistemas {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+      margin-block: 1rem;
+    }
+    .sistema {
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-lg);
+      overflow: hidden;
+      background: var(--ucam-color-surface-default);
+    }
+    .sistema-faixa {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.75rem;
+      color: #fff;
+    }
+    .sistema-faixa code {
+      background: none;
+      color: inherit;
+      font-size: 0.8125rem;
+    }
+    .sistema-tile {
+      inline-size: 1.25rem;
+      block-size: 1.25rem;
+      border-radius: var(--ucam-radius-sm);
+      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.35);
+    }
+    .sistema-corpo {
+      padding: 0.6rem 0.75rem 0.75rem;
+    }
+    .sistema-corpo > p {
+      margin: 0 0 0.5rem;
+      color: var(--ucam-color-text-secondary);
+    }
+    .sistema-valores {
+      display: grid;
+      gap: 0.25rem;
+      margin: 0;
+    }
+    .sistema-valores > div {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      align-items: center;
+    }
+    .sistema-valores dt {
+      color: var(--ucam-color-text-secondary);
+    }
+    .sistema-valores dd {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0;
+    }
+    .sistema-botao {
+      inline-size: 1.75rem;
+      block-size: 0.875rem;
+      border-radius: var(--ucam-radius-sm);
+    }
+
     .alternador button {
       padding: 0.3rem 0.7rem;
       border: 0;
@@ -480,6 +595,10 @@ export default class CorPage {
 
   protected readonly feedback = computed(() =>
     this.tema() === 'claro' ? this.f.feedback : this.f.feedbackEscuro,
+  );
+
+  protected readonly sistemas = computed(() =>
+    this.tema() === 'claro' ? this.f.sistemas : this.f.sistemasEscuro,
   );
 
   private readonly ROTULOS: Record<string, string> = {
@@ -525,6 +644,7 @@ export default class CorPage {
     { id: 'semantica', rotulo: 'Camada semântica' },
     { id: 'superficies', rotulo: 'Superfícies e filetes' },
     { id: 'feedback', rotulo: 'Feedback e estado' },
+    { id: 'sistemas', rotulo: 'Cor por sistema' },
     { id: 'escuro', rotulo: 'Tema escuro' },
   ];
 

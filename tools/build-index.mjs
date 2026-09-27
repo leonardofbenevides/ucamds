@@ -17,6 +17,7 @@ import { contrast, grade } from './lib/wcag.mjs';
 import { listboxSelects, listboxScript } from './lib/select-listbox.mjs';
 import { menuContaScript, estadoScript, descricaoScript, linhaDoTempoScript, abasScript } from './lib/shell.mjs';
 import { iconCss } from './lib/icon-css.mjs';
+import { SISTEMAS, HERDA_MARCA, DESVIO_L, subpaleta } from './lib/subpaleta.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SPEC = join(ROOT, 'spec');
@@ -354,6 +355,30 @@ const feedback = (cores) =>
       graphic: de('graphic')?.hex ?? null,
       razao: razao === null ? null : Number(razao.toFixed(2)),
       wcag: razao === null ? null : grade(razao),
+    };
+  });
+
+// A COR DE CADA SISTEMA (ADR-032 e ADR-037): a categoria, a faixa e o botão
+// primário que a receita da subpaleta deriva dela. Calculado pela MESMA
+// função que a folha emite e o portão mede — a página não pode mostrar um hex
+// que o build não entrega. Atendimento herda a marca e mostra o bordô.
+const sistemas = (cores, tema) =>
+  SISTEMAS.map((id) => {
+    const token = cores.find((c) => c.token === `color.categoria.${id}`);
+    const surface = acharHex(cores, 'color.surface.default') ?? '#FFFFFF';
+    const herda = HERDA_MARCA.includes(id);
+    const p = herda ? null : subpaleta(token.hex, tema, { surface }, id);
+    const acao = herda ? acharHex(cores, 'color.action.primary.default') : p['action-primary-default'];
+    const faixa = herda ? acharHex(cores, 'color.surface.brand') : p['surface-brand'];
+    return {
+      id,
+      descricao: semantic.color.categoria[id]?.$description ?? '',
+      origem: token.ref,
+      categoria: token.hex,
+      acao,
+      faixa,
+      herdaMarca: herda,
+      desvioL: (DESVIO_L[id] || {})[tema] ?? 0,
     };
   });
 
@@ -869,6 +894,8 @@ const data = {
     familiasEscuro: familias(corEscura),
     feedback: feedback(corClara),
     feedbackEscuro: feedback(corEscura),
+    sistemas: sistemas(corClara, 'claro'),
+    sistemasEscuro: sistemas(corEscura, 'escuro'),
     elevacao,
     breakpoints,
     movimento,

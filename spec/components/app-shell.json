@@ -328,7 +328,7 @@
     },
     {
       "nome": "systemCategory",
-      "tipo": "'academico' | 'financeiro' | 'atendimento' | 'gestao' | 'pessoas' | 'acervo' | null",
+      "tipo": "'academico' | 'financeiro' | 'atendimento' | 'gestao' | 'pessoas' | 'acervo' | 'pesquisa' | 'comunicacao' | null",
       "default": "null",
       "descricao": "Categoria do sistema (ADR-032). Em teste pela ADR-037: vira a subpaleta do sistema — família da ação (primário, hover, pressionado, sutil, foco) derivada da categoria e faixa tinta a 10% com a marquinha cheia. Feedback, links e ladrilhos não mudam. null mantém o bordô, e é o que o Portal declara: ele é o saguão. O teste tem três modos (cheia, moldura, comum) pela chave ?paleta= das telas autônomas."
     },

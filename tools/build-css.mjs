@@ -16,7 +16,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { selectChevronCss } from './lib/select-chevron.mjs';
-import { cssDaSubpaleta } from './lib/subpaleta.mjs';
+import { cssDaSubpaleta, SISTEMAS } from './lib/subpaleta.mjs';
 import { contrast } from './lib/wcag.mjs';
 
 /* A cor de faixa que um projeto declara em templates.json (`cor`). Branco
@@ -3341,23 +3341,15 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * módulos em que dez ícones se repetem — o capelo do Acadêmico e o do
  * Vestibular passam a ser azul e azul, mas o Financeiro ao lado é verde. A
  * receita é a mesma do --marca: fundo a 12%, traço na cor. Variável de bloco
- * para a receita ser escrita uma vez; cada categoria só troca a tinta. */
-.ucam-icon-tile--academico,
-.ucam-icon-tile--financeiro,
-.ucam-icon-tile--atendimento,
-.ucam-icon-tile--gestao,
-.ucam-icon-tile--pessoas,
-.ucam-icon-tile--acervo {
+ * para a receita ser escrita uma vez; cada categoria só troca a tinta. A lista
+ * vem de SISTEMAS (lib/subpaleta.mjs): categoria nova entra lá e aparece aqui
+ * e no [data-sistema] mais abaixo, sem terceira cópia. */
+${SISTEMAS.map((s) => '.ucam-icon-tile--' + s).join(',\n')} {
   --ucam-tile-cor: var(--ucam-color-text-secondary);
   background: color-mix(in srgb, var(--ucam-tile-cor) 12%, transparent);
   color: var(--ucam-tile-cor);
 }
-.ucam-icon-tile--academico   { --ucam-tile-cor: var(--ucam-color-categoria-academico); }
-.ucam-icon-tile--financeiro  { --ucam-tile-cor: var(--ucam-color-categoria-financeiro); }
-.ucam-icon-tile--atendimento { --ucam-tile-cor: var(--ucam-color-categoria-atendimento); }
-.ucam-icon-tile--gestao      { --ucam-tile-cor: var(--ucam-color-categoria-gestao); }
-.ucam-icon-tile--pessoas     { --ucam-tile-cor: var(--ucam-color-categoria-pessoas); }
-.ucam-icon-tile--acervo      { --ucam-tile-cor: var(--ucam-color-categoria-acervo); }
+${SISTEMAS.map((s) => '.ucam-icon-tile--' + s + ' { --ucam-tile-cor: var(--ucam-color-categoria-' + s + '); }').join('\n')}
 
 /* 28px: a marquinha do módulo na faixa e a fileira densa. Ícone no degrau
  * miúdo, raio do controle pequeno — a mesma proporção do botão --sm. */
@@ -4415,12 +4407,7 @@ ${abaixo('respiro-completo')} {
  * regra de [data-sistema] declarar uma delas.
  *
  * ?paleta=comum desliga tudo, ?paleta=moldura deixa a cor só na moldura. */
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema="academico"]   { --ucam-sistema-cor: var(--ucam-color-categoria-academico); }
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema="financeiro"]  { --ucam-sistema-cor: var(--ucam-color-categoria-financeiro); }
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema="atendimento"] { --ucam-sistema-cor: var(--ucam-color-categoria-atendimento); }
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema="gestao"]      { --ucam-sistema-cor: var(--ucam-color-categoria-gestao); }
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema="pessoas"]     { --ucam-sistema-cor: var(--ucam-color-categoria-pessoas); }
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema="acervo"]      { --ucam-sistema-cor: var(--ucam-color-categoria-acervo); }
+${SISTEMAS.map((s) => ':root:not([data-paleta="comum"]) .ucam-shell[data-sistema="' + s + '"] { --ucam-sistema-cor: var(--ucam-color-categoria-' + s + '); }').join('\n')}
 
 /* ATENDIMENTO não deriva: é a matiz da marca, e o token diz por quê — "o
  * atendimento é a cara da instituição, e leva a marca". A tinta dele é o

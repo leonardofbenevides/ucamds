@@ -610,6 +610,19 @@ export interface Densidade {
   proibido: string[];
 }
 
+export interface CorDeSistema {
+  id: string;
+  descricao: string;
+  /** Primitivo de onde a categoria sai, como o token escreve: {indigo.600}. */
+  origem: string;
+  categoria: string;
+  acao: string;
+  faixa: string;
+  herdaMarca: boolean;
+  /** Quanto o sistema anda em L em relação aos outros, neste tema. */
+  desvioL: number;
+}
+
 export interface Fundamentos {
   descricao: string;
   regraCamadas: string;
@@ -631,6 +644,9 @@ export interface Fundamentos {
   familiasEscuro: FamiliaCor[];
   feedback: TomFeedback[];
   feedbackEscuro: TomFeedback[];
+  /** Cor de cada sistema: categoria, faixa e ação derivadas pela subpaleta (ADR-037). */
+  sistemas: CorDeSistema[];
+  sistemasEscuro: CorDeSistema[];
   elevacao: Elevacao;
   breakpoints: Breakpoints;
   movimento: Movimento;
