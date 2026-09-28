@@ -269,9 +269,9 @@
   },
   "implementacao": {
     "trilho_a": {
-      "contrato": "O mesmo .ucam-field do campo de texto, com o modificador de data e o <input> por dentro.",
+      "contrato": "O mesmo .ucam-field do campo de texto, com o modificador de data. Dentro, .ucam-date-field com o <input data-data> de texto, o botão de calendário [data-calendario] (IconButton sm, nome \"Escolher data no calendário: <rótulo>\") e o <input type=\"date\" class=\"ucam-date-field__nativo\"> fora da tabulação e do leitor. O formato vai num .ucam-field__hint ligado por aria-describedby.",
       "raiz": ".ucam-field--data com .ucam-input",
-      "nota": "Não há máscara nem seletor de calendário no Trilho A: o modificador só dá a largura de uma data e a fonte tabular. O formato aceito vive no .ucam-field__hint, escrito no markup."
+      "nota": "Desde 28/09/2026 o comportamento das telas (dataScript) dá ao Trilho A o que só o Trilho B tinha: máscara (8 dígitos viram dd/mm/aaaa), o calendário NATIVO por showPicker() e, ao sair do campo, a data que não existe vira erro do campo com \"Data inválida. Use dd/mm/aaaa.\". Escolher no calendário dispara input e change no campo de texto. Precisões mês e ano ainda só no Trilho B."
     }
   }
 }

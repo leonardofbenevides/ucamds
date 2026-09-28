@@ -5511,6 +5511,241 @@ export const toastScript = `
  * O botão é IRMÃO do texto, não filho: dentro do título ele entraria no nome
  * do cabeçalho. Some e aparece por opacidade, e nunca some do teclado.
  */
+/**
+ * A DATA NO TRILHO A (28/09/2026: "datepicker não funciona?"). O contrato
+ * date-field.json pedia máscara, calendário e validação, e o Trilho A só dava
+ * a largura: o campo era texto cru e aceitava 31/02. Aqui vai o mesmo desenho
+ * do Trilho B: o campo de texto continua sendo O campo (digitar é o caminho
+ * rápido), a máscara põe as barras, e o botão de calendário empresta o
+ * seletor NATIVO por showPicker() num <input type="date"> escondido — locale,
+ * teclado e leitor de tela de graça. Ao sair, data que não existe vira erro do
+ * campo (field.json), com a frase que o contrato manda. Escolher ou digitar
+ * dispara input e change no campo, para quem filtra ouvir.
+ */
+export const dataScript = `
+(function () {
+  function digitos(v) { return String(v).replace(/\\D/g, '').slice(0, 8); }
+  function mascara(d) { return d.length > 4 ? d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4) : d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; }
+  function iso(v) { var d = digitos(v); return d.length === 8 ? d.slice(4) + '-' + d.slice(2, 4) + '-' + d.slice(0, 2) : ''; }
+  function real(i) { if (!i) return false; var t = new Date(i + 'T00:00:00'); return !isNaN(t) && t.toISOString().slice(0, 10) === i; }
+  function erro(campo, frase) {
+    var id = campo.id + '-erro', e = document.getElementById(id);
+    var resto = (campo.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== id; });
+    if (!frase) {
+      if (e) e.remove();
+      campo.removeAttribute('aria-invalid');
+      campo.setAttribute('aria-describedby', resto.join(' '));
+      return;
+    }
+    if (!e) {
+      e = document.createElement('span');
+      e.className = 'ucam-field__error';
+      e.id = id;
+      campo.closest('.ucam-field').appendChild(e);
+    }
+    e.textContent = frase;
+    campo.setAttribute('aria-invalid', 'true');
+    campo.setAttribute('aria-describedby', [id].concat(resto).join(' '));
+  }
+  function avisa(campo) {
+    campo.dispatchEvent(new Event('input', { bubbles: true }));
+    campo.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  document.addEventListener('input', function (e) {
+    var c = e.target;
+    if (!c.matches || !c.matches('input[data-data]') || e.isTrusted === false) return;
+    var d = digitos(c.value), m = mascara(d);
+    if (m !== c.value) { c.value = m; c.setSelectionRange(m.length, m.length); }
+    if (c.getAttribute('aria-invalid') === 'true' && real(iso(m))) erro(c, '');
+  });
+  document.addEventListener('focusout', function (e) {
+    var c = e.target;
+    if (!c.matches || !c.matches('input[data-data]')) return;
+    if (!c.value) return erro(c, '');
+    erro(c, real(iso(c.value)) ? '' : 'Data inválida. Use dd/mm/aaaa.');
+  });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-calendario]');
+    if (!b) return;
+    var caixa = b.closest('.ucam-date-field');
+    var campo = caixa && caixa.querySelector('input[data-data]');
+    var nativo = caixa && caixa.querySelector('.ucam-date-field__nativo');
+    if (!campo || !nativo) return;
+    nativo.value = real(iso(campo.value)) ? iso(campo.value) : '';
+    nativo.onchange = function () {
+      var p = nativo.value.split('-');
+      if (p.length !== 3) return;
+      campo.value = p[2] + '/' + p[1] + '/' + p[0];
+      erro(campo, '');
+      avisa(campo);
+      campo.focus();
+    };
+    try { nativo.showPicker(); } catch (x) { campo.focus(); }
+  });
+})();
+`;
+
+/**
+ * O PERÍODO QUE MUDA A TELA (28/09/2026: "faça os itens serem clicáveis
+ * funcionando"). As datas De/Até do Analytics abriam o calendário e não
+ * mudavam nada. Com data-periodo="de|ate" e data-periodo-alvo=<tabela>, a
+ * tabela mensal (th[data-valor]=aaaamm) esconde os meses fora do intervalo,
+ * os indicadores com data-soma="<tabela>:<coluna>" viram a soma das linhas
+ * que ficaram, e o selo data-periodo-rotulo diz o recorte. Início depois do
+ * fim é erro do campo final. Recalcula também depois do recorte por natureza
+ * (data-cenario), que troca os números das células. E data-recorte num link
+ * aplica o recorte da natureza sem sair da tela.
+ */
+export const periodoScript = `
+(function () {
+${FN_ANUNCIA}
+  var MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  function am(v) { var m = /^(\\d{2})\\/(\\d{2})\\/(\\d{4})$/.exec(v || ''); return m ? m[3] + m[2] : ''; }
+  function num(t) { return Number(String(t).replace(/\\./g, '').replace(',', '.').replace(/[^\\d.-]/g, '')) || 0; }
+  function fmt(n) { return n.toLocaleString('pt-BR'); }
+  function campos(alvo) {
+    return {
+      de: document.querySelector('[data-periodo="de"][data-periodo-alvo="' + alvo + '"]'),
+      ate: document.querySelector('[data-periodo="ate"][data-periodo-alvo="' + alvo + '"]'),
+    };
+  }
+  function erroAte(c, frase) {
+    var id = c.id + '-erro', e = document.getElementById(id);
+    var resto = (c.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== id; });
+    if (!frase) { if (e) e.remove(); c.removeAttribute('aria-invalid'); c.setAttribute('aria-describedby', resto.join(' ')); return; }
+    if (!e) { e = document.createElement('span'); e.className = 'ucam-field__error'; e.id = id; c.closest('.ucam-field').appendChild(e); }
+    e.textContent = frase;
+    c.setAttribute('aria-invalid', 'true');
+    c.setAttribute('aria-describedby', [id].concat(resto).join(' '));
+  }
+  function aplica(alvo, falar) {
+    var t = document.getElementById(alvo);
+    var c = campos(alvo);
+    if (!t || !c.de || !c.ate) return;
+    var de = am(c.de.value), ate = am(c.ate.value);
+    if (!de || !ate) return;
+    if (de > ate) { erroAte(c.ate, 'A data final precisa ser depois de ' + c.de.value + '.'); return; }
+    if (c.ate.getAttribute('aria-invalid') === 'true' && c.ate.id + '-erro' && /depois de/.test((document.getElementById(c.ate.id + '-erro') || {}).textContent || '')) erroAte(c.ate, '');
+    var vis = [];
+    Array.prototype.forEach.call(t.tBodies[0].rows, function (tr) {
+      var k = tr.querySelector('th[data-valor]');
+      if (!k) return;
+      var v = k.getAttribute('data-valor');
+      tr.hidden = v < de || v > ate;
+      if (!tr.hidden) vis.push(tr);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-soma^="' + alvo + ':"]'), function (el) {
+      var col = Number(el.getAttribute('data-soma').split(':')[1]);
+      var soma = vis.reduce(function (s, tr) { var td = tr.querySelectorAll('td')[col]; return s + (td ? num(td.textContent) : 0); }, 0);
+      el.textContent = fmt(soma);
+    });
+    var rot = document.querySelector('[data-periodo-rotulo="' + alvo + '"]');
+    var nome = function (v) { return MESES[Number(v.slice(4)) - 1]; };
+    var texto = vis.length ? nome(vis[0].querySelector('th').getAttribute('data-valor')) + ' a ' + nome(vis[vis.length - 1].querySelector('th').getAttribute('data-valor')) + ' · ' + vis[vis.length - 1].querySelector('th').getAttribute('data-valor').slice(0, 4) : 'Nenhum mês';
+    texto = texto.charAt(0).toUpperCase() + texto.slice(1);
+    if (rot) rot.textContent = texto;
+    if (falar) anuncia('Período de ' + c.de.value + ' a ' + c.ate.value + ': ' + vis.length + (vis.length === 1 ? ' mês' : ' meses') + ' na tabela, totais recalculados.', c.de);
+  }
+  document.addEventListener('change', function (e) {
+    var c = e.target;
+    if (!c.matches || !c.matches('[data-periodo]')) return;
+    aplica(c.getAttribute('data-periodo-alvo'), true);
+  });
+  // O recorte por natureza reescreve as células e os totais: refaz a conta
+  // depois dele (o estadoScript age no mesmo clique, antes deste setTimeout).
+  document.addEventListener('click', function (e) {
+    var r = e.target.closest && e.target.closest('[data-recorte]');
+    if (r) {
+      e.preventDefault();
+      var b = document.querySelector('[data-cenario] button[data-valor="' + r.getAttribute('data-recorte') + '"]');
+      if (b) { b.click(); b.focus(); }
+      return;
+    }
+    if (!(e.target.closest && e.target.closest('[data-cenario] button'))) return;
+    setTimeout(function () {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-periodo="de"]'), function (c) { aplica(c.getAttribute('data-periodo-alvo'), false); });
+    }, 0);
+  });
+})();
+`;
+
+/**
+ * O QUE NÃO SE PODE FAZER DIZ POR QUÊ (28/09/2026: "em um usuário que não se
+ * pode selecionar para isentar, tinha que ter um feedback mais claro ao
+ * clicar"). aria-disabled mantém o controle focável justamente para ele poder
+ * explicar — e até aqui o clique caía no vazio: o motivo morava num title que
+ * só aparece com o ponteiro parado, nunca no toque e nunca no teclado.
+ *
+ * Clique (ou Enter/Espaço) em [aria-disabled="true"] abre um balão
+ * (.ucam-tooltip, contrato tooltip.json) colado no controle com o motivo, e a
+ * mesma frase vai para a região de anúncio. O texto vem de data-motivo, depois
+ * do title; paginação e "Ocultar coluna" têm frase própria. Sem motivo
+ * nenhum, nada acontece — melhor calado que inventado. Some com Esc, rolagem,
+ * clique fora ou em 5s. Roda na CAPTURA e para a propagação: nenhum outro
+ * tratador age sobre controle bloqueado.
+ */
+export const motivoScript = `
+(function () {
+${FN_ANUNCIA}
+  var balao = null, timer = null, dono = null;
+  function fecha() {
+    if (!balao) return;
+    balao.remove(); balao = null; clearTimeout(timer);
+    if (dono) { dono.removeAttribute('aria-describedby-motivo'); dono = null; }
+  }
+  function motivoDe(el) {
+    var m = el.getAttribute('data-motivo') || el.getAttribute('title');
+    if (m) return m;
+    var r = el.getAttribute('aria-label') || '';
+    if (/anterior/i.test(r)) return 'Você já está na primeira página.';
+    if (/pr[oó]xima/i.test(r)) return 'Esta é a última página.';
+    if (el.getAttribute('data-coluna') === 'ocultar') return 'A primeira coluna identifica a linha e não se oculta.';
+    return '';
+  }
+  function mostra(el) {
+    var texto = motivoDe(el);
+    if (!texto) return;
+    fecha();
+    dono = el;
+    balao = document.createElement('div');
+    balao.className = 'ucam-tooltip ucam-motivo';
+    balao.setAttribute('role', 'status');
+    balao.textContent = texto;
+    // Dentro do escopo .ucam: pendurado no body o balão perdia a fonte e os
+    // tokens (saía em serifa).
+    (el.closest('.ucam-shell') || el.closest('.ucam') || document.body).appendChild(balao);
+    var r = el.getBoundingClientRect(), b = balao.getBoundingClientRect();
+    var x = Math.min(Math.max(8, r.left + r.width / 2 - b.width / 2), innerWidth - b.width - 8);
+    var y = r.bottom + 6;
+    if (y + b.height > innerHeight - 8) y = r.top - b.height - 6;
+    balao.style.left = x + 'px';
+    balao.style.top = y + 'px';
+    // Anuncia a partir do BALÃO, não do controle: vindo de data-fluxo=c a
+    // frase virava toast com ícone de sucesso — e nada foi feito.
+    anuncia(texto, balao);
+    timer = setTimeout(fecha, 5000);
+  }
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest && e.target.closest('[aria-disabled="true"]');
+    if (!el) { fecha(); return; }
+    e.preventDefault();
+    e.stopPropagation();
+    mostra(el);
+  }, true);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') return fecha();
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var el = e.target.closest && e.target.closest('[aria-disabled="true"]');
+    if (!el) return;
+    e.preventDefault();
+    e.stopPropagation();
+    mostra(el);
+  }, true);
+  addEventListener('scroll', fecha, true);
+  addEventListener('resize', fecha);
+})();
+`;
+
 export const copiarScript = `
 (function () {
   var EMAIL = /^[^\\s@]+@[^\\s@]+\\.[a-z]{2,}$/i;

@@ -1696,6 +1696,29 @@ ${selectChevronCss}
 .ucam-field--cpf   .ucam-input { inline-size: calc(14ch + 1.5rem); }
 .ucam-field--cep   .ucam-input { inline-size: calc(9ch  + 1.5rem); }
 .ucam-field--data  .ucam-input { inline-size: calc(10ch + 1.5rem); }
+
+/* O CAMPO DE DATA COM CALENDÁRIO (date-field.json, Trilho A desde 28/09/2026):
+ * o texto, o botão de calendário colado nele e o <input type="date"> que só
+ * empresta o seletor nativo. O nativo fica com 1px sobre o botão — com
+ * display:none parte dos navegadores não abre o seletor, e ancorado ali o
+ * calendário nasce onde a pessoa clicou. */
+.ucam-date-field {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-xs);
+  position: relative;
+}
+.ucam-date-field__nativo {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  padding: 0;
+}
 .ucam-field--mes   .ucam-input { inline-size: calc(7ch  + 1.5rem); }
 
 /* ------------------------------------------------------------- tabela --- */
@@ -9784,6 +9807,18 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 
 .ucam-descricao--inline .ucam-descricao__rotulo { margin: 0; }
 
+/* O BALÃO DO MOTIVO (motivoScript, 28/09/2026): o .ucam-tooltip de sempre,
+ * aberto pelo clique num controle bloqueado e posto pelo script ao lado dele.
+ * Fixo, acima de tudo que não é modal, e sem pegar o ponteiro — ele explica,
+ * não se clica. */
+.ucam-motivo {
+  position: fixed;
+  z-index: var(--ucam-z-overlay);
+  pointer-events: none;
+  animation: ucam-esmaecer var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+@media (prefers-reduced-motion: reduce) { .ucam-motivo { animation: none; } }
+
 /* A FAIXA NO TOPO DA TABELA (data-table.json, parte "faixa"). Dentro do
  * cartão, antes do cabeçalho de colunas: o que vale para a tabela inteira e
  * não é filtro — na análise da isenção, a sugestão automatizada (quando foi
@@ -9900,7 +9935,9 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
   white-space: nowrap;
 }
 
-.ucam-descricao--painel .ucam-descricao__valor { min-inline-size: 0; }
+/* E-mail e outro valor sem espaço QUEBRAM em qualquer ponto: sem isso
+ * "ana.rocha@email.com" saía pela borda do painel (sem-documentos, 28/09). */
+.ucam-descricao--painel .ucam-descricao__valor { min-inline-size: 0; overflow-wrap: anywhere; }
 
 .ucam-descricao__icone {
   flex: none;

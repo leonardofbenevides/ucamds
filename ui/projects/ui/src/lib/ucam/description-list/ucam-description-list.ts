@@ -191,6 +191,7 @@ const TINTA: Record<UcamDescriptionTone, string> = {
       white-space: nowrap;
     }
     ucam-description-list .ucam-descricao--painel .ucam-descricao__valor {
+      overflow-wrap: anywhere;
       margin: 0;
       font-size: var(--ucam-typography-body-sm-font-size);
       min-inline-size: 0;

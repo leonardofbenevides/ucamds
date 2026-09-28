@@ -39,6 +39,9 @@ import {
   roloScript,
   toastScript,
   copiarScript,
+  motivoScript,
+  dataScript,
+  periodoScript,
   criadoScript,
   navScript,
   contadorScript,
@@ -326,6 +329,9 @@ ${sprite}
 <script>${tabelaScript}</script>
 <script>${roloScript}</script>
 <script>${copiarScript}</script>
+<script>${motivoScript}</script>
+<script>${dataScript}</script>
+<script>${periodoScript}</script>
 <script>${criadoScript}</script>
 <script>${barraDoQuadroScript}</script>
 </body>
