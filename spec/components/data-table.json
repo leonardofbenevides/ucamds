@@ -117,7 +117,7 @@
     {
       "parte": "cell-person",
       "obrigatorio": false,
-      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047)."
+      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro; <button> quando a linha abre uma gaveta na própria tela, sem endereço) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047)."
     },
     {
       "parte": "cell-support",
@@ -218,7 +218,7 @@
       "nome": "rowClickable",
       "tipo": "boolean",
       "default": "false",
-      "descricao": "Quando true, a linha inteira navega. EXIGE que a primeira célula contenha um link real — ver acessibilidade. Trilho A desde 25/09/2026: .ucam-table--linha-clicavel no <table>; o tabelaScript segue o link da primeira célula de dado no clique em qualquer ponto que não seja controle, abre em outra aba com Ctrl/Cmd/Shift ou botão do meio, e não navega se houver texto selecionado. Só onde a linha ABRE um registro, não em tabela de leitura; com seleção em lote, a caixa segue marcando e o resto da linha abre."
+      "descricao": "Quando true, a linha inteira navega. EXIGE que a primeira célula contenha um link real — ver acessibilidade —, ou, quando a linha abre uma gaveta na própria tela e não um registro com endereço, um <button> com .td--pessoa__nome (link sem destino contraria link.json; é o caso do alvo do ListItem que governa um painel). Com botão, Ctrl/Cmd e o botão do meio não abrem aba: não há endereço. Trilho A desde 25/09/2026: .ucam-table--linha-clicavel no <table>; o tabelaScript segue o link da primeira célula de dado no clique em qualquer ponto que não seja controle, abre em outra aba com Ctrl/Cmd/Shift ou botão do meio, e não navega se houver texto selecionado. Só onde a linha ABRE um registro, não em tabela de leitura; com seleção em lote, a caixa segue marcando e o resto da linha abre."
     },
     {
       "nome": "zebra",

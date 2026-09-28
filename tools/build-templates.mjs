@@ -69,6 +69,36 @@ const ucamCss = readFileSync(join(ROOT, 'dist/css/ucam.css'), 'utf8').replace(/@
 const sprite = readFileSync(join(ROOT, 'dist/icons/sprite.svg'), 'utf8');
 const projetos = JSON.parse(readFileSync(join(ROOT, 'spec/templates.json'), 'utf8')).projetos;
 
+/* A BARRA DE ROLAGEM DO QUADRO (28/09/2026). No modo embutido a barra do
+ * documento some (scrollbar-width:none) e esta toma o lugar dela: SOBREPOSTA,
+ * como a do macOS, porque uma barra nativa `thin` ainda reserva ~11px de
+ * calha no Chrome de desktop — a faixa da marca pararia antes da borda, ou a
+ * tela saltaria 11px se a barra só existisse no hover. O polegar é o mesmo
+ * do DS em .ucam-table-wrap: pílula, border-default em repouso, border-strong
+ * sob o ponteiro. Aparece com o ponteiro no quadro ou enquanto rola (roda,
+ * teclado), some sozinha 900ms depois. Arrastar o polegar e clicar na trilha
+ * funcionam; aria-hidden porque a rolagem de verdade continua sendo a do
+ * documento, que leitor de tela e teclado já alcançam. */
+const barraDoQuadroScript = `(function(){
+var h=document.documentElement;if(!h.classList.contains('embed'))return;
+var se=document.scrollingElement,r=document.createElement('div'),p=document.createElement('div'),t;
+r.className='embed-rolo';r.setAttribute('aria-hidden','true');p.className='embed-rolo__polegar';
+r.appendChild(p);document.body.appendChild(r);
+function mede(){var vh=innerHeight,sh=se.scrollHeight;r.hidden=sh<=vh+1;if(r.hidden)return;
+var alt=Math.max(32,vh*vh/sh);p.style.height=alt+'px';p.style.transform='translateY('+(se.scrollTop/(sh-vh))*(vh-alt)+'px)';}
+function vai(y){se.scrollTo({top:y,behavior:'instant'});}
+addEventListener('scroll',function(){mede();r.classList.add('ativo');clearTimeout(t);
+t=setTimeout(function(){r.classList.remove('ativo');},900);},{passive:true});
+addEventListener('resize',mede);new ResizeObserver(mede).observe(document.body);
+p.addEventListener('pointerdown',function(e){e.preventDefault();e.stopPropagation();p.setPointerCapture(e.pointerId);
+var y0=e.clientY,s0=se.scrollTop;r.classList.add('arrasto');
+function mv(ev){var vh=innerHeight,sh=se.scrollHeight;vai(s0+(ev.clientY-y0)*(sh-vh)/(vh-p.offsetHeight));}
+function up(){p.removeEventListener('pointermove',mv);r.classList.remove('arrasto');}
+p.addEventListener('pointermove',mv);p.addEventListener('pointerup',up,{once:true});p.addEventListener('pointercancel',up,{once:true});});
+r.addEventListener('pointerdown',function(e){if(e.target!==r)return;
+var cima=e.clientY<p.getBoundingClientRect().top;vai(se.scrollTop+(cima?-1:1)*innerHeight*0.9);});
+mede();})();`;
+
 const esc = (s = '') =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -217,6 +247,24 @@ ${ucamCss}
        essa altura, e repetir o mínimo empurraria a barra para fora da tela. */
     min-block-size:0;flex:1}
   html.embed .ucam-shell{--ucam-vh:100dvh}
+  /* No quadro a barra NATIVA sai: o shell cresce com a tabela
+     (min-block-size), e numa moldura de 44rem isso punha uma barra cinza
+     de 15px atravessando a faixa da marca, sempre à mostra. No lugar dela
+     entra a sobreposta de barraDoQuadroScript, que só aparece no hover ou
+     rolando e não ocupa calha. */
+  html.embed{scrollbar-width:none}
+  html.embed::-webkit-scrollbar{display:none}
+  .embed-rolo{position:fixed;inset-block:0;inset-inline-end:0;inline-size:.75rem;z-index:2147483000;
+    opacity:0;pointer-events:none;transition:opacity 160ms ease}
+  .embed-rolo[hidden]{display:none}
+  html.embed:hover .embed-rolo,.embed-rolo.ativo,.embed-rolo.arrasto{opacity:1;pointer-events:auto}
+  .embed-rolo__polegar{position:absolute;inset-block-start:0;inset-inline-end:3px;inline-size:6px;
+    border-radius:var(--ucam-radius-pill);background:var(--ucam-color-border-default);
+    transition:inline-size 120ms ease,background-color 120ms ease}
+  .embed-rolo:hover .embed-rolo__polegar,.embed-rolo.arrasto .embed-rolo__polegar{
+    inline-size:8px;background:var(--ucam-color-border-strong)}
+  @media (prefers-reduced-motion:reduce){.embed-rolo,.embed-rolo__polegar{transition:none}}
+  @media (forced-colors:active){html.embed{scrollbar-width:auto}.embed-rolo{display:none}}
   /* O escopo .ucam fica ENTRE o body e o shell — sem repassar o crescimento
      aqui, o flex:1 acima não alcança nada e o rodapé para no meio da tela. */
   body > .ucam{display:flex;flex-direction:column;flex:1;min-block-size:0}
@@ -279,6 +327,7 @@ ${sprite}
 <script>${roloScript}</script>
 <script>${copiarScript}</script>
 <script>${criadoScript}</script>
+<script>${barraDoQuadroScript}</script>
 </body>
 </html>`;
 

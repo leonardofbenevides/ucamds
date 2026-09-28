@@ -25,6 +25,13 @@ const LARGURAS = [
   { id: 'celular', rotulo: 'Celular', px: 390, nota: 'Navegação sobreposta e conteúdo em coluna única.' },
 ] as const;
 
+const SITUACOES = [
+  { situacao: 'aberta', rotulo: 'Sem resposta' },
+  { situacao: 'proposta', rotulo: 'Propostas pelo desenho' },
+  { situacao: 'legado', rotulo: 'Como o sistema de hoje faz' },
+  { situacao: 'confirmada', rotulo: 'Confirmadas' },
+] as const;
+
 /**
  * Uma tela de referência.
  *
@@ -111,6 +118,28 @@ const LARGURAS = [
               <li>{{ n }}</li>
             }
           </ul>
+
+          @if (regras().length) {
+            <h2>Regras de negócio que a tela supõe</h2>
+            <div class="regras">
+              <p class="small muted">
+                O design system não decide estas regras. A tela foi desenhada supondo cada uma; quem
+                decide está ao lado. Só as do legado e as confirmadas são regra. Os números da tela
+                são exemplo.
+              </p>
+              @for (g of regras(); track g.situacao) {
+                <h3>{{ g.rotulo }} · {{ g.itens.length }}</h3>
+                <ul class="regras" [attr.data-situacao]="g.situacao">
+                  @for (r of g.itens; track r.regra) {
+                    <li>
+                      {{ r.regra }}
+                      <span class="decide small muted">Decide: {{ r.decide }}</span>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          }
 
           @if (d.tela.problemas?.length) {
             <h2>O que o legado faz aqui</h2>
@@ -323,6 +352,35 @@ const LARGURAS = [
       border-inline-start-color: var(--ucam-color-feedback-danger-border);
       color: var(--ucam-color-text-secondary);
     }
+    div.regras h3 {
+      margin: 1.25rem 0 0.5rem;
+      font-size: 0.9375rem;
+      font-weight: 560;
+    }
+    div.regras > p {
+      max-inline-size: var(--measure);
+      margin: 0;
+    }
+    ul.regras {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.6rem;
+    }
+    ul.regras li {
+      max-inline-size: var(--measure);
+      padding-inline-start: 0.9rem;
+      border-inline-start: 2px solid var(--ucam-color-border-subtle);
+      font-size: 0.9375rem;
+    }
+    /* Aberta é a única que pede ação de alguém antes de a tela virar código. */
+    ul.regras[data-situacao='aberta'] li {
+      border-inline-start-color: var(--ucam-color-feedback-warning-border);
+    }
+    ul.regras .decide {
+      display: block;
+    }
     ul.usa {
       gap: 0.35rem;
     }
@@ -406,6 +464,17 @@ export default class TelaPage {
   protected readonly padrao = computed(() => {
     const d = this.dados();
     return d ? padraoPorId(d.tela.padrao) : undefined;
+  });
+
+  /**
+   * Agrupadas pela pergunta que o dev faz: o que ainda não tem resposta vem
+   * primeiro, o que já é regra vem por último.
+   */
+  protected readonly regras = computed(() => {
+    const todas = this.dados()?.tela.regras_negocio ?? [];
+    return SITUACOES.map((s) => ({ ...s, itens: todas.filter((r) => r.situacao === s.situacao) })).filter(
+      (g) => g.itens.length,
+    );
   });
 
   /**

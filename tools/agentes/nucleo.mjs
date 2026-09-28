@@ -131,7 +131,7 @@ export const FERRAMENTAS = [
   {
     name: 'ucam_get_template',
     description:
-      'Uma tela de referência inteira: problemas do legado, notas de decisão, componentes usados, código Angular de partida, fluxos (de onde se chega e o que cada ação faz) e, se pedido, o HTML do Trilho A.',
+      'Uma tela de referência inteira: problemas do legado, notas de decisão, componentes usados, código Angular de partida, fluxos (de onde se chega e o que cada ação faz), regras_negocio (o que a tela supõe do negócio: só legado e confirmada são regra; proposta e aberta são perguntas para quem decide) e, se pedido, o HTML do Trilho A.',
     inputSchema: {
       type: 'object',
       required: ['projeto', 'tela'],

@@ -2367,6 +2367,22 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
    * confirma o alvo. */
   text-decoration: none;
 }
+/* O NOME COMO BOTÃO (28/09/2026): quando a linha abre uma gaveta na própria
+ * tela, e não um registro com endereço, o nome é <button> — link sem destino
+ * contraria link.json, e é o mesmo caso do alvo do ListItem que governa um
+ * painel. Desenhado igual ao nome em <a>: só o reset do botão nativo. */
+.ucam-table button.td--pessoa__nome {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--ucam-typography-label-font-weight);
+  text-align: start;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
 .ucam-table .td--pessoa__nome:hover,
 .ucam-table .td--pessoa__nome:focus-visible,
 .ucam-table--linha-clicavel tbody tr:hover .td--pessoa__nome { text-decoration: underline; }

@@ -367,6 +367,41 @@ for (const projeto of templates.projetos ?? []) {
   }
 }
 
+/* ------------------------------------- 4c'. regras de negócio das telas --- */
+// A tela desenha supondo regras que o design system não decide. Sem este
+// campo, o dev lê o protótipo como especificação e o desenho passa a decidir
+// o negócio. Proposta e aberta precisam dizer QUEM decide, senão a pergunta
+// não tem para onde ir. Tela sem o campo é falha desde 27/09/2026, quando
+// as 29 telas foram levantadas: tela nova nasce dizendo o que supõe.
+const SITUACOES_REGRA = new Set(['legado', 'proposta', 'aberta', 'confirmada']);
+const semRegras = [];
+for (const projeto of templates.projetos ?? []) {
+  for (const t of projeto.templates ?? []) {
+    const onde = `templates.json (${projeto.id}/${t.id})`;
+    if (!('regras_negocio' in t)) {
+      semRegras.push(`${projeto.id}/${t.id}`);
+      continue;
+    }
+    if (!Array.isArray(t.regras_negocio) || !t.regras_negocio.length) {
+      falha(onde, '"regras_negocio" existe e está vazio — tela sem suposição nenhuma não precisa do campo');
+      continue;
+    }
+    const vistas = new Set();
+    for (const r of t.regras_negocio) {
+      if (!SITUACOES_REGRA.has(r.situacao)) falha(onde, `regra com situação "${r.situacao}" — use ${[...SITUACOES_REGRA].join(', ')}`);
+      if (!r.regra?.trim()) falha(onde, 'regra sem texto');
+      if (!r.decide?.trim()) falha(onde, `"${r.regra?.slice(0, 50)}…" não diz quem decide`);
+      if (vistas.has(r.regra)) falha(onde, `regra repetida: "${r.regra.slice(0, 50)}…"`);
+      vistas.add(r.regra);
+      const extras = Object.keys(r).filter((k) => !['situacao', 'regra', 'decide'].includes(k));
+      if (extras.length) falha(onde, `regra com campo desconhecido: ${extras.join(', ')}`);
+    }
+  }
+}
+if (semRegras.length) {
+  falha('templates.json', `${semRegras.length} telas sem "regras_negocio" — diga o que a tela supõe do negócio e quem decide: ${semRegras.join(', ')}`);
+}
+
 /* ------------------------------------------- 4d. a MARCAÇÃO dos templates --- */
 // O bloco acima olha o campo "codigo" — o exemplo em Angular que o
 // desenvolvedor copia. Ninguém olhava o campo "preview", que é a TELA: o HTML

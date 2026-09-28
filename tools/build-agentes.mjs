@@ -282,7 +282,7 @@ ${fonteDeDados}
 
 ## Ordem de trabalho
 
-1. **Ache a tela parecida.** \`ucam_list_templates\` e \`ucam_get_template\`. Leia \`problemas\` e \`notas\`: são as decisões que a tela de referência já tomou, e a sua deve seguir as mesmas.
+1. **Ache a tela parecida.** \`ucam_list_templates\` e \`ucam_get_template\`. Leia \`problemas\` e \`notas\`: são as decisões que a tela de referência já tomou, e a sua deve seguir as mesmas. Leia também \`regras_negocio\`: é o que a tela SUPÕE do negócio, e não é o design system que decide. Só \`legado\` e \`confirmada\` são regra; \`proposta\` e \`aberta\` são perguntas para quem está em \`decide\` — não as implemente como fato sem essa resposta, e diga ao usuário quais ficaram pendentes. Os números das telas são exemplo, nunca regra.
 2. **Confirme o padrão.** \`ucam_get_pattern\` com o \`padrao\` da tela. As \`regras\` do padrão são obrigatórias (onde fica a ação de criar, onde vive a ordenação, como é o estado vazio).
 3. **Leia o contrato de cada componente** que vai usar, com \`ucam_get_component\`. Olhe \`props\` (nomes e valores válidos), \`limites\` (quando NÃO usar) e \`acessibilidade\`.
 4. **Escreva** com \`<ucam-*>\` (Trilho B) ou com as classes do Trilho A, só com tokens semânticos (\`ucam_get_tokens\`).

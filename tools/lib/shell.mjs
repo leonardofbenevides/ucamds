@@ -2682,6 +2682,25 @@ ${FN_ANUNCIA}
     }
     return t;
   }
+  /* QUAL FALTA, NA PRÓPRIA LINHA (28/09/2026). O aviso de "Falta 1 decisão"
+   * nomeava a disciplina, mas a tabela não mostrava onde ela estava: com nove
+   * linhas, a pessoa fechava o diálogo e procurava o nome no olho. Agora a
+   * linha sem decisão recebe o erro como qualquer campo obrigatório (contrato
+   * field.json): a frase em .ucam-field__error embaixo do seletor, aria-invalid
+   * e o id dela na frente do aria-describedby. Decidir a linha apaga a marca.
+   * Quem MARCA é marcaFalta, no confirmaScript (é lá que o aviso nasce);
+   * quem apaga é esta, aqui junto do decidir. Scripts separados não se veem. */
+  function limpaFalta(tr) {
+    if (!tr.hasAttribute('data-falta')) return;
+    tr.removeAttribute('data-falta');
+    var grupo = tr.querySelector('[data-decisao]');
+    if (!grupo) return;
+    var id = grupo.id + '-erro', p = document.getElementById(id);
+    if (p) p.remove();
+    grupo.removeAttribute('aria-invalid');
+    var resto = (grupo.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== id; });
+    if (resto.length) grupo.setAttribute('aria-describedby', resto.join(' ')); else grupo.removeAttribute('aria-describedby');
+  }
   function escapaHtml(t) {
     return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
@@ -3282,6 +3301,7 @@ ${FN_ANUNCIA}
         valor === 'isentar' ? 'success' : valor === 'nao' ? 'danger' : valor === 'documento' ? 'warning' : 'neutral',
         valor === 'isentar' ? 'Isenta' : valor === 'nao' ? 'Não isenta' : valor === 'documento' ? 'Aguardando documento' : 'Sem decisão');
       linhaD.setAttribute('data-decidida', valor);
+      if (valor) limpaFalta(linhaD);
       var nomeD = linhaD.getAttribute('data-disciplina');
       totaisIsencao(botao);
       anuncia((nomeD || 'Disciplina') + ': ' + (valor === 'isentar' ? 'isenta.' : valor === 'nao' ? 'não isenta.' : valor === 'documento' ? 'documento a pedir ao candidato.' : 'sem decisão.'), botao);
@@ -4778,6 +4798,25 @@ export const confirmaScript = `
 
   var caixa = null;
 
+  /* Par de limpaFalta (estadoScript): ver o comentário de lá. */
+  function marcaFalta(tr) {
+    var grupo = tr.querySelector('[data-decisao]');
+    if (!grupo) return;
+    tr.setAttribute('data-falta', '');
+    if (!grupo.id) grupo.id = 'decisao-' + Math.random().toString(36).slice(2, 8);
+    var id = grupo.id + '-erro';
+    if (!document.getElementById(id)) {
+      var p = document.createElement('p');
+      p.className = 'ucam-field__error';
+      p.style.margin = '0.25rem 0 0';
+      p.id = id;
+      p.textContent = 'Escolha uma decisão.';
+      grupo.insertAdjacentElement('afterend', p);
+    }
+    grupo.setAttribute('aria-invalid', 'true');
+    var resto = (grupo.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== id; });
+    grupo.setAttribute('aria-describedby', [id].concat(resto).join(' '));
+  }
   function monta() {
     if (caixa) return caixa;
     caixa = document.createElement('dialog');
@@ -4839,9 +4878,10 @@ export const confirmaScript = `
       var faltam = Array.prototype.filter.call(document.querySelectorAll('[data-decisoes] tr[data-disciplina]'), function (tr) { return !tr.getAttribute('data-decidida'); });
       var nomes = faltam.map(function (tr) { return tr.getAttribute('data-disciplina'); });
       var lista = nomes.length < 2 ? nomes[0] : nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1];
+      faltam.forEach(marcaFalta);
       var da = monta();
       da.querySelector('.ucam-dialog__title').textContent = (pend === 1 ? 'Falta 1 decisão' : 'Faltam ' + pend + ' decisões');
-      da.querySelector('.ucam-dialog__texto').textContent = lista + (pend === 1 ? ' ainda não tem decisão. ' : ' ainda não têm decisão. ') +
+      da.querySelector('.ucam-dialog__texto').textContent = lista + (pend === 1 ? ' ainda não tem decisão, e está marcada na tabela. ' : ' ainda não têm decisão, e estão marcadas na tabela. ') +
         'Se falta documento para decidir, marque "Pedir documento": a solicitação espera o candidato, sem indeferir nada.';
       var okA = da.querySelector('[data-confirmar-ok]'); okA.hidden = true;
       var canc = da.querySelector('[data-cancelar]'); canc.textContent = 'Ir para a primeira';
@@ -5553,7 +5593,9 @@ export const tabelaScript = `
     var celulas = Array.prototype.filter.call(tr.children, function (c) {
       return !c.classList.contains('td--selecao') && !c.classList.contains('th--selecao');
     });
-    return celulas.length ? celulas[0].querySelector('a[href]') : null;
+    // O nome pode ser BOTÃO quando a linha abre uma gaveta na própria tela
+    // (data-table.json, rowClickable): aí não há endereço para outra aba.
+    return celulas.length ? celulas[0].querySelector('a[href], button.td--pessoa__nome') : null;
   }
   function segueLinha(e) {
     if (!e.target.closest) return;
@@ -5563,6 +5605,7 @@ export const tabelaScript = `
     if (sel) return;
     var link = linkDaLinha(tr);
     if (!link) return;
+    if (link.tagName === 'BUTTON') { if (e.button === 0) link.click(); return; }
     if (e.button === 1 || e.ctrlKey || e.metaKey || e.shiftKey) {
       e.preventDefault();
       window.open(link.href, '_blank', 'noopener');
