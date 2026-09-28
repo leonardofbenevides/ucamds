@@ -117,6 +117,12 @@
       }
     },
     {
+      "nome": "divided",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Fio entre os pares e altura de linha de lista (2.25rem), no layout inline. Para lista longa de pares do mesmo tipo — as disciplinas de um período com a carga ao lado —, onde sem o fio o olho perde qual valor é de qual rótulo. No Trilho A, .ucam-descricao--fio. O painel já tem o fio e não precisa dele."
+    },
+    {
       "nome": "items",
       "tipo": "DescriptionItem[]",
       "obrigatorio": true,

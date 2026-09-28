@@ -9770,6 +9770,40 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 
 .ucam-descricao--inline .ucam-descricao__rotulo { margin: 0; }
 
+/* FIO ENTRE PARES (28/09/2026). Lista longa de pares deitados — as
+ * disciplinas de um período na gaveta de Matrizes — lia como parágrafo: com
+ * oito linhas o olho perdia qual carga era de qual nome. O fio vai ENTRE os
+ * pares, como no painel, e a linha ganha a altura de linha de lista. */
+.ucam-descricao--fio { gap: 0; }
+.ucam-descricao--fio .ucam-descricao__par {
+  align-items: center;
+  padding-block: var(--ucam-space-inline-xs);
+  min-block-size: 2.25rem;
+}
+/* Na lista com fio o rótulo É o item (o nome da disciplina), não a legenda
+ * de um campo: sobe ao tamanho e à tinta do texto, e o valor segue um degrau
+ * acima só no peso. */
+.ucam-descricao--fio .ucam-descricao__rotulo {
+  font-size: var(--ucam-typography-body-sm-font-size);
+  line-height: var(--ucam-typography-body-sm-line-height);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-descricao--fio .ucam-descricao__par + .ucam-descricao__par {
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+}
+
+/* NA GAVETA, a seção que vem depois de outro bloco ganha o mesmo fio inteiro
+ * e o mesmo ar do corpo da página (.ucam-corpo > * + .ucam-section): o resumo
+ * de uma matriz e cada período dela são unidades, e sem o fio os títulos dos
+ * períodos colavam na lista de cima. */
+.ucam-drawer__body > .ucam-stack > * + section {
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+  /* 16 acima do fio (o vão da pilha) e 24 abaixo: o do corpo (24 + 24)
+   * punha quase 50px entre um período e o seguinte na gaveta estreita, e 16
+   * + 16 fazia o fio do período ler como mais um fio de linha da lista. */
+  padding-block-start: var(--ucam-space-stack-lg);
+}
+
 /* PAINEL: uma linha por par, ícone e rótulo numa coluna de largura fixa,
  * valor na outra.
  *

@@ -20,7 +20,7 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../../docs/tema-pr
 
 /** Larguras da moldura. Os nomes são os pontos de virada do próprio shell. */
 const LARGURAS = [
-  { id: 'desktop', rotulo: 'Desktop', px: 1180, nota: 'Navegação fixa — a partir de 64rem.' },
+  { id: 'desktop', rotulo: 'Desktop', px: 1180, nota: 'Navegação fixa — a partir de 64rem. Ocupa a coluna inteira, com piso de 1180px.' },
   { id: 'tablet', rotulo: 'Tablet', px: 900, nota: 'Navegação sobreposta; conteúdo ainda em duas colunas.' },
   { id: 'celular', rotulo: 'Celular', px: 390, nota: 'Navegação sobreposta e conteúdo em coluna única.' },
 ] as const;
@@ -68,7 +68,7 @@ const SITUACOES = [
               (click)="largura.set(l)"
             >
               {{ l.rotulo }}
-              <span class="px">{{ l.px }}px</span>
+              <span class="px">{{ pxDe(l) }}px</span>
             </button>
           }
         </div>
@@ -93,11 +93,11 @@ const SITUACOES = [
            abaixo já evitava para a altura. O palco não tem borda nem
            tamanho próprio, então sua largura é a da coluna, sempre. -->
       <div class="palco" #palco>
-        <div class="moldura" [style.--px.px]="largura().px" [style.--escala]="escala()">
+        <div class="moldura" [style.--px.px]="pxEfetivo()" [style.--escala]="escala()">
           <iframe
             [src]="url(d.tela.arquivo)"
             data-preview
-            [attr.width]="largura().px"
+            [attr.width]="pxEfetivo()"
             [title]="'Tela ' + d.tela.nome + ' — ' + d.projeto.nome"
             loading="lazy"
           ></iframe>
@@ -106,7 +106,7 @@ const SITUACOES = [
       @if (escala() < 1) {
         <p class="escala-nota small muted">
           Reduzido a {{ (escala() * 100).toFixed(0) }}% para caber na coluna. A tela continua
-          desenhando em {{ largura().px }}px — é a viewport que o arranjo documenta.
+          desenhando em {{ pxEfetivo() }}px — é a viewport que o arranjo documenta.
         </p>
       }
 
@@ -427,16 +427,31 @@ export default class TelaPage {
   protected readonly escala = signal(1);
 
   /**
+   * DESKTOP É A COLUNA INTEIRA (28/09/2026: "a tela deveria estar full aqui em
+   * largura"). Com --app-max em 96rem a coluna chega a ~1250px e o quadro
+   * fixo de 1180 deixava uma faixa vazia à direita. Desktop agora desenha na
+   * largura do palco, com 1180 de piso: abaixo disso volta a reduzir por
+   * escala, que é o que mantém o arranjo de desktop numa coluna estreita.
+   * Tablet e Celular continuam fixos — são pontos de virada, não "a tela
+   * que cabe". No prerender o palco mede 0 e vale o piso.
+   */
+  private readonly palcoLargura = signal(0);
+  protected pxDe(l: (typeof LARGURAS)[number]): number {
+    return l.id === 'desktop' ? Math.max(l.px, Math.floor(this.palcoLargura())) : l.px;
+  }
+  protected readonly pxEfetivo = computed(() => this.pxDe(this.largura()));
+
+  /**
    * Recalcula quando o quadro aparece (o viewChild é signal) e quando o botão
    * de largura muda o divisor. O ResizeObserver do construtor cobre o terceiro
    * gatilho, que é a janela mudar de tamanho.
    */
   private readonly ajusta = effect(() => {
     const el = this.palco()?.nativeElement;
-    const px = this.largura().px;
     // clientWidth ausente = prerender. Zero também não serve de divisor.
     if (!el?.clientWidth) return;
-    this.escala.set(Math.min(1, el.clientWidth / px));
+    this.palcoLargura.set(el.clientWidth);
+    this.escala.set(Math.min(1, el.clientWidth / this.pxEfetivo()));
   });
 
   constructor() {
@@ -452,7 +467,9 @@ export default class TelaPage {
         // derivada da escala; medi-la para calcular a escala fecharia o laço
         // que este comentário já alertava para a altura — a caixa encolheria
         // a cada passada até desaparecer. O palco não depende da escala.
-        if (el.clientWidth) this.escala.set(Math.min(1, el.clientWidth / this.largura().px));
+        if (!el.clientWidth) return;
+        this.palcoLargura.set(el.clientWidth);
+        this.escala.set(Math.min(1, el.clientWidth / this.pxEfetivo()));
       });
       obs.observe(el);
       this.destroy.onDestroy(() => obs.disconnect());

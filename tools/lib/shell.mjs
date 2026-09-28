@@ -372,7 +372,9 @@ export function renderShell(cfg = {}, conteudo = '') {
       ].filter((g) => g.itens.length)
     : [];
 
-  /* A CHAVE DE BUSCA de um item é rótulo + apoio, sem acento e em caixa
+  /* A CHAVE DE BUSCA de um item é rótulo + apoio (+ termos, palavras que
+   * acham o item sem estar escritas nele: o código da matriz acha o curso),
+   * sem acento e em caixa
    * baixa. Sem tirar o acento, "Analitico" não acha "Analytics" e — pior —
    * "Secretaria" não acha "Secretária": digitar o acento certo vira
    * requisito, e ninguém digita acento numa busca. */
@@ -390,7 +392,7 @@ export function renderShell(cfg = {}, conteudo = '') {
     return (
       abre +
       ` role="option" id="${esc(idOpcao)}" aria-selected="false" tabindex="-1"` +
-      ` data-escopo="${esc(gid)}" data-chave="${esc(chave(`${i.rotulo} ${i.meta ?? ''}`))}"` +
+      ` data-escopo="${esc(gid)}" data-chave="${esc(chave(`${i.rotulo} ${i.meta ?? ''} ${i.termos ?? ''}`))}"` +
       (i.recente ? ' data-recente' : '') +
       '>' +
       ic(i.icone ?? 'search') +

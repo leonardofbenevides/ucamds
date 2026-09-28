@@ -3146,7 +3146,7 @@
             ]
           }
         ],
-        "busca": "Buscar candidato, inscrição ou curso",
+        "busca": "Buscar candidato, inscrição, curso, matriz ou disciplina",
         "buscaAtalho": "/",
         "railMarca": "../marca/ucamds-simbolo-inverso.svg",
         "navRodape": [
@@ -3200,48 +3200,97 @@
             "titulo": "Candidatos",
             "itens": [
               {
-                "rotulo": "João Cutrim",
-                "meta": "Direito · 2026-01187",
-                "icone": "user",
-                "tela": "analise",
-                "recente": true
-              },
-              {
                 "rotulo": "Ana Paula Rocha",
-                "meta": "Direito · 2026-01203",
+                "meta": "2026-01203 · Aguardando envio",
                 "icone": "user",
-                "tela": "sem-documentos"
+                "tela": "sem-documentos",
+                "termos": "inscrição candidato Direito",
+                "recente": true
               },
               {
                 "rotulo": "Maria Souza",
-                "meta": "Administração · 2026-01158",
+                "meta": "2026-01158 · Aguardando análise",
                 "icone": "user",
-                "tela": "analise"
-              }
-            ]
-          },
-          {
-            "id": "inscricao",
-            "titulo": "Inscrições",
-            "itens": [
-              {
-                "rotulo": "2026-01187 · João Cutrim",
-                "meta": "aguardando análise",
-                "icone": "clipboardCheck",
                 "tela": "analise",
+                "termos": "inscrição candidato Administração"
+              },
+              {
+                "rotulo": "João Cutrim",
+                "meta": "2026-01187 · Aguardando análise",
+                "icone": "user",
+                "tela": "analise",
+                "termos": "inscrição candidato Direito",
                 "recente": true
               },
               {
-                "rotulo": "2026-01203 · Ana Paula Rocha",
-                "meta": "aguardando envio",
-                "icone": "clipboardCheck",
-                "tela": "sem-documentos"
+                "rotulo": "Carlos Henrique Dias",
+                "meta": "2026-01211 · Aguardando análise",
+                "icone": "user",
+                "tela": "analise",
+                "termos": "inscrição candidato Direito"
               },
               {
-                "rotulo": "2025-02044 · Pedro Alves",
-                "meta": "concluída · 6 de 9 isentas",
-                "icone": "clipboardCheck",
-                "tela": "consulta"
+                "rotulo": "Bruna Lima Ferraz",
+                "meta": "2026-01219 · Aguardando análise",
+                "icone": "user",
+                "tela": "analise",
+                "termos": "inscrição candidato Administração"
+              },
+              {
+                "rotulo": "Rafael Nunes Pinto",
+                "meta": "2026-01224 · Aguardando envio",
+                "icone": "user",
+                "tela": "sem-documentos",
+                "termos": "inscrição candidato Direito"
+              },
+              {
+                "rotulo": "Lúcia Andrade Melo",
+                "meta": "2026-01230 · Aguardando envio",
+                "icone": "user",
+                "tela": "sem-documentos",
+                "termos": "inscrição candidato Administração"
+              },
+              {
+                "rotulo": "Tiago Barbosa Reis",
+                "meta": "2026-01236 · Aguardando candidato",
+                "icone": "user",
+                "tela": "analise",
+                "termos": "inscrição candidato Direito"
+              },
+              {
+                "rotulo": "Pedro Alves",
+                "meta": "2025-02044 · ",
+                "icone": "user",
+                "tela": "consulta",
+                "termos": "inscrição candidato Direito"
+              },
+              {
+                "rotulo": "Fernanda Costa Braga",
+                "meta": "2025-02061 · ",
+                "icone": "user",
+                "tela": "consulta",
+                "termos": "inscrição candidato Administração"
+              },
+              {
+                "rotulo": "Gustavo Lemos Prado",
+                "meta": "2025-02078 · ",
+                "icone": "user",
+                "tela": "consulta",
+                "termos": "inscrição candidato Direito"
+              },
+              {
+                "rotulo": "Helena Sá Ribeiro",
+                "meta": "2025-02090 · ",
+                "icone": "user",
+                "tela": "consulta",
+                "termos": "inscrição candidato Direito"
+              },
+              {
+                "rotulo": "Igor Martins Vale",
+                "meta": "2025-02101 · ",
+                "icone": "user",
+                "tela": "consulta",
+                "termos": "inscrição candidato Administração"
               }
             ]
           },
@@ -3250,22 +3299,527 @@
             "titulo": "Cursos",
             "itens": [
               {
-                "rotulo": "Direito",
-                "meta": "5 solicitações na fila",
+                "rotulo": "Administração",
+                "meta": "Coordenação: Paulo Henrique Lessa · análise automatizada ligada",
                 "icone": "graduationCap",
-                "tela": "fila",
+                "tela": "cursos",
+                "termos": "curso ADM20231"
+              },
+              {
+                "rotulo": "Ciências Contábeis",
+                "meta": "Coordenação: Sílvia Moura · análise automatizada desligada",
+                "icone": "graduationCap",
+                "tela": "cursos",
+                "termos": "curso CON20241"
+              },
+              {
+                "rotulo": "Direito",
+                "meta": "Coordenação: Leonardo F. Benevides · análise automatizada ligada",
+                "icone": "graduationCap",
+                "tela": "cursos",
+                "termos": "curso DIR20222",
                 "recente": true
               },
               {
-                "rotulo": "Administração",
-                "meta": "3 solicitações na fila",
+                "rotulo": "Pedagogia",
+                "meta": "Coordenação: Cláudia Neves · análise automatizada desligada",
                 "icone": "graduationCap",
-                "tela": "fila"
+                "tela": "cursos",
+                "termos": "curso PED20221"
+              },
+              {
+                "rotulo": "Psicologia",
+                "meta": "Coordenação: André Figueira · análise automatizada desligada",
+                "icone": "graduationCap",
+                "tela": "cursos",
+                "termos": "curso PSI20231"
+              }
+            ]
+          },
+          {
+            "id": "matriz",
+            "titulo": "Matrizes",
+            "itens": [
+              {
+                "rotulo": "DIR20222 · Direito · 2022.2",
+                "meta": " · 640h · 9 disciplinas",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "matriz curricular",
+                "recente": true
+              },
+              {
+                "rotulo": "DIR20201 · Direito · 2020.1",
+                "meta": "Em extinção · 640h · 9 disciplinas",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "matriz curricular"
+              },
+              {
+                "rotulo": "ADM20231 · Administração · 2023.1",
+                "meta": " · 560h · 8 disciplinas",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "matriz curricular"
+              },
+              {
+                "rotulo": "ADM20182 · Administração · 2018.2",
+                "meta": "Encerrada · 600h · 8 disciplinas",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "matriz curricular"
+              },
+              {
+                "rotulo": "CON20241 · Ciências Contábeis · 2024.1",
+                "meta": " · 560h · 8 disciplinas",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "matriz curricular"
+              },
+              {
+                "rotulo": "PSI20231 · Psicologia · 2023.1",
+                "meta": " · 720h · 10 disciplinas",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "matriz curricular"
+              },
+              {
+                "rotulo": "PED20221 · Pedagogia · 2022.1",
+                "meta": " · 560h · 8 disciplinas",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "matriz curricular"
+              }
+            ]
+          },
+          {
+            "id": "disciplina",
+            "titulo": "Disciplinas",
+            "itens": [
+              {
+                "rotulo": "Introdução ao Estudo do Direito",
+                "meta": "DIR20222 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Direito Civil I",
+                "meta": "DIR20222 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "História do Direito",
+                "meta": "DIR20222 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Sociologia Jurídica",
+                "meta": "DIR20222 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Direito Penal I",
+                "meta": "DIR20222 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Direito Constitucional I",
+                "meta": "DIR20222 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Teoria Geral do Processo",
+                "meta": "DIR20222 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Direito Administrativo",
+                "meta": "DIR20222 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Direito Empresarial I",
+                "meta": "DIR20222 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2022.2"
+              },
+              {
+                "rotulo": "Introdução ao Estudo do Direito",
+                "meta": "DIR20201 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Direito Civil I",
+                "meta": "DIR20201 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Filosofia do Direito",
+                "meta": "DIR20201 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Sociologia Jurídica",
+                "meta": "DIR20201 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Direito Penal I",
+                "meta": "DIR20201 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Direito Constitucional I",
+                "meta": "DIR20201 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Economia Política",
+                "meta": "DIR20201 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Direito Administrativo",
+                "meta": "DIR20201 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Direito Empresarial I",
+                "meta": "DIR20201 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Direito · 2020.1"
+              },
+              {
+                "rotulo": "Teoria Geral da Administração",
+                "meta": "ADM20231 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Matemática Aplicada",
+                "meta": "ADM20231 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Contabilidade Geral",
+                "meta": "ADM20231 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Economia I",
+                "meta": "ADM20231 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Estatística Aplicada",
+                "meta": "ADM20231 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Direito Empresarial",
+                "meta": "ADM20231 · 2º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Marketing I",
+                "meta": "ADM20231 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Gestão de Pessoas I",
+                "meta": "ADM20231 · 3º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2023.1"
+              },
+              {
+                "rotulo": "Teoria Geral da Administração",
+                "meta": "ADM20182 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Matemática Financeira",
+                "meta": "ADM20182 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Contabilidade Geral",
+                "meta": "ADM20182 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Economia I",
+                "meta": "ADM20182 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Estatística",
+                "meta": "ADM20182 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Instituições de Direito",
+                "meta": "ADM20182 · 2º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Marketing I",
+                "meta": "ADM20182 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Comportamento Organizacional",
+                "meta": "ADM20182 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Administração · 2018.2"
+              },
+              {
+                "rotulo": "Contabilidade Introdutória",
+                "meta": "CON20241 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "Matemática Aplicada",
+                "meta": "CON20241 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "Fundamentos de Administração",
+                "meta": "CON20241 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "Contabilidade Intermediária",
+                "meta": "CON20241 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "Estatística",
+                "meta": "CON20241 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "Direito Tributário I",
+                "meta": "CON20241 · 2º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "Contabilidade de Custos",
+                "meta": "CON20241 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "Legislação Societária",
+                "meta": "CON20241 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Ciências Contábeis · 2024.1"
+              },
+              {
+                "rotulo": "História da Psicologia",
+                "meta": "PSI20231 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Neuroanatomia",
+                "meta": "PSI20231 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Antropologia",
+                "meta": "PSI20231 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Filosofia",
+                "meta": "PSI20231 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Psicologia do Desenvolvimento I",
+                "meta": "PSI20231 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Estatística em Psicologia",
+                "meta": "PSI20231 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Ética Profissional",
+                "meta": "PSI20231 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Teorias da Personalidade",
+                "meta": "PSI20231 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Psicopatologia I",
+                "meta": "PSI20231 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Metodologia da Pesquisa",
+                "meta": "PSI20231 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Psicologia · 2023.1"
+              },
+              {
+                "rotulo": "Fundamentos da Educação",
+                "meta": "PED20221 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
+              },
+              {
+                "rotulo": "Psicologia da Educação",
+                "meta": "PED20221 · 1º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
+              },
+              {
+                "rotulo": "Leitura e Produção de Texto",
+                "meta": "PED20221 · 1º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
+              },
+              {
+                "rotulo": "Didática",
+                "meta": "PED20221 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
+              },
+              {
+                "rotulo": "Sociologia da Educação",
+                "meta": "PED20221 · 2º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
+              },
+              {
+                "rotulo": "Filosofia da Educação",
+                "meta": "PED20221 · 2º período · 40h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
+              },
+              {
+                "rotulo": "Alfabetização e Letramento",
+                "meta": "PED20221 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
+              },
+              {
+                "rotulo": "Políticas Educacionais",
+                "meta": "PED20221 · 3º período · 80h",
+                "icone": "bookOpen",
+                "tela": "matrizes",
+                "termos": "disciplina Pedagogia · 2022.1"
               }
             ]
           }
         ],
-        "$porque_buscaResultados": "Candidato, inscrição e curso — os três que o placeholder do campo promete, com o mesmo mecanismo do Protocolo: os destinos saem do menu, o que está aqui é o que o menu não alcança.",
+        "$porque_buscaResultados": "Tudo o que o app tem, e derivado das telas (scratchpad gera-busca.mjs, 28/09/2026): os 13 candidatos da fila (a inscrição vai no apoio, e o destino segue a situação — análise, sem documentos ou consulta), os 5 cursos com a coordenação, as 7 matrizes e as disciplinas de cada uma, com matriz, período e carga. Inscrições deixou de ser grupo próprio: o mesmo registro aparecia duas vezes. \"termos\" deixa o item achável por palavra que não está no texto (o código da matriz acha o curso).",
         "rail": {
           "icone": "clipboardCheck",
           "itens": [
@@ -3960,8 +4514,8 @@
             {"situacao":"aberta","regra":"Quais disciplinas da matriz entram na isenção: a matriz inteira ou só as marcadas como passíveis de isenção (a tela mostra os três primeiros períodos).","decide":"Secretaria acadêmica"},
             {"situacao":"proposta","regra":"Matriz em extinção continua valendo para quem entrou nela; candidato novo é analisado contra a vigente.","decide":"Secretaria acadêmica"}
           ],
-          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/portal/grade-modulos'>Meus sistemas</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Matrizes curriculares</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Matrizes curriculares</h2><span class='ucam-viewbar__meta'>7 matrizes lidas do SIGU hoje, 06:00 · abra uma para ver as disciplinas que a análise compara com o histórico</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='exportar'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> Exportar</button></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' role='group' aria-label='Situação da matriz' data-filtra='dado:situacao' aria-controls='mt-tabela'><button type='button' aria-pressed='true' data-valor=''>Todas</button><button type='button' aria-pressed='false' data-valor='vigente'>Vigentes</button><button type='button' aria-pressed='false' data-valor='extincao'>Em extinção</button><button type='button' aria-pressed='false' data-valor='encerrada'>Encerradas</button></div></div></div><div class='ucam-corpo'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow' style='max-inline-size:28rem'><label class='ucam-field__label' for='mt-b'>Pesquisar matriz</label><input class='ucam-input' id='mt-b' type='search' data-filtra='texto' placeholder='Código ou curso' aria-controls='mt-vazio' aria-describedby='mt-eco'></div><div class='ucam-field'><label class='ucam-field__label' for='mt-c'>Curso</label><select class='ucam-select' id='mt-c' data-filtra='dado:curso'><option value=''>Todos os cursos</option><option value='Administração'>Administração</option><option value='Ciências Contábeis'>Ciências Contábeis</option><option value='Direito'>Direito</option><option value='Pedagogia'>Pedagogia</option><option value='Psicologia'>Psicologia</option></select></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact ucam-table--linha-clicavel' id='mt-tabela'><caption class='ucam-sr-only'>Matrizes curriculares dos cursos do campus Rio de Janeiro. Cada matriz lista as disciplinas que entram na análise de isenção; abrir uma mostra as disciplinas.</caption><thead><tr><th scope='col' aria-sort='ascending'><button type='button' class='ucam-table__coluna' id='mt-col-1-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-1-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-bookOpen'/></svg>Matriz <svg class='ic' aria-hidden='true'><use href='#i-chevronUp'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-1-menu' role='menu' aria-labelledby='mt-col-1-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='true' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' aria-disabled='true' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min th--num' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-2-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-2-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-hash'/></svg>Disciplinas <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-2-menu' role='menu' aria-labelledby='mt-col-2-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min th--num' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-3-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-3-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-clock'/></svg>Carga na isenção <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-3-menu' role='menu' aria-labelledby='mt-col-3-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-4-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-4-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-calendar'/></svg>Vigente desde <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-4-menu' role='menu' aria-labelledby='mt-col-4-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min th--num' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-5-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-5-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-inbox'/></svg>Em análise <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-5-menu' role='menu' aria-labelledby='mt-col-5-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-6-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-6-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-circleDot'/></svg>Situação <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-6-menu' role='menu' aria-labelledby='mt-col-6-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th></tr></thead><tbody><tr data-situacao='vigente' data-curso='Direito'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-dir20222'>Direito · 2022.2</button><span class='td--apoio'><span class='ucam-id'>DIR20222</span></span></span></td><td class='td--num'>9</td><td class='td--num'>640h</td><td style='white-space:nowrap'>2022.2</td><td class='td--num'><a class='ucam-link' href='#/templates/isencao/fila' data-fluxo='a'>5</a></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='extincao' data-curso='Direito'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-dir20201'>Direito · 2020.1</button><span class='td--apoio'><span class='ucam-id'>DIR20201</span></span></span></td><td class='td--num'>9</td><td class='td--num'>640h</td><td style='white-space:nowrap'>2020.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--warning'><span class='ucam-badge__ponto' aria-hidden='true'></span>Em extinção</span></td></tr><tr data-situacao='vigente' data-curso='Administração'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-adm20231'>Administração · 2023.1</button><span class='td--apoio'><span class='ucam-id'>ADM20231</span></span></span></td><td class='td--num'>8</td><td class='td--num'>560h</td><td style='white-space:nowrap'>2023.1</td><td class='td--num'><a class='ucam-link' href='#/templates/isencao/fila' data-fluxo='a'>3</a></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='encerrada' data-curso='Administração'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-adm20182'>Administração · 2018.2</button><span class='td--apoio'><span class='ucam-id'>ADM20182</span></span></span></td><td class='td--num'>8</td><td class='td--num'>600h</td><td style='white-space:nowrap'>2018.2</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span>Encerrada</span></td></tr><tr data-situacao='vigente' data-curso='Ciências Contábeis'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-con20241'>Ciências Contábeis · 2024.1</button><span class='td--apoio'><span class='ucam-id'>CON20241</span></span></span></td><td class='td--num'>8</td><td class='td--num'>560h</td><td style='white-space:nowrap'>2024.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='vigente' data-curso='Psicologia'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-psi20231'>Psicologia · 2023.1</button><span class='td--apoio'><span class='ucam-id'>PSI20231</span></span></span></td><td class='td--num'>10</td><td class='td--num'>720h</td><td style='white-space:nowrap'>2023.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='vigente' data-curso='Pedagogia'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-ped20221'>Pedagogia · 2022.1</button><span class='td--apoio'><span class='ucam-id'>PED20221</span></span></span></td><td class='td--num'>8</td><td class='td--num'>560h</td><td style='white-space:nowrap'>2022.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr></tbody></table></div><nav class='ucam-pagination' aria-label='Resumo das matrizes'><span class='ucam-pagination__range' role='status' tabindex='-1'>7 matrizes · 5 vigentes, 1 em extinção e 1 encerrada</span></nav></div><div class='ucam-empty' id='mt-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhuma matriz com esses filtros</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou, ao curso ou à situação escolhida. Tente outro termo, ou limpe os filtros.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar filtros</button></div><p class='ucam-sr-only' id='mt-eco' role='status'></p></div><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-dir20222' role='dialog' aria-modal='true' aria-labelledby='mt-g-dir20222-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-dir20222-t'>Direito · 2022.2</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>DIR20222</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>5 solicitações</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20222-p1'><h3 class='ucam-section__title' id='mt-g-dir20222-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Introdução ao Estudo do Direito</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Civil I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>História do Direito</dt><dd class='ucam-descricao__valor'>40h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Sociologia Jurídica</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20222-p2'><h3 class='ucam-section__title' id='mt-g-dir20222-p2'>2º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Penal I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Constitucional I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teoria Geral do Processo</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20222-p3'><h3 class='ucam-section__title' id='mt-g-dir20222-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Administrativo</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Empresarial I</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><p class='ucam-field__hint'>9 disciplinas · 640h entram na isenção</p></div></div><footer class='ucam-drawer__footer'><a class='ucam-btn ucam-btn--secondary' href='#/templates/isencao/fila' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-inbox'/></svg> Ver na fila</a><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-dir20201' role='dialog' aria-modal='true' aria-labelledby='mt-g-dir20201-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-dir20201-t'>Direito · 2020.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>DIR20201</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Em extinção: vale só para quem entrou até 2022.1</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20201-p1'><h3 class='ucam-section__title' id='mt-g-dir20201-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Introdução ao Estudo do Direito</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Civil I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Filosofia do Direito</dt><dd class='ucam-descricao__valor'>40h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Sociologia Jurídica</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20201-p2'><h3 class='ucam-section__title' id='mt-g-dir20201-p2'>2º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Penal I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Constitucional I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Economia Política</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20201-p3'><h3 class='ucam-section__title' id='mt-g-dir20201-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Administrativo</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Empresarial I</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><p class='ucam-field__hint'>9 disciplinas · 640h entram na isenção</p></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-adm20231' role='dialog' aria-modal='true' aria-labelledby='mt-g-adm20231-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-adm20231-t'>Administração · 2023.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>ADM20231</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>3 solicitações</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20231-p1'><h3 class='ucam-section__title' id='mt-g-adm20231-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teoria Geral da Administração</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matemática Aplicada</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Geral</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20231-p2'><h3 class='ucam-section__title' id='mt-g-adm20231-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Economia I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística Aplicada</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Empresarial</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20231-p3'><h3 class='ucam-section__title' id='mt-g-adm20231-p3'>3º período <span class='ucam-section__contagem'>120h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Marketing I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Gestão de Pessoas I</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><p class='ucam-field__hint'>8 disciplinas · 560h entram na isenção</p></div></div><footer class='ucam-drawer__footer'><a class='ucam-btn ucam-btn--secondary' href='#/templates/isencao/fila' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-inbox'/></svg> Ver na fila</a><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-adm20182' role='dialog' aria-modal='true' aria-labelledby='mt-g-adm20182-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-adm20182-t'>Administração · 2018.2</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>ADM20182</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Encerrada</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20182-p1'><h3 class='ucam-section__title' id='mt-g-adm20182-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teoria Geral da Administração</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matemática Financeira</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Geral</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20182-p2'><h3 class='ucam-section__title' id='mt-g-adm20182-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Economia I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Instituições de Direito</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20182-p3'><h3 class='ucam-section__title' id='mt-g-adm20182-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Marketing I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Comportamento Organizacional</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><p class='ucam-field__hint'>8 disciplinas · 600h entram na isenção</p></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-con20241' role='dialog' aria-modal='true' aria-labelledby='mt-g-con20241-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-con20241-t'>Ciências Contábeis · 2024.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>CON20241</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-con20241-p1'><h3 class='ucam-section__title' id='mt-g-con20241-p1'>1º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Introdutória</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matemática Aplicada</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Fundamentos de Administração</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-con20241-p2'><h3 class='ucam-section__title' id='mt-g-con20241-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Intermediária</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Tributário I</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-con20241-p3'><h3 class='ucam-section__title' id='mt-g-con20241-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade de Custos</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Legislação Societária</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><p class='ucam-field__hint'>8 disciplinas · 560h entram na isenção</p></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-psi20231' role='dialog' aria-modal='true' aria-labelledby='mt-g-psi20231-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-psi20231-t'>Psicologia · 2023.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>PSI20231</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-psi20231-p1'><h3 class='ucam-section__title' id='mt-g-psi20231-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>História da Psicologia</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Neuroanatomia</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Antropologia</dt><dd class='ucam-descricao__valor'>40h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Filosofia</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-psi20231-p2'><h3 class='ucam-section__title' id='mt-g-psi20231-p2'>2º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Psicologia do Desenvolvimento I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística em Psicologia</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Ética Profissional</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-psi20231-p3'><h3 class='ucam-section__title' id='mt-g-psi20231-p3'>3º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teorias da Personalidade</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Psicopatologia I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Metodologia da Pesquisa</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><p class='ucam-field__hint'>10 disciplinas · 720h entram na isenção</p></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-ped20221' role='dialog' aria-modal='true' aria-labelledby='mt-g-ped20221-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-ped20221-t'>Pedagogia · 2022.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>PED20221</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-ped20221-p1'><h3 class='ucam-section__title' id='mt-g-ped20221-p1'>1º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Fundamentos da Educação</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Psicologia da Educação</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Leitura e Produção de Texto</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-ped20221-p2'><h3 class='ucam-section__title' id='mt-g-ped20221-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Didática</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Sociologia da Educação</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Filosofia da Educação</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-ped20221-p3'><h3 class='ucam-section__title' id='mt-g-ped20221-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Alfabetização e Letramento</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Políticas Educacionais</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><p class='ucam-field__hint'>8 disciplinas · 560h entram na isenção</p></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside>",
-          "codigo": "<ucam-app-shell [user]=\"usuario()\" [campus]=\"campus()\">\n  <ucam-page-header title=\"Matrizes curriculares\" [count]=\"matrizes().length\" description=\"Importadas do SIGU\">\n    <ucam-button variant=\"secondary\" (pressed)=\"exportar()\">Exportar</ucam-button>\n  </ucam-page-header>\n\n  <ucam-segmented label=\"Situação da matriz\" [options]=\"situacoes()\" [(value)]=\"situacao\" />\n\n  <ucam-data-table\n    density=\"compact\"\n    [columns]=\"colunas\"\n    [rows]=\"filtradas()\"\n    identifierKey=\"codigo\"\n    caption=\"Matrizes curriculares do campus\"\n    (rowActivate)=\"abrir($event)\" />\n\n  <ucam-drawer [open]=\"!!aberta()\" [title]=\"aberta()?.titulo\" (closed)=\"aberta.set(null)\">\n    <ucam-description-list [items]=\"aberta()?.resumo\" />\n    <section *ngFor=\"let p of aberta()?.periodos\">\n      <h3 class=\"ucam-section__title\">{{ p.nome }} <span class=\"ucam-section__contagem\">{{ p.carga }}h</span></h3>\n      <ucam-description-list layout=\"inline\" [items]=\"p.disciplinas\" />\n    </section>\n    <ucam-button *ngIf=\"aberta()?.emAnalise\" variant=\"secondary\" routerLink=\"/isencao/fila\">Ver na fila</ucam-button>\n    <ucam-button variant=\"ghost\" (pressed)=\"aberta.set(null)\">Fechar</ucam-button>\n  </ucam-drawer>\n</ucam-app-shell>\n\ncolunas: UcamColumnDef[] = [\n  { key: 'matriz', header: 'Matriz', priority: 1 },\n  { key: 'disciplinas', header: 'Disciplinas', type: 'number', width: 'min' },\n  { key: 'carga', header: 'Carga na isenção', type: 'number', width: 'min' },\n  { key: 'vigente', header: 'Vigente desde', width: 'min' },\n  { key: 'emAnalise', header: 'Em análise', type: 'number', width: 'min' },\n  { key: 'situacao', header: 'Situação', type: 'status', width: 'min' },\n];",
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/portal/grade-modulos'>Meus sistemas</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Matrizes curriculares</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Matrizes curriculares</h2><span class='ucam-viewbar__meta'>7 matrizes lidas do SIGU hoje, 06:00 · abra uma para ver as disciplinas que a análise compara com o histórico</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='exportar'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> Exportar</button></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' role='group' aria-label='Situação da matriz' data-filtra='dado:situacao' aria-controls='mt-tabela'><button type='button' aria-pressed='true' data-valor=''>Todas</button><button type='button' aria-pressed='false' data-valor='vigente'>Vigentes</button><button type='button' aria-pressed='false' data-valor='extincao'>Em extinção</button><button type='button' aria-pressed='false' data-valor='encerrada'>Encerradas</button></div></div></div><div class='ucam-corpo'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow' style='max-inline-size:28rem'><label class='ucam-field__label' for='mt-b'>Pesquisar matriz</label><input class='ucam-input' id='mt-b' type='search' data-filtra='texto' placeholder='Código ou curso' aria-controls='mt-vazio' aria-describedby='mt-eco'></div><div class='ucam-field'><label class='ucam-field__label' for='mt-c'>Curso</label><select class='ucam-select' id='mt-c' data-filtra='dado:curso'><option value=''>Todos os cursos</option><option value='Administração'>Administração</option><option value='Ciências Contábeis'>Ciências Contábeis</option><option value='Direito'>Direito</option><option value='Pedagogia'>Pedagogia</option><option value='Psicologia'>Psicologia</option></select></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact ucam-table--linha-clicavel' id='mt-tabela'><caption class='ucam-sr-only'>Matrizes curriculares dos cursos do campus Rio de Janeiro. Cada matriz lista as disciplinas que entram na análise de isenção; abrir uma mostra as disciplinas.</caption><thead><tr><th scope='col' aria-sort='ascending'><button type='button' class='ucam-table__coluna' id='mt-col-1-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-1-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-bookOpen'/></svg>Matriz <svg class='ic' aria-hidden='true'><use href='#i-chevronUp'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-1-menu' role='menu' aria-labelledby='mt-col-1-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='true' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' aria-disabled='true' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min th--num' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-2-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-2-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-hash'/></svg>Disciplinas <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-2-menu' role='menu' aria-labelledby='mt-col-2-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min th--num' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-3-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-3-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-clock'/></svg>Carga na isenção <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-3-menu' role='menu' aria-labelledby='mt-col-3-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-4-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-4-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-calendar'/></svg>Vigente desde <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-4-menu' role='menu' aria-labelledby='mt-col-4-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min th--num' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-5-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-5-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-inbox'/></svg>Em análise <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-5-menu' role='menu' aria-labelledby='mt-col-5-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='mt-col-6-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='mt-col-6-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-circleDot'/></svg>Situação <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='mt-col-6-menu' role='menu' aria-labelledby='mt-col-6-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' hidden tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th></tr></thead><tbody><tr data-situacao='vigente' data-curso='Direito'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-dir20222'>Direito · 2022.2</button><span class='td--apoio'><span class='ucam-id'>DIR20222</span></span></span></td><td class='td--num'>9</td><td class='td--num'>640h</td><td style='white-space:nowrap'>2022.2</td><td class='td--num'><a class='ucam-link' href='#/templates/isencao/fila' data-fluxo='a'>5</a></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='extincao' data-curso='Direito'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-dir20201'>Direito · 2020.1</button><span class='td--apoio'><span class='ucam-id'>DIR20201</span></span></span></td><td class='td--num'>9</td><td class='td--num'>640h</td><td style='white-space:nowrap'>2020.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--warning'><span class='ucam-badge__ponto' aria-hidden='true'></span>Em extinção</span></td></tr><tr data-situacao='vigente' data-curso='Administração'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-adm20231'>Administração · 2023.1</button><span class='td--apoio'><span class='ucam-id'>ADM20231</span></span></span></td><td class='td--num'>8</td><td class='td--num'>560h</td><td style='white-space:nowrap'>2023.1</td><td class='td--num'><a class='ucam-link' href='#/templates/isencao/fila' data-fluxo='a'>3</a></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='encerrada' data-curso='Administração'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-adm20182'>Administração · 2018.2</button><span class='td--apoio'><span class='ucam-id'>ADM20182</span></span></span></td><td class='td--num'>8</td><td class='td--num'>600h</td><td style='white-space:nowrap'>2018.2</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span>Encerrada</span></td></tr><tr data-situacao='vigente' data-curso='Ciências Contábeis'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-con20241'>Ciências Contábeis · 2024.1</button><span class='td--apoio'><span class='ucam-id'>CON20241</span></span></span></td><td class='td--num'>8</td><td class='td--num'>560h</td><td style='white-space:nowrap'>2024.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='vigente' data-curso='Psicologia'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-psi20231'>Psicologia · 2023.1</button><span class='td--apoio'><span class='ucam-id'>PSI20231</span></span></span></td><td class='td--num'>10</td><td class='td--num'>720h</td><td style='white-space:nowrap'>2023.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr><tr data-situacao='vigente' data-curso='Pedagogia'><td class='td--pessoa'><span class='td--pessoa__texto'><button type='button' class='td--pessoa__nome' data-fluxo='c' data-abre-gaveta='mt-g-ped20221'>Pedagogia · 2022.1</button><span class='td--apoio'><span class='ucam-id'>PED20221</span></span></span></td><td class='td--num'>8</td><td class='td--num'>560h</td><td style='white-space:nowrap'>2022.1</td><td class='td--num'><span aria-hidden='true'>—</span><span class='ucam-sr-only'>Nenhuma solicitação em análise</span></td><td><span class='ucam-badge ucam-badge--plain'>Vigente</span></td></tr></tbody></table></div><nav class='ucam-pagination' aria-label='Resumo das matrizes'><span class='ucam-pagination__range' role='status' tabindex='-1'>7 matrizes · 5 vigentes, 1 em extinção e 1 encerrada</span></nav></div><div class='ucam-empty' id='mt-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhuma matriz com esses filtros</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou, ao curso ou à situação escolhida. Tente outro termo, ou limpe os filtros.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar filtros</button></div><p class='ucam-sr-only' id='mt-eco' role='status'></p></div><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-dir20222' role='dialog' aria-modal='true' aria-labelledby='mt-g-dir20222-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-dir20222-t'>Direito · 2022.2</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao ucam-descricao--painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>DIR20222</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>5 solicitações</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Carga na isenção</dt><dd class='ucam-descricao__valor'>640h · 9 disciplinas</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20222-p1'><h3 class='ucam-section__title' id='mt-g-dir20222-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Introdução ao Estudo do Direito</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Civil I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>História do Direito</dt><dd class='ucam-descricao__valor'>40h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Sociologia Jurídica</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20222-p2'><h3 class='ucam-section__title' id='mt-g-dir20222-p2'>2º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Penal I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Constitucional I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teoria Geral do Processo</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20222-p3'><h3 class='ucam-section__title' id='mt-g-dir20222-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Administrativo</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Empresarial I</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section></div></div><footer class='ucam-drawer__footer'><a class='ucam-btn ucam-btn--secondary' href='#/templates/isencao/fila' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-inbox'/></svg> Ver na fila</a><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-dir20201' role='dialog' aria-modal='true' aria-labelledby='mt-g-dir20201-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-dir20201-t'>Direito · 2020.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao ucam-descricao--painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>DIR20201</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Em extinção: vale só para quem entrou até 2022.1</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Carga na isenção</dt><dd class='ucam-descricao__valor'>640h · 9 disciplinas</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20201-p1'><h3 class='ucam-section__title' id='mt-g-dir20201-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Introdução ao Estudo do Direito</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Civil I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Filosofia do Direito</dt><dd class='ucam-descricao__valor'>40h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Sociologia Jurídica</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20201-p2'><h3 class='ucam-section__title' id='mt-g-dir20201-p2'>2º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Penal I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Constitucional I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Economia Política</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-dir20201-p3'><h3 class='ucam-section__title' id='mt-g-dir20201-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Administrativo</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Empresarial I</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-adm20231' role='dialog' aria-modal='true' aria-labelledby='mt-g-adm20231-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-adm20231-t'>Administração · 2023.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao ucam-descricao--painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>ADM20231</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>3 solicitações</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Carga na isenção</dt><dd class='ucam-descricao__valor'>560h · 8 disciplinas</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20231-p1'><h3 class='ucam-section__title' id='mt-g-adm20231-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teoria Geral da Administração</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matemática Aplicada</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Geral</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20231-p2'><h3 class='ucam-section__title' id='mt-g-adm20231-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Economia I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística Aplicada</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Empresarial</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20231-p3'><h3 class='ucam-section__title' id='mt-g-adm20231-p3'>3º período <span class='ucam-section__contagem'>120h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Marketing I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Gestão de Pessoas I</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section></div></div><footer class='ucam-drawer__footer'><a class='ucam-btn ucam-btn--secondary' href='#/templates/isencao/fila' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-inbox'/></svg> Ver na fila</a><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-adm20182' role='dialog' aria-modal='true' aria-labelledby='mt-g-adm20182-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-adm20182-t'>Administração · 2018.2</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao ucam-descricao--painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>ADM20182</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Encerrada</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Carga na isenção</dt><dd class='ucam-descricao__valor'>600h · 8 disciplinas</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20182-p1'><h3 class='ucam-section__title' id='mt-g-adm20182-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teoria Geral da Administração</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matemática Financeira</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Geral</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20182-p2'><h3 class='ucam-section__title' id='mt-g-adm20182-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Economia I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Instituições de Direito</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-adm20182-p3'><h3 class='ucam-section__title' id='mt-g-adm20182-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Marketing I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Comportamento Organizacional</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-con20241' role='dialog' aria-modal='true' aria-labelledby='mt-g-con20241-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-con20241-t'>Ciências Contábeis · 2024.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao ucam-descricao--painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>CON20241</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Carga na isenção</dt><dd class='ucam-descricao__valor'>560h · 8 disciplinas</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-con20241-p1'><h3 class='ucam-section__title' id='mt-g-con20241-p1'>1º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Introdutória</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matemática Aplicada</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Fundamentos de Administração</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-con20241-p2'><h3 class='ucam-section__title' id='mt-g-con20241-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade Intermediária</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Direito Tributário I</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-con20241-p3'><h3 class='ucam-section__title' id='mt-g-con20241-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Contabilidade de Custos</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Legislação Societária</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-psi20231' role='dialog' aria-modal='true' aria-labelledby='mt-g-psi20231-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-psi20231-t'>Psicologia · 2023.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao ucam-descricao--painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>PSI20231</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Carga na isenção</dt><dd class='ucam-descricao__valor'>720h · 10 disciplinas</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-psi20231-p1'><h3 class='ucam-section__title' id='mt-g-psi20231-p1'>1º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>História da Psicologia</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Neuroanatomia</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Antropologia</dt><dd class='ucam-descricao__valor'>40h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Filosofia</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-psi20231-p2'><h3 class='ucam-section__title' id='mt-g-psi20231-p2'>2º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Psicologia do Desenvolvimento I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Estatística em Psicologia</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Ética Profissional</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-psi20231-p3'><h3 class='ucam-section__title' id='mt-g-psi20231-p3'>3º período <span class='ucam-section__contagem'>240h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Teorias da Personalidade</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Psicopatologia I</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Metodologia da Pesquisa</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside><div class='ucam-drawer-scrim' hidden></div><aside class='ucam-drawer' id='mt-g-ped20221' role='dialog' aria-modal='true' aria-labelledby='mt-g-ped20221-t' tabindex='-1' hidden><header class='ucam-drawer__header'><div><h2 class='ucam-drawer__title' id='mt-g-ped20221-t'>Pedagogia · 2022.1</h2><p class='ucam-drawer__description'>Vem do SIGU. Corrigir uma disciplina ou uma carga é lá, no cadastro acadêmico.</p></div><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' data-fecha-gaveta aria-label='Fechar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></header><div class='ucam-drawer__body'><div class='ucam-stack'><dl class='ucam-descricao ucam-descricao--painel'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>PED20221</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Situação</dt><dd class='ucam-descricao__valor'>Vigente</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Em análise</dt><dd class='ucam-descricao__valor'>Nenhuma solicitação</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Carga na isenção</dt><dd class='ucam-descricao__valor'>560h · 8 disciplinas</dd></div></dl><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-ped20221-p1'><h3 class='ucam-section__title' id='mt-g-ped20221-p1'>1º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Fundamentos da Educação</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Psicologia da Educação</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Leitura e Produção de Texto</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-ped20221-p2'><h3 class='ucam-section__title' id='mt-g-ped20221-p2'>2º período <span class='ucam-section__contagem'>200h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Didática</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Sociologia da Educação</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Filosofia da Educação</dt><dd class='ucam-descricao__valor'>40h</dd></div></dl></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='mt-g-ped20221-p3'><h3 class='ucam-section__title' id='mt-g-ped20221-p3'>3º período <span class='ucam-section__contagem'>160h</span></h3><dl class='ucam-descricao ucam-descricao--inline ucam-descricao--valores ucam-descricao--fio'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Alfabetização e Letramento</dt><dd class='ucam-descricao__valor'>80h</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Políticas Educacionais</dt><dd class='ucam-descricao__valor'>80h</dd></div></dl></section></div></div><footer class='ucam-drawer__footer'><button class='ucam-btn ucam-btn--ghost' type='button' data-fecha-gaveta>Fechar</button></footer></aside>",
+          "codigo": "<ucam-app-shell [user]=\"usuario()\" [campus]=\"campus()\">\n  <ucam-page-header title=\"Matrizes curriculares\" [count]=\"matrizes().length\" description=\"Importadas do SIGU\">\n    <ucam-button variant=\"secondary\" (pressed)=\"exportar()\">Exportar</ucam-button>\n  </ucam-page-header>\n\n  <ucam-segmented label=\"Situação da matriz\" [options]=\"situacoes()\" [(value)]=\"situacao\" />\n\n  <ucam-data-table\n    density=\"compact\"\n    [columns]=\"colunas\"\n    [rows]=\"filtradas()\"\n    identifierKey=\"codigo\"\n    caption=\"Matrizes curriculares do campus\"\n    (rowActivate)=\"abrir($event)\" />\n\n  <ucam-drawer [open]=\"!!aberta()\" [title]=\"aberta()?.titulo\" (closed)=\"aberta.set(null)\">\n    <ucam-description-list layout=\"painel\" [items]=\"aberta()?.resumo\" />\n    <section *ngFor=\"let p of aberta()?.periodos\">\n      <h3 class=\"ucam-section__title\">{{ p.nome }} <span class=\"ucam-section__contagem\">{{ p.carga }}h</span></h3>\n      <ucam-description-list layout=\"inline\" [divided]=\"true\" [items]=\"p.disciplinas\" />\n    </section>\n    <ucam-button *ngIf=\"aberta()?.emAnalise\" variant=\"secondary\" routerLink=\"/isencao/fila\">Ver na fila</ucam-button>\n    <ucam-button variant=\"ghost\" (pressed)=\"aberta.set(null)\">Fechar</ucam-button>\n  </ucam-drawer>\n</ucam-app-shell>\n\ncolunas: UcamColumnDef[] = [\n  { key: 'matriz', header: 'Matriz', priority: 1 },\n  { key: 'disciplinas', header: 'Disciplinas', type: 'number', width: 'min' },\n  { key: 'carga', header: 'Carga na isenção', type: 'number', width: 'min' },\n  { key: 'vigente', header: 'Vigente desde', width: 'min' },\n  { key: 'emAnalise', header: 'Em análise', type: 'number', width: 'min' },\n  { key: 'situacao', header: 'Situação', type: 'status', width: 'min' },\n];",
           "shell": {
             "largura": "larga",
             "navAtivo": "matrizes"
