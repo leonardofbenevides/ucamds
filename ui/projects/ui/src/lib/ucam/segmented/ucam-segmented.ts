@@ -14,6 +14,8 @@ import { ChangeDetectionStrategy, Component, computed, input, model, ViewEncapsu
 export interface UcamSegmentItem {
   id: string;
   label: string;
+  /** Tom do desfecho quando escolhido (decisão por linha). Solto, sem tom. */
+  tone?: 'success' | 'danger' | 'warning';
 }
 
 @Component({
@@ -39,6 +41,7 @@ export interface UcamSegmentItem {
         <button
           type="button"
           [attr.aria-pressed]="item.id === value()"
+          [attr.data-tom]="item.tone ?? null"
           [disabled]="disabled()"
           (click)="escolher(item.id)"
         >
@@ -121,6 +124,10 @@ export interface UcamSegmentItem {
       color: var(--ucam-color-action-primary-default);
       font-weight: var(--ucam-typography-action-font-weight);
     }
+    /* Escolhido com tom: ver build-css.mjs (28/09/2026). */
+    ucam-segmented .ucam-segmented button[aria-pressed='true'][data-tom='success'] { background: var(--ucam-color-feedback-success-background); color: var(--ucam-color-feedback-success-foreground); }
+    ucam-segmented .ucam-segmented button[aria-pressed='true'][data-tom='danger'] { background: var(--ucam-color-feedback-danger-background); color: var(--ucam-color-feedback-danger-foreground); }
+    ucam-segmented .ucam-segmented button[aria-pressed='true'][data-tom='warning'] { background: var(--ucam-color-feedback-warning-background); color: var(--ucam-color-feedback-warning-foreground); }
     /* O anel fica DENTRO do trilho e o trilho não o recorta. */
     ucam-segmented .ucam-segmented button:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);

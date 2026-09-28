@@ -1446,7 +1446,9 @@ export function shellDaTela(projeto = {}, template = {}, destinos = {}) {
    * continua na lista sem virar link. A contagem do selo tem de bater com o
    * que a lista mostra; tirar o aviso sem destino faria o selo contar o que
    * ninguém acha. */
-  const notificacoesItens = (base.notificacoesItens ?? []).map((n) => ({
+  // A tela pode trazer os próprios avisos: o candidato no Portal não vê os da
+  // coordenação (isenção, 28/09/2026 — o sino do aluno listava outros alunos).
+  const notificacoesItens = (tela.notificacoesItens ?? base.notificacoesItens ?? []).map((n) => ({
     ...n,
     href: n.href ?? (n.tela ? porTela[n.tela] : null) ?? (n.nav ? porNav[n.nav] : null) ?? null,
   }));
@@ -1479,6 +1481,7 @@ export function shellDaTela(projeto = {}, template = {}, destinos = {}) {
     logo: projeto.lockup === true,
     perfil: porNav.perfil ?? null,
     ...tela,
+    notificacoesItens,
     nav: tela.semNav ? [] : nav,
     navId: `nav-${template.id ?? 'app'}`,
     idConteudo: `conteudo-${template.id ?? 'app'}`,
@@ -2727,6 +2730,22 @@ ${FN_ANUNCIA}
   function juntaNomes(l) {
     return l.length < 2 ? (l[0] || '') : l.slice(0, -1).join(', ') + ' e ' + l[l.length - 1];
   }
+  // Cada decisão vira selo fixo: o desenho da consulta de uma análise fechada.
+  function fixaDecisoes() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-decisao]'), function (g) {
+      var marcado = g.querySelector('button[aria-pressed="true"]');
+      var v = marcado ? marcado.getAttribute('data-valor') : '';
+      var tr = g.closest('tr');
+      if (tr) tr.removeAttribute('data-falta');
+      var erro = g.id && document.getElementById(g.id + '-erro');
+      if (erro) erro.remove();
+      var fixo = document.createElement('span');
+      fixo.className = 'ucam-badge ucam-badge--' + (v === 'isentar' ? 'success' : v === 'nao' ? 'danger' : v === 'documento' ? 'warning' : 'neutral');
+      fixo.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>';
+      fixo.appendChild(document.createTextNode(v === 'isentar' ? 'Isenta' : v === 'nao' ? 'Não isenta' : v === 'documento' ? 'Aguardando documento' : 'Sem decisão'));
+      g.replaceWith(fixo);
+    });
+  }
   function seloIsencao(el, tom, texto) {
     if (!el) return;
     el.className = 'ucam-badge ucam-badge--' + tom;
@@ -3342,8 +3361,23 @@ ${FN_ANUNCIA}
         seloIsencao(seloS, 'warning', 'Aguardando candidato');
         registraAtividade(botao, 'Documento pedido ao candidato, prazo até ' + prazoIsencao(),
           (obsP && obsP.value.trim()) || ('Falta documento para ' + juntaNomes(tot.aguardam) + '.'), 'send', 'warning');
-        anuncia('Pedido enviado. A situação passou a Aguardando candidato, com prazo até ' + prazoIsencao() + '.', botao);
-        rotuloTemporario(botao, 'Pedido enviado');
+        /* O PEDIDO MUDA A TELA (28/09/2026: "o botão retorna pro mesmo
+         * jeito"). Antes o primário dizia "Pedido enviado" por um instante e
+         * voltava a ser "Enviar pedido ao candidato", como se nada tivesse
+         * saído. Agora a tela assume a espera: cada decisão vira selo fixo (a
+         * pedida, "Aguardando documento"), as ações de trabalho saem e um
+         * aviso fica com o prazo e o que foi pedido. */
+        fixaDecisoes();
+        ['salvar-rascunho', 'finalizar-analise', 'aplicar-sugestoes', 'enviar-observacao'].forEach(function (a) {
+          Array.prototype.forEach.call(document.querySelectorAll('[data-acao="' + a + '"]'), function (b) { b.hidden = true; });
+        });
+        if (obsP) obsP.readOnly = true;
+        var textoP = 'Pedido enviado ao candidato às ' + hora() + '. A solicitação espera até ' + prazoIsencao() + ' o documento de ' + juntaNomes(tot.aguardam) +
+          '; as ' + (tot.isentas + tot.nao) + ' decisões tomadas ficam salvas. Quando o documento chegar, a análise volta à fila.';
+        avisa(textoP, document.querySelector('[data-decisoes]') || seloS || botao, 'warning');
+        var tituloP = document.querySelector('.ucam-viewbar__titulo');
+        if (tituloP) { tituloP.setAttribute('tabindex', '-1'); tituloP.focus(); }
+        anuncia(textoP, botao);
         return eco(seloS);
       }
       seloIsencao(seloS, 'success', 'Concluída');
@@ -3355,15 +3389,7 @@ ${FN_ANUNCIA}
        * decisão vira selo fixo — o mesmo desenho da consulta de uma análise
        * concluída —, os botões de trabalho saem, e um aviso fica com o
        * resumo, porque o número de isentas é o que se consulta depois. */
-      Array.prototype.forEach.call(document.querySelectorAll('[data-decisao]'), function (g) {
-        var marcado = g.querySelector('button[aria-pressed="true"]');
-        var v = marcado ? marcado.getAttribute('data-valor') : '';
-        var fixo = document.createElement('span');
-        fixo.className = 'ucam-badge ucam-badge--' + (v === 'isentar' ? 'success' : v === 'nao' ? 'danger' : 'neutral');
-        fixo.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>';
-        fixo.appendChild(document.createTextNode(v === 'isentar' ? 'Isenta' : v === 'nao' ? 'Não isenta' : 'Pendente'));
-        g.replaceWith(fixo);
-      });
+      fixaDecisoes();
       ['salvar-rascunho', 'finalizar-analise', 'aplicar-sugestoes'].forEach(function (a) {
         Array.prototype.forEach.call(document.querySelectorAll('[data-acao="' + a + '"]'), function (b) { b.hidden = true; });
       });
@@ -3385,18 +3411,47 @@ ${FN_ANUNCIA}
     }
 
     if (qual === 'notificar-candidato') {
-      registraAtividade(botao, 'Candidato notificado por e-mail e SMS', 'Pedido de envio do histórico escolar e das ementas.', 'send', 'info');
-      anuncia('Candidato notificado por e-mail e SMS. O aviso entrou na atividade.', botao);
+      // Sem canal no texto: por onde o aviso sai é regra em aberto (e-mail,
+      // Portal, SMS). O cartão de documentos passa a dizer o aviso de agora.
+      registraAtividade(botao, 'Aviso de documentos enviado', 'Faltam o histórico escolar e as ementas.', 'send', 'info');
+      var ultimoAviso = document.querySelector('#is-sem-docs .ucam-empty__description');
+      if (ultimoAviso) ultimoAviso.textContent = ultimoAviso.textContent.split('.')[0] + '. Último aviso: hoje, às ' + hora() + '.';
+      anuncia('Aviso enviado às ' + hora() + '. Ele entrou na atividade.', botao);
       return rotuloTemporario(botao, 'Notificado');
     }
 
     if (qual === 'tentar-analise') {
-      var caixaT = botao.closest('td, .ucam-card') || botao.parentElement;
-      var seloT = caixaT && caixaT.querySelector('.ucam-badge');
-      if (seloT) { seloT.className = 'ucam-badge ucam-badge--neutral'; seloT.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>Em processamento'; }
-      botao.hidden = true;
-      anuncia('Análise automatizada pedida de novo. O resultado chega em alguns minutos.', botao);
-      return eco(seloT);
+      /* O PEDIDO CONTINUA VISÍVEL (28/09/2026). O botão "Falhou" É o selo
+       * (.ucam-badge--acao): a versão anterior trocava a classe dele e em
+       * seguida o escondia, e a célula ficava vazia — a pessoa pedia de novo
+       * e a tabela deixava de dizer qualquer coisa. Agora o botão dá lugar a
+       * um selo "Em processamento" que gira (ucam-spinner; parado com
+       * movimento reduzido), e o resultado chega na MESMA célula: vira
+       * "Disponível" e é anunciado com o nome do candidato. */
+      var linhaT = botao.closest('tr');
+      var nomeT = linhaT && linhaT.querySelector('.td--pessoa__nome');
+      nomeT = nomeT ? nomeT.textContent.trim() : '';
+      var seloT = document.createElement('span');
+      seloT.className = 'ucam-badge ucam-badge--neutral';
+      seloT.tabIndex = -1;
+      seloT.innerHTML = '<svg class="ic ucam-spinner" aria-hidden="true"><use href="#i-loaderCircle"/></svg>Em processamento';
+      var celulaT = botao.parentElement;
+      if (celulaT) celulaT.setAttribute('aria-busy', 'true');
+      // Anuncia ANTES de trocar: é o botão (data-fluxo=c) que leva ao toast.
+      anuncia('Análise automatizada pedida de novo' + (nomeT ? ' para ' + nomeT : '') + '. Em processamento.', botao);
+      botao.replaceWith(seloT);
+      seloT.focus({ preventScroll: true });
+      eco(seloT);
+      setTimeout(function () {
+        seloT.className = 'ucam-badge ucam-badge--info';
+        seloT.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-circleCheck"/></svg>Disponível';
+        if (celulaT) celulaT.removeAttribute('aria-busy');
+        var prontaT = 'Sugestão disponível' + (nomeT ? ' para ' + nomeT : '') + '.';
+        anuncia(prontaT, seloT);
+        if (window.ucamToast) window.ucamToast(prontaT);
+        eco(seloT);
+      }, 4000);
+      return;
     }
 
     if (qual === 'reabrir-analise') {
@@ -3405,8 +3460,15 @@ ${FN_ANUNCIA}
       Array.prototype.forEach.call(document.querySelectorAll('[aria-disabled="true"][title="Análise concluída"]'), function (b) {
         b.removeAttribute('aria-disabled'); b.removeAttribute('title');
       });
-      registraAtividade(botao, 'Análise reaberta', 'As decisões voltam a poder ser alteradas.', 'refreshCw', 'warning');
-      anuncia('Análise reaberta. A situação voltou a Aguardando análise.', botao);
+      registraAtividade(botao, 'Análise reaberta', 'A solicitação voltou à fila; as decisões se alteram na análise.', 'refreshCw', 'warning');
+      // Na consulta não há decisão a destravar: Reabrir não se repete, e
+      // quem quer mudar uma decisão vai à análise pelo link que a tela traz.
+      botao.setAttribute('aria-disabled', 'true');
+      botao.setAttribute('title', 'Análise já reaberta');
+      var irAnalise = document.querySelector('[data-reaberta]');
+      if (irAnalise) irAnalise.hidden = false;
+      anuncia('Análise reaberta. A situação voltou a Aguardando análise; Abrir análise leva às decisões.', botao);
+      if (irAnalise) irAnalise.focus();
       return eco(seloR);
     }
 
@@ -4790,7 +4852,7 @@ export const confirmaScript = `
       tom: 'primary',
     },
     'reabrir-analise': {
-      corpo: 'A solicitação volta a Aguardando análise e as decisões podem ser alteradas. O candidato é avisado da reabertura.',
+      corpo: 'A solicitação volta a Aguardando análise e as decisões podem ser alteradas na análise.',
       rotulo: 'Reabrir análise',
       tom: 'danger',
     },
@@ -4893,6 +4955,41 @@ export const confirmaScript = `
       };
       da.showModal(); canc.focus();
       return;
+    }
+
+    /* O PEDIDO DIZ O QUE FALTA (28/09/2026). Pedir documento sem dizer qual
+     * mandava ao candidato um "falta documento" que ele não sabe cumprir. Com
+     * disciplina em "Pedir documento", a observação é obrigatória: vazia, o
+     * campo recebe o erro (contrato field.json: frase, aria-invalid, id na
+     * frente do aria-describedby) e o foco, e nenhum diálogo abre. */
+    if (acao === 'finalizar-analise') {
+      var pedidas = Array.prototype.filter.call(document.querySelectorAll('[data-decisoes] tr[data-disciplina]'), function (tr) { return tr.getAttribute('data-decidida') === 'documento'; })
+        .map(function (tr) { return tr.getAttribute('data-disciplina'); });
+      var obsV = document.querySelector('textarea[data-observacao]');
+      if (pedidas.length && obsV && !obsV.value.trim()) {
+        var idE = obsV.id + '-erro';
+        var erroV = document.getElementById(idE);
+        if (!erroV) {
+          erroV = document.createElement('span');
+          erroV.className = 'ucam-field__error';
+          erroV.id = idE;
+          obsV.insertAdjacentElement('afterend', erroV);
+        }
+        erroV.textContent = 'Diga ao candidato qual documento falta para ' + (pedidas.length < 2 ? pedidas[0] : pedidas.slice(0, -1).join(', ') + ' e ' + pedidas[pedidas.length - 1]) + '.';
+        obsV.setAttribute('aria-invalid', 'true');
+        var restoV = (obsV.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== idE; });
+        obsV.setAttribute('aria-describedby', [idE].concat(restoV).join(' '));
+        obsV.scrollIntoView({ block: 'center' });
+        obsV.focus();
+        obsV.addEventListener('input', function limpa() {
+          if (!obsV.value.trim()) return;
+          obsV.removeEventListener('input', limpa);
+          var e2 = document.getElementById(idE); if (e2) e2.remove();
+          obsV.removeAttribute('aria-invalid');
+          obsV.setAttribute('aria-describedby', restoV.join(' '));
+        });
+        return;
+      }
     }
 
     var d = monta();
@@ -5025,10 +5122,100 @@ export const gavetaScript = `
     return fora;
   }
 
+  /**
+   * GAVETA COM SALVAR: grava na linha, e fechar sem salvar desfaz (28/09/2026).
+   *
+   * Em Cursos, "Salvar" só anunciava "Salvo." — a linha continuava dizendo
+   * "Ligada" depois de a pessoa desligar a análise, e Cancelar deixava a caixa
+   * desmarcada para a próxima abertura. Agora, numa gaveta que tem
+   * data-acao="salvar": abrir fotografa os controles; Salvar escreve cada
+   * controle com data-grava="x" na célula data-celula="x" da linha de quem
+   * abriu (e no data-x da própria <tr>, que é por onde o filtro recorta);
+   * qualquer outra saída — Cancelar, X, Esc, fundo — devolve a fotografia.
+   *
+   * O valor de uma caixa de marcação vem de data-grava-sim / data-grava-nao;
+   * o de um select, da opção escolhida. Se a página tem
+   * <template data-modelo="x:valor">, a célula recebe esse desenho (o selo);
+   * senão, o texto vai para [data-celula-texto] e o avatar da célula ganha as
+   * iniciais do nome.
+   */
+  var foto = null;
+
+  // Nas telas o <select> vira gatilho + listbox (select-listbox.mjs): o
+  // estado dele é o texto do gatilho, o data-valor e a opção aria-selected.
+  function controles(painel) {
+    return Array.prototype.slice.call(painel.querySelectorAll('input, select, textarea, [data-listbox]'));
+  }
+
+  function listaDe(c) {
+    return document.getElementById(c.getAttribute('aria-controls') || '');
+  }
+
+  function fotografar(painel) {
+    if (!painel.querySelector('[data-acao="salvar"]')) { foto = null; return; }
+    foto = controles(painel).map(function (c) {
+      if (c.hasAttribute('data-listbox')) {
+        var lb = listaDe(c);
+        var sel = lb && lb.querySelector('[aria-selected="true"]');
+        return { c: c, texto: c.textContent, valor: c.getAttribute('data-valor'), opcao: sel };
+      }
+      return { c: c, checked: c.checked, value: c.value };
+    });
+  }
+
+  function desfazer() {
+    if (!foto) return;
+    foto.forEach(function (f) {
+      if (f.c.hasAttribute('data-listbox')) {
+        f.c.textContent = f.texto;
+        if (f.valor === null) f.c.removeAttribute('data-valor'); else f.c.setAttribute('data-valor', f.valor);
+        var lb = listaDe(f.c);
+        if (lb) Array.prototype.forEach.call(lb.querySelectorAll('[role="option"]'), function (o) {
+          o.setAttribute('aria-selected', o === f.opcao ? 'true' : 'false');
+        });
+      } else if (f.c.type === 'checkbox' || f.c.type === 'radio') f.c.checked = f.checked;
+      else f.c.value = f.value;
+    });
+    foto = null;
+  }
+
+  function iniciais(nome) {
+    var partes = nome.split(' ').filter(function (p) { return p.length > 2 && p.charAt(0) === p.charAt(0).toUpperCase(); });
+    if (!partes.length) return '';
+    return (partes[0].charAt(0) + (partes.length > 1 ? partes[partes.length - 1].charAt(0) : '')).toUpperCase();
+  }
+
+  function gravar(painel, linha) {
+    foto = null;
+    if (!linha) return;
+    Array.prototype.forEach.call(painel.querySelectorAll('[data-grava]'), function (c) {
+      var campo = c.getAttribute('data-grava');
+      var valor = c.type === 'checkbox'
+        ? c.getAttribute(c.checked ? 'data-grava-sim' : 'data-grava-nao')
+        : c.hasAttribute('data-listbox') ? c.textContent.trim()
+        : (c.tagName === 'SELECT' && c.selectedIndex >= 0 ? c.options[c.selectedIndex].text : c.value);
+      if (valor == null) return;
+      if (linha.hasAttribute('data-' + campo)) linha.setAttribute('data-' + campo, valor);
+      var celula = linha.querySelector('[data-celula="' + campo + '"]');
+      if (!celula) return;
+      var modelo = document.querySelector('template[data-modelo="' + campo + ':' + valor + '"]');
+      if (modelo) return celula.replaceChildren(modelo.content.cloneNode(true));
+      var texto = celula.querySelector('[data-celula-texto]') || celula;
+      texto.textContent = valor;
+      var avatar = celula.querySelector('.ucam-avatar');
+      if (avatar) avatar.textContent = iniciais(valor);
+    });
+    linha.removeAttribute('data-eco');
+    void linha.offsetWidth;
+    linha.setAttribute('data-eco', 'true');
+    setTimeout(function () { linha.removeAttribute('data-eco'); }, 1700);
+  }
+
   function abrir(painel, quem) {
     if (aberta) return;
     aberta = painel;
     gatilho = quem;
+    fotografar(painel);
     painel.hidden = false;
     var scrim = painel.previousElementSibling;
     if (scrim && scrim.classList.contains('ucam-drawer-scrim')) scrim.hidden = false;
@@ -5048,6 +5235,7 @@ export const gavetaScript = `
     if (!aberta) return;
     var painel = aberta;
     aberta = null;
+    desfazer();
     painel.hidden = true;
     var scrim = painel.previousElementSibling;
     if (scrim && scrim.classList.contains('ucam-drawer-scrim')) scrim.hidden = true;
@@ -5075,7 +5263,15 @@ export const gavetaScript = `
       return abrir(painel, abre);
     }
     if (!aberta) return;
-    if (e.target.closest('[data-fecha-gaveta]')) return fechar();
+    // Salvar que NÃO fecha: o que está nos controles passa a ser o salvo.
+    if (e.target.closest('[data-acao="salvar"]:not([data-fecha-gaveta])') && aberta.contains(e.target)) {
+      gravar(aberta, gatilho && gatilho.closest('tr'));
+      return fotografar(aberta);
+    }
+    if (e.target.closest('[data-fecha-gaveta]')) {
+      if (e.target.closest('[data-acao="salvar"]')) gravar(aberta, gatilho && gatilho.closest('tr'));
+      return fechar();
+    }
     if (e.target.classList && e.target.classList.contains('ucam-drawer-scrim')) return fechar();
   });
 

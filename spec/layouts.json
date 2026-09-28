@@ -268,6 +268,11 @@
           "classe": "ucam-split--apoio-inicio",
           "quando": "Apoio à esquerda — navegação de etapas, filtros persistentes.",
           "nota": "A ordem do DOM NÃO muda: o apoio continua depois do conteúdo na leitura e na tabulação, e só a pintura inverte. Inverter no DOM colocaria o painel secundário antes do principal para quem usa teclado e leitor de tela."
+        },
+        {
+          "classe": "ucam-split--largo",
+          "quando": "O conteúdo principal tem um piso que não encolhe — tabela com um controle por linha, como a de decisões da isenção.",
+          "nota": "Põe o apoio ao lado só a partir de container.duas-colunas-largo (56rem); abaixo, empilha. Com o split comum a tabela de decisões ficava em 533px a 1280 e cortava o seletor numa rolagem lateral. Usar com o painel padrão (18rem): o papel foi medido com ele, e um painel de 19rem já devolvia 10px de rolagem logo acima do limiar."
         }
       ],
       "variaveis": [

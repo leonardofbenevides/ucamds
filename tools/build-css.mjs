@@ -7145,6 +7145,18 @@ ${contentorAcima('duas-colunas')} {
   .ucam-split--apoio-inicio > :last-child { grid-column: 1; grid-row: 1; }
 }
 
+/* LARGO: o conteúdo principal tem um piso que duas-colunas não comporta — a
+ * tabela de decisões da isenção, com um seletor de três posições por linha.
+ * Entre duas-colunas e duas-colunas-largo ele continua empilhado, em vez de
+ * pôr o apoio ao lado e cortar o controle da decisão numa rolagem lateral.
+ * Conta feita com o painel padrão (18rem); ver container.duas-colunas-largo. */
+${contentorAcima('duas-colunas')} {
+  .ucam-split--largo { grid-template-columns: minmax(0, 1fr); }
+}
+${contentorAcima('duas-colunas-largo')} {
+  .ucam-split--largo { grid-template-columns: minmax(0, 1fr) var(--ucam-split-aside); }
+}
+
 /* Duas colunas de MESMO peso — resumo ao lado de resumo, não conteúdo ao lado
  * de apoio. O .ucam-split padrão é 1fr + 18rem porque a maioria dos casos é
  * principal e barra lateral; quando os dois blocos são irmãos, a assimetria
@@ -7690,15 +7702,25 @@ ${acima('duas-colunas')} {
  * dois casos, e o desenho do trilho não muda: quem cresce é a área. */
 .ucam-switch {
   display: inline-flex;
-  align-items: center;
+  /* Pelo início, como a caixa de marcação: com apoio embaixo do rótulo, o
+   * centro punha a chave boiando no meio do parágrafo (Cursos, 28/09/2026). */
+  align-items: flex-start;
   gap: var(--ucam-space-inline-sm);
   min-block-size: var(--ucam-size-icon-lg);
   cursor: pointer;
 }
 
+.ucam-switch:not(:has(.ucam-check__label)) { align-items: center; }
+.ucam-switch:not(:has(.ucam-check__label)) input[type="checkbox"] { margin-block-start: 0; }
+
 .ucam-switch input[type="checkbox"] {
   appearance: none;
   margin: 0;
+  /* Sem flex:none o trilho ENCOLHIA quando o rótulo quebrava em duas linhas
+   * — o polegar de 0,85rem transbordava da pílula espremida. A margem
+   * centra os 17,6px do trilho na primeira linha de 24 do rótulo. */
+  flex: none;
+  margin-block-start: calc((var(--ucam-size-icon-lg) - 1.1rem) / 2);
   inline-size: 1.9rem;
   block-size: 1.1rem;
   background: var(--ucam-color-border-strong);
@@ -8620,6 +8642,27 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   background: var(--ucam-color-action-primary-subtle);
   color: var(--ucam-color-action-primary-default);
   font-weight: var(--ucam-typography-action-font-weight);
+}
+
+/* O ESCOLHIDO COM TOM (28/09/2026). Onde cada segmento É um desfecho —
+ * a decisão por disciplina da isenção: Isentar, Não isentar, Pedir
+ * documento —, o bordô claro dizia só "escolhido", e nove linhas de
+ * decisões diferentes liam iguais. data-tom no botão dá ao escolhido o tom
+ * do desfecho, o mesmo par fundo + tinta do selo (badge.json), e o peso
+ * continua sendo o segundo sinal. Solto, o botão não tem tom: a cor só
+ * nasce da escolha. Na mesma linha a sugestão da máquina é texto neutro,
+ * para a linha ter um portador de cor só (ADR-027). */
+.ucam-segmented button[aria-pressed="true"][data-tom="success"] {
+  background: var(--ucam-color-feedback-success-background);
+  color: var(--ucam-color-feedback-success-foreground);
+}
+.ucam-segmented button[aria-pressed="true"][data-tom="danger"] {
+  background: var(--ucam-color-feedback-danger-background);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+.ucam-segmented button[aria-pressed="true"][data-tom="warning"] {
+  background: var(--ucam-color-feedback-warning-background);
+  color: var(--ucam-color-feedback-warning-foreground);
 }
 
 /* OS DOIS TAMANHOS, que o contrato declara desde a primeira versão e o Trilho

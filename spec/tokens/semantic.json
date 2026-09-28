@@ -580,6 +580,10 @@
       "$value": "52rem",
       "$description": "A partir daqui o bloco de divisão põe o painel de apoio ao lado do conteúdo. 52rem = 30rem para o conteúdo (uma tabela de cinco colunas sem cortar a última) + 22rem do painel de apoio mais largo em uso. Abaixo, empilha: painel de apoio espremido em 12rem não apoia nada, e tabela em 24rem esconde coluna."
     },
+    "duas-colunas-largo": {
+      "$value": "56rem",
+      "$description": "A partir daqui o bloco de divisão LARGO (.ucam-split--largo) põe o painel de apoio ao lado. Existe para o conteúdo que tem um controle por linha e não encolhe: a tabela de decisões da isenção, com o seletor Isentar · Não isentar · Pedir documento, mede 571px no mínimo. Com duas-colunas (52rem) ela ficava em 533px a 1280 e rolava na horizontal, cortando o próprio controle da decisão (medido em 28/09/2026). 56rem = 36rem de conteúdo + 18rem do painel padrão + o vão; abaixo, empilha. Painel mais largo que o padrão devolve a rolagem logo acima do limiar e a tabela volta à largura inteira."
+    },
     "formulario-em-fileira": {
       "$value": "60rem",
       "$description": "Largura do CORPO (.ucam-corpo) a partir da qual uma fileira de formulário de quatro campos cabe numa linha: a coluna do CPF (14ch mais o recuo), três de no mínimo 14rem, os vãos e o recuo do cartão. Abaixo, a fileira que declara .ucam-form-row--quebra passa a duas colunas por linha, em vez de estourar o cartão. Entrou em 25/09/2026, quando o Novo usuário passou de duas colunas de 22rem — metade de um cartão de 1500px vazio — a uma fileira de quatro."

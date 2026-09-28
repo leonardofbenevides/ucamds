@@ -52,7 +52,7 @@
       "nome": "items",
       "tipo": "SegmentItem[]",
       "obrigatorio": true,
-      "descricao": "As opções, de duas a quatro. A ordem é fixa e vai do mais amplo ao mais restrito quando houver uma opção que engloba as outras: Todas antes de EAD e Presencial."
+      "descricao": "As opções, de duas a quatro. A ordem é fixa e vai do mais amplo ao mais restrito quando houver uma opção que engloba as outras: Todas antes de EAD e Presencial. Cada item pode ter tone (success, danger, warning) quando o segmento É um desfecho — a decisão por disciplina da isenção —: escolhido, ele pinta com o par fundo + tinta do selo daquele tom; solto, fica sem tom. Na linha que usa o tom, a sugestão ao lado é texto neutro, para haver um portador de cor só (ADR-027). No Trilho A, data-tom no <button>."
     },
     {
       "nome": "value",
@@ -271,7 +271,7 @@
     "trilho_a": {
       "contrato": "Trilho e segmentos vêm estilizados; a escolha é lida de aria-pressed=\"true\" no botão, e não de uma classe — para que o visual não possa divergir do que o leitor de tela ouve.",
       "raiz": ".ucam-segmented",
-      "estado": "hover em quem NÃO está escolhido clareia o plano e escurece a tinta; a escolha pinta o segmento por inteiro. Sem classe de estado própria — o seletor é o aria-pressed.",
+      "estado": "hover em quem NÃO está escolhido clareia o plano e escurece a tinta; a escolha pinta o segmento por inteiro. Sem classe de estado própria — o seletor é o aria-pressed. Com data-tom (success, danger, warning) no botão, o escolhido usa o fundo e a tinta de feedback daquele tom em vez do bordô claro.",
       "variaveis": [
         "--ucam-color-surface-inverse",
         "--ucam-color-text-on-action",
