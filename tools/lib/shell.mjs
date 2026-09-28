@@ -1426,9 +1426,14 @@ export function shellDaTela(projeto = {}, template = {}, destinos = {}) {
     : base.rail;
 
   // Os favoritos apontam uma tela (id do template), um item de menu, ou nada.
+  // Com "filtro" ({controle: valor}) o destino leva o recorte na query, e o
+  // filtroScript o aplica ao abrir: um favorito chamado "Aguardando análise"
+  // que abria a fila inteira prometia o que não entregava (28/09/2026).
+  const comFiltro = (href, filtro) =>
+    href && filtro ? href + (href.includes('?') ? '&' : '?') + new URLSearchParams(filtro).toString() : href;
   const favoritos = (base.favoritos ?? []).map((i) => ({
     ...i,
-    href: i.href ?? (i.tela ? porTela[i.tela] : null) ?? (i.nav ? porNav[i.nav] : null) ?? null,
+    href: comFiltro(i.href ?? (i.tela ? porTela[i.tela] : null) ?? (i.nav ? porNav[i.nav] : null) ?? null, i.filtro),
   }));
 
   /* Os RESULTADOS DA BUSCA apontam tela ou item de menu, pela mesma regra
@@ -3311,6 +3316,8 @@ ${FN_ANUNCIA}
      * vazio para no próprio campo, com a mensagem de erro dele. */
 
     if (qual === 'salvar') {
+      var gavetaS = botao.closest('.ucam-drawer');
+      if (gavetaS && gavetaS.querySelector('[data-grava]')) return;
       eco(document.querySelector('tr[aria-selected="true"]'));
       anuncia('Salvo.', botao);
       return rotuloTemporario(botao, 'Salvo');
@@ -4886,6 +4893,38 @@ ${FN_ANUNCIA}
   Array.prototype.forEach.call(document.querySelectorAll('.ucam-pagination[data-paginacao]'), function (nav) {
     paginar(nav, Number(nav.getAttribute('data-pagina')) || 1);
   });
+
+  // LINK COM RECORTE: href fica na convenção #/templates/<projeto>/<tela>
+  // (a que o site religa e o validador cobra) e o filtro vai em data-filtro;
+  // no clique ele entra na query do destino já religado.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[data-filtro]');
+    if (!a || a.href.indexOf(a.getAttribute('data-filtro')) >= 0) return;
+    a.href = a.href.split('?')[0] + '?' + a.getAttribute('data-filtro');
+  }, true);
+
+  // O RECORTE QUE VEM NA URL (favorito com filtro): ?situacao=analise escolhe
+  // o segmento de data-filtra="dado:situacao"; ?Curso=Direito escolhe a
+  // opção do select de data-filtra="coluna:Curso". Pelo mesmo caminho do
+  // clique e do change, para chip, contagem e eco saírem iguais.
+  try {
+    new URLSearchParams(location.search).forEach(function (v, k) {
+      var seg = document.querySelector('[data-filtra="dado:' + k + '"]');
+      var b = seg && seg.querySelector('button[data-valor="' + v + '"]');
+      if (b && b.getAttribute('aria-pressed') !== 'true') b.click();
+      // O select da marcação vira listbox ([data-listbox]) ao carregar: escolhe
+      // a opção dele pelo clique, como a pessoa faria.
+      var lb = document.querySelector('[data-listbox][data-filtra="coluna:' + k + '"]');
+      var lista = lb && document.getElementById(lb.getAttribute('aria-controls'));
+      var opL = lista && Array.prototype.find.call(lista.querySelectorAll('[role="option"]'), function (o) { return o.getAttribute('data-valor') === v || o.textContent.trim() === v; });
+      if (opL) { lb.click(); opL.click(); }
+      var sel = document.querySelector('select[data-filtra="coluna:' + k + '"]');
+      if (sel) {
+        var op = Array.prototype.find.call(sel.options, function (o) { return o.value === v || o.text === v; });
+        if (op) { sel.value = op.value; sel.dispatchEvent(new Event('change', { bubbles: true })); }
+      }
+    });
+  } catch (x) {}
 })();
 `;
 
@@ -5214,6 +5253,7 @@ export const dialogoScript = `
  */
 export const gavetaScript = `
 (function () {
+${FN_ANUNCIA}
   var aberta = null;
   var gatilho = null;
 
@@ -5322,6 +5362,33 @@ export const gavetaScript = `
     void linha.offsetWidth;
     linha.setAttribute('data-eco', 'true');
     setTimeout(function () { linha.removeAttribute('data-eco'); }, 1700);
+    /* O RESUMO ACOMPANHA (28/09/2026). "5 cursos · análise automatizada
+     * ligada em 2" ficava no número velho depois de salvar. O resumo que
+     * declara data-resumo-conta="campo:valor" e data-resumo-modelo (com {n} e
+     * {total}) é recontado pelas linhas da mesma tabela. */
+    var tabela = linha.closest('table');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-resumo-conta]'), function (r) {
+      if (!tabela) return;
+      var p = r.getAttribute('data-resumo-conta').split(':');
+      var linhas = tabela.tBodies[0] ? Array.prototype.slice.call(tabela.tBodies[0].rows).filter(function (tr) { return tr.hasAttribute('data-' + p[0]); }) : [];
+      var n = linhas.filter(function (tr) { return tr.getAttribute('data-' + p[0]) === p[1]; }).length;
+      r.textContent = r.getAttribute('data-resumo-modelo').replace('{n}', n).replace('{total}', linhas.length);
+    });
+    // E a frase diz O QUE mudou, com o nome do registro: "Salvo." sozinho
+    // não confirma que a coordenação de Direito passou a Sílvia Moura.
+    var nome = linha.querySelector('.td--pessoa__nome');
+    var partes = [];
+    Array.prototype.forEach.call(painel.querySelectorAll('[data-grava]'), function (c) {
+      var rot = c.getAttribute('data-grava-rotulo');
+      if (!rot) return;
+      var v = c.type === 'checkbox' ? c.getAttribute(c.checked ? 'data-grava-sim' : 'data-grava-nao')
+        : c.hasAttribute('data-listbox') ? c.textContent.trim()
+        : (c.tagName === 'SELECT' && c.selectedIndex >= 0 ? c.options[c.selectedIndex].text : c.value);
+      partes.push(rot + ' ' + v);
+    });
+    var frase = 'Salvo' + (nome ? ' em ' + nome.textContent.trim() : '') + (partes.length ? ': ' + partes.join(', ') : '') + '.';
+    anuncia(frase, painel);
+    if (window.ucamToast) window.ucamToast(frase);
   }
 
   function abrir(painel, quem) {
