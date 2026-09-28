@@ -52,7 +52,7 @@
       "nome": "items",
       "tipo": "SegmentItem[]",
       "obrigatorio": true,
-      "descricao": "As opções, de duas a quatro. A ordem é fixa e vai do mais amplo ao mais restrito quando houver uma opção que engloba as outras: Todas antes de EAD e Presencial. Cada item pode ter tone (success, danger, warning) quando o segmento É um desfecho — a decisão por disciplina da isenção —: escolhido, ele pinta com o par fundo + tinta do selo daquele tom; solto, fica sem tom. Na linha que usa o tom, a sugestão ao lado é texto neutro, para haver um portador de cor só (ADR-027). No Trilho A, data-tom no <button>."
+      "descricao": "As opções, de duas a quatro. A ordem é fixa e vai do mais amplo ao mais restrito quando houver uma opção que engloba as outras: Todas antes de EAD e Presencial. Cada item pode ter tone (success, danger, warning) quando o segmento É um desfecho — a decisão por disciplina da isenção —: escolhido, ele pinta com o par fundo + tinta do selo daquele tom; solto, fica sem tom. Na linha que usa o tom, a sugestão ao lado é texto neutro, para haver um portador de cor só (ADR-027). No Trilho A, data-tom no <button>. Com suggested: true, o segmento é o que a MÁQUINA sugere (sugestão automatizada): leva o ícone sparkles depois do rótulo e \", sugestão\" no nome acessível. Só um por grupo, e só onde a tela explica a marca em palavras. No Trilho A, <svg class=\"ic ucam-segmented__sugerido\"> + <span class=\"ucam-sr-only\">, sugestão</span> dentro do <button>."
     },
     {
       "nome": "value",

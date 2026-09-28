@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, model, ViewEncapsulation } from '@angular/core';
+import { UcamIcon } from '../icon/ucam-icon';
 
 /**
  * Contrato: spec/components/segmented.json
@@ -16,10 +17,13 @@ export interface UcamSegmentItem {
   label: string;
   /** Tom do desfecho quando escolhido (decisão por linha). Solto, sem tom. */
   tone?: 'success' | 'danger' | 'warning';
+  /** A opção que a máquina sugere: ícone sparkles e ", sugestão" no nome. */
+  suggested?: boolean;
 }
 
 @Component({
   selector: 'ucam-segmented',
+  imports: [UcamIcon],
   exportAs: 'ucamSegmented',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -46,6 +50,9 @@ export interface UcamSegmentItem {
           (click)="escolher(item.id)"
         >
           {{ item.label }}
+          @if (item.suggested) {
+            <ucam-icon name="sparkles" size="sm" class="ucam-segmented__sugerido" /><span class="sr-only">, sugestão</span>
+          }
         </button>
       }
     </div>

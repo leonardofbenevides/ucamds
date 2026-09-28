@@ -8644,6 +8644,20 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   font-weight: var(--ucam-typography-action-font-weight);
 }
 
+/* A OPÇÃO QUE A MÁQUINA SUGERE (28/09/2026: "ao invés de 'diferente da
+ * sugestão', coloque um elemento na que a sugestão quer"). Um sparkles
+ * pequeno depois do rótulo, na tinta do próprio botão: solto ele é
+ * secundário como o texto, escolhido ele toma o tom da escolha. Quando a
+ * decisão diverge, a divergência se vê sem frase nenhuma — a marcada é uma, a
+ * sugerida é outra. O nome acessível leva ", sugestão" (ucam-sr-only). */
+.ucam-segmented__sugerido {
+  inline-size: 0.8125rem;
+  block-size: 0.8125rem;
+  margin-inline-start: 0.25rem;
+  flex: none;
+  vertical-align: -0.125em;
+}
+
 /* O ESCOLHIDO COM TOM (28/09/2026). Onde cada segmento É um desfecho —
  * a decisão por disciplina da isenção: Isentar, Não isentar, Pedir
  * documento —, o bordô claro dizia só "escolhido", e nove linhas de
@@ -9769,6 +9783,27 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 }
 
 .ucam-descricao--inline .ucam-descricao__rotulo { margin: 0; }
+
+/* A FAIXA NO TOPO DA TABELA (data-table.json, parte "faixa"). Dentro do
+ * cartão, antes do cabeçalho de colunas: o que vale para a tabela inteira e
+ * não é filtro — na análise da isenção, a sugestão automatizada (quando foi
+ * feita, o que sugeriu, a legenda da marca, Aplicar). Ladrilho, título e
+ * apoio à esquerda, a ação à direita; quebra para baixo quando aperta. */
+.ucam-table-faixa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ucam-space-inline-md);
+  padding: var(--ucam-space-inset-md);
+  border-block-end: 1px solid var(--ucam-color-border-subtle);
+}
+.ucam-table-faixa > .ucam-card__cabecalho { flex: 1 1 20rem; min-inline-size: 0; }
+/* O apoio da faixa QUEBRA: no cabeçalho de cartão ele corta com reticências,
+ * e aqui o fim da frase é a legenda da marca — cortada, a marca fica sem
+ * explicação. */
+.ucam-table-faixa .ucam-card__apoio { white-space: normal; overflow: visible; text-overflow: clip; }
+.ucam-table-faixa .ucam-card__apoio .ic { inline-size: 0.8125rem; block-size: 0.8125rem; vertical-align: -0.125em; }
 
 /* FIO ENTRE PARES (28/09/2026). Lista longa de pares deitados — as
  * disciplinas de um período na gaveta de Matrizes — lia como parágrafo: com

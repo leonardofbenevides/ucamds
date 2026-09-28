@@ -2712,14 +2712,15 @@ ${FN_ANUNCIA}
       }
     });
   }
-  // A nota embaixo do seletor: "Pela sugestão" ou "Diferente da sugestão".
+  // A nota embaixo do seletor: "Pela sugestão" quando foi o Aplicar que marcou.
+  // A divergência não tem frase: a opção sugerida leva a marca (sparkles) e
+  // se vê que a escolhida é outra.
   function notaDecisao(tr) {
     var grupo = tr.querySelector('[data-decisao]');
     if (!grupo) return;
     var v = tr.getAttribute('data-decidida'), sug = tr.getAttribute('data-sugestao');
     var texto = '';
     if (v && tr.hasAttribute('data-pela-sugestao')) texto = 'Pela sugestão';
-    else if ((sug === 'isentar' || sug === 'nao') && (v === 'isentar' || v === 'nao') && v !== sug) texto = 'Diferente da sugestão';
     var nota = tr.querySelector('[data-nota-decisao]');
     if (!texto) { if (nota) nota.remove(); return; }
     if (!nota) {
@@ -4973,7 +4974,18 @@ export const confirmaScript = `
       p.className = 'ucam-field__error';
       p.style.margin = '0.25rem 0 0';
       p.id = id;
-      p.textContent = 'Escolha uma decisão.';
+      /* A FRASE DIZ O QUE FALTA E O QUE A IA ACHOU (28/09/2026: "seja mais
+       * claro aqui"). "Escolha uma decisão." não dizia qual das três nem
+       * por que a linha ficou sem: agora cita a sugestão daquela disciplina,
+       * e na de revisar, o motivo que a máquina deu. */
+      var sugF = tr.getAttribute('data-sugestao');
+      var motivoF = tr.querySelector('td:nth-child(2) .td--apoio');
+      motivoF = motivoF ? motivoF.textContent.trim().toLowerCase() : '';
+      p.textContent = sugF === 'revisar'
+        ? 'Falta a sua decisão. A IA pediu revisão' + (motivoF ? ' (' + motivoF + ')' : '') + ': isente, não isente ou peça documento.'
+        : sugF === 'isentar' || sugF === 'nao'
+          ? 'Falta a sua decisão. A IA sugere ' + (sugF === 'isentar' ? 'isentar' : 'não isentar') + ' (a opção marcada com o brilho); confirme ou escolha outra.'
+          : 'Falta a sua decisão: isente, não isente ou peça documento.';
       grupo.insertAdjacentElement('afterend', p);
     }
     grupo.setAttribute('aria-invalid', 'true');

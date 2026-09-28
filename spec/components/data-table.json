@@ -159,6 +159,12 @@
       "parte": "pagination",
       "obrigatorio": false,
       "descricao": "Delegado a ucam-pagination. Um único padrão para todo o sistema."
+    },
+    {
+      "parte": "faixa",
+      "obrigatorio": false,
+      "descricao": "Faixa no topo da tabela, dentro do cartão e antes do cabeçalho de colunas (.ucam-table-faixa): o que vale para a tabela inteira e não é filtro nem ação em lote. Ladrilho, título e apoio (.ucam-card__cabecalho) à esquerda, uma ação à direita. Caso de referência: a sugestão automatizada da análise da isenção — quando foi feita, o que sugeriu, a legenda da marca da opção sugerida e Aplicar N sugestões.",
+      "classe": "ucam-table-faixa"
     }
   ],
   "props": [
