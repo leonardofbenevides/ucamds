@@ -88,8 +88,9 @@ let seq = 0;
       white-space: nowrap;
       background: none;
       border: 0;
-      border-block-end: 2px solid transparent;
-      padding: var(--ucam-space-inset-sm) 0;
+      /* 3px; o pixel a mais sai do recuo de baixo (espelho do Trilho A). */
+      border-block-end: 3px solid transparent;
+      padding: var(--ucam-space-inset-sm) 0 calc(var(--ucam-space-inset-sm) - 1px);
       margin-block-end: -1px;
       font: inherit;
       font-size: var(--ucam-typography-label-font-size);

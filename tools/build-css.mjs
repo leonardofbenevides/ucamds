@@ -680,6 +680,29 @@ a.ucam-btn { text-decoration: none; }
   min-inline-size: 0;
 }
 
+/* A LEGENDA NÃO ENTRA NO GAP. O <legend> de um fieldset é "legenda
+ * renderizada": o navegador a desenha fora do fluxo flex do fieldset, e o
+ * gap de 8px entre rótulo e controle nunca chegava nela — medido em
+ * 26/09/2026, "Unidades atendidas" encostava nas caixas com 0px ("faça o
+ * espaçamento correto / maior aqui e nos similares"). A margem dá à legenda
+ * o mesmo degrau que o rótulo de qualquer campo tem até o controle. */
+fieldset.ucam-field > legend {
+  padding: 0;
+  margin-block-end: var(--ucam-space-stack-sm);
+}
+/* OPÇÕES EM FILEIRA respiram mais que botões em fileira: 24px entre uma
+ * caixa e a próxima, contra 16, porque o texto de uma opção e a caixa da
+ * seguinte liam como um par ("Presencial ☐ Anchieta"). Quebrando linha, 12px
+ * entre as fileiras. */
+.ucam-field > .ucam-cluster:has(> :is(.ucam-check, .ucam-radio, .ucam-switch)) {
+  column-gap: calc(var(--ucam-space-inline-md) + var(--ucam-space-inline-sm));
+  row-gap: calc(var(--ucam-space-stack-sm) + var(--ucam-space-inline-xs));
+}
+/* Em coluna (interruptores com apoio), 12px entre uma opção e a outra. */
+.ucam-field > .ucam-stack:has(> :is(.ucam-check, .ucam-radio, .ucam-switch)) {
+  gap: calc(var(--ucam-space-stack-sm) + var(--ucam-space-inline-xs));
+}
+
 .ucam-field + .ucam-field { margin-block-start: var(--ucam-space-stack-md); }
 
 /* A regra acima é de EMPILHAMENTO: dois campos um sob o outro precisam do vão
@@ -1832,8 +1855,6 @@ ${selectChevronCss}
 }
 .ucam-table thead th:first-child { border-start-start-radius: calc(var(--ucam-radius-surface) - 1px); }
 .ucam-table thead th:last-child { border-start-end-radius: calc(var(--ucam-radius-surface) - 1px); }
-.ucam-table thead .ucam-col--fixa-inicio,
-.ucam-table thead .ucam-col--fixa-fim { z-index: 3; }
 
 /* Quando o invólucro ROLA na horizontal ele vira contêiner de rolagem, e o
  * cabeçalho grudado passa a medir o deslocamento a partir DELE: a soma da
@@ -2641,9 +2662,15 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table .ucam-col--fixa-inicio { inset-inline-start: var(--ucam-col-x); }
 .ucam-table .ucam-col--fixa-fim    { inset-inline-end: var(--ucam-col-x); }
 
+/* z-index 3, não 2: o cabeçalho inteiro é sticky com z-index 2, e com o
+ * mesmo nível a célula que vem DEPOIS no HTML pinta por cima. Rolada a
+ * tabela, Curso e Período passavam por cima de "Candidato" fixo e o rótulo
+ * da coluna sumia enquanto as células dela ficavam (26/09/2026). O nível
+ * mora SÓ aqui: havia uma segunda declaração junto do cabeçalho grudado que
+ * dizia 3, e esta, mais abaixo, dizia 2 e a desfazia sem ninguém ver. */
 .ucam-table thead .ucam-col--fixa-inicio,
 .ucam-table thead .ucam-col--fixa-fim {
-  z-index: 2;
+  z-index: 3;
   background-color: var(--ucam-color-surface-default);
 }
 
@@ -2663,6 +2690,33 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * ADR-007 não deixa. */
 .ucam-table .ucam-col--borda-inicio { box-shadow: inset -1px 0 0 var(--ucam-color-border-default); }
 .ucam-table .ucam-col--borda-fim    { box-shadow: inset 1px 0 0 var(--ucam-color-border-default); }
+/* NO CABEÇALHO a borda do bloco fixo SOMA às sombras da célula, não as
+ * troca. O box-shadow acima substituía a lista inteira, e é nela que o
+ * cabeçalho desenha o fio do pé (e, fora de cartão, o de cima): a célula
+ * "Candidato" fixa ficava sem o fio que separa o rótulo das linhas
+ * (26/09/2026: "ficou com o header bugado"). */
+.ucam-table thead .ucam-col--borda-inicio {
+  box-shadow: var(--ucam-table-fio-coluna), inset -1px 0 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+.ucam-table thead .ucam-col--borda-fim {
+  box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead .ucam-col--borda-inicio {
+  box-shadow: var(--ucam-table-fio-coluna), inset -1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead .ucam-col--borda-fim {
+  box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+/* UM FIO SÓ na borda do bloco fixo. O fio de coluna da vizinha (borda
+ * subtle à esquerda) encostava na borda default do bloco e desenhava uma
+ * linha dupla, mais grossa e de dois tons. A vizinha apaga o dela; na coluna
+ * fixa do fim, é a própria célula fixa que apaga o seu. */
+.ucam-table tbody tr > .ucam-col--borda-inicio + :is(th, td),
+.ucam-table tbody tr > .ucam-col--borda-fim { border-inline-start-color: transparent; }
+/* th:not(.th--selecao) no seletor: a regra do fio de coluna pesa (0,2,3), e
+ * sem ele esta perdia e a linha dupla ficava no cabeçalho. */
+.ucam-table thead tr > th.ucam-col--borda-inicio + th:not(.th--selecao),
+.ucam-table thead tr > th.ucam-col--borda-fim:not(.th--selecao) { --ucam-table-fio-coluna: 0 0 transparent; }
 
 /* COLUNAS OCULTAS. Ocultar sem caminho de volta é apagar: a barra aparece
  * acima da tabela enquanto houver coluna oculta, diz quantas e oferece
@@ -8042,8 +8096,10 @@ dialog.ucam-dialog:not([open]) { display: none; }
 .ucam-tabs__tab {
   background: none;
   border: 0;
-  border-block-end: 2px solid transparent;
-  padding: var(--ucam-space-inset-sm) var(--ucam-space-inline-xs);
+  /* 3px, não 2 (26/09/2026: "o traço da tab deveria ser mais grosso"). O
+   * pixel a mais sai do recuo de baixo, e a aba mede o mesmo de antes. */
+  border-block-end: 3px solid transparent;
+  padding: var(--ucam-space-inset-sm) var(--ucam-space-inline-xs) calc(var(--ucam-space-inset-sm) - 1px);
   margin-block-end: -1px;
   font: inherit;
   font-size: var(--ucam-typography-label-font-size);
