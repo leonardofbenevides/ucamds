@@ -2675,7 +2675,7 @@ ${FN_ANUNCIA}
       else { t.pendentes++; t.semDecisao.push(nome); }
     });
     var alvo = document.querySelector('[data-totais]');
-    if (alvo) alvo.textContent = t.total + ' disciplinas · ' + t.isentas + ' isentas · ' + t.nao + ' não isentas' +
+    if (alvo) alvo.textContent = t.total + ' disciplinas · ' + t.isentas + (t.isentas === 1 ? ' isenta · ' : ' isentas · ') + t.nao + (t.nao === 1 ? ' não isenta' : ' não isentas') +
       (t.documento ? ' · ' + t.documento + ' aguardando documento' : '') + (t.pendentes ? ' · ' + t.pendentes + ' sem decisão' : '');
     var fim = document.querySelector('[data-acao="finalizar-analise"]');
     if (fim) {
@@ -2683,7 +2683,50 @@ ${FN_ANUNCIA}
       fim.setAttribute('data-documento', String(t.documento));
       if (fim.getAttribute('aria-disabled') !== 'true') fim.textContent = t.documento ? 'Enviar pedido ao candidato' : 'Finalizar análise';
     }
+    atualizaAplicar(tabela);
     return t;
+  }
+  /* A IA DIZ QUANTO VAI AJUDAR (28/09/2026: "clico em aplicar sugestões e
+   * não parece acontecer nada"). O botão conta as disciplinas sem decisão
+   * com sugestão firme — "Aplicar 7 sugestões" — e a conta acompanha cada
+   * decisão; sem nenhuma, ele fica indisponível e diz por quê. */
+  function firmesPendentes(tabela) {
+    return Array.prototype.filter.call(tabela.querySelectorAll('tr[data-disciplina]'), function (tr) {
+      var sug = tr.getAttribute('data-sugestao');
+      return !tr.getAttribute('data-decidida') && (sug === 'isentar' || sug === 'nao');
+    });
+  }
+  function atualizaAplicar(tabela) {
+    var n = firmesPendentes(tabela).length;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-acao="aplicar-sugestoes"]'), function (b) {
+      var rot = b.querySelector('[data-aplicar-rotulo]');
+      if (n) {
+        b.removeAttribute('aria-disabled'); b.removeAttribute('title');
+        if (rot) rot.textContent = n === 1 ? 'Aplicar 1 sugestão' : 'Aplicar ' + n + ' sugestões';
+      } else {
+        b.setAttribute('aria-disabled', 'true');
+        b.setAttribute('title', 'Nenhuma disciplina sem decisão com sugestão firme');
+        if (rot) rot.textContent = 'Sugestões aplicadas';
+      }
+    });
+  }
+  // A nota embaixo do seletor: "Pela sugestão" ou "Diferente da sugestão".
+  function notaDecisao(tr) {
+    var grupo = tr.querySelector('[data-decisao]');
+    if (!grupo) return;
+    var v = tr.getAttribute('data-decidida'), sug = tr.getAttribute('data-sugestao');
+    var texto = '';
+    if (v && tr.hasAttribute('data-pela-sugestao')) texto = 'Pela sugestão';
+    else if ((sug === 'isentar' || sug === 'nao') && (v === 'isentar' || v === 'nao') && v !== sug) texto = 'Diferente da sugestão';
+    var nota = tr.querySelector('[data-nota-decisao]');
+    if (!texto) { if (nota) nota.remove(); return; }
+    if (!nota) {
+      nota = document.createElement('span');
+      nota.className = 'td--apoio';
+      nota.setAttribute('data-nota-decisao', '');
+      grupo.insertAdjacentElement('afterend', nota);
+    }
+    nota.textContent = texto;
   }
   /* QUAL FALTA, NA PRÓPRIA LINHA (28/09/2026). O aviso de "Falta 1 decisão"
    * nomeava a disciplina, mas a tabela não mostrava onde ela estava: com nove
@@ -3320,6 +3363,8 @@ ${FN_ANUNCIA}
         valor === 'isentar' ? 'success' : valor === 'nao' ? 'danger' : valor === 'documento' ? 'warning' : 'neutral',
         valor === 'isentar' ? 'Isenta' : valor === 'nao' ? 'Não isenta' : valor === 'documento' ? 'Aguardando documento' : 'Sem decisão');
       linhaD.setAttribute('data-decidida', valor);
+      if (!window.ucamEmLote) linhaD.removeAttribute('data-pela-sugestao');
+      notaDecisao(linhaD);
       if (valor) limpaFalta(linhaD);
       var nomeD = linhaD.getAttribute('data-disciplina');
       totaisIsencao(botao);
@@ -3328,20 +3373,74 @@ ${FN_ANUNCIA}
     }
 
     if (qual === 'aplicar-sugestoes') {
+      /* APLICAR SE VÊ (28/09/2026). Antes preenchia a linha fora da vista e
+       * dizia "Aplicadas" por um instante. Agora cada linha preenchida pisca
+       * e fica marcada "Pela sugestão"; um aviso acima da tabela diz o que foi
+       * preenchido, o que ficou com a coordenação (as de revisar, com o
+       * motivo) e oferece Desfazer; a atividade registra quem aplicou. A
+       * máquina continua sem decidir sozinha: só preenche o vazio, e tudo é
+       * reversível (ADR-049). */
       var tabelaS = document.querySelector('[data-decisoes]');
-      if (!tabelaS) return;
-      var feitas = 0;
-      Array.prototype.forEach.call(tabelaS.querySelectorAll('tr[data-disciplina]'), function (tr) {
-        if (tr.getAttribute('data-decidida')) return;
+      if (!tabelaS || botao.getAttribute('aria-disabled') === 'true') return;
+      var feitas = firmesPendentes(tabelaS);
+      if (!feitas.length) { anuncia('Nenhuma disciplina sem decisão com sugestão firme.', botao); return; }
+      var isentasA = 0, naoA = 0;
+      window.ucamEmLote = true;
+      feitas.forEach(function (tr) {
         var sug = tr.getAttribute('data-sugestao');
-        if (sug !== 'isentar' && sug !== 'nao') return;
         var alvoB = tr.querySelector('[data-decisao] button[data-valor="' + sug + '"]');
-        if (alvoB) { agir(alvoB, 'decidir'); feitas++; }
+        if (!alvoB) return;
+        tr.setAttribute('data-pela-sugestao', '');
+        agir(alvoB, 'decidir');
+        if (sug === 'isentar') isentasA++; else naoA++;
+        eco(tr.querySelector('[data-decisao]'));
       });
-      anuncia(feitas
-        ? feitas + (feitas === 1 ? ' decisão preenchida pela sugestão. ' : ' decisões preenchidas pela sugestão. ') + 'As marcadas para revisar continuam sem decisão.'
-        : 'Nenhuma disciplina sem decisão com sugestão de isentar ou não isentar.', botao);
-      return rotuloTemporario(botao, feitas ? 'Aplicadas' : 'Nada a aplicar');
+      window.ucamEmLote = false;
+      var comVoce = Array.prototype.filter.call(tabelaS.querySelectorAll('tr[data-disciplina]'), function (tr) { return !tr.getAttribute('data-decidida'); })
+        .map(function (tr) {
+          var m = tr.querySelector('td:nth-child(2) .td--apoio');
+          return tr.getAttribute('data-disciplina') + (m ? ' (' + m.textContent.trim().toLowerCase() + ')' : '');
+        });
+      var nA = isentasA + naoA;
+      var textoA = nA + (nA === 1 ? ' decisão preenchida' : ' decisões preenchidas') + ' pela sugestão: ' +
+        isentasA + (isentasA === 1 ? ' isenta' : ' isentas') + ' e ' + naoA + (naoA === 1 ? ' não isenta' : ' não isentas') +
+        '. Estão marcadas "Pela sugestão"; confira e mude o que discordar.' +
+        (comVoce.length ? ' Ficam com você: ' + juntaNomes(comVoce) + '.' : '');
+      avisa(textoA, tabelaS, 'info');
+      var avisoA = (tabelaS.closest('section') || document).querySelector('[data-aviso-da-acao]');
+      if (avisoA) {
+        var acoesA = document.createElement('div');
+        acoesA.className = 'ucam-cluster';
+        acoesA.style.marginBlockStart = 'var(--ucam-space-stack-sm)';
+        acoesA.innerHTML = '<button class="ucam-btn ucam-btn--ghost ucam-btn--sm" type="button" data-fluxo="c" data-acao="desfazer-sugestoes">Desfazer</button>';
+        avisoA.querySelector('.ucam-alert__corpo').appendChild(acoesA);
+        avisoA.scrollIntoView({ block: 'nearest' });
+      }
+      registraAtividade(botao, 'Sugestão aplicada a ' + nA + (nA === 1 ? ' disciplina' : ' disciplinas'),
+        isentasA + ' isentar e ' + naoA + ' não isentar, a conferir antes de finalizar.', 'listChecks', 'info');
+      anuncia(textoA, botao);
+      return;
+    }
+
+    if (qual === 'desfazer-sugestoes') {
+      var tabelaU = document.querySelector('[data-decisoes]');
+      if (!tabelaU) return;
+      var desfeitas = 0;
+      window.ucamEmLote = true;
+      Array.prototype.forEach.call(tabelaU.querySelectorAll('tr[data-pela-sugestao]'), function (tr) {
+        var marcado = tr.querySelector('[data-decisao] button[aria-pressed="true"]');
+        tr.removeAttribute('data-pela-sugestao');
+        if (marcado) { agir(marcado, 'decidir'); desfeitas++; }
+      });
+      window.ucamEmLote = false;
+      var avisoU = botao.closest('[data-aviso-da-acao]');
+      var alvoU = document.querySelector('[data-acao="aplicar-sugestoes"]');
+      var textoU = desfeitas + (desfeitas === 1 ? ' disciplina voltou' : ' disciplinas voltaram') + ' a sem decisão. O que você decidiu à mão não mudou.';
+      anuncia(textoU, botao);
+      if (window.ucamToast) window.ucamToast(textoU);
+      if (avisoU) avisoU.remove();
+      if (alvoU) alvoU.focus();
+      return;
     }
 
     if (qual === 'salvar-rascunho') {

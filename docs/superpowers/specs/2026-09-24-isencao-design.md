@@ -178,8 +178,9 @@ nome da disciplina, carga horária, a sugestão automatizada como selo
 (Isentar / Revisar / Não isentar, com o motivo curto em apoio: "Ementa
 compatível: 92%"), e a decisão como segmented de três posições
 (Isentar · Não isentar · Pedir documento; nenhuma marcada é sem
-decisão). Rodapé da seção: "9 disciplinas · 4 isentas · 2 não isentas
-· 1 aguardando documento · 2 sem decisão", com `aria-live`. Direito
+decisão). Rodapé da seção: "9 disciplinas · 0 isentas · 0 não isentas
+· 1 aguardando documento · 8 sem decisão", com `aria-live`: a tela abre
+antes do trabalho, para mostrar o que a sugestão faz. Direito
 Civil I (ementa parcial, 61%) começa em Pedir documento, por isso a
 ação primária do cabeçalho abre como "Enviar pedido ao candidato".
 
@@ -190,8 +191,13 @@ Cursos; DIR20201 está em extinção e não vale para quem entra agora); cartão
 (anexos: Histórico escolar, Ementas, cada um com nome do arquivo em
 `.ucam-id`, tamanho e "Baixar"); cartão "Sugestão automatizada"
 ("Analisada em 12/09 às 09h40 · 4 isentar, 2 revisar, 3 não isentar",
-ação "Aplicar sugestões" que preenche as sem decisão com isentar/não
-isentar e deixa revisar sem decisão, e diz quantas preencheu); cartão
+e como ela é feita, com o critério de cada resultado). "Aplicar N
+sugestões" fica ACIMA da tabela, ao lado do filtro de período, e conta
+as sem decisão com sugestão firme; aplicar marca cada linha "Pela
+sugestão", abre um aviso com o que foi preenchido, o que ficou com a
+coordenação (as de revisar, com o motivo) e Desfazer, e registra na
+atividade. Decidir contra uma sugestão firme marca "Diferente da
+sugestão". Cartão
 "Observação ao candidato" (textarea com contador de 150, apoio "O
 candidato lê esta observação na tela de acompanhamento", ação "Enviar
 ao candidato" que muda a situação para Aguardando candidato).
@@ -265,8 +271,9 @@ campo na tela de análise (regra aberta).
   aguardando candidato; 5 concluídas (período letivo 2026.1; as em
   análise são de 2026.2). Direito 5, Administração 3.
 - João Cutrim, DIR20222: 9 disciplinas = 4 (1º) + 3 (2º) + 2 (3º).
-  Sugestões: 4 isentar, 2 revisar, 3 não isentar. Na tela de análise, 4
-  isentas, 2 não isentas, 1 aguardando documento, 2 sem decisão. No acompanhamento (depois
+  Sugestões: 4 isentar, 2 revisar, 3 não isentar. Na tela de análise, abre
+  com 1 aguardando documento e 8 sem decisão; Aplicar preenche 7 (4 isentas, 3 não
+  isentas) e deixa Direito Constitucional I (revisar) com a coordenação. No acompanhamento (depois
   do pedido, antes da conclusão): 8 em análise, 1 aguardando documento (Direito Civil I).
 - Matriz DIR20222: 240h (1º) + 240h (2º) + 160h (3º) = 640h. Pedro Alves: 400h isentas + 240h
   que ficam na grade = 640h.
