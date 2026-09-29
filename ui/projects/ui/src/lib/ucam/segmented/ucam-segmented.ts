@@ -66,13 +66,15 @@ export interface UcamSegmentItem {
         >
           {{ item.label }}
           @if (item.suggested) {
-            <ucam-icon name="sparkles" size="sm" class="ucam-segmented__sugerido" /><span class="sr-only">, sugestão</span>
+            <ucam-icon name="sparkles" size="xs" class="ucam-segmented__sugerido" /><span class="sr-only">, sugestão</span>
           }
         </button>
       }
     </div>
   `,
   styles: `
+    /* A marca da opção sugerida, discreta como no Trilho A (29/09/2026). */
+    ucam-segmented .ucam-segmented__sugerido { opacity: 0.7; margin-inline-start: 0.1875rem; }
     ucam-segmented .ucam-segmented__rotulo {
       display: block;
       margin-block-end: var(--ucam-space-1);

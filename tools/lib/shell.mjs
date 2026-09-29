@@ -2662,11 +2662,15 @@ ${FN_ANUNCIA}
    * sai no ato da escolha: escolher é escolher, enviar é o botão. */
   function exigeAnexo(dlg) {
     if (!dlg) return;
-    var envia = dlg.querySelector('[data-exige-anexo]');
-    if (!envia) return;
+    // Todos os que exigem arquivo: o Enviar e o Verificar com IA (29/09/2026).
     var tem = !!dlg.querySelector('.ucam-anexos .ucam-anexo:not(.ucam-anexo--recusado)');
-    if (tem) envia.removeAttribute('aria-disabled');
-    else envia.setAttribute('aria-disabled', 'true');
+    Array.prototype.forEach.call(dlg.querySelectorAll('[data-exige-anexo]'), function (b) {
+      if (tem) b.removeAttribute('aria-disabled');
+      else b.setAttribute('aria-disabled', 'true');
+    });
+    // Arquivo trocado invalida a verificação feita no anterior.
+    var ver = dlg.querySelector('[data-ia-resultado]');
+    if (ver) { ver.hidden = true; ver.textContent = ''; }
   }
 
   function nomesDosFormatos(aceita) {
@@ -3751,6 +3755,84 @@ ${FN_ANUNCIA}
       if (window.ucamToast) window.ucamToast(textoU);
       if (avisoU) avisoU.remove();
       if (alvoU) alvoU.focus();
+      return;
+    }
+
+    /* AÇÕES DE IA (29/09/2026: "coloque ações de IA com botões aonde achar
+     * válido e que será útil"). Três regras valem para as três (ADR-049): a
+     * IA RASCUNHA ou EXPLICA, nunca decide nem envia; o que ela escreve vem
+     * rotulado como dela; e desfazer é um clique. No protótipo o texto sai
+     * das próprias linhas da tela; na aplicação, do serviço que compara
+     * ementas. */
+    if (qual === 'ia-rascunhar-observacao') {
+      var campoIA = document.querySelector('textarea[data-observacao]');
+      if (!campoIA) return;
+      var linhasIA = Array.prototype.slice.call(document.querySelectorAll('[data-decisoes] tr[data-disciplina]'));
+      var pedidas = linhasIA.filter(function (tr) { return tr.getAttribute('data-decidida') === 'documento'; }).map(function (tr) { return tr.getAttribute('data-disciplina'); });
+      if (!pedidas.length) {
+        anuncia('Nenhuma disciplina com documento pedido: marque "Pedir documento" onde faltar ementa, e a IA rascunha o pedido.', botao);
+        if (window.ucamToast) window.ucamToast('Nenhuma disciplina com documento pedido.');
+        return;
+      }
+      var nomesIA = pedidas.length > 2 ? pedidas.slice(0, 2).join(', ') + ' e mais ' + (pedidas.length - 2) : juntaNomes(pedidas);
+      var textoIA = 'Envie a ementa completa de ' + nomesIA + ', com o conteúdo programático e a carga horária, em PDF.';
+      if (textoIA.length > 150) textoIA = 'Envie as ementas completas das disciplinas pedidas, com o conteúdo programático e a carga horária, em PDF.';
+      campoIA.setAttribute('data-ia-anterior', campoIA.value);
+      campoIA.value = textoIA;
+      campoIA.dispatchEvent(new Event('input', { bubbles: true }));
+      var notaIA = document.getElementById(campoIA.id + '-ia');
+      if (!notaIA) {
+        notaIA = document.createElement('p');
+        notaIA.id = campoIA.id + '-ia';
+        notaIA.className = 'ucam-field__hint ucam-ia-nota';
+        campoIA.closest('.ucam-field').appendChild(notaIA);
+      }
+      notaIA.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg> Rascunho da IA a partir das disciplinas com documento pedido. Revise antes de enviar. <button type="button" class="ucam-link ucam-link--apoio" data-fluxo="c" data-acao="ia-desfazer-observacao">Desfazer</button>';
+      campoIA.focus();
+      anuncia('Rascunho da IA no campo de observação. Revise antes de enviar.', botao);
+      return;
+    }
+    if (qual === 'ia-desfazer-observacao') {
+      var campoD = document.querySelector('textarea[data-observacao]');
+      if (!campoD) return;
+      campoD.value = campoD.getAttribute('data-ia-anterior') || '';
+      campoD.dispatchEvent(new Event('input', { bubbles: true }));
+      var notaD = document.getElementById(campoD.id + '-ia');
+      if (notaD) notaD.remove();
+      campoD.focus();
+      anuncia('Rascunho da IA desfeito.', campoD);
+      return;
+    }
+    if (qual === 'ia-explicar') {
+      var alvoE = document.getElementById(botao.getAttribute('aria-controls'));
+      if (!alvoE) return;
+      var abre = botao.getAttribute('aria-expanded') !== 'true';
+      alvoE.hidden = !abre;
+      botao.setAttribute('aria-expanded', String(abre));
+      var rotE = botao.querySelector('[data-rotulo]');
+      if (rotE) rotE.textContent = abre ? 'Ocultar' : 'Por que revisar?';
+      // Anuncia a partir do detalhe: o texto já está na linha, não vira toast.
+      if (abre) anuncia(alvoE.textContent.trim(), alvoE);
+      return;
+    }
+    if (qual === 'ia-verificar-documento') {
+      var dlgV = botao.closest('dialog');
+      var caixaV = dlgV && dlgV.querySelector('[data-ia-resultado]');
+      var arqV = dlgV && dlgV.querySelector('.ucam-anexos .ucam-anexo:not(.ucam-anexo--recusado) .ucam-anexo__nome');
+      if (!caixaV || !arqV) return;
+      caixaV.hidden = false;
+      caixaV.className = 'ucam-ia-nota ucam-ia-nota--caixa';
+      caixaV.setAttribute('aria-busy', 'true');
+      caixaV.innerHTML = '<svg class="ic ucam-spinner" aria-hidden="true"><use href="#i-loaderCircle"/></svg> Verificando ' + escapaHtml(arqV.textContent.trim()) + '…';
+      botao.setAttribute('aria-disabled', 'true');
+      botao.setAttribute('data-motivo', 'A verificação está em andamento.');
+      setTimeout(function () {
+        caixaV.removeAttribute('aria-busy');
+        caixaV.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg> <span><strong>Parece ser o documento pedido.</strong> O PDF menciona Direito Civil I e a carga de 80h. Quem decide é a coordenação, ao receber.</span>';
+        botao.removeAttribute('aria-disabled');
+        botao.removeAttribute('data-motivo');
+        anuncia('Verificação da IA: parece ser o documento pedido. O PDF menciona Direito Civil I e a carga de 80h.', caixaV);
+      }, 1400);
       return;
     }
 

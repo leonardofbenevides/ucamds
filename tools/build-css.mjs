@@ -9146,13 +9146,45 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * secundário como o texto, escolhido ele toma o tom da escolha. Quando a
  * decisão diverge, a divergência se vê sem frase nenhuma — a marcada é uma, a
  * sugerida é outra. O nome acessível leva ", sugestão" (ucam-sr-only). */
+/* 29/09/2026: "o ícone de sparkle podia ser menor, ficou bruto". De 13 para
+ * 11px e a 70%: o traço do símbolo é fixo (2 em 24), então o que afina é o
+ * tamanho — a 11px ele fica abaixo de 1px — e a intensidade. A marca
+ * acompanha o rótulo em vez de disputar com ele. */
 .ucam-segmented__sugerido {
-  inline-size: 0.8125rem;
-  block-size: 0.8125rem;
-  margin-inline-start: 0.25rem;
+  inline-size: 0.6875rem;
+  block-size: 0.6875rem;
+  opacity: 0.7;
+  margin-inline-start: 0.1875rem;
   flex: none;
   vertical-align: -0.125em;
 }
+
+/* A NOTA DA IA (29/09/2026, ações de IA): o que a máquina escreveu ou
+ * verificou vem ROTULADO como dela — o brilho discreto e a frase "Rascunho da
+ * IA…" — em tinta secundária, sem cor própria de IA (ADR-049: sem varinha,
+ * sem roxo de marketing). Em caixa (--caixa), o resultado de uma
+ * verificação: superfície rebaixada, fio, e o texto em tinta primária. */
+.ucam-ia-nota {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ucam-space-inline-xs);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-ia-nota > .ic { flex: none; inline-size: 0.8125rem; block-size: 0.8125rem; margin-block-start: 0.2em; opacity: 0.8; }
+.ucam-ia-nota--caixa {
+  padding: var(--ucam-space-inline-sm) var(--ucam-space-inline-md);
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--ucam-radius-control);
+  background: var(--ucam-color-surface-subtle);
+  color: var(--ucam-color-text-primary);
+  font-size: var(--ucam-typography-body-sm-font-size);
+}
+.ucam-ia-nota[hidden] { display: none; }
+/* O detalhe da explicação dentro da célula de sugestão: apoio que quebra. */
+.ucam-table .td--apoio[data-ia-detalhe] { display: block; white-space: normal; max-inline-size: 22rem; margin-block-start: var(--ucam-space-inline-xs); }
+/* O botão de explicar fica na PRÓPRIA linha, sob o motivo, e o detalhe abre
+ * embaixo dele — lado a lado, "Ocultar" encostava na primeira palavra. */
+.ucam-table td > button[data-acao="ia-explicar"] { display: flex; margin-block-start: var(--ucam-space-inline-xs); margin-inline-start: calc(-1 * var(--ucam-space-inline-sm)); }
 
 /* O ESCOLHIDO COM TOM (28/09/2026). Onde cada segmento É um desfecho —
  * a decisão por disciplina da isenção: Isentar, Não isentar, Pedir
