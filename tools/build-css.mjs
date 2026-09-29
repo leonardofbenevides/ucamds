@@ -125,10 +125,10 @@ function remDoContentor(papel) {
   return parseFloat(no.$value);
 }
 
-const contentorAcima = (papel) => {
+const contentorAcima = (papel, nome = 'corpo') => {
   const r = remDoContentor(papel);
   breakpointsEmitidos.add(`min:${r}rem`);
-  return `@container corpo (min-width: ${r}rem)`;
+  return `@container ${nome} (min-width: ${r}rem)`;
 };
 
 const contentorAbaixo = (papel, nome = 'corpo') => {
@@ -886,6 +886,128 @@ ${abaixo('controle-deitado')} {
     inline-size: 100%;
   }
 
+}
+
+/* ------------------------------------------------ teto de todo controle --- */
+/* A TEXTAREA FORA DA GRADE para na medida de leitura (48rem, a mesma de
+ * .ucam-corpo--leitura): a descrição do Novo requerimento abria em 1205px a
+ * 1920, ~170 caracteres por linha (28/09/2026). Na grade quem manda é a
+ * trilha (1 / span 2). */
+:where(:not(.ucam-form-grid) > .ucam-field) > .ucam-textarea { max-inline-size: 48rem; }
+
+/* O TETO É DO CAMPO, não da fileira (28/09/2026, auditoria de largura). O
+ * teto de 30rem só valia em .ucam-form-row > .ucam-field; campo solto numa
+ * pilha esticava até a coluna — o Tipo do requerimento chegava a 1205px a
+ * 1920, e o Curso dos filtros de relatório também. Valem as exceções de
+ * sempre: textarea e compositor (texto de vários parágrafos), campo que
+ * declara ocupar a linha (--linha) ou crescer na barra (--grow). */
+.ucam-field:not(.ucam-field--linha, .ucam-field--grow) > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) {
+  max-inline-size: 30rem;
+}
+
+/* --------------------------------------------------- grade de formulário --- */
+/* A GRADE DE FORMULÁRIO (ADR-055, 28/09/2026: "revisar a largura e o uso da
+ * largura dos formulários, usar melhor a largura sendo responsivo"). Havia
+ * dois modelos e nenhum respondia à largura: a fileira com --ucam-cols fixo
+ * no style de cada tela (Natureza parava em x=737 com o cartão indo a 1547,
+ * 793px de vão morto a 1920) e o campo solto que esticava sem teto.
+ *
+ * A grade conta as trilhas sozinha: trilha mínima de 17rem, no máximo
+ * QUATRO — a conta dentro do minmax impede a quinta —, e cada trilha cresce
+ * até 30rem, o teto do controle. 1 trilha até 35rem, 2 até 53, 3 até 71, 4
+ * acima (container.formulario-*). Num diálogo de 34rem ou no painel de 18rem,
+ * uma; a 768, duas; a 1440, três; a 1920, quatro.
+ *
+ * Cada campo continua sendo subgrade de três fileiras (rótulo, controle,
+ * apoio): rótulo com rótulo e controle com controle alinham na fileira,
+ * mesmo com apoio de duas linhas ao lado de campo sem apoio. O vão entre
+ * rótulo e controle é o do campo (subgrade com gap próprio); entre uma
+ * fileira de campos e a próxima, o da grade. */
+.ucam-form-grid {
+  container: formulario / inline-size;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(max(min(100%, 17rem), calc((100% - 3 * var(--ucam-space-inline-md)) / 4)), 1fr));
+  grid-auto-flow: row;
+  gap: var(--ucam-space-stack-lg) var(--ucam-space-inline-md);
+  align-items: start;
+  max-inline-size: calc(4 * 30rem + 3 * var(--ucam-space-inline-md));
+}
+/* A grade é contêiner (inline-size): não tem largura de conteúdo. Quem a
+ * contém tem de dar a largura — cartão e seção que encolhem pelo conteúdo
+ * (align-items:start) a deixavam crescer até o teto de 123rem, passando da
+ * tela. Ela e o cartão dela esticam na coluna. */
+.ucam-form-grid { inline-size: 100%; }
+:is(.ucam-card, .ucam-section, .ucam-stack, .ucam-dialog__corpo, form):has(> .ucam-form-grid) { align-self: stretch; }
+.ucam-section > .ucam-card:has(> .ucam-form-grid) { align-self: stretch; }
+
+.ucam-form-grid > .ucam-field,
+.ucam-form-grid > .ucam-form-row {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: var(--ucam-space-stack-sm);
+  margin-block-start: 0;
+  min-inline-size: 0;
+}
+/* Na grade o controle preenche a trilha (ela já tem no máximo 30rem); quem
+ * declara a medida do dado (--cpf, --data, --valor...) guarda a sua. */
+.ucam-form-grid > .ucam-field:not([class*="ucam-field--"]) > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]),
+.ucam-form-grid > .ucam-field.ucam-field--largo > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) {
+  inline-size: 100%;
+}
+/* O LARGO preenche as duas trilhas: o teto de 30rem é de UMA trilha, e
+ * parar nele deixava meio palmo de branco antes do vizinho (Nome e Unidade,
+ * Novo usuário a 1440). */
+.ucam-form-grid > .ucam-field--largo > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) { max-inline-size: none; }
+/* O GRUPO: campos curtos que andam juntos (De/Até, Referência + Vencimento +
+ * Desconto, CPF + Nome) numa trilha só. É a .ucam-form-row de sempre posta
+ * na grade: subgrade das três fileiras dela, e os campos, subgrade da
+ * fileira. */
+.ucam-form-grid > .ucam-form-row { grid-template-columns: var(--ucam-cols); gap: 0 var(--ucam-space-inline-md); grid-column: 1 / -1; }
+/* Com uma ou duas trilhas o grupo ocupa a linha: três datas não cabem numa
+ * trilha de 17rem. Com três ou mais, o grupo sem --largo volta a uma trilha
+ * (regra do contêiner abaixo). */
+/* O que ocupa a LINHA INTEIRA: grupo de caixas, grade de escolha, grupo de
+ * interruptores, aviso, anexos. Uma fileira só, sem subgrade. */
+.ucam-form-grid > .ucam-field--linha,
+.ucam-form-grid > :not(.ucam-field, .ucam-form-row) {
+  grid-column: 1 / -1;
+  grid-row: auto;
+}
+.ucam-form-grid > fieldset.ucam-field--linha { display: flex; }
+/* Texto longo: a linha inteira com uma ou duas trilhas; com três ou mais, as
+ * duas primeiras (~48rem, a medida de leitura do corpo). A textarea termina
+ * numa borda de trilha, e não em 45rem num lugar e 1205px no outro. */
+.ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / -1; }
+.ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) > :is(.ucam-textarea, .ucam-compositor) { inline-size: 100%; }
+${contentorAcima('formulario-3col', 'formulario')} {
+  .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / span 2; }
+  /* O campo LARGO (autocompletar de pessoa, curso, tipo): duas trilhas. */
+  .ucam-form-grid > .ucam-field--largo,
+  .ucam-form-grid > .ucam-form-row.ucam-field--largo { grid-column: span 2; }
+  .ucam-form-grid > .ucam-form-row:not(.ucam-field--largo) { grid-column: auto; }
+}
+/* Sem subgrade o campo volta a ser pilha própria: controles podem
+ * desalinhar se um rótulo quebrar, mas nada se sobrepõe. */
+@supports not (grid-template-rows: subgrid) {
+  .ucam-form-grid > .ucam-field { display: flex; grid-row: auto; }
+}
+
+/* A SEÇÃO COM TÍTULO AO LADO (.ucam-section--lateral): em formulário longo
+ * feito de seções curtas, com o corpo acima de duas-colunas, o título e a
+ * descrição vão para uma coluna de até 16rem e o cartão de campos ocupa o
+ * resto — o padrão de página de configuração. Corta o bloco título +
+ * parágrafo + cartão que se repetia na vertical e usa a largura sem
+ * esticar campo. Abaixo, empilha como qualquer seção. */
+${contentorAcima('duas-colunas')} {
+  /* Classe dobrada: .ucam-section (display:flex) vem depois na folha com a
+   * mesma especificidade e desfazia a grade. */
+  .ucam-section.ucam-section--lateral {
+    display: grid;
+    grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+    column-gap: var(--ucam-space-inset-lg);
+    align-items: start;
+  }
 }
 
 .ucam-field__label {
@@ -1707,6 +1829,16 @@ ${selectChevronCss}
  * era o que cortava 10/09/2026 em "10/09/202". */
 .ucam-field--cpf   .ucam-input { inline-size: calc(14ch + 1.5rem); }
 .ucam-field--cep   .ucam-input { inline-size: calc(9ch  + 1.5rem); }
+/* A MEDIDA DO DADO, completa (formats.json > largura-pelo-dado, 28/09/2026):
+ * CNPJ, valor em reais (alinhado ao fim, dígitos tabulares), percentual,
+ * código/matrícula, telefone e quantidade. O controle mede o dado, e não a
+ * trilha — o vão até o vizinho é o que diz "isto é curto". */
+.ucam-field--cnpj   .ucam-input { inline-size: calc(18ch + 1.5rem); }
+.ucam-field--valor  .ucam-input { inline-size: calc(14ch + 1.5rem); text-align: end; font-variant-numeric: tabular-nums; }
+.ucam-field--pct    .ucam-input { inline-size: calc(6ch  + 1.5rem); text-align: end; font-variant-numeric: tabular-nums; }
+.ucam-field--codigo .ucam-input { inline-size: calc(12ch + 1.5rem); }
+.ucam-field--tel    .ucam-input { inline-size: calc(15ch + 1.5rem); }
+.ucam-field--qtd    .ucam-input-group { inline-size: calc(8ch + 5rem); }
 .ucam-field--data  .ucam-input { inline-size: calc(10ch + 1.5rem); }
 
 /* O CAMPO DE DATA COM CALENDÁRIO (date-field.json, Trilho A desde 28/09/2026).
@@ -2022,6 +2154,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
     color: var(--ucam-color-text-secondary);
   }
   .ucam-table__ordenar .ucam-select { flex: 1 1 auto; min-inline-size: 0; }
+  /* Convertido em listbox (o select nasce depois e vira gatilho + lista). */
+  .ucam-table__ordenar .ucam-select-wrap { flex: 1 1 auto; min-inline-size: 0; }
+  .ucam-table__ordenar .ucam-select-wrap > .ucam-select-trigger { inline-size: 100%; }
   .ucam-table-wrap { overflow: visible; border: 0; border-radius: 0; }
   /* O piso por número de colunas (até 56rem) é de tabela EM COLUNAS. Aqui
    * ele fazia a tabela empilhada mais larga que o telefone, e o cartão
@@ -7325,8 +7460,23 @@ ${acima('nav-fixa')} {
 .ucam-grid {
   display: grid;
   --ucam-grid-min: 16rem;
-  grid-template-columns: repeat(auto-fill, minmax(var(--ucam-grid-min), 1fr));
+  /* GRADE EQUILIBRADA (28/09/2026): o número de colunas tem teto pela
+   * CONTAGEM de itens — 6 cartões a 1920 saíam 5 + 1, 4 cartões deixavam
+   * duas trilhas vazias de 521px. --ucam-grid-max limita as colunas pela
+   * conta dentro do minmax; sem teto declarado, vale o auto-fill de sempre. */
+  --ucam-grid-max: 99;
+  grid-template-columns: repeat(auto-fill, minmax(max(min(100%, var(--ucam-grid-min)), calc((100% - (var(--ucam-grid-max) - 1) * var(--ucam-space-inset-md)) / var(--ucam-grid-max))), 1fr));
   gap: var(--ucam-space-inset-md);
+}
+/* 4 itens: 4 ou 2 por linha, nunca 3 + 1. 6: 3 + 3. 9: 3 + 3 + 3. 8: 4 + 4. */
+.ucam-grid:has(> :nth-child(4):last-child),
+.ucam-grid:has(> :nth-child(8):last-child) { --ucam-grid-max: 4; }
+.ucam-grid:has(> :nth-child(6):last-child),
+.ucam-grid:has(> :nth-child(9):last-child) { --ucam-grid-max: 3; }
+.ucam-grid:has(> :nth-child(2):last-child) { --ucam-grid-max: 2; }
+.ucam-grid:has(> :nth-child(7):last-child) { --ucam-grid-max: 4; }
+${contentorAbaixo('grade-quatro-em-fileira')} {
+  .ucam-grid:has(> :nth-child(4):last-child) { --ucam-grid-max: 2; }
 }
 
 /* VISTA DE LISTA da mesma grade — o outro lado do segmented "Grade | Lista".
@@ -11127,13 +11277,22 @@ figure:has(> .ucam-citacao) { margin: 0; }
 
 .ucam-choice-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  /* Equilibrada pela contagem, como .ucam-grid: 6 naturezas a 1920 saíam
+   * 5 + 1 (28/09/2026). A legenda do fieldset não conta como filho de
+   * grade, mas conta no :nth-child — por isso os números aqui somam um. */
+  --ucam-grid-max: 99;
+  grid-template-columns: repeat(auto-fit, minmax(max(min(100%, 13rem), calc((100% - (var(--ucam-grid-max) - 1) * var(--ucam-space-inline-sm)) / var(--ucam-grid-max))), 1fr));
   gap: var(--ucam-space-inline-sm);
   border: 0;
   padding: 0;
   margin: 0;
   min-inline-size: 0;
 }
+
+.ucam-choice-grid:has(> legend + * + * + * + * + * + *:last-child),
+.ucam-choice-grid:not(:has(> legend)):has(> :nth-child(6):last-child) { --ucam-grid-max: 3; }
+.ucam-choice-grid:has(> legend + * + * + * + *:last-child),
+.ucam-choice-grid:not(:has(> legend)):has(> :nth-child(4):last-child) { --ucam-grid-max: 4; }
 
 /* O RÓTULO DO GRUPO precisa de ar antes da grade.
  *

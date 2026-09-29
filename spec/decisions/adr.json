@@ -1090,6 +1090,27 @@
         "badge",
         "app-shell"
       ]
+    },
+    {
+      "id": "ADR-055",
+      "titulo": "Formulário ocupa a largura por grade responsiva; o campo tem teto pelo dado",
+      "status": "aceita",
+      "data": "2026-09-28",
+      "contexto": "Pedido de 28/09/2026: \"revisar a largura e o uso da largura dos formulários e das telas no geral, usar melhor a largura sendo responsivo\". A auditoria mediu as 31 telas a 768, 1280, 1440 e 1920 e achou dois modelos de formulário, nenhum respondendo à largura: a fileira com --ucam-cols fixo no style de cada tela (Nova natureza parava em x=737 com o cartão indo a 1547 — 793px de vão morto a 1920; o cartão de parâmetros do cálculo usava 388 de 1514; \"Calcular\" ficava a 560px do último campo) e o campo solto numa pilha, que esticava sem teto (o Tipo do requerimento e o Curso dos filtros chegavam a 1205px; a descrição do requerimento, ~170 caracteres por linha). As grades de cartões saíam 5 + 1, 4 + 2 e com trilhas vazias de 521px.",
+      "decisao": "Uma grade de formulário (.ucam-form-grid) que conta as próprias trilhas: mínimo de 17rem, no máximo quatro, cada uma até 30rem; campos como subgrade de três fileiras; --largo em duas trilhas, --linha na linha inteira, textarea em duas trilhas a partir de três; o grupo (.ucam-form-row dentro da grade) para campos curtos que andam juntos, com a medida do dado. O teto de 30rem passa a valer em todo .ucam-field (menos textarea, --linha e --grow), e a textarea fora da grade para em 48rem. Medidas do dado para CPF, CNPJ, CEP, data, mês, valor, percentual, código, telefone e quantidade. Seção com título ao lado (.ucam-section--lateral) nos formulários longos de seções curtas. Grades de cartões equilibradas pela contagem. Papéis de contêiner novos: formulario-2col/3col/4col e grade-quatro-em-fileira.",
+      "consequencias": [
+        "Nova natureza, Novo integrante e Novo usuário ganham seções com título ao lado e grade de 3 trilhas a 1440 e 4 a 1920; o cálculo de mensalidade põe a matrícula larga e as três datas num grupo na mesma linha; os filtros de relatório fecham em duas linhas de três trilhas com \"Ingresso de/até\" juntos.",
+        "Nenhuma tela passa a rolar na horizontal (medido de 390 a 1920).",
+        "O --ucam-cols no style vira exceção contável, como a boa prática de layouts.json já pedia.",
+        "Pendente: tabelas de até três colunas e listas esticadas a 1920 (grupo-menu, fila do gerencial) seguem na largura do corpo; a grade de sete setores do gerencial tem cartões desiguais e continua 4 + 2 + 1."
+      ],
+      "afeta": [
+        "spec/layouts.json",
+        "spec/formats.json",
+        "spec/tokens/semantic.json",
+        "tools/build-css.mjs",
+        "spec/templates.json"
+      ]
     }
   ]
 }

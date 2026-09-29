@@ -2212,8 +2212,9 @@ export const estadoScript = `
     });
     // O "Ordenar por" do modo empilhado diz a mesma ordem que o cabeçalho.
     var ordSel = tabela.closest('.ucam-table-wrap');
-    ordSel = ordSel && ordSel.querySelector('.ucam-table__ordenar select');
-    if (ordSel) ordSel.value = dir ? col + '|' + dir : '';
+    ordSel = ordSel && ordSel.querySelector('.ucam-table__ordenar [data-listbox], .ucam-table__ordenar select');
+    if (ordSel && ordSel.tagName === 'SELECT') ordSel.value = dir ? col + '|' + dir : '';
+    else if (ordSel && window.ucamListboxValor) window.ucamListboxValor(ordSel, dir ? col + '|' + dir : '');
   }
 
   // ORDENAR NO TELEFONE (data-table.json, responsividade.ordenacao). Empilhada, a
@@ -2273,17 +2274,20 @@ export const estadoScript = `
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ordenarMontar); else ordenarMontar();
   document.addEventListener('change', function (e) {
-    var sel = e.target.closest && e.target.closest('.ucam-table__ordenar select');
+    var sel = e.target.closest && e.target.closest('.ucam-table__ordenar select, .ucam-table__ordenar [data-listbox]');
     if (!sel) return;
     var tabela = sel.closest('.ucam-table-wrap').querySelector('.ucam-table');
-    var partes = sel.value.split('|');
+    // Convertido em listbox, o valor vem de data-valor e o rótulo do gatilho.
+    var valorOrd = sel.tagName === 'SELECT' ? sel.value : (sel.getAttribute('data-valor') || '');
+    var textoOrd = sel.tagName === 'SELECT' ? sel.options[sel.selectedIndex].textContent : sel.textContent.trim();
+    var partes = valorOrd.split('|');
     var ths = tabela.tHead.rows[0].children;
     var th = null;
     for (var i = 0; i < ths.length; i++) if (ths[i].getAttribute('data-col') === (partes[0] || '')) th = ths[i];
     if (!th) th = Array.prototype.filter.call(ths, function (x) { return x.getAttribute('aria-sort') && x.getAttribute('aria-sort') !== 'none'; })[0];
     if (!th) return;
     colunaOrdenar(tabela, th, partes[1] || null);
-    anuncia(sel.value ? 'Ordenado por ' + sel.options[sel.selectedIndex].textContent + '.' : 'Ordem original.', sel);
+    anuncia(valorOrd ? 'Ordenado por ' + textoOrd + '.' : 'Ordem original.', sel);
   });
 
   // Reordena as colunas e escreve o sticky. Peso: selecao 0, fixa no inicio
@@ -3646,9 +3650,9 @@ ${FN_ANUNCIA}
         else semErroDeCampo(inp);
       });
       if (faltou) { faltou.focus(); return; }
-      var formaL = trL.querySelector('select');
+      var formaL = trL.querySelector('select, [data-listbox]');
       var valorL = entradas[2].value.trim();
-      var textos = [null, entradas[0].value.trim(), entradas[1].value.trim(), formaL.options[formaL.selectedIndex].text, '+ R$ ' + valorL];
+      var textos = [null, entradas[0].value.trim(), entradas[1].value.trim(), (formaL.tagName === 'SELECT' ? formaL.options[formaL.selectedIndex].text : formaL.textContent.trim()), '+ R$ ' + valorL];
       Array.prototype.forEach.call(trL.cells, function (c, k) { if (k) c.textContent = textos[k]; });
       var modeloL = trL.parentNode.rows[1];
       if (modeloL && modeloL.cells[4]) trL.cells[4].className = modeloL.cells[4].className;

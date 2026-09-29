@@ -255,5 +255,88 @@ export const listboxScript = `
     else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (atual) escolher(gatilho, atual); }
     else if (e.key === 'Tab') { fechar(false); }
   });
+
+  /* O SELECT QUE NASCE DEPOIS (28/09/2026: "os combos que abrem em select
+   * estão sem estilo"). A conversão do build só alcança o <select> escrito
+   * na marcação; o que um script cria depois — o "Ordenar por" da tabela
+   * empilhada, a Forma de pagamento do lançamento novo — abria a lista
+   * NATIVA do sistema operacional, sem estilo nenhum. Um observador converte
+   * todo select.ucam-select que entra no documento, com a MESMA marcação da
+   * conversão do build (gatilho + listbox), e window.ucamListbox fica para
+   * quem quiser converter na hora. Sem rótulo visível (aria-label), o nome
+   * vai num span oculto e o gatilho é rotulado por ele e pelo próprio valor. */
+  var nConv = 0;
+  function converter(sel) {
+    if (!sel || !sel.parentNode || sel.hasAttribute('data-sem-listbox')) return null;
+    var id = sel.id || ('lbv-' + (++nConv));
+    var wrap = document.createElement('span');
+    wrap.className = 'ucam-select-wrap';
+    var g = document.createElement('button');
+    g.type = 'button';
+    g.className = sel.className.replace('ucam-select', 'ucam-select ucam-select-trigger');
+    g.id = id;
+    g.setAttribute('data-listbox', '');
+    g.setAttribute('aria-haspopup', 'listbox');
+    g.setAttribute('aria-expanded', 'false');
+    g.setAttribute('aria-controls', id + '-lb');
+    Array.prototype.forEach.call(sel.attributes, function (a) {
+      if (a.name.indexOf('data-') === 0 || a.name === 'aria-describedby' || a.name === 'aria-invalid' || a.name === 'aria-required') g.setAttribute(a.name, a.value);
+    });
+    if (sel.disabled) g.disabled = true;
+    if (sel.required) g.setAttribute('aria-required', 'true');
+    var nome = sel.getAttribute('aria-label');
+    if (nome) {
+      var oculto = document.createElement('span');
+      oculto.className = 'ucam-sr-only';
+      oculto.id = id + '-nome';
+      oculto.textContent = nome;
+      wrap.appendChild(oculto);
+      g.setAttribute('aria-labelledby', oculto.id + ' ' + id);
+    }
+    var lb = document.createElement('ul');
+    lb.className = 'ucam-listbox';
+    lb.id = id + '-lb';
+    lb.setAttribute('role', 'listbox');
+    lb.setAttribute('aria-labelledby', nome ? id + '-nome' : id);
+    lb.hidden = true;
+    var escolhida = sel.options[sel.selectedIndex] || sel.options[0];
+    Array.prototype.forEach.call(sel.options, function (o, i) {
+      var li = document.createElement('li');
+      li.className = 'ucam-option';
+      li.setAttribute('role', 'option');
+      li.id = id + '-o' + i;
+      li.setAttribute('aria-selected', o === escolhida ? 'true' : 'false');
+      li.setAttribute('data-valor', o.value);
+      if (o.disabled) li.setAttribute('aria-disabled', 'true');
+      li.textContent = o.textContent;
+      lb.appendChild(li);
+    });
+    g.textContent = escolhida ? escolhida.textContent : '';
+    if (escolhida) g.setAttribute('data-valor', escolhida.value);
+    wrap.appendChild(g);
+    wrap.appendChild(lb);
+    sel.parentNode.replaceChild(wrap, sel);
+    return g;
+  }
+  window.ucamListbox = converter;
+  // Marca uma opção por valor sem disparar change (quem sincroniza de fora).
+  window.ucamListboxValor = function (g, valor) {
+    var lb = g && document.getElementById(g.getAttribute('aria-controls'));
+    if (!lb) return;
+    Array.prototype.forEach.call(lb.querySelectorAll('.ucam-option'), function (o) {
+      var sim = o.getAttribute('data-valor') === valor;
+      o.setAttribute('aria-selected', sim ? 'true' : 'false');
+      if (sim) { g.textContent = o.textContent; g.setAttribute('data-valor', valor); }
+    });
+  };
+  function varrer(no) {
+    if (!no || no.nodeType !== 1) return;
+    if (no.matches('select.ucam-select')) converter(no);
+    Array.prototype.forEach.call(no.querySelectorAll('select.ucam-select'), converter);
+  }
+  varrer(document.body);
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, varrer); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
 })();
 `.trim();

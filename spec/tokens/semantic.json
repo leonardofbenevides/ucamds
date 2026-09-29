@@ -584,6 +584,22 @@
       "$value": "56rem",
       "$description": "A partir daqui o bloco de divisão LARGO (.ucam-split--largo) põe o painel de apoio ao lado. Existe para o conteúdo que tem um controle por linha e não encolhe: a tabela de decisões da isenção, com o seletor Isentar · Não isentar · Pedir documento, mede 571px no mínimo. Com duas-colunas (52rem) ela ficava em 533px a 1280 e rolava na horizontal, cortando o próprio controle da decisão (medido em 28/09/2026). 56rem = 36rem de conteúdo + 18rem do painel padrão + o vão; abaixo, empilha. Painel mais largo que o padrão devolve a rolagem logo acima do limiar e a tabela volta à largura inteira."
     },
+    "formulario-2col": {
+      "$value": "35rem",
+      "$description": "Largura da GRADE DE FORMULÁRIO (.ucam-form-grid é o contêiner 'formulario') a partir da qual cabem duas trilhas de campo. A trilha mínima é 17rem — o rótulo mais longo em uso ('Setor responsável', 'Prazo de resposta') e um select de nome de setor sem reticência — e o vão é inline-md (1rem): 2 × 17 + 1 = 35rem. A grade conta as trilhas sozinha (auto-fill); o papel serve às regras que dependem de quantas trilhas há. Entrou em 28/09/2026 com a ADR da grade de formulário, quando a auditoria mediu formulários usando 347px de um cartão de 1547."
+    },
+    "formulario-3col": {
+      "$value": "53rem",
+      "$description": "Três trilhas de 17rem e dois vãos de 1rem. A partir daqui o campo largo (.ucam-field--largo) ocupa duas trilhas e a textarea fica em 1 / span 2 (~48rem, a medida de leitura do corpo) em vez da linha inteira."
+    },
+    "formulario-4col": {
+      "$value": "71rem",
+      "$description": "Quatro trilhas de 17rem e três vãos. É o máximo: acima daqui as trilhas crescem até 30rem (o teto do controle) e a grade para — 4 × 30 + 3 = 123rem —, em vez de abrir uma quinta coluna que separaria o fim da linha do começo da próxima."
+    },
+    "grade-quatro-em-fileira": {
+      "$value": "70rem",
+      "$description": "Largura do CORPO a partir da qual uma grade de quatro cartões (.ucam-grid, trilha mínima de 16rem) cabe numa fileira: 4 × 16rem + 3 vãos de inset-md + o recuo do corpo. Abaixo, a grade de quatro vai a 2 + 2 — nunca 3 + 1, o cartão órfão que o catálogo de relatórios mostrava a 768 (28/09/2026)."
+    },
     "formulario-em-fileira": {
       "$value": "60rem",
       "$description": "Largura do CORPO (.ucam-corpo) a partir da qual uma fileira de formulário de quatro campos cabe numa linha: a coluna do CPF (14ch mais o recuo), três de no mínimo 14rem, os vãos e o recuo do cartão. Abaixo, a fileira que declara .ucam-form-row--quebra passa a duas colunas por linha, em vez de estourar o cartão. Entrou em 25/09/2026, quando o Novo usuário passou de duas colunas de 22rem — metade de um cartão de 1500px vazio — a uma fileira de quatro."

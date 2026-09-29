@@ -278,6 +278,10 @@
   --ucam-viewport-nav-fixa: 64rem;
   --ucam-container-duas-colunas: 52rem;
   --ucam-container-duas-colunas-largo: 56rem;
+  --ucam-container-formulario-2col: 35rem;
+  --ucam-container-formulario-3col: 53rem;
+  --ucam-container-formulario-4col: 71rem;
+  --ucam-container-grade-quatro-em-fileira: 70rem;
   --ucam-container-formulario-em-fileira: 60rem;
   --ucam-container-tabela-empilhada: 30rem;
   --ucam-container-indicadores-empilhados: 20rem;

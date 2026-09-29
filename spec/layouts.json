@@ -235,7 +235,7 @@
       "classe": "ucam-grid",
       "papel": "Cartões que se acomodam sozinhos conforme a largura.",
       "quando": "Grade de módulos do portal, cartões de resumo, atalhos.",
-      "decisao": "auto-fill, não auto-fit. Com auto-fit uma grade de dois itens estica os dois até a largura da tela, e a grade de módulos ficaria com dois cartões gigantes na primeira linha.",
+      "decisao": "auto-fill, não auto-fit. Com auto-fit uma grade de dois itens estica os dois até a largura da tela, e a grade de módulos ficaria com dois cartões gigantes na primeira linha. EQUILIBRADA pela contagem desde 28/09/2026 (ADR-055): --ucam-grid-max limita as colunas pela conta dentro do minmax, e a folha o põe pela quantidade de itens — 2 → 2, 4 → 4 ou 2 + 2 (nunca 3 + 1; abaixo de container.grade-quatro-em-fileira), 6 e 9 → 3 por linha, 7 e 8 → 4. Acaba com 5 + 1, 4 + 2 e trilhas vazias.",
       "variantes": [
         {
           "classe": "ucam-grid--sm",
@@ -251,16 +251,49 @@
           "nome": "--ucam-grid-min",
           "default": "16rem",
           "descricao": "Largura mínima da coluna. É ela que decide quantas colunas cabem."
+        },
+        {
+          "nome": "--ucam-grid-max",
+          "default": "99 (sem teto)",
+          "descricao": "Teto de colunas. A folha declara pela contagem de itens; a tela só declara quando a grade tem um número conhecido que a contagem não cobre."
         }
       ],
       "exemplo": "<div class=\"ucam-grid\">\n  <a class=\"ucam-card\" href=\"…\">…</a>\n  <a class=\"ucam-card\" href=\"…\">…</a>\n</div>"
+    },
+    {
+      "id": "form-grid",
+      "nome": "Grade de formulário",
+      "classe": "ucam-form-grid",
+      "papel": "Campos de formulário numa grade que responde à largura: 1, 2, 3 ou 4 trilhas, contadas sozinhas pela largura do contêiner (a grade é o contêiner \"formulario\").",
+      "quando": "Todo formulário de cadastro e de filtros com mais de dois campos. Diálogo, painel de apoio e celular caem sozinhos para uma trilha.",
+      "decisao": "ADR-055. Trilha mínima de 17rem, no máximo quatro, cada trilha até 30rem (o teto do controle): 1 trilha até container.formulario-2col (35rem), 2 até formulario-3col (53rem), 3 até formulario-4col (71rem), 4 acima. Cada campo é subgrade de três fileiras (rótulo, controle, apoio): rótulo com rótulo e controle com controle alinham mesmo quando um tem apoio e o vizinho não. Substitui a .ucam-form-row com --ucam-cols no style como jeito normal de montar formulário — a fileira fica para o GRUPO.",
+      "variantes": [
+        {
+          "classe": "ucam-field--largo",
+          "quando": "Campo que ocupa duas trilhas a partir de três: autocompletar de pessoa, nome completo, unidade. Preenche as duas (sem o teto de 30rem)."
+        },
+        {
+          "classe": "ucam-field--linha",
+          "quando": "Ocupa a linha inteira: grupo de caixas, grade de escolha, grupo de interruptores. Todo filho da grade que não é campo nem grupo (aviso, cluster, anexos) já ocupa a linha."
+        },
+        {
+          "classe": "ucam-form-row (dentro da grade)",
+          "quando": "GRUPO de campos curtos que andam juntos — De/Até, Referência + Vencimento + Desconto, CPF + Nome. Linha inteira com uma ou duas trilhas; uma trilha com três ou mais (duas com --largo). Colunas pela medida do dado: --ucam-cols: max-content max-content."
+        },
+        {
+          "classe": "textarea / compositor",
+          "quando": "Linha inteira com uma ou duas trilhas; 1 / span 2 com três ou mais (~48rem, a medida de leitura). Fora da grade, a textarea para em 48rem."
+        }
+      ],
+      "variaveis": [],
+      "exemplo": "<div class=\"ucam-card\">\n  <div class=\"ucam-form-grid\">\n    <div class=\"ucam-field ucam-field--cpf\">…CPF…</div>\n    <div class=\"ucam-field ucam-field--largo\">…Nome completo…</div>\n    <div class=\"ucam-field\">…E-mail…</div>\n    <div class=\"ucam-form-row\" style=\"--ucam-cols: max-content max-content\">\n      <div class=\"ucam-field ucam-field--data\">…De…</div>\n      <div class=\"ucam-field ucam-field--data\">…Até…</div>\n    </div>\n    <div class=\"ucam-field\">…Descrição (textarea)…</div>\n  </div>\n</div>"
     },
     {
       "id": "split",
       "nome": "Divide",
       "classe": "ucam-split",
       "papel": "Conteúdo principal com painel de apoio ao lado.",
-      "quando": "Formulário longo com resumo, detalhe de requerimento com histórico, cálculo com memória de cálculo.",
+      "quando": "Formulário longo com resumo, detalhe de requerimento com histórico, cálculo com memória de cálculo. Painel de apoio só quando há um DERIVADO VIVO ou contexto do que se preenche (prévia do requerimento, \"Sobre este relatório\", a linha escolhida); formulário de cadastro puro não leva painel e usa a grade de formulário (ADR-055).",
       "substitui": ".ucam-form-layout, que resolvia só o caso do formulário — o arranjo é o mesmo em detalhe de requerimento, análise e cálculo de mensalidade.",
       "decisao": "Uma coluna enquanto o CONTÊINER (.ucam-corpo, contêiner nomeado 'corpo') tem menos de container.duas-colunas (52rem): painel de apoio espremido em 12rem não apoia nada, e tabela em 24rem esconde a última coluna. Pergunta ao contêiner, não à janela, porque a partir de nav-fixa a coluna de navegação leva 20rem que a janela não desconta — a 1024px o bloco punha o apoio ao lado num painel de 666px (ADR-028).",
       "variantes": [
@@ -301,7 +334,13 @@
           "descricao": "Uma linha de apoio abaixo do título."
         }
       ],
-      "exemplo": "<section class=\"ucam-section\">\n  <h2 class=\"ucam-section__title\">Dados do requerente</h2>\n  <p class=\"ucam-section__hint\">Preenchidos a partir da matrícula.</p>\n  …\n</section>"
+      "exemplo": "<section class=\"ucam-section\">\n  <h2 class=\"ucam-section__title\">Dados do requerente</h2>\n  <p class=\"ucam-section__hint\">Preenchidos a partir da matrícula.</p>\n  …\n</section>",
+      "variantes": [
+        {
+          "classe": "ucam-section--lateral",
+          "quando": "Formulário longo feito de seções curtas (cadastro de natureza, integrante, usuário). Com o corpo acima de container.duas-colunas, título e descrição vão para uma coluna de até 16rem e o cartão ocupa o resto — o padrão de página de configuração. Abaixo, empilha. (ADR-055)"
+        }
+      ]
     },
     {
       "id": "content",
@@ -402,6 +441,11 @@
       "faca": "Skip-link como primeiro elemento focável, escondido por deslocamento.",
       "evite": "display:none, visibility:hidden, ou nenhum skip-link.",
       "porque": "As duas primeiras tiram o elemento da ordem de foco. Sem ele o teclado atravessa os mais de cem itens do menu do SIGFIN a cada página."
+    },
+    {
+      "faca": "Ações do formulário dentro do contêiner do formulário, ao fim do cartão ou numa barra fixa (.ucam-form-actions--sticky) em página longa.",
+      "evite": "Ações no rodapé do corpo, a 700px do último campo.",
+      "porque": "A auditoria de 28/09/2026 mediu \"Calcular\" em x=1367 a 1920 com os campos acabando em x=803: o olho procura a ação ao lado do que acabou de preencher (ADR-055)."
     }
   ]
 }
