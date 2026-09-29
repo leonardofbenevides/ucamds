@@ -1866,7 +1866,9 @@ ${selectChevronCss}
   inset-inline-start: 0.625rem;
   inset-block-start: 50%;
   translate: 0 -50%;
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
   pointer-events: none;
 }
 .ucam-field--data .ucam-date-field .ucam-input {
@@ -2929,7 +2931,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * das duas referências de tabela densa que o projeto adotou, e é a razão de o
  * ícone existir: ele não informa a ordem, informa que HÁ ordem a pedir. */
 .ucam-table th > button .ic {
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
   transition: color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
 }
 
@@ -5522,7 +5526,9 @@ ${acima('nav-fixa')} {
 
 .ucam-busca__item .ic {
   flex: none;
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
 }
 
 /* O CORRENTE é o mesmo destaque do hover, e de propósito: o teclado e o
@@ -10524,7 +10530,9 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 
 .ucam-descricao__icone {
   flex: none;
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
 }
 
 /* O par escondido atrás do "mostrar todos". O atributo hidden perde para o
@@ -10731,14 +10739,19 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 }
 
 .ucam-timeline__seta {
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
   flex: none;
 }
 
 .ucam-timeline__corpo {
   margin: 0.375rem 0 0;
   font-size: var(--ucam-typography-body-sm-font-size);
-  color: var(--ucam-color-text-secondary);
+  /* O corpo É a mensagem — o que se veio ler. Em tinta secundária ele lia
+   * como rodapé do próprio evento (29/09/2026, "telas muito cinzas"); quem
+   * fica secundário é o carimbo: autor, papel e hora. */
+  color: var(--ucam-color-text-primary);
 }
 
 /* MENSAGEM É FALA CITADA, NÃO BALÃO (ADR-036).
@@ -10974,7 +10987,7 @@ figure:has(> .ucam-citacao) { margin: 0; }
   min-block-size: var(--ucam-size-contagem);
 }
 
-.ucam-timeline__campo .ic { color: var(--ucam-color-text-placeholder); }
+.ucam-timeline__campo .ic { color: var(--ucam-color-text-secondary); }
 
 .ucam-timeline__novo {
   display: flex;

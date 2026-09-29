@@ -61,6 +61,10 @@
     "200": {
       "$value": "#DEE5EE"
     },
+    "250": {
+      "$value": "#D2DBE7",
+      "$description": "Meio do 200 e do 300 em OKLCH (29/09/2026): o fio de cartão e de tabela, um meio degrau acima do 200 depois do retorno \"as telas estão muito cinzas\" — o limite do cartão lia lavado — sem chegar ao 300, que é o contorno de CONTROLE."
+    },
     "300": {
       "$value": "#C6D2E0"
     },
@@ -95,6 +99,10 @@
     "600": {
       "$value": "#4D535B",
       "$description": "Texto de apoio. 7,77:1 sobre branco, 7,15:1 sobre o chão (neutral.100), 6,12:1 sobre neutral.200. AAA sobre as duas superfícies em que o apoio aparece."
+    },
+    "700": {
+      "$value": "#3B4048",
+      "$description": "Entre o 600 e o 900, em OKLCH no matiz do 600 (29/09/2026). É a tinta secundária desde o pedido \"as telas estão muito cinzas\": 10,43:1 sobre o branco."
     },
     "900": {
       "$value": "#15181E",

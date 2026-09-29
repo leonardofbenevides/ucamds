@@ -29,6 +29,7 @@
   --ucam-neutral-100: #F2F6F9;
   --ucam-neutral-150: #E6ECF3;
   --ucam-neutral-200: #DEE5EE;
+  --ucam-neutral-250: #D2DBE7;
   --ucam-neutral-300: #C6D2E0;
   --ucam-neutral-400: #7A8BA4;
   --ucam-neutral-500: #62758F;
@@ -38,6 +39,7 @@
   --ucam-neutral-800: #1B263A;
   --ucam-neutral-900: #0E162A;
   --ucam-grafite-600: #4D535B;
+  --ucam-grafite-700: #3B4048;
   --ucam-grafite-900: #15181E;
   --ucam-green-100: #DCF5E7;
   --ucam-green-400: #40A177;
@@ -154,7 +156,7 @@
   --ucam-color-surface-brand: #8D293A;
   --ucam-color-surface-brand-raised: #BC4657;
   --ucam-color-text-primary: #15181E;
-  --ucam-color-text-secondary: #4D535B;
+  --ucam-color-text-secondary: #3B4048;
   --ucam-color-text-placeholder: #62758F;
   --ucam-color-text-disabled: #62758F;
   --ucam-color-text-on-brand: #FFFFFF;
@@ -200,7 +202,7 @@
   --ucam-color-feedback-info-foreground: #0E4174;
   --ucam-color-feedback-info-border: #1A6FC4;
   --ucam-color-feedback-info-graphic: #1A6FC4;
-  --ucam-color-border-subtle: #DEE5EE;
+  --ucam-color-border-subtle: #D2DBE7;
   --ucam-color-border-default: #C6D2E0;
   --ucam-color-border-strong: #62758F;
   --ucam-color-border-focus: #62758F;

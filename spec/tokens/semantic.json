@@ -55,8 +55,8 @@
         "$description": "Texto de leitura. 17,78:1 sobre surface.default e 16,36:1 sobre surface.chao. Grafite, não slate, desde 14/09/2026 (ADR-034): o neutral.900 dava 18:1, mas com 0,04 de croma o texto lia azul-marinho sobre um chão também azulado, e a tela perdia nitidez sem perder contraste numérico."
       },
       "secondary": {
-        "$value": "{grafite.600}",
-        "$description": "Rótulo, legenda, apoio, ícone. 7,77:1 sobre surface.default, 7,15:1 sobre surface.chao e 6,91:1 sobre surface.sunken. Era neutral.550 (5,70:1) desde 10/09/2026 — o pedido de 14/09 foi \"mais contraste nas telas\", e o apoio era o texto que mais pesava na queixa: rótulo de campo, meta de indicador e ícone de navegação saem todos daqui. A hierarquia com o primário continua de 17,8 para 7,8, mais que o dobro, e o peso segue fazendo o resto."
+        "$value": "{grafite.700}",
+        "$description": "Rótulo, legenda, apoio, ícone. 10,43:1 sobre surface.default. Era grafite.600 (7,77:1): em 29/09/2026 a queixa foi \"as telas estão muito cinzas\", e a medida explicou — de 55% a 80% do texto visível de cada tela saía nesta tinta, então o cinza não era claro, era MAIORIA. Um degrau mais escuro devolve peso ao que se lê e mantém a hierarquia (a primária segue 1,7 vez acima, e tamanho e peso fazem o resto). Antes disso: neutral.550 (5,70:1) até 14/09."
       },
       "placeholder": {
         "$value": "{neutral.500}",
@@ -247,8 +247,8 @@
     },
     "border": {
       "subtle": {
-        "$value": "{neutral.200}",
-        "$description": "FIO: divisor de linha de tabela, borda de card, separador de grupo, filete de faixa. Subiu de neutral.150 para neutral.200 em 14/09/2026 (ADR-034): com o conteúdo assentado no chão cinza, o 150 dava 1,09:1 contra o chão e o cartão branco perdia o limite. Quem contorna CONTROLE continua sendo border.default."
+        "$value": "{neutral.250}",
+        "$description": "FIO: divisor de linha de tabela, borda de card, separador de grupo, filete de faixa. Subiu de neutral.150 para neutral.200 em 14/09/2026 (ADR-034): com o conteúdo assentado no chão cinza, o 150 dava 1,09:1 contra o chão e o cartão branco perdia o limite. Quem contorna CONTROLE continua sendo border.default. Subiu de neutral.200 para neutral.250 em 29/09/2026 (\"telas muito cinzas\"): o limite do cartão sobre o branco lia lavado; o 250 fica meio degrau abaixo do 300 de controle, para cartão e campo não se confundirem."
       },
       "default": {
         "$value": "{neutral.300}",
