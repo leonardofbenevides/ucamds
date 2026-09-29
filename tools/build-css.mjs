@@ -11056,26 +11056,41 @@ figure:has(> .ucam-citacao) { margin: 0; }
  * parte. O valor em tabular para as três colunas de dígito alinharem quando
  * a fileira empilha. */
 .ucam-progress__series {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ucam-space-inline-xs) var(--ucam-space-inline-md);
+  /* A LEGENDA É UMA TABELINHA (28/09/2026, revisão de gráficos): ponto e
+   * nome, valor e parte, em colunas. Em fileira que quebrava, os valores não
+   * alinhavam e a parte de cada forma (32%, 51%, 17%) só existia no
+   * aria-label — quem vê tinha de estimar pelo comprimento do segmento. O
+   * valor é o número exato (dataviz.json: o desenho mostra a forma) e a
+   * parte é o que a barra desenha; os dois em dígitos tabulares, à direita. */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  column-gap: var(--ucam-space-inline-sm);
+  row-gap: var(--ucam-space-inline-xs);
   margin: 0.5rem 0 0;
   padding: 0;
   list-style: none;
-  font-size: var(--ucam-typography-caption-font-size);
-  line-height: var(--ucam-typography-caption-line-height);
+  font-size: var(--ucam-typography-body-sm-font-size);
   color: var(--ucam-color-text-secondary);
 }
 .ucam-progress__series > li {
-  display: inline-flex;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
-  gap: var(--ucam-space-inline-xs);
-  min-block-size: 1rem;
+  min-block-size: 1.25rem;
 }
 .ucam-progress__series b {
   font-weight: var(--ucam-typography-label-font-weight);
   color: var(--ucam-color-text-primary);
   font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+/* O nome encolhe com a coluna e quebra, sem empurrar valor e parte. */
+.ucam-progress__nome { min-inline-size: 0; overflow-wrap: anywhere; color: var(--ucam-color-text-primary); }
+.ucam-progress__parte {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  min-inline-size: 3.5ch;
 }
 .ucam-progress__ponto {
   flex: none;

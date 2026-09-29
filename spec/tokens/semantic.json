@@ -267,30 +267,30 @@
       }
     },
     "chart": {
-      "$description": "Identidade de SÉRIE em gráfico. Seis slots, atribuídos em ordem fixa e NUNCA reciclados: a sétima série não ganha cor nova, ela vira \"Outros\" ou o gráfico vira pequenos múltiplos. A ordem não é estética — é o mecanismo que mantém os pares VIZINHOS separáveis sob daltonismo, e trocá-la exige rodar tools/check-daltonismo.mjs, que roda no build e reprova distância abaixo de 0,100. O que a ordem NÃO resolve, e nenhuma ordem resolve, é o par não-vizinho: seis matizes não cabem separáveis duas a duas nas três dicromacias, e a partir de quatro séries em cena existe par confundível. Quem carrega a informação sem cor é a tabela equivalente que o contrato do chart obriga a estar sempre no DOM. Estes tokens são proibidos fora de visualização de dados, e as cores de feedback são proibidas aqui: verde não pode significar 'sucesso' num lugar e 'série 6' no outro.",
+      "$description": "Identidade de SÉRIE em gráfico. Refeita em 28/09/2026 pelo validador de paleta (faixa de luminosidade, croma mínimo, separação sob protanopia e deuteranopia, piso de visão normal de ΔE 15 entre vizinhas, contraste): azul, laranja, turquesa, fúcsia, índigo, oliva. Saíram o vinho da marca (é a cor da ação) e o ocre (é o âmbar de atenção). Seis slots, atribuídos em ordem fixa e NUNCA reciclados: a sétima série não ganha cor nova, ela vira \"Outros\" ou o gráfico vira pequenos múltiplos. A ordem não é estética — é o mecanismo que mantém os pares VIZINHOS separáveis sob daltonismo, e trocá-la exige rodar tools/check-daltonismo.mjs, que roda no build e reprova distância abaixo de 0,100. O que a ordem NÃO resolve, e nenhuma ordem resolve, é o par não-vizinho: seis matizes não cabem separáveis duas a duas nas três dicromacias, e a partir de quatro séries em cena existe par confundível. Quem carrega a informação sem cor é a tabela equivalente que o contrato do chart obriga a estar sempre no DOM. Estes tokens são proibidos fora de visualização de dados, e as cores de feedback são proibidas aqui: verde não pode significar 'sucesso' num lugar e 'série 6' no outro.",
       "series-1": {
-        "$value": "{wine.600}",
-        "$description": "Slot 1 — vinho. A primeira série é a cor da marca: o gráfico de uma série só sai bordô."
+        "$value": "{blue.550}",
+        "$description": "Slot 1 — azul. A primeira série NÃO é a marca: o vinho é a cor da ação e fica a ΔE 9 do vermelho de perigo (o portão da marca já avisava), e a barra \"Em caixa\" lia Dinheiro como botão ou alerta (28/09/2026)."
       },
       "series-2": {
-        "$value": "{blue.500}",
-        "$description": "Slot 2 — azul."
+        "$value": "{orange.700}",
+        "$description": "Slot 2 — laranja queimado. Azul, laranja e turquesa são o único trio que passa em TODOS os pares nas duas visões: pizza, dispersão e barra de três partes cabem nele."
       },
       "series-3": {
-        "$value": "{ochre.500}",
-        "$description": "Slot 3 — ocre."
+        "$value": "{teal.500}",
+        "$description": "Slot 3 — turquesa."
       },
       "series-4": {
-        "$value": "{violet.500}",
-        "$description": "Slot 4 — violeta. Vem depois da turquesa, e não antes: violeta e oliva vizinhas reprovam sob tritanopia (d=0,080 no claro e 0,029 no escuro, contra o mínimo de 0,100 do portão da ADR-016), e a turquesa entre as duas resolve. Azul e turquesa ficam a três slots de distância, longe o bastante."
+        "$value": "{fuchsia.700}",
+        "$description": "Slot 4 — fúcsia."
       },
       "series-5": {
-        "$value": "{teal.500}",
-        "$description": "Slot 5 — turquesa. Fica longe do azul na ordem de propósito: encostados, o par reprova no piso de visão normal."
+        "$value": "{indigo.450}",
+        "$description": "Slot 5 — índigo. Longe do azul na ordem: encostados, o par reprova."
       },
       "series-6": {
-        "$value": "{olive.500}",
-        "$description": "Slot 6 — oliva."
+        "$value": "{olive.600}",
+        "$description": "Slot 6 — oliva. Não encosta mais na turquesa: vizinhas, reprovavam o piso de visão normal (ΔE 11,4 < 15)."
       }
     },
     "categoria": {

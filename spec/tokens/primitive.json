@@ -199,8 +199,16 @@
       "$value": "#4A8FDA",
       "$description": "Só gráfico, no tema escuro: é a série 2 sobre a superfície escura. Não é degrau de link nem de feedback — o azul de informação continua sendo 500/600."
     },
+    "450": {
+      "$value": "#2275CB",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 1 no escuro."
+    },
     "500": {
       "$value": "#1A6FC4"
+    },
+    "550": {
+      "$value": "#015DAE",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 1 no claro."
     },
     "600": {
       "$value": "#14589E"
@@ -220,8 +228,16 @@
       "$value": "#EA6A0A",
       "$description": "O laranja da NOTIFICAÇÃO (color.notificacao). Vivo de propósito: é o único ponto de cor que diz \"chegou algo para você\", e precisa saltar tanto da faixa colorida de cada app quanto do branco da navegação. 3,34:1 contra branco, acima do piso de 3:1 de objeto gráfico (WCAG 1.4.11). Número escrito sobre ele usa tinta escura (neutral.900, 5,1:1), porque branco sobre este laranja dá 3,3:1 e o número tem 12px."
     },
+    "600": {
+      "$value": "#B85207",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 2 no escuro. Fica a ΔE 11,4 do laranja da notificação — aceito porque a notificação é ponto de interface e nunca entra em gráfico."
+    },
+    "700": {
+      "$value": "#964101",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 2 no claro. Queimado, longe do laranja da notificação (ΔE 19,6)."
+    },
     "$type": "color",
-    "$description": "Notificação e nada mais. Não é aviso (amber), não é erro (red) e não é série de gráfico (ochre, que foi puxado para o amarelo justamente para não cair no laranja). Nunca encosta no vinho: o ponto e o selo andam sempre dentro de um anel de 2px da cor do fundo em que pousam."
+    "$description": "Laranja VIVO (500) é da notificação e nada mais: não é aviso (amber) nem erro (red). Os degraus 600 e 700, queimados, são a série 2 de gráfico desde 28/09/2026 — o ocre saiu da série por ser o âmbar de atenção. Nunca encosta no vinho: o ponto e o selo andam sempre dentro de um anel de 2px da cor do fundo em que pousam."
   },
   "ochre": {
     "400": {
@@ -257,8 +273,16 @@
     "400": {
       "$value": "#6D9A38"
     },
+    "450": {
+      "$value": "#528529",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 6 no escuro."
+    },
     "500": {
       "$value": "#4A7C1F"
+    },
+    "600": {
+      "$value": "#3C6D07",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 6 no claro."
     },
     "$type": "color",
     "$description": "Série de gráfico, slot 6. Distinto da rampa green de propósito: verde de feedback significa sucesso e não pode ser gasto como identidade de série."
@@ -266,6 +290,10 @@
   "indigo": {
     "400": {
       "$value": "#818CF8"
+    },
+    "450": {
+      "$value": "#7982FE",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 5 nos dois temas (o 400 sai da faixa de luminosidade do escuro, L 0,68)."
     },
     "600": {
       "$value": "#4F46E5"
@@ -279,6 +307,14 @@
     },
     "600": {
       "$value": "#C026D3"
+    },
+    "650": {
+      "$value": "#B512C8",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 4 no escuro. 2,8:1 contra a superfície escura: a legenda e a tabela equivalente, obrigatórias em todo gráfico, são o alívio."
+    },
+    "700": {
+      "$value": "#9500A5",
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 4 no claro."
     },
     "$type": "color",
     "$description": "Paleta base do Tailwind CSS (fuchsia-400 e fuchsia-600), trazida em 27/09/2026 para as categorias dos apps que virão. Entrada da categoria comunicacao: a subpaleta usa só a matiz e o croma desta cor — a altura (L) é da receita, igual para todos os sistemas. O 600 é o degrau claro porque é o primeiro que passa 3:1 como traço de ícone sobre o branco."
