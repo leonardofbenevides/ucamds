@@ -57,7 +57,7 @@
     {
       "parte": "botao-calendario",
       "obrigatorio": false,
-      "descricao": "Abre o seletor. É um IconButton com nome acessível."
+      "descricao": "Na precisão de dia NÃO é botão: o ícone de calendário é decorativo, mora dentro do campo, no início (.ucam-date-field__icone), e o gatilho é o próprio campo — clique ou Alt+seta para baixo. Na precisão de mês do Trilho B segue sendo um IconButton com nome acessível, que abre o seletor nativo de mês."
     },
     {
       "parte": "erro",
@@ -150,11 +150,11 @@
     "requisitos": [
       "A dica de formato é persistente e ligada por aria-describedby — nunca placeholder, que some ao digitar.",
       "Digitação sempre disponível: seletor obrigatório inviabiliza datas distantes e prejudica quem usa só teclado.",
-      "O botão de calendário é IconButton com nome acessível Escolher data no calendário.",
+      "O campo anuncia o calendário por aria-haspopup=dialog e aria-expanded; o ícone dentro dele é decorativo. Onde ainda há botão (mês, no Trilho B), é IconButton com nome acessível.",
       "Data inválida gera mensagem dizendo o esperado: Data inválida. Use dd/mm/aaaa.",
       "Fora do intervalo diz o limite: A data precisa ser posterior a 01/09/2026.",
       "autocomplete=bday em data de nascimento (WCAG 1.3.5).",
-      "O seletor é um diálogo com retenção de foco e devolução do foco ao campo ao fechar."
+      "O seletor é um diálogo NÃO modal: um dia focável por vez, setas, PageUp/PageDown, Home/End, Enter escolhe, Esc fecha e devolve o foco ao campo; foco que sai do campo e do calendário o fecha. Dia fora de min/max é aria-disabled."
     ],
     "criterios_wcag": [
       "1.3.1",
@@ -187,6 +187,7 @@
   },
   "composicao": {
     "usa": [
+      "ucam-button",
       "ucam-field",
       "ucam-icon-button",
       "ucam-text-field"
@@ -271,7 +272,8 @@
     "trilho_a": {
       "contrato": "O mesmo .ucam-field do campo de texto, com o modificador de data. Dentro, .ucam-date-field com o ícone de calendário decorativo NO INÍCIO do campo (.ucam-date-field__icone) e o <input data-data aria-haspopup=\"dialog\">. O formato vai num .ucam-field__hint ligado por aria-describedby.",
       "raiz": ".ucam-field--data com .ucam-input",
-      "nota": "Desde 28/09/2026 o comportamento das telas (dataScript) dá máscara (8 dígitos viram dd/mm/aaaa), validação ao sair (\"Data inválida. Use dd/mm/aaaa.\") e o CALENDÁRIO DO DS: clicar no campo (ou Alt+seta para baixo) abre o popover .ucam-calendario — role=dialog não modal, um dia focável por vez, setas, PageUp/PageDown, Home/End, Enter escolhe, Esc fecha e devolve o foco, \"Hoje\" no pé, abre para cima quando falta espaço. O seletor nativo (showPicker) saiu: é do sistema operacional e não recebe estilo. Tab no campo não abre nada — quem chega pelo teclado digita. O Trilho B ainda usa o nativo e deve migrar para o mesmo popover."
-    }
+      "nota": "Desde 28/09/2026 o comportamento das telas (dataScript) dá máscara (8 dígitos viram dd/mm/aaaa), validação ao sair (\"Data inválida. Use dd/mm/aaaa.\") e o CALENDÁRIO DO DS: clicar no campo (ou Alt+seta para baixo) abre o popover .ucam-calendario — role=dialog não modal, um dia focável por vez, setas, PageUp/PageDown, Home/End, Enter escolhe, Esc fecha e devolve o foco, \"Hoje\" no pé, abre para cima quando falta espaço. O seletor nativo (showPicker) saiu: é do sistema operacional e não recebe estilo. Tab no campo não abre nada — quem chega pelo teclado digita."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/date-field/ucam-date-field.ts — desde 29/09/2026 abre o MESMO calendário do Trilho A na precisão de dia: ícone decorativo dentro do campo, no início; clique no campo (ou Alt+seta para baixo) abre o popover .ucam-calendario, role=dialog não modal, com o input em aria-haspopup=dialog, aria-expanded e aria-controls. Um dia focável por vez (roving tabindex), setas ±1/±7, PageUp/PageDown um mês, Home/End a semana, Enter/Espaço escolhem, Esc fecha e devolve o foco ao campo, clique fora e foco fora fecham sem roubar o foco, \"Hoje\" no pé, abre para cima quando falta altura embaixo. min e max chegam à grade: dia fora do intervalo fica aria-disabled — focável, para a seta não pular buracos, e não escolhível —, o calendário abre dentro do intervalo e \"Hoje\" se desabilita quando hoje está fora. Tab no campo não abre nada. A pele do popover é copiada da folha do Trilho A para o componente, porque quem usa só @ucam/ui não carrega aquela folha. Máscara, rascunho da digitação e modelo em ISO não mudaram. A precisão de MÊS continua no seletor nativo (type=month) por IconButton ao lado — o DS ainda não tem grade de meses —, e a de ano não tem seletor."
   }
 }

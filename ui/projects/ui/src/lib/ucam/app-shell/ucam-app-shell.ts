@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
@@ -6,6 +7,7 @@ import {
   DestroyRef,
   inject,
   input,
+  model,
   signal,
   ViewEncapsulation,
 } from '@angular/core';
@@ -13,6 +15,7 @@ import {
 import { UcamAvatar } from '../avatar/ucam-avatar';
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
 import { UcamIconButton } from '../icon-button/ucam-icon-button';
+import { UcamSelect, type UcamOption } from '../select/ucam-select';
 
 /**
  * Contrato: spec/components/app-shell.json
@@ -28,9 +31,24 @@ import { UcamIconButton } from '../icon-button/ucam-icon-button';
  * de referência. As partes obrigatórias do contrato estão todas aqui:
  * skip-link, região viva, faixa, marca, navegação, conta e main com id fixo.
  *
- * O QUE NÃO COBRE, e está dito no contrato em vez de fingido: os arranjos
- * `rail` e `lateral`, a busca global da faixa, o seletor de campus e o
- * lançador de sistemas. Entram na ordem em que as telas pedirem.
+ * 29/09/2026: entram os outros dois arranjos e o campus, porque as telas do
+ * Gerencial já pediam `shellLayout="lateral"` e `[contextOptions]` no código
+ * que o desenvolvedor copia — e o código não compilava.
+ *   · `lateral` APAGA a faixa: marca, campus, ações e conta descem para a
+ *     coluna, que vai do topo ao pé da janela; abaixo de 64rem uma fileira
+ *     rasa (a mobilebar) carrega o gatilho da navegação, senão o celular
+ *     ficaria sem menu.
+ *   · `rail` troca a faixa por uma coluna de módulos de 72px, em marca cheia.
+ *     Os módulos são da aplicação e entram pelo slot [ucamShellRail]; o nome
+ *     do sistema sobe para o alto da navegação. O campus NÃO aparece aqui —
+ *     é a dívida que o contrato declara para este arranjo.
+ *   · O campus é um select de verdade (ADR-033) quando há mais de uma
+ *     opção, e texto quando não há o que escolher: rótulo só para leitor de
+ *     tela na faixa, visível na coluna lateral.
+ *
+ * O QUE AINDA NÃO COBRE, e está dito no contrato em vez de fingido: a busca
+ * global da faixa, o lançador de sistemas, o menu da conta (signOut) e o
+ * grupo Favoritos. Entram na ordem em que as telas pedirem.
  *
  * A navegação é FIXA a partir de 64rem e SOBREPOSTA abaixo disso — a mesma
  * fronteira do Trilho A, e a mesma razão: em 1024px a coluna de 19,875rem
@@ -53,6 +71,8 @@ export interface UcamNavGroup {
 }
 
 export type UcamAppbarAppearance = 'brand' | 'light' | 'dark' | 'custom';
+/** O arranjo da moldura. Ver o comentário do topo e app-shell.json. */
+export type UcamShellLayout = 'appbar' | 'rail' | 'lateral';
 export type UcamSystemCategory =
   | 'academico'
   | 'financeiro'
@@ -66,14 +86,38 @@ export type UcamSystemCategory =
 @Component({
   selector: 'ucam-app-shell',
   exportAs: 'ucamAppShell',
-  imports: [UcamAvatar, UcamIcon, UcamIconButton],
+  imports: [NgTemplateOutlet, UcamAvatar, UcamIcon, UcamIconButton, UcamSelect],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: {
     class: 'block',
     '[style]': 'variaveis()',
     '[attr.data-sistema]': 'systemCategory()',
+    '[attr.data-layout]': 'shellLayout()',
   },
+  /* O select do campus NA FAIXA (29/09/2026). O gatilho do <ucam-select> é
+   * desenhado para superfície branca; sobre a faixa de marca ele seria uma
+   * pastilha branca no meio do bordô. A tinta sai da própria faixa, como o
+   * .ucam-select--faixa do Trilho A: fundo transparente, fio e chevron
+   * derivados de currentColor, altura do controle pequeno. */
+  styles: `
+    ucam-app-shell .ucam-campus--faixa [data-slot='select-trigger'] {
+      block-size: var(--ucam-size-control-sm);
+      max-inline-size: 14rem;
+      background: transparent;
+      color: inherit;
+      border-color: color-mix(in srgb, currentColor 30%, transparent);
+      font-size: var(--ucam-typography-body-sm-font-size);
+      font-weight: var(--ucam-typography-label-font-weight);
+    }
+    ucam-app-shell .ucam-campus--faixa [data-slot='select-trigger']:hover:not(:disabled) {
+      background: color-mix(in srgb, currentColor 10%, transparent);
+    }
+    ucam-app-shell .ucam-campus--faixa [data-slot='select-trigger'] ng-icon {
+      color: inherit;
+      opacity: 0.72;
+    }
+  `,
   template: `
     <!--
       SKIP-LINK, primeiro elemento focável do documento.
@@ -98,12 +142,48 @@ export type UcamSystemCategory =
     -->
     <p class="sr-only" role="status" aria-live="polite">{{ announcement() }}</p>
 
-    <div
-      class="grid grid-cols-1 lg:grid-cols-[var(--ucam-nav-width)_minmax(0,1fr)]"
-      [class.min-h-[100dvh]]="!embedded()"
-      [class.h-full]="embedded()"
-      [style.grid-template-rows]="'var(--ucam-appbar-height) minmax(0, 1fr)'"
-    >
+    <!--
+      PEÇAS QUE MUDAM DE LUGAR CONFORME O ARRANJO. Um <ng-content> só pode
+      aparecer uma vez: as ações da faixa e o campus são desenhados aqui e
+      postos onde o arranjo mandar — na faixa (appbar), no alto da coluna
+      (lateral) ou no rail. Projetar duas vezes perderia uma das cópias sem
+      aviso.
+    -->
+    <ng-template #acoes><ng-content select="[ucamShellAcoes]" /></ng-template>
+    <ng-template #campus let-visivel>
+      @if (context()) {
+        @if (trocaContexto()) {
+          <span class="ucam-campus min-w-0" [class]="visivel ? 'ucam-campus--nav block' : 'ucam-campus--faixa inline-flex'">
+            <ucam-select
+              [label]="contextLabel()"
+              [labelHidden]="!visivel"
+              [options]="contextOptions()!"
+              [value]="context() ?? ''"
+              [width]="visivel ? 'full' : 'content'"
+              (valueChange)="trocarContexto($event)"
+            />
+          </span>
+        } @else {
+          <!-- Uma opção só não é escolha: sem gatilho, que abriria uma lista
+               de um item e prometeria o que não tem. -->
+          <span
+            class="ucam-campus flex min-w-0 gap-[var(--ucam-space-inline-xs)]"
+            [class]="visivel ? 'ucam-campus--nav flex-col' : 'ucam-campus--faixa items-center'"
+          >
+            <span
+              [class]="visivel ? 'text-[length:var(--ucam-typography-caption-font-size)] text-[var(--ucam-color-text-secondary)]' : 'sr-only'"
+              >{{ contextLabel() }}</span
+            >
+            <span class="truncate text-[length:var(--ucam-typography-body-sm-font-size)] font-medium">{{
+              rotuloContexto()
+            }}</span>
+          </span>
+        }
+      }
+    </ng-template>
+
+    <div [class]="classesGrade()" [class.min-h-[100dvh]]="!embedded()" [class.h-full]="embedded()">
+      @if (shellLayout() === 'appbar') {
       <!--
         FAIXA. Elemento banner, grudada no alto, e atravessando as duas
         colunas: a marca fica acima da navegação, não ao lado dela.
@@ -156,13 +236,72 @@ export type UcamSystemCategory =
         </a>
 
         <span class="ms-auto"></span>
+        <!-- Campus antes das ações: é o contexto de TODA a tela, e mora ao
+             lado da conta, no grupo que responde "onde estou". -->
+        <ng-container [ngTemplateOutlet]="campus" [ngTemplateOutletContext]="{ $implicit: false }" />
         <!-- Ações da faixa: busca, notificações, lançador. A aplicação projeta. -->
-        <ng-content select="[ucamShellAcoes]" />
+        <ng-container [ngTemplateOutlet]="acoes" />
 
         @if (user(); as u) {
           <ucam-avatar [name]="u.name" [photoUrl]="u.photoUrl ?? null" size="sm" />
         }
       </header>
+      }
+
+      @if (shellLayout() === 'lateral') {
+        <!--
+          MOBILEBAR. Só abaixo de 64rem, e só neste arranjo: sem faixa, não há
+          onde morar o botão que abre a navegação sobreposta. Sem ela o
+          sistema inteiro ficaria sem menu no celular.
+        -->
+        <div
+          class="sticky top-0 z-[var(--ucam-z-faixa)] col-span-full flex h-14 items-center gap-[var(--ucam-space-inline-sm)] border-b border-[var(--ucam-color-border-subtle)] bg-[var(--ucam-color-surface-chrome)] px-[var(--ucam-space-inset-md)] lg:hidden"
+        >
+          <ucam-icon-button
+            icon="menu"
+            variant="ghost"
+            [label]="navAberta() ? 'Fechar navegação' : 'Abrir navegação'"
+            [attr.aria-expanded]="navAberta()"
+            [attr.aria-controls]="navId()"
+            (click)="alternaNav()"
+          />
+          <span class="truncate font-medium">{{ systemName() }}</span>
+        </div>
+      }
+
+      @if (shellLayout() === 'rail') {
+        <!--
+          RAIL. Coluna de MÓDULOS do parque, em marca cheia — um ícone por
+          sistema, não por seção deste. Os itens são da aplicação (slot
+          [ucamShellRail]) e cada um exige aria-label: 72px não comportam
+          rótulo. O gatilho da navegação é o primeiro filho e só aparece
+          abaixo de 64rem, onde a navegação do módulo vira painel.
+        -->
+        <nav
+          aria-label="Módulos"
+          class="sticky top-0 z-[var(--ucam-z-faixa)] flex w-[4.5rem] flex-col items-center gap-[var(--ucam-space-inline-xs)] bg-[var(--ucam-color-surface-brand)] py-[var(--ucam-space-inset-md)] text-[var(--ucam-color-text-on-action)]"
+          [class.h-[100dvh]]="!embedded()"
+          [class.h-full]="embedded()"
+        >
+          <ucam-icon-button
+            class="lg:hidden"
+            icon="menu"
+            variant="ghost"
+            [label]="navAberta() ? 'Fechar navegação' : 'Abrir navegação'"
+            [attr.aria-expanded]="navAberta()"
+            [attr.aria-controls]="navId()"
+            (click)="alternaNav()"
+          />
+          <div class="flex flex-col items-center gap-[var(--ucam-space-inline-xs)]">
+            <ng-content select="[ucamShellRail]" />
+          </div>
+          <span class="mt-auto"></span>
+          <ng-container [ngTemplateOutlet]="acoes" />
+          @if (user(); as u) {
+            <ucam-avatar [name]="u.name" [photoUrl]="u.photoUrl ?? null" size="sm" />
+          }
+        </nav>
+      }
 
       <!--
         NAVEGAÇÃO. Coluna da grade a partir de 64rem; abaixo disso ela sai do
@@ -183,9 +322,67 @@ export type UcamSystemCategory =
         [id]="navId()"
         [attr.aria-label]="'Navegação de ' + systemName()"
         [attr.inert]="!largura() && !navAberta() ? '' : null"
-        class="flex flex-col border-e border-[var(--ucam-color-border-subtle)] bg-[var(--ucam-color-surface-chrome)] max-lg:fixed max-lg:inset-y-0 max-lg:start-0 max-lg:z-[200] max-lg:w-[var(--ucam-nav-width)] max-lg:transition-transform lg:sticky lg:top-[var(--ucam-appbar-height)] lg:h-[calc(100dvh-var(--ucam-appbar-height))]"
+        class="flex flex-col border-e border-[var(--ucam-color-border-subtle)] bg-[var(--ucam-color-surface-chrome)] max-lg:fixed max-lg:inset-y-0 max-lg:start-0 max-lg:z-[200] max-lg:w-[var(--ucam-nav-width)] max-lg:transition-transform"
+        [class]="classesNav()"
         [class.max-lg:-translate-x-full]="!navAberta()"
       >
+        @if (shellLayout() === 'lateral') {
+          <!--
+            A MARCA NO ALTO DA COLUNA, no lugar da faixa que este arranjo não
+            emite: marquinha e nome do sistema, as ações da aplicação e, em
+            fileira própria, o campus com rótulo visível — o dado que decide
+            quais registros a tela mostra ganha o peso de um campo.
+          -->
+          <div
+            class="flex flex-col gap-[var(--ucam-space-stack-sm)] border-b border-[var(--ucam-color-border-subtle)] p-[var(--ucam-space-inset-md)]"
+          >
+            <div class="flex min-h-14 items-center gap-[var(--ucam-space-inline-sm)]">
+              <a
+                [href]="homeHref()"
+                class="inline-flex min-w-0 items-center gap-[var(--ucam-space-inline-sm)] rounded-[var(--ucam-radius-control-sm)] text-[var(--ucam-color-text-primary)] no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
+              >
+                @if (systemIcon()) {
+                  <span
+                    class="inline-flex size-[var(--ucam-size-control-lg)] shrink-0 items-center justify-center rounded-[var(--ucam-radius-control)] text-[var(--ucam-color-text-on-action)]"
+                    [style.background]="tintaSistema()"
+                    aria-hidden="true"
+                  >
+                    <ucam-icon [name]="systemIcon()!" />
+                  </span>
+                }
+                <span class="truncate font-medium">{{ systemName() }}</span>
+              </a>
+              <span class="ms-auto"></span>
+              <ng-container [ngTemplateOutlet]="acoes" />
+            </div>
+            <ng-container [ngTemplateOutlet]="campus" [ngTemplateOutletContext]="{ $implicit: true }" />
+          </div>
+        }
+
+        @if (shellLayout() === 'rail') {
+          <!-- SELETOR DE SISTEMA: sem faixa, o nome do sistema mora no alto do
+               menu que ele governa. Com faixa ele não existe — o nome já está
+               na marca, e repeti-lo é o defeito do SIGFIN. -->
+          <div
+            class="flex h-[3.75rem] shrink-0 items-center gap-[var(--ucam-space-inline-sm)] border-b border-[var(--ucam-color-border-subtle)] px-[var(--ucam-space-inset-md)]"
+          >
+            @if (systemIcon()) {
+              <span
+                class="inline-flex size-[var(--ucam-size-control-md)] shrink-0 items-center justify-center rounded-[var(--ucam-radius-control)] text-[var(--ucam-color-text-on-action)]"
+                [style.background]="tintaSistema()"
+                aria-hidden="true"
+              >
+                <ucam-icon [name]="systemIcon()!" size="sm" />
+              </span>
+            }
+            <a
+              [href]="homeHref()"
+              class="truncate rounded-[var(--ucam-radius-control-sm)] font-medium text-[var(--ucam-color-text-primary)] no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
+              >{{ systemName() }}</a
+            >
+          </div>
+        }
+
         <div class="flex-1 overflow-y-auto p-[var(--ucam-space-inset-md)]">
           @for (grupo of navGroups(); track grupo.label ?? $index) {
             <div class="mb-[var(--ucam-space-stack-md)]">
@@ -227,6 +424,26 @@ export type UcamSystemCategory =
         <div class="border-t border-[var(--ucam-color-border-subtle)] p-[var(--ucam-space-inset-md)]">
           <ng-content select="[ucamShellNavRodape]" />
         </div>
+
+        @if (shellLayout() === 'lateral' && user(); as u) {
+          <!-- A CONTA no pé da coluna, com NOME VISÍVEL: na faixa sobrava só o
+               avatar porque o nome custava largura ao lado da marca; aqui a
+               linha está vazia de qualquer forma. Fora da rolagem, para um
+               menu longo não enterrar quem está logado. -->
+          <div
+            class="flex items-center gap-[var(--ucam-space-inline-sm)] border-t border-[var(--ucam-color-border-subtle)] p-[var(--ucam-space-inset-md)]"
+          >
+            <ucam-avatar [name]="u.name" [photoUrl]="u.photoUrl ?? null" size="sm" decorative />
+            <span class="flex min-w-0 flex-col">
+              <span class="truncate text-[length:var(--ucam-typography-body-sm-font-size)] font-medium">{{ u.name }}</span>
+              @if (context()) {
+                <span class="truncate text-[length:var(--ucam-typography-caption-font-size)] text-[var(--ucam-color-text-secondary)]"
+                  >{{ contextLabel() }} {{ rotuloContexto() }}</span
+                >
+              }
+            </span>
+          </div>
+        }
       </nav>
 
       <!-- MAIN é o alvo do skip-link: id fixo e tabindex -1, senão o salto
@@ -268,6 +485,18 @@ export class UcamAppShell {
    * demo empurra 100dvh de shell para dentro de um cartão de 520px.
    */
   readonly embedded = input(false, { transform: booleanAttribute });
+  /** O arranjo da moldura (29/09/2026). 'appbar' é o default do contrato. */
+  readonly shellLayout = input<UcamShellLayout>('appbar');
+  /**
+   * Campus ou unidade ativa — o VALOR da opção em contextOptions. Model, e
+   * não input: a troca emite contextChange, e recarregar os dados é da
+   * aplicação.
+   */
+  readonly context = model<string | null>(null);
+  /** A palavra antes do valor: "Campos" sozinho não diz que é campus. */
+  readonly contextLabel = input<string>('Campus');
+  /** Com mais de uma opção, o contexto vira select; com uma, é só texto. */
+  readonly contextOptions = input<UcamOption[] | null>(null);
 
   protected readonly navId = signal(`ucam-nav-${Math.random().toString(36).slice(2, 8)}`);
   protected readonly contentId = signal('conteudo');
@@ -293,6 +522,46 @@ export class UcamAppShell {
       this.destroyRef.onDestroy(() => mq.removeEventListener('change', ouve));
     }
   }
+
+  protected readonly trocaContexto = computed(() => (this.contextOptions()?.length ?? 0) > 1);
+
+  /** O rótulo da opção ativa; sem opções, o próprio valor. */
+  protected readonly rotuloContexto = computed(() => {
+    const v = this.context();
+    return this.contextOptions()?.find((o) => o.value === v)?.label ?? v ?? '';
+  });
+
+  protected trocarContexto(valor: string): void {
+    if (valor === this.context()) return;
+    this.context.set(valor);
+  }
+
+  /**
+   * A GRADE por arranjo. Literais inteiros, e não montados por pedaço: o
+   * Tailwind acha as classes lendo o fonte, e classe concatenada não existe
+   * para ele.
+   *   appbar  → faixa na primeira fileira, coluna + conteúdo na segunda;
+   *   lateral → mobilebar em cima só abaixo de 64rem, e uma fileira só acima;
+   *   rail    → rail de 72px sempre, coluna do módulo a partir de 64rem.
+   */
+  protected readonly classesGrade = computed(() => {
+    switch (this.shellLayout()) {
+      case 'lateral':
+        return 'grid grid-cols-1 grid-rows-[auto_minmax(0,1fr)] lg:grid-cols-[var(--ucam-nav-width)_minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)]';
+      case 'rail':
+        return 'grid grid-cols-[4.5rem_minmax(0,1fr)] grid-rows-[minmax(0,1fr)] lg:grid-cols-[4.5rem_var(--ucam-nav-width)_minmax(0,1fr)]';
+      default:
+        return 'grid grid-cols-1 grid-rows-[var(--ucam-appbar-height)_minmax(0,1fr)] lg:grid-cols-[var(--ucam-nav-width)_minmax(0,1fr)]';
+    }
+  });
+
+  /** Onde a coluna gruda: sob a faixa no appbar; no topo da janela sem ela. */
+  protected readonly classesNav = computed(() => {
+    if (this.shellLayout() === 'appbar') {
+      return 'lg:sticky lg:top-[var(--ucam-appbar-height)] lg:h-[calc(100dvh-var(--ucam-appbar-height))]';
+    }
+    return this.embedded() ? 'lg:h-full' : 'lg:sticky lg:top-0 lg:h-[100dvh]';
+  });
 
   protected alternaNav(): void {
     this.navAberta.update((v) => !v);

@@ -208,6 +208,7 @@
       "contrato": "Bloco de carregamento, com a forma dada por modificador.",
       "raiz": ".ucam-skeleton",
       "nota": "A animação respeita prefers-reduced-motion na própria folha. O anúncio do carregamento é do markup — o esqueleto sozinho é invisível para quem ouve."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/skeleton/ucam-skeleton.ts — <ucam-skeleton>. Substitui o overlay CARREGANDO de tela cheia. Entradas: variant, lines, count, width. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

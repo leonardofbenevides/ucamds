@@ -243,7 +243,7 @@ function montarCena(): Face[] {
       <h2>Por onde começar</h2>
     </section>
 
-    <!-- As seis portas levam um LADRILHO DE ÍCONE do próprio sistema, como os
+    <!-- As portas levam um LADRILHO DE ÍCONE do próprio sistema, como os
          blocos de pontos das outras páginas: seis caixas de título e texto
          eram indistinguíveis entre si e do resto do site. O ladrilho é a
          .ucam-icon-tile de @ucam/css, não um quadrado desenhado aqui. -->
@@ -433,10 +433,19 @@ function montarCena(): Face[] {
        faixa de números quebrou em duas linhas com três células vazias — pior
        que o vazio que eu queria resolver. A largura dos BLOCOS aqui é ditada
        pela peça mais larga que a home tem, que são os sete indicadores. */
+    /* 29/09/2026: "pq o body do site tá mais pra esquerda? pq não está com a
+       largura máxima igual ao header". Com --app-max em 96rem o cabeçalho foi
+       a 1536px e a home seguia presa nos 64rem de quando a aplicação tinha 80:
+       a borda esquerda batia com a do cabeçalho e a direita parava 470px
+       antes, e a página lia torta. A home volta à coluna da aplicação — a
+       mesma do cabeçalho —, e os sete indicadores, as portas e a ilustração
+       enchem a largura dela. */
     :host {
       display: block;
-      max-inline-size: 64rem;
     }
+    /* As cinco portas numa linha a partir de ~1100px (a 1280 saíam 4 + 1 com
+       a coluna mínima de 16rem do site); abaixo, 3 + 2 e depois uma por linha. */
+    .grade-cartoes { grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
     .porta > .ucam-icon-tile {
       margin-block-end: 0.85rem;
     }
@@ -461,13 +470,14 @@ export default class IndexPage {
   /** A cena isométrica, calculada uma vez. Ver o cabeçalho do arquivo. */
   protected readonly cena = montarCena();
 
-  /** As seis portas da capa: destino, ícone do sprite, nome e uma linha. */
+  /** As cinco portas da capa: destino, ícone do sprite, nome e uma linha.
+   *  O Servidor MCP saiu da capa em 29/09/2026 (pedido do Leonardo); segue
+   *  no menu Começar. */
   protected readonly portas = [
     { link: '/comecar/instalacao', icone: 'download', titulo: 'Instalação', texto: 'Como consumir o design system hoje, em cada trilho.' },
     { link: '/fundamentos/cor', icone: 'bookOpen', titulo: 'Fundamentos', texto: 'Cor, tipografia e espaçamento, com contraste calculado no build.' },
     { link: '/catalogo', icone: 'layoutGrid', titulo: 'Catálogo', texto: `${meta.componentes} contratos de componente.` },
     { link: '/decisoes', icone: 'scrollText', titulo: 'Decisões', texto: 'O porquê de cada regra, registrado em ADR.' },
-    { link: '/comecar/mcp', icone: 'monitor', titulo: 'Servidor MCP', texto: 'Os contratos servidos a agentes de IA, com a API exata.' },
     { link: '/padroes', icone: 'listChecks', titulo: 'Padrões', texto: 'Composições que resolvem uma tarefa inteira.' },
   ];
 

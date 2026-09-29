@@ -210,6 +210,7 @@
       "contrato": "Uma classe na raiz, com o tamanho por modificador. As iniciais são texto no markup — o CSS não as deriva do nome.",
       "raiz": ".ucam-avatar",
       "nota": "Sem variante de cor. Havia .ucam-avatar--1 a --4 (a nota prometia até --6, que nunca existiu) reaproveitando os pares de tinta do feedback; saíram na ADR-022 porque um disco verde ao lado de um prazo vencido lia como contradição, não como variação. O avatar nasce neutro — tinta alfa que compõe sobre painel e moldura nos dois temas — e a identidade vem da foto ou das iniciais. É o que o Trilho B sempre fez (bg-accent)."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/avatar/ucam-avatar.ts — <ucam-avatar>. NÃO envolve o z-avatar: a base não deriva iniciais, e é justamente isso que resolve o problema do parque — o modal Funcionário usa o mesmo clipart para toda pessoa. Entradas: name, photoUrl, size, decorative. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

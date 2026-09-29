@@ -131,6 +131,17 @@ const contentorAcima = (papel, nome = 'corpo') => {
   return `@container ${nome} (min-width: ${r}rem)`;
 };
 
+/* O que conta como ITEM de uma grade equilibrada: todo filho menos o estado
+ * vazio do filtro, a região de anúncio e o cartão que o filtro escondeu.
+ * Usado dentro de :nth-child(N of …) — ver .ucam-grid. */
+const ITEM_DE_GRADE = ':not(.ucam-empty, .ucam-sr-only, [hidden], template, script)';
+
+/* Tabela de até N colunas de DADO (a de seleção não conta) e o cartão que
+ * pode ter medida própria — ver "A TABELA CURTA TEM TETO". Um :has() só,
+ * porque :has() não aninha: a última coluna de dado é a N-ésima ou antes. */
+const TABELA_ATE = (n) => `.ucam-table > thead > tr > th:nth-last-child(1 of :not(.th--selecao, [hidden])):nth-child(-n+${n} of :not(.th--selecao, [hidden]))`;
+const TABELA_SOLTA = ':not(.ucam-split:not(.ucam-split--apoio-inicio) *):not(:has(~ :is(.ucam-card, .ucam-stats, .ucam-grid))):not(:is(.ucam-card, .ucam-stats, .ucam-grid) ~ *)';
+
 const contentorAbaixo = (papel, nome = 'corpo') => {
   const r = (remDoContentor(papel) - 0.001).toFixed(3);
   breakpointsEmitidos.add(`max:${r}rem`);
@@ -2287,6 +2298,35 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table:has(thead th:nth-child(6 of :not([hidden]))) { --ucam-table-piso: 48rem; }
 .ucam-table:has(thead th:nth-child(7 of :not([hidden]))) { --ucam-table-piso: 56rem; }
 .ucam-split .ucam-table { min-inline-size: min(var(--ucam-table-piso), 34rem); }
+
+/* A TABELA CURTA TEM TETO (29/09/2026). O piso acima impede a tabela larga
+ * de espremer; faltava o contrário. Com duas ou três colunas de dado ela
+ * esticava até a largura do corpo, e quem recebia a sobra era a coluna do
+ * nome: a 1920 o Grupo × Menu dava 1043px a "Menu" e a data de concessão
+ * ficava a mais de mil pixels do nome que ela data; os Grupos do usuário,
+ * 966px; a consulta da isenção, 946. O olho perde a linha no vão.
+ *
+ * Quem para é o CARTÃO que carrega a tabela (e a faixa e a paginação dele),
+ * não a tabela dentro de um cartão largo: fio de cabeçalho e fio de linha
+ * terminando antes da borda liam como tabela quebrada. Três colunas de dado,
+ * 64rem; duas, 48rem — o nome fica com o que sobra das colunas curtas (558px
+ * no Grupo × Menu), a medida de uma linha de leitura. A coluna de seleção
+ * não conta: ela é controle, não dado. Quatro colunas ou mais seguem na
+ * largura cheia: ali a largura é das colunas, não de um vão.
+ *
+ * SÓ O CARTÃO SOLTO. Ao lado de um painel de apoio à direita (a análise e a
+ * consulta da isenção) o teto abria um buraco de 236px entre a tabela e o
+ * painel; empilhada com indicadores ou com outro cartão (o resultado do
+ * cálculo de mensalidade) a tabela terminava antes dos vizinhos de baixo.
+ * Nesses casos a largura é da coluna, e a tabela a acompanha. */
+.ucam-card${TABELA_SOLTA}:has(> .ucam-table-wrap > ${TABELA_ATE(3)}),
+.ucam-table-wrap:not(.ucam-card *)${TABELA_SOLTA}:has(> ${TABELA_ATE(3)}) {
+  max-inline-size: 64rem;
+}
+.ucam-card${TABELA_SOLTA}:has(> .ucam-table-wrap > ${TABELA_ATE(2)}),
+.ucam-table-wrap:not(.ucam-card *)${TABELA_SOLTA}:has(> ${TABELA_ATE(2)}) {
+  max-inline-size: 48rem;
+}
 
 .ucam-table caption {
   text-align: start;
@@ -5088,6 +5128,29 @@ ${abaixo('faixa-minima')} {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
   }
+  /* SOB TOQUE, O NOME AINDA CABE (29/09/2026). O vão da faixa sob toque é
+   * 16px (alvo de 44 menos a peça de 28), e ele é que come o nome: a 360px
+   * "Gerencial" (62px) e "Protocolo" (63px) tinham 60 e saíam da vista pela
+   * regra do inteiro ou nenhum; "Relatórios Acadêmicos" saía já a 375, com
+   * "Acadêmicos" sem caber na segunda linha. Três ajustes, nenhum às custas
+   * de alvo:
+   * - a marquinha desce mais um degrau, 32 → 28 (control-sm);
+   * - o vão entre ela e o nome vai a inline-xs;
+   * - o vão ANTES da marca cai à metade. O vão de 16 existe para o extensor
+   *   de 44 do botão de menu (8px para cada lado) não invadir a peça vizinha;
+   *   a marca não tem extensor — o link é ela inteira —, então 8px bastam
+   *   para os dois alvos se encostarem sem se sobrepor (medido: extensor do
+   *   menu termina em x=56, a marca começa em x=56).
+   * Juntos devolvem 16px ao nome: a 360 cabem "Gerencial" e "Protocolo"; a
+   * 375, "Relatórios / Acadêmicos" em duas linhas. */
+  @media (pointer: coarse) {
+    .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
+      inline-size: var(--ucam-size-control-sm);
+      block-size: var(--ucam-size-control-sm);
+    }
+    .ucam-appbar > .ucam-appbar__brand { column-gap: var(--ucam-space-inline-xs); }
+    .ucam-appbar > .ucam-btn + .ucam-appbar__brand { margin-inline-start: calc(var(--ucam-space-inline-sm) * -1); }
+  }
 }
 
 /* A logo encolhe: as DUAS medidas encolhem juntas, senão "contain" volta a
@@ -7468,15 +7531,23 @@ ${acima('nav-fixa')} {
   grid-template-columns: repeat(auto-fill, minmax(max(min(100%, var(--ucam-grid-min)), calc((100% - (var(--ucam-grid-max) - 1) * var(--ucam-space-inset-md)) / var(--ucam-grid-max))), 1fr));
   gap: var(--ucam-space-inset-md);
 }
-/* 4 itens: 4 ou 2 por linha, nunca 3 + 1. 6: 3 + 3. 9: 3 + 3 + 3. 8: 4 + 4. */
-.ucam-grid:has(> :nth-child(4):last-child),
-.ucam-grid:has(> :nth-child(8):last-child) { --ucam-grid-max: 4; }
-.ucam-grid:has(> :nth-child(6):last-child),
-.ucam-grid:has(> :nth-child(9):last-child) { --ucam-grid-max: 3; }
-.ucam-grid:has(> :nth-child(2):last-child) { --ucam-grid-max: 2; }
-.ucam-grid:has(> :nth-child(7):last-child) { --ucam-grid-max: 4; }
+/* 4 itens: 4 ou 2 por linha, nunca 3 + 1. 6: 3 + 3. 9: 3 + 3 + 3. 8: 4 + 4.
+ *
+ * A CONTA É DE CARTÃO, não de filho (29/09/2026). Com :nth-child(N):last-child
+ * a grade contava tudo o que morava nela — o estado vazio do filtro
+ * (.ucam-empty, escondido) e a região de anúncio (.ucam-sr-only) —, e os
+ * seis setores do painel gerencial do Protocolo eram lidos como OITO: teto
+ * de 4, e a 1920 a grade saía 4 + 2. Com "of" a conta pula quem não ocupa
+ * trilha, e o cartão que o filtro esconde ([hidden]) sai da conta também:
+ * filtrar para cinco devolve o teto de cinco, não o de seis. */
+.ucam-grid:has(> :nth-child(4 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})),
+.ucam-grid:has(> :nth-child(8 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 4; }
+.ucam-grid:has(> :nth-child(6 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})),
+.ucam-grid:has(> :nth-child(9 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 3; }
+.ucam-grid:has(> :nth-child(2 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 2; }
+.ucam-grid:has(> :nth-child(7 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 4; }
 ${contentorAbaixo('grade-quatro-em-fileira')} {
-  .ucam-grid:has(> :nth-child(4):last-child) { --ucam-grid-max: 2; }
+  .ucam-grid:has(> :nth-child(4 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 2; }
 }
 
 /* VISTA DE LISTA da mesma grade — o outro lado do segmented "Grade | Lista".
@@ -9814,6 +9885,33 @@ ${abaixo('controle-deitado')} {
 
 .ucam-list-item:last-child { box-shadow: none; }
 
+/* LISTA LARGA VAI A DUAS COLUNAS (29/09/2026). No cartão da largura do corpo
+ * a linha de uma lista era uma faixa de 1547px com o conteúdo em 400: na
+ * fila do painel gerencial do Protocolo, a 1920, nome e data ficavam a
+ * 1198px um do outro. Quem pergunta é o CARTÃO que carrega a lista (a lista
+ * na caixa de entrada ou no painel de apoio nunca chega lá). A ordem é a de
+ * leitura, 1 2 / 3 4, a mesma da grade de cartões logo acima na mesma tela.
+ * O fio entre as colunas é o mesmo fio entre linhas, e a última fileira não
+ * leva fio embaixo. Abaixo do limiar, uma coluna — e o conteúdo da linha
+ * para em 40rem (ver .ucam-list-item__corpo). */
+.ucam-card:has(> .ucam-list) { container: lista / inline-size; }
+${contentorAcima('lista-em-duas-colunas', 'lista')} {
+  .ucam-card > .ucam-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ucam-card > .ucam-list > .ucam-list-item:nth-child(odd) {
+    box-shadow: inset 0 -1px 0 var(--ucam-color-border-subtle), inset -1px 0 0 var(--ucam-color-border-subtle);
+  }
+  .ucam-card > .ucam-list > .ucam-list-item:nth-child(odd):nth-last-child(-n+2) {
+    box-shadow: inset -1px 0 0 var(--ucam-color-border-subtle);
+  }
+  .ucam-card > .ucam-list > .ucam-list-item:nth-child(even):nth-last-child(1) { box-shadow: none; }
+  /* Na coluna, a medida já é a da coluna: o teto de 40rem deixava o tempo
+   * 75px antes do fio, fora da prumada da coluna vizinha. */
+  .ucam-card > .ucam-list > .ucam-list-item > .ucam-list-item__corpo { max-inline-size: none; }
+}
+
 /* LISTA DENTRO DE CARTÃO COM RECUO. A linha traz o próprio recuo de 16px e
  * o cartão também: o texto nascia a 32px da borda, 16 à direita do ladrilho e
  * do título que o cabeçalho põe a 16 — duas prumadas no mesmo cartão. A lista
@@ -10033,6 +10131,16 @@ a.ucam-list-item:active,
   /* Sem isto o item de flex adota a largura do conteúdo e o texto longo
    * empurra a hora para fora em vez de truncar. */
   min-inline-size: 0;
+  /* O CONTEÚDO DA LINHA TEM MEDIDA (29/09/2026). O tempo encosta à direita
+   * do corpo, e numa lista na largura do corpo da página isso era a borda
+   * da tela: na fila do painel gerencial do Protocolo, a 1920, "Carlos
+   * Eduardo Martins Souza" e "16/08/2026" ficavam a 1198px um do outro. O
+   * fio e o realce da linha seguem de ponta a ponta — a linha continua sendo
+   * a peça —, mas nome, assunto e tempo param em 40rem, a medida de uma
+   * linha de leitura; o tempo fica ao alcance do nome que ele data. Em
+   * lista estreita (caixa de entrada, painel de apoio) o teto não chega a
+   * valer. */
+  max-inline-size: 40rem;
 }
 
 .ucam-list-item__linha {
@@ -12504,6 +12612,44 @@ ${abaixo('nav-fixa')} {
    * para dentro do segmento enquanto o trilho rola. */
   .ucam-segmented { max-inline-size: 100%; overflow-x: auto; scrollbar-width: none; }
   .ucam-segmented button:focus-visible { outline-offset: calc(-1 * var(--ucam-focus-ring-width)); }
+  /* O TRILHO QUE ROLA RECORTAVA O ALVO (29/09/2026). Contêiner de rolagem
+   * recorta tudo na própria caixa, e o extensor de 44 de cada segmento ia
+   * junto: sob toque, a 390px, o filtro da linha do tempo (Todos ·
+   * Mensagens · Tramitação, trilho de 28) dava 27px de alvo; o de 32 dos
+   * Usuários, 30; os seletores de decisão da isenção, 26. Crescer a peça
+   * para 44 contraria a regra do alvo (extensor ou vão, nunca peça maior).
+   *
+   * A caixa cresce sem a peça crescer: a folga que falta ao alvo ((44 −
+   * altura do trilho) / 2 de cada lado, mais 1px da borda — o recorte é na
+   * caixa de RECUO, por dentro da borda) entra como recuo, uma margem
+   * negativa do mesmo tamanho devolve o lugar que ela ocupava na fileira, e
+   * o fio do trilho passa a ser um contorno recuado para dentro na mesma
+   * medida — cai exatamente onde a borda estava, com o mesmo raio. A caixa
+   * maior é transparente ao ponteiro; só os segmentos respondem. */
+  @media (pointer: coarse) {
+    .ucam-segmented {
+      --ucam-segmented-folga: calc((var(--ucam-alvo-min) - var(--ucam-size-control-md)) / 2 + 1px);
+      block-size: calc(var(--ucam-size-control-md) + 2 * var(--ucam-segmented-folga));
+      padding: calc(0.1875rem + var(--ucam-segmented-folga));
+      margin: calc(-1 * var(--ucam-segmented-folga));
+      max-inline-size: calc(100% + 2 * var(--ucam-segmented-folga));
+      border-color: transparent;
+      border-radius: calc(var(--ucam-radius-control) + var(--ucam-segmented-folga));
+      outline: 1px solid var(--ucam-color-border-subtle);
+      outline-offset: calc(-1px - var(--ucam-segmented-folga));
+      pointer-events: none;
+    }
+    .ucam-segmented--sm {
+      --ucam-segmented-folga: calc((var(--ucam-alvo-min) - var(--ucam-size-control-sm)) / 2 + 1px);
+      block-size: calc(var(--ucam-size-control-sm) + 2 * var(--ucam-segmented-folga));
+    }
+    .ucam-segmented > * { pointer-events: auto; }
+    /* O degrau abaixo do título do painel continua medindo do FIO. */
+    .ucam-aside__title + .ucam-segmented,
+    .ucam-section__title--painel + .ucam-segmented {
+      margin-block-start: calc(var(--ucam-space-stack-sm) - var(--ucam-segmented-folga));
+    }
+  }
 }
 
 /* As abas ROLAM na horizontal antes de encolher. Sete filas num telefone não

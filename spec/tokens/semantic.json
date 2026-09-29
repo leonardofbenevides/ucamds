@@ -615,6 +615,10 @@
     "indicadores-em-fileira": {
       "$value": "47rem",
       "$description": "Largura do PRÓPRIO grupo de indicadores (.ucam-stats é contêiner 'indicadores') a partir da qual quatro ladrilhos de 11rem cabem numa fileira: 4 × 11rem + 3 vãos de 1rem. Abaixo, um grupo de quatro vai a 2 + 2 em vez de 3 + 1 — o quarto sozinho na largura inteira lia como o mais importante. Grupo de três não muda: três cabem até 35rem e abaixo disso já caem em 2 + 1 sozinhos."
+    },
+    "lista-em-duas-colunas": {
+      "$value": "64rem",
+      "$description": "Largura do CARTÃO que carrega uma lista de itens (.ucam-card com .ucam-list como filho é contêiner 'lista') a partir da qual a lista vai a duas colunas, na ordem de leitura (1 2 / 3 4). Medido em 29/09/2026 na fila do painel gerencial do Protocolo: a 1920 o cartão tinha 1547px, e nome e data de cada linha ficavam a 1198px um do outro. 64rem = duas colunas de 32rem, e cada linha de 32rem ainda leva avatar, nome, assunto, dois marcadores e o tempo sem reticência. Abaixo, uma coluna, com o conteúdo da linha parando em 40rem."
     }
   },
   "focus": {

@@ -321,6 +321,7 @@
       "raiz": ".ucam-dialog",
       "nota": "Foco preso, inert atrás e fechamento por Escape vêm do elemento <dialog> nativo, não do CSS. Um <div class=\"ucam-dialog\"> tem o visual certo e nenhum dos comportamentos.",
       "estado": "loading: aria-busy=true no <dialog>, aria-disabled=true no botão de fechar e o cancel do Esc impedido em script; o botão primário leva aria-busy, aria-disabled e o svg.ic.ucam-spinner no lugar do ícone."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/dialog/ucam-dialog.ts — <ucam-dialog>. SOBRE O <dialog> NATIVO, com showModal — e não sobre o overlay do CDK nem sobre o z-dialog da base. Entradas: title, size, variant, dismissible, loading, initialFocus, open. Saídas: closed. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

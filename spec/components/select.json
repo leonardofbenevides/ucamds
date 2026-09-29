@@ -289,6 +289,7 @@
       "raiz": ".ucam-select-wrap com .ucam-select-trigger e .ucam-listbox",
       "nota": "A classe .ucam-select ainda existe e é o campo em si; o arranjo completo do gatilho estilizado precisa das três. O script que abre a lista é gerado por tools/lib/select-listbox.mjs e não faz parte do @ucam/css. O value do <option> atravessa a conversão: vira data-valor na opção e no gatilho, e escolher dispara um change que borbulha. É o que permite um select FILTRAR (data-filtra) com \"Todos\" valendo value vazio, ou seja, filtro nenhum — sem isso o gatilho nunca dizia o que fora escolhido.",
       "estado": "loading: aria-busy=true no gatilho e um svg.ic.ucam-spinner no lugar do chevron."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/select/ucam-select.ts — <ucam-select>. Usa o OVERLAY do z-select, não o <select> nativo — ver ADR-011. Entradas: label, labelHidden, options, placeholder, hint, required, disabled, loading, invalid, errorMessage, width, dependsOn, dependencyFilled, value. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

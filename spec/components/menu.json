@@ -266,6 +266,7 @@
       "contrato": "O popover e seus itens. Abre e fecha pelo atributo hidden.",
       "raiz": ".ucam-menu",
       "nota": "Fecha por hidden e não por classe: o atributo tira o menu da ordem de tabulação e da árvore de acessibilidade de uma vez. Posicionamento, foco e teclado são do markup e do script da página."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/menu/ucam-menu.ts — o painel mora num overlay do CDK e o gatilho é a diretiva [ucamMenuTrigger], que põe aria-haspopup, aria-expanded e aria-controls no botão de verdade. Setas, Home/End, Esc devolvendo o foco e Tab fechando sem devolver. placement (29/09/2026): 'below' desce do gatilho, 'above' sobe dele e ganha .ucam-menu--acima; nos dois a posição oposta fica de reserva, e o CDK troca quando a primeira não cabe — o menu que sobe no alto da página não perde a lista fora da vista. align escolhe a borda (start|end)."
   }
 }

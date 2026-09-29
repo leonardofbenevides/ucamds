@@ -59,6 +59,21 @@ const ABAIXO_INICIO: ConnectedPosition[] = [
   { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
 ];
 
+/* ACIMA (29/09/2026): o gatilho no pé da moldura — a conta no rodapé do rail
+ * ou da coluna lateral — não tem altura embaixo. A primeira posição sobe e a
+ * segunda desce: se o gatilho estiver no alto, o CDK cai na de baixo em vez
+ * de perder a lista fora da janela, que é o limite que o contrato declara. */
+const ACIMA: ConnectedPosition[] = [
+  { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom', offsetY: -4 },
+  { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 4 },
+];
+const ACIMA_INICIO: ConnectedPosition[] = [
+  { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
+  { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
+];
+
+export type UcamMenuPlacement = 'below' | 'above';
+
 let seq = 0;
 
 @Component({
@@ -71,6 +86,7 @@ let seq = 0;
     <ng-template #painel>
       <div
         class="ucam ucam-menu"
+        [class.ucam-menu--acima]="placement() === 'above'"
         role="menu"
         [id]="id"
         [attr.aria-label]="ariaLabel()"
@@ -177,6 +193,8 @@ export class UcamMenu {
    */
   readonly ariaLabel = input<string | null>(null);
   readonly align = input<'start' | 'end'>('end');
+  /** Desce do gatilho ('below') ou sobe dele ('above'). Ver ACIMA. */
+  readonly placement = input<UcamMenuPlacement>('below');
 
   readonly escolher = output<UcamMenuItem>();
 
@@ -312,7 +330,15 @@ export class UcamMenuTrigger {
     const ref = (this.ref ??= this.overlay.create({
       positionStrategy: this.posicoes
         .flexibleConnectedTo(this.host)
-        .withPositions(menu.align() === 'start' ? ABAIXO_INICIO : ABAIXO),
+        .withPositions(
+          menu.placement() === 'above'
+            ? menu.align() === 'start'
+              ? ACIMA_INICIO
+              : ACIMA
+            : menu.align() === 'start'
+              ? ABAIXO_INICIO
+              : ABAIXO,
+        ),
       scrollStrategy: this.overlay.scrollStrategies.reposition(),
       // UM menu aberto por vez: com o backdrop, o clique fora fecha este antes
       // de chegar a qualquer outro gatilho. Dois popovers abertos fazem o

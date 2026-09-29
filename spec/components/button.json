@@ -404,7 +404,8 @@
       "ucam-file-field",
       "ucam-page-header",
       "ucam-section-bar",
-      "ucam-compositor"
+      "ucam-compositor",
+      "ucam-date-field"
     ],
     "usa": [
       "ucam-icon"
@@ -416,6 +417,7 @@
       "raiz": ".ucam-btn",
       "nota": "A classe é .ucam-btn, abreviada, enquanto o componente do Trilho B é <ucam-button>. Os dois nomes convivem de propósito, mas quem migra escrevendo class=\"ucam-button\" não recebe estilo nem aviso.",
       "estado": "loading: aria-busy=true e aria-disabled=true, nunca disabled; um svg.ic.ucam-spinner (ícone loaderCircle) no lugar do ícone inicial, com o rótulo mantido para a largura não mudar."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/button/ucam-button.ts — <ucam-button>. Envolve o ZardButtonComponent. Entradas: variant, tone, size, disabled, loading, iconOnly, iconStart, iconEnd, ariaLabel, type. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

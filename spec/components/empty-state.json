@@ -261,6 +261,7 @@
       "contrato": "Um bloco centrado com título, descrição e, quando há saída, uma ação.",
       "raiz": ".ucam-empty",
       "nota": "A classe encurta o nome do contrato. Quem escrever .ucam-empty-state não recebe regra nenhuma."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/empty-state/ucam-empty-state.ts — <ucam-empty-state>. Não tem equivalente na base — é implementação nossa, porque o problema é nosso: o parque tem duas redações para o mesmo estado (Sem registros e Nenhum registro encontrado) e nenhuma delas oferece saída. Entradas: reason, title, description, size, scope. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

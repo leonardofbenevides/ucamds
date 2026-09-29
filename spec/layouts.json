@@ -235,7 +235,7 @@
       "classe": "ucam-grid",
       "papel": "Cartões que se acomodam sozinhos conforme a largura.",
       "quando": "Grade de módulos do portal, cartões de resumo, atalhos.",
-      "decisao": "auto-fill, não auto-fit. Com auto-fit uma grade de dois itens estica os dois até a largura da tela, e a grade de módulos ficaria com dois cartões gigantes na primeira linha. EQUILIBRADA pela contagem desde 28/09/2026 (ADR-055): --ucam-grid-max limita as colunas pela conta dentro do minmax, e a folha o põe pela quantidade de itens — 2 → 2, 4 → 4 ou 2 + 2 (nunca 3 + 1; abaixo de container.grade-quatro-em-fileira), 6 e 9 → 3 por linha, 7 e 8 → 4. Acaba com 5 + 1, 4 + 2 e trilhas vazias.",
+      "decisao": "auto-fill, não auto-fit. Com auto-fit uma grade de dois itens estica os dois até a largura da tela, e a grade de módulos ficaria com dois cartões gigantes na primeira linha. EQUILIBRADA pela contagem desde 28/09/2026 (ADR-055): --ucam-grid-max limita as colunas pela conta dentro do minmax, e a folha o põe pela quantidade de itens — 2 → 2, 4 → 4 ou 2 + 2 (nunca 3 + 1; abaixo de container.grade-quatro-em-fileira), 6 e 9 → 3 por linha, 7 e 8 → 4. Acaba com 5 + 1, 4 + 2 e trilhas vazias. A conta é de CARTÃO, não de filho (29/09/2026): o estado vazio do filtro (.ucam-empty), a região de anúncio (.ucam-sr-only) e o cartão escondido pelo filtro ([hidden]) não contam — com eles, os seis setores do painel gerencial do Protocolo eram lidos como oito e saíam 4 + 2 a 1920; agora 3 + 3.",
       "variantes": [
         {
           "classe": "ucam-grid--sm",
@@ -312,7 +312,7 @@
         {
           "nome": "--ucam-split-aside",
           "default": "18rem",
-          "descricao": "Largura do painel de apoio."
+          "descricao": "Largura do painel de apoio. Baixe um degrau (17rem) quando a tabela do conteúdo principal passa do lugar por poucos pixels logo acima de container.duas-colunas e o painel ainda cabe: nos Parâmetros dos setores, a 1280, a tabela de cinco colunas rolava 3px (600 em 597) com o painel de 18rem; com 17rem ela mede 613 e não rola, e o Descartar · Salvar setor continua numa fileira (com 16rem já quebrava em duas — 29/09/2026)."
         }
       ],
       "exemplo": "<div class=\"ucam-split\">\n  <form class=\"ucam-stack\">…</form>\n  <aside class=\"ucam-aside\">…</aside>\n</div>"
@@ -446,6 +446,16 @@
       "faca": "Ações do formulário dentro do contêiner do formulário, ao fim do cartão ou numa barra fixa (.ucam-form-actions--sticky) em página longa.",
       "evite": "Ações no rodapé do corpo, a 700px do último campo.",
       "porque": "A auditoria de 28/09/2026 mediu \"Calcular\" em x=1367 a 1920 com os campos acabando em x=803: o olho procura a ação ao lado do que acabou de preencher (ADR-055)."
+    },
+    {
+      "faca": "Tabela curta (até três colunas de DADO; a de seleção não conta) num cartão solto: deixe a folha parar o cartão em 64rem (três colunas) ou 48rem (duas). A coluna do nome fica com o que sobra das colunas curtas.",
+      "evite": "Esticar a tabela curta até a largura do corpo, ou pôr um max-inline-size por tela no style.",
+      "porque": "A 1920 o Grupo × Menu dava 1043px à coluna Menu e a data de concessão ficava a mais de mil pixels do nome que ela data; os Grupos do Novo usuário, 966px (auditoria de 29/09/2026). Com o teto: 556 e 719px. O teto é do CARTÃO e não da tabela, porque fio de cabeçalho terminando antes da borda do cartão lê como tabela quebrada. Não vale para o cartão ao lado de um painel de apoio à direita (abriria um buraco entre os dois) nem para o cartão empilhado com indicadores ou com outro cartão na mesma seção: ali a largura é da coluna. Quatro colunas ou mais seguem na largura cheia — o piso por colunas (--ucam-table-piso) cuida do outro lado."
+    },
+    {
+      "faca": "Lista de itens (.ucam-list) num cartão largo: a partir de container.lista-em-duas-colunas (64rem de cartão) ela vai a duas colunas, na ordem de leitura; abaixo, o conteúdo da linha para em 40rem.",
+      "evite": "Uma coluna de linhas de 1500px com o tempo encostado na borda da tela, ou dividir a lista em dois cartões por tela.",
+      "porque": "Na fila do painel gerencial do Protocolo, a 1920, nome e data de cada linha ficavam a 1198px um do outro (29/09/2026). Em duas colunas de 772px, 425px; e a ordem 1 2 / 3 4 é a mesma da grade de cartões da própria tela. Quem pergunta é o cartão ('lista' é contêiner), então a lista da caixa de entrada e a do painel de apoio nunca mudam."
     }
   ]
 }

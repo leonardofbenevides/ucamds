@@ -1083,7 +1083,7 @@
         "A escala primitiva não muda: 12px continua existindo para o que é de fato miúdo (iniciais do avatar, ordinal de etapa), e o texto de trabalho deixa de usá-lo."
       ],
       "afeta": [
-        "tokens",
+        "*",
         "data-table",
         "field",
         "button",
@@ -1105,11 +1105,13 @@
         "Pendente: tabelas de até três colunas e listas esticadas a 1920 (grupo-menu, fila do gerencial) seguem na largura do corpo; a grade de sete setores do gerencial tem cartões desiguais e continua 4 + 2 + 1."
       ],
       "afeta": [
-        "spec/layouts.json",
-        "spec/formats.json",
-        "spec/tokens/semantic.json",
-        "tools/build-css.mjs",
-        "spec/templates.json"
+        "field",
+        "text-field",
+        "select",
+        "textarea",
+        "date-field",
+        "choice-card",
+        "card"
       ]
     }
   ]

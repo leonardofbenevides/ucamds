@@ -234,6 +234,7 @@
       "contrato": "<label class=\"ucam-switch\"> envolvendo o <input type=\"checkbox\">, igual ao checkbox mas com o desenho de chave.",
       "raiz": ".ucam-switch",
       "nota": "Chave e caixa de seleção não são intercambiáveis: a chave aplica o efeito na hora e não espera um botão de salvar, e é isso que o contrato de migração usa para separar as duas no legado."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/switch/ucam-switch.ts — <ucam-switch>. Envolve o z-switch. Entradas: label, labelHidden, hint, checked, disabled, loading. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }
