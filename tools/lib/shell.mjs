@@ -447,6 +447,14 @@ export function renderShell(cfg = {}, conteudo = '') {
     ? `<div class="ucam-appbar__search" data-busca-caixa>` + miolodBusca() + painelBusca + `</div>`
     : '';
 
+  /* A LUPA, abaixo de nav-fixa (a folha a mostra só ali). A caixa de busca
+   * sai da faixa nessa largura; a lupa a traz de volta por cima da faixa,
+   * com o mesmo campo e o mesmo painel (buscaGlobalScript). Nome acessível
+   * "Buscar" e a mesma barra "/" do campo. */
+  const botaoBusca = campoBusca
+    ? `<button class="ucam-appbar__lancador ucam-appbar__buscar" type="button" aria-label="Buscar" aria-keyshortcuts="/" aria-controls="${esc(idBusca)}" aria-expanded="false" data-busca-abrir>` + ic('search') + '</button>'
+    : '';
+
   /* A MESMA BUSCA, na coluna do arranjo lateral.
    *
    * Não é a nav-search: aquela peneira o MENU, esta procura no CONTEÚDO do
@@ -1126,6 +1134,7 @@ export function renderShell(cfg = {}, conteudo = '') {
       `<span class="ucam-appbar__spacer"></span>` +
       campoBusca +
       (campoBusca ? `<span class="ucam-appbar__spacer"></span>` : '') +
+      botaoBusca +
       chipCampus +
       (chipCampus && (sinoNotificacoes || menuSistemas || menuConta)
         ? `<span class="ucam-appbar__divider"></span>`
@@ -1261,6 +1270,7 @@ export function renderShell(cfg = {}, conteudo = '') {
       ) +
       '<span class="ucam-topbar__folga"></span>' +
       campoBusca +
+      botaoBusca +
       chipCampus +
       // Mesmo lado, mesmo motivo que na faixa: a fileira de identidade da
       // testeira É uma .ucam-appbar, e as duas molduras não podem discordar
@@ -1522,6 +1532,8 @@ document.addEventListener('keydown', function (e) {
   var campo = document.querySelector('[data-busca]');
   if (!campo) return;
   e.preventDefault();
+  // Campo fora da faixa (abaixo de nav-fixa): a barra faz o que a lupa faz.
+  if (!campo.offsetParent && window.ucamBuscaMostrar) { window.ucamBuscaMostrar(campo); return; }
   campo.focus();
   campo.select();
   // O foco ABRE o painel — o mesmo caminho do clique. Antes o atalho
@@ -1577,9 +1589,40 @@ export const buscaGlobalScript = `
     filtrar(caixa);
   }
 
+  // A LUPA (abaixo de nav-fixa): a caixa deita sobre a faixa com
+  // data-aberta, e o foco vai ao campo — que abre o painel pelo caminho de
+  // sempre. A lupa da mesma faixa é quem abriu e quem recebe o foco na volta.
+  function lupaDe(caixa) {
+    var faixa = caixa && caixa.closest('.ucam-appbar, .ucam-topbar__identidade');
+    return faixa ? faixa.querySelector('[data-busca-abrir]') : null;
+  }
+  function mostrar(caixa) {
+    var campo = campoDe(caixa);
+    if (!campo) return;
+    caixa.setAttribute('data-aberta', '');
+    var lupa = lupaDe(caixa);
+    if (lupa) lupa.setAttribute('aria-expanded', 'true');
+    campo.focus();
+    abrir(campo);
+  }
+  function recolher(caixa, devolveFoco) {
+    if (!caixa || !caixa.hasAttribute('data-aberta')) return;
+    caixa.removeAttribute('data-aberta');
+    var lupa = lupaDe(caixa);
+    if (lupa) {
+      lupa.setAttribute('aria-expanded', 'false');
+      if (devolveFoco) lupa.focus();
+    }
+  }
+  window.ucamBuscaMostrar = function (campo) {
+    var caixa = caixaDe(campo);
+    if (caixa) mostrar(caixa);
+  };
+
   function fechar(caixa) {
     var painel = painelDe(caixa);
     var campo = campoDe(caixa);
+    recolher(caixa, false);
     if (!painel || painel.hidden) return;
     painel.hidden = true;
     if (campo) {
@@ -1711,6 +1754,13 @@ export const buscaGlobalScript = `
   });
 
   document.addEventListener('click', function (e) {
+    var lupa = e.target.closest && e.target.closest('[data-busca-abrir]');
+    if (lupa) {
+      var faixaL = lupa.closest('.ucam-appbar, .ucam-topbar__identidade');
+      var caixaL = faixaL && faixaL.querySelector('[data-busca-caixa]');
+      if (caixaL) mostrar(caixaL);
+      return;
+    }
     var campo = e.target.closest && e.target.closest('[data-busca]');
     if (campo) { abrir(campo); return; }
 
@@ -1727,7 +1777,8 @@ export const buscaGlobalScript = `
       return;
     }
 
-    if (e.target.closest && e.target.closest('.ucam-busca')) return;
+    // Dentro da própria caixa (o X de limpar, a lupa desenhada) não é "fora".
+    if (e.target.closest && e.target.closest('.ucam-busca, [data-busca-caixa]')) return;
     var todas = document.querySelectorAll('[data-busca-caixa]');
     for (var t = 0; t < todas.length; t++) fechar(todas[t]);
   });
@@ -1751,6 +1802,8 @@ export const buscaGlobalScript = `
       // Esc com painel aberto FECHA o painel. Só depois de fechado ele
       // devolve o campo — dois papéis na mesma tecla, na ordem em que a
       // pessoa desfaz o que fez.
+      // Deitada sobre a faixa (lupa), o Esc fecha tudo e devolve a lupa.
+      if (caixa.hasAttribute('data-aberta')) { e.preventDefault(); fechar(caixa); recolher(caixa, true); var lp = lupaDe(caixa); if (lp) lp.focus(); return; }
       if (!painel.hidden) { e.preventDefault(); fechar(caixa); }
       else { campo.value = ''; }
       return;
@@ -1969,7 +2022,7 @@ const FN_ANUNCIA = `
    * A região é procurada a partir do gatilho porque a página do site mostra
    * vários shells de uma vez; o primeiro do documento seria o shell errado.
    */
-  function anuncia(texto, de) {
+  function anuncia(texto, de, tom) {
     if (!texto) return;
     var raiz = (de && de.closest && de.closest('.ucam-shell')) || document;
     var regiao = raiz.querySelector('[data-anuncio]') || document.querySelector('[data-anuncio]');
@@ -1980,7 +2033,13 @@ const FN_ANUNCIA = `
     // ação de sistema (data-fluxo="c"). Ordenar, abrir menu e trocar de etapa
     // também falam por aqui, e não viram toast.
     // Em lote (várias decisões marcadas de uma vez) só o resumo final vira toast.
-    if (window.ucamToast && !window.ucamEmLote && de && de.closest && de.closest('[data-fluxo="c"]')) window.ucamToast(texto);
+    // DECIDIR UMA LINHA NÃO VIRA TOAST (28/09/2026): a linha muda na frente
+    // de quem clicou e a região viva fala; nove decisões eram nove toasts
+    // empilhados por cima das linhas seguintes. [data-sem-toast] é a mesma
+    // saída para outro controle que já se mostra onde foi tocado.
+    // O TOM vem de quem anuncia: recusa sai como erro, não com o visto.
+    if (window.ucamToast && !window.ucamEmLote && de && de.closest && de.closest('[data-fluxo="c"]') &&
+      !de.closest('[data-acao="decidir"], [data-sem-toast]')) window.ucamToast(texto, tom);
   }
 `;
 
@@ -2008,6 +2067,57 @@ export const estadoScript = `
   }
 
   function plural(n, um, varios) { return n + ' ' + (n === 1 ? um : varios); }
+
+  // O ESTADO SALVO DE UM FORMULÁRIO (descartar-form / salvar). Campo nativo
+  // guarda o salvo em defaultValue/defaultChecked; a lista estilizada que
+  // substitui o <select> (select-listbox) não tem default — a foto dela é
+  // tirada na carga, no gatilho (data-inicial) e em cada opção.
+  function formFoto(g) {
+    if (!g.hasAttribute('data-inicial')) g.setAttribute('data-inicial', g.innerHTML);
+    var l = document.getElementById(g.getAttribute('aria-controls') || '');
+    if (l) Array.prototype.forEach.call(l.querySelectorAll('[role="option"]'), function (o) {
+      if (!o.hasAttribute('data-inicial-sel')) o.setAttribute('data-inicial-sel', o.getAttribute('aria-selected') === 'true' ? '1' : '0');
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-listbox]'), formFoto);
+  function formVolta(escopo) {
+    var n = 0;
+    Array.prototype.forEach.call(escopo.querySelectorAll('input, textarea'), function (c) {
+      if (c.type === 'checkbox' || c.type === 'radio') { if (c.checked !== c.defaultChecked) { c.checked = c.defaultChecked; n++; } }
+      else if (c.type !== 'hidden' && c.value !== c.defaultValue) { c.value = c.defaultValue; n++; }
+    });
+    Array.prototype.forEach.call(escopo.querySelectorAll('[data-listbox][data-inicial]'), function (g) {
+      if (g.innerHTML === g.getAttribute('data-inicial')) return;
+      g.innerHTML = g.getAttribute('data-inicial');
+      var l = document.getElementById(g.getAttribute('aria-controls') || '');
+      if (l) Array.prototype.forEach.call(l.querySelectorAll('[role="option"]'), function (o) { o.setAttribute('aria-selected', o.getAttribute('data-inicial-sel') === '1' ? 'true' : 'false'); });
+      n++;
+    });
+    return n;
+  }
+  function formGrava(escopo) {
+    if (!escopo) return;
+    Array.prototype.forEach.call(escopo.querySelectorAll('input, textarea'), function (c) {
+      if (c.type === 'checkbox' || c.type === 'radio') c.defaultChecked = c.checked;
+      else if (c.type !== 'hidden' && c.type !== 'file') c.defaultValue = c.value;
+    });
+    Array.prototype.forEach.call(escopo.querySelectorAll('[data-listbox]'), function (g) {
+      g.removeAttribute('data-inicial');
+      var l = document.getElementById(g.getAttribute('aria-controls') || '');
+      if (l) Array.prototype.forEach.call(l.querySelectorAll('[role="option"]'), function (o) { o.removeAttribute('data-inicial-sel'); });
+      formFoto(g);
+    });
+  }
+
+  // O BOTÃO DOS FILTROS DIZ O QUE FAZ (revisão de 28/09/2026). "Filtros 2"
+  // prometia um painel de escolha e só escondia a fileira de chips: o verbo
+  // passa a ser o que o toque faz — Ocultar / Mostrar — e o aria-controls da
+  // marcação aponta a fileira. O número continua sendo quantos há.
+  function verboFiltros(botao, aberto) {
+    Array.prototype.forEach.call(botao.childNodes, function (n) {
+      if (n.nodeType === 3 && /filtros/i.test(n.textContent)) n.textContent = ' ' + (aberto ? 'Ocultar filtros' : 'Mostrar filtros') + ' ';
+    });
+  }
 
   // --- menu da coluna da tabela -----------------------------------------------
   // Contrato data-table.json, parte column-menu. Tudo aqui trabalha pela
@@ -2100,7 +2210,81 @@ export const estadoScript = `
       var limpar = o.querySelector('[data-coluna="limpar"]');
       if (limpar) limpar.hidden = !d;
     });
+    // O "Ordenar por" do modo empilhado diz a mesma ordem que o cabeçalho.
+    var ordSel = tabela.closest('.ucam-table-wrap');
+    ordSel = ordSel && ordSel.querySelector('.ucam-table__ordenar select');
+    if (ordSel) ordSel.value = dir ? col + '|' + dir : '';
   }
+
+  // ORDENAR NO TELEFONE (data-table.json, responsividade.ordenacao). Empilhada, a
+  // tabela esconde o thead — e com ele todo gatilho de ordenação: a 390px
+  // nenhuma das dez tabelas ordenáveis ordenava (revisão de 28/09/2026). O
+  // controle nasce dentro do invólucro, é pintado só quando o contêiner
+  // empilha (a folha decide) e usa a MESMA colunaOrdenar: o aria-sort e a seta
+  // do cabeçalho continuam dizendo a ordem para o leitor de tela e para a
+  // largura de mesa.
+  var ordenarN = 0;
+  function ordenarMontar() {
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-table-wrap > .ucam-table'), function (tabela) {
+      var wrap = tabela.parentElement;
+      if (wrap.querySelector('.ucam-table__ordenar') || !tabela.tHead) return;
+      // Uma linha só não tem o que ordenar.
+      if (!tabela.tBodies[0] || tabela.tBodies[0].rows.length < 2) return;
+      var ths = Array.prototype.filter.call(tabela.tHead.rows[0].children, function (th) {
+        return th.hasAttribute('aria-sort') && th.querySelector('.ucam-table__coluna');
+      });
+      if (!ths.length) return;
+      colunasCarimbar(tabela);
+      var id = 'ucam-ordenar-' + (++ordenarN);
+      var caixa = document.createElement('div');
+      caixa.className = 'ucam-table__ordenar';
+      var rot = document.createElement('label');
+      rot.className = 'ucam-table__ordenar-rotulo';
+      rot.setAttribute('for', id);
+      rot.textContent = 'Ordenar por';
+      var sel = document.createElement('select');
+      sel.className = 'ucam-select';
+      sel.id = id;
+      sel.setAttribute('data-sem-toast', '');
+      var padrao = document.createElement('option');
+      padrao.value = '';
+      padrao.textContent = 'Ordem original';
+      sel.appendChild(padrao);
+      var atual = '';
+      ths.forEach(function (th) {
+        var nome = th.querySelector('.ucam-table__coluna').cloneNode(true);
+        Array.prototype.forEach.call(nome.querySelectorAll('.ucam-sr-only, svg'), function (n) { n.remove(); });
+        var texto = nome.textContent.split(String.fromCharCode(10)).join(' ').trim();
+        [['asc', 'crescente'], ['desc', 'decrescente']].forEach(function (d) {
+          var op = document.createElement('option');
+          op.value = th.getAttribute('data-col') + '|' + d[0];
+          op.textContent = texto + ', ' + d[1];
+          sel.appendChild(op);
+        });
+        var s = th.getAttribute('aria-sort');
+        if (s === 'ascending') atual = th.getAttribute('data-col') + '|asc';
+        if (s === 'descending') atual = th.getAttribute('data-col') + '|desc';
+      });
+      sel.value = atual;
+      caixa.appendChild(rot);
+      caixa.appendChild(sel);
+      wrap.insertBefore(caixa, tabela);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ordenarMontar); else ordenarMontar();
+  document.addEventListener('change', function (e) {
+    var sel = e.target.closest && e.target.closest('.ucam-table__ordenar select');
+    if (!sel) return;
+    var tabela = sel.closest('.ucam-table-wrap').querySelector('.ucam-table');
+    var partes = sel.value.split('|');
+    var ths = tabela.tHead.rows[0].children;
+    var th = null;
+    for (var i = 0; i < ths.length; i++) if (ths[i].getAttribute('data-col') === (partes[0] || '')) th = ths[i];
+    if (!th) th = Array.prototype.filter.call(ths, function (x) { return x.getAttribute('aria-sort') && x.getAttribute('aria-sort') !== 'none'; })[0];
+    if (!th) return;
+    colunaOrdenar(tabela, th, partes[1] || null);
+    anuncia(sel.value ? 'Ordenado por ' + sel.options[sel.selectedIndex].textContent + '.' : 'Ordem original.', sel);
+  });
 
   // Reordena as colunas e escreve o sticky. Peso: selecao 0, fixa no inicio
   // 1, o resto 2 na ordem original, fixa no fim 3, acoes 4.
@@ -2340,6 +2524,13 @@ ${FN_ANUNCIA}
     });
   });
 
+  // Troca o rótulo de vez, mantendo o ícone: só o último nó de texto muda.
+  function trocaRotulo(botao, texto) {
+    var nos = Array.prototype.filter.call(botao.childNodes, function (n) { return n.nodeType === 3 && n.textContent.trim(); });
+    if (nos.length) nos[nos.length - 1].textContent = ' ' + texto;
+    else botao.appendChild(document.createTextNode(texto));
+  }
+
   function rotuloTemporario(botao, texto) {
     if (botao.hasAttribute('data-rotulo-original')) return;
     botao.setAttribute('data-rotulo-original', botao.innerHTML);
@@ -2459,6 +2650,19 @@ ${FN_ANUNCIA}
     var aceita = (g.getAttribute('data-accept') || '').split(',').map(function (x) { return x.trim().toLowerCase(); }).filter(Boolean);
     var teto = Number(g.getAttribute('data-max-size') || 0) || null;
     return { aceita: aceita, teto: teto };
+  }
+
+  /* O ENVIO QUE EXIGE ARQUIVO. No diálogo de enviar documento, o primário
+   * ([data-exige-anexo]) só vale com um arquivo aceito na lista do próprio
+   * diálogo; sem ele, fica aria-disabled e o motivoScript diz por quê. Nada
+   * sai no ato da escolha: escolher é escolher, enviar é o botão. */
+  function exigeAnexo(dlg) {
+    if (!dlg) return;
+    var envia = dlg.querySelector('[data-exige-anexo]');
+    if (!envia) return;
+    var tem = !!dlg.querySelector('.ucam-anexos .ucam-anexo:not(.ucam-anexo--recusado)');
+    if (tem) envia.removeAttribute('aria-disabled');
+    else envia.setAttribute('aria-disabled', 'true');
   }
 
   function nomesDosFormatos(aceita) {
@@ -2681,9 +2885,11 @@ ${FN_ANUNCIA}
       else if (v === 'documento') { t.documento++; t.aguardam.push(nome); }
       else { t.pendentes++; t.semDecisao.push(nome); }
     });
-    var alvo = document.querySelector('[data-totais]');
-    if (alvo) alvo.textContent = t.total + ' disciplinas · ' + t.isentas + (t.isentas === 1 ? ' isenta · ' : ' isentas · ') + t.nao + (t.nao === 1 ? ' não isenta' : ' não isentas') +
+    var linhaTot = t.total + ' disciplinas · ' + t.isentas + (t.isentas === 1 ? ' isenta · ' : ' isentas · ') + t.nao + (t.nao === 1 ? ' não isenta' : ' não isentas') +
       (t.documento ? ' · ' + t.documento + ' aguardando documento' : '') + (t.pendentes ? ' · ' + t.pendentes + ' sem decisão' : '');
+    // O resumo do rodapé da tabela e o eco dele no fecho do telefone
+    // (.ucam-viewbar__resumo, aria-hidden: quem ouve já tem o de cima).
+    Array.prototype.forEach.call(document.querySelectorAll('[data-totais], [data-totais-eco]'), function (alvo) { alvo.textContent = linhaTot; });
     var fim = document.querySelector('[data-acao="finalizar-analise"]');
     if (fim) {
       fim.setAttribute('data-pendentes', String(t.pendentes));
@@ -2797,6 +3003,15 @@ ${FN_ANUNCIA}
       g.replaceWith(fixo);
     });
   }
+  // A DICA DA SEÇÃO ACOMPANHA O ESTADO: a frase que explicava o que fazer
+  // ("aplique as sugestões… Finalizar envia") continuava lá depois do pedido
+  // enviado, numa tela que já não deixava fazer nada. Quem tem outra frase
+  // para o estado novo a traz em data-dica-<estado>.
+  function trocaDicas(estado) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-dica-' + estado + ']'), function (p) {
+      p.textContent = p.getAttribute('data-dica-' + estado);
+    });
+  }
   function seloIsencao(el, tom, texto) {
     if (!el) return;
     el.className = 'ucam-badge ucam-badge--' + tom;
@@ -2846,7 +3061,15 @@ ${FN_ANUNCIA}
     if (qual === 'anexar') {
       var entrada = document.createElement('input');
       entrada.type = 'file';
-      entrada.multiple = true;
+      // O SELETOR JÁ FILTRA o que a regra aceita (data-accept): no telefone
+      // o seletor mostrava a galeria inteira para um campo que só leva PDF.
+      // A validação depois da escolha continua — accept é sugestão ao
+      // sistema, não garantia. data-unico: um arquivo por vez, e a nova
+      // escolha substitui a anterior (o documento pedido é um só).
+      var regraE = regraDoAnexo(botao);
+      if (regraE.aceita.length) entrada.accept = regraE.aceita.map(function (x) { return x === '.pdf' ? '.pdf,application/pdf' : x; }).join(',');
+      var unico = botao.hasAttribute('data-unico');
+      entrada.multiple = !unico;
       entrada.addEventListener('change', function () {
         if (!entrada.files.length) return;
         // .ucam-compositor vem PRIMEIRO: dentro dele o ancestral mais próximo
@@ -2867,6 +3090,7 @@ ${FN_ANUNCIA}
         var regra = regraDoAnexo(botao);
         var entraram = 0;
         var recusas = [];
+        if (unico) grade.textContent = '';
         Array.prototype.forEach.call(entrada.files, function (f) {
           var recusa = recusaDe(f, regra);
           if (recusa) recusas.push(f.name + ' ' + recusa + '.');
@@ -2881,7 +3105,10 @@ ${FN_ANUNCIA}
         var aceitos = Array.prototype.filter.call(entrada.files, function (f) { return !recusaDe(f, regra); });
         if (entraram === 1) dito.push('Anexado ' + aceitos[0].name + '.');
         else if (entraram) dito.push(entraram + ' arquivos anexados.');
-        anuncia(dito.concat(recusas).join(' '), botao);
+        // Recusa é erro (tudo recusado) ou atenção (parte entrou): o toast
+        // sai no tom, e não com o visto de sucesso.
+        anuncia(dito.concat(recusas).join(' '), botao, recusas.length ? (entraram ? 'warning' : 'danger') : undefined);
+        exigeAnexo(botao.closest('dialog'));
         // O foco vai para a primeira linha recusada: a recusa veio de escolha
         // por teclado, e quem escolheu precisa chegar ao motivo.
         if (recusas.length) {
@@ -2900,7 +3127,9 @@ ${FN_ANUNCIA}
       if (!li) return;
       var vizinho = li.nextElementSibling || li.previousElementSibling;
       var nomeAnexo = (li.querySelector('.ucam-anexo__nome') || {}).textContent || 'arquivo';
+      var dlgR = ul && ul.closest('dialog');
       li.remove();
+      exigeAnexo(dlgR);
       anuncia('Anexo ' + nomeAnexo.trim() + ' removido.', botao);
       if (vizinho) return vizinho.querySelector('button, a').focus();
       var dono = ul.closest('fieldset') || ul.parentElement;
@@ -2923,6 +3152,7 @@ ${FN_ANUNCIA}
       if (!fileira) return;
       fileira.hidden = !fileira.hidden;
       botao.setAttribute('aria-expanded', String(!fileira.hidden));
+      verboFiltros(botao, !fileira.hidden);
       return;
     }
 
@@ -2942,7 +3172,7 @@ ${FN_ANUNCIA}
       anuncia(n ? n + (n === 1 ? ' filtro aplicado.' : ' filtros aplicados.') : 'Nenhum filtro aplicado.', botao);
       if (!n) {
         fila.hidden = true;
-        if (cont) { cont.setAttribute('aria-expanded', 'false'); cont.focus(); }
+        if (cont) { cont.setAttribute('aria-expanded', 'false'); verboFiltros(cont, false); cont.focus(); }
       } else {
         var proximo = fila.querySelector('.ucam-chip button');
         if (proximo) proximo.focus();
@@ -2959,10 +3189,15 @@ ${FN_ANUNCIA}
      * "Encaminhados" não recebiam nada. */
     if (qual === 'concluir' || qual === 'encaminhar') {
       var concluindo = qual === 'concluir';
+      // O DESTINO é escolhido no diálogo (data-abre-dialogo → data-escolha,
+      // dialogoScript): "encaminhado ao setor responsável" mandava o pedido
+      // para o setor onde ele já estava (revisão de 28/09/2026).
+      var destino = botao.getAttribute('data-escolha');
+      var paraOnde = destino ? ' a ' + destino : ' ao setor responsável';
       mudarSelo(seloSituacao(botao), concluindo ? 'Concluído' : 'Encaminhado', concluindo ? 'success' : 'info');
-      evento(concluindo ? 'Concluiu o requerimento' : 'Encaminhou o requerimento ao setor responsável', concluindo ? 'check' : 'send');
+      evento(concluindo ? 'Concluiu o requerimento' : 'Encaminhou o requerimento' + paraOnde, concluindo ? 'check' : 'send');
       tiraDaFila(botao, concluindo ? 'concluidos' : 'encaminhados', concluindo ? 'Concluído' : 'Encaminhado', concluindo ? 'success' : 'info');
-      anuncia(concluindo ? 'Requerimento concluído. Ele saiu de Aguardam você e está em Concluídos.' : 'Requerimento encaminhado ao setor responsável. Ele saiu de Aguardam você e está em Encaminhados.', botao);
+      anuncia(concluindo ? 'Requerimento concluído. Ele saiu de Aguardam você e está em Concluídos.' : 'Requerimento encaminhado' + paraOnde + '. Ele saiu de Aguardam você e está em Encaminhados.', botao);
       if (concluindo) { botao.setAttribute('aria-disabled', 'true'); botao.setAttribute('title', 'O requerimento já está concluído'); return; }
       return rotuloTemporario(botao, 'Encaminhado');
     }
@@ -3315,7 +3550,20 @@ ${FN_ANUNCIA}
      * cabeçalho de uma coluna; a lista o insere no topo (criadoScript). Nome
      * vazio para no próprio campo, com a mensagem de erro dele. */
 
+    /* DESCARTAR VOLTA O FORMULÁRIO, NÃO SAI DA TELA (revisão de 28/09/2026).
+     * Nos parâmetros dos setores "Descartar" era link para a listagem: tirava
+     * a pessoa da tela para desfazer duas mudanças. O estado salvo é o da
+     * marcação — defaultValue, defaultChecked e, na lista estilizada, a foto
+     * data-inicial tirada na carga —, e Salvar o atualiza (logo abaixo). */
+    if (qual === 'descartar-form') {
+      var escopoD = botao.closest('aside, form, .ucam-card') || document;
+      var voltaram = formVolta(escopoD);
+      anuncia(voltaram ? plural(voltaram, 'campo voltou', 'campos voltaram') + ' ao que está salvo.' : 'Nada a descartar: os campos estão como foram salvos.', botao);
+      return;
+    }
+
     if (qual === 'salvar') {
+      formGrava(botao.closest('aside, form, .ucam-card'));
       var gavetaS = botao.closest('.ucam-drawer');
       if (gavetaS && gavetaS.querySelector('[data-grava]')) return;
       eco(document.querySelector('tr[aria-selected="true"]'));
@@ -3343,22 +3591,71 @@ ${FN_ANUNCIA}
       return;
     }
 
+    /* REGISTRAR É UMA LINHA QUE SE PREENCHE (revisão de 28/09/2026). A linha
+     * nova dizia "Novo / Lançamento em edição / — / —" e não tinha campo
+     * nenhum: o toast prometia edição que não existia, e no telefone as
+     * células vinham sem rótulo. Agora cada célula é um campo com nome
+     * acessível e data-label (o cartão empilhado mostra o rótulo), e a última
+     * leva Lançar e Cancelar. Uma linha em edição por vez. */
     if (qual === 'registrar-lancamento') {
       var corpo = (botao.closest('.ucam-corpo, .ucam-main') || document).querySelector('table.ucam-table tbody');
       if (!corpo) return;
+      var aberta = corpo.querySelector('tr[data-lancamento-novo]');
+      if (aberta) { aberta.querySelector('input').focus(); return; }
+      var tabelaL = corpo.closest('table');
       var modelo = corpo.rows[0];
       var nova = document.createElement('tr');
+      nova.setAttribute('data-lancamento-novo', '');
+      var cabL = tabelaL.tHead ? tabelaL.tHead.rows[0].cells : [];
+      var campos = [
+        null,
+        '<input class="ucam-input" type="text" aria-label="Documento do lançamento" placeholder="REC 0000">',
+        '<input class="ucam-input" type="text" aria-label="Histórico do lançamento" placeholder="Pagador ou motivo">',
+        '<select class="ucam-select" aria-label="Forma de pagamento"><option>Dinheiro</option><option>PIX</option><option>Cartão</option><option>Transferência</option></select>',
+        '<span class="ucam-cluster"><input class="ucam-input" type="text" inputmode="decimal" aria-label="Valor do lançamento, em reais" placeholder="0,00" style="inline-size:7rem"><button class="ucam-btn ucam-btn--primary ucam-btn--sm" type="button" data-fluxo="c" data-acao="lancar-lancamento">Lançar</button><button class="ucam-btn ucam-btn--ghost ucam-btn--sm" type="button" data-fluxo="c" data-acao="cancelar-lancamento">Cancelar</button></span>',
+      ];
       var colunas = modelo ? modelo.cells.length : 5;
-      var valores = [hora(), 'Novo', 'Lançamento em edição', '—', '—'];
       for (var i = 0; i < colunas; i++) {
         var td = document.createElement('td');
-        if (modelo) td.className = modelo.cells[i].className;
-        td.textContent = valores[i] || '';
+        if (modelo) td.className = modelo.cells[i].className.replace('td--num', '');
+        var th = cabL[i];
+        if (th) td.setAttribute('data-label', ((th.querySelector('.ucam-table__coluna') || th).textContent || '').trim());
+        if (i === 0) td.textContent = hora(); else td.innerHTML = campos[i] || '';
         nova.appendChild(td);
       }
       corpo.insertBefore(nova, corpo.firstElementChild);
-      anuncia('Lançamento novo na primeira linha da tabela, em edição.', botao);
+      nova.querySelector('input').focus();
+      anuncia('Linha nova no topo da tabela: preencha documento, histórico, forma e valor e toque em Lançar.', botao);
       return eco(nova);
+    }
+
+    if (qual === 'lancar-lancamento' || qual === 'cancelar-lancamento') {
+      var trL = botao.closest('tr[data-lancamento-novo]');
+      if (!trL) return;
+      var registrarL = document.querySelector('[data-acao="registrar-lancamento"]');
+      if (qual === 'cancelar-lancamento') {
+        trL.remove();
+        anuncia('Lançamento descartado.', registrarL || botao);
+        if (registrarL) registrarL.focus();
+        return;
+      }
+      var entradas = trL.querySelectorAll('input');
+      var faltou = null;
+      Array.prototype.forEach.call(entradas, function (inp) {
+        if (!inp.value.trim()) { if (!faltou) faltou = inp; erroDeCampo(inp, 'Preencha ' + inp.getAttribute('aria-label').replace(/ do lançamento.*$/, '').toLowerCase() + '.'); }
+        else semErroDeCampo(inp);
+      });
+      if (faltou) { faltou.focus(); return; }
+      var formaL = trL.querySelector('select');
+      var valorL = entradas[2].value.trim();
+      var textos = [null, entradas[0].value.trim(), entradas[1].value.trim(), formaL.options[formaL.selectedIndex].text, '+ R$ ' + valorL];
+      Array.prototype.forEach.call(trL.cells, function (c, k) { if (k) c.textContent = textos[k]; });
+      var modeloL = trL.parentNode.rows[1];
+      if (modeloL && modeloL.cells[4]) trL.cells[4].className = modeloL.cells[4].className;
+      trL.removeAttribute('data-lancamento-novo');
+      anuncia('Lançamento ' + textos[1] + ' de R$ ' + valorL + ' registrado às ' + trL.cells[0].textContent + '.', botao);
+      if (registrarL) registrarL.focus();
+      return eco(trL);
     }
 
     /* --- ISENÇÃO DE DISCIPLINAS -------------------------------------------- */
@@ -3484,6 +3781,7 @@ ${FN_ANUNCIA}
         var textoP = 'Pedido enviado ao candidato às ' + hora() + '. A solicitação espera até ' + prazoIsencao() + ' o documento de ' + juntaNomes(tot.aguardam) +
           '; as ' + (tot.isentas + tot.nao) + ' decisões tomadas ficam salvas. Quando o documento chegar, a análise volta à fila.';
         avisa(textoP, document.querySelector('[data-decisoes]') || seloS || botao, 'warning');
+        trocaDicas('pedido');
         var tituloP = document.querySelector('.ucam-viewbar__titulo');
         if (tituloP) { tituloP.setAttribute('tabindex', '-1'); tituloP.focus(); }
         anuncia(textoP, botao);
@@ -3504,6 +3802,7 @@ ${FN_ANUNCIA}
       });
       var textoFim = 'Análise concluída às ' + hora() + ': ' + tot.isentas + (tot.isentas === 1 ? ' isenta' : ' isentas') + ' e ' + tot.nao + (tot.nao === 1 ? ' não isenta' : ' não isentas') + '. O candidato recebeu o resultado por e-mail.';
       avisa(textoFim, document.querySelector('[data-decisoes]') || seloS || botao, 'success');
+      trocaDicas('concluida');
       var tituloTela = document.querySelector('.ucam-viewbar__titulo');
       if (tituloTela) { tituloTela.setAttribute('tabindex', '-1'); tituloTela.focus(); }
       anuncia(textoFim, botao);
@@ -3522,11 +3821,78 @@ ${FN_ANUNCIA}
     if (qual === 'notificar-candidato') {
       // Sem canal no texto: por onde o aviso sai é regra em aberto (e-mail,
       // Portal, SMS). O cartão de documentos passa a dizer o aviso de agora.
-      registraAtividade(botao, 'Aviso de documentos enviado', 'Faltam o histórico escolar e as ementas.', 'send', 'info');
+      /* O SEGUNDO AVISO SE DIZ SEGUNDO (28/09/2026). O botão virava
+       * "Notificado" e continuava ativo: cada toque mandava outro aviso sem
+       * dizer, e a atividade ganhava duas linhas iguais. Agora o rótulo passa
+       * a "Notificar de novo" e a atividade conta: "2º aviso…". */
+      var nAviso = (Number(botao.getAttribute('data-avisos')) || 0) + 1;
+      botao.setAttribute('data-avisos', String(nAviso));
+      var ordem = nAviso > 1 ? nAviso + 'º aviso' : 'Aviso';
+      registraAtividade(botao, ordem + ' de documentos enviado', 'Faltam o histórico escolar e as ementas.', 'send', 'info');
       var ultimoAviso = document.querySelector('#is-sem-docs .ucam-empty__description');
       if (ultimoAviso) ultimoAviso.textContent = ultimoAviso.textContent.split('.')[0] + '. Último aviso: hoje, às ' + hora() + '.';
-      anuncia('Aviso enviado às ' + hora() + '. Ele entrou na atividade.', botao);
-      return rotuloTemporario(botao, 'Notificado');
+      trocaRotulo(botao, 'Notificar de novo');
+      anuncia(ordem + ' enviado às ' + hora() + '. Ele entrou na atividade.', botao);
+      return eco(botao);
+    }
+
+    /* O DOCUMENTO PEDIDO, ENVIADO (acompanhamento do candidato, 28/09/2026).
+     * O diálogo escolhe o arquivo e mostra o tile; o "Enviar" dele devolve o
+     * clique a este botão (dialogoScript, data-confirmado). Aqui a tela muda
+     * como a solicitação muda: o selo vai a Em análise, o aviso amarelo dá
+     * lugar à confirmação com data e hora, a disciplina que esperava volta a
+     * Em análise e o arquivo entra em Documentos enviados. Antes o arquivo
+     * ficava "anexado" e nada mais mudava — a tela seguia pedindo o que já
+     * tinha chegado. */
+    if (qual === 'enviar-documento') {
+      var dlgE = document.getElementById(botao.getAttribute('data-abre-dialogo'));
+      var tileE = dlgE && dlgE.querySelector('.ucam-anexos .ucam-anexo:not(.ucam-anexo--recusado)');
+      if (!tileE) return;
+      var nomeE = (tileE.querySelector('.ucam-anexo__nome') || {}).textContent || 'documento';
+      var apoioE = (tileE.querySelector('.ucam-anexo__apoio') || {}).textContent || '';
+      var descE = dlgE.querySelector('input[type="text"]');
+      var formatoE = apoioE.replace(/ · anexado$/, '') + (descE && descE.value.trim() ? ' · ' + descE.value.trim().toLowerCase() : '');
+      var hoje = new Date();
+      var diaE = ('0' + hoje.getDate()).slice(-2) + '/' + ('0' + (hoje.getMonth() + 1)).slice(-2);
+      var listaE = document.querySelector('ul[data-anexos][aria-label="Documentos enviados"]');
+      if (listaE) {
+        var idE = 'is-cx' + (listaE.children.length + 1);
+        var liE = document.createElement('li');
+        liE.className = 'ucam-anexo';
+        liE.innerHTML = '<span class="ucam-anexo__figura" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-fileText"/></svg></span>' +
+          '<span class="ucam-anexo__corpo"><button class="ucam-anexo__nome" type="button" aria-describedby="' + idE + '" data-fluxo="c" data-acao="baixar-anexo"><span class="ucam-id"></span></button>' +
+          '<span class="ucam-anexo__apoio" id="' + idE + '"></span></span>';
+        liE.querySelector('.ucam-id').textContent = nomeE.trim();
+        liE.querySelector('.ucam-anexo__nome').title = nomeE.trim();
+        liE.querySelector('.ucam-anexo__apoio').textContent = formatoE;
+        liE.querySelector('.ucam-anexo__nome').title = nomeE.trim() + ' — enviado em ' + diaE;
+        listaE.appendChild(liE);
+        eco(liE);
+      }
+      // O diálogo volta vazio para a próxima vez.
+      Array.prototype.forEach.call(dlgE.querySelectorAll('.ucam-anexos'), function (u) { u.remove(); });
+      exigeAnexo(dlgE);
+      seloIsencao(document.querySelector('[data-selo-situacao]'), 'info', 'Em análise');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-aguarda-documento]'), function (td) {
+        td.innerHTML = '<span class="ucam-badge ucam-badge--info"><span class="ucam-badge__ponto" aria-hidden="true"></span>Em análise</span>';
+        td.removeAttribute('data-aguarda-documento');
+      });
+      trocaDicas('enviado');
+      var alertaE = botao.closest('.ucam-alert');
+      var textoE = 'Documento enviado em ' + diaE + ' às ' + hora() + '. A coordenação volta a analisar sua solicitação.';
+      if (alertaE) {
+        alertaE.className = 'ucam-alert ucam-alert--success';
+        alertaE.setAttribute('tabindex', '-1');
+        alertaE.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-circleCheck"/></svg><div class="ucam-alert__corpo"><strong></strong> <span></span></div>';
+        alertaE.querySelector('strong').textContent = 'Documento enviado em ' + diaE + ' às ' + hora() + '.';
+        alertaE.querySelector('.ucam-alert__corpo span').textContent = nomeE.trim() + ' chegou. A coordenação volta a analisar sua solicitação.';
+        alertaE.focus();
+        eco(alertaE);
+      }
+      // Anuncia a partir do alerta: o botão saiu da página junto com o aviso.
+      anuncia(textoE, alertaE || document.querySelector('[data-selo-situacao]'));
+      if (window.ucamToast) window.ucamToast(textoE);
+      return;
     }
 
     if (qual === 'tentar-analise') {
@@ -3576,6 +3942,15 @@ ${FN_ANUNCIA}
       botao.setAttribute('title', 'Análise já reaberta');
       var irAnalise = document.querySelector('[data-reaberta]');
       if (irAnalise) irAnalise.hidden = false;
+      // O PARECER REABERTO NÃO SE BAIXA (28/09/2026): ele deixou de valer no
+      // ato de reabrir, e baixar o antigo entregaria uma decisão desfeita.
+      // Fica indisponível com o motivo (motivoScript); a dica da seção diz
+      // o estado novo em vez de "só para consulta".
+      Array.prototype.forEach.call(document.querySelectorAll('[data-acao="baixar-parecer"], [data-acao="imprimir"][data-parecer]'), function (b) {
+        b.setAttribute('aria-disabled', 'true');
+        b.setAttribute('data-motivo', 'A análise foi reaberta: este parecer deixou de valer. O novo sai quando ela for finalizada de novo.');
+      });
+      trocaDicas('reaberta');
       anuncia('Análise reaberta. A situação voltou a Aguardando análise; Abrir análise leva às decisões.', botao);
       if (irAnalise) irAnalise.focus();
       return eco(seloR);
@@ -3862,6 +4237,39 @@ ${FN_ANUNCIA}
  * entre os dois spans do botão — data-fechado e data-aberto — em vez de ser
  * reescrito, para o número continuar no HTML e não numa string do script.
  */
+/**
+ * A META QUE QUEBROU (28/09/2026). O ponto médio separa a meta do título na
+ * MESMA linha; quando a fileira quebra e a meta abre a linha de baixo, o
+ * ponto lê como marcador de lista ("· Abra uma solicitação…", fila a 768px).
+ * A folha não sabe se um item de flex quebrou: aqui se mede — a meta começa
+ * abaixo do fim do vizinho visível anterior — e se marca data-quebrada.
+ */
+export const viewbarScript = `
+(function () {
+  function mede() {
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-viewbar__meta'), function (m) {
+      var ant = m.previousElementSibling;
+      while (ant && (ant.hidden || !ant.getClientRects().length)) ant = ant.previousElementSibling;
+      var quebrou = !!ant && m.getClientRects().length > 0 &&
+        m.getBoundingClientRect().top >= ant.getBoundingClientRect().bottom - 1;
+      if (quebrou) m.setAttribute('data-quebrada', ''); else m.removeAttribute('data-quebrada');
+    });
+    // O NOME DO SISTEMA NA FAIXA inteiro ou nenhum: a 375px, com a lupa, ele
+    // cortava em "Isen…". Não cabendo, sai da vista (continua sendo o nome
+    // acessível do link) e a marquinha fica sozinha — o nome está no
+    // cabeçalho da gaveta, a um toque.
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-appbar__system'), function (s) {
+      s.removeAttribute('data-cortado');
+      if (s.scrollWidth > s.clientWidth + 1) s.setAttribute('data-cortado', '');
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mede); else mede();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(mede);
+  var t = null;
+  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(mede, 80); });
+})();
+`.trim();
+
 export const descricaoScript = `
 (function () {
   document.addEventListener('click', function (e) {
@@ -4134,6 +4542,10 @@ export const grupoMenuScript = `
         if (novo) naoSalvos++;
         var cx = tr.querySelector('.td--selecao input[type="checkbox"]');
         if (cx) {
+          // Salvo é o defaultChecked (filtroScript, "alterações não salvas"):
+          // concedido "agora" ainda não foi salvo. O default primeiro — ele
+          // arrasta o checked enquanto a caixa não foi tocada.
+          cx.defaultChecked = !!d && !novo;
           cx.checked = !!d;
           cx.setAttribute('aria-label', (cx.getAttribute('aria-label') || '').replace(/ ao grupo .*$/, ' ao grupo ' + dados.nome));
         }
@@ -4160,7 +4572,7 @@ export const grupoMenuScript = `
     });
 
     var rodape = document.querySelector('[data-campo="alteracoes"]');
-    if (rodape) rodape.textContent = naoSalvos === 0 ? 'Nenhuma alteração para salvar' : plural(naoSalvos, 'alteração não salva', 'alterações não salvas');
+    if (rodape) rodape.textContent = naoSalvos === 0 ? 'Nenhuma alteração' : plural(naoSalvos, 'alteração não salva', 'alterações não salvas');
   }
 
   document.addEventListener('click', function (e) {
@@ -4606,6 +5018,41 @@ ${FN_ANUNCIA}
     eco.textContent = n === 0 ? 'Nenhuma alteração' : n === 1 ? '1 alteração não salva' : n + ' alterações não salvas';
   }
 
+  // A LINHA QUE CHEGA "NÃO SALVO" JÁ É ALTERAÇÃO PENDENTE. A Grupo × Menu
+  // abria com três menus marcados e o selo "Não salvo", e a barra dizia
+  // "Nenhuma alteração" (revisão de 28/09/2026): o selo morava no HTML e o
+  // estado salvo também — defaultChecked. Na carga, a caixa dessas linhas
+  // passa a ter "desmarcado" como estado salvo; a contagem, o Descartar e o
+  // Salvar leem todos a mesma diferença.
+  function temSeloPendente(tr) {
+    return Array.prototype.some.call(tr.querySelectorAll('.ucam-badge'), function (b) { return (b.textContent || '').trim() === 'Não salvo'; });
+  }
+  function limpaSelos(soDesmarcadas) {
+    Array.prototype.forEach.call(document.querySelectorAll('tbody tr'), function (tr) {
+      var c = tr.querySelector('.td--selecao input[type="checkbox"]');
+      if (!c || (soDesmarcadas && c.checked)) return;
+      Array.prototype.forEach.call(tr.querySelectorAll('.ucam-badge'), function (b) { if ((b.textContent || '').trim() === 'Não salvo') b.remove(); });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-campo="nao-salvos"]'), function (h) {
+      var sec = h.closest('.ucam-section') || document;
+      if (!Array.prototype.some.call(sec.querySelectorAll('tbody tr'), temSeloPendente)) { h.hidden = true; h.textContent = ''; }
+    });
+  }
+  if (document.querySelector('[data-campo="alteracoes"]')) {
+    Array.prototype.forEach.call(document.querySelectorAll('tbody tr'), function (tr) {
+      var c = tr.querySelector('.td--selecao input[type="checkbox"]');
+      if (c && c.checked && temSeloPendente(tr)) { c.defaultChecked = false; c.checked = true; }
+    });
+    contaAlteracoes();
+    // Salvar grava: o que está marcado passa a ser o estado salvo.
+    document.addEventListener('click', function (e) {
+      if (!(e.target.closest && e.target.closest('[data-acao="salvar"]'))) return;
+      Array.prototype.forEach.call(document.querySelectorAll('tbody .td--selecao input[type="checkbox"]'), function (c) { c.defaultChecked = c.checked; c.checked = c.defaultChecked; });
+      limpaSelos(false);
+      contaAlteracoes();
+    });
+  }
+
   // O texto da contagem de cada seção como ele veio: é para cá que o
   // Descartar volta, e recalculá-lo das linhas mentiria (a tela mostra seis
   // dos quarenta e quatro menus).
@@ -4618,6 +5065,7 @@ ${FN_ANUNCIA}
     var b = e.target.closest && e.target.closest('[data-acao="descartar-marcas"]');
     if (!b) return;
     mexidas().forEach(function (c) { c.checked = c.defaultChecked; });
+    limpaSelos(true);
     contagensIniciais.forEach(function (par) { par[0].textContent = par[1]; });
     Array.prototype.forEach.call(document.querySelectorAll('table'), function (t) {
       if (cabeca(t)) sincroniza(t);
@@ -4997,6 +5445,14 @@ export const confirmaScript = `
       rotulo: 'Reabrir análise',
       tom: 'danger',
     },
+    // Só com a resposta vazia (data-confirmar="se-vazio:#campo"): concluir
+    // calado fechava o pedido sem uma palavra ao aluno (revisão de 28/09/2026).
+    'concluir': {
+      titulo: 'Concluir sem resposta ao aluno?',
+      corpo: 'O requerimento fecha sem mensagem nenhuma ao requerente: ele só vê a situação mudar para Concluído. Para explicar a decisão, escreva a resposta antes de concluir.',
+      rotulo: 'Concluir sem resposta',
+      tom: 'primary',
+    },
   };
 
   var caixa = null;
@@ -5068,6 +5524,13 @@ export const confirmaScript = `
   document.addEventListener('click', function (e) {
     var botao = e.target.closest && e.target.closest('[data-confirmar]');
     if (!botao || botao.hasAttribute('data-confirmado')) return;
+    // CONFIRMAÇÃO CONDICIONAL: data-confirmar="se-vazio:<seletor>" só
+    // pergunta quando aquele campo está vazio (Concluir sem resposta).
+    var condicao = botao.getAttribute('data-confirmar') || '';
+    if (condicao.indexOf('se-vazio:') === 0) {
+      var campoCond = document.querySelector(condicao.slice(9));
+      if (campoCond && campoCond.value.trim()) return;
+    }
     e.preventDefault();
     e.stopPropagation();
 
@@ -5145,7 +5608,7 @@ export const confirmaScript = `
     }
 
     var d = monta();
-    d.querySelector('.ucam-dialog__title').textContent = (botao.getAttribute('aria-label') || botao.textContent.trim()) + '?';
+    d.querySelector('.ucam-dialog__title').textContent = texto.titulo || (botao.getAttribute('aria-label') || botao.textContent.trim()) + '?';
     d.querySelector('.ucam-dialog__texto').textContent = texto.corpo;
     var rotuloOk = texto.rotulo;
     // Finalizar nomeia os números: o resumo da tabela ([data-totais]) abre o corpo.
@@ -5402,7 +5865,16 @@ ${FN_ANUNCIA}
     irmaos(painel).forEach(function (n) { n.setAttribute('inert', ''); });
     document.documentElement.style.overflow = 'hidden';
     var corpo = painel.querySelector('.ucam-drawer__body');
-    var primeiro = corpo && corpo.querySelector('button, [href], input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"])');
+    // a[href], e não [href]: o <use href="#i-…"> de todo ícone casava com
+    // [href] e ganhava o foco — que não pega em SVG, e ficava no body. Na
+    // gaveta da matriz (só leitura, ícones no corpo) o foco nunca entrava.
+    // Sem interativo no corpo, quem recebe o foco é o próprio painel.
+    // Só o que se vê, e não o copiar: ele some sob toque (display: none,
+    // o foco não pega) e, no mouse, abrir a gaveta no botão de copiar o
+    // código da matriz é pousar num acessório.
+    var primeiro = corpo && Array.prototype.find.call(
+      corpo.querySelectorAll('button:not(.ucam-copiar), a[href], input:not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"]):not(svg *)'),
+      function (el) { return el.getClientRects().length > 0; });
     // DEPOIS de quem fechou o menu. A gaveta costuma ser aberta por um item de
     // menu, e o script do menu devolve o foco ao gatilho dele ao fechar — se a
     // gaveta focar antes, o menu rouba o foco em seguida e a pessoa continua
@@ -5520,7 +5992,7 @@ export const toastScript = `
 (function () {
   var VIDA = 5000;
   var MAX = 3;
-  var ICONE = { success: 'circleCheck', info: 'info', warning: 'triangleAlert' };
+  var ICONE = { success: 'circleCheck', info: 'info', warning: 'triangleAlert', danger: 'circleAlert' };
   var regiao = null;
 
   function pilha() {
@@ -5547,13 +6019,18 @@ export const toastScript = `
     if (!texto) return;
     tom = ICONE[tom] ? tom : 'success';
     var p = pilha();
-    while (p.children.length >= MAX) sai(p.firstElementChild) || p.firstElementChild.remove();
+    // Quantos cabem: a folha diz (--ucam-toasts-max, 1 no telefone). O que
+    // sai é o mais antigo, e sai NA HORA — o "saindo" com animação continuava
+    // ocupando a pilha e o novo nascia em cima dele.
+    var max = parseInt(getComputedStyle(p).getPropertyValue('--ucam-toasts-max'), 10) || MAX;
+    var vivos = function () { return p.querySelectorAll('.ucam-toast:not([data-saindo])'); };
+    while (vivos().length >= max) { var velho = vivos()[0]; clearTimeout(velho._t); velho.remove(); }
     var el = document.createElement('div');
     el.className = 'ucam-toast ucam-toast--' + tom;
     el.innerHTML =
       '<svg class="ic" aria-hidden="true"><use href="#i-' + ICONE[tom] + '"/></svg>' +
       '<span class="ucam-toast__texto"></span>' +
-      '<button class="ucam-toast__fechar" type="button" aria-label="Fechar confirmação">' +
+      '<button class="ucam-toast__fechar" type="button" aria-label="' + (tom === 'danger' || tom === 'warning' ? 'Fechar aviso' : 'Fechar confirmação') + '">' +
       '<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>';
     el.querySelector('.ucam-toast__texto').textContent = texto;
     el.querySelector('.ucam-toast__fechar').addEventListener('click', function () { sai(el); });
@@ -5600,7 +6077,11 @@ export const dataScript = `
     var resto = (campo.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== id; });
     if (!frase) {
       if (e) e.remove();
-      campo.removeAttribute('aria-invalid');
+      // Só o erro de FORMATO sai: se outro erro do campo continua de pé (o
+      // "-periodo-erro" do periodoScript, que diz Até antes de De), o campo
+      // segue inválido.
+      var outro = resto.some(function (x) { var el = document.getElementById(x); return el && el.classList.contains('ucam-field__error'); });
+      if (!outro) campo.removeAttribute('aria-invalid');
       campo.setAttribute('aria-describedby', resto.join(' '));
       return;
     }
@@ -5676,8 +6157,12 @@ ${FN_ANUNCIA}
       ate: document.querySelector('[data-periodo="ate"][data-periodo-alvo="' + alvo + '"]'),
     };
   }
+  // Id PRÓPRIO, não o "-erro" do campo de data: o dataScript valida o
+  // formato na saída do campo e limpa o "-erro" quando a data é real — e a
+  // saída vem logo depois do change. Com o mesmo id, "Até antes de De" nascia
+  // e morria no mesmo toque: 01/06 a 01/01 passava calado (28/09/2026).
   function erroAte(c, frase) {
-    var id = c.id + '-erro', e = document.getElementById(id);
+    var id = c.id + '-periodo-erro', e = document.getElementById(id);
     var resto = (c.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== id; });
     if (!frase) { if (e) e.remove(); c.removeAttribute('aria-invalid'); c.setAttribute('aria-describedby', resto.join(' ')); return; }
     if (!e) { e = document.createElement('span'); e.className = 'ucam-field__error'; e.id = id; c.closest('.ucam-field').appendChild(e); }
@@ -5691,8 +6176,12 @@ ${FN_ANUNCIA}
     if (!t || !c.de || !c.ate) return;
     var de = am(c.de.value), ate = am(c.ate.value);
     if (!de || !ate) return;
-    if (de > ate) { erroAte(c.ate, 'A data final precisa ser depois de ' + c.de.value + '.'); return; }
-    if (c.ate.getAttribute('aria-invalid') === 'true' && c.ate.id + '-erro' && /depois de/.test((document.getElementById(c.ate.id + '-erro') || {}).textContent || '')) erroAte(c.ate, '');
+    if (de > ate) {
+      erroAte(c.ate, 'A data final precisa ser depois de ' + c.de.value + '.');
+      if (falar) anuncia('A data final precisa ser depois de ' + c.de.value + '. A tabela continua no período anterior.', c.ate);
+      return;
+    }
+    if (document.getElementById(c.ate.id + '-periodo-erro')) erroAte(c.ate, '');
     var vis = [];
     Array.prototype.forEach.call(t.tBodies[0].rows, function (tr) {
       var k = tr.querySelector('th[data-valor]');
@@ -5705,6 +6194,29 @@ ${FN_ANUNCIA}
       var col = Number(el.getAttribute('data-soma').split(':')[1]);
       var soma = vis.reduce(function (s, tr) { var td = tr.querySelectorAll('td')[col]; return s + (td ? num(td.textContent) : 0); }, 0);
       el.textContent = fmt(soma);
+    });
+    // A COMPARAÇÃO É DO PERÍODO INTEIRO. "4% abaixo do anterior" foi medido
+    // contra o período padrão; recortado, o número mudava e a frase ficava,
+    // comparando o que não foi comparado. Recortado, ela diz só o recorte, sem
+    // seta; de volta ao período inteiro, volta a frase (a do cenário atual).
+    var total = Array.prototype.filter.call(t.tBodies[0].rows, function (tr) { return tr.querySelector('th[data-valor]'); }).length;
+    var recortado = vis.length < total;
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-stat'), function (st) {
+      if (!st.querySelector('[data-soma^="' + alvo + ':"]') && !(st.parentElement && st.parentElement.querySelector('[data-soma^="' + alvo + ':"]'))) return;
+      var d = st.querySelector('.ucam-stat__delta');
+      var s = d && d.querySelector('span');
+      if (!s) return;
+      var ic = d.querySelector('svg');
+      if (recortado) {
+        if (!d.hasAttribute('data-neutro') || s.textContent !== 'no período escolhido') s.setAttribute('data-texto-cheio', s.textContent);
+        d.setAttribute('data-neutro', '');
+        s.textContent = 'no período escolhido';
+        if (ic) ic.style.display = 'none';
+      } else if (d.hasAttribute('data-neutro')) {
+        d.removeAttribute('data-neutro');
+        s.textContent = s.getAttribute('data-texto-cheio') || s.textContent;
+        if (ic) ic.style.display = '';
+      }
     });
     var rot = document.querySelector('[data-periodo-rotulo="' + alvo + '"]');
     var nome = function (v) { return MESES[Number(v.slice(4)) - 1]; };
@@ -5780,7 +6292,9 @@ ${FN_ANUNCIA}
     balao.textContent = texto;
     // Dentro do escopo .ucam: pendurado no body o balão perdia a fonte e os
     // tokens (saía em serifa).
-    (el.closest('.ucam-shell') || el.closest('.ucam') || document.body).appendChild(balao);
+    // Dentro de diálogo modal, no diálogo: fora dele o balão ficava atrás da
+    // camada do topo e do escurecimento, invisível.
+    (el.closest('dialog[open]') || el.closest('.ucam-shell') || el.closest('.ucam') || document.body).appendChild(balao);
     var r = el.getBoundingClientRect(), b = balao.getBoundingClientRect();
     var x = Math.min(Math.max(8, r.left + r.width / 2 - b.width / 2), innerWidth - b.width - 8);
     var y = r.bottom + 6;
@@ -6173,6 +6687,10 @@ export const tabelaScript = `
   function rotulosDaBarra() {
     Array.prototype.forEach.call(document.querySelectorAll('.ucam-toolbar--compacta .ucam-field > .ucam-field__label'), function (label) {
       if (label.querySelector('.ucam-sr-only')) return;
+      // Data fica com o rótulo À VISTA: o campo nasce preenchido, então não
+      // há placeholder para dizer o que ele é — e De/Até empilhados no
+      // telefone eram duas datas sem nome (Analytics, 28/09/2026).
+      if (label.closest('.ucam-field--data')) return;
       var texto = (label.textContent || '').trim();
       var span = document.createElement('span');
       span.className = 'ucam-sr-only';
@@ -6228,6 +6746,12 @@ export const tabelaScript = `
   document.addEventListener('auxclick', segueLinha);
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tudo); else tudo();
+  // MEDE DE NOVO QUANDO A FONTE CHEGA. A primeira medida sai com a fonte de
+  // reserva, mais estreita: a 768px os cursos cabiam nela (711px), a fonte
+  // de verdade levava a tabela a 719, e o invólucro já marcado "não rola"
+  // recortava 8px da última coluna sem barra nenhuma (28/09/2026).
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(tudo);
+  window.addEventListener('load', tudo);
   var agendado = null;
   window.addEventListener('resize', function () {
     clearTimeout(agendado);
@@ -6268,7 +6792,33 @@ export const menuContaScript = `
   // esquerda saem do retangulo do gatilho, com a borda da janela como teto —
   // e abre para CIMA quando embaixo nao cabe, que e o caso da tabela colada
   // no pe da tela.
+  // O MENU QUE CABE NA JANELA. O painel absoluto alinha pelo lado que o
+  // markup escolheu (align do menu.json: fim por padrão). Quando esse lado o
+  // joga para fora — o "⋮" no começo da linha num telefone abria em x=−58 —,
+  // vira para o outro lado; se ainda assim não couber, desliza pelo que falta.
+  // O deslize vai em "translate" e não em "transform", que é do surgimento.
+  // Painel fixo (a lista do sino no telefone) já está preso à janela.
+  function caber(menu) {
+    if (menu.classList.contains('ucam-menu--coluna')) return;
+    if (!menu.hasAttribute('data-alinha')) menu.setAttribute('data-alinha', menu.classList.contains('ucam-menu--inicio') ? 'inicio' : 'fim');
+    var inicio = menu.getAttribute('data-alinha') === 'inicio';
+    menu.classList.toggle('ucam-menu--inicio', inicio);
+    menu.style.translate = '';
+    if (getComputedStyle(menu).position !== 'absolute') return;
+    var larg = document.documentElement.clientWidth;
+    // Mede SEM o surgimento: a animação começa em escala menor, e o retângulo
+    // medido no meio dela subestimava o quanto o painel passava da borda.
+    menu.style.animation = 'none';
+    var r = menu.getBoundingClientRect();
+    if (!inicio && r.left < 8) { menu.classList.add('ucam-menu--inicio'); r = menu.getBoundingClientRect(); }
+    else if (inicio && r.right > larg - 8) { menu.classList.remove('ucam-menu--inicio'); r = menu.getBoundingClientRect(); }
+    var dx = r.left < 8 ? 8 - r.left : (r.right > larg - 8 ? Math.max(larg - 8 - r.right, 8 - r.left) : 0);
+    if (dx) menu.style.translate = Math.round(dx) + 'px 0';
+    menu.style.animation = '';
+  }
+
   function posicionar(gatilho, menu) {
+    caber(menu);
     if (!menu.classList.contains('ucam-menu--coluna')) return;
     var r = gatilho.getBoundingClientRect();
     var larg = menu.offsetWidth;

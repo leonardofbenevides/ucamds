@@ -52,13 +52,13 @@
       "nome": "items",
       "tipo": "SegmentItem[]",
       "obrigatorio": true,
-      "descricao": "As opções, de duas a quatro. A ordem é fixa e vai do mais amplo ao mais restrito quando houver uma opção que engloba as outras: Todas antes de EAD e Presencial. Cada item pode ter tone (success, danger, warning) quando o segmento É um desfecho — a decisão por disciplina da isenção —: escolhido, ele pinta com o par fundo + tinta do selo daquele tom; solto, fica sem tom. Na linha que usa o tom, a sugestão ao lado é texto neutro, para haver um portador de cor só (ADR-027). No Trilho A, data-tom no <button>. Com suggested: true, o segmento é o que a MÁQUINA sugere (sugestão automatizada): leva o ícone sparkles depois do rótulo e \", sugestão\" no nome acessível. Só um por grupo, e só onde a tela explica a marca em palavras. No Trilho A, <svg class=\"ic ucam-segmented__sugerido\"> + <span class=\"ucam-sr-only\">, sugestão</span> dentro do <button>."
+      "descricao": "As opções, de duas a quatro. A ordem é fixa e vai do mais amplo ao mais restrito quando houver uma opção que engloba as outras: Todas antes de EAD e Presencial. Cada item pode ter tone (success, danger, warning) quando o segmento É um desfecho — a decisão por disciplina da isenção —: escolhido, ele pinta com o par fundo + tinta do selo daquele tom; solto, fica sem tom. Na linha que usa o tom, a sugestão ao lado é texto neutro, para haver um portador de cor só (ADR-027). No Trilho A, data-tom no <button>. Com suggested: true, o segmento é o que a MÁQUINA sugere (sugestão automatizada): leva o ícone sparkles depois do rótulo e \", sugestão\" no nome acessível. Só um por grupo, e só onde a tela explica a marca em palavras. No Trilho A, <svg class=\"ic ucam-segmented__sugerido\"> + <span class=\"ucam-sr-only\">, sugestão</span> dentro do <button>. Com disabled: true e reason, o segmento EXISTE mas agora não pode ser escolhido (a decisão que espera os documentos do candidato, em isencao/sem-documentos): fica visível e focável, com aria-disabled=true em vez de disabled, e o motivo aparece num balão (tooltip) ao focar, apontar ou clicar. reason é obrigatório com disabled — bloqueio sem porquê é controle morto. No Trilho A, aria-disabled=\"true\" + data-motivo no <button>, e o motivoScript abre o balão."
     },
     {
       "nome": "value",
       "tipo": "string",
       "obrigatorio": true,
-      "descricao": "O id do segmento escolhido. Two-way: [(value)]. Nunca fica vazio — grupo segmentado sem escolha não tem estado neutro que faça sentido, e um trilho todo cinza parece desabilitado."
+      "descricao": "O id do segmento escolhido. Two-way: [(value)]. Nunca fica vazio — grupo segmentado sem escolha não tem estado neutro que faça sentido, e um trilho todo cinza parece desabilitado. Exceção: com allowEmpty, '' é um estado (nada escolhido)."
     },
     {
       "nome": "ariaLabel",
@@ -82,7 +82,13 @@
       "nome": "disabled",
       "tipo": "boolean",
       "default": "false",
-      "descricao": "Desabilita o grupo inteiro. Não existe desabilitar um segmento: opção indisponível some da lista, porque um segmento morto num trilho de três ocupa um terço da largura sem oferecer nada."
+      "descricao": "Desabilita o grupo inteiro. Opção que não existe para este caso some da lista, porque um segmento morto num trilho de três ocupa um terço da largura sem oferecer nada. Opção que existe mas está bloqueada AGORA, e volta quando a condição mudar, é items[].disabled com reason: fica, e diz por quê."
+    },
+    {
+      "nome": "allowEmpty",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "O grupo pode ficar SEM escolha: value '' é um estado, e acionar o segmento escolhido o desfaz. Só para decisão por linha em que \"ainda não decidido\" é real e pré-escolher seria decidir por omissão — a decisão por disciplina da isenção (Isentar · Não isentar · Pedir documento), em que nenhum marcado é \"sem decisão\". Fora disso vale a regra do value: um segmento sempre escolhido. No Trilho A, nenhum botão com aria-pressed=true."
     }
   ],
   "schemas": {
@@ -101,6 +107,26 @@
         "tipo": "number | null",
         "default": "null",
         "descricao": "Contagem do recorte, quando conhecida sem custo. Entra depois do rótulo e no nome acessível."
+      },
+      "tone": {
+        "tipo": "'success' | 'danger' | 'warning'",
+        "default": "null",
+        "descricao": "Tom do desfecho quando escolhido. Ver items."
+      },
+      "suggested": {
+        "tipo": "boolean",
+        "default": "false",
+        "descricao": "A opção que a máquina sugere: ícone sparkles e \", sugestão\" no nome acessível. Um por grupo."
+      },
+      "disabled": {
+        "tipo": "boolean",
+        "default": "false",
+        "descricao": "Bloqueado agora: aria-disabled, focável, não escolhe. Exige reason."
+      },
+      "reason": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Por que está bloqueado, em frase que diz o que destrava: \"Faltam o histórico e as ementas. Use Notificar candidato.\""
       }
     }
   },
@@ -140,7 +166,8 @@
       "Todos os segmentos são tabuláveis. Diferente da tira de abas: aqui não há painel associado, o grupo é curto e roving tabindex esconderia opções de quem tabula.",
       "Alvo mínimo de 24px em qualquer tamanho; em formulário, size=md acompanha a altura do controle vizinho.",
       "O anel de foco aparece no segmento, dentro do trilho, e não é recortado pelo overflow do trilho.",
-      "Rótulo em caixa natural (ADR-003)."
+      "Rótulo em caixa natural (ADR-003).",
+      "Segmento bloqueado (items[].disabled) usa aria-disabled=true e continua na ordem de tabulação: disabled nativo tiraria o foco e, com ele, o único caminho até o motivo. O motivo é a descrição (aria-describedby do balão), nunca o nome."
     ],
     "criterios_wcag": [
       "1.3.1",
@@ -246,9 +273,9 @@
       "porque": "Marca cheia num filtro rouba o peso da ação primária da tela, que é o único elemento que deveria usá-la (ADR-001). O tom claro da marca é o erro oposto e foi o que esteve no ar: #FFF4F4 sobre branco é 1,03:1 de diferença de plano, e o estado deixa de existir para quem não distingue o rosa."
     },
     {
-      "faca": "Remover da lista a opção indisponível.",
-      "evite": "Segmento desabilitado dentro do trilho.",
-      "porque": "Um segmento morto ocupa um terço da largura sem oferecer nada, e o trilho não tem espaço para gastar."
+      "faca": "Remover da lista a opção que não existe para este caso; manter, com disabled e reason, a que existe e está bloqueada agora.",
+      "evite": "Segmento desabilitado sem motivo, ou com disabled nativo, que tira o foco e esconde o porquê.",
+      "porque": "Um segmento morto ocupa um terço da largura sem oferecer nada. O bloqueado com motivo é outra coisa: diz o que falta para a opção voltar — as decisões da isenção esperando os documentos do candidato."
     },
     {
       "faca": "Escrever type=\"button\" em cada segmento.",
@@ -284,6 +311,6 @@
       ],
       "nota": "O Trilho A NÃO entrega o role=group nem o aria-label — os dois são atributos do markup. É justamente o que falta no legado, então a migração por CSS sozinha não corrige o defeito de acessibilidade. Nas telas de exemplo o segmented é também o PORTADOR dos recortes, sempre com data-valor em cada botão e o efeito declarado no grupo: data-filtra (esconde o que não casa), data-ordena (reordena sem esconder ninguém), data-cenario (troca os números de um recorte que, na aplicação, seria outra consulta) e data-timeline-filtro. O grupo escolhido continua sendo lido de aria-pressed — os atributos dizem o EFEITO, nunca o estado."
     },
-    "trilho_b": "ui/projects/ui/src/lib/ucam/segmented/ucam-segmented.ts — pronto. Grupo com um segmento sempre escolhido, teclado por setas e ariaLabel OBRIGATÓRIO: é a pergunta que o par Sim/Não do SIGFIN não faz."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/segmented/ucam-segmented.ts — pronto. Grupo com um segmento sempre escolhido (ou nenhum, com allowEmpty), ariaLabel OBRIGATÓRIO: é a pergunta que o par Sim/Não do SIGFIN não faz. Itens com tone, suggested e disabled + reason (balão pelo UcamTooltip). count do schema ainda não é desenhado no Trilho B."
   }
 }

@@ -1,4 +1,5 @@
 import {
+  contentChild,
   contentChildren,
   ChangeDetectionStrategy,
   DestroyRef,
@@ -21,6 +22,7 @@ import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
 import { UcamBadge, type UcamBadgeTone } from '../badge/ucam-badge';
 import { UcamAvatar } from '../avatar/ucam-avatar';
 import { UcamMenu, UcamMenuTrigger, type UcamMenuItem } from '../menu/ucam-menu';
+import { UcamTableFaixa } from './ucam-table-faixa';
 
 /**
  * Contrato: spec/components/data-table.json
@@ -149,6 +151,12 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     <!-- O contêiner de rolagem é focável e é uma região com nome: sem isso,
          quem usa só o teclado não consegue rolar a tabela na horizontal
          (WCAG 2.1.1). -->
+    <!-- A MOLDURA existe para a faixa (parte "faixa" do contrato): ela fica
+         dentro da borda da tabela e FORA do contêiner de rolagem — senão
+         rolaria para o lado junto com as colunas. Sem faixa, a moldura não
+         pinta nada e a borda continua no contêiner de rolagem. -->
+    <div class="ucam-table-moldura" [class.ucam-table-moldura--faixa]="!!faixa()">
+    <ng-content select="[ucamTableFaixa]" />
     <div
       #caixa
       [class]="classesCaixa()"
@@ -223,7 +231,9 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
             @for (linha of rows(); track $index) {
               <tr
                 [class.ucam-table__linha--marcada]="marcadas().has(linha)"
+                [class.ucam-table__linha--acionavel]="rowClickable()"
                 [attr.aria-selected]="selectable() === 'none' ? null : marcadas().has(linha)"
+                (click)="aoClicarLinha(linha, $event)"
               >
                 @if (selectable() !== 'none') {
                   <td class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')">
@@ -320,6 +330,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
         </div>
       }
     </div>
+    </div>
   `,
   styles: `
     .ucam-data-table-host {
@@ -337,6 +348,19 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       background: var(--ucam-color-surface-default);
       scrollbar-width: thin;
     }
+    /* Com faixa, a BORDA passa para a moldura: faixa e tabela no mesmo
+       cartão, como .ucam-card > .ucam-table-faixa + .ucam-table-wrap no
+       Trilho A. */
+    .ucam-table-moldura--faixa {
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-surface);
+      background: var(--ucam-color-surface-default);
+      overflow: clip;
+    }
+    .ucam-table-moldura--faixa > .ucam-table-wrap { border: 0; border-radius: 0; }
+    /* Linha acionável: o ponteiro diz que a linha inteira responde. O
+       caminho do teclado continua sendo o link da célula identificadora. */
+    .ucam-table__linha--acionavel { cursor: pointer; }
     .ucam-table-wrap:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: var(--ucam-focus-ring-offset);
@@ -651,7 +675,17 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
    * aplicação que a consome.
    */
   readonly selectionChange = output<readonly T[]>();
+  /**
+   * Linha acionada, com rowClickable: o clique em qualquer ponto da linha que
+   * não seja um controle (link, botão, campo, rótulo). O link ou botão da
+   * célula identificadora faz o mesmo e é o caminho do teclado — por isso o
+   * contrato o exige junto. Ver data-table.json, eventos.rowClick.
+   */
+  readonly rowClick = output<T>();
   readonly retry = output<void>();
+
+  /** A faixa no topo, se o consumidor projetou uma. */
+  protected readonly faixa = contentChild(UcamTableFaixa);
 
   private readonly moldes = contentChildren(UcamCelula);
   /** O HOST, que é quem carrega o container-type — não o div de rolagem. */
@@ -687,6 +721,18 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
         }
       });
     }
+  }
+
+  protected aoClicarLinha(linha: T, evento: MouseEvent): void {
+    if (!this.rowClickable()) return;
+    // O controle dentro da linha responde por si: o link da célula
+    // identificadora navega, o botão age, a caixa de seleção marca. Emitir
+    // rowClick junto seria um clique, duas ações.
+    const alvo = evento.target as Element | null;
+    if (alvo?.closest('a, button, input, select, textarea, label, [role="button"], [contenteditable]')) return;
+    // Seleção de texto não é clique: quem arrastou para copiar não pediu para abrir.
+    if (typeof getSelection === 'function' && String(getSelection() ?? '').length) return;
+    this.rowClick.emit(linha);
   }
 
   protected readonly colunasVisiveis = computed(() => {

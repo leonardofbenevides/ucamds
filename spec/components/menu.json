@@ -95,7 +95,7 @@
       "nome": "align",
       "tipo": "'start' | 'end'",
       "default": "'end'",
-      "descricao": "De que lado do gatilho o painel alinha.",
+      "descricao": "De que lado do gatilho o painel alinha. É a PREFERÊNCIA, não uma garantia: ao abrir, o script do menu mede o painel e, se o lado escolhido o jogaria para fora da janela, vira para o outro (fim → início quando sairia pela esquerda, início → fim quando sairia pela direita); se nenhum dos dois cabe, desliza pelo que falta com a propriedade translate, deixando 8px de respiro da borda. Medido em 28/09/2026: o \"⋮\" encostado no começo da linha abria em x=−58 a 390px. A lista de notificações, abaixo de 30rem, não segue o sino: prende-se à janela (fixa, 1rem de cada lado).",
       "valores": {
         "start": {
           "uso": "Menu encostado na borda inicial do gatilho. É o alinhamento de quem abre da esquerda — a conta na coluna lateral, o lançador da faixa.",

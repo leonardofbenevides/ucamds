@@ -355,6 +355,11 @@ const css = `/* @ucam/css — Trilho A
  * componente (menu.json, prop align) e a origem tem de segui-lo — origem
  * fixa faria o painel da esquerda parecer vir da direita. */
 .ucam-menu--inicio { --ucam-surgir-origem: 0 0; }
+/* O alinhamento pelo início POSICIONA, não só muda a origem do surgimento.
+ * O menuContaScript também põe esta classe quando o painel alinhado pela
+ * direita sairia pela borda esquerda da janela (o "⋮" encostado no começo da
+ * linha num telefone) — ver menu.json, prop align. */
+.ucam-menu.ucam-menu--inicio:not(.ucam-menu--coluna) { inset-inline-start: 0; inset-inline-end: auto; }
 /* Painel ancorado ACIMA do gatilho cresce de baixo para cima. */
 .ucam-menu--acima  { --ucam-surgir-origem: 100% 100%; }
 .ucam-menu--acima.ucam-menu--inicio { --ucam-surgir-origem: 0 100%; }
@@ -420,6 +425,13 @@ const css = `/* @ucam/css — Trilho A
   line-height: 1;
   /* text-transform ausente de propósito — ADR-003. */
   white-space: nowrap;
+  /* O botão NÃO encolhe abaixo do rótulo. Com nowrap e o flex-shrink padrão,
+   * a linha apertada espremia a caixa e o texto vazava por cima do vizinho:
+   * a 390px "Copiar linha digitável" (134 em 111), "Continuar para revisão"
+   * com o C cortado, "Alterar filtros" sobre o chip (revisão de 28/09/2026).
+   * Quem cede é a fileira — .ucam-form-actions quebra linha, o rolo de chips
+   * encolhe. */
+  flex-shrink: 0;
   /* Arrastar o ponteiro sobre um botão não deve selecionar o rótulo: seleção
    * azul em cima de ação lê como defeito. */
   user-select: none;
@@ -1918,7 +1930,24 @@ ${selectChevronCss}
  * ações à direita, na primeira linha. O cabeçalho sai da pintura mas fica
  * para o leitor de tela, e a ordenação por cabeçalho sai com ele (contrato:
  * ela migra para a toolbar). */
+/* O "ORDENAR POR" (estadoScript, data-table.json responsividade.ordenacao): nasce
+ * dentro do invólucro de toda tabela ordenável e só é pintado quando ela
+ * empilha — em colunas, quem ordena é o cabeçalho. */
+.ucam-table__ordenar { display: none; }
 ${contentorAbaixo('tabela-empilhada', 'tabela')} {
+  .ucam-table__ordenar {
+    display: flex;
+    align-items: center;
+    gap: var(--ucam-space-inline-sm);
+    padding-block-end: var(--ucam-space-inset-sm);
+    border-block-end: 1px solid var(--ucam-color-border-subtle);
+  }
+  .ucam-table__ordenar-rotulo {
+    flex: none;
+    font-size: var(--ucam-typography-caption-font-size);
+    color: var(--ucam-color-text-secondary);
+  }
+  .ucam-table__ordenar .ucam-select { flex: 1 1 auto; min-inline-size: 0; }
   .ucam-table-wrap { overflow: visible; border: 0; border-radius: 0; }
   /* O piso por número de colunas (até 56rem) é de tabela EM COLUNAS. Aqui
    * ele fazia a tabela empilhada mais larga que o telefone, e o cartão
@@ -1972,6 +2001,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   }
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes)::before {
     content: attr(data-label);
+    /* O rótulo é texto de interface, não o dado: numa célula de código
+     * (.ucam-codigo, a "Origem" da auditoria) ele herdava a mono. */
+    font-family: var(--ucam-font-body);
     font-size: var(--ucam-typography-caption-font-size);
     line-height: var(--ucam-typography-caption-line-height);
     color: var(--ucam-color-text-secondary);
@@ -1983,24 +2015,55 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   }
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):nth-child(1 of :not(.td--selecao))::before { content: none; }
   .ucam-table tbody tr > :is(th, td):empty::before { content: none; }
-  .ucam-table tbody tr > .td--num { text-align: start; padding: 0; }
+  /* inline-size: a base dá 1% à célula numérica (tabela em colunas encolhe
+   * até o número). Empilhada, esse 1% virava 3px: o valor transbordava para
+   * fora da própria célula, saía 16px à esquerda dos outros valores do
+   * cartão e o link do número ("5" em análise) ficava com 8px de alvo
+   * (isenção a 390px, 28/09/2026). */
+  .ucam-table tbody tr > .td--num { text-align: start; padding: 0; inline-size: auto; }
+  /* SELETOR SEGMENTADO NA CÉLULA: rótulo em cima, controle na largura do
+   * cartão. Ao lado do rótulo ele ganhava 60% do cartão (187px a 390) e a
+   * terceira posição — "Pedir documento" na análise da isenção — ficava
+   * inteira atrás da rolagem, com o selecionado cortado em "Pe…". O seletor
+   * mede 305px e o cartão tem 317: em cima ele cabe. Mesmo seletor comprido
+   * da ficha, com o :has() na frente, para vencer a regra de duas colunas. */
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))):has(> .ucam-segmented) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--ucam-space-inline-xs);
+  }
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))):has(> .ucam-segmented) > * { grid-column: 1; }
+  /* PESSOA FORA DA PRIMEIRA CÉLULA (a coordenação de um curso): avatar e
+   * nome na MESMA linha do valor. A regra da ficha manda todo filho para a
+   * coluna do valor, um embaixo do outro — o avatar ficava sozinho numa
+   * linha e o nome caía na seguinte. Três colunas: rótulo, avatar, nome. */
+  .ucam-table tbody tr > :is(th, td).td--pessoa:not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) {
+    grid-template-columns: minmax(6.5rem, 38%) auto minmax(0, 1fr);
+    align-items: center;
+  }
+  .ucam-table tbody tr > :is(th, td).td--pessoa:not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) > .ucam-avatar { grid-column: 2; }
+  .ucam-table tbody tr > :is(th, td).td--pessoa:not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) > :not(.ucam-avatar) { grid-column: 3; max-inline-size: none; }
   /* tbody na frente: este bloco vem ANTES das regras base da célula na
    * folha, e com a mesma especificidade perderia para elas. */
   .ucam-table tbody .td--pessoa__texto { flex-wrap: wrap; max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
   .ucam-table tbody .td--pessoa__texto > * { flex: 0 1 auto; min-inline-size: 0; }
   .ucam-table tbody .td--pessoa { white-space: normal; }
   .ucam-table tbody .td--apoio { white-space: normal; }
+  /* E-mail é uma palavra só: "amanda.vasques@aluno.ucam.edu.br" passava 53px
+   * da borda do cartão a 390px (Relatórios, 28/09/2026). */
+  .ucam-table tbody .td--pessoa .td--apoio { overflow-wrap: anywhere; }
   .ucam-table tbody .ucam-copiar { position: relative; }
   .ucam-table tbody tr > td:not(.td--selecao):nth-child(1 of :not(.td--selecao)):has(> .ucam-card__titulo) { min-inline-size: 0; }
-  /* A linha marcada: o shape de 4px sai da última célula (que virou bloco no
-   * meio) e vai para a borda direita do bloco inteiro. */
+  /* A linha marcada: o shape de 4px sai da primeira célula (que virou bloco)
+   * e vai para a borda ESQUERDA do cartão inteiro (28/09/2026). */
   .ucam-table tbody tr[aria-selected="true"] { position: relative; }
-  .ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child::after { content: none; }
+  /* Classe repetida: a regra da célula vem DEPOIS na folha com a mesma
+   * especificidade e desenhava uma segunda barra dentro do cartão. */
+  .ucam-table.ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child::after { content: none; }
   .ucam-table tbody tr[aria-selected="true"]::after {
     content: "";
     position: absolute;
     inset-block: 0;
-    inset-inline-end: 0;
+    inset-inline-start: 0;
     inline-size: 0.25rem;
     background: var(--ucam-color-action-primary-default);
     pointer-events: none;
@@ -2213,14 +2276,19 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * mora na última célula porque é a única que tem borda direita de verdade;
  * a linha ganha o hover normal, já que não há mais tom de escolha para o
  * hover cobrir. */
-.ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child { position: relative; }
-.ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child::after {
+/* 28/09/2026: "o highlight deveria ser do outro lado, sempre no lado
+ * esquerdo". O traço passa para a BORDA DE ENTRADA, na primeira célula —
+ * o mesmo lado do destaque da caixa de entrada (.ucam-list-item), para a
+ * escolha falar num lado só em todo o sistema. Coluna fixa já é sticky, que
+ * serve de âncora; só a célula comum ganha position: relative. */
+.ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child:not(.ucam-col--fixa-inicio):not(.ucam-col--fixa-fim) { position: relative; }
+.ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child::after {
   content: "";
   position: absolute;
   /* 25/09/2026: era um pill de 3px recuado 6px em cima e embaixo, e leu como
    * "bolinha" em vez de traço. Shape SÓLIDO de 4px, de ponta a ponta. */
   inset-block: 0;
-  inset-inline-end: 0;
+  inset-inline-start: 0;
   inline-size: 0.25rem;
   background: var(--ucam-color-action-primary-default);
   pointer-events: none;
@@ -2722,7 +2790,7 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 }
 
 /* A coluna fixa da linha marcada não tem mais tom próprio: o sinal da
- * escolha é o traço na borda direita (ver a regra de aria-selected). */
+ * escolha é o traço na borda esquerda (ver a regra de aria-selected). */
 
 /* A borda do bloco fixo é um FILETE, só na última fixa de cada lado — é o que
  * diz onde a parte que rola começa. Sombra de lado exigiria cor literal, e a
@@ -4674,6 +4742,57 @@ ${abaixo('nav-fixa')} {
   .ucam-appbar__search { display: none; }
 }
 
+/* A BUSCA ABAIXO DE nav-fixa: uma lupa na faixa, e o MESMO campo por cima.
+ *
+ * O campo saía da faixa e a frase acima prometia que a busca viraria "a
+ * primeira coisa da tela de conteúdo" — nenhuma tela fez isso. A 390 e a 768
+ * a busca global (candidato, curso, matriz, disciplina na isenção) não tinha
+ * caminho nenhum (revisão de 28/09/2026). A lupa (.ucam-appbar__buscar) abre
+ * a caixa de sempre, com o painel de sempre, deitada sobre a faixa inteira;
+ * o foco sair dela, Esc ou tocar fora fecham (buscaGlobalScript). A barra "/"
+ * continua valendo. Acima de nav-fixa a lupa não existe: o campo está lá. */
+.ucam-appbar__lancador.ucam-appbar__buscar { display: none; }
+${abaixo('nav-fixa')} {
+  .ucam-appbar__lancador.ucam-appbar__buscar { display: inline-flex; }
+  /* O espaçador que vinha DEPOIS da caixa sai com ela. Com largura zero ele
+   * ainda cobrava um vão da faixa (16px sob toque), e a lupa nova custava
+   * outro: a 390px o nome do sistema cortava em "Is…". Um espaçador só já
+   * empurra o grupo da direita. */
+  .ucam-appbar__search + .ucam-appbar__spacer { display: none; }
+  /* Sem translate para centrar: transform faz da caixa o bloco contenedor
+   * do painel, que abaixo de respiro-completo é position: fixed — e o painel
+   * de largura da janela encolhia para a largura da caixa, 17px para dentro. */
+  .ucam-appbar__search[data-aberta] {
+    display: flex;
+    position: absolute;
+    inset-inline: var(--ucam-space-inset-md);
+    inset-block-start: calc((100% - var(--ucam-size-control-md)) / 2);
+    max-inline-size: none;
+    z-index: 1;
+  }
+  /* O resto da faixa sai da vista enquanto a caixa está deitada: o papel
+   * dela é translúcido na faixa de marca, e a marquinha, o sino e o avatar
+   * apareciam através do campo. visibility, e não display: a faixa não
+   * muda de altura nem de arranjo, e fechar devolve tudo no mesmo lugar. */
+  .ucam-appbar:has(> .ucam-appbar__search[data-aberta]) > :not(.ucam-appbar__search) { visibility: hidden; }
+  /* O painel acompanha a caixa na largura; na altura, o que sobra da tela
+   * abaixo da faixa, para a última linha de resultado não ficar sob o dedo
+   * fora da janela. */
+  .ucam-appbar__search[data-aberta] .ucam-busca {
+    max-block-size: min(28rem, calc(100dvh - var(--ucam-appbar-height) - var(--ucam-space-inset-md)));
+  }
+}
+
+/* AS TECLAS DO RODAPÉ DO PAINEL. A pastilha .ucam-kbd lê as tintas da faixa
+ * (--ucam-appbar-muted, branco a 72%), porque o uso dominante é dentro dela —
+ * e o painel da busca é FILHO da caixa da faixa, mas pinta papel branco. As
+ * setas, o Enter e o esc saíam brancos em branco: "   navegar   abrir". No
+ * painel, as tintas do papel. */
+.ucam-busca .ucam-kbd {
+  color: var(--ucam-color-text-secondary);
+  border-color: var(--ucam-color-border-subtle);
+}
+
 /* ------------------------------------------------------ tecla (kbd) --- */
 /* Atalho desenhado como tecla. aria-hidden na marcação: para quem ouve, o
  * atalho é anunciado por aria-keyshortcuts no campo, e uma sigla solta no
@@ -4720,6 +4839,46 @@ ${abaixo('nav-fixa')} {
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* Inteiro ou nenhum (viewbarScript mede): "Isen…" não diz o sistema melhor
+ * que a marquinha sozinha, e ocupa o lugar dela. Fora da vista, não do
+ * leitor de tela — é ele o nome acessível do link da faixa. */
+.ucam-appbar__system[data-cortado] {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* O NOME DO SISTEMA CABE NO TELEFONE (revisão móvel de 28/09/2026). Sob toque,
+ * a 390px, "Protocolo" e "Gerencial" saíam da vista por 14px — e o que os
+ * comia era o espaçador: largura zero, mas um vão de 16px da faixa. Abaixo de
+ * nav-fixa quem empurra o grupo da direita é a própria marca (margem
+ * automática), e o espaçador sai. Nome de duas palavras ("Relatórios
+ * Acadêmicos", "Isenção de disciplinas") quebra em duas linhas num corpo
+ * menor antes de sair da vista: a regra "inteiro ou nenhum" segue valendo para
+ * a PALAVRA — o viewbarScript só esconde o nome se uma palavra não couber. */
+${abaixo('nav-fixa')} {
+  .ucam-appbar > .ucam-appbar__spacer { display: none; }
+  .ucam-appbar > .ucam-appbar__brand { margin-inline-end: auto; }
+}
+${abaixo('faixa-minima')} {
+  /* A marquinha desce um degrau (40 → 32px): os 8px são os que faltavam
+   * para "Relatórios" caber inteiro na linha dele a 390px. */
+  .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
+    inline-size: var(--ucam-size-control-md);
+    block-size: var(--ucam-size-control-md);
+  }
+  .ucam-appbar__system:not([data-cortado]) {
+    font-size: 0.875rem;
+    line-height: 1.15;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
 }
 
 /* A logo encolhe: as DUAS medidas encolhem juntas, senão "contain" volta a
@@ -6103,6 +6262,22 @@ ${acima('nav-fixa')} {
   max-inline-size: calc(100vw - 2rem);
   max-block-size: min(26rem, 70vh);
   overflow-y: auto;
+}
+
+/* NO TELEFONE A LISTA SE PRENDE À JANELA, não ao sino. Alinhada pela direita
+ * do sino (x≈290 num telefone de 390), a lista de 358px nascia em x=−68 e
+ * cortava o começo de cada aviso — medido nas 22 telas em 28/09/2026. Abaixo
+ * de 30rem ela ocupa a largura da janela menos o respiro de 1rem de cada lado,
+ * logo abaixo da faixa. */
+${abaixo('faixa-minima')} {
+  .ucam-menu.ucam-menu--notificacoes {
+    position: fixed;
+    inset-inline: 1rem;
+    inset-block-start: 3.5rem;
+    inline-size: auto;
+    max-inline-size: none;
+    translate: none;
+  }
 }
 
 /* O aviso ocupa duas linhas e o ícone pertence à PRIMEIRA: centralizado, ele
@@ -8317,6 +8492,9 @@ dialog.ucam-dialog:not([open]) { display: none; }
  * de verde por ser positivo seria a cor mentindo. Quando o sinal importar, o
  * .ucam-stat--success/--danger continua governando o VALOR, que é onde o
  * julgamento pertence. */
+/* Recortado o período, a comparação com o anterior deixa de valer e a
+ * pastilha diz só "no período escolhido" (periodoScript): sem seta e sem tom. */
+.ucam-stat .ucam-stat__delta[data-neutro] { color: var(--ucam-color-text-secondary); }
 .ucam-stat__delta {
   display: inline-block;
   /* PASTILHA, não faixa. O ladrilho é uma coluna flex, e como item de flex o
@@ -8922,6 +9100,12 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   margin: 0;
 }
 .ucam-toolbar--compacta .ucam-field { gap: 0; }
+/* EXCETO A DATA. O campo de data nasce preenchido — não há placeholder que
+ * diga o que ele é —, e De/Até lado a lado (ou empilhados no telefone) eram
+ * duas datas sem nome (Analytics, 28/09/2026). O tabelaScript deixa o rótulo
+ * dela em paz, e aqui ele volta a ter altura. */
+.ucam-toolbar--compacta .ucam-field.ucam-field--data { gap: var(--ucam-space-inline-sm); }
+.ucam-toolbar--compacta .ucam-field--data > .ucam-field__label { block-size: auto; }
 
 /* Abaixo de 40rem o rótulo deitado não cabe: "Pesquisar setor" mais o campo
  * somam mais que a largura de um celular, e o campo encolhia até caber três
@@ -9097,12 +9281,38 @@ ${abaixo('controle-deitado')} {
 @media (prefers-reduced-motion: reduce) {
   .ucam-toast, .ucam-toast[data-saindo] { animation: none; }
 }
+/* RECUSA NÃO É CONFIRMAÇÃO. O toast de sucesso é a superfície invertida com
+ * o círculo de visto; um arquivo recusado saía IGUAL — "grande.pdf tem 11 MB"
+ * com o visto de "deu certo" (acompanhamento da isenção, 28/09/2026). Erro e
+ * atenção saem na superfície do feedback do tom, com o ícone do tom, como o
+ * alerta de mesmo tom: é outra notícia e tem de parecer outra. */
+.ucam-toast--danger,
+.ucam-toast--warning { box-shadow: var(--ucam-elevation-overlay), inset 0 0 0 1px var(--ucam-toast-borda); }
+.ucam-toast--danger {
+  --ucam-toast-borda: var(--ucam-color-feedback-danger-border);
+  background: var(--ucam-color-feedback-danger-background);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+.ucam-toast--danger > .ic { color: var(--ucam-color-feedback-danger-graphic); }
+.ucam-toast--warning {
+  --ucam-toast-borda: var(--ucam-color-feedback-warning-border);
+  background: var(--ucam-color-feedback-warning-background);
+  color: var(--ucam-color-feedback-warning-foreground);
+}
+.ucam-toast--warning > .ic { color: var(--ucam-color-feedback-warning-graphic); }
+/* Quantos cabem na pilha. O toastScript LÊ esta variável: a largura em que a
+ * pilha cai para um é papel de viewport, e papel mora na folha, não no JS. */
+.ucam-toasts { --ucam-toasts-max: 3; }
 ${abaixo('controle-deitado')} {
   .ucam-toasts {
     inset-inline: var(--ucam-space-inset-md);
     inset-block-end: var(--ucam-space-inset-md);
     max-inline-size: none;
     align-items: stretch;
+    /* UM DE CADA VEZ no telefone: três toasts de três linhas tapavam 300px
+     * de uma tela de 844 — justamente as linhas que se estava decidindo. O
+     * novo substitui o anterior. */
+    --ucam-toasts-max: 1;
   }
 }
 
@@ -9304,6 +9514,9 @@ ${abaixo('controle-deitado')} {
 /* Rodapé de ações que acompanha a rolagem em formulário longo. */
 .ucam-form-actions {
   display: flex;
+  /* Quebra quando não cabe: os botões não encolhem (ver .ucam-btn), então a
+   * fileira do boleto a 390px desce o terceiro botão em vez de sobrepor. */
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--ucam-space-inline-sm);
   padding-block-start: var(--ucam-space-inset-md);
@@ -9321,6 +9534,12 @@ ${abaixo('controle-deitado')} {
 .ucam-form-actions--sticky {
   position: sticky;
   inset-block-end: 0;
+  /* Acima do cabeçalho de tabela grudado (z-index 2, e 3 na coluna fixa): com
+   * z auto, o thead da tabela seguinte aparecia POR BAIXO da barra e pegava o
+   * toque — em 768px, o ponto (650, 838) da Grupo × Menu caía no "Concedido
+   * em". Abaixo de z.sticky de propósito: a barra de visão, que gruda no topo,
+   * continua por cima quando a barra de ações passa por ela ao rolar. */
+  z-index: 4;
   background: var(--ucam-color-surface-default);
   /* Mantém o fio de cima ao somar a elevação. */
   box-shadow: inset 0 1px 0 var(--ucam-color-border-subtle), var(--ucam-elevation-sticky);
@@ -11137,6 +11356,16 @@ ${abaixo('controle-deitado')} {
   .ucam-main .ucam-viewbar { position: static; }
 }
 
+/* NO TABLET EM PÉ ELA TAMBÉM NÃO GRUDA quando a janela é baixa. A 768×844 a
+ * faixa (72px) mais a barra de três fileiras (125–134px) grudadas tomavam
+ * 197–206px — um quarto da tela — em nove telas, e na Grupo × Menu, somada à
+ * barra de ações de 64px, quase um terço (revisão de 28/09/2026). Abaixo de
+ * nav-fixa e com até 900px de altura, a barra rola com a página; o cabeçalho
+ * da tabela continua grudando sob a faixa. */
+${abaixo('nav-fixa')} and (max-height: 56.25rem) {
+  .ucam-main .ucam-viewbar { position: static; }
+}
+
 /* ---------------------------------------------------------------- dica --- */
 /* Contrato: tooltip.json. O balão é o MESMO nos dois trilhos: no Trilho B ele
  * é criado pela diretiva ucamTooltip dentro do contêiner de overlay do CDK, no
@@ -11925,6 +12154,57 @@ ${abaixo('controle-deitado')} {
   content: "·";
   color: var(--ucam-color-border-strong);
 }
+/* A META QUE QUEBROU PARA A LINHA DE BAIXO perde o ponto médio em QUALQUER
+ * largura, não só abaixo de controle-deitado: a 768px a frase da fila
+ * ("Abra uma solicitação…") não cabia ao lado do título e abria a linha dela
+ * com "·", que lê como marcador de lista. CSS não sabe se um item de flex
+ * quebrou; o viewbarScript (lib/shell.mjs) mede e marca data-quebrada. */
+.ucam-viewbar__meta[data-quebrada]::before { content: none; }
+
+/* O FECHO DA TELA DE TRABALHO: a ação que conclui (Finalizar análise) e o
+ * resumo que ela confere, embrulhados em .ucam-viewbar__fecho dentro das
+ * ações da barra.
+ *
+ * Na mesa o embrulho não existe (display: contents): o primário fica onde
+ * sempre esteve, no fim da barra, e o resumo não aparece — ele já está no
+ * rodapé da tabela. No TELEFONE a barra não gruda (ver .ucam-main
+ * .ucam-viewbar, logo acima): a análise da isenção media 4.200px e o
+ * primário ficava a 266px do topo, a 1.700px da última decisão. Ali o fecho
+ * desce para o pé da janela, fixo, com o resumo em cima do botão. É o MESMO
+ * botão, movido pela folha, não uma cópia — um primário só na tela (ADR-023).
+ *
+ * Some quando o botão some (pedido enviado, análise concluída): barra fixa
+ * sem ação seria área morta em cima do conteúdo. */
+.ucam-viewbar__fecho { display: contents; }
+.ucam-viewbar__resumo { display: none; }
+${abaixo('controle-deitado')} {
+  .ucam-viewbar__fecho:has(> .ucam-btn:not([hidden])) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ucam-space-inline-xs);
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--ucam-z-sticky);
+    padding: var(--ucam-space-inset-sm) var(--ucam-space-inset-md);
+    padding-block-end: max(var(--ucam-space-inset-sm), env(safe-area-inset-bottom));
+    background: var(--ucam-color-surface-default);
+    box-shadow: inset 0 1px 0 var(--ucam-color-border-subtle), var(--ucam-elevation-sticky);
+  }
+  .ucam-viewbar__fecho:has(> .ucam-btn:not([hidden])) > .ucam-viewbar__resumo {
+    display: block;
+    font-size: var(--ucam-typography-caption-font-size);
+    line-height: var(--ucam-typography-caption-line-height);
+    color: var(--ucam-color-text-secondary);
+  }
+  .ucam-viewbar__fecho:has(> .ucam-btn:not([hidden])) > .ucam-btn { inline-size: 100%; justify-content: center; }
+  /* O conteúdo não termina embaixo da barra: a última linha de atividade
+   * e o rodapé do shell ganham o respiro da altura dela. */
+  .ucam-main:has(.ucam-viewbar__fecho > .ucam-btn:not([hidden])) { padding-block-end: 6rem; }
+  /* O toast sobe acima da barra, como sobe acima da barra de lote. */
+  :root:has(.ucam-viewbar__fecho > .ucam-btn:not([hidden])) .ucam-toasts { inset-block-end: 6.5rem; }
+}
 
 /* O separador vertical entre grupos de controle da mesma fileira. */
 .ucam-viewbar__sep {
@@ -12596,6 +12876,23 @@ ${acima('nav-fixa')} {
 .ucam-chip button::after {
   inline-size: var(--ucam-alvo-min);
   block-size: var(--ucam-alvo-min);
+}
+
+/* O NÚMERO QUE É LINK numa célula numérica ("5" solicitações em análise,
+ * que abre a fila recortada). Um algarismo mede 8px de largura: o mesmo
+ * extensor centrado, que cresce o alvo sem mexer na coluna. Só o link que é
+ * a célula inteira — número dentro de frase fica com a regra de texto. */
+.ucam-table .td--num > a:only-child { position: relative; }
+.ucam-table .td--num > a:only-child::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: var(--ucam-alvo-min);
+  min-block-size: var(--ucam-alvo-min);
 }
 
 /* SOB O DEDO, TODO CONTROLE — NÃO SÓ BOTÃO.

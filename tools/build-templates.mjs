@@ -27,6 +27,7 @@ import {
   menuContaScript,
   estadoScript,
   descricaoScript,
+  viewbarScript,
   linhaDoTempoScript,
   abasScript,
   filtroScript,
@@ -317,6 +318,7 @@ ${sprite}
 <script>${menuContaScript}</script>
 <script>${estadoScript}</script>
 <script>${descricaoScript}</script>
+<script>${viewbarScript}</script>
 <script>${linhaDoTempoScript}</script>
 <script>${abasScript}</script>
 <script>${filtroScript}</script>

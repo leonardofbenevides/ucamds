@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, input, model, ViewEncapsulation } from '@angular/core';
+import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, model, ViewEncapsulation } from '@angular/core';
 import { UcamIcon } from '../icon/ucam-icon';
+import { UcamTooltip } from '../tooltip/ucam-tooltip';
 
 /**
  * Contrato: spec/components/segmented.json
@@ -19,11 +20,21 @@ export interface UcamSegmentItem {
   tone?: 'success' | 'danger' | 'warning';
   /** A opção que a máquina sugere: ícone sparkles e ", sugestão" no nome. */
   suggested?: boolean;
+  /**
+   * O segmento EXISTE mas agora não pode ser escolhido (a decisão que espera
+   * os documentos do candidato). Não é a opção indisponível, que some da
+   * lista: é a que volta quando a condição mudar. Fica focável, com
+   * aria-disabled, e o motivo é obrigatório — bloqueio sem porquê é controle
+   * morto. Ver segmented.json, items.
+   */
+  disabled?: boolean;
+  /** Por que está bloqueado. Aparece no balão ao focar, apontar ou clicar. */
+  reason?: string;
 }
 
 @Component({
   selector: 'ucam-segmented',
-  imports: [UcamIcon],
+  imports: [UcamIcon, UcamTooltip],
   exportAs: 'ucamSegmented',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -47,7 +58,11 @@ export interface UcamSegmentItem {
           [attr.aria-pressed]="item.id === value()"
           [attr.data-tom]="item.tone ?? null"
           [disabled]="disabled()"
-          (click)="escolher(item.id)"
+          [attr.aria-disabled]="item.disabled ? 'true' : null"
+          [ucamTooltip]="item.reason ?? ''"
+          [tooltipDisabled]="!item.disabled"
+          tooltipPosition="bottom"
+          (click)="escolher(item, $event)"
         >
           {{ item.label }}
           @if (item.suggested) {
@@ -140,10 +155,12 @@ export interface UcamSegmentItem {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: -1px;
     }
-    ucam-segmented .ucam-segmented button:disabled {
+    ucam-segmented .ucam-segmented button:disabled,
+    ucam-segmented .ucam-segmented button[aria-disabled='true'] {
       cursor: not-allowed;
       color: var(--ucam-color-text-disabled);
     }
+    ucam-segmented .ucam-segmented button[aria-disabled='true']:hover { background: none; }
 
     /* O TAMANHO MUDA O TRILHO, não o mínimo do botão.
        Era o contrário, e foi o que quebrou a paridade: --md punha
@@ -190,14 +207,31 @@ export class UcamSegmented {
    * ocupa um terço da largura sem oferecer nada.
    */
   readonly disabled = input(false);
+  /**
+   * O grupo pode ficar SEM escolha: value '' é um estado, e clicar no
+   * escolhido o desfaz. Só para decisão por linha em que "ainda não decidido"
+   * é real e pré-escolher seria decidir por omissão (isenção: sem decisão).
+   * Desligado, vale a regra de sempre: um segmento sempre escolhido.
+   */
+  readonly allowEmpty = input(false, { transform: booleanAttribute });
 
   protected readonly idRotulo = `ucam-seg-${++seq}`;
 
   protected readonly classes = computed(() => `ucam-segmented ucam-segmented--${this.size()}`);
 
-  protected escolher(id: string): void {
+  protected escolher(item: UcamSegmentItem, evento: Event): void {
     if (this.disabled()) return;
-    this.value.set(id);
+    // Bloqueado: não escolhe, e o clique leva o foco ao segmento, o que abre
+    // o balão com o motivo (o mesmo que o motivoScript faz no Trilho A).
+    if (item.disabled) {
+      (evento.currentTarget as HTMLElement | null)?.focus();
+      return;
+    }
+    if (this.allowEmpty() && item.id === this.value()) {
+      this.value.set('');
+      return;
+    }
+    this.value.set(item.id);
   }
 
   constructor() {
@@ -209,9 +243,15 @@ export class UcamSegmented {
             `[ucam-segmented] recebeu ${n} segmentos; o contrato admite de 2 a 4. Acima de quatro, todas as opções visíveis deixam de caber e o componente é o select. Ver spec/components/segmented.json.`,
           );
         }
+        const semMotivo = this.items().filter((i) => i.disabled && !i.reason?.trim());
+        if (semMotivo.length) {
+          console.warn(
+            `[ucam-segmented] segmento bloqueado sem reason: ${semMotivo.map((i) => i.label).join(', ')}. Bloqueio sem motivo é controle morto. Ver spec/components/segmented.json.`,
+          );
+        }
         // Valor fora da lista deixa o trilho inteiro sem escolhido — o estado
         // cinza que o contrato proíbe, e que lê como grupo desabilitado.
-        if (!this.items().some((i) => i.id === this.value())) {
+        if (!(this.allowEmpty() && this.value() === '') && !this.items().some((i) => i.id === this.value())) {
           throw new Error(
             `[ucam-segmented] value="${this.value()}" não é id de nenhum segmento: o grupo ficaria sem escolha.`,
           );

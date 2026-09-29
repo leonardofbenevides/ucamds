@@ -107,7 +107,7 @@
     {
       "parte": "row",
       "obrigatorio": true,
-      "descricao": "A linha. Escolhida (aria-selected=true) tem um sinal de superfície e um de tipografia: fundo branco com um shape sólido de 4px na borda DIREITA, de ponta a ponta da altura, e a primeira célula de dado em peso de ação; quem carrega a cor além do shape é a caixa de marcação marcada. Sem tarja na entrada (ADR-046) e sem barra de estado por linha (ADR-027)."
+      "descricao": "A linha. Escolhida (aria-selected=true) tem um sinal de superfície e um de tipografia: fundo branco com um shape sólido de 4px na borda ESQUERDA (a de entrada, desde 28/09/2026 — o mesmo lado do destaque da caixa de entrada), de ponta a ponta da altura, e a primeira célula de dado em peso de ação; quem carrega a cor além do shape é a caixa de marcação marcada. Sem tarja na entrada (ADR-046) e sem barra de estado por linha (ADR-027)."
     },
     {
       "parte": "cell",
@@ -163,7 +163,7 @@
     {
       "parte": "faixa",
       "obrigatorio": false,
-      "descricao": "Faixa no topo da tabela, dentro do cartão e antes do cabeçalho de colunas (.ucam-table-faixa): o que vale para a tabela inteira e não é filtro nem ação em lote. Ladrilho, título e apoio (.ucam-card__cabecalho) à esquerda, uma ação à direita. Caso de referência: a sugestão automatizada da análise da isenção — quando foi feita, o que sugeriu, a legenda da marca da opção sugerida e Aplicar N sugestões.",
+      "descricao": "Faixa no topo da tabela, dentro do cartão e antes do cabeçalho de colunas (.ucam-table-faixa): o que vale para a tabela inteira e não é filtro nem ação em lote. Ladrilho, título e apoio (.ucam-card__cabecalho) à esquerda, uma ação à direita. Caso de referência: a sugestão automatizada da análise da isenção — quando foi feita, o que sugeriu, a legenda da marca da opção sugerida e Aplicar N sugestões. No Trilho B, <div ucamTableFaixa titulo icon tone [apoio]> projetado dentro de <ucam-data-table>, com a ação como conteúdo (e apoio com marcação em [ucamFaixaApoio]); a tabela a põe dentro da própria borda e fora do contêiner de rolagem.",
       "classe": "ucam-table-faixa"
     }
   ],
@@ -346,7 +346,7 @@
     },
     "regra": "Qualquer que seja a estratégia, a tabela nunca provoca rolagem horizontal na página — só no próprio container (WCAG 1.4.10).",
     "medida": "As três estratégias reagem à largura do CONTÊINER da tabela (@container), não à da janela. As telas do Protocolo rodam num container de ~1020px numa janela de 2518px: media query de viewport nunca dispara, e a tabela quebra dentro de uma página que o navegador considera larga. Duas referências independentes chegaram ao mesmo lugar — o @gitlab/ui empilha por container query (gl-container-width-down) e o checkout do Shopify expõe query-container como primitivo.",
-    "ordenacao": "No modo empilhado a ordenação por cabeçalho SAI: sem linha de cabeçalho não há onde ancorá-la, e um botão solto dentro do cartão ordenaria algo que não está mais em colunas. Ela migra para a toolbar. É a única situação em que o controle de ordenação vive fora do cabeçalho — a regra geral do contrato, e o defeito da image 6, continuam valendo em toda tabela que ainda tem colunas."
+    "ordenacao": "No modo empilhado a ordenação por cabeçalho SAI: sem linha de cabeçalho não há onde ancorá-la, e um botão solto dentro do cartão ordenaria algo que não está mais em colunas. Ela migra para um controle \"Ordenar por\" (.ucam-table__ordenar) no alto da tabela, que só é pintado quando o contêiner empilha: um <select> com rótulo visível, uma opção por coluna ordenável e direção (\"Usuário, crescente\"), mais \"Ordem original\". Trilho A desde 28/09/2026: o estadoScript o cria dentro do invólucro de toda tabela com cabeçalho ordenável e ordena pela MESMA função do menu da coluna — o aria-sort e a seta do cabeçalho, que o leitor de tela continua lendo, mudam junto, e escolher pelo cabeçalho atualiza o select. A mudança é anunciada na região viva, sem toast. Motivo medido: a 390px nenhuma das dez tabelas ordenáveis das telas ordenava. É a única situação em que o controle de ordenação vive fora do cabeçalho — a regra geral do contrato, e o defeito da image 6, continuam valendo em toda tabela que ainda tem colunas."
   },
   "acessibilidade": {
     "requisitos": [
@@ -555,7 +555,7 @@
     {
       "nome": "rowClick",
       "payload": "T",
-      "descricao": "Linha acionada. Só emitido com rowClickable; a célula identificadora ainda precisa conter um link real."
+      "descricao": "Linha acionada. Só emitido com rowClickable, pelo clique em qualquer ponto da linha que não seja um controle (link, botão, campo, rótulo): o controle responde por si, e emitir junto seria um clique, duas ações. A célula identificadora ainda precisa conter um link ou botão real, que é o caminho do teclado e chama a mesma ação."
     },
     {
       "nome": "retry",
@@ -605,6 +605,7 @@
       "contrato": "<div class=\"ucam-table-wrap\"> em volta de <table class=\"ucam-table\">. O invólucro é quem rola na horizontal.",
       "raiz": ".ucam-table-wrap mais .ucam-table",
       "nota": "A barra de seleção em lote é .ucam-lote, irmã da tabela e não filha: ela aparece e some conforme a seleção, e dentro do <table> não haveria onde pôr um elemento que não é linha. O menu da coluna é .ucam-table__coluna (o gatilho, dentro do th) mais .ucam-menu.ucam-menu--coluna; quem ordena, fixa e oculta de verdade é o estadoScript de tools/lib/shell.mjs, e as colunas fixas são .ucam-col--fixa-inicio / .ucam-col--fixa-fim."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/data-table/ucam-data-table.ts — pronto. Tabela semântica com menu da coluna (ordenar, fixar, ocultar), seleção, estados, célula de status e de pessoa, moldes por coluna (ng-template ucamCelula), rowClickable + rowClick e a faixa no topo (ucam-table-faixa.ts, componente de atributo [ucamTableFaixa], projetado). Não desenha a barra de lote (.ucam-lote) nem a paginação, que são irmãs da tabela."
   }
 }
