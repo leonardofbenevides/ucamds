@@ -1709,27 +1709,101 @@ ${selectChevronCss}
 .ucam-field--cep   .ucam-input { inline-size: calc(9ch  + 1.5rem); }
 .ucam-field--data  .ucam-input { inline-size: calc(10ch + 1.5rem); }
 
-/* O CAMPO DE DATA COM CALENDÁRIO (date-field.json, Trilho A desde 28/09/2026):
- * o texto, o botão de calendário colado nele e o <input type="date"> que só
- * empresta o seletor nativo. O nativo fica com 1px sobre o botão — com
- * display:none parte dos navegadores não abre o seletor, e ancorado ali o
- * calendário nasce onde a pessoa clicou. */
+/* O CAMPO DE DATA COM CALENDÁRIO (date-field.json, Trilho A desde 28/09/2026).
+ * O ícone mora DENTRO do campo, no início, decorativo — o campo inteiro é o
+ * gatilho (clique abre o calendário; digitar continua valendo). O calendário
+ * é um popover do sistema (.ucam-calendario), com a mesma pele do listbox:
+ * superfície, fio, raio de superfície e sombra de sobreposição. */
 .ucam-date-field {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--ucam-space-inline-xs);
+  display: inline-block;
   position: relative;
 }
-.ucam-date-field__nativo {
+.ucam-date-field__icone {
   position: absolute;
-  inset-inline-end: 0;
-  inset-block-end: 0;
-  inline-size: 1px;
-  block-size: 1px;
-  opacity: 0;
+  inset-inline-start: 0.625rem;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  color: var(--ucam-color-text-placeholder);
   pointer-events: none;
+}
+.ucam-field--data .ucam-date-field .ucam-input {
+  padding-inline-start: 2.125rem;
+  inline-size: calc(10ch + 3rem);
+  cursor: pointer;
+}
+.ucam-calendario {
+  position: absolute;
+  z-index: var(--ucam-z-overlay);
+  inset-inline-start: 0;
+  inset-block-start: calc(100% + 0.25rem);
+  inline-size: 17.5rem;
+  padding: var(--ucam-space-inline-sm);
+  background: var(--ucam-color-surface-default);
+  color: var(--ucam-color-text-primary);
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--ucam-radius-surface);
+  box-shadow: var(--ucam-elevation-overlay);
+}
+.ucam-calendario--acima { inset-block-start: auto; inset-block-end: calc(100% + 0.25rem); }
+.ucam-calendario__cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ucam-space-inline-xs);
+  margin-block-end: var(--ucam-space-inline-xs);
+}
+.ucam-calendario__mes {
+  font-weight: var(--ucam-typography-label-font-weight);
+  font-size: var(--ucam-typography-body-sm-font-size);
+}
+.ucam-calendario__mes::first-letter { text-transform: uppercase; }
+.ucam-calendario__grade { inline-size: 100%; border-collapse: collapse; table-layout: fixed; }
+.ucam-calendario__grade th {
+  padding-block: 0.25rem;
+  font-size: var(--ucam-typography-caption-font-size);
+  font-weight: var(--ucam-typography-label-font-weight);
+  color: var(--ucam-color-text-secondary);
+  text-align: center;
+}
+.ucam-calendario__grade td { padding: 1px; text-align: center; }
+.ucam-calendario__dia {
+  inline-size: 100%;
+  aspect-ratio: 1;
+  min-block-size: 2rem;
   border: 0;
-  padding: 0;
+  border-radius: var(--ucam-radius-control);
+  background: none;
+  font: inherit;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--ucam-color-text-primary);
+  cursor: pointer;
+}
+.ucam-calendario__dia:hover { background: var(--ucam-color-interaction-hover); }
+.ucam-calendario__dia:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: 1px;
+}
+/* Hoje: peso e um traço embaixo — não cor, que é do escolhido. */
+.ucam-calendario__dia[aria-current="date"] {
+  font-weight: var(--ucam-typography-action-font-weight);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.ucam-calendario__dia[aria-pressed="true"] {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+  font-weight: var(--ucam-typography-action-font-weight);
+}
+.ucam-calendario__pe {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: var(--ucam-space-inline-xs);
+  padding-block-start: var(--ucam-space-inline-xs);
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+}
+@media (forced-colors: active) {
+  .ucam-calendario__dia[aria-pressed="true"] { outline: 2px solid CanvasText; }
 }
 .ucam-field--mes   .ucam-input { inline-size: calc(7ch  + 1.5rem); }
 

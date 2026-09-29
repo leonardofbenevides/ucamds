@@ -166,12 +166,24 @@ export const listboxScript = `
     // Abre para CIMA quando não cabe embaixo e cabe em cima. A mesma regra do
     // .ucam-menu--acima, decidida aqui porque só o navegador sabe onde a
     // lista cai.
+    //
+    // 28/09/2026 ("o drop deveria já aparecer para cima, e não esconder no
+    // scroll"): a regra só virava quando a lista INTEIRA cabia em cima. Perto
+    // do fundo de uma janela baixa (o quadro do preview, a gaveta, o celular
+    // deitado) ela não cabia em nenhum lado, descia e sumia na rolagem. Agora
+    // abre para o lado com MAIS espaço e a altura da lista encolhe até esse
+    // espaço — ela rola por dentro, nunca sai da área visível.
+    lb.style.maxBlockSize = '';
     var limite = tetoDe(lb);
     var g = gatilho.getBoundingClientRect();
     var altura = lb.getBoundingClientRect().height;
-    if (g.bottom + altura > limite.bottom && g.top - altura >= limite.top) {
-      lb.classList.add('ucam-listbox--acima');
-    }
+    var folga = 8;
+    var embaixo = Math.min(limite.bottom, window.innerHeight) - g.bottom - folga;
+    var emCima = g.top - Math.max(limite.top, 0) - folga;
+    var paraCima = altura > embaixo && emCima > embaixo;
+    if (paraCima) lb.classList.add('ucam-listbox--acima');
+    var espaco = paraCima ? emCima : embaixo;
+    if (altura > espaco) lb.style.maxBlockSize = Math.max(espaco, 96) + 'px';
     gatilho.setAttribute('aria-expanded', 'true');
     aberta = gatilho;
     destacar(lb, lb.querySelector('.ucam-option[aria-selected="true"]') || itens(lb)[0]);

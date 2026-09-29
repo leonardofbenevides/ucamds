@@ -269,9 +269,9 @@
   },
   "implementacao": {
     "trilho_a": {
-      "contrato": "O mesmo .ucam-field do campo de texto, com o modificador de data. Dentro, .ucam-date-field com o <input data-data> de texto, o botão de calendário [data-calendario] (IconButton sm, nome \"Escolher data no calendário: <rótulo>\") e o <input type=\"date\" class=\"ucam-date-field__nativo\"> fora da tabulação e do leitor. O formato vai num .ucam-field__hint ligado por aria-describedby.",
+      "contrato": "O mesmo .ucam-field do campo de texto, com o modificador de data. Dentro, .ucam-date-field com o ícone de calendário decorativo NO INÍCIO do campo (.ucam-date-field__icone) e o <input data-data aria-haspopup=\"dialog\">. O formato vai num .ucam-field__hint ligado por aria-describedby.",
       "raiz": ".ucam-field--data com .ucam-input",
-      "nota": "Desde 28/09/2026 o comportamento das telas (dataScript) dá ao Trilho A o que só o Trilho B tinha: máscara (8 dígitos viram dd/mm/aaaa), o calendário NATIVO por showPicker() e, ao sair do campo, a data que não existe vira erro do campo com \"Data inválida. Use dd/mm/aaaa.\". Escolher no calendário dispara input e change no campo de texto. Precisões mês e ano ainda só no Trilho B."
+      "nota": "Desde 28/09/2026 o comportamento das telas (dataScript) dá máscara (8 dígitos viram dd/mm/aaaa), validação ao sair (\"Data inválida. Use dd/mm/aaaa.\") e o CALENDÁRIO DO DS: clicar no campo (ou Alt+seta para baixo) abre o popover .ucam-calendario — role=dialog não modal, um dia focável por vez, setas, PageUp/PageDown, Home/End, Enter escolhe, Esc fecha e devolve o foco, \"Hoje\" no pé, abre para cima quando falta espaço. O seletor nativo (showPicker) saiu: é do sistema operacional e não recebe estilo. Tab no campo não abre nada — quem chega pelo teclado digita. O Trilho B ainda usa o nativo e deve migrar para o mesmo popover."
     }
   }
 }
