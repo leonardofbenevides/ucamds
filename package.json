@@ -6,7 +6,8 @@
     "start": "ng serve --host localhost",
     "build": "ng build",
     "test": "ng test",
-    "ds:checar": "node tools/ds-checar.mjs"
+    "ds:checar": "node tools/ds-checar.mjs",
+    "mock": "node tools/mock-backend.mjs"
   },
   "private": true,
   "dependencies": {

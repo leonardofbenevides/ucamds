@@ -33,3 +33,12 @@ No Trilho B o app importa também `@ucam/css/ucam.css` e põe `class="ucam"` no 
 - Trilho B do DS: o botão desabilitado ainda não tem o "chão" e a "aresta" da ADR-042 — a base ZardUI só tira a opacidade. O `@ucam/ui` precisa de CSS de estado para `button[disabled]` e `[aria-disabled]`.
 - Endpoint agregado de respostas (uma chamada em vez de uma por questão) é pedido ao backend.
 - Publicar o `@ucam/ui` 0.1.1 (imports relativizados, `styles.css` autocontido, `disabled`/`aria-disabled` no primeiro render) e trocar os `file:` por URL.
+
+## Backend de mentira (desenvolvimento)
+
+`npm run mock` sobe em `http://localhost:8030/` um servidor que imita os endpoints do legado com dados fictícios em memória (`tools/mock-backend.mjs`). Com ele e o `npm start`:
+
+- http://localhost:4200/candidato/ana — prova objetiva + redação
+- http://localhost:4200/candidato/bruno — só objetiva, corrigida na hora
+
+`TEMPO=00:03:00 npm run mock` encurta a prova para testar o tempo esgotado. Reiniciar o mock zera tudo.
