@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { UcamAlert, UcamBadge, UcamButton, UcamDescriptionList, UcamPageHeader, UcamSkeleton } from '@ucam/ui';
+import { UcamAlert, UcamBadge, UcamButton, UcamCard, UcamPageHeader, UcamSkeleton, UcamStat, UcamStepper } from '@ucam/ui';
 import { CandidatoApi } from '../../core/api/candidato.api';
 import { ProvaApi } from '../../core/api/prova.api';
 import { ehRedacao, rotuloTipoProva } from '../../core/model/prova';
@@ -9,12 +9,14 @@ import { Navegador } from '../../core/navegador';
 import { CandidatoStore } from '../../core/store/candidato.store';
 import { formatarHms } from '../../core/tempo/relogio-prova';
 import { Moldura } from '../../layout/moldura';
+import { etapas } from '../etapas';
+import { environment } from '../../../environments/environment';
 
 type Situacao = 'APROVADO' | 'REPROVADO' | null;
 
 @Component({
   selector: 'app-resultado',
-  imports: [Moldura, UcamAlert, UcamBadge, UcamButton, UcamDescriptionList, UcamPageHeader, UcamSkeleton],
+  imports: [Moldura, UcamAlert, UcamBadge, UcamButton, UcamCard, UcamPageHeader, UcamSkeleton, UcamStat, UcamStepper],
   templateUrl: './resultado.html',
 })
 export class ResultadoPage {
@@ -24,11 +26,14 @@ export class ResultadoPage {
   private readonly navegador = inject(Navegador);
   private readonly router = inject(Router);
 
+  readonly contato = environment.contatoSecretaria;
+  readonly etapas = etapas(3);
   readonly carregando = signal(true);
   readonly erro = signal<string | null>(null);
   readonly tipos = signal<string[]>([]);
   readonly situacao = signal<Situacao>(null);
-  readonly entregueEm = signal<string | null>(null);
+  readonly entregueDia = signal<string | null>(null);
+  readonly entregueHora = signal<string | null>(null);
   readonly tempoUsado = signal<string | null>(null);
 
   readonly trilha = computed(() => [
@@ -37,11 +42,7 @@ export class ResultadoPage {
   ]);
   readonly temRedacao = computed(() => this.tipos().some(ehRedacao));
   readonly totalTentativas = computed(() => this.store.tentativas()?.totalTentativasPossiveis ?? 0);
-  readonly itens = computed(() => [
-    { label: 'Entregue em', value: this.entregueEm() },
-    { label: 'Tempo usado', value: this.tempoUsado() },
-    { label: 'Cadernos', value: this.tipos().map(rotuloTipoProva).join(', ') || null },
-  ]);
+  readonly cadernosTexto = computed(() => this.tipos().map(rotuloTipoProva).join(', ') || null);
 
   constructor() {
     this.carregar();
@@ -52,12 +53,15 @@ export class ResultadoPage {
     try {
       const [tipos, dados] = await Promise.all([
         firstValueFrom(this.provaApi.tiposProva(oidCp)),
-        firstValueFrom(this.candidatoApi.dados(oidCp)).catch(() => ({}) as { horarioinicio?: string | null; horariofim?: string | null }),
+        firstValueFrom(this.candidatoApi.dados(oidCp)).catch(
+          () => ({}) as { horarioinicio?: string | null; horariofim?: string | null },
+        ),
       ]);
       this.tipos.set(tipos ?? []);
       if (dados.horariofim) {
         const fim = new Date(dados.horariofim);
-        this.entregueEm.set(fim.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }));
+        this.entregueDia.set(fim.toLocaleDateString('pt-BR'));
+        this.entregueHora.set(`às ${fim.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`);
         if (dados.horarioinicio) this.tempoUsado.set(formatarHms(fim.getTime() - new Date(dados.horarioinicio).getTime()));
       }
       if (!this.temRedacao()) {

@@ -37,7 +37,7 @@ describe('ProvaPage', () => {
     f.componentInstance.instrucoesAbertas.set(true);
     await f.whenStable();
     // A gaveta do DS abre em overlay no body, fora do fixture.
-    expect(document.body.textContent).toContain('Cada resposta é salva na hora');
+    expect(document.body.textContent).toContain('Tudo salvo na hora');
   });
 
   it('um relógio esgotado de uma prova anterior não entrega esta', async () => {

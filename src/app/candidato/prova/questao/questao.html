@@ -2,9 +2,11 @@
   <article class="ucam-stack ucam-stack--lg" appProvaProtegida>
     <header class="ucam-cluster ucam-cluster--entre">
       <h2 class="ucam-section__title">{{ rotuloCaderno() }} · Questão {{ n() }} de {{ totalNoCaderno() }}</h2>
-      @if (escolhida()) {
-        <ucam-badge tone="success" variant="dot" label="Respondida" />
-      }
+      <ucam-badge
+        [tone]="escolhida() ? 'success' : 'neutral'"
+        variant="dot"
+        [label]="escolhida() ? 'Respondida' : 'Em branco'"
+      />
     </header>
 
     @if (q.textoreferencia) {

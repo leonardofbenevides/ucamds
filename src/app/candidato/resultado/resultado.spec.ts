@@ -37,7 +37,7 @@ describe('ResultadoPage', () => {
 
   it('com redação, diz que aguarda correção e leva ao site', async () => {
     const el = await montar(['PORTUGUES', 'REDACAO']);
-    expect(el.textContent).toContain('corrigida pela banca');
+    expect(el.textContent).toContain('correção da banca');
     expect(el.textContent).toContain('Ir para o site');
     expect(el.textContent).toContain('01:15:30');
     expect(prova.corrigirObjetiva).not.toHaveBeenCalled();

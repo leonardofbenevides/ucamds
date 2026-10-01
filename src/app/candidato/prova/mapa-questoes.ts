@@ -1,5 +1,5 @@
 import { Component, computed, inject, output } from '@angular/core';
-import { UcamIcon, UcamSectionBar } from '@ucam/ui';
+import { UcamIcon, UcamProgress, UcamSectionBar } from '@ucam/ui';
 import { rotuloTipoProva, slugTipoProva } from '../../core/model/prova';
 import { Posicao, ProvaStore } from '../../core/store/prova.store';
 
@@ -22,9 +22,17 @@ interface GrupoMapa {
  */
 @Component({
   selector: 'app-mapa-questoes',
-  imports: [UcamIcon, UcamSectionBar],
+  imports: [UcamIcon, UcamProgress, UcamSectionBar],
   template: `
     <nav class="ucam-stack ucam-stack--lg" aria-label="Questões da prova">
+      <ucam-progress
+        label="Questões respondidas"
+        [value]="store.respondidas()"
+        [max]="store.totalObjetivas()"
+        [tone]="store.respondidas() === store.totalObjetivas() ? 'success' : 'info'"
+        [valueText]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
+        [legendStart]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
+      />
       @for (g of grupos(); track g.slug) {
         <section class="ucam-stack ucam-stack--sm">
           <ucam-section-bar [title]="g.rotulo" [level]="3" [count]="g.respondidas + ' de ' + g.itens.length" [rule]="true" />

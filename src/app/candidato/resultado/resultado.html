@@ -1,47 +1,63 @@
 <app-moldura>
   <ucam-page-header variante="barra" title="Prova entregue" [breadcrumb]="trilha()" />
 
-  <div class="ucam-corpo ucam-corpo--leitura ucam-stack ucam-stack--lg">
-    @if (carregando()) {
-      <ucam-skeleton variant="text" [lines]="4" />
-    } @else if (erro()) {
+  <div class="ucam-corpo ucam-stack ucam-stack--lg">
+    <ucam-stepper label="Etapas do vestibular online" [current]="3" [steps]="etapas" />
+
+    @if (erro()) {
       <ucam-alert tone="danger" live="assertive">{{ erro() }}</ucam-alert>
       <ucam-button variant="primary" (click)="recarregar()">Tentar de novo</ucam-button>
     } @else {
-      <p class="ucam-lede">Suas respostas foram registradas.</p>
-
-      <ucam-description-list [items]="itens()" layout="inline" [columns]="1" />
-
-      @if (temRedacao()) {
-        <ucam-alert tone="info">Sua redação será corrigida pela banca. Acompanhe a data do resultado no site da universidade.</ucam-alert>
-        <div class="ucam-cluster ucam-cluster--fim">
-          <ucam-button variant="primary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
+      <section class="ucam-stack" aria-labelledby="t-sua-prova">
+        <h2 class="ucam-section__title" id="t-sua-prova">Sua prova</h2>
+        <div class="ucam-stats">
+          <ucam-stat label="Entregue em" [value]="entregueDia() ?? '—'" [meta]="entregueHora()" icon="calendar" [state]="carregando() ? 'loading' : 'idle'" />
+          <ucam-stat label="Tempo usado" [value]="tempoUsado() ?? '—'" meta="Do início à entrega" icon="clock" [state]="carregando() ? 'loading' : 'idle'" />
+          <ucam-stat label="Cadernos" [value]="tipos().length" [meta]="cadernosTexto()" icon="listChecks" [state]="carregando() ? 'loading' : 'idle'" />
         </div>
-      } @else {
-        <div class="ucam-stack">
-          <ucam-badge
-            [tone]="situacao() === 'APROVADO' ? 'success' : 'neutral'"
-            variant="soft"
-            [label]="situacao() === 'APROVADO' ? 'Aprovado' : 'Reprovado'"
-          />
-          @if (situacao() === 'APROVADO') {
-            <p>Parabéns! Você foi aprovado no vestibular. O próximo passo é concluir a matrícula.</p>
-            <div class="ucam-cluster ucam-cluster--fim">
-              <ucam-button variant="primary" iconEnd="externalLink" (click)="concluirMatricula()">Concluir matrícula</ucam-button>
-            </div>
-          } @else if (store.podeTentarDeNovo()) {
-            <p>Você não atingiu a nota mínima nesta tentativa. Ainda há tentativa disponível nesta inscrição.</p>
-            <div class="ucam-cluster ucam-cluster--fim">
-              <ucam-button variant="secondary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
-              <ucam-button variant="primary" iconStart="refreshCw" (click)="tentarNovamente()">Tentar novamente</ucam-button>
-            </div>
-          } @else {
-            <p>Você não atingiu a nota mínima e já usou as {{ totalTentativas() }} tentativas desta inscrição.</p>
+      </section>
+
+      @if (carregando()) {
+        <ucam-skeleton variant="block" />
+      } @else if (temRedacao()) {
+        <ucam-card as="section" titulo="Aguardando a correção da banca" apoio="Sua redação será lida pela banca; a prova objetiva é corrigida junto." icone="pencil">
+          <div class="ucam-stack">
+            <ucam-badge tone="info" variant="dot" label="Em correção" />
+            <p>Pronto. Acompanhe a data do resultado no site da universidade — é lá que a nota aparece.</p>
             <div class="ucam-cluster ucam-cluster--fim">
               <ucam-button variant="primary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
             </div>
-          }
-        </div>
+          </div>
+        </ucam-card>
+      } @else if (situacao() === 'APROVADO') {
+        <ucam-card as="section" titulo="Você foi aprovado" apoio="Parabéns! O próximo passo é concluir a matrícula na área do inscrito." icone="circleCheck">
+          <div class="ucam-stack">
+            <ucam-badge tone="success" variant="dot" label="Aprovado" />
+            <div class="ucam-cluster ucam-cluster--fim">
+              <ucam-button variant="primary" size="lg" iconEnd="externalLink" (click)="concluirMatricula()">Concluir matrícula</ucam-button>
+            </div>
+          </div>
+        </ucam-card>
+      } @else if (store.podeTentarDeNovo()) {
+        <ucam-card as="section" titulo="Nota mínima não atingida" apoio="Ainda há tentativa disponível nesta inscrição. A prova nova começa do zero." icone="refreshCw">
+          <div class="ucam-stack">
+            <ucam-badge tone="neutral" variant="dot" label="Reprovado nesta tentativa" />
+            <div class="ucam-cluster ucam-cluster--fim">
+              <ucam-button variant="secondary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
+              <ucam-button variant="primary" size="lg" iconStart="refreshCw" (click)="tentarNovamente()">Tentar novamente</ucam-button>
+            </div>
+          </div>
+        </ucam-card>
+      } @else {
+        <ucam-card as="section" titulo="Nota mínima não atingida" [apoio]="'Você já usou as ' + totalTentativas() + ' tentativas desta inscrição.'" icone="info">
+          <div class="ucam-stack">
+            <ucam-badge tone="neutral" variant="dot" label="Reprovado" />
+            <p>Fale com a secretaria para saber sobre outras formas de ingresso: {{ contato }}.</p>
+            <div class="ucam-cluster ucam-cluster--fim">
+              <ucam-button variant="primary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
+            </div>
+          </div>
+        </ucam-card>
       }
     }
   </div>
