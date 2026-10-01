@@ -1,10 +1,14 @@
-/* Fonte institucional, auto-hospedada: sai do mesmo servidor do app. */
-@import "@fontsource-variable/geist";
-@import "@fontsource-variable/geist-mono";
+/* Fonte Geist auto-hospedada: sai do pacote do DS, não de CDN. */
+@import "@ucam/css/ucam-fonts.css";
+/* Trilho A do DS: layout (ucam-stack, ucam-split…), tela de entrada
+   (ucam-login) e as classes .ucam-* que os componentes do @ucam/ui usam.
+   Quase tudo é global; o que depende do ancestral .ucam (box-sizing, fonte,
+   anel de foco) vale porque <body class="ucam">. */
+@import "@ucam/css/ucam.css";
 
 @import "tailwindcss";
-/* Tokens da UCAM como @theme do Tailwind: bg-surface-canvas, text-text-primary… */
+/* Tokens como @theme do Tailwind: bg-surface-canvas, text-text-primary… */
 @import "@ucam/tokens/ucam-theme.css";
-/* Base dos componentes <ucam-*>: utilities que eles usam, ponte para os tokens
-   e o @layer base da biblioteca. */
+/* Base dos componentes <ucam-*>: utilities do bundle (via @source),
+   ponte para os tokens e o @layer base da biblioteca. */
 @import "@ucam/ui/styles.css";

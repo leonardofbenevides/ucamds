@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --host localhost",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "ds:checar": "ucam-ds checar src/app/**/*.html"
   },
   "private": true,
   "dependencies": {
@@ -17,11 +17,10 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
-    "@fontsource-variable/geist": "^5.3.0",
-    "@fontsource-variable/geist-mono": "^5.3.0",
     "@ng-icons/core": "^34.0.0",
     "@ng-icons/lucide": "^34.0.0",
-    "@ucam/tokens": "https://ucam-ds.vercel.app/pacotes/ucam-tokens-0.1.0.tgz",
+    "@ucam/css": "file:../ucamds/dist/pacotes/ucam-css-0.1.1.tgz",
+    "@ucam/tokens": "file:../ucamds/dist/pacotes/ucam-tokens-0.1.1.tgz",
     "@ucam/ui": "file:../ucamds/dist/pacotes/ucam-ui-0.1.1.tgz",
     "echarts": "^6.1.0",
     "ngx-echarts": "^21.0.0",
@@ -34,6 +33,7 @@
     "@angular/cli": "^21.2.24",
     "@angular/compiler-cli": "^21.2.0",
     "@tailwindcss/postcss": "^4.3.3",
+    "@ucam/ds-mcp": "file:../ucamds/dist/pacotes/ucam-ds-mcp-0.1.1.tgz",
     "jsdom": "^28.0.0",
     "postcss": "^8.5.28",
     "prettier": "^3.8.1",
