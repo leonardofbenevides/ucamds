@@ -1,0 +1,47 @@
+@if (questao(); as q) {
+  <article class="ucam-stack ucam-stack--lg" appProvaProtegida>
+    <header class="ucam-cluster ucam-cluster--entre">
+      <h2 class="ucam-section__title">Redação</h2>
+      @if (atingeMinimo()) {
+        <ucam-badge tone="success" variant="dot" label="Mínimo atingido" />
+      }
+    </header>
+
+    @if (q.textoreferencia) {
+      <div data-texto-referencia [innerHTML]="q.textoreferencia"></div>
+    }
+    <div data-proposta [innerHTML]="q.descricao"></div>
+
+    <div (focusout)="aoSair()">
+      <ucam-textarea
+        label="Seu texto"
+        [rows]="14"
+        autoGrow
+        [maxLength]="maximo"
+        [(value)]="texto"
+        [hint]="'Mínimo de ' + minimo + ' caracteres, sem contar espaços. ' + contador()"
+      />
+    </div>
+    <p class="ucam-field__hint" aria-live="polite">
+      @if (faltam() > 0) {
+        Faltam {{ faltam() }} caracteres para o mínimo.
+      } @else {
+        Mínimo atingido. Você pode continuar escrevendo até {{ maximo | number: '1.0-0' : 'pt-BR' }} caracteres.
+      }
+    </p>
+
+    <footer class="ucam-cluster ucam-cluster--entre">
+      @if (temObjetiva()) {
+        <ucam-button variant="secondary" iconStart="chevronLeft" (click)="voltarParaObjetiva()">Voltar para a prova objetiva</ucam-button>
+      } @else {
+        <span></span>
+      }
+      <span class="ucam-cluster">
+        @if (!atingeMinimo()) {
+          <span class="ucam-field__hint">A redação precisa de pelo menos {{ minimo }} caracteres para ser entregue.</span>
+        }
+        <ucam-button variant="primary" iconStart="send" [disabled]="!atingeMinimo()" (click)="entregar()">Entregar prova</ucam-button>
+      </span>
+    </footer>
+  </article>
+}
