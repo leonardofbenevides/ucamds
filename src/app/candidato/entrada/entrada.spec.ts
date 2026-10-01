@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { EntradaPage } from './entrada';
 import { CandidatoStore } from '../../core/store/candidato.store';
-import { candidatoFake } from '../../core/store/candidato.store.spec';
+import { candidatoFake } from '../../core/store/candidato.fake';
 
 describe('EntradaPage', () => {
   async function montar(

@@ -6,7 +6,7 @@ import { ProvaPage } from './prova';
 import { ProvaApi } from '../../core/api/prova.api';
 import { CandidatoStore } from '../../core/store/candidato.store';
 import { RelogioProva } from '../../core/tempo/relogio-prova';
-import { candidatoFake } from '../../core/store/candidato.store.spec';
+import { candidatoFake } from '../../core/store/candidato.fake';
 
 describe('ProvaPage', () => {
   const api = {

@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { QuestaoPage } from './questao';
 import { ProvaStore } from '../../../core/store/prova.store';
 import { CandidatoStore } from '../../../core/store/candidato.store';
-import { candidatoFake } from '../../../core/store/candidato.store.spec';
+import { candidatoFake } from '../../../core/store/candidato.fake';
 import { ProvaPage } from '../prova';
 
 const alt = (oid: string, html: string) => ({ oid, descricao: html });

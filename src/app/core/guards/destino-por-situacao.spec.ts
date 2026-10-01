@@ -1,5 +1,5 @@
 import { destinoPorSituacao } from './destino-por-situacao';
-import { candidatoFake } from '../store/candidato.store.spec';
+import { candidatoFake } from '../store/candidato.fake';
 
 describe('destinoPorSituacao', () => {
   it('CADASTRADO vê entrada e instruções; prova e resultado voltam à entrada', () => {

@@ -6,7 +6,7 @@ import { ProvaStore } from '../../core/store/prova.store';
 import { FilaRespostas } from '../../core/offline/fila-respostas';
 import { ProvaApi } from '../../core/api/prova.api';
 import { CandidatoStore } from '../../core/store/candidato.store';
-import { candidatoFake } from '../../core/store/candidato.store.spec';
+import { candidatoFake } from '../../core/store/candidato.fake';
 
 describe('EntregaDialog', () => {
   const api = { entregar: vi.fn(() => of({})) };

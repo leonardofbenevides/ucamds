@@ -1,26 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CandidatoStore } from './candidato.store';
-import { CandidatoProva } from '../model/candidato';
-
-export function candidatoFake(extra: Partial<CandidatoProva> = {}): CandidatoProva {
-  return {
-    oid: 'cp-1',
-    situacao: 'CADASTRADO',
-    formaingressopessoa: {
-      oid: 'fip-1',
-      situacao: 'INSCRITO',
-      pessoa: { oid: 'p-1', nome: 'Ana Souza', cpf: { numero: '12345678901' } },
-      periodounidadecurso: {
-        turnoLabel: 'N',
-        unidadecurso: {
-          curso: { nome: 'ENGENHARIA DE SOFTWARE' },
-          unidade: { oid: 'unid01', sigla: 'Campos', nome: 'Campos' },
-        },
-      },
-    },
-    ...extra,
-  };
-}
+import { candidatoFake } from './candidato.fake';
 
 describe('CandidatoStore', () => {
   let store: CandidatoStore;

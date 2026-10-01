@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { Moldura } from './moldura';
 import { CandidatoStore } from '../core/store/candidato.store';
 import { ProvaStore } from '../core/store/prova.store';
-import { candidatoFake } from '../core/store/candidato.store.spec';
+import { candidatoFake } from '../core/store/candidato.fake';
 
 @Component({ imports: [Moldura], template: `<app-moldura><p>conteúdo</p></app-moldura>` })
 class Host {}

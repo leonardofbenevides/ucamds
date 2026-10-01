@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { InstrucoesPage } from './instrucoes';
 import { ProvaApi } from '../../core/api/prova.api';
 import { CandidatoStore } from '../../core/store/candidato.store';
-import { candidatoFake } from '../../core/store/candidato.store.spec';
+import { candidatoFake } from '../../core/store/candidato.fake';
 
 describe('InstrucoesPage', () => {
   const q = (oid: string) => ({ oid, descricao: '', alternativas: [] });

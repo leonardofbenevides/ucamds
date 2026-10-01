@@ -6,7 +6,7 @@ import { candidatoGuard } from './candidato.guard';
 import { CandidatoApi } from '../api/candidato.api';
 import { CandidatoStore } from '../store/candidato.store';
 import { Navegador } from '../navegador';
-import { candidatoFake } from '../store/candidato.store.spec';
+import { candidatoFake } from '../store/candidato.fake';
 
 function rota(tela: string, tentativa?: string): ActivatedRouteSnapshot {
   return {

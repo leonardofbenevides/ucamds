@@ -12,4 +12,6 @@ export const environment = {
   redacaoMin: 300,
   redacaoMax: 3000,
   contatoSecretaria: 'secretaria@candidomendes.edu.br',
+  /** Em produção ninguém entra por atalho: só pelo link. */
+  candidatosDeTeste: [] as { oid: string; nome: string; apoio: string }[],
 };

@@ -7,7 +7,7 @@ import { ProvaApi } from '../../core/api/prova.api';
 import { CandidatoApi } from '../../core/api/candidato.api';
 import { CandidatoStore } from '../../core/store/candidato.store';
 import { Navegador } from '../../core/navegador';
-import { candidatoFake } from '../../core/store/candidato.store.spec';
+import { candidatoFake } from '../../core/store/candidato.fake';
 
 describe('ResultadoPage', () => {
   const prova = { tiposProva: vi.fn(), corrigirObjetiva: vi.fn() };

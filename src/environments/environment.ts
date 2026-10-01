@@ -13,4 +13,9 @@ export const environment = {
   redacaoMin: 300,
   redacaoMax: 3000,
   contatoSecretaria: 'secretaria@candidomendes.edu.br',
+  /** Atalhos da tela sem link, só no protótipo: os candidatos do backend de mentira (npm run mock). */
+  candidatosDeTeste: [
+    { oid: 'ana', nome: 'Ana Souza', apoio: 'Objetiva e redação — resultado aguarda a banca' },
+    { oid: 'bruno', nome: 'Bruno Lima', apoio: 'Só objetiva — corrige na hora' },
+  ],
 };
