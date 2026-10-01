@@ -1,7 +1,21 @@
-import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input,  ViewEncapsulation } from '@angular/core';
+import {
+  afterNextRender,
+  afterRenderEffect,
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  Renderer2,
+  viewChild,
+  ViewEncapsulation,
+} from '@angular/core';
 
-import { ZardButtonComponent } from '@/shared/components/button/button.component';
-import type { ZardButtonSizeVariants, ZardButtonTypeVariants } from '@/shared/components/button/button.variants';
+import { ZardButtonComponent } from '../../shared/components/button/button.component';
+import type { ZardButtonSizeVariants, ZardButtonTypeVariants } from '../../shared/components/button/button.variants';
+import { aplicarEstado } from '../button/ucam-button';
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
 
 /**
@@ -57,6 +71,7 @@ const SIZE_MAP: Record<'sm' | 'md', ZardButtonSizeVariants> = {
   encapsulation: ViewEncapsulation.None,
   template: `
     <button
+      #botao
       z-button
       [zType]="zType()"
       [zSize]="zSize()"
@@ -66,8 +81,6 @@ const SIZE_MAP: Record<'sm' | 'md', ZardButtonSizeVariants> = {
       [attr.aria-pressed]="ariaPressed()"
       [attr.aria-label]="label()"
       [attr.title]="tooltip() ? label() : null"
-      [attr.disabled]="disabled() ? '' : null"
-      [attr.aria-disabled]="loading() ? 'true' : null"
       [attr.aria-busy]="loading() ? 'true' : null"
       (click)="onClick($event)"
     >
@@ -184,9 +197,22 @@ export class UcamIconButton {
     this.tone() === 'danger' ? TONE_CLASSES[this.variant()] : '',
   );
 
+  private readonly botao = viewChild.required('botao', { read: ElementRef<HTMLButtonElement> });
+  private readonly renderer = inject(Renderer2);
+
   constructor() {
+    // Mesma correção do Button (CORREÇÃO 5): o host binding da base zerava
+    // `disabled` e `aria-disabled` no primeiro render.
+    afterRenderEffect(() => {
+      const el = this.botao().nativeElement;
+      aplicarEstado(this.renderer, el, 'disabled', this.disabled() ? '' : null);
+      aplicarEstado(this.renderer, el, 'aria-disabled', this.loading() ? 'true' : null);
+    });
+
     if (ngDevMode) {
-      queueMicrotask(() => {
+      // afterNextRender, não queueMicrotask: nos testes o microtask corria antes de
+      // o primeiro ciclo ligar os inputs e lia um `label` ainda sem valor (NG0950).
+      afterNextRender(() => {
         if (!this.label()?.trim()) {
           throw new Error(
             '[ucam-icon-button] label é obrigatório e não pode ser vazio. Sem ele o botão é anônimo para leitor de tela. Ver spec/components/icon-button.json.',
