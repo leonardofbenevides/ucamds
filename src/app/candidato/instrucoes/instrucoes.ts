@@ -26,6 +26,11 @@ export class InstrucoesPage {
   readonly tempoMs = signal(environment.duracaoPadraoMs);
   readonly tipos = signal<string[]>([]);
 
+  readonly trilha = computed(() => [
+    { label: 'Seus dados', link: `/candidato/${this.store.oidFip() ?? ''}` },
+    { label: 'Antes de começar' },
+  ]);
+
   /** "2 h", "1 h 30 min": o mesmo texto do relógio, sem o verbo. */
   readonly tempoTexto = computed(() => textoRestante(this.tempoMs()).replace(/^Faltam? /, ''));
   readonly resumo = computed(() => [

@@ -38,15 +38,17 @@ import { RelogioProva } from '../../core/tempo/relogio-prova';
         </p>
       </div>
       <div class="ucam-viewbar__fileira">
-        <ucam-progress
-          label="Tempo da prova"
-          [value]="relogio.decorrido()"
-          [max]="relogio.total()"
-          [tone]="relogio.tom()"
-          [valueText]="relogio.texto()"
-          [legendStart]="relogio.texto()"
-          [legendEnd]="relogio.hms()"
-        />
+        <div class="w-full">
+          <ucam-progress
+            label="Tempo da prova"
+            [value]="relogio.decorrido()"
+            [max]="relogio.total()"
+            [tone]="relogio.tom()"
+            [valueText]="relogio.texto()"
+            [legendStart]="relogio.texto()"
+            [legendEnd]="relogio.hms()"
+          />
+        </div>
         <p class="ucam-sr-only" aria-live="polite">{{ anuncio() }}</p>
       </div>
     </header>

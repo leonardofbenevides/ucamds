@@ -1,11 +1,9 @@
 <app-moldura>
-  <ucam-page-header
-    variante="pagina"
-    title="Antes de começar"
-    description="Leia com calma. A prova só começa quando você clicar em Iniciar prova."
-  />
+  <ucam-page-header variante="barra" title="Antes de começar" [breadcrumb]="trilha()" />
 
-  <div class="ucam-content ucam-content--estreita ucam-stack ucam-stack--lg">
+  <div class="ucam-corpo ucam-corpo--leitura ucam-stack ucam-stack--lg">
+    <p class="ucam-lede">Leia com calma. A prova só começa quando você clicar em Iniciar prova.</p>
+
     <app-instrucoes-lista />
 
     @if (carregando()) {

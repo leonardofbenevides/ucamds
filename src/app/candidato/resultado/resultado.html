@@ -1,13 +1,15 @@
 <app-moldura>
-  <ucam-page-header variante="pagina" title="Prova entregue" description="Suas respostas foram registradas." />
+  <ucam-page-header variante="barra" title="Prova entregue" [breadcrumb]="trilha()" />
 
-  <div class="ucam-content ucam-content--estreita ucam-stack ucam-stack--lg">
+  <div class="ucam-corpo ucam-corpo--leitura ucam-stack ucam-stack--lg">
     @if (carregando()) {
       <ucam-skeleton variant="text" [lines]="4" />
     } @else if (erro()) {
       <ucam-alert tone="danger" live="assertive">{{ erro() }}</ucam-alert>
       <ucam-button variant="primary" (click)="recarregar()">Tentar de novo</ucam-button>
     } @else {
+      <p class="ucam-lede">Suas respostas foram registradas.</p>
+
       <ucam-description-list [items]="itens()" layout="inline" [columns]="1" />
 
       @if (temRedacao()) {

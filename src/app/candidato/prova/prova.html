@@ -1,6 +1,6 @@
 <app-moldura>
   <div ucamShellAcoes>
-    <ucam-button variant="ghost" size="sm" iconStart="info" (click)="instrucoesAbertas.set(true)">Instruções</ucam-button>
+    <ucam-icon-button icon="info" label="Como a prova funciona" variant="ghost" size="sm" (click)="instrucoesAbertas.set(true)" />
   </div>
 
   @switch (store.estado()) {
@@ -28,14 +28,20 @@
     @default {
       <app-cabecalho-prova />
       <div class="ucam-corpo">
-        <div class="ucam-cluster ucam-cluster--fim lg:hidden">
-          <ucam-button variant="secondary" size="sm" iconStart="listChecks" (click)="mapaAberto.set(true)">Questões</ucam-button>
+        <!-- Os div sem classe do DS existem para o Tailwind decidir o display:
+             o CSS do DS não tem camada e venceria `lg:hidden` num .ucam-cluster. -->
+        <div class="lg:hidden">
+          <div class="ucam-cluster ucam-cluster--fim">
+            <ucam-button variant="secondary" size="sm" iconStart="listChecks" (click)="mapaAberto.set(true)">Questões</ucam-button>
+          </div>
         </div>
         <div class="ucam-split">
           <div class="ucam-stack ucam-stack--lg"><router-outlet /></div>
-          <aside class="ucam-aside hidden lg:block" aria-label="Mapa de questões">
-            <app-mapa-questoes (navegar)="irPara($event)" />
-          </aside>
+          <div class="hidden lg:block">
+            <aside class="ucam-aside" aria-label="Mapa de questões">
+              <app-mapa-questoes (navegar)="irPara($event)" />
+            </aside>
+          </div>
         </div>
       </div>
       <ucam-drawer [(open)]="mapaAberto" title="Questões" side="end" size="sm">

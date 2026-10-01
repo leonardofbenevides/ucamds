@@ -31,6 +31,10 @@ export class ResultadoPage {
   readonly entregueEm = signal<string | null>(null);
   readonly tempoUsado = signal<string | null>(null);
 
+  readonly trilha = computed(() => [
+    { label: 'Seus dados', link: `/candidato/${this.store.oidFip() ?? ''}` },
+    { label: 'Prova entregue' },
+  ]);
   readonly temRedacao = computed(() => this.tipos().some(ehRedacao));
   readonly totalTentativas = computed(() => this.store.tentativas()?.totalTentativasPossiveis ?? 0);
   readonly itens = computed(() => [

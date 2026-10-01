@@ -33,6 +33,7 @@ describe('ProvaPage', () => {
     await f.whenStable();
     const el = f.nativeElement as HTMLElement;
     expect(el.querySelector('a[target="_blank"]')).toBeNull();
+    expect(el.querySelector('button[aria-label="Como a prova funciona"]')).not.toBeNull();
     f.componentInstance.instrucoesAbertas.set(true);
     await f.whenStable();
     // A gaveta do DS abre em overlay no body, fora do fixture.

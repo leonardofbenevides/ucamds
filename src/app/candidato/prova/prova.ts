@@ -1,7 +1,7 @@
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { UcamAlert, UcamButton, UcamDrawer, UcamEmptyState, UcamSkeleton } from '@ucam/ui';
+import { UcamAlert, UcamButton, UcamDrawer, UcamEmptyState, UcamIconButton, UcamSkeleton } from '@ucam/ui';
 import { ProvaApi } from '../../core/api/prova.api';
 import { FilaRespostas } from '../../core/offline/fila-respostas';
 import { CandidatoStore } from '../../core/store/candidato.store';
@@ -27,6 +27,7 @@ import { environment } from '../../../environments/environment';
     UcamButton,
     UcamDrawer,
     UcamEmptyState,
+    UcamIconButton,
     UcamSkeleton,
   ],
   templateUrl: './prova.html',
