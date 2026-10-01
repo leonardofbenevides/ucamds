@@ -1,0 +1,46 @@
+<app-moldura>
+  <ucam-page-header variante="pagina" title="Prova entregue" description="Suas respostas foram registradas." />
+
+  <div class="ucam-content ucam-content--estreita ucam-stack ucam-stack--lg">
+    @if (carregando()) {
+      <ucam-skeleton variant="text" [lines]="4" />
+    } @else if (erro()) {
+      <ucam-alert tone="danger" live="assertive">{{ erro() }}</ucam-alert>
+      <ucam-button variant="primary" (click)="recarregar()">Tentar de novo</ucam-button>
+    } @else {
+      <ucam-description-list [items]="itens()" layout="inline" [columns]="1" />
+
+      @if (temRedacao()) {
+        <ucam-alert tone="info">Sua redação será corrigida pela banca. Acompanhe a data do resultado no site da universidade.</ucam-alert>
+        <div class="ucam-cluster ucam-cluster--fim">
+          <ucam-button variant="primary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
+        </div>
+      } @else {
+        <div class="ucam-stack">
+          <ucam-badge
+            [tone]="situacao() === 'APROVADO' ? 'success' : 'neutral'"
+            variant="soft"
+            [label]="situacao() === 'APROVADO' ? 'Aprovado' : 'Reprovado'"
+          />
+          @if (situacao() === 'APROVADO') {
+            <p>Parabéns! Você foi aprovado no vestibular. O próximo passo é concluir a matrícula.</p>
+            <div class="ucam-cluster ucam-cluster--fim">
+              <ucam-button variant="primary" iconEnd="externalLink" (click)="concluirMatricula()">Concluir matrícula</ucam-button>
+            </div>
+          } @else if (store.podeTentarDeNovo()) {
+            <p>Você não atingiu a nota mínima nesta tentativa. Ainda há tentativa disponível nesta inscrição.</p>
+            <div class="ucam-cluster ucam-cluster--fim">
+              <ucam-button variant="secondary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
+              <ucam-button variant="primary" iconStart="refreshCw" (click)="tentarNovamente()">Tentar novamente</ucam-button>
+            </div>
+          } @else {
+            <p>Você não atingiu a nota mínima e já usou as {{ totalTentativas() }} tentativas desta inscrição.</p>
+            <div class="ucam-cluster ucam-cluster--fim">
+              <ucam-button variant="primary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</app-moldura>
