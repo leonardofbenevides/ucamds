@@ -21,6 +21,14 @@ import type { UcamIconName } from '../icon/ucam-icons.generated';
  *    solto de texto entre o rótulo e o valor;
  *  - a BORDA no grupo e não no controle. Dois contornos aninhados é o defeito
  *    visual mais comum desta peça.
+ *
+ * O HOST NÃO LEVA A CLASSE .ucam-input-group (01/10/2026). Levava, e numa
+ * aplicação de Trilho B — que carrega o @ucam/css para os blocos de arranjo —
+ * a folha do Trilho A desenhava a moldura dela NO HOST: borda, fundo e 32px de
+ * altura em volta do div interno, que já desenha a sua. Eram os dois contornos
+ * aninhados que este componente existe para impedir, e em size="lg" o div de
+ * 40px vazava do host de 32 e encostava no texto de apoio. A moldura é uma só,
+ * a do div; as regras daqui se ancoram no seletor do elemento.
  */
 export type UcamInputGroupSize = 'sm' | 'md' | 'lg';
 
@@ -31,7 +39,7 @@ export type UcamInputGroupSize = 'sm' | 'md' | 'lg';
   encapsulation: ViewEncapsulation.None,
   imports: [ZardInputGroupImports, UcamIcon],
   host: {
-    class: 'ucam-input-group block',
+    class: 'block',
     '[attr.data-disabled]': 'disabled() ? "" : null',
     '[attr.data-invalid]': 'invalid() ? "" : null',
   },
@@ -70,7 +78,7 @@ export type UcamInputGroupSize = 'sm' | 'md' | 'lg';
     /* A BORDA É DO GRUPO. O controle projetado entra sem contorno e sem fundo
      * próprios, senão aparecem duas caixas aninhadas — e ocupa a altura
      * INTEIRA, que é o que fecha a faixa morta onde o clique não focava. */
-    .ucam-input-group :is(input, select, textarea) {
+    ucam-input-group :is(input, select, textarea) {
       border: 0;
       background: none;
       box-shadow: none;
@@ -79,7 +87,7 @@ export type UcamInputGroupSize = 'sm' | 'md' | 'lg';
       min-inline-size: 0;
       flex: 1;
     }
-    .ucam-input-group :is(input, select, textarea):focus-visible {
+    ucam-input-group :is(input, select, textarea):focus-visible {
       outline: none;
     }
   `,
