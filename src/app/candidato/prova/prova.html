@@ -1,5 +1,7 @@
 <app-moldura>
-  <ucam-button ucamShellAcoes variant="ghost" size="sm" iconStart="info" (click)="instrucoesAbertas.set(true)">Instruções</ucam-button>
+  <div ucamShellAcoes>
+    <ucam-button variant="ghost" size="sm" iconStart="info" (click)="instrucoesAbertas.set(true)">Instruções</ucam-button>
+  </div>
 
   @switch (store.estado()) {
     @case ('carregando') {
