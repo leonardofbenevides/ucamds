@@ -9,12 +9,24 @@ import { Posicao, ProvaStore } from '../../core/store/prova.store';
 import { RelogioProva, parseTempoMaximo } from '../../core/tempo/relogio-prova';
 import { Moldura } from '../../layout/moldura';
 import { CabecalhoProva } from './cabecalho-prova';
+import { EntregaDialog } from './entrega-dialog';
 import { MapaQuestoes } from './mapa-questoes';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-prova',
-  imports: [RouterOutlet, Moldura, CabecalhoProva, MapaQuestoes, UcamAlert, UcamButton, UcamDrawer, UcamEmptyState, UcamSkeleton],
+  imports: [
+    RouterOutlet,
+    Moldura,
+    CabecalhoProva,
+    EntregaDialog,
+    MapaQuestoes,
+    UcamAlert,
+    UcamButton,
+    UcamDrawer,
+    UcamEmptyState,
+    UcamSkeleton,
+  ],
   templateUrl: './prova.html',
 })
 export class ProvaPage {
@@ -63,5 +75,19 @@ export class ProvaPage {
 
   recarregar(): void {
     this.store.carregar(this.candidato.oidCandidatoProva()!);
+  }
+
+  /** Depois da entrega registrada: limpa o que era desta prova e vai ao resultado. */
+  async entregue(): Promise<void> {
+    const oidCp = this.candidato.oidCandidatoProva()!;
+    this.relogio.parar();
+    this.fila.limpar(oidCp);
+    try {
+      localStorage.removeItem(`rascunho:${oidCp}`);
+    } catch {
+      /* sem storage */
+    }
+    this.pedirEntrega.set(null);
+    await this.router.navigate(['/candidato', this.candidato.oidFip(), 'resultado']);
   }
 }

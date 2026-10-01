@@ -39,6 +39,7 @@
       <ucam-drawer [(open)]="mapaAberto" title="Questões" side="end" size="sm">
         <app-mapa-questoes (navegar)="irPara($event)" />
       </ucam-drawer>
+      <app-entrega-dialog [modo]="pedirEntrega()" (fechar)="pedirEntrega.set(null)" (revisar)="irPara($event)" (entregue)="entregue()" />
     }
   }
 </app-moldura>
