@@ -1,0 +1,40 @@
+@if (questao(); as q) {
+  <article class="ucam-stack ucam-stack--lg" appProvaProtegida>
+    <header class="ucam-cluster ucam-cluster--entre">
+      <h2 class="ucam-section__title">{{ rotuloCaderno() }} · Questão {{ n() }} de {{ totalNoCaderno() }}</h2>
+      @if (escolhida()) {
+        <ucam-badge tone="success" variant="dot" label="Respondida" />
+      }
+    </header>
+
+    @if (q.textoreferencia) {
+      <div data-texto-referencia [innerHTML]="q.textoreferencia"></div>
+    }
+    <div data-enunciado [innerHTML]="q.descricao"></div>
+
+    <fieldset class="ucam-stack ucam-stack--sm">
+      <legend class="ucam-sr-only">Alternativas da questão {{ n() }}</legend>
+      @for (a of alternativas(); track a.oid) {
+        <label class="ucam-choice-card">
+          <input type="radio" [name]="'questao-' + q.oid" [value]="a.oid" [checked]="escolhida() === a.oid" (change)="escolher(a.oid)" />
+          <span class="ucam-choice-card__figura" aria-hidden="true">{{ a.letra }}</span>
+          <span class="ucam-choice-card__titulo">
+            <span class="ucam-sr-only">Alternativa {{ a.letra }}: </span>
+            <span [innerHTML]="a.descricao"></span>
+          </span>
+          <span class="ucam-choice-card__marca" aria-hidden="true"><ucam-icon name="check" size="sm" /></span>
+        </label>
+      }
+    </fieldset>
+
+    <footer class="ucam-cluster ucam-cluster--entre">
+      <span [ucamTooltip]="'Esta é a primeira questão'" [tooltipDisabled]="!ehPrimeira()">
+        <ucam-button variant="secondary" iconStart="chevronLeft" [disabled]="ehPrimeira()" (click)="anterior()">Anterior</ucam-button>
+      </span>
+      @if (ehPrimeira()) {
+        <span class="ucam-sr-only">Esta é a primeira questão.</span>
+      }
+      <ucam-button variant="primary" [iconEnd]="proximaEhFim() ? 'send' : 'chevronRight'" (click)="proxima()">{{ rotuloProxima() }}</ucam-button>
+    </footer>
+  </article>
+}
