@@ -1,0 +1,40 @@
+<app-moldura>
+  <ucam-page-header
+    variante="pagina"
+    title="Antes de começar"
+    description="Leia com calma. A prova só começa quando você clicar em Iniciar prova."
+  />
+
+  <div class="ucam-content ucam-content--estreita ucam-stack ucam-stack--lg">
+    <ul class="ucam-stack" aria-label="Como a prova funciona">
+      <li class="ucam-cluster">
+        <ucam-icon name="monitor" aria-hidden="true" />
+        <span>Funciona no computador e no celular. Se a conexão cair, suas respostas ficam guardadas e são enviadas quando ela voltar.</span>
+      </li>
+      <li class="ucam-cluster">
+        <ucam-icon name="clock" aria-hidden="true" />
+        <span>O tempo fica à vista no topo. A barra avisa quando faltar um terço e quando faltarem 10 minutos.</span>
+      </li>
+      <li class="ucam-cluster">
+        <ucam-icon name="circleCheck" aria-hidden="true" />
+        <span>Cada resposta é salva na hora. Você pode mudar de ideia até entregar a prova.</span>
+      </li>
+    </ul>
+
+    @if (carregando()) {
+      <ucam-skeleton variant="text" [lines]="3" />
+    } @else {
+      <ucam-description-list [items]="resumo()" layout="inline" [columns]="1" />
+    }
+
+    <ucam-alert tone="info">Ao clicar em Iniciar prova, o tempo de {{ tempoTexto() }} começa a contar e não para.</ucam-alert>
+
+    @if (erro()) {
+      <ucam-alert tone="danger" live="assertive">{{ erro() }}</ucam-alert>
+    }
+
+    <div class="ucam-cluster ucam-cluster--fim">
+      <ucam-button variant="primary" size="lg" iconStart="doorOpen" [loading]="iniciando()" (click)="iniciar()">Iniciar prova</ucam-button>
+    </div>
+  </div>
+</app-moldura>
