@@ -13,6 +13,13 @@ const LETRAS = 'ABCDEFG';
   selector: 'app-questao',
   imports: [UcamBadge, UcamButton, UcamIcon, UcamTooltip, ProvaProtegida],
   templateUrl: './questao.html',
+  styles: `
+    /* O cartão do DS alinha pelo topo porque prevê título + linha de apoio;
+       a alternativa é uma linha só, e o texto precisa ficar no eixo da letra. */
+    :host .ucam-choice-card {
+      align-items: center;
+    }
+  `,
 })
 export class QuestaoPage {
   readonly caderno = input.required<string>();

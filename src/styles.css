@@ -12,3 +12,10 @@
 /* Base dos componentes <ucam-*>: utilities do bundle (via @source),
    ponte para os tokens e o @layer base da biblioteca. */
 @import "@ucam/ui/styles.css";
+
+/* A marca entra por máscara (faixa, tela de entrada): o DS pede que a página
+   hospedeira aponte o arquivo. É o lockup horizontal, em uma cor só. */
+.ucam .ucam-shell,
+.ucam .ucam-login {
+  --ucam-appbar-logo: url("/assets/logo-ucam.svg");
+}

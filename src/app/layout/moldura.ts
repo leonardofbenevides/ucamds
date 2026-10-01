@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { UcamAppShell } from '@ucam/ui';
 import { CandidatoStore } from '../core/store/candidato.store';
+import { TemaToggle } from './tema-toggle';
 
 /**
  * A moldura de toda tela depois da entrada: faixa com o nome do sistema e o
@@ -8,7 +9,7 @@ import { CandidatoStore } from '../core/store/candidato.store';
  */
 @Component({
   selector: 'app-moldura',
-  imports: [UcamAppShell],
+  imports: [UcamAppShell, TemaToggle],
   template: `
     <ucam-app-shell
       systemName="Vestibular Online"
@@ -20,7 +21,10 @@ import { CandidatoStore } from '../core/store/candidato.store';
       [navCollapsed]="true"
       maxContentWidth="72rem"
     >
-      <ng-content select="[ucamShellAcoes]" />
+      <div ucamShellAcoes class="ucam-cluster">
+        <ng-content select="[ucamShellAcoes]" />
+        <app-tema-toggle />
+      </div>
       <ng-content />
     </ucam-app-shell>
   `,
