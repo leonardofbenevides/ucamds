@@ -83,3 +83,25 @@
   --ease-entrance: var(--ucam-motion-easing-entrance);
   --ease-emphasized: var(--ucam-motion-easing-emphasized);
 }
+
+/* A SUBPALETA CHEGA À BASE (ADR-037).
+ *
+ * Propriedade customizada resolve ONDE é declarada: --primary, declarado no
+ * :root como var(--ucam-color-action-primary-default), congela o bordô do
+ * :root. Quando o shell troca color-action-primary-* pela cor do sistema
+ * (data-sistema="academico" → azul), o .ucam-btn do Trilho A acompanha, mas
+ * o <ucam-button> da base continua lendo --primary do :root — bordô. Medido
+ * em 01/10/2026 no Vestibular Online: faixa azul, botão primário bordô.
+ *
+ * Redeclarar os nomes de AÇÃO no mesmo elemento que recebe a subpaleta faz o
+ * var() resolver contra os tokens já trocados. Sem data-sistema (ou com
+ * data-paleta="comum"/"moldura"), os tokens não mudam e a redeclaração só
+ * repete o valor do :root — por isso nenhum guarda de paleta aqui. */
+:is(.ucam-shell, ucam-app-shell)[data-sistema] {
+  --primary: var(--ucam-color-action-primary-default);
+  --primary-foreground: var(--ucam-color-text-on-action);
+  --accent: var(--ucam-color-action-primary-subtle);
+  --accent-foreground: var(--ucam-color-action-primary-default);
+  --sidebar-primary: var(--ucam-color-action-primary-default);
+  --sidebar-primary-foreground: var(--ucam-color-text-on-action);
+}
