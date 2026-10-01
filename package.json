@@ -6,7 +6,7 @@
     "start": "ng serve --host localhost",
     "build": "ng build",
     "test": "ng test",
-    "ds:checar": "ucam-ds checar src/app/**/*.html"
+    "ds:checar": "node tools/ds-checar.mjs"
   },
   "private": true,
   "dependencies": {

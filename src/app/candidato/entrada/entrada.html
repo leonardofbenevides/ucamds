@@ -1,0 +1,52 @@
+<main class="ucam-login">
+  <section class="ucam-login__acesso" aria-labelledby="t-entrada">
+    <div class="ucam-login__miolo ucam-stack ucam-stack--lg">
+      <div class="ucam-login__marca">
+        <img class="ucam-login__logo" src="assets/logo-ucam.svg" alt="Universidade Candido Mendes" />
+      </div>
+      <div class="ucam-stack ucam-stack--sm">
+        <h1 class="ucam-page-header__title" id="t-entrada">Confira seus dados</h1>
+        <p class="ucam-lede">Se algo estiver errado, fale com a secretaria antes de começar.</p>
+      </div>
+
+      @if (semTentativas()) {
+        <ucam-alert tone="warning">Você já usou as {{ totalTentativas() }} tentativas desta inscrição.</ucam-alert>
+      }
+
+      <ucam-description-list [items]="itens()" [columns]="1" layout="stacked" />
+
+      <div class="ucam-stack ucam-stack--sm">
+        <ucam-button variant="primary" size="lg" [disabled]="semTentativas()" (click)="seguir()">{{ rotulo() }}</ucam-button>
+        @if (semTentativas()) {
+          <p class="ucam-field__hint">Sem tentativa disponível, não há como entrar na prova. Fale com a secretaria.</p>
+        }
+      </div>
+
+      <p class="ucam-login__apoio">
+        <ucam-icon name="clock" size="sm" aria-hidden="true" />
+        Esta prova tem tempo para ser feita. O relógio começa quando você clicar em Iniciar prova.
+        <br />Dúvidas: <a class="ucam-link" href="mailto:{{ contato }}">{{ contato }}</a>
+      </p>
+    </div>
+  </section>
+
+  <aside class="ucam-login__institucional" aria-label="Sobre a prova">
+    <div class="ucam-login__discurso">
+      <p class="ucam-login__frase">O vestibular da Candido Mendes, no seu tempo e no seu aparelho.</p>
+      <ul class="ucam-login__sistemas">
+        <li class="ucam-login__sistema">
+          <span class="ucam-login__sistema-nome">Prova com tempo</span>
+          <span class="ucam-login__sistema-apoio">O relógio fica à vista o tempo todo.</span>
+        </li>
+        <li class="ucam-login__sistema">
+          <span class="ucam-login__sistema-nome">Tudo salvo sozinho</span>
+          <span class="ucam-login__sistema-apoio">Cada resposta é gravada na hora.</span>
+        </li>
+        <li class="ucam-login__sistema">
+          <span class="ucam-login__sistema-nome">Resultado na tela</span>
+          <span class="ucam-login__sistema-apoio">Ao entregar, você vê o que vem depois.</span>
+        </li>
+      </ul>
+    </div>
+  </aside>
+</main>
