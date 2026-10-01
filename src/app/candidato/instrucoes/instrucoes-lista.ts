@@ -31,9 +31,13 @@ export const ORIENTACOES: Orientacao[] = [
   imports: [UcamCard, UcamIcon],
   template: `
     @if (cartoes()) {
-      <div class="ucam-grid" aria-label="Como a prova funciona" role="list">
+      <!-- O texto vai como conteúdo, não como apoio: o apoio do cartão é de uma
+           linha e cortava a frase com reticências. -->
+      <div class="ucam-grid ucam-grid--lg" aria-label="Como a prova funciona" role="list">
         @for (o of orientacoes; track o.titulo) {
-          <ucam-card role="listitem" [titulo]="o.titulo" [apoio]="o.texto" [icone]="o.icone" />
+          <ucam-card role="listitem" [titulo]="o.titulo" [icone]="o.icone">
+            <p>{{ o.texto }}</p>
+          </ucam-card>
         }
       </div>
     } @else {
