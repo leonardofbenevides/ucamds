@@ -13,18 +13,29 @@
         <div class="ucam-stats">
           <ucam-stat label="Entregue em" [value]="entregueDia() ?? '—'" [meta]="entregueHora()" icon="calendar" [state]="carregando() ? 'loading' : 'idle'" />
           <ucam-stat label="Tempo usado" [value]="tempoUsado() ?? '—'" meta="Do início à entrega" icon="clock" [state]="carregando() ? 'loading' : 'idle'" />
+          @if (respondidas(); as r) {
+            <ucam-stat label="Questões respondidas" [value]="r" meta="Na prova objetiva" icon="clipboardCheck" />
+          }
           <ucam-stat label="Cadernos" [value]="tipos().length" [meta]="cadernosTexto()" icon="listChecks" [state]="carregando() ? 'loading' : 'idle'" />
         </div>
       </section>
 
+      <!-- O desfecho manda: prova corrigida mostra o resultado, com ou sem
+           redação. A espera pela banca só aparece enquanto não há desfecho. -->
       @if (carregando()) {
         <ucam-skeleton variant="block" />
-      } @else if (temRedacao()) {
+      } @else if (situacao() === null) {
         <ucam-card as="section" titulo="Aguardando a correção da banca" apoio="Sua redação será lida pela banca; a prova objetiva é corrigida junto." icone="pencil">
           <div class="ucam-stack">
             <ucam-badge tone="info" variant="dot" label="Em correção" />
-            <p>Pronto. Acompanhe a data do resultado no site da universidade — é lá que a nota aparece.</p>
+            <p>Sua prova está entregue e nada mais precisa ser feito. Assim que a banca terminar, o resultado aparece aqui, por este mesmo link, e no site da universidade.</p>
+            @if (erroVerificacao()) {
+              <ucam-alert tone="danger" live="assertive">Não conseguimos consultar a correção. Tente de novo em instantes.</ucam-alert>
+            } @else if (verificadoAs(); as hora) {
+              <ucam-alert tone="info" live="polite">A banca ainda não terminou a correção. Última consulta às {{ hora }}.</ucam-alert>
+            }
             <div class="ucam-cluster ucam-cluster--fim">
+              <ucam-button variant="secondary" iconStart="refreshCw" [loading]="verificando()" (click)="verificar()">Ver se já saiu</ucam-button>
               <ucam-button variant="primary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
             </div>
           </div>

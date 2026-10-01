@@ -4,15 +4,23 @@ import { firstValueFrom } from 'rxjs';
 import { UcamAlert, UcamBadge, UcamButton, UcamCard, UcamPageHeader, UcamSkeleton, UcamStat, UcamStepper } from '@ucam/ui';
 import { CandidatoApi } from '../../core/api/candidato.api';
 import { ProvaApi } from '../../core/api/prova.api';
+import { CandidatoProva } from '../../core/model/candidato';
 import { ehRedacao, rotuloTipoProva } from '../../core/model/prova';
 import { Navegador } from '../../core/navegador';
 import { CandidatoStore } from '../../core/store/candidato.store';
+import { ProvaStore } from '../../core/store/prova.store';
 import { formatarHms } from '../../core/tempo/relogio-prova';
 import { Moldura } from '../../layout/moldura';
 import { etapas } from '../etapas';
 import { environment } from '../../../environments/environment';
 
 type Situacao = 'APROVADO' | 'REPROVADO' | null;
+
+/** O desfecho de uma prova já corrigida; null enquanto a correção não saiu. */
+function desfecho(c: CandidatoProva | null): Situacao {
+  if (c?.situacao !== 'PROVA_CORRIGIDA') return null;
+  return ['APROVADO', 'MATRICULADO'].includes(c.formaingressopessoa.situacao) ? 'APROVADO' : 'REPROVADO';
+}
 
 @Component({
   selector: 'app-resultado',
@@ -21,6 +29,7 @@ type Situacao = 'APROVADO' | 'REPROVADO' | null;
 })
 export class ResultadoPage {
   readonly store = inject(CandidatoStore);
+  private readonly prova = inject(ProvaStore);
   private readonly provaApi = inject(ProvaApi);
   private readonly candidatoApi = inject(CandidatoApi);
   private readonly navegador = inject(Navegador);
@@ -35,6 +44,10 @@ export class ResultadoPage {
   readonly entregueDia = signal<string | null>(null);
   readonly entregueHora = signal<string | null>(null);
   readonly tempoUsado = signal<string | null>(null);
+  /** A consulta à banca feita pelo botão: em curso, e a hora da última que voltou sem correção. */
+  readonly verificando = signal(false);
+  readonly verificadoAs = signal<string | null>(null);
+  readonly erroVerificacao = signal(false);
 
   readonly trilha = computed(() => [
     { label: 'Seus dados', link: `/candidato/${this.store.oidFip() ?? ''}` },
@@ -43,6 +56,10 @@ export class ResultadoPage {
   readonly temRedacao = computed(() => this.tipos().some(ehRedacao));
   readonly totalTentativas = computed(() => this.store.tentativas()?.totalTentativasPossiveis ?? 0);
   readonly cadernosTexto = computed(() => this.tipos().map(rotuloTipoProva).join(', ') || null);
+  /** Só existe na sessão em que a prova foi feita: quem volta pelo link depois não tem o caderno carregado. */
+  readonly respondidas = computed(() =>
+    this.prova.totalObjetivas() > 0 ? `${this.prova.respondidas()} de ${this.prova.totalObjetivas()}` : null,
+  );
 
   constructor() {
     this.carregar();
@@ -64,7 +81,12 @@ export class ResultadoPage {
         this.entregueHora.set(`às ${fim.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`);
         if (dados.horarioinicio) this.tempoUsado.set(formatarHms(fim.getTime() - new Date(dados.horarioinicio).getTime()));
       }
-      if (!this.temRedacao()) {
+      // Prova já corrigida tem desfecho, com ou sem redação: quem volta depois
+      // de a banca terminar vê o resultado, não a espera.
+      const corrigida = desfecho(this.store.candidato());
+      if (corrigida) {
+        this.situacao.set(corrigida);
+      } else if (!this.temRedacao()) {
         const s = (await firstValueFrom(this.provaApi.corrigirObjetiva(oidCp))).trim().toUpperCase();
         this.situacao.set(s === 'APROVADO' ? 'APROVADO' : 'REPROVADO');
       }
@@ -72,6 +94,27 @@ export class ResultadoPage {
       this.erro.set('Não conseguimos carregar o resultado. Tente de novo em instantes.');
     } finally {
       this.carregando.set(false);
+    }
+  }
+
+  /** Pergunta de novo ao servidor se a banca já corrigiu. */
+  async verificar(): Promise<void> {
+    if (this.verificando()) return;
+    const oidFip = this.store.oidFip()!;
+    this.verificando.set(true);
+    this.erroVerificacao.set(false);
+    try {
+      const candidato = await firstValueFrom(this.candidatoApi.buscar(oidFip));
+      if (candidato) this.store.definir(candidato, oidFip);
+      const corrigida = desfecho(candidato);
+      this.situacao.set(corrigida);
+      this.verificadoAs.set(
+        corrigida ? null : new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      );
+    } catch {
+      this.erroVerificacao.set(true);
+    } finally {
+      this.verificando.set(false);
     }
   }
 

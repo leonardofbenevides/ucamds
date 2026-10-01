@@ -1,13 +1,14 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { UcamAlert, UcamButton, UcamDescriptionList, UcamIcon } from '@ucam/ui';
+import { UcamAlert, UcamButton, UcamDescriptionList, UcamIcon, UcamIconTile } from '@ucam/ui';
 import { CandidatoStore } from '../../core/store/candidato.store';
+import { CenaProva } from '../../layout/cena-prova';
 import { TemaToggle } from '../../layout/tema-toggle';
 import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-entrada',
-  imports: [UcamAlert, UcamButton, UcamDescriptionList, UcamIcon, TemaToggle],
+  imports: [UcamAlert, UcamButton, UcamDescriptionList, UcamIcon, UcamIconTile, TemaToggle, CenaProva],
   templateUrl: './entrada.html',
 })
 export class EntradaPage {

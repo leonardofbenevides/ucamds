@@ -14,4 +14,6 @@ export const environment = {
   contatoSecretaria: 'secretaria@candidomendes.edu.br',
   /** Em produção ninguém entra por atalho: só pelo link. */
   candidatosDeTeste: [] as { oid: string; nome: string; apoio: string }[],
+  /** Não existe fora do protótipo. */
+  mockNovaProva: null as string | null,
 };

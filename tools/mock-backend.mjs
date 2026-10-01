@@ -5,10 +5,15 @@
 //   http://localhost:4200/candidato/bruno  (só objetiva: corrige na hora)
 // Qualquer outro oid também funciona (candidato genérico, com redação).
 // TEMPO=00:03:00 node tools/mock-backend.mjs  → prova de 3 minutos.
+// BANCA=60 node tools/mock-backend.mjs        → a banca leva 60 s para corrigir.
 import { createServer } from 'node:http';
 
 const PORTA = Number(process.env.PORTA ?? 8030);
 const TEMPO = process.env.TEMPO ?? '00:20:00';
+// A banca de mentira: quanto tempo depois da entrega a prova com redação
+// aparece corrigida. Sem isso o caminho da redação nunca chega a um resultado
+// no protótipo — a tela de espera seria o fim da linha.
+const BANCA_MS = Number(process.env.BANCA ?? 20) * 1000;
 const TOTAL_TENTATIVAS = 3;
 
 const q = (oid, descricao, alternativas, certa, textoreferencia = null) => ({
@@ -69,7 +74,17 @@ function inscricao(oidFip) {
     const p = PESSOAS[oidFip] ?? { nome: `Candidato ${oidFip}`, cpf: '00000000000', curso: 'DIREITO', turno: 'N', redacao: true };
     inscricoes.set(oidFip, { oidFip, pessoa: p, situacaoInscricao: 'INSCRITO', tentativaAtual: 0, candidato: null, respostas: {} });
   }
-  return inscricoes.get(oidFip);
+  return comBanca(inscricoes.get(oidFip));
+}
+
+/** Passado o prazo da banca, a prova com redação entregue vira corrigida. */
+function comBanca(i) {
+  const c = i?.candidato;
+  if (c?.situacao === 'PROVA_FINALIZADA' && i.pessoa.redacao && Date.now() - new Date(c.horariofim).getTime() >= BANCA_MS) {
+    c.situacao = 'PROVA_CORRIGIDA';
+    i.situacaoInscricao = corrigir(i);
+  }
+  return i;
 }
 
 function candidatoProva(i) {
@@ -98,7 +113,7 @@ function cadernosDe(i) {
 }
 
 function porCandidato(oidCp) {
-  return [...inscricoes.values()].find((i) => i.candidato?.oid === oidCp);
+  return comBanca([...inscricoes.values()].find((i) => i.candidato?.oid === oidCp));
 }
 
 function corrigir(i) {
@@ -131,6 +146,17 @@ const servidor = createServer(async (req, res) => {
   if (m === 'OPTIONS') return responder(res, 204);
 
   let x;
+  // SÓ DO PROTÓTIPO (não existe no legado): os atalhos de teste chamam isto
+  // antes de entrar. Prova já entregue ou corrigida → a inscrição volta ao
+  // zero, para dar para fazer a prova de novo sem reiniciar o servidor. Prova
+  // em andamento fica como está: fechar a aba e voltar não pode custar as
+  // respostas.
+  if ((x = /^\/mock\/nova-prova\/([^/]+)$/.exec(p)) && m === 'POST') {
+    const situacao = inscricoes.get(x[1])?.candidato?.situacao;
+    const reiniciada = situacao === 'PROVA_FINALIZADA' || situacao === 'PROVA_CORRIGIDA';
+    if (reiniciada) inscricoes.delete(x[1]);
+    return responder(res, 200, { reiniciada });
+  }
   if (m === 'GET' && p === '/vestibularonline/candidatoprova/search/findbyformaingressopessoa') {
     const i = inscricao(url.searchParams.get('oidformaingressopessoa'));
     return i.candidato ? responder(res, 200, candidatoProva(i)) : responder(res, 200, null);
@@ -191,6 +217,6 @@ const servidor = createServer(async (req, res) => {
 });
 
 servidor.listen(PORTA, () => {
-  console.log(`backend de mentira em http://localhost:${PORTA}/ (tempo de prova ${TEMPO})`);
+  console.log(`backend de mentira em http://localhost:${PORTA}/ (tempo de prova ${TEMPO}, banca corrige em ${BANCA_MS / 1000} s)`);
   console.log('abra: http://localhost:4200/candidato/ana  ou  http://localhost:4200/candidato/bruno');
 });

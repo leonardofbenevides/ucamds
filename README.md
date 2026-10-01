@@ -42,3 +42,5 @@ No Trilho B o app importa também `@ucam/css/ucam.css` e põe `class="ucam"` no 
 - http://localhost:4200/candidato/bruno — só objetiva, corrigida na hora
 
 `TEMPO=00:03:00 npm run mock` encurta a prova para testar o tempo esgotado. Reiniciar o mock zera tudo.
+
+Para refazer a prova sem reiniciar: em http://localhost:4200/ os atalhos "Candidatos de teste" chamam `POST /mock/nova-prova/<oid>` antes de entrar — prova já entregue ou corrigida volta ao zero, prova em andamento continua. A rota só existe no mock (`environment.mockNovaProva`, nulo em produção). Qualquer outro código digitado no campo cria um candidato novo.

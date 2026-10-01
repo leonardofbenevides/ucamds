@@ -1,6 +1,6 @@
 <!-- A moldura da tela de entrada do DS (shell sem faixa e sem navegação,
      conteúdo pleno): é ela que dá ao painel a altura da janela. -->
-<div class="ucam-shell ucam-shell--sem-nav" data-nav="closed" data-sistema="academico">
+<div class="ucam-shell ucam-shell--sem-nav" data-nav="closed" data-sistema="pessoas">
   <a class="ucam-skip" href="#conteudo">Pular para o conteúdo</a>
   <main class="ucam-main" id="conteudo" tabindex="-1">
     <div class="ucam-content ucam-content--pleno">
@@ -40,19 +40,29 @@
             <p class="ucam-login__frase">O vestibular da Candido Mendes, no seu tempo e no seu aparelho.</p>
             <ul class="ucam-login__sistemas">
               <li class="ucam-login__sistema">
-                <span class="ucam-login__sistema-nome">Prova com tempo</span>
-                <span class="ucam-login__sistema-apoio">O relógio fica à vista o tempo todo.</span>
+                <ucam-icon-tile icon="clock" />
+                <span class="ucam-login__sistema-texto">
+                  <span class="ucam-login__sistema-nome">Prova com tempo</span>
+                  <span class="ucam-login__sistema-apoio">O relógio fica à vista o tempo todo.</span>
+                </span>
               </li>
               <li class="ucam-login__sistema">
-                <span class="ucam-login__sistema-nome">Tudo salvo sozinho</span>
-                <span class="ucam-login__sistema-apoio">Cada resposta é gravada na hora.</span>
+                <ucam-icon-tile icon="circleCheck" />
+                <span class="ucam-login__sistema-texto">
+                  <span class="ucam-login__sistema-nome">Tudo salvo sozinho</span>
+                  <span class="ucam-login__sistema-apoio">Cada resposta é gravada na hora.</span>
+                </span>
               </li>
               <li class="ucam-login__sistema">
-                <span class="ucam-login__sistema-nome">Resultado na tela</span>
-                <span class="ucam-login__sistema-apoio">Ao entregar, você vê o que vem depois.</span>
+                <ucam-icon-tile icon="clipboardCheck" />
+                <span class="ucam-login__sistema-texto">
+                  <span class="ucam-login__sistema-nome">Resultado na tela</span>
+                  <span class="ucam-login__sistema-apoio">Ao entregar, você vê o que vem depois.</span>
+                </span>
               </li>
             </ul>
           </div>
+          <app-cena-prova />
         </aside>
       </div>
     </div>

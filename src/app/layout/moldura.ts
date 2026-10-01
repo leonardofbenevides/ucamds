@@ -27,7 +27,7 @@ import { RelogioFaixa } from './relogio-faixa';
     <ucam-app-shell
       systemName="Vestibular Online"
       systemIcon="graduationCap"
-      systemCategory="academico"
+      systemCategory="pessoas"
       [user]="usuario()"
       [homeHref]="home()"
       [navGroups]="grupos()"

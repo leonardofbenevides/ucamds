@@ -19,3 +19,21 @@
 .ucam .ucam-login {
   --ucam-appbar-logo: url("/assets/logo-ucam.svg");
 }
+
+/* A ENTRADA EM JANELA LARGA. O bloco de entrada do DS foi medido em 1440: o
+   miolo tem 25rem e o título 22px, e é a proporção certa ali. Num monitor de
+   2560 a coluna dobra de largura e o mesmo miolo vira um selo no meio de um
+   campo vazio. Em vez de trocar medida por medida — e sair da escala do DS —,
+   o bloco INTEIRO sobe de degrau: tipografia, controles, recuo e ilustração
+   crescem juntos e a tela mantém as relações que o DS desenhou. Os degraus
+   pedem também altura, para a coluna não passar da dobra num ultrawide baixo.
+   Só a entrada: tela de trabalho continua na densidade do sistema. */
+@media (min-width: 100rem) and (min-height: 50rem) {
+  .ucam .ucam-login { zoom: 1.125; }
+}
+@media (min-width: 120rem) and (min-height: 60rem) {
+  .ucam .ucam-login { zoom: 1.25; }
+}
+@media (min-width: 150rem) and (min-height: 70rem) {
+  .ucam .ucam-login { zoom: 1.5; }
+}

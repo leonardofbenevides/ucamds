@@ -15,7 +15,8 @@
     <div (focusout)="aoSair()">
       <ucam-textarea
         label="Seu texto"
-        [rows]="14"
+        [rows]="22"
+        [maxRows]="60"
         autoGrow
         [maxLength]="maximo"
         [(value)]="texto"

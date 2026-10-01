@@ -15,7 +15,9 @@ export const environment = {
   contatoSecretaria: 'secretaria@candidomendes.edu.br',
   /** Atalhos da tela sem link, só no protótipo: os candidatos do backend de mentira (npm run mock). */
   candidatosDeTeste: [
-    { oid: 'ana', nome: 'Ana Souza', apoio: 'Objetiva e redação — resultado aguarda a banca' },
+    { oid: 'ana', nome: 'Ana Souza', apoio: 'Objetiva e redação — a banca corrige' },
     { oid: 'bruno', nome: 'Bruno Lima', apoio: 'Só objetiva — corrige na hora' },
   ],
+  /** Rota do backend de mentira que devolve o candidato de teste ao zero quando a prova dele já foi entregue; recebe o oid no fim. */
+  mockNovaProva: 'http://localhost:8030/mock/nova-prova/' as string | null,
 };
