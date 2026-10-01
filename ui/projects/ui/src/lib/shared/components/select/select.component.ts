@@ -45,9 +45,9 @@ import { lucideChevronDown, lucideChevronUp } from '@ng-icons/lucide';
 import type { ClassValue } from 'clsx';
 import { filter } from 'rxjs';
 
-import { ZardBadgeComponent } from '@/shared/components/badge';
-import { ZardSelectGroupComponent } from '@/shared/components/select/select-group.component';
-import { ZardSelectItemComponent } from '@/shared/components/select/select-item.component';
+import { ZardBadgeComponent } from '../badge';
+import { ZardSelectGroupComponent } from './select-group.component';
+import { ZardSelectItemComponent } from './select-item.component';
 import {
   selectContentVariants,
   selectScrollButtonVariants,
@@ -56,8 +56,8 @@ import {
   selectViewportVariants,
   type ZardSelectAlignVariants,
   type ZardSelectPositionVariants,
-} from '@/shared/components/select/select.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './select.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 type OnTouchedType = () => void;
 type OnChangeType = (value: string | string[]) => void;

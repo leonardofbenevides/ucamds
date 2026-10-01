@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, ViewEncaps
 
 import type { ClassValue } from 'clsx';
 
-import { ZardCommandComponent } from '@/shared/components/command/command.component';
-import { commandSeparatorVariants } from '@/shared/components/command/command.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { ZardCommandComponent } from './command.component';
+import { commandSeparatorVariants } from './command.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'z-command-divider',

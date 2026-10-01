@@ -14,14 +14,14 @@ import {
 import { NgIcon, type IconName } from '@ng-icons/core';
 import type { ClassValue } from 'clsx';
 
-import type { ZardCommandOptionGroupComponent } from '@/shared/components/command/command-option-group.component';
-import { ZardCommand } from '@/shared/components/command/command.tokens';
+import type { ZardCommandOptionGroupComponent } from './command-option-group.component';
+import { ZardCommand } from './command.tokens';
 import {
   commandItemVariants,
   commandShortcutVariants,
   type ZardCommandItemVariants,
-} from '@/shared/components/command/command.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './command.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'z-command-option',

@@ -3,6 +3,13 @@
 @import './lib/shared/core/css/tailwind';
 @plugin "tailwindcss-animate";
 
+/* No pacote instalado, as classes dos componentes vivem no bundle
+   fesm2022/ — e o Tailwind do app hospedeiro não varre node_modules sozinho.
+   Este @source é relativo a ESTE arquivo: no repositório a pasta não existe
+   e o Tailwind ignora em silêncio; em node_modules/@ucam/ui ela existe e
+   as utilities que os componentes usam passam a ser geradas. */
+@source './fesm2022';
+
 @custom-variant dark (&:is(.dark *));
 
 

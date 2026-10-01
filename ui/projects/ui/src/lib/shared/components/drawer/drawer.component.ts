@@ -27,8 +27,8 @@ import {
 import type { ClassValue } from 'clsx';
 import { filter } from 'rxjs';
 
-import { ZardStringTemplateOutletDirective } from '@/shared/core';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { ZardStringTemplateOutletDirective } from '../../core';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { nextDrawerId, ZardDrawerHost, type ZardDrawerCloseReason } from './drawer-host';
 import { ZardDrawerPanelComponent } from './drawer-panel.component';

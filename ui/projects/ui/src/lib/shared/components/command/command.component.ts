@@ -27,10 +27,10 @@ import { type ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angu
 import type { IconName } from '@ng-icons/core';
 import type { ClassValue } from 'clsx';
 
-import { ZardCommandInputComponent } from '@/shared/components/command/command-input.component';
-import { ZardCommandOptionComponent } from '@/shared/components/command/command-option.component';
-import { commandVariants } from '@/shared/components/command/command.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { ZardCommandInputComponent } from './command-input.component';
+import { ZardCommandOptionComponent } from './command-option.component';
+import { commandVariants } from './command.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { ZardCommand } from './command.tokens';
 

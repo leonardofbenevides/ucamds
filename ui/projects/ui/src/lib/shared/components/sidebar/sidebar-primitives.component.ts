@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, Directive, input, ViewEnc
 
 import type { ClassValue } from 'clsx';
 
-import { separatorVariants } from '@/shared/components/separator/separator.variants';
+import { separatorVariants } from '../separator/separator.variants';
 import {
   sidebarContentVariants,
   sidebarFooterVariants,
@@ -12,8 +12,8 @@ import {
   sidebarGroupVariants,
   sidebarHeaderVariants,
   sidebarSeparatorVariants,
-} from '@/shared/components/sidebar/sidebar.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './sidebar.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'z-sidebar-header, [z-sidebar-header]',

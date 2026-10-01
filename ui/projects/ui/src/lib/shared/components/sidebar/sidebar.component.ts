@@ -17,13 +17,13 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucidePanelLeft } from '@ng-icons/lucide';
 import type { ClassValue } from 'clsx';
 
-import { buttonVariants } from '@/shared/components/button/button.variants';
+import { buttonVariants } from '../button/button.variants';
 import {
   ZARD_SIDEBAR_WIDTH,
   ZARD_SIDEBAR_WIDTH_ICON,
   ZARD_SIDEBAR_WIDTH_MOBILE,
-} from '@/shared/components/sidebar/sidebar.constants';
-import { ZardSidebarService } from '@/shared/components/sidebar/sidebar.service';
+} from './sidebar.constants';
+import { ZardSidebarService } from './sidebar.service';
 import {
   sidebarContainerVariants,
   sidebarGapVariants,
@@ -39,8 +39,8 @@ import {
   type ZardSidebarCollapsibleVariants,
   type ZardSidebarSideVariants,
   type ZardSidebarVariantVariants,
-} from '@/shared/components/sidebar/sidebar.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './sidebar.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'z-sidebar-provider',

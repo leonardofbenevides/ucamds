@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 
-import { mergeClasses } from '@/shared/utils';
+import { mergeClasses } from '../../utils';
 
 export const avatarVariants = cva(
   mergeClasses(

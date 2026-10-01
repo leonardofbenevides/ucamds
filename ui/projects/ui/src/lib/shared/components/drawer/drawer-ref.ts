@@ -1,6 +1,6 @@
 import type { OverlayRef } from '@angular/cdk/overlay';
 
-import { ZardOverlayRefBase } from '@/shared/core';
+import { ZardOverlayRefBase } from '../../core';
 
 import type { ZardDrawerContainerComponent, ZardDrawerOptions } from './drawer-container.component';
 import { DRAWER_DURATION } from './drawer.utils';

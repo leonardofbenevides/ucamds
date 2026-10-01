@@ -21,7 +21,7 @@ import {
   ZardComboboxItemComponent,
   ZardComboboxLabelComponent,
   ZardComboboxListComponent,
-} from '@/shared/components/combobox';
+} from '../../shared/components/combobox';
 
 import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
 

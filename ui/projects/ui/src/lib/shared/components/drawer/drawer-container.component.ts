@@ -28,8 +28,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import type { ClassValue } from 'clsx';
 
-import { ZardButtonComponent } from '@/shared/components/button';
-import { noopFn } from '@/shared/utils/noop';
+import { ZardButtonComponent } from '../button';
+import { noopFn } from '../../utils/noop';
 
 import { ZardDrawerHost } from './drawer-host';
 import { ZardDrawerPanelComponent } from './drawer-panel.component';

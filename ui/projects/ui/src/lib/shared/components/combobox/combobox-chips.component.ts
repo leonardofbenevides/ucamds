@@ -14,14 +14,14 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import type { ClassValue } from 'clsx';
 
-import { ZardButtonComponent } from '@/shared/components/button';
+import { ZardButtonComponent } from '../button';
 import {
   comboboxChipRemoveVariants,
   comboboxChipsInputVariants,
   comboboxChipsVariants,
   comboboxChipVariants,
-} from '@/shared/components/combobox/combobox.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './combobox.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { ZardComboboxRoot } from './combobox.types';
 

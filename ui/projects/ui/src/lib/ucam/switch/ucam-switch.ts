@@ -1,7 +1,7 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, forwardRef, input, model, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { ZardSwitchComponent } from '@/shared/components/switch/switch.component';
+import { ZardSwitchComponent } from '../../shared/components/switch/switch.component';
 import { describedBy, nextFieldIds } from '../field/ucam-field';
 
 /**

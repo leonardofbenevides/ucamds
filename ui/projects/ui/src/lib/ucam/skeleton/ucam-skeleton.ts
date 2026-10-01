@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
 
-import { ZardSkeletonComponent } from '@/shared/components/skeleton/skeleton.component';
+import { ZardSkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
 
 /**
  * Contrato: spec/components/skeleton.json — ADR-005.

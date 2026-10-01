@@ -1,4 +1,4 @@
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import type { ZardChartConfig, ZardChartTooltipIndicator, ZardChartTooltipTrigger } from './chart.types';
 

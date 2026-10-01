@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, ViewEncaps
 import { NgIcon } from '@ng-icons/core';
 import type { ClassValue } from 'clsx';
 
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { ZARD_CHART } from './chart-context';
 import type { ZardChartLegendEntry } from './chart.types';

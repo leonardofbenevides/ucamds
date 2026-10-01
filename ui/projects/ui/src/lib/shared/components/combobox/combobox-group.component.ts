@@ -10,8 +10,8 @@ import {
 
 import type { ClassValue } from 'clsx';
 
-import { comboboxGroupVariants, comboboxLabelVariants } from '@/shared/components/combobox/combobox.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { comboboxGroupVariants, comboboxLabelVariants } from './combobox.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { ZardComboboxItemComponent } from './combobox-item.component';
 

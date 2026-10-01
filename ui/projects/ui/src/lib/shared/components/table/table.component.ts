@@ -13,8 +13,8 @@ import {
   tableHeadVariants,
   tableRowVariants,
   tableVariants,
-} from '@/shared/components/table/table.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './table.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'table[z-table]',
