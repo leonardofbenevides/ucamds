@@ -1,0 +1,44 @@
+<app-moldura>
+  <a ucamShellAcoes class="ucam-link" [href]="'/candidato/' + candidato.oidFip() + '/instrucoes'" target="_blank" rel="noopener">Instruções</a>
+
+  @switch (store.estado()) {
+    @case ('carregando') {
+      <div class="ucam-content ucam-stack">
+        <ucam-skeleton variant="heading" />
+        <ucam-skeleton variant="text" [lines]="6" />
+      </div>
+    }
+    @case ('vazio') {
+      <div class="ucam-content">
+        <ucam-empty-state
+          reason="error"
+          title="Esta prova ainda não tem caderno cadastrado"
+          [description]="'Fale com a secretaria: ' + contato"
+        />
+      </div>
+    }
+    @case ('erro') {
+      <div class="ucam-content ucam-stack">
+        <ucam-alert tone="danger" live="assertive">Não conseguimos carregar a prova. Confira sua conexão e tente de novo.</ucam-alert>
+        <ucam-button variant="primary" (click)="recarregar()">Tentar de novo</ucam-button>
+      </div>
+    }
+    @default {
+      <app-cabecalho-prova />
+      <div class="ucam-corpo">
+        <div class="ucam-cluster ucam-cluster--fim lg:hidden">
+          <ucam-button variant="secondary" size="sm" iconStart="listChecks" (click)="mapaAberto.set(true)">Questões</ucam-button>
+        </div>
+        <div class="ucam-split">
+          <div class="ucam-stack ucam-stack--lg"><router-outlet /></div>
+          <aside class="ucam-aside hidden lg:block" aria-label="Mapa de questões">
+            <app-mapa-questoes (navegar)="irPara($event)" />
+          </aside>
+        </div>
+      </div>
+      <ucam-drawer [(open)]="mapaAberto" title="Questões" side="end" size="sm">
+        <app-mapa-questoes (navegar)="irPara($event)" />
+      </ucam-drawer>
+    }
+  }
+</app-moldura>
