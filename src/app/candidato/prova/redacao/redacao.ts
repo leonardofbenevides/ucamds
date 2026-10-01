@@ -11,8 +11,9 @@ import { environment } from '../../../../environments/environment';
 const INTERVALO_SALVAR = 30_000;
 
 /**
- * Redação em texto simples. Salva ao sair do campo e a cada 30 s se houve
- * mudança; o rascunho local sobrevive a recarregar a página.
+ * Redação em texto simples. O que a pessoa digita vai para o rascunho do
+ * store (de onde a entrega descarrega) e para o localStorage (que sobrevive
+ * a recarregar); o servidor recebe ao sair do campo e a cada 30 s.
  */
 @Component({
   selector: 'app-redacao',
@@ -29,7 +30,6 @@ export class RedacaoPage {
   readonly maximo = environment.redacaoMax;
   readonly questao = this.store.questaoRedacao;
   readonly texto = signal('');
-  private ultimoSalvo = '';
 
   readonly caracteres = computed(() => contarCaracteres(this.texto()));
   readonly faltam = computed(() => Math.max(0, this.minimo - this.caracteres()));
@@ -47,44 +47,42 @@ export class RedacaoPage {
     // Na redação não há posição de questão objetiva: o mapa marca "Redação".
     this.store.posicao.set(null);
     this.texto.set(this.store.textoRedacao());
-    this.ultimoSalvo = this.texto();
     this.restaurarRascunho();
 
-    const timer = setInterval(() => {
-      if (this.texto() !== this.ultimoSalvo) this.salvar();
-    }, INTERVALO_SALVAR);
+    const timer = setInterval(() => void this.store.descarregarRedacao(), INTERVALO_SALVAR);
     inject(DestroyRef).onDestroy(() => {
       clearInterval(timer);
-      if (this.texto() !== this.ultimoSalvo) this.salvar();
+      if (!this.store.entregue()) void this.store.descarregarRedacao();
+      this.store.rascunhoRedacao.set(null);
     });
 
     effect(() => {
-      // Rascunho local a cada mudança: sobrevive a recarregar a página.
+      const t = this.texto();
+      this.store.rascunhoRedacao.set(t);
       try {
-        localStorage.setItem(this.chaveRascunho, JSON.stringify({ texto: this.texto(), em: Date.now() }));
+        localStorage.setItem(this.chaveRascunho, JSON.stringify({ texto: t, em: Date.now() }));
       } catch {
         /* sem storage */
       }
     });
   }
 
+  /** O rascunho local só vale quando o servidor não tem texto: outro aparelho pode ter o mais novo. */
   private restaurarRascunho(): void {
+    if (this.texto().length > 0) return;
     try {
-      const r = JSON.parse(localStorage.getItem(this.chaveRascunho) ?? 'null') as { texto: string; em: number } | null;
-      if (r && r.texto.length > 0 && r.texto !== this.texto()) this.texto.set(r.texto);
+      const r = JSON.parse(localStorage.getItem(this.chaveRascunho) ?? 'null') as { texto: string } | null;
+      if (r?.texto) this.texto.set(r.texto);
     } catch {
       /* rascunho inválido: ignora */
     }
   }
 
   aoSair(): void {
-    if (this.texto() !== this.ultimoSalvo) this.salvar();
-  }
-
-  private salvar(): void {
-    const t = this.texto();
-    this.ultimoSalvo = t;
-    this.store.salvarRedacao(t);
+    // O effect que espelha o texto no store só roda no próximo ciclo; aqui o
+    // valor atual precisa ir antes do envio.
+    this.store.rascunhoRedacao.set(this.texto());
+    void this.store.descarregarRedacao();
   }
 
   /** Volta à primeira questão em branco ou, se não há, à primeira da prova. */
@@ -94,7 +92,6 @@ export class RedacaoPage {
   }
 
   entregar(): void {
-    this.aoSair();
     this.pagina.pedirEntrega.set('manual');
   }
 }

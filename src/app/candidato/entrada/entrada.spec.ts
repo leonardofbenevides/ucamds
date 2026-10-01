@@ -33,9 +33,11 @@ describe('EntradaPage', () => {
     expect((await montar('PROVA_FINALIZADA')).querySelector('ucam-button')?.textContent).toContain('Ver resultado');
   });
 
-  it('sem tentativas, explica e desabilita', async () => {
+  it('sem tentativas, explica e ainda deixa ver o resultado', async () => {
     const el = await montar('PROVA_CORRIGIDA', { tentativaAtual: 3, totalTentativasPossiveis: 3 });
     expect(el.querySelector('ucam-alert')?.textContent).toContain('3 tentativas');
-    expect(el.querySelector('ucam-button button')?.matches('[disabled],[aria-disabled="true"]')).toBe(true);
+    const botao = el.querySelector('ucam-button button')!;
+    expect(botao.textContent).toContain('Ver resultado');
+    expect(botao.matches('[disabled],[aria-disabled="true"]')).toBe(false);
   });
 });

@@ -25,7 +25,11 @@ import { RelogioProva } from '../../core/tempo/relogio-prova';
             }
             @case ('pendente') {
               <ucam-icon name="triangleAlert" size="sm" aria-hidden="true" />
-              Sem conexão. {{ fila.pendentes().length }} respostas serão enviadas quando ela voltar.
+              Sem conexão. {{ fila.pendentes().length }} {{ fila.pendentes().length === 1 ? 'resposta será enviada' : 'respostas serão enviadas' }} quando ela voltar.
+            }
+            @case ('erro') {
+              <ucam-icon name="circleAlert" size="sm" aria-hidden="true" />
+              {{ fila.ultimoErro() }}
             }
             @default {
               <ucam-icon name="circleCheck" size="sm" aria-hidden="true" /> Salvo

@@ -1,5 +1,5 @@
 <app-moldura>
-  <a ucamShellAcoes class="ucam-link" [href]="'/candidato/' + candidato.oidFip() + '/instrucoes'" target="_blank" rel="noopener">Instruções</a>
+  <ucam-button ucamShellAcoes variant="ghost" size="sm" iconStart="info" (click)="instrucoesAbertas.set(true)">Instruções</ucam-button>
 
   @switch (store.estado()) {
     @case ('carregando') {
@@ -42,4 +42,8 @@
       <app-entrega-dialog [modo]="pedirEntrega()" (fechar)="pedirEntrega.set(null)" (revisar)="irPara($event)" (entregue)="entregue()" />
     }
   }
+
+  <ucam-drawer [(open)]="instrucoesAbertas" title="Como a prova funciona" side="end" size="sm">
+    <app-instrucoes-lista />
+  </ucam-drawer>
 </app-moldura>

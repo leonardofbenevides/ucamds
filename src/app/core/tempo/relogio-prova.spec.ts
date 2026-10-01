@@ -55,4 +55,15 @@ describe('RelogioProva', () => {
     expect(r.esgotado()).toBe(true);
     r.parar();
   });
+
+  it('parar() esquece a prova anterior: esgotado não vaza para a tentativa seguinte', () => {
+    vi.setSystemTime(new Date('2026-10-01T12:00:00Z'));
+    const r = TestBed.inject(RelogioProva);
+    r.iniciar(new Date('2026-10-01T09:00:00Z'), H);
+    expect(r.esgotado()).toBe(true);
+    r.parar();
+    expect(r.esgotado()).toBe(false);
+    expect(r.restante()).toBe(0);
+    expect(r.total()).toBe(0);
+  });
 });

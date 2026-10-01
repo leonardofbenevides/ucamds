@@ -48,6 +48,8 @@ export const routes: Routes = [
       { path: 'erro', loadComponent: () => import('./candidato/erro/erro').then((m) => m.ErroPage) },
     ],
   },
+  // O link que o legado mandou por e-mail continua valendo (a query ?tentativa é preservada).
+  { path: 'vestibularonline/:oid', redirectTo: 'candidato/:oid' },
   { path: '', pathMatch: 'full', loadComponent: () => import('./candidato/sem-link/sem-link').then((m) => m.SemLinkPage) },
   { path: '**', redirectTo: '' },
 ];

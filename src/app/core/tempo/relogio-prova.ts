@@ -74,8 +74,11 @@ export class RelogioProva {
     this.intervalo = setInterval(() => this.agora.set(Date.now()), 1000);
   }
 
+  /** Para e ESQUECE a prova: o serviço é singleton e a tentativa seguinte não pode herdar um esgotado. */
   parar(): void {
     if (this.intervalo) clearInterval(this.intervalo);
     this.intervalo = null;
+    this.inicio.set(null);
+    this.total.set(0);
   }
 }

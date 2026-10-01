@@ -8,6 +8,7 @@ import { CandidatoStore } from '../../core/store/candidato.store';
 import { Posicao, ProvaStore } from '../../core/store/prova.store';
 import { RelogioProva, parseTempoMaximo } from '../../core/tempo/relogio-prova';
 import { Moldura } from '../../layout/moldura';
+import { InstrucoesLista } from '../instrucoes/instrucoes-lista';
 import { CabecalhoProva } from './cabecalho-prova';
 import { EntregaDialog } from './entrega-dialog';
 import { MapaQuestoes } from './mapa-questoes';
@@ -18,6 +19,7 @@ import { environment } from '../../../environments/environment';
   imports: [
     RouterOutlet,
     Moldura,
+    InstrucoesLista,
     CabecalhoProva,
     EntregaDialog,
     MapaQuestoes,
@@ -38,24 +40,30 @@ export class ProvaPage {
   private readonly router = inject(Router);
 
   readonly mapaAberto = signal(false);
+  readonly instrucoesAbertas = signal(false);
   readonly contato = environment.contatoSecretaria;
   /** Pedido de entrega: 'manual' pelo botão, 'tempo' pelo relógio. Ligado ao diálogo de entrega. */
   readonly pedirEntrega = signal<'manual' | 'tempo' | null>(null);
+  /** O relógio desta página já foi ligado — antes disso, o singleton pode trazer o estado de outra prova. */
+  private readonly relogioLigado = signal(false);
 
   constructor() {
     const oidCp = this.candidato.oidCandidatoProva()!;
+    this.relogio.parar();
     this.store.carregar(oidCp);
     this.ligarRelogio(oidCp);
+    this.fila.iniciarReenvioPeriodico(oidCp);
 
-    const reenviar = () => this.fila.reenviar(oidCp);
+    const reenviar = () => void this.fila.reenviar(oidCp);
     window.addEventListener('online', reenviar);
     inject(DestroyRef).onDestroy(() => {
       window.removeEventListener('online', reenviar);
+      this.fila.pararReenvioPeriodico();
       this.relogio.parar();
     });
 
     effect(() => {
-      if (this.relogio.esgotado()) this.pedirEntrega.set('tempo');
+      if (this.relogioLigado() && this.relogio.esgotado() && !this.store.entregue()) this.pedirEntrega.set('tempo');
     });
   }
 
@@ -65,6 +73,7 @@ export class ProvaPage {
     const tempo = await firstValueFrom(this.provaApi.tempoMaximo(oidCp)).catch(() => ({ tempomaximo: '' }));
     const ms = parseTempoMaximo(tempo.tempomaximo);
     this.relogio.iniciar(inicio, Number.isNaN(ms) ? environment.duracaoPadraoMs : ms);
+    this.relogioLigado.set(true);
   }
 
   irPara(destino: Posicao | 'redacao'): void {
@@ -77,10 +86,12 @@ export class ProvaPage {
     this.store.carregar(this.candidato.oidCandidatoProva()!);
   }
 
-  /** Depois da entrega registrada: limpa o que era desta prova e vai ao resultado. */
+  /** Depois da entrega registrada: nada mais grava, limpa o que era desta prova e vai ao resultado. */
   async entregue(): Promise<void> {
     const oidCp = this.candidato.oidCandidatoProva()!;
+    this.store.entregue.set(true);
     this.relogio.parar();
+    this.fila.pararReenvioPeriodico();
     this.fila.limpar(oidCp);
     try {
       localStorage.removeItem(`rascunho:${oidCp}`);

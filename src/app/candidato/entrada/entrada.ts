@@ -24,7 +24,7 @@ export class EntradaPage {
   readonly jaEntregou = computed(() => ['PROVA_FINALIZADA', 'PROVA_CORRIGIDA'].includes(this.store.situacao() ?? ''));
   readonly rotulo = computed(() => (this.jaEntregou() ? 'Ver resultado' : 'Entrar na prova'));
 
-  /** Só bloqueia quando a prova corrigida pediria nova tentativa e ela não existe. */
+  /** Aviso, não bloqueio: a entrada nunca cria tentativa, e o resultado precisa continuar acessível. */
   readonly semTentativas = computed(
     () => this.store.situacao() === 'PROVA_CORRIGIDA' && this.store.tentativas() !== null && !this.store.podeTentarDeNovo(),
   );

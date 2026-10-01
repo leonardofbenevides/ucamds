@@ -15,12 +15,7 @@
 
       <ucam-description-list [items]="itens()" [columns]="1" layout="stacked" />
 
-      <div class="ucam-stack ucam-stack--sm">
-        <ucam-button variant="primary" size="lg" [disabled]="semTentativas()" (click)="seguir()">{{ rotulo() }}</ucam-button>
-        @if (semTentativas()) {
-          <p class="ucam-field__hint">Sem tentativa disponível, não há como entrar na prova. Fale com a secretaria.</p>
-        }
-      </div>
+      <ucam-button variant="primary" size="lg" (click)="seguir()">{{ rotulo() }}</ucam-button>
 
       <p class="ucam-login__apoio">
         <ucam-icon name="clock" size="sm" aria-hidden="true" />

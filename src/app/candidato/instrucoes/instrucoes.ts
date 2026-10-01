@@ -1,7 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
-import { UcamAlert, UcamButton, UcamDescriptionList, UcamIcon, UcamPageHeader, UcamSkeleton } from '@ucam/ui';
+import { UcamAlert, UcamButton, UcamDescriptionList, UcamPageHeader, UcamSkeleton } from '@ucam/ui';
+import { InstrucoesLista } from './instrucoes-lista';
 import { ProvaApi } from '../../core/api/prova.api';
 import { ehRedacao, rotuloTipoProva } from '../../core/model/prova';
 import { CandidatoStore } from '../../core/store/candidato.store';
@@ -11,7 +12,7 @@ import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-instrucoes',
-  imports: [Moldura, UcamAlert, UcamButton, UcamDescriptionList, UcamIcon, UcamPageHeader, UcamSkeleton],
+  imports: [Moldura, InstrucoesLista, UcamAlert, UcamButton, UcamDescriptionList, UcamPageHeader, UcamSkeleton],
   templateUrl: './instrucoes.html',
 })
 export class InstrucoesPage {

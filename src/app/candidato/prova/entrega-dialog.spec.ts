@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { EntregaDialog } from './entrega-dialog';
 import { ProvaStore } from '../../core/store/prova.store';
@@ -12,9 +12,9 @@ describe('EntregaDialog', () => {
   const api = { entregar: vi.fn(() => of({})) };
   const fila = { reenviar: vi.fn(async () => 0), pendentes: () => [] };
 
-  async function montar(modo: 'manual' | 'tempo', respostas: Record<string, string> = {}) {
+  async function montar(modo: 'manual' | 'tempo', respostas: Record<string, string> = {}, entregar = of({})) {
     TestBed.resetTestingModule();
-    api.entregar.mockClear();
+    api.entregar.mockReset().mockReturnValue(entregar);
     fila.reenviar.mockClear();
     await TestBed.configureTestingModule({
       imports: [EntregaDialog],
@@ -46,7 +46,7 @@ describe('EntregaDialog', () => {
   it('nomeia quantas e quais questões estão em branco e oferece revisar', async () => {
     const f = await montar('manual', { p2: 'x' });
     expect(f.nativeElement.textContent).toContain('2 questões estão em branco');
-    expect(f.nativeElement.textContent).toContain('1, 3');
+    expect(f.nativeElement.textContent).toContain('Português 1, Português 3');
     expect(f.nativeElement.textContent).toContain('Revisar');
   });
 
@@ -73,5 +73,28 @@ describe('EntregaDialog', () => {
     await f.whenStable();
     expect(f.nativeElement.textContent).toContain('O tempo acabou');
     expect(api.entregar).toHaveBeenCalled();
+  });
+
+  it('com tempo esgotado e entrega falhando, tenta uma vez e espera o botão', async () => {
+    const f = await montar('tempo', {}, throwError(() => new Error('rede')));
+    await f.whenStable();
+    await new Promise((r) => setTimeout(r, 300));
+    await f.whenStable();
+    expect(api.entregar).toHaveBeenCalledTimes(1);
+    expect(f.nativeElement.textContent).toContain('Tentar de novo');
+  });
+
+  it('lista as em branco pelo caderno e pelo número que o mapa mostra', async () => {
+    const f = await montar('manual', { p2: 'x' });
+    expect(f.nativeElement.textContent).toContain('Português 1, Português 3');
+  });
+
+  it('descarrega o texto da redação antes de entregar', async () => {
+    const f = await montar('manual', { p1: 'a', p2: 'b', p3: 'c' });
+    const store = TestBed.inject(ProvaStore);
+    const descarregar = vi.spyOn(store, 'descarregarRedacao').mockResolvedValue();
+    await f.componentInstance.entregar();
+    expect(descarregar).toHaveBeenCalled();
+    expect(descarregar.mock.invocationCallOrder[0]).toBeLessThan(api.entregar.mock.invocationCallOrder[0]);
   });
 });

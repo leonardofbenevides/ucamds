@@ -65,9 +65,25 @@ describe('RedacaoPage', () => {
     expect(el.textContent).toContain('precisa de pelo menos 300 caracteres');
   });
 
-  it('restaura o rascunho local quando existe', async () => {
+  it('restaura o rascunho local quando o servidor não tem texto', async () => {
+    localStorage.setItem('rascunho:cp-1', JSON.stringify({ texto: 'rascunho local', em: Date.now() }));
+    const f = await montar('');
+    expect(f.componentInstance.texto()).toBe('rascunho local');
+  });
+
+  it('o texto do servidor vence o rascunho local quando os dois existem', async () => {
     localStorage.setItem('rascunho:cp-1', JSON.stringify({ texto: 'rascunho local', em: Date.now() }));
     const f = await montar('texto do servidor');
-    expect(f.componentInstance.texto()).toBe('rascunho local');
+    expect(f.componentInstance.texto()).toBe('texto do servidor');
+  });
+
+  it('cada mudança vai para o rascunho do store, e depois da entrega não grava mais', async () => {
+    const f = await montar('');
+    f.componentInstance.texto.set('digitando');
+    await f.whenStable();
+    expect(store.rascunhoRedacao()).toBe('digitando');
+    store.entregue.set(true);
+    f.destroy();
+    expect(store.salvarRedacao).not.toHaveBeenCalled();
   });
 });

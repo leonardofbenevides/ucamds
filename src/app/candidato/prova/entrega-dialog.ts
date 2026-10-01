@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { UcamAlert, UcamButton, UcamDialog } from '@ucam/ui';
 import { ProvaApi } from '../../core/api/prova.api';
@@ -34,7 +34,7 @@ import { environment } from '../../../environments/environment';
           @if (emBranco().length) {
             <p>
               <strong>{{ emBranco().length }} {{ emBranco().length === 1 ? 'questão está' : 'questões estão' }} em branco:</strong>
-              {{ numeros() }}.
+              {{ nomes() }}.
             </p>
           }
           @if (!store.redacaoAtingeMinimo()) {
@@ -81,17 +81,20 @@ export class EntregaDialog {
   readonly aberto = computed(() => this.modo() !== null);
   readonly titulo = computed(() => (this.modo() === 'tempo' ? 'Tempo esgotado' : 'Entregar a prova?'));
   readonly emBranco = computed(() => this.store.emBranco());
-  readonly numeros = computed(
+  readonly nomes = computed(
     () =>
       this.emBranco()
         .slice(0, 10)
-        .map((e) => e.numeroGlobal)
+        .map((e) => e.rotulo)
         .join(', ') + (this.emBranco().length > 10 ? '…' : ''),
   );
 
   constructor() {
+    // Só o `modo` é dependência: `entregar()` lê outros signals e, rastreado,
+    // o effect rodava de novo a cada falha — um laço de finalizarprova.
     effect(() => {
-      if (this.modo() === 'tempo') this.entregar();
+      const modo = this.modo();
+      if (modo === 'tempo') untracked(() => void this.entregar());
     });
   }
 
@@ -107,6 +110,7 @@ export class EntregaDialog {
     this.erro.set(null);
     const oidCp = this.candidato.oidCandidatoProva()!;
     try {
+      await this.store.descarregarRedacao();
       const pendentes = await this.fila.reenviar(oidCp);
       if (pendentes > 0 && this.modo() === 'manual') {
         this.erro.set(`${pendentes} respostas não foram enviadas por falta de conexão. Confira a rede e tente de novo.`);

@@ -21,7 +21,11 @@ const cadernos = [
 
 describe('ProvaStore', () => {
   const api = { cadernos: vi.fn(() => of(cadernos)), resposta: vi.fn() };
-  const fila = { enviar: vi.fn(async () => 'enviada' as const), carregar: vi.fn() };
+  const fila = {
+    enviar: vi.fn(async () => 'enviada' as const),
+    carregar: vi.fn(),
+    pendentes: () => [] as { oidQuestao: string; oidAlternativa: string | null; respostaTextual: string | null; em: number }[],
+  };
   let store: ProvaStore;
 
   beforeEach(async () => {
@@ -74,6 +78,52 @@ describe('ProvaStore', () => {
     expect(store.respostas()['p1']).toBe('p1-a');
     expect(store.respondidas()).toBe(2);
     expect(fila.enviar).toHaveBeenCalledWith('cp-1', { oidQuestao: 'p1', oidAlternativa: 'p1-a', respostaTextual: null });
+  });
+
+  it('carregar de novo esquece respostas e redação da prova anterior', async () => {
+    await store.responder('p1', 'p1-a');
+    store.textoRedacao.set('antigo');
+    api.resposta.mockReturnValue(of(null));
+    await store.carregar('cp-2');
+    expect(store.respostas()).toEqual({});
+    expect(store.textoRedacao()).toBe('');
+    expect(store.entregue()).toBe(false);
+  });
+
+  it('ao carregar, as respostas pendentes na fila valem mais que as do servidor', async () => {
+    fila.pendentes = () => [
+      { oidQuestao: 'p1', oidAlternativa: 'p1-b', respostaTextual: null, em: 1 },
+      { oidQuestao: 'r1', oidAlternativa: null, respostaTextual: 'pendente local', em: 2 },
+    ];
+    await store.carregar('cp-1');
+    expect(store.respostas()['p1']).toBe('p1-b');
+    expect(store.textoRedacao()).toBe('pendente local');
+    fila.pendentes = () => [];
+  });
+
+  it('a redação vai ao backend como parágrafos HTML escapados e volta como texto', async () => {
+    await store.salvarRedacao('a < b\n\nsegundo');
+    expect(fila.enviar).toHaveBeenLastCalledWith('cp-1', {
+      oidQuestao: 'r1',
+      oidAlternativa: null,
+      respostaTextual: '<p>a &lt; b</p><p>segundo</p>',
+    });
+    api.resposta.mockImplementation((oid: string) =>
+      of(oid === 'r1' ? { oidAlternativa: null, respostaTextual: '<p>um</p><p>dois &amp; três</p>' } : null),
+    );
+    await store.carregar('cp-1');
+    expect(store.textoRedacao()).toBe('um\n\ndois & três');
+  });
+
+  it('descarregarRedacao envia o rascunho só quando ele mudou', async () => {
+    fila.enviar.mockClear();
+    store.rascunhoRedacao.set('texto salvo');
+    await store.descarregarRedacao();
+    expect(fila.enviar).not.toHaveBeenCalled();
+    store.rascunhoRedacao.set('mudou');
+    await store.descarregarRedacao();
+    expect(fila.enviar).toHaveBeenCalledTimes(1);
+    expect(store.textoRedacao()).toBe('mudou');
   });
 
   it('conta caracteres não brancos da redação', async () => {
