@@ -201,7 +201,7 @@
     }
   </div>
 
-  <ucam-dialog size="sm" variant="confirm" [title]="dialogo()?.titulo ?? 'Análise'" [open]="!!dialogo()" (openChange)="dialogoMudou($event)" [loading]="confirmando()" initialFocus="[data-foco] button">
+  <ucam-dialog size="sm" variant="confirm" [title]="dialogo()?.titulo ?? 'Análise'" [open]="!!dialogo()" (openChange)="dialogoMudou($event)" [loading]="confirmando()" initialFocus="[data-foco]">
     @if (dialogo(); as d) {
       <div class="ucam-stack">
         <p>{{ d.texto }}</p>

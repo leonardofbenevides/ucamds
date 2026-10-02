@@ -82,7 +82,7 @@
 
   <!-- Só a questão que existe pode ser excluída. -->
   @if (!nova()) {
-    <ucam-dialog title="Excluir questão" variant="destructive" size="sm" [open]="confirmandoExclusao()" (openChange)="dialogoMudou($event)" [loading]="excluindo()" initialFocus="[data-foco] button">
+    <ucam-dialog title="Excluir questão" variant="destructive" size="sm" [open]="confirmandoExclusao()" (openChange)="dialogoMudou($event)" [loading]="excluindo()" initialFocus="[data-foco]">
       <div class="ucam-stack">
         <p>Excluir esta questão do caderno de {{ nomeCaderno() }}? Quem ainda não fez a prova deixa de recebê-la. Esta ação não pode ser desfeita.</p>
         @if (erroAoExcluir()) {

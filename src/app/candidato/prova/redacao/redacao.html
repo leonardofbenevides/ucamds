@@ -17,8 +17,8 @@
       <div data-proposta [innerHTML]="q.descricao"></div>
     </section>
 
-    <!-- A folha: nasce com a altura de uma redação, não de um recado. -->
-    <div data-folha-redacao (focusout)="aoSair()">
+    <!-- A folha: nasce com a altura de uma redação, não de um recado (rows). -->
+    <div (focusout)="aoSair()">
       <ucam-textarea
         label="Seu texto"
         [rows]="22"

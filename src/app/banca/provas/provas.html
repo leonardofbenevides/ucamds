@@ -84,7 +84,7 @@
     }
   </div>
 
-  <ucam-dialog title="Excluir caderno" variant="destructive" size="sm" [open]="!!excluindo()" (openChange)="dialogoMudou($event)" [loading]="excluindoEmCurso()" initialFocus="[data-foco] button">
+  <ucam-dialog title="Excluir caderno" variant="destructive" size="sm" [open]="!!excluindo()" (openChange)="dialogoMudou($event)" [loading]="excluindoEmCurso()" initialFocus="[data-foco]">
     @if (excluindo(); as c) {
       <div class="ucam-stack">
         <p>

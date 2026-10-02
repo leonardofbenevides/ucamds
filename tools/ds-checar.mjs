@@ -9,11 +9,9 @@ import { globSync, readFileSync } from 'node:fs';
 import { checar } from '@ucam/ds-mcp/mcp';
 
 // DESVIOS DECLARADOS: onde a biblioteca (@ucam/ui) está à frente do contrato.
-// O <ucam-app-shell> desenha a marquinha do sistema, o link da marca e os
-// grupos de navegação por estas três entradas, e sem elas não há moldura; o
-// contrato do app-shell ainda não as lista. Saem daqui quando o contrato as
-// declarar — é pendência do DS, registrada no README.
-const DESVIOS = [/<ucam-app-shell> não tem a prop "(systemIcon|homeHref|navGroups)"/];
+// Vazia desde que o contrato do app-shell passou a listar systemIcon, homeHref
+// e navGroups; o que entrar aqui é pendência do DS, e vai para o README.
+const DESVIOS = [];
 
 const fontes = [
   ...globSync('src/app/**/*.html').map((arq) => ({ arq, codigo: readFileSync(arq, 'utf8') })),

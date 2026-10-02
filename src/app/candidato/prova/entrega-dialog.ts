@@ -24,7 +24,7 @@ import { environment } from '../../../environments/environment';
       (openChange)="!$event && fechar.emit()"
       [dismissible]="modo() === 'manual' && !entregando()"
       [loading]="entregando()"
-      initialFocus="[data-foco] button"
+      initialFocus="[data-foco]"
     >
       <div class="ucam-stack">
         @if (modo() === 'tempo') {

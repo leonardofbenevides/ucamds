@@ -1,13 +1,7 @@
 <app-moldura-banca secao="redacoes" [emEspera]="estado() === 'pronto' ? totalEspera() : null">
   <ucam-page-header variante="barra" title="Redações" [count]="estado() === 'pronto' ? totalDoRecorte() : null" [breadcrumb]="trilha">
     <div ucamFerramentas class="ucam-cluster ucam-cluster--entre flex-1">
-      <!-- As abas nascem dentro de um @if de propósito: o <ucam-tabs> lê o
-           próprio value num microtask do construtor, e criado junto com a
-           página ele ainda não recebeu o binding (NG0952 no console). Dentro
-           do @if a criação e o primeiro binding acontecem no mesmo passo. -->
-      @if (abas(); as itens) {
-        <ucam-tabs ariaLabel="Recortes da fila de redações" [items]="itens" [value]="recorte()" (valueChange)="trocarRecorte($event)" />
-      }
+      <ucam-tabs ariaLabel="Recortes da fila de redações" [items]="abas()" [value]="recorte()" (valueChange)="trocarRecorte($event)" />
       <ucam-button variant="secondary" iconStart="listFilter" (click)="filtrosAbertos.set(true)">Filtros</ucam-button>
     </div>
     <!-- O escopo da fila fica sempre à vista: ninguém pode concluir que a

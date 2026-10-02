@@ -67,9 +67,9 @@ export function destinoDoLink(texto: string): { oid: string; tentativa: string |
                   <!-- Campo e ação na mesma altura (lg), como na entrada de
                        referência do DS: numa tela de tarefa única, alturas
                        diferentes leem como peças de sistemas diferentes. O
-                       degrau lg do campo é a variante ucam-field--lg, e o
-                       grupo é o do Trilho A — o <ucam-input-group> carimba a
-                       mesma classe no host e desenha a moldura duas vezes. -->
+                       degrau lg do campo é a variante ucam-field--lg, que
+                       dimensiona o grupo do Trilho A; o <ucam-text-field>
+                       não tem esse degrau. -->
                   <ucam-field
                     class="ucam-field--lg"
                     label="Código da inscrição"

@@ -1,12 +1,7 @@
 <app-moldura-banca secao="isencao" [isencoes]="store.estado() === 'pronto' ? store.emAnalise().length : null">
   <ucam-page-header variante="barra" title="Fila de análise" [count]="store.estado() === 'pronto' ? filtradas().length : null" [breadcrumb]="trilha">
     <div ucamFerramentas>
-      <!-- Dentro de um @if: as abas do DS leem o próprio valor num microtask do
-           construtor, e criadas junto com a página estouram antes do primeiro
-           binding (NG0952). Num bloco, nascem e recebem o valor no mesmo passo. -->
-      @if (store.estado() === 'pronto') {
-        <ucam-tabs ariaLabel="Recortes da fila de isenção" [items]="abas()" [value]="recorte()" (valueChange)="trocarRecorte($event)" />
-      }
+      <ucam-tabs ariaLabel="Recortes da fila de isenção" [items]="abas()" [value]="recorte()" (valueChange)="trocarRecorte($event)" />
     </div>
   </ucam-page-header>
 
