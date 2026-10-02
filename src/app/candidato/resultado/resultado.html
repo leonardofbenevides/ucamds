@@ -1,8 +1,16 @@
 <app-moldura>
-  <ucam-page-header variante="barra" title="Prova entregue" [breadcrumb]="trilha()" />
+  <ucam-page-header variante="barra" [title]="titulo()" [breadcrumb]="trilha()" />
 
   <div class="ucam-corpo ucam-stack ucam-stack--lg">
-    <ucam-stepper label="Etapas do vestibular online" [current]="3" [steps]="etapas" />
+    <!-- Em janela larga as etapas já estão na coluna da moldura; aqui é para a
+         estreita, onde a coluna vira painel sobreposto (em barra, como nas
+         instruções). -->
+    <div class="lg:hidden">
+      <div class="ucam-stack ucam-stack--sm">
+        <ucam-stepper label="Etapas do vestibular online" variant="bar" [current]="3" [steps]="etapas" />
+        <p class="ucam-field__hint">Etapa {{ etapas.length }} de {{ etapas.length }}</p>
+      </div>
+    </div>
 
     @if (erro()) {
       <ucam-alert tone="danger" live="assertive">{{ erro() }}</ucam-alert>

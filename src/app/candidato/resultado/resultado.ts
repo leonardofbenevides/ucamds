@@ -9,7 +9,7 @@ import { ehRedacao, rotuloTipoProva } from '../../core/model/prova';
 import { Navegador } from '../../core/navegador';
 import { CandidatoStore } from '../../core/store/candidato.store';
 import { ProvaStore } from '../../core/store/prova.store';
-import { formatarHms } from '../../core/tempo/relogio-prova';
+import { duracaoEmPalavra } from '../../core/tempo/relogio-prova';
 import { Moldura } from '../../layout/moldura';
 import { etapas } from '../etapas';
 import { environment } from '../../../environments/environment';
@@ -49,9 +49,11 @@ export class ResultadoPage {
   readonly verificadoAs = signal<string | null>(null);
   readonly erroVerificacao = signal(false);
 
+  /** Enquanto a correção não sai, o que há a dizer é que a prova foi entregue; depois, é o resultado. */
+  readonly titulo = computed(() => (this.situacao() === null ? 'Prova entregue' : 'Resultado'));
   readonly trilha = computed(() => [
     { label: 'Seus dados', link: `/candidato/${this.store.oidFip() ?? ''}` },
-    { label: 'Prova entregue' },
+    { label: this.titulo() },
   ]);
   readonly temRedacao = computed(() => this.tipos().some(ehRedacao));
   readonly totalTentativas = computed(() => this.store.tentativas()?.totalTentativasPossiveis ?? 0);
@@ -79,7 +81,7 @@ export class ResultadoPage {
         const fim = new Date(dados.horariofim);
         this.entregueDia.set(fim.toLocaleDateString('pt-BR'));
         this.entregueHora.set(`às ${fim.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`);
-        if (dados.horarioinicio) this.tempoUsado.set(formatarHms(fim.getTime() - new Date(dados.horarioinicio).getTime()));
+        if (dados.horarioinicio) this.tempoUsado.set(duracaoEmPalavra(fim.getTime() - new Date(dados.horarioinicio).getTime()));
       }
       // Prova já corrigida tem desfecho, com ou sem redação: quem volta depois
       // de a banca terminar vê o resultado, não a espera.

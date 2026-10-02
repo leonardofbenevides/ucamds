@@ -69,6 +69,17 @@ describe('QuestaoPage', () => {
     expect(store.responder).toHaveBeenCalledWith('p1', 'b');
   });
 
+  it('a alternativa escolhida não leva check: check ao lado de resposta de prova lê como "certa"', async () => {
+    const f = await montar();
+    (f.nativeElement.querySelector('input[value="b"]') as HTMLInputElement).click();
+    await f.whenStable();
+    const el = f.nativeElement as HTMLElement;
+    expect(el.querySelector('.ucam-choice-card__marca')).toBeNull();
+    expect(el.querySelector('fieldset ucam-icon')).toBeNull();
+    // A letra continua lá: é ela que a folha de estilo preenche na escolhida.
+    expect(el.querySelectorAll('.ucam-choice-card__figura')).toHaveLength(5);
+  });
+
   it('anterior fica desabilitada na primeira, com o motivo; próxima navega', async () => {
     const f = await montar();
     const nav = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);

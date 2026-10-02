@@ -1,7 +1,10 @@
 @if (questao(); as q) {
   <article class="ucam-stack ucam-stack--lg" appProvaProtegida>
     <header class="ucam-cluster ucam-cluster--entre">
-      <h2 class="ucam-section__title">{{ rotuloCaderno() }} · Questão {{ n() }} de {{ totalNoCaderno() }}</h2>
+      <span class="ucam-cluster">
+        <ucam-icon-tile [icon]="iconeCaderno()" />
+        <h2 class="ucam-section__title">{{ rotuloCaderno() }} · Questão {{ n() }} de {{ totalNoCaderno() }}</h2>
+      </span>
       <ucam-badge
         [tone]="escolhida() ? 'success' : 'neutral'"
         variant="dot"
@@ -10,7 +13,10 @@
     </header>
 
     @if (q.textoreferencia) {
-      <div data-texto-referencia [innerHTML]="q.textoreferencia"></div>
+      <section class="ucam-stack">
+        <ucam-section-bar title="Texto de apoio" [level]="3" />
+        <ucam-citacao><div class="ucam-stack ucam-stack--sm" data-texto-referencia [innerHTML]="q.textoreferencia"></div></ucam-citacao>
+      </section>
     }
     <div data-enunciado [innerHTML]="q.descricao"></div>
 
@@ -24,19 +30,18 @@
             <span class="ucam-sr-only">Alternativa {{ a.letra }}: </span>
             <span [innerHTML]="a.descricao"></span>
           </span>
-          <span class="ucam-choice-card__marca" aria-hidden="true"><ucam-icon name="check" size="sm" /></span>
         </label>
       }
     </fieldset>
 
     <footer class="ucam-cluster ucam-cluster--entre">
       <span [ucamTooltip]="'Esta é a primeira questão'" [tooltipDisabled]="!ehPrimeira()">
-        <ucam-button variant="secondary" iconStart="chevronLeft" [disabled]="ehPrimeira()" (click)="anterior()">Anterior</ucam-button>
+        <ucam-button variant="secondary" size="lg" iconStart="chevronLeft" [disabled]="ehPrimeira()" (click)="anterior()">Anterior</ucam-button>
       </span>
       @if (ehPrimeira()) {
         <span class="ucam-sr-only">Esta é a primeira questão.</span>
       }
-      <ucam-button variant="primary" [iconEnd]="proximaEhFim() ? 'send' : 'chevronRight'" (click)="proxima()">{{ rotuloProxima() }}</ucam-button>
+      <ucam-button variant="primary" size="lg" [iconEnd]="proximaEhFim() ? 'send' : 'chevronRight'" (click)="proxima()">{{ rotuloProxima() }}</ucam-button>
     </footer>
   </article>
 }

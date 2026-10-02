@@ -14,6 +14,11 @@ const TURNOS: Record<string, string> = {
   T: 'Tarde',
   N: 'Noturno',
 };
+/** 'N' → 'Noturno'. Sigla desconhecida fica como veio. */
+export function nomeTurno(sigla: string): string {
+  return TURNOS[sigla] ?? sigla;
+}
+
 export function formatarCpf(n: string): string {
   const d = (n ?? '').replace(/\D/g, '').padStart(11, '0');
   return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9, 11)}`;
@@ -55,10 +60,7 @@ export class CandidatoStore {
   readonly curso = computed(() =>
     nomeCurso(this.candidato()?.formaingressopessoa.periodounidadecurso.unidadecurso.curso.nome ?? ''),
   );
-  readonly turno = computed(() => {
-    const t = this.candidato()?.formaingressopessoa.periodounidadecurso.turnoLabel ?? '';
-    return TURNOS[t] ?? t;
-  });
+  readonly turno = computed(() => nomeTurno(this.candidato()?.formaingressopessoa.periodounidadecurso.turnoLabel ?? ''));
   readonly unidade = computed(
     () => this.candidato()?.formaingressopessoa.periodounidadecurso.unidadecurso.unidade ?? null,
   );

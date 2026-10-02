@@ -13,11 +13,51 @@
    ponte para os tokens e o @layer base da biblioteca. */
 @import "@ucam/ui/styles.css";
 
+/* O TAMANHO DE TUDO. O DS mede as telas de trabalho — texto de 14px, controle
+   de 32px —, que é a densidade certa para quem opera uma fila o dia inteiro.
+   O candidato abre isto uma vez, muitas vezes no celular, para ler uma prova:
+   aqui a medida sobe. Como todo token do DS é rem, subir a base sobe texto,
+   controle, ícone e espaço juntos e mantém as proporções que o DS desenhou
+   (texto ~16px, botão 36px, botão grande 45px). É o único número a mexer para
+   deixar tudo maior ou menor; em % para respeitar o tamanho de fonte que a
+   pessoa escolheu no navegador. */
+html {
+  font-size: 112.5%;
+}
+
 /* A marca entra por máscara (faixa, tela de entrada): o DS pede que a página
    hospedeira aponte o arquivo. É o lockup horizontal, em uma cor só. */
 .ucam .ucam-shell,
 .ucam .ucam-login {
   --ucam-appbar-logo: url("/assets/logo-ucam.svg");
+}
+
+/* A FAIXA NO TEMA ESCURO. O <ucam-app-shell> pinta o texto da faixa de marca
+   com text-on-action, que no escuro é tinta ESCURA (a ação fica clara) — e o
+   nome do sistema, o campus e os botões da faixa sumiam sobre o verde. A
+   folha do Trilho A usa text-on-brand, que é branco nos dois temas; enquanto
+   a biblioteca não é corrigida, a tinta certa mora aqui. O seletor é o da
+   faixa do shell, não o de qualquer <header> projetado dentro dele. */
+ucam-app-shell > div > header {
+  color: var(--ucam-color-text-on-brand);
+}
+
+/* A BARRA DA TELA GRUDA SOB A FAIXA. No Trilho A quem dá o degrau é a regra
+   .ucam-appbar ~ .ucam-main; no <ucam-app-shell> a faixa não tem essa classe
+   e a barra grudava em 0, por baixo dela — na prova, o relógio sumia ao
+   rolar a questão. */
+ucam-app-shell .ucam-viewbar {
+  inset-block-start: var(--ucam-appbar-height);
+}
+
+/* A FOLHA DA REDAÇÃO. O contrato do textarea diz que `rows` é o piso da
+   altura quando ele cresce sozinho; na biblioteca o campo se dimensiona pelo
+   conteúdo (field-sizing) e as linhas pedidas não valem — a redação nascia
+   com cinco linhas. Enquanto isso não é corrigido lá, o piso mora aqui, com
+   a mesma conta que a biblioteca usa para o teto: 1,5rem por linha, vezes as
+   22 linhas que a tela pede. */
+[data-folha-redacao] textarea {
+  min-block-size: calc(22 * 1.5rem);
 }
 
 /* A ENTRADA EM JANELA LARGA. O bloco de entrada do DS foi medido em 1440: o

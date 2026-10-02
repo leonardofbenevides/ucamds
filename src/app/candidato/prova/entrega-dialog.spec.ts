@@ -84,6 +84,25 @@ describe('EntregaDialog', () => {
     expect(f.nativeElement.textContent).toContain('Tentar de novo');
   });
 
+  it('sem o mínimo da redação, a ação do diálogo é ir escrevê-la, e nada é entregue', async () => {
+    const f = await montar('manual', { p1: 'a', p2: 'b', p3: 'c' });
+    const store = TestBed.inject(ProvaStore);
+    store.cadernos.update((c) => [...c, { oid: 'c3', tipoprova: 'REDACAO', questoes: [{ oid: 'r1', descricao: '', alternativas: [] }] }]);
+    await f.whenStable();
+    const texto = f.nativeElement.textContent as string;
+    expect(texto).toContain('A redação ainda não tem o mínimo');
+    expect(texto).toContain('Ir para a redação');
+    expect(texto).not.toContain('Entregar prova');
+
+    const destinos: unknown[] = [];
+    f.componentInstance.revisar.subscribe((p) => destinos.push(p));
+    f.componentInstance.irParaRedacao();
+    expect(destinos).toEqual(['redacao']);
+
+    await f.componentInstance.entregar();
+    expect(api.entregar).not.toHaveBeenCalled();
+  });
+
   it('lista as em branco pelo caderno e pelo número que o mapa mostra', async () => {
     const f = await montar('manual', { p2: 'x' });
     expect(f.nativeElement.textContent).toContain('Português 1, Português 3');

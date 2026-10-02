@@ -1,0 +1,53 @@
+<app-moldura-banca secao="isencao" [isencoes]="store.estado() === 'pronto' ? store.emAnalise().length : null">
+  <ucam-page-header variante="barra" title="Fila de análise" [count]="store.estado() === 'pronto' ? filtradas().length : null" [breadcrumb]="trilha">
+    <div ucamFerramentas>
+      <!-- Dentro de um @if: as abas do DS leem o próprio valor num microtask do
+           construtor, e criadas junto com a página estouram antes do primeiro
+           binding (NG0952). Num bloco, nascem e recebem o valor no mesmo passo. -->
+      @if (store.estado() === 'pronto') {
+        <ucam-tabs ariaLabel="Recortes da fila de isenção" [items]="abas()" [value]="recorte()" (valueChange)="trocarRecorte($event)" />
+      }
+    </div>
+  </ucam-page-header>
+
+  <div class="ucam-corpo">
+    @switch (store.estado()) {
+      @case ('loading') {
+        <div class="ucam-stack" aria-busy="true">
+          <span class="ucam-sr-only">Buscando as solicitações…</span>
+          <ucam-skeleton variant="text" [lines]="8" />
+        </div>
+      }
+      @case ('error') {
+        <ucam-empty-state reason="error" title="Não foi possível buscar as solicitações" description="Confira sua conexão e tente de novo.">
+          <ucam-button variant="secondary" (click)="store.carregar()">Tentar de novo</ucam-button>
+        </ucam-empty-state>
+      }
+      @default {
+        <div class="ucam-toolbar">
+          @if (recorte() === 'analise') {
+            <ucam-segmented label="Situação" ariaLabel="Situação da solicitação" [items]="situacoes" [(value)]="situacao" />
+          }
+          <ucam-text-field label="Pesquisar candidato" type="search" placeholder="Nome" width="content" [(value)]="busca" />
+          <ucam-select label="Curso" width="content" [options]="opcoesCurso()" [(value)]="curso" />
+        </div>
+
+        <ucam-data-table
+          density="compact"
+          [columns]="colunas()"
+          [rows]="linhas()"
+          [caption]="legenda()"
+          [state]="filtradas().length ? 'idle' : 'empty'"
+          [emptyReason]="temFiltro() ? 'no-results' : 'no-data'"
+        >
+          <div ucamTabelaSemResultado><ucam-button variant="secondary" (click)="limparFiltros()">Limpar filtros</ucam-button></div>
+        </ucam-data-table>
+        @if (filtradas().length > porPagina) {
+          <ucam-pagination [(page)]="pagina" [pageSize]="porPagina" [total]="filtradas().length" itemLabel="solicitações" />
+        } @else if (filtradas().length) {
+          <p class="ucam-pagination__range" role="status">{{ filtradas().length === 1 ? '1 solicitação' : filtradas().length + ' solicitações' }}</p>
+        }
+      }
+    }
+  </div>
+</app-moldura-banca>

@@ -34,6 +34,15 @@ export function textoRestante(ms: number): string {
   return `${singular ? 'Falta' : 'Faltam'} ${partes}`;
 }
 
+/** Uma duração em palavra, na mesma unidade do relógio: "1 h 15 min", "42 min", "50 s". */
+export function duracaoEmPalavra(ms: number): string {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  if (s < 60) return `${s} s`;
+  const h = Math.floor(s / 3600);
+  const min = Math.floor((s % 3600) / 60);
+  return [h ? `${h} h` : '', min ? `${min} min` : ''].filter(Boolean).join(' ');
+}
+
 export function formatarHms(ms: number): string {
   const s = Math.max(0, Math.floor(ms / 1000));
   const p = (n: number) => String(n).padStart(2, '0');

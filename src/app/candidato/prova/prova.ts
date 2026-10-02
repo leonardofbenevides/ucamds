@@ -8,7 +8,6 @@ import { CandidatoStore } from '../../core/store/candidato.store';
 import { Posicao, ProvaStore } from '../../core/store/prova.store';
 import { RelogioProva, parseTempoMaximo } from '../../core/tempo/relogio-prova';
 import { Moldura } from '../../layout/moldura';
-import { InstrucoesLista } from '../instrucoes/instrucoes-lista';
 import { CabecalhoProva } from './cabecalho-prova';
 import { EntregaDialog } from './entrega-dialog';
 import { MapaQuestoes } from './mapa-questoes';
@@ -19,7 +18,6 @@ import { environment } from '../../../environments/environment';
   imports: [
     RouterOutlet,
     Moldura,
-    InstrucoesLista,
     CabecalhoProva,
     EntregaDialog,
     MapaQuestoes,
@@ -41,7 +39,6 @@ export class ProvaPage {
   private readonly router = inject(Router);
 
   readonly mapaAberto = signal(false);
-  readonly instrucoesAbertas = signal(false);
   readonly contato = environment.contatoSecretaria;
   /** Pedido de entrega: 'manual' pelo botão, 'tempo' pelo relógio. Ligado ao diálogo de entrega. */
   readonly pedirEntrega = signal<'manual' | 'tempo' | null>(null);

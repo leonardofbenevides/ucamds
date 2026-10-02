@@ -12,8 +12,16 @@ export const environment = {
   redacaoMin: 300,
   redacaoMax: 3000,
   contatoSecretaria: 'secretaria@candidomendes.edu.br',
+  /** Login único da universidade, com o mesmo cliente do app legado: devolve em /admin/login/:token/:usuario. */
+  loginUrl: 'https://login.ucam-campos.br/login.jsf?client_id=aplicVestOnline@ucam' as string | null,
+  apiGerencial: 'https://api-gerencial.ucam-campos.br',
+  /** Em produção a área interna só abre pelo login único. */
+  loginDeTeste: null as { token: string; usuario: string } | null,
   /** Em produção ninguém entra por atalho: só pelo link. */
   candidatosDeTeste: [] as { oid: string; nome: string; apoio: string }[],
+  /** Em produção quem corrige vem do login, não de um atalho. */
+  corretorDeTeste: null as { nome: string; apoio: string } | null,
+  isencaoDeTeste: null as { oid: string; nome: string; apoio: string } | null,
   /** Não existe fora do protótipo. */
   mockNovaProva: null as string | null,
 };

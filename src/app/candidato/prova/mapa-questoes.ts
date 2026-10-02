@@ -17,8 +17,9 @@ interface GrupoMapa {
 }
 
 /**
- * Navegação da prova. Estado por questão em cor E palavra (nome acessível),
- * alvo mínimo pela classe do DS, atual com aria-current.
+ * Navegação da prova. Estado por questão em forma E palavra: a respondida
+ * tem contorno, a em branco não, e o nome acessível diz qual é qual. Alvo
+ * mínimo pela classe do DS; a atual leva aria-current e o realce.
  */
 @Component({
   selector: 'app-mapa-questoes',
@@ -29,19 +30,19 @@ interface GrupoMapa {
         label="Questões respondidas"
         [value]="store.respondidas()"
         [max]="store.totalObjetivas()"
-        [tone]="store.respondidas() === store.totalObjetivas() ? 'success' : 'info'"
+        [tone]="store.respondidas() === store.totalObjetivas() ? 'success' : 'neutral'"
         [valueText]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
         [legendStart]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
       />
       @for (g of grupos(); track g.slug) {
         <section class="ucam-stack ucam-stack--sm">
-          <ucam-section-bar [title]="g.rotulo" [level]="3" [count]="g.respondidas + ' de ' + g.itens.length" [rule]="true" />
+          <ucam-section-bar [title]="g.rotulo" [level]="2" [count]="g.respondidas + ' de ' + g.itens.length" [rule]="true" />
           <ol class="ucam-cluster" data-mapa>
             @for (i of g.itens; track i.n) {
               <li>
                 <button
                   type="button"
-                  class="ucam-btn ucam-btn--sm"
+                  class="ucam-btn"
                   [class.ucam-btn--secondary]="i.respondida"
                   [class.ucam-btn--ghost]="!i.respondida"
                   [attr.data-questao]="i.slug + '/' + i.n"
@@ -58,10 +59,10 @@ interface GrupoMapa {
       }
       @if (store.redacao()) {
         <section class="ucam-stack ucam-stack--sm">
-          <ucam-section-bar title="Redação" [level]="3" [count]="estadoRedacao()" [rule]="true" />
+          <ucam-section-bar title="Redação" [level]="2" [count]="store.estadoRedacao()" [rule]="true" />
           <button
             type="button"
-            class="ucam-btn ucam-btn--sm ucam-btn--ghost"
+            class="ucam-btn ucam-btn--ghost"
             [attr.aria-current]="naRedacao() ? 'page' : null"
             (click)="navegar.emit('redacao')"
           >
@@ -71,15 +72,22 @@ interface GrupoMapa {
       }
     </nav>
   `,
+  styles: `
+    /* Onde a pessoa está, na língua do "escolhido" do DS (ADR-046): um sinal
+       de superfície e um de tipografia. O contorno continua dizendo
+       respondida; o realce diz atual. */
+    .ucam-btn[aria-current='page'] {
+      background: var(--ucam-color-action-primary-subtle);
+      color: var(--ucam-color-text-primary);
+      font-weight: var(--ucam-typography-action-font-weight);
+    }
+  `,
 })
 export class MapaQuestoes {
   readonly store = inject(ProvaStore);
   readonly navegar = output<Posicao | 'redacao'>();
 
   readonly naRedacao = computed(() => this.store.posicao() === null && !!this.store.redacao());
-  readonly estadoRedacao = computed(() =>
-    this.store.caracteresRedacao() === 0 ? 'em branco' : this.store.redacaoAtingeMinimo() ? 'mínimo atingido' : 'rascunho',
-  );
 
   readonly grupos = computed<GrupoMapa[]>(() => {
     const r = this.store.respostas();

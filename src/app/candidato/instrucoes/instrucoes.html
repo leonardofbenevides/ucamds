@@ -2,7 +2,16 @@
   <ucam-page-header variante="barra" title="Antes de começar" [breadcrumb]="trilha()" />
 
   <div class="ucam-corpo ucam-stack ucam-stack--lg">
-    <ucam-stepper label="Etapas do vestibular online" [current]="1" [steps]="etapas" />
+    <!-- Em janela larga as etapas já estão na coluna da moldura; aqui é para a
+         estreita, onde a coluna vira painel sobreposto. Em barra: os quatro
+         nomes não cabem lado a lado num celular, e o nome da etapa atual é o
+         título da tela. -->
+    <div class="lg:hidden">
+      <div class="ucam-stack ucam-stack--sm">
+        <ucam-stepper label="Etapas do vestibular online" variant="bar" [current]="1" [steps]="etapas" />
+        <p class="ucam-field__hint">Etapa 2 de {{ etapas.length }}</p>
+      </div>
+    </div>
 
     <section class="ucam-stack" aria-labelledby="t-sua-prova">
       <h2 class="ucam-section__title" id="t-sua-prova">Sua prova</h2>
@@ -18,7 +27,7 @@
       <app-instrucoes-lista [cartoes]="true" />
     </section>
 
-    <ucam-card as="section" titulo="Pronto para começar?" apoio="Confirme que leu as orientações. O relógio começa no clique e não para." icone="clipboardCheck">
+    <ucam-card as="section" titulo="Pronto para começar?" apoio="Confirme que leu as orientações." icone="clipboardCheck">
       <div class="ucam-stack">
         <ucam-checkbox
           label="Li as orientações e estou pronto para começar"

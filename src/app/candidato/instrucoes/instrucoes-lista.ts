@@ -32,8 +32,11 @@ export const ORIENTACOES: Orientacao[] = [
   template: `
     @if (cartoes()) {
       <!-- O texto vai como conteúdo, não como apoio: o apoio do cartão é de uma
-           linha e cortava a frase com reticências. -->
-      <div class="ucam-grid ucam-grid--lg" aria-label="Como a prova funciona" role="list">
+           linha e cortava a frase com reticências. A grade é a padrão do DS
+           (mínimo de 16rem): os três cartões ficam numa fileira no desktop e
+           empilham no celular — com o mínimo de 22rem o terceiro sobrava
+           sozinho e, a 390px, o cartão passava da largura da tela. -->
+      <div class="ucam-grid" aria-label="Como a prova funciona" role="list">
         @for (o of orientacoes; track o.titulo) {
           <ucam-card role="listitem" [titulo]="o.titulo" [icone]="o.icone">
             <p>{{ o.texto }}</p>

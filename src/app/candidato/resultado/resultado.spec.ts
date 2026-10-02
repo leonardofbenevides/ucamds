@@ -60,7 +60,7 @@ describe('ResultadoPage', () => {
     const el = await montar(['PORTUGUES', 'REDACAO']);
     expect(el.textContent).toContain('correção da banca');
     expect(el.textContent).toContain('Ir para o site');
-    expect(el.textContent).toContain('01:15:30');
+    expect(el.textContent).toContain('1 h 15 min');
     expect(prova.corrigirObjetiva).not.toHaveBeenCalled();
   });
 

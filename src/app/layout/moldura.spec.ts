@@ -29,22 +29,22 @@ describe('Moldura', () => {
 
   it('a coluna lateral traz as etapas, com a atual marcada e a contagem de respondidas', async () => {
     const el = await montar('PROVA_INICIADA', '/candidato/fip-1/prova/portugues/1');
-    const itens = [...el.querySelectorAll('nav a')].map((a) => a.textContent?.replace(/\s+/g, ' ').trim());
-    expect(itens.join(' | ')).toContain('Seus dados');
-    expect(itens.join(' | ')).toContain('Prova objetiva');
-    expect(itens.join(' | ')).toContain('Redação');
-    expect(itens.join(' | ')).toContain('Resultado');
-    const atual = el.querySelector('nav a[aria-current="page"]');
+    const etapas = [...el.querySelectorAll('[data-etapa]')].map((li) => li.textContent?.replace(/\s+/g, ' ').trim());
+    expect(etapas.join(' | ')).toContain('Seus dados');
+    expect(etapas.join(' | ')).toContain('Prova objetiva');
+    expect(etapas.join(' | ')).toContain('Redação');
+    expect(etapas.join(' | ')).toContain('Resultado');
+    const atual = el.querySelector('[data-etapa] a[aria-current="page"]');
     expect(atual?.textContent).toContain('Prova objetiva');
-    expect(atual?.textContent).toContain('1');
+    expect(atual?.textContent).toContain('1 de 2 respondidas');
   });
 
-  it('etapas que a situação não permite ficam desabilitadas', async () => {
+  it('etapa futura não é clicável; etapa concluída abre em gaveta', async () => {
     const el = await montar('CADASTRADO');
-    const prova = [...el.querySelectorAll('nav a')].find((a) => a.textContent?.includes('Prova objetiva'))!;
-    expect(prova.getAttribute('aria-disabled')).toBe('true');
-    const dados = [...el.querySelectorAll('nav a')].find((a) => a.textContent?.includes('Seus dados'))!;
-    expect(dados.getAttribute('aria-disabled')).toBeNull();
+    // Antes de começar, a prova ainda não é destino: nem link nem botão.
+    expect(el.querySelector('[data-etapa="objetiva"]')?.querySelector('a, button')).toBeNull();
+    // Os dados já conferidos continuam consultáveis, sem sair da tela.
+    expect(el.querySelector('[data-etapa="dados"] button')?.getAttribute('aria-haspopup')).toBe('dialog');
   });
 
   it('mostra quem é o candidato e a unidade na moldura', async () => {

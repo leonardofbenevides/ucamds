@@ -84,6 +84,12 @@ export class ProvaStore {
   /** Conta o que está sendo digitado, não só o que já foi salvo. */
   readonly caracteresRedacao = computed(() => contarCaracteres(this.rascunhoRedacao() ?? this.textoRedacao()));
   readonly redacaoAtingeMinimo = computed(() => !this.redacao() || this.caracteresRedacao() >= environment.redacaoMin);
+  /** Em palavra, como o mapa e o cabeçalho da prova dizem em que pé está a redação. */
+  readonly estadoRedacao = computed<'em branco' | 'rascunho' | 'mínimo atingido'>(() =>
+    this.caracteresRedacao() === 0 ? 'em branco' : this.redacaoAtingeMinimo() ? 'mínimo atingido' : 'rascunho',
+  );
+  /** A pessoa está na tela da redação, e não numa questão objetiva. */
+  readonly naRedacao = computed(() => this.rascunhoRedacao() !== null);
 
   readonly cadernoAtual = computed(() => {
     const p = this.posicao();

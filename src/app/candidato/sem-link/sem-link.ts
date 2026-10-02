@@ -101,7 +101,7 @@ export function destinoDoLink(texto: string): { oid: string; tentativa: string |
 
                 @if (candidatosDeTeste.length) {
                   <section class="ucam-stack ucam-stack--sm" aria-labelledby="t-teste">
-                    <h2 class="ucam-login__ou" id="t-teste">Candidatos de teste do protótipo</h2>
+                    <h2 class="ucam-login__ou" id="t-teste">Perfis de teste do protótipo</h2>
                     <!-- O clique passa pelo backend de mentira antes de entrar:
                          prova já entregue volta ao zero, prova em andamento
                          continua. O href fica para quem abre em outra aba. -->
@@ -114,6 +114,12 @@ export function destinoDoLink(texto: string): { oid: string; tentativa: string |
                           [href]="'/candidato/' + c.oid"
                           (click)="abrirTeste($event, c.oid)"
                         />
+                      }
+                      @if (isencaoDeTeste; as i) {
+                        <ucam-list-item [title]="i.nome" [support]="i.apoio" [name]="i.nome" [href]="'/isencao/' + i.oid" (click)="abrirIsencao($event, i.oid)" />
+                      }
+                      @if (corretorDeTeste; as b) {
+                        <ucam-list-item [title]="b.nome" [support]="b.apoio" [name]="b.nome" [href]="loginDeTeste" (click)="abrirBanca($event)" />
                       }
                     </ul>
                     <p class="ucam-section__hint">Cada atalho abre uma prova nova quando a anterior já foi entregue; prova em andamento continua de onde parou.</p>
@@ -170,6 +176,12 @@ export class SemLinkPage {
   private readonly http = inject(HttpClient);
   readonly contato = environment.contatoSecretaria;
   readonly candidatosDeTeste = environment.candidatosDeTeste;
+  readonly corretorDeTeste = environment.corretorDeTeste;
+  /** O endereço de volta do login único, com o perfil de teste. Sem ele (produção), o atalho não existe. */
+  readonly loginDeTeste = environment.loginDeTeste
+    ? `/admin/login/${environment.loginDeTeste.token}/${environment.loginDeTeste.usuario}`
+    : '/banca';
+  readonly isencaoDeTeste = environment.isencaoDeTeste;
   readonly ids = nextFieldIds('codigo-inscricao');
   readonly texto = signal('');
   readonly erro = signal<string | null>(null);
@@ -203,5 +215,20 @@ export class SemLinkPage {
       await firstValueFrom(this.http.post(environment.mockNovaProva + oid, null)).catch(() => null);
     }
     void this.router.navigate(['/candidato', oid]);
+  }
+
+  /** Atalho de teste para o candidato que acompanha a isenção de disciplinas. */
+  abrirIsencao(evento: Event, oid: string): void {
+    evento.preventDefault();
+    void this.router.navigate(['/isencao', oid]);
+  }
+
+  /**
+   * Atalho de teste para a área interna: entra pelo mesmo endereço em que o
+   * login único devolve, com o token e o usuário de mentira do ambiente.
+   */
+  abrirBanca(evento: Event): void {
+    evento.preventDefault();
+    void this.router.navigateByUrl(this.loginDeTeste);
   }
 }

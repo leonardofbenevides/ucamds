@@ -1,7 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { UcamBadge, UcamButton, UcamTextarea } from '@ucam/ui';
+import { UcamButton, UcamCitacao, UcamSectionBar, UcamTextarea } from '@ucam/ui';
 import { ProvaProtegida } from '../../../core/directives/prova-protegida';
 import { CandidatoStore } from '../../../core/store/candidato.store';
 import { ProvaStore, contarCaracteres } from '../../../core/store/prova.store';
@@ -17,7 +17,7 @@ const INTERVALO_SALVAR = 30_000;
  */
 @Component({
   selector: 'app-redacao',
-  imports: [DecimalPipe, UcamBadge, UcamButton, UcamTextarea, ProvaProtegida],
+  imports: [DecimalPipe, UcamButton, UcamCitacao, UcamSectionBar, UcamTextarea, ProvaProtegida],
   templateUrl: './redacao.html',
 })
 export class RedacaoPage {
@@ -48,6 +48,9 @@ export class RedacaoPage {
     this.store.posicao.set(null);
     this.texto.set(this.store.textoRedacao());
     this.restaurarRascunho();
+    // Já aqui, e não só no effect: é o rascunho que diz ao cabeçalho da prova
+    // que a etapa é a redação, e ele não pode nascer dizendo "Prova objetiva".
+    this.store.rascunhoRedacao.set(this.texto());
 
     const timer = setInterval(() => void this.store.descarregarRedacao(), INTERVALO_SALVAR);
     inject(DestroyRef).onDestroy(() => {

@@ -1,0 +1,141 @@
+<app-moldura-isencao [inicio]="inicio()">
+  <!-- Na coluna, o que identifica o pedido. -->
+  @if (isencao()) {
+    <dl molduraColuna class="ucam-descricao" aria-label="Sua solicitação">
+      <div class="ucam-descricao__par">
+        <dt class="ucam-descricao__rotulo">Solicitação</dt>
+        <dd class="ucam-descricao__valor">Isenção de disciplinas</dd>
+      </div>
+      @if (curso()) {
+        <div class="ucam-descricao__par">
+          <dt class="ucam-descricao__rotulo">Curso</dt>
+          <dd class="ucam-descricao__valor">{{ curso() }}</dd>
+        </div>
+      }
+      <div class="ucam-descricao__par">
+        <dt class="ucam-descricao__rotulo">Documentos enviados</dt>
+        <dd class="ucam-descricao__valor">{{ documentos().length }}</dd>
+      </div>
+    </dl>
+  }
+
+  <ucam-page-header variante="barra" title="Isenção de disciplinas" [breadcrumb]="trilha">
+    <!-- O mesmo estado que a coordenação chama de Aguardando candidato, dito
+         para quem lê. -->
+    @if (selo(); as s) {
+      <ucam-badge variant="dot" [label]="s.paraOCandidato" [tone]="s.tone" />
+    }
+  </ucam-page-header>
+
+  <p class="ucam-sr-only" role="status" data-anuncio>{{ anuncio() }}</p>
+
+  <div class="ucam-corpo ucam-stack ucam-stack--lg">
+    @switch (estado()) {
+      @case ('loading') {
+        <div class="ucam-stack" aria-busy="true">
+          <span class="ucam-sr-only">Buscando sua solicitação…</span>
+          <ucam-skeleton variant="block" />
+          <ucam-skeleton variant="text" [lines]="6" />
+        </div>
+      }
+      @case ('error') {
+        <ucam-empty-state reason="error" title="Não foi possível abrir sua solicitação" [description]="'Confira o link e sua conexão. Se continuar, fale com a secretaria: ' + contato">
+          <ucam-button variant="secondary" (click)="recarregar()">Tentar de novo</ucam-button>
+        </ucam-empty-state>
+      }
+      @default {
+        @switch (situacao()) {
+          @case ('concluida') {
+            <ucam-alert tone="success" title="Análise concluída">
+              {{ resultado() }}
+              @if (observacao(); as o) {
+                {{ o }}
+              }
+            </ucam-alert>
+          }
+          @case ('candidato') {
+            <ucam-alert tone="warning" title="A coordenação pediu um documento">
+              {{ observacao() ?? 'Veja abaixo, em cada disciplina, o que falta.' }} Ao enviar, sua solicitação volta para a análise.
+              <div ucamAlertAcoes><ucam-button variant="primary" iconStart="upload" (click)="abrirEnvio()">Enviar documento</ucam-button></div>
+            </ucam-alert>
+          }
+          @case ('envio') {
+            <ucam-alert tone="info" title="Falta enviar os documentos">
+              A análise começa quando você enviar ao menos o histórico escolar e as ementas das disciplinas cursadas.
+              <div ucamAlertAcoes><ucam-button variant="primary" iconStart="upload" (click)="abrirEnvio()">Enviar documento</ucam-button></div>
+            </ucam-alert>
+          }
+          @default {
+            @if (observacao(); as o) {
+              <ucam-alert tone="info" title="Observação da coordenação">{{ o }}</ucam-alert>
+            }
+          }
+        }
+
+        <section class="ucam-stack">
+          <ucam-section-bar title="Documentos enviados" [level]="2" [count]="documentos().length">
+            @if (situacao() === 'analise') {
+              <ucam-button variant="secondary" size="sm" iconStart="upload" (click)="abrirEnvio()">Enviar outro documento</ucam-button>
+            }
+          </ucam-section-bar>
+          @if (anexos().length) {
+            <div class="ucam-anexos" role="list" aria-label="Documentos enviados">
+              @for (d of anexos(); track d.id) {
+                <div role="listitem"><ucam-anexo [file]="d" /></div>
+              }
+            </div>
+          } @else {
+            <p class="ucam-section__hint">Nenhum documento enviado ainda.</p>
+          }
+        </section>
+
+        <section class="ucam-stack">
+          <ucam-section-bar title="Disciplinas" [level]="2" />
+          @if (linhas().length || periodo() !== 'todos') {
+            @if (opcoesPeriodo().length > 2) {
+              <div class="ucam-toolbar">
+                <ucam-select label="Período" width="content" [options]="opcoesPeriodo()" [(value)]="periodo" />
+              </div>
+            }
+            <ucam-data-table density="compact" [columnMenu]="false" [columns]="colunas" [rows]="linhas()" caption="Situação de cada disciplina da sua solicitação">
+              <ng-template ucamCelula="nome" let-linha>
+                {{ linha.nome }}
+                @if (linha.pedido) {
+                  <span class="td--apoio">{{ linha.pedido }}</span>
+                }
+              </ng-template>
+            </ucam-data-table>
+            <p class="ucam-pagination__range" role="status">{{ totais() }}</p>
+          } @else {
+            <p class="ucam-section__hint">A lista de disciplinas aparece aqui quando a coordenação começar a análise.</p>
+          }
+        </section>
+      }
+    }
+  </div>
+
+  <ucam-dialog title="Enviar documento" size="sm" [open]="enviando()" (openChange)="dialogoMudou($event)" [loading]="enviandoEmCurso()">
+    <div class="ucam-stack" (appArquivosEscolhidos)="guardar($event)">
+      <ucam-text-field
+        label="Descrição"
+        hint="Diga o que é o arquivo: histórico, ementas, declaração."
+        required
+        [(value)]="descricao"
+        [invalid]="!!erroDescricao()"
+        [errorMessage]="erroDescricao()"
+      />
+      <ucam-file-field label="Arquivo" accept=".pdf,.png,.jpg" required [(files)]="arquivos" />
+      @if (erroArquivo(); as e) {
+        <p class="ucam-field__error" role="alert">{{ e }}</p>
+      }
+      @if (erroAoEnviar()) {
+        <ucam-alert tone="danger" live="assertive">O documento não foi enviado. Confira sua conexão e tente de novo.</ucam-alert>
+      }
+    </div>
+    <!-- As ações só vão para o rodapé do diálogo quando vêm marcadas. -->
+    <div ucamDialogAcoes class="ucam-cluster ucam-cluster--fim">
+      <ucam-button variant="secondary" (click)="dialogoMudou(false)">Cancelar</ucam-button>
+      <ucam-button variant="primary" iconStart="upload" [loading]="enviandoEmCurso()" (click)="enviar()">Enviar documento</ucam-button>
+    </div>
+  </ucam-dialog>
+</app-moldura-isencao>

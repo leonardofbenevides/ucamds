@@ -1,6 +1,6 @@
-<app-moldura>
+<app-moldura #moldura>
   <div ucamShellAcoes>
-    <ucam-icon-button icon="info" label="Como a prova funciona" variant="ghost" size="sm" (click)="instrucoesAbertas.set(true)" />
+    <ucam-icon-button icon="info" label="Como a prova funciona" variant="ghost" (click)="moldura.instrucoesAbertas.set(true)" />
   </div>
 
   @switch (store.estado()) {
@@ -32,7 +32,7 @@
              o CSS do DS não tem camada e venceria `lg:hidden` num .ucam-cluster. -->
         <div class="lg:hidden">
           <div class="ucam-cluster ucam-cluster--fim">
-            <ucam-button variant="secondary" size="sm" iconStart="listChecks" (click)="mapaAberto.set(true)">Questões</ucam-button>
+            <ucam-button variant="secondary" iconStart="listChecks" (click)="mapaAberto.set(true)">Questões</ucam-button>
           </div>
         </div>
         <div class="ucam-split">
@@ -50,8 +50,4 @@
       <app-entrega-dialog [modo]="pedirEntrega()" (fechar)="pedirEntrega.set(null)" (revisar)="irPara($event)" (entregue)="entregue()" />
     }
   }
-
-  <ucam-drawer [(open)]="instrucoesAbertas" title="Como a prova funciona" side="end" size="sm">
-    <app-instrucoes-lista />
-  </ucam-drawer>
 </app-moldura>

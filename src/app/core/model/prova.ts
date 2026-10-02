@@ -47,6 +47,19 @@ export function rotuloTipoProva(tipo: string): string {
   return t.charAt(0).toUpperCase() + t.slice(1);
 }
 
+const ICONES = {
+  portugues: 'bookOpen',
+  matematica: 'calculator',
+  conhecimentos_gerais: 'landmark',
+  redacao: 'pencil',
+} as const;
+
+/** O desenho que identifica o caderno na questão. Desconhecido: a folha de prova. */
+export function iconeTipoProva(tipo: string): (typeof ICONES)[keyof typeof ICONES] | 'fileText' {
+  const k = chave(tipo) as keyof typeof ICONES | undefined;
+  return k ? ICONES[k] : 'fileText';
+}
+
 export function ehRedacao(tipo: string): boolean {
   return /redacao/i.test(tipo);
 }

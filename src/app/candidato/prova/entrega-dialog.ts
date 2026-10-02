@@ -24,7 +24,7 @@ import { environment } from '../../../environments/environment';
       (openChange)="!$event && fechar.emit()"
       [dismissible]="modo() === 'manual' && !entregando()"
       [loading]="entregando()"
-      initialFocus="[data-foco]"
+      initialFocus="[data-foco] button"
     >
       <div class="ucam-stack">
         @if (modo() === 'tempo') {
@@ -45,29 +45,32 @@ import { environment } from '../../../environments/environment';
           <ucam-alert tone="danger" live="assertive">{{ erro() }}</ucam-alert>
         }
       </div>
-      <footer class="ucam-cluster ucam-cluster--fim">
-        @if (modo() === 'manual') {
+      <!-- As ações vão no rodapé do diálogo (ucamDialogAcoes): soltas no
+           corpo, ficavam coladas ao texto e sem o filete. Sem ação a mostrar
+           — o tempo acabou e a entrega está em curso —, o rodapé não existe. -->
+      @if (modo() === 'manual') {
+        <div ucamDialogAcoes class="ucam-cluster ucam-cluster--fim">
           <ucam-button variant="secondary" data-foco (click)="revisarAgora()">Revisar</ucam-button>
-          <ucam-button
-            variant="primary"
-            iconStart="send"
-            [loading]="entregando()"
-            [disabled]="!store.redacaoAtingeMinimo()"
-            (click)="entregar()"
-          >
-            Entregar prova
-          </ucam-button>
-        } @else if (erro()) {
+          @if (store.redacaoAtingeMinimo()) {
+            <ucam-button variant="primary" iconStart="send" [loading]="entregando()" (click)="entregar()">Entregar prova</ucam-button>
+          } @else {
+            <!-- Sem o mínimo da redação a prova não se entrega: em vez de um
+                 botão desabilitado, a saída é ir escrever. -->
+            <ucam-button variant="primary" iconStart="pencil" (click)="irParaRedacao()">Ir para a redação</ucam-button>
+          }
+        </div>
+      } @else if (erro()) {
+        <div ucamDialogAcoes class="ucam-cluster ucam-cluster--fim">
           <ucam-button variant="primary" data-foco [loading]="entregando()" (click)="entregar()">Tentar de novo</ucam-button>
-        }
-      </footer>
+        </div>
+      }
     </ucam-dialog>
   `,
 })
 export class EntregaDialog {
   readonly modo = input.required<'manual' | 'tempo' | null>();
   readonly fechar = output<void>();
-  readonly revisar = output<Posicao>();
+  readonly revisar = output<Posicao | 'redacao'>();
   readonly entregue = output<void>();
 
   readonly store = inject(ProvaStore);
@@ -104,8 +107,15 @@ export class EntregaDialog {
     this.fechar.emit();
   }
 
+  irParaRedacao(): void {
+    this.revisar.emit('redacao');
+    this.fechar.emit();
+  }
+
   async entregar(): Promise<void> {
     if (this.entregando()) return;
+    // Pelo botão, só com a redação no mínimo; com o tempo esgotado, entrega o que houver.
+    if (this.modo() === 'manual' && !this.store.redacaoAtingeMinimo()) return;
     this.entregando.set(true);
     this.erro.set(null);
     const oidCp = this.candidato.oidCandidatoProva()!;

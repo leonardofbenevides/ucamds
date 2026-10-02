@@ -1,12 +1,10 @@
-import { Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
-import { UcamAppShell, UcamIcon, UcamNavGroup, UcamNavItem } from '@ucam/ui';
-import { filter, map } from 'rxjs';
+import { Component, computed, inject, signal } from '@angular/core';
+import { UcamAppShell, UcamDescriptionList, UcamDrawer, UcamIcon } from '@ucam/ui';
+import { InstrucoesLista } from '../candidato/instrucoes/instrucoes-lista';
 import { CandidatoStore } from '../core/store/candidato.store';
-import { ProvaStore } from '../core/store/prova.store';
-import { Tela, telaPermitida } from '../core/guards/destino-por-situacao';
 import { environment } from '../../environments/environment';
+import { EtapasLateral, GavetaEtapa } from './etapas-lateral';
+import { LinksInternos } from './links-internos';
 import { TemaToggle } from './tema-toggle';
 import { RelogioFaixa } from './relogio-faixa';
 
@@ -14,15 +12,16 @@ import { RelogioFaixa } from './relogio-faixa';
  * A moldura padrão do DS para toda tela depois da entrada: faixa com a marca
  * do sistema, o campus como contexto e a pessoa; coluna de navegação à
  * esquerda. No vestibular a coluna não é um menu — é o caminho: as etapas em
- * ordem, a atual marcada, as que a situação ainda não libera apagadas (a
- * mesma tabela que o guarda usa, para a navegação não prometer o que ele
- * nega). Abaixo das etapas, quem está fazendo a prova; no pé, ajuda e tema.
- * O relógio da prova vai na faixa, ao lado do campus, para acompanhar
- * qualquer rolagem.
+ * ordem, como stepper (EtapasLateral). As etapas já concluídas abrem aqui, em
+ * gaveta: os dados da inscrição e as orientações ficam a um clique sem tirar
+ * a pessoa da prova nem parar o relógio. Abaixo das etapas, quem está fazendo
+ * a prova; no pé, ajuda e tema. O relógio da prova vai na faixa, ao lado do
+ * campus, para acompanhar qualquer rolagem.
  */
 @Component({
   selector: 'app-moldura',
-  imports: [UcamAppShell, UcamIcon, TemaToggle, RelogioFaixa],
+  hostDirectives: [LinksInternos],
+  imports: [UcamAppShell, UcamDescriptionList, UcamDrawer, UcamIcon, EtapasLateral, InstrucoesLista, TemaToggle, RelogioFaixa],
   template: `
     <ucam-app-shell
       systemName="Vestibular Online"
@@ -30,20 +29,34 @@ import { RelogioFaixa } from './relogio-faixa';
       systemCategory="pessoas"
       [user]="usuario()"
       [homeHref]="home()"
-      [navGroups]="grupos()"
     >
+      <!-- O QUE CABE NA FAIXA. A 390px, menu, marca e conta já tomam a largura
+           inteira: relógio, campus e ações embrulhavam para fora da faixa. O
+           campus só entra a partir de 48rem e o resto a partir de 40rem;
+           abaixo disso nada se perde — o tempo está na barra da prova, que
+           gruda sob a faixa, e o campus e as orientações abrem pelas etapas.
+           Os div sem classe do DS existem para o Tailwind decidir o display
+           (contents: os filhos continuam sendo itens do cluster). -->
       <div ucamShellAcoes class="ucam-cluster">
-        <app-relogio-faixa />
+        <div class="hidden sm:contents">
+          <app-relogio-faixa />
+        </div>
         @if (unidade(); as u) {
-          <span class="ucam-campus ucam-campus--faixa">
-            <ucam-icon name="mapPin" size="sm" aria-hidden="true" />
-            <span class="ucam-sr-only">Campus:</span>
-            <span>{{ u }}</span>
-          </span>
-          <span class="ucam-appbar__divider" aria-hidden="true"></span>
+          <div class="hidden md:contents">
+            <span class="ucam-campus ucam-campus--faixa">
+              <ucam-icon name="mapPin" size="sm" aria-hidden="true" />
+              <span class="ucam-sr-only">Campus:</span>
+              <span>{{ u }}</span>
+            </span>
+            <span class="ucam-appbar__divider" aria-hidden="true"></span>
+          </div>
         }
-        <ng-content select="[ucamShellAcoes]" />
+        <div class="hidden sm:contents">
+          <ng-content select="[ucamShellAcoes]" />
+        </div>
       </div>
+
+      <app-etapas-lateral ucamShellNav (abrir)="abrir($event)" />
 
       <!-- Quem está na prova, como lista de descrição do DS (contrato
            description-list): um par por dado, o nome primeiro. -->
@@ -80,65 +93,47 @@ import { RelogioFaixa } from './relogio-faixa';
 
       <ng-content />
     </ucam-app-shell>
+
+    <ucam-drawer [(open)]="dadosAbertos" title="Seus dados" description="Os dados desta inscrição." side="end" size="sm">
+      <div class="ucam-stack">
+        <ucam-description-list [items]="dados()" [columns]="1" layout="stacked" />
+        <p class="ucam-field__hint">
+          Se algo estiver errado, fale com a secretaria:
+          <a class="ucam-link" [href]="'mailto:' + contato">{{ contato }}</a>
+        </p>
+      </div>
+    </ucam-drawer>
+
+    <ucam-drawer [(open)]="instrucoesAbertas" title="Como a prova funciona" side="end" size="sm">
+      <app-instrucoes-lista />
+    </ucam-drawer>
   `,
 })
 export class Moldura {
   readonly store = inject(CandidatoStore);
-  private readonly prova = inject(ProvaStore);
-  private readonly router = inject(Router);
   readonly contato = environment.contatoSecretaria;
 
-  private readonly url = toSignal(
-    this.router.events.pipe(
-      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      map((e) => e.urlAfterRedirects),
-    ),
-    { initialValue: this.router.url },
-  );
+  readonly dadosAbertos = signal(false);
+  readonly instrucoesAbertas = signal(false);
 
   readonly usuario = computed(() => (this.store.nome() ? { name: this.store.nome() } : null));
   readonly home = computed(() => `/candidato/${this.store.oidFip() ?? ''}`);
   readonly unidade = computed(() => this.store.unidade()?.nome ?? this.store.unidade()?.sigla ?? null);
 
-  /** Onde a pessoa está, pela URL: a etapa marcada na coluna. */
-  private readonly etapaAtual = computed<Etapa>(() => {
-    const url = this.url();
-    if (url.includes('/prova/redacao')) return 'redacao';
-    if (url.includes('/prova')) return 'objetiva';
-    if (url.includes('/instrucoes')) return 'instrucoes';
-    if (url.includes('/resultado')) return 'resultado';
-    return 'entrada';
-  });
-
-  readonly grupos = computed<UcamNavGroup[]>(() => {
-    const base = this.home();
-    const situacao = this.store.situacao();
-    const atual = this.etapaAtual();
-    const item = (etapa: Etapa, tela: Tela, label: string, icon: UcamNavItem['icon'], sufixo: string, count?: number): UcamNavItem => {
-      const liberada = telaPermitida(situacao, tela);
-      return {
-        label,
-        icon,
-        href: liberada ? base + sufixo : undefined,
-        current: atual === etapa,
-        disabled: !liberada,
-        count: count ?? null,
-      };
-    };
-    const itens: UcamNavItem[] = [
-      item('entrada', 'entrada', 'Seus dados', 'user', ''),
-      item('instrucoes', 'instrucoes', 'Antes de começar', 'listChecks', '/instrucoes'),
-      item('objetiva', 'prova', 'Prova objetiva', 'fileText', '/prova', this.contagemObjetiva()),
+  /** Tudo o que a inscrição diz sobre a pessoa, para conferir a qualquer momento. */
+  readonly dados = computed(() => {
+    const t = this.store.tentativas();
+    return [
+      { label: 'Nome', value: this.store.nome() },
+      { label: 'CPF', value: this.store.cpf() },
+      { label: 'Curso', value: this.store.curso() },
+      { label: 'Turno', value: this.store.turno() },
+      { label: 'Unidade', value: this.unidade() },
+      ...(t ? [{ label: 'Tentativa', value: `${t.tentativaAtual} de ${t.totalTentativasPossiveis}` }] : []),
     ];
-    if (this.prova.redacao()) {
-      itens.push(item('redacao', 'prova', 'Redação', 'pencil', '/prova/redacao'));
-    }
-    itens.push(item('resultado', 'resultado', 'Resultado', 'circleCheck', '/resultado'));
-    return [{ label: 'Etapas', items: itens }];
   });
 
-  /** Respondidas só enquanto há caderno carregado; antes disso a contagem não existe. */
-  private readonly contagemObjetiva = computed(() => (this.prova.totalObjetivas() > 0 ? this.prova.respondidas() : undefined));
+  abrir(gaveta: GavetaEtapa): void {
+    (gaveta === 'dados' ? this.dadosAbertos : this.instrucoesAbertas).set(true);
+  }
 }
-
-type Etapa = 'entrada' | 'instrucoes' | 'objetiva' | 'redacao' | 'resultado';

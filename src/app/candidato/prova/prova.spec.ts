@@ -34,7 +34,7 @@ describe('ProvaPage', () => {
     const el = f.nativeElement as HTMLElement;
     expect(el.querySelector('a[target="_blank"]')).toBeNull();
     expect(el.querySelector('button[aria-label="Como a prova funciona"]')).not.toBeNull();
-    f.componentInstance.instrucoesAbertas.set(true);
+    el.querySelector<HTMLButtonElement>('button[aria-label="Como a prova funciona"]')!.click();
     await f.whenStable();
     // A gaveta do DS abre em overlay no body, fora do fixture.
     expect(document.body.textContent).toContain('Tudo salvo na hora');

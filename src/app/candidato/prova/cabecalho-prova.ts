@@ -15,7 +15,7 @@ import { RelogioProva } from '../../core/tempo/relogio-prova';
   template: `
     <header class="ucam-viewbar" aria-label="Andamento da prova">
       <div class="ucam-viewbar__fileira">
-        <h1 class="ucam-page-header__title">Prova objetiva<span class="ucam-sr-only">, {{ progresso() }}</span></h1>
+        <h1 class="ucam-page-header__title">{{ titulo() }}<span class="ucam-sr-only">, {{ progresso() }}</span></h1>
         <span class="ucam-viewbar__contagem" aria-hidden="true">{{ progresso() }}</span>
         <span class="ucam-viewbar__folga"></span>
         <p class="ucam-cluster" data-salvamento>
@@ -59,7 +59,11 @@ export class CabecalhoProva {
   readonly fila = inject(FilaRespostas);
   readonly store = inject(ProvaStore);
 
-  readonly progresso = computed(() => `${this.store.respondidas()} de ${this.store.totalObjetivas()} respondidas`);
+  /** O título é o da etapa em que a pessoa está, com o andamento DELA ao lado. */
+  readonly titulo = computed(() => (this.store.naRedacao() ? 'Redação' : 'Prova objetiva'));
+  readonly progresso = computed(() =>
+    this.store.naRedacao() ? this.store.estadoRedacao() : `${this.store.respondidas()} de ${this.store.totalObjetivas()} respondidas`,
+  );
   readonly anuncio = signal('');
 
   constructor() {

@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { UcamBadge } from '@ucam/ui';
+import { UcamBadge, UcamIcon } from '@ucam/ui';
 import { RelogioProva } from '../core/tempo/relogio-prova';
 
 /**
@@ -10,10 +10,13 @@ import { RelogioProva } from '../core/tempo/relogio-prova';
  */
 @Component({
   selector: 'app-relogio-faixa',
-  imports: [UcamBadge],
+  imports: [UcamBadge, UcamIcon],
   template: `
     @if (ativo()) {
-      <ucam-badge icon="clock" [tone]="tom()" variant="soft" [label]="relogio.hms()" />
+      <span class="ucam-cluster">
+        <ucam-icon name="clock" size="sm" aria-hidden="true" />
+        <ucam-badge [tone]="tom()" variant="soft" [label]="relogio.hms()" />
+      </span>
       <span class="ucam-sr-only">{{ relogio.texto() }}</span>
     }
   `,

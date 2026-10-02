@@ -34,6 +34,25 @@ describe('CabecalhoProva', () => {
     expect(f.nativeElement.querySelector('ucam-progress')).not.toBeNull();
   });
 
+  it('na redação, o título e o andamento são os da redação', async () => {
+    const store = TestBed.inject(ProvaStore);
+    store.cadernos.update((c) => [...c, { oid: 'c3', tipoprova: 'REDACAO', questoes: [{ oid: 'r1', descricao: '', alternativas: [] }] }]);
+    const f = TestBed.createComponent(CabecalhoProva);
+    await f.whenStable();
+    expect(f.nativeElement.querySelector('h1').textContent).toContain('Prova objetiva');
+
+    store.rascunhoRedacao.set('');
+    await f.whenStable();
+    const h1 = f.nativeElement.querySelector('h1').textContent as string;
+    expect(h1).toContain('Redação');
+    expect(h1).toContain('em branco');
+    expect(h1).not.toContain('respondidas');
+
+    store.rascunhoRedacao.set('um começo');
+    await f.whenStable();
+    expect(f.nativeElement.querySelector('h1').textContent).toContain('rascunho');
+  });
+
   it('diz quantas respostas estão pendentes', async () => {
     fila.estado.set('pendente');
     const f = TestBed.createComponent(CabecalhoProva);

@@ -1,0 +1,98 @@
+<app-moldura-banca secao="provas">
+  <!-- Cabeçalho de página (e não a barra das filas): esta tela se abre para
+       escrever. Ele vai dentro do corpo, que é quem tem o recuo da página. -->
+  <div class="ucam-corpo ucam-stack ucam-stack--lg">
+    <ucam-page-header [title]="titulo()" [breadcrumb]="trilha()" backLink="/banca/provas" [description]="'Caderno de ' + nomeCaderno() + ' · ' + (store.rotulos().processo ?? '')" />
+
+    @if (store.estado() === 'loading') {
+      <div class="ucam-stack" aria-busy="true">
+        <span class="ucam-sr-only">Buscando a questão…</span>
+        <ucam-skeleton variant="text" [lines]="8" />
+      </div>
+    } @else if (store.estado() === 'error') {
+      <ucam-empty-state reason="error" title="Não foi possível buscar a questão" description="Confira sua conexão e tente de novo.">
+        <ucam-button variant="secondary" (click)="store.recarregar()">Tentar de novo</ucam-button>
+      </ucam-empty-state>
+    } @else if (naoEncontrada()) {
+      <ucam-empty-state reason="no-results" title="Esta questão não está no cadastro" description="Ela pode ter sido excluída, ou pertence a outro processo seletivo.">
+        <ucam-button variant="secondary" (click)="cancelar()">Voltar para as provas</ucam-button>
+      </ucam-empty-state>
+    } @else {
+      <form class="ucam-stack ucam-stack--lg" novalidate (submit)="salvar($event)">
+        @if (erroAoSalvar()) {
+          <ucam-alert tone="danger" live="assertive">A questão não foi gravada. Confira sua conexão e tente de novo.</ucam-alert>
+        }
+
+        <ucam-textarea
+          label="Texto de apoio"
+          hint="Opcional. É o que o candidato lê antes do enunciado; separe os parágrafos com uma linha em branco."
+          [rows]="8"
+          [maxRows]="30"
+          [(value)]="apoio"
+        />
+        <ucam-textarea
+          label="Enunciado"
+          hint="O que o candidato deve fazer."
+          required
+          [rows]="4"
+          [maxRows]="20"
+          [(value)]="enunciado"
+          [invalid]="!!erroEnunciado()"
+          [errorMessage]="erroEnunciado()"
+        />
+        <div class="ucam-form-row">
+          <ucam-text-field
+            label="Pontuação"
+            hint="De 0 a 10, de meio em meio ponto."
+            width="content"
+            required
+            autocomplete="off"
+            [maxLength]="4"
+            [(value)]="pontuacao"
+            [invalid]="!!erroPontuacao()"
+            [errorMessage]="erroPontuacao()"
+          />
+          <ucam-text-field
+            label="Ordem no caderno"
+            hint="1 para a primeira questão."
+            width="content"
+            required
+            autocomplete="off"
+            [maxLength]="3"
+            [(value)]="ordem"
+            [invalid]="!!erroOrdem()"
+            [errorMessage]="erroOrdem()"
+          />
+        </div>
+
+        <footer class="ucam-cluster ucam-cluster--entre">
+          @if (nova()) {
+            <span></span>
+          } @else {
+            <ucam-button variant="secondary" tone="danger" iconStart="trash2" (click)="confirmandoExclusao.set(true)">Excluir questão</ucam-button>
+          }
+          <span class="ucam-cluster">
+            <ucam-button variant="ghost" (click)="cancelar()">Cancelar</ucam-button>
+            <ucam-button variant="primary" type="submit" [loading]="salvando()">{{ nova() ? 'Criar questão' : 'Salvar questão' }}</ucam-button>
+          </span>
+        </footer>
+      </form>
+    }
+  </div>
+
+  <!-- Só a questão que existe pode ser excluída. -->
+  @if (!nova()) {
+    <ucam-dialog title="Excluir questão" variant="destructive" size="sm" [open]="confirmandoExclusao()" (openChange)="dialogoMudou($event)" [loading]="excluindo()" initialFocus="[data-foco] button">
+      <div class="ucam-stack">
+        <p>Excluir esta questão do caderno de {{ nomeCaderno() }}? Quem ainda não fez a prova deixa de recebê-la. Esta ação não pode ser desfeita.</p>
+        @if (erroAoExcluir()) {
+          <ucam-alert tone="danger" live="assertive">A questão não foi excluída. Confira sua conexão e tente de novo.</ucam-alert>
+        }
+      </div>
+      <div ucamDialogAcoes class="ucam-cluster ucam-cluster--fim">
+        <ucam-button variant="secondary" data-foco (click)="dialogoMudou(false)">Cancelar</ucam-button>
+        <ucam-button variant="primary" tone="danger" [loading]="excluindo()" (click)="excluir()">Excluir questão</ucam-button>
+      </div>
+    </ucam-dialog>
+  }
+</app-moldura-banca>
