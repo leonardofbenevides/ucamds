@@ -36,6 +36,7 @@ const LEITURA =
         z-textarea
         [id]="ids.controlId"
         [rows]="rows()"
+        [style.min-height.rem]="minAltura()"
         [style.max-height.rem]="maxAltura()"
         [style.resize]="autoGrow() ? 'none' : 'vertical'"
         [value]="value()"
@@ -86,6 +87,13 @@ export class UcamTextarea implements ControlValueAccessor {
 
   protected readonly ids = nextFieldIds('ucam-ta');
   protected readonly descrito = computed(() => describedBy(this.ids, !!this.hint(), this.invalid() && !!this.errorMessage()));
+
+  /**
+   * Piso da altura em rem, na mesma conta do teto. A base dimensiona pelo
+   * conteúdo (field-sizing) com mínimo fixo de 6rem, e o atributo rows deixa
+   * de valer: sem este piso, uma folha de 22 linhas nascia com quatro.
+   */
+  protected readonly minAltura = computed(() => this.rows() * 1.5);
 
   /** Teto do crescimento em rem, aproximando 1.5rem por linha. */
   protected readonly maxAltura = computed(() => (this.maxRows() ?? 12) * 1.5);

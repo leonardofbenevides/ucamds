@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   ElementRef,
   input,
   model,
@@ -146,7 +147,13 @@ export class UcamTabs {
     // A aba focável inicial é a selecionada. Quando a seleção muda por fora
     // (um filtro que reseta o recorte), a parada de tabulação acompanha —
     // senão o Tab devolveria o foco a uma aba que já não é a atual.
-    queueMicrotask(() => this.focada.set(this.value()));
+    //
+    // Por effect, e não por microtask do construtor: o effect só roda depois
+    // de o valor chegar pelo binding e roda de novo quando ele muda. O
+    // microtask lia value() antes do primeiro binding quando a tira nascia
+    // junto com a página (NG0952 em app sem zone) e, quando dava certo, lia
+    // uma vez só — a parada não acompanhava nada.
+    effect(() => this.focada.set(this.value()));
   }
 
   protected readonly indiceAtual = computed(() =>

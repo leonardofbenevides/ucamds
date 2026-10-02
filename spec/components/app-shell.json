@@ -333,6 +333,24 @@
       "descricao": "Categoria do sistema (ADR-032). Em teste pela ADR-037: vira a subpaleta do sistema — família da ação (primário, hover, pressionado, sutil, foco) derivada da categoria e faixa tinta a 10% com a marquinha cheia. Feedback, links e ladrilhos não mudam. null mantém o bordô, e é o que o Portal declara: ele é o saguão. O teste tem três modos (cheia, moldura, comum) pela chave ?paleta= das telas autônomas."
     },
     {
+      "nome": "systemIcon",
+      "tipo": "UcamIconName | null",
+      "default": "null",
+      "descricao": "O ícone da marquinha do sistema na faixa (ADR-033): o mesmo ladrilho que a pessoa clicou no Portal para entrar. Decorativo — o nome do sistema, dentro do mesmo link, é o nome acessível. Sem ele a faixa abre só com o nome."
+    },
+    {
+      "nome": "homeHref",
+      "tipo": "string",
+      "default": "'/'",
+      "descricao": "Para onde a marca leva: a primeira tela do sistema. A marca é link, não enfeite (ADR-033)."
+    },
+    {
+      "nome": "navGroups",
+      "tipo": "UcamNavGroup[]",
+      "default": "[]",
+      "descricao": "Os destinos da navegação, em grupos: { label?, items: { label, icon?, href?, current?, count?, disabled? }[] }. O item atual declara current e sai com aria-current=\"page\"; count é a contagem ao lado do rótulo. Só entra o que existe: item que não leva a lugar nenhum não se desenha. Vazio, a coluna fica só com o que a aplicação projetar."
+    },
+    {
       "nome": "shellLayout",
       "tipo": "'appbar' | 'rail' | 'lateral'",
       "default": "'appbar'",

@@ -36,6 +36,10 @@ export type UcamDialogVariant = 'default' | 'confirm' | 'destructive';
 
 let seq = 0;
 
+/** O que recebe foco por conta própria (tabindex="-1" inclusive: é foco por programa). */
+const FOCAVEL = 'button, [href], input, select, textarea, [tabindex]';
+const FOCAVEL_DENTRO = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 @Component({
   selector: 'ucam-dialog',
   exportAs: 'ucamDialog',
@@ -75,9 +79,14 @@ let seq = 0;
       </div>
 
       <!-- Ação secundária ANTES da primária, no DOM e na tela: a ordem de
-           leitura e a ordem de tabulação são a mesma coisa aqui. -->
+           leitura e a ordem de tabulação são a mesma coisa aqui.
+
+           Entram aqui o <footer> que o contrato escreve nos exemplos e o que
+           vier marcado com ucamDialogAcoes. Até 01/10/2026 só o atributo
+           valia: quem seguia o contrato via os botões caírem no corpo,
+           colados ao texto e sem o filete. -->
       <div class="ucam-dialog__footer">
-        <ng-content select="[ucamDialogAcoes]" />
+        <ng-content select="footer, [ucamDialogAcoes]" />
       </div>
     </dialog>
   `,
@@ -161,6 +170,9 @@ let seq = 0;
       border-block-start: 1px solid var(--ucam-color-border-subtle);
     }
     ucam-dialog .ucam-dialog__footer:empty { display: none; }
+    /* O <footer> projetado some como caixa: os botões dele são os itens da
+       fileira do rodapé, com o vão e o alinhamento dela. */
+    ucam-dialog .ucam-dialog__footer > footer { display: contents; }
     ucam-dialog .ucam-dialog__fechar[aria-disabled='true'] {
       color: var(--ucam-color-text-disabled);
       cursor: not-allowed;
@@ -222,7 +234,12 @@ export class UcamDialog {
     if (seletor) {
       const alvo = el.querySelector<HTMLElement>(seletor);
       if (alvo) {
-        alvo.focus();
+        // O seletor pode casar com um hospedeiro que não recebe foco — o
+        // <ucam-button data-foco>, cujo <button> mora dentro. Focar o
+        // hospedeiro não faz nada, e o foco ficava no ×: vale o primeiro
+        // focável de dentro.
+        const focavel = alvo.matches(FOCAVEL) ? alvo : (alvo.querySelector<HTMLElement>(FOCAVEL_DENTRO) ?? alvo);
+        focavel.focus();
         return;
       }
       if (ngDevMode) {

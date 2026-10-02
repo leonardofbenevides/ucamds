@@ -200,7 +200,9 @@ export class UcamPageHeader {
   readonly favorite = model<boolean | null>(null);
 
   protected readonly hospedeiro = computed(() => {
-    if (this.variante() === 'barra') return 'block sticky top-0 z-10 bg-background border-b border-border';
-    return this.sticky() ? 'block sticky top-0 z-10 bg-background' : 'block';
+    // Gruda abaixo do degrau que a moldura declara (--ucam-sticky-top no
+    // <ucam-app-shell>); fora de uma moldura, em zero.
+    if (this.variante() === 'barra') return 'block sticky top-[var(--ucam-sticky-top,0px)] z-10 bg-background border-b border-border';
+    return this.sticky() ? 'block sticky top-[var(--ucam-sticky-top,0px)] z-10 bg-background' : 'block';
   });
 }

@@ -74,6 +74,14 @@ export type UcamSystemCategory =
     '[style]': 'variaveis()',
     '[attr.data-sistema]': 'systemCategory()',
   },
+  styles: `
+    /* A barra de visão da folha do Trilho A (.ucam-viewbar) gruda em zero, e o
+       degrau que a põe abaixo da faixa lá depende de .ucam-appbar ~ .ucam-main,
+       que esta moldura não emite. Dentro dela, o degrau é o --ucam-sticky-top. */
+    ucam-app-shell .ucam-viewbar {
+      inset-block-start: var(--ucam-sticky-top);
+    }
+  `,
   template: `
     <!--
       SKIP-LINK, primeiro elemento focável do documento.
@@ -325,6 +333,10 @@ export class UcamAppShell {
     '--ucam-content-max': this.maxContentWidth(),
     '--ucam-appbar-height': '4.5rem',
     '--ucam-appbar-system-size': '1rem',
+    // O degrau para o que gruda DENTRO do conteúdo (barra de visão, cabeçalho
+    // de página): a faixa também gruda, com z maior, e o que grudasse em zero
+    // ia por baixo dela assim que a página rolava.
+    '--ucam-sticky-top': 'var(--ucam-appbar-height)',
   }));
 
   /** A tinta do sistema: a cor da categoria puxada para o legível, como no
@@ -346,7 +358,7 @@ export class UcamAppShell {
 
   protected readonly classesFaixa = computed(() =>
     this.appbarAppearance() === 'brand'
-      ? 'bg-[var(--ucam-color-surface-brand)] text-[var(--ucam-color-text-on-action)]'
+      ? 'bg-[var(--ucam-color-surface-brand)] text-[var(--ucam-color-text-on-brand)]'
       : this.appbarAppearance() === 'dark'
         ? 'bg-[var(--ucam-color-surface-inverse)] text-[var(--ucam-color-text-on-brand)]'
         : 'text-[var(--ucam-color-text-primary)]',
