@@ -1125,7 +1125,7 @@
         "O controle volta aos 36px de 29/08: a medida segue o tamanho do rótulo, e não o contrário. A base ZardUI deixa de coincidir com o h-8 nativo — o portão check-geometria.mjs é quem segura a divergência.",
         "Tudo ocupa cerca de 7% a mais na horizontal. Medido em 31 telas a 390, 768, 1280 e 1920px: nenhuma vaza. A fila da isenção passava 18px a 1280 e voltou a caber com o apoio de célula descendo no arranjo apertado (curso em cima, período embaixo).",
         "O que cortava com reticências numa linha passou a ter duas antes de cortar: apoio do cabeçalho de cartão e apoio do anexo. O rótulo da lista de descrição em painel quebra em vez de cortar; alargar a coluna dele foi tentado e empurrava o valor a três linhas.",
-        "No celular o seletor de período da análise (quatro opções) passa a rolar 12px na horizontal, com o esmaecido que já existia.",
+        "No celular o seletor de período da análise (quatro opções) passava 12px da fileira e rolava; abaixo de controle-deitado o recuo do segmento vai de 12 para 10px e ele volta a caber.",
         "O limiar do bloco de divisão largo (container.duas-colunas-largo) foi de 56 para 60rem: a 1280 o painel de apoio da análise desce para baixo da tabela, que rolava 42px ao lado dele; a 1366 volta ao lado.",
         "O avatar pequeno foi a 28px e voltou a 24: a célula de pessoa é toda calculada sobre 1.5rem (linha, recuo, teto do texto), e com 28 o nome saía 2px acima do centro da fileira."
       ],

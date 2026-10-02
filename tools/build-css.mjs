@@ -12681,6 +12681,10 @@ ${abaixo('nav-fixa')} {
    * para dentro do segmento enquanto o trilho rola. */
   .ucam-segmented { max-inline-size: 100%; overflow-x: auto; scrollbar-width: none; }
   .ucam-segmented button:focus-visible { outline-offset: calc(-1 * var(--ucam-focus-ring-width)); }
+  /* Recuo de 10px, não 12, nesta largura (02/10/2026, ADR-056). Com o texto
+   * a 15px o seletor de período da análise (quatro opções) passava 12px da
+   * fileira de 350 e rolava por tão pouco; 2px a menos de cada lado fecham. */
+  .ucam-segmented:not(.ucam-segmented--sm) button { padding-inline: 0.625rem; }
   /* O TRILHO QUE ROLA RECORTAVA O ALVO (29/09/2026). Contêiner de rolagem
    * recorta tudo na própria caixa, e o extensor de 44 de cada segmento ia
    * junto: sob toque, a 390px, o filtro da linha do tempo (Todos ·
