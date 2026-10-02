@@ -59,14 +59,12 @@ Do produto:
 - Endpoint agregado de respostas (uma chamada em vez de uma por questão) é pedido ao backend.
 - `admin/correcao/questao` do legado não foi trazido: lá é só um esboço.
 
-Do design system (`@ucam/ui` 0.1.1), cada um com um contorno no app que sai quando a biblioteca for corrigida:
+Do design system:
 
-- A faixa de marca do `<ucam-app-shell>` pinta o texto com `text-on-action`, que no tema escuro é tinta escura: o nome do sistema sumia. Contorno em `styles.css` (`text-on-brand`, como no Trilho A).
-- A barra de visão (`.ucam-viewbar`) gruda em 0, por baixo da faixa do `<ucam-app-shell>`. Contorno em `styles.css`.
-- `<ucam-tabs>` lê o próprio `value` num microtask do construtor e estoura NG0952 quando nasce junto com a página. Contorno: as abas nascem dentro de um `@if`.
-- `<ucam-textarea>` ignora `rows` como piso. Contorno em `styles.css` (a folha da redação).
+- **Corrigidos na fonte em 01/10/2026** (`ucamds`, commit `00c44ba`, com spec na biblioteca; tarballs em `../ucamds/dist/pacotes` já regerados): a tinta da faixa de marca no tema escuro, a barra de visão que grudava por baixo da faixa, o NG0952 do `<ucam-tabs>`, o rodapé e o foco inicial do `<ucam-dialog>`, o `rows` do `<ucam-textarea>` como piso, e as três entradas do `<ucam-app-shell>` que faltavam no contrato. Conferido numa cópia do app com os pacotes novos e sem os contornos: 157 testes, `ds:checar` sem desvio e as sete medições no navegador.
+- **Falta adotar aqui.** O `node_modules` deste app ainda tem os pacotes antigos, e por isso os contornos continuam no código — eles funcionam com a biblioteca antiga e com a nova. Para adotar, com o `ng serve` parado: `npm cache clean --force` e `npm install --force ../ucamds/dist/pacotes/ucam-ui-0.1.1.tgz ../ucamds/dist/pacotes/ucam-ds-mcp-0.1.1.tgz` (a versão não mudou, e sem limpar o cache o npm serve o tarball velho). Depois saem: em `styles.css`, os blocos "A FAIXA NO TEMA ESCURO", "A BARRA DA TELA GRUDA SOB A FAIXA" e "A FOLHA DA REDAÇÃO"; o `@if` em volta do `<ucam-tabs>` em `banca/correcao/correcao.html` e `banca/isencao/fila.html`; o ` button` de `initialFocus="[data-foco] button"` nos diálogos; e a lista `DESVIOS` de `tools/ds-checar.mjs`.
 - O botão desabilitado ainda não tem o "chão" e a "aresta" da ADR-042 — a base ZardUI só tira a opacidade.
-- O contrato do `ucam-dialog` mostra as ações num `<footer>`; a biblioteca só as põe no rodapé pelo atributo `ucamDialogAcoes`, e `initialFocus` precisa apontar o `<button>` de dentro do `<ucam-button>`. O contrato do `ucam-app-shell` não lista `systemIcon`, `homeHref` e `navGroups`; o do `ucam-badge` não lista `icon` (o app deixou de usar).
+- O contrato do `ucam-badge` não lista `icon`, que a biblioteca tem (o app deixou de usar); `labelHidden` de `ucam-text-field` e `ucam-select` também não está no contrato.
 - Publicar o `@ucam/ui` 0.1.1 (imports relativizados, `styles.css` autocontido, `disabled`/`aria-disabled` no primeiro render) e trocar os `file:` por URL.
 
 Desvio declarado do contrato: na questão da prova a alternativa escolhida não leva o check do `choice-card` — ao lado de uma resposta de prova, check lê como "certa". O segundo sinal além da borda é a letra preenchida, como no cartão-resposta (`questao.ts`).
