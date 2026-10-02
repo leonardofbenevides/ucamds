@@ -236,7 +236,7 @@
       "nome": "density",
       "tipo": "'comfortable' | 'compact'",
       "default": "'comfortable'",
-      "descricao": "compact põe 8 × 12 na célula (~36px por linha com uma linha de texto): a densidade das referências, e o que devolve a dobra a uma listagem de trinta linhas. SÓ para tabela em que toda célula tem uma linha — célula de duas linhas com 8px em volta vira bloco sem ar. A ação de linha continua com alvo de 28px (ADR-046)."
+      "descricao": "compact põe 9 × 12 na célula (~39px por linha com uma linha de texto, 43 com selo ou avatar; ADR-056, eram 8 × 12): a densidade das referências, e o que devolve a dobra a uma listagem de trinta linhas. SÓ para tabela em que toda célula tem uma linha — célula de duas linhas com 8px em volta vira bloco sem ar. A ação de linha continua com alvo de 28px (ADR-046)."
     },
     {
       "nome": "stickyHeader",

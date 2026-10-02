@@ -416,7 +416,7 @@
   },
   "fontSize": {
     "$type": "dimension",
-    "$description": "Escala tipográfica: 12 · 13 · 14 · 16 · 18 · 22 · 28px.\n\nO corpo é 14px, não 16. 16px é o padrão do NAVEGADOR, feito para texto corrido, e é o que faz uma aplicação de dados parecer um site; as referências do gênero ficam em 13–14px no corpo. A densidade se resolve aqui, na escala primitiva, e não nos papéis: os sete papéis tipográficos mantêm suas referências e preservam as PROPORÇÕES entre título, corpo e legenda.\n\nEm rem, e não em px, de propósito: quem aumenta o corpo do navegador aumenta a interface inteira. Densidade não é motivo para cravar pixel.",
+    "$description": "Escala tipográfica: 12 · 13 · 14 · 15 · 16 · 18 · 22 · 28px.\n\nO corpo é 15px desde 01/10/2026 (ADR-056; era 14), não 16. 16px é o padrão do NAVEGADOR, feito para texto corrido, e é o que faz uma aplicação de dados parecer um site; as referências do gênero ficam em 13–14px no corpo. A densidade se resolve aqui, na escala primitiva, e não nos papéis: os sete papéis tipográficos mantêm suas referências e preservam as PROPORÇÕES entre título, corpo e legenda.\n\nEm rem, e não em px, de propósito: quem aumenta o corpo do navegador aumenta a interface inteira. Densidade não é motivo para cravar pixel.",
     "xs": {
       "$value": "0.75rem"
     },
@@ -426,6 +426,10 @@
     "base": {
       "$value": "0.875rem",
       "$description": "14px. O nome continua \"base\" porque é o corpo do sistema — não porque é 1rem."
+    },
+    "md": {
+      "$value": "0.9375rem",
+      "$description": "15px. Degrau entre base (14) e lg (16), criado em 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056): é o texto de trabalho — corpo, rótulo, ação e cabeçalho de tabela."
     },
     "lg": {
       "$value": "1rem"

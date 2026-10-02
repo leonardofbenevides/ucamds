@@ -1113,6 +1113,33 @@
         "choice-card",
         "card"
       ]
+    },
+    {
+      "id": "ADR-056",
+      "titulo": "Um degrau a mais: texto de trabalho a 15px e controle a 36px",
+      "status": "aceita",
+      "data": "2026-10-01",
+      "contexto": "Pedido de 01/10/2026: \"aumente um pouco a dimensão das coisas nas telas\". A ADR-054 já tinha subido a letra (13 para 14px) sem mexer nas caixas — o botão e o campo continuaram em 32px, o selo em 22, a linha compacta em 41. O resultado era letra maior dentro da mesma caixa: mais legível, mas a tela seguia lendo miúda, porque o que dá a dimensão de uma interface é a caixa e não só o texto. A altura de 32px vinha de uma reversão deliberada (o controle já foi 36px quando o corpo era 16, e voltou a 32 quando o rótulo de botão caiu a 13px: \"36 em volta de 13 é ar\"). Com o rótulo a 15px esse argumento deixa de valer.",
+      "decisao": "Texto e caixa sobem JUNTOS, um degrau cada, pelos tokens. Texto: entra a primitiva fontSize.md (15px) e os papéis body, body-sm, label, action e table-header passam a ela; caption vai a 14px em linha de 18px; section-title vai a 18px, para não ficar a 1px do corpo. O título de página fica em 22px. Caixa: size.control-sm 28 → 32px, control-md 32 → 36px, control-lg 40 → 44px, size.marcador (selo, chip) 22 → 24px. A base ZardUI acompanha (h-8, h-9, h-11, textarea min-h-27), cobrada pelo portão de geometria. A tabela compacta ganha 1px de recuo em cima e embaixo: a linha da fila vai de 42 para 43px. Ícones, avatares, espaçamentos, raios e a faixa do topo não mudam.",
+      "consequencias": [
+        "O controle volta aos 36px de 29/08: a medida segue o tamanho do rótulo, e não o contrário. A base ZardUI deixa de coincidir com o h-8 nativo — o portão check-geometria.mjs é quem segura a divergência.",
+        "Tudo ocupa cerca de 7% a mais na horizontal. Medido em 31 telas a 390, 768, 1280 e 1920px: nenhuma vaza. A fila da isenção passava 18px a 1280 e voltou a caber com o apoio de célula descendo no arranjo apertado (curso em cima, período embaixo).",
+        "O que cortava com reticências numa linha passou a ter duas antes de cortar: apoio do cabeçalho de cartão e apoio do anexo. O rótulo da lista de descrição em painel quebra em vez de cortar; alargar a coluna dele foi tentado e empurrava o valor a três linhas.",
+        "No celular o seletor de período da análise (quatro opções) passa a rolar 12px na horizontal, com o esmaecido que já existia.",
+        "O limiar do bloco de divisão largo (container.duas-colunas-largo) foi de 56 para 60rem: a 1280 o painel de apoio da análise desce para baixo da tabela, que rolava 42px ao lado dele; a 1366 volta ao lado.",
+        "O avatar pequeno foi a 28px e voltou a 24: a célula de pessoa é toda calculada sobre 1.5rem (linha, recuo, teto do texto), e com 28 o nome saía 2px acima do centro da fileira."
+      ],
+      "afeta": [
+        "*",
+        "button",
+        "text-field",
+        "select",
+        "badge",
+        "data-table",
+        "description-list",
+        "card",
+        "anexo"
+      ]
     }
   ]
 }

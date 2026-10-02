@@ -1472,9 +1472,13 @@ button.ucam-anexo__nome {
 /* Formato, tamanho, estado e motivo da recusa moram na mesma linha de apoio:
  * são as respostas que o parque não dava, e juntas cabem numa caption. */
 .ucam-anexo__apoio {
+  /* Duas linhas antes de cortar (01/10/2026, ADR-056): no painel estreito o
+   * tipo e o tamanho cabiam, e o que o arquivo É ("histórico escolar") sumia. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   font-size: var(--ucam-typography-caption-font-size);
   line-height: var(--ucam-typography-caption-line-height);
   color: var(--ucam-color-text-secondary);
@@ -2458,8 +2462,11 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * inteira lê mais apertada sem ficar mais curta. A ação de linha continua
  * com alvo de 28px (ucam-btn--sm), acima dos 24 da 2.5.8. */
 .ucam-table--compact th,
-.ucam-table--compact td { padding: 0.5rem var(--ucam-space-inset-sm); }
-.ucam-table--compact thead th { padding-block: 0.375rem; }
+.ucam-table--compact td { padding: 0.5625rem var(--ucam-space-inset-sm); }
+/* 9px e 8px desde 01/10/2026 (ADR-056); eram 8 e 6. O texto subiu a 15px e
+ * o selo a 24: com o recuo antigo a linha continuava em 41px e a letra maior
+ * lia apertada. Com 10px a linha ia a 45; com 9 fecha em 43 — "um pouco". */
+.ucam-table--compact thead th { padding-block: 0.5rem; }
 /* A ação de linha desce um degrau (28px): com o botão de 32 a linha compacta
  * fechava em 48, o mesmo que a confortável sem ação — a densidade sumia na
  * coluna de ações. 28 ainda passa os 24 da WCAG 2.5.8. */
@@ -2741,6 +2748,11 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * texto de trabalho a 14px, Usuários passava 49px da largura cheia, o
  * Resultado do relatório 17 e a fila da isenção 8. */
 .ucam-table[data-apertada] .td--apoio { white-space: normal; }
+/* O apoio que vem depois de um TEXTO solto na célula (curso e período, setor
+ * e os demais) também desce — 01/10/2026, ADR-056. Só o da célula de pessoa
+ * descia; com o texto a 15px a fila da isenção passava 18px a 1280 com o
+ * período ainda ao lado do curso. */
+.ucam-table[data-apertada] td > .td--apoio { display: block; }
 /* Recuo lateral de 8px, o degrau inteiro abaixo dos 12: seis colunas
  * devolvem 48px, o que tira a rolagem a 768px e a reduz a 1024 com a
  * navegação fixa (área de 666px). */
@@ -3475,11 +3487,20 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   flex-direction: column;
 }
 
-.ucam-card__cabecalho-texto > .ucam-card__titulo,
-.ucam-card__cabecalho-texto > .ucam-card__apoio {
+.ucam-card__cabecalho-texto > .ucam-card__titulo {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* O apoio vai a DUAS linhas antes de cortar (01/10/2026, ADR-056). Numa só,
+ * com a legenda a 14px, "em análise desde hoje, 09:40" perdia a hora — e a
+ * hora é o dado. O título segue numa linha: é ele que segura a forma. */
+.ucam-card__cabecalho-texto > .ucam-card__apoio {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 /* O que vem depois do texto assenta na ponta direita: selo de período, menu
@@ -10519,10 +10540,13 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
   margin: 0;
   font-size: var(--ucam-typography-caption-font-size);
   min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* QUEBRA, não corta (01/10/2026, ADR-056). Com a legenda a 14px "Setor
+   * responsável" perdia a última letra nas reticências. Alargar a coluna do
+   * rótulo foi tentado e tirava do valor: "Universidade Estácio de Sá" ia a
+   * três linhas. O rótulo comprido desce uma linha e o valor fica onde está. */
+  overflow-wrap: break-word;
 }
+.ucam-descricao--painel .ucam-descricao__rotulo > .ic { flex: none; }
 
 /* E-mail e outro valor sem espaço QUEBRAM em qualquer ponto: sem isso
  * "ana.rocha@email.com" saía pela borda do painel (sem-documentos, 28/09). */

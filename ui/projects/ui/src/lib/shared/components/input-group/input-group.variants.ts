@@ -4,7 +4,7 @@ import { mergeClasses } from '@/shared/utils/merge-classes';
 
 export const inputGroupVariants = cva(
   mergeClasses(
-    'group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-input transition-colors outline-none',
+    'group/input-group relative flex h-9 w-full min-w-0 items-center rounded-lg border border-input transition-colors outline-none',
     'has-disabled:bg-input/50 has-disabled:opacity-50',
     'has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50',
     'has-[[data-slot][aria-invalid=true]]:border-destructive has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20',

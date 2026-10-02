@@ -68,7 +68,7 @@
   "medida_de_leitura": {
     "regra": "Todo bloco de texto corrido tem teto em ch. O número muda com o papel do texto, e cada um foi escolhido pelo ponto em que a frase quebra bem — não por arredondamento.",
     "medidas": [
-      { "medida": "68ch", "onde": "Linha de apoio do cabeçalho de página", "porque": "Em 14px, é onde a frase ainda se lê em uma ou duas linhas sem atravessar a tela toda." },
+      { "medida": "68ch", "onde": "Linha de apoio do cabeçalho de página", "porque": "Em 15px, é onde a frase ainda se lê em uma ou duas linhas sem atravessar a tela toda." },
       { "medida": "56ch", "onde": "Descrição de estado vazio dentro de moldura larga ou de tabela", "porque": "48ch numa moldura larga produz uma linha só, longuíssima, e o bloco centrado perde o eixo." },
       { "medida": "48ch", "onde": "Descrição de estado vazio em página inteira", "porque": "É a medida clássica de texto centralizado curto." },
       { "medida": "32ch", "onde": "Dica flutuante", "porque": "A pergunta é quantos caracteres cabem na linha, e é ela que decide se a frase quebra em duas." },
@@ -89,7 +89,7 @@
     "excecao_de_densidade": "O único aperto legítimo é o control-sm em linha de tabela e barra de ferramentas, e ele é local: uma tela não pode ligar 'modo compacto' e encolher tudo. Densidade global é como o legado acabou com quatro alturas de botão na mesma tela."
   },
   "alvos": {
-    "regra": "A ÁREA CLICÁVEL NÃO É O DESENHO. O controle desenha 32px por decisão de densidade e estende a área de acerto por um pseudo-elemento centrado, que ocupa espaço de ponteiro sem ocupar espaço de layout.",
+    "regra": "A ÁREA CLICÁVEL NÃO É O DESENHO. O controle desenha 36px (ADR-056; eram 32) por decisão de densidade e estende a área de acerto por um pseudo-elemento centrado, que ocupa espaço de ponteiro sem ocupar espaço de layout.",
     "patamares": [
       { "ponteiro": "fino (mouse, caneta)", "alvo": "24px", "criterio": "WCAG 2.5.8 (AA)", "porque": "Numa barra com vão de 8px entre ações, 44px invadiria seis pixels da tinta do vizinho de cada lado — dois alvos disputando a faixa morta entre eles trocam um erro por outro." },
       { "ponteiro": "grosso (dedo)", "alvo": "44px", "criterio": "WCAG 2.5.5 (AAA)", "porque": "No dedo o cálculo se inverte: a invasão fica dentro do vão, não sobre a tinta do vizinho, e errar o alvo por inteiro é o erro pior." }
