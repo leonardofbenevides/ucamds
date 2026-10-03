@@ -88,7 +88,7 @@
                               <p class="ucam-section__hint">Equivale a {{ origem(l) }}</p>
                             }
                           } @else {
-                            <ucam-segmented size="sm" [ariaLabel]="'Decisão para ' + l.d.nome" [items]="opcoesDecisao" [value]="idDecisao(l)" (valueChange)="decidir(l, $event)" />
+                            <ucam-segmented size="sm" allowEmpty [ariaLabel]="'Decisão para ' + l.d.nome" [items]="opcoesDecisao" [value]="idDecisao(l)" (valueChange)="decidir(l, $event)" />
                             @switch (idDecisao(l)) {
                               @case ('isentar') {
                                 <div class="ucam-form-row">

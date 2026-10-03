@@ -40,7 +40,6 @@ import { IsencaoStore } from './isencao.store';
 
 type Estado = 'loading' | 'pronto' | 'error';
 const TODOS = 'todos';
-const SEM_DECISAO = 'sem';
 const MAX_MOTIVO = 300;
 const MAX_OBSERVACAO = 150;
 
@@ -105,8 +104,9 @@ export class AnaliseIsencaoPage {
 
   readonly maxMotivo = MAX_MOTIVO;
   readonly maxObservacao = MAX_OBSERVACAO;
+  // Sem "Sem decisão" na lista: a disciplina ainda não avaliada é o segmentado
+  // SEM escolha (allowEmpty), e clicar de novo na decisão a desfaz.
   readonly opcoesDecisao: UcamSegmentItem[] = [
-    { id: SEM_DECISAO, label: 'Sem decisão' },
     { id: 'isentar', label: 'Isentar' },
     { id: 'nao', label: 'Não isentar' },
     { id: 'documento', label: 'Pedir documento' },
@@ -270,8 +270,9 @@ export class AnaliseIsencaoPage {
 
   // ----------------------------------------------------------- por disciplina --
 
+  /** O id do segmento escolhido, ou '' para a disciplina ainda sem decisão. */
   idDecisao(l: DisciplinaEmAnalise): string {
-    return decisaoDe(l.d) || SEM_DECISAO;
+    return decisaoDe(l.d);
   }
   seloDecisao(l: DisciplinaEmAnalise) {
     return DECISOES[decisaoDe(l.d)];
@@ -291,7 +292,7 @@ export class AnaliseIsencaoPage {
             : // Sem decisão é como o backend devolve a disciplina não avaliada.
               { aceita: 'PENDENTE' as const, motivo: null };
     this.mudar(l, d, true);
-    this.anuncio.set(`${l.d.nome}: ${this.opcoesDecisao.find((o) => o.id === id)?.label ?? ''}. ${this.totais()}.`);
+    this.anuncio.set(`${l.d.nome}: ${this.opcoesDecisao.find((o) => o.id === id)?.label ?? DECISOES[''].label}. ${this.totais()}.`);
   }
 
   escrever(l: DisciplinaEmAnalise, campo: Campo, valor: string): void {

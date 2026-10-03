@@ -100,8 +100,8 @@ describe('AcompanhamentoIsencaoPage', () => {
 
     const arquivo = new File(['x'], 'ementa-civil.pdf', { type: 'application/pdf' });
     pagina.descricao.set('Ementa de Direito Civil I');
-    pagina.arquivos.set([{ id: 'a1', nome: arquivo.name, tamanho: arquivo.size, tipo: arquivo.type, estado: 'pendente' }]);
-    pagina.guardar([arquivo]);
+    // Como o <ucam-file-field> entrega: a linha com o File dentro (DS 0.1.2).
+    pagina.arquivos.set([{ id: 'a1', nome: arquivo.name, tamanho: arquivo.size, tipo: arquivo.type, estado: 'pendente', file: arquivo }]);
     api.enviarDocumento.mockReturnValue(
       of({ ...base, status: 'PENDENTE_ANALISE', documentos: [...base.documentos!, { oid: 'd2', descricao: 'Ementa de Direito Civil I', datacriacao: '2026-10-01T12:00:00Z', filename: 'ementa-civil.pdf' }] }),
     );

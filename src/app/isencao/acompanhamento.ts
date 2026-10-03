@@ -21,7 +21,6 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { nomeCurso } from '../core/store/candidato.store';
-import { ArquivosEscolhidos } from './arquivos-escolhidos';
 import { IsencaoApi } from './isencao.api';
 import { MolduraIsencao } from './moldura-isencao';
 import { IsencaoCandidato, SITUACOES, dataCurta, decisaoDe, disciplinasEmOrdem, situacaoDaDisciplina, situacaoDe } from './isencao.model';
@@ -38,7 +37,6 @@ const TODOS = 'todos';
 @Component({
   selector: 'app-acompanhamento-isencao',
   imports: [
-    ArquivosEscolhidos,
     MolduraIsencao,
     UcamAlert,
     UcamAnexo,
@@ -136,7 +134,6 @@ export class AcompanhamentoIsencaoPage {
   readonly enviando = signal(false);
   readonly descricao = signal('');
   readonly arquivos = signal<UcamFile[]>([]);
-  private escolhidos: File[] = [];
   readonly erroDescricao = signal<string | null>(null);
   readonly erroArquivo = signal<string | null>(null);
   readonly enviandoEmCurso = signal(false);
@@ -166,7 +163,6 @@ export class AcompanhamentoIsencaoPage {
   abrirEnvio(): void {
     this.descricao.set('');
     this.arquivos.set([]);
-    this.escolhidos = [];
     this.erroDescricao.set(null);
     this.erroArquivo.set(null);
     this.erroAoEnviar.set(false);
@@ -177,16 +173,11 @@ export class AcompanhamentoIsencaoPage {
     if (!this.enviandoEmCurso()) this.enviando.set(aberto);
   }
 
-  /** Os arquivos de verdade, que o campo do DS não entrega no modelo. */
-  guardar(arquivos: File[]): void {
-    this.escolhidos = arquivos;
-  }
-
   async enviar(): Promise<void> {
     if (this.enviandoEmCurso()) return;
     const descricao = this.descricao().trim();
-    const aceito = this.arquivos().find((f) => f.estado === 'pendente');
-    const arquivo = aceito ? this.escolhidos.find((f) => f.name === aceito.nome && f.size === aceito.tamanho) : undefined;
+    // O File vem no próprio modelo do campo (UcamFile.file, DS 0.1.2).
+    const arquivo = this.arquivos().find((f) => f.estado === 'pendente')?.file ?? undefined;
     this.erroDescricao.set(descricao ? null : 'Falta a descrição. Diga o que é o arquivo: histórico, ementas, declaração.');
     this.erroArquivo.set(arquivo ? null : 'Falta o arquivo. Escolha o documento que vai enviar.');
     if (!descricao || !arquivo) return;
@@ -197,7 +188,6 @@ export class AcompanhamentoIsencaoPage {
       this.isencao.set(await firstValueFrom(this.api.enviarDocumento(this.oid(), arquivo, descricao)));
       this.enviando.set(false);
       this.arquivos.set([]);
-      this.escolhidos = [];
       this.anuncio.set(`Documento ${descricao} enviado. A coordenação vai analisar.`);
     } catch {
       this.erroAoEnviar.set(true);

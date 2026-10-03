@@ -115,7 +115,7 @@
   </div>
 
   <ucam-dialog title="Enviar documento" size="sm" [open]="enviando()" (openChange)="dialogoMudou($event)" [loading]="enviandoEmCurso()">
-    <div class="ucam-stack" (appArquivosEscolhidos)="guardar($event)">
+    <div class="ucam-stack">
       <ucam-text-field
         label="Descrição"
         hint="Diga o que é o arquivo: histórico, ementas, declaração."

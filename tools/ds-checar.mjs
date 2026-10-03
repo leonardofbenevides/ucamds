@@ -7,6 +7,7 @@
 // só os .html eram conferidos.
 import { globSync, readFileSync } from 'node:fs';
 import { checar } from '@ucam/ds-mcp/mcp';
+import { primariosSimultaneos } from './lib/primarios.mjs';
 
 // DESVIOS DECLARADOS: onde a biblioteca (@ucam/ui) está à frente do contrato.
 // Vazia desde que o contrato do app-shell passou a listar systemIcon, homeHref
@@ -23,9 +24,19 @@ const fontes = [
 
 let erros = 0;
 for (const { arq, codigo } of fontes) {
-  const achados = checar({ codigo }).achados.map((a) =>
-    a.severidade === 'erro' && DESVIOS.some((d) => d.test(a.mensagem)) ? { ...a, severidade: 'desvio' } : a,
-  );
+  const achados = checar({ codigo })
+    .achados.map((a) =>
+      a.severidade === 'erro' && DESVIOS.some((d) => d.test(a.mensagem)) ? { ...a, severidade: 'desvio' } : a,
+    )
+    // ADR-023 conta o que está EM VISTA: o núcleo soma todos os primários do
+    // texto, e numa tela com @if/@else ou com um diálogo isso dava cinco onde
+    // a pessoa nunca vê mais de um (tools/lib/primarios.mjs).
+    .flatMap((a) => {
+      if (a.regra !== 'ADR-023') return [a];
+      const n = primariosSimultaneos(codigo);
+      if (n <= 1) return [];
+      return [{ ...a, mensagem: `${n} ações primárias em vista ao mesmo tempo. Uma vista, um primário — o da ação frequente; o resto desce a secundário ou fantasma.` }];
+    });
   const n = (s) => achados.filter((a) => a.severidade === s).length;
   erros += n('erro');
   console.log(`${n('erro') ? '✗' : '✓'} ${arq} — ${n('erro')} erro(s), ${n('aviso')} aviso(s)${n('desvio') ? `, ${n('desvio')} desvio(s) declarado(s)` : ''}`);
