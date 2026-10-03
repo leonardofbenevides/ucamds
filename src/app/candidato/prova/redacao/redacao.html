@@ -1,5 +1,8 @@
 @if (questao(); as q) {
-  <article class="ucam-stack ucam-stack--lg" appProvaProtegida>
+  <!-- O artigo recebe o foco ao abrir (como o título da questão recebe) e
+       entra com o mesmo movimento: quem veio do mapa ou de "Ir para a
+       redação" começa a ler daqui, não do botão que apertou. -->
+  <article #artigo class="ucam-stack ucam-stack--lg" appProvaProtegida tabindex="-1" aria-label="Redação" data-entrada="frente">
     <!-- Sem título próprio: "Redação" e o estado dela estão no cabeçalho da
          prova (o h1), e as seções abaixo descem dele como h2.
 

@@ -32,6 +32,31 @@ html {
   --ucam-appbar-logo: url("/assets/logo-ucam.svg");
 }
 
+/* A TROCA DE QUESTÃO. O conteúdo novo entra do lado de onde veio — avançando,
+   da direita; voltando, da esquerda — com opacidade e deslocamento, que são
+   as duas propriedades que não recalculam layout, na duração e na curva de
+   "superfície que aparece" do DS. O deslocamento é o dobro do de menu
+   porque aqui o que entra é a coluna inteira, não um painel de 15rem.
+   prefers-reduced-motion: a regra global do DS (.ucam *) zera a duração. */
+@keyframes app-entrar-frente {
+  from {
+    opacity: 0;
+    translate: calc(var(--ucam-motion-reveal-shift) * 2) 0;
+  }
+}
+@keyframes app-entrar-tras {
+  from {
+    opacity: 0;
+    translate: calc(var(--ucam-motion-reveal-shift) * -2) 0;
+  }
+}
+.ucam [data-entrada="frente"] {
+  animation: app-entrar-frente var(--ucam-motion-duration-reveal) var(--ucam-motion-easing-entrance) both;
+}
+.ucam [data-entrada="tras"] {
+  animation: app-entrar-tras var(--ucam-motion-duration-reveal) var(--ucam-motion-easing-entrance) both;
+}
+
 /* A ENTRADA EM JANELA LARGA. O bloco de entrada do DS foi medido em 1440: o
    miolo tem 25rem e o título 22px, e é a proporção certa ali. Num monitor de
    2560 a coluna dobra de largura e o mesmo miolo vira um selo no meio de um

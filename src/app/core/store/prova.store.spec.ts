@@ -29,6 +29,7 @@ describe('ProvaStore', () => {
   let store: ProvaStore;
 
   beforeEach(async () => {
+    localStorage.clear();
     api.resposta.mockImplementation((oid: string) =>
       of(
         oid === 'p2'
@@ -71,6 +72,37 @@ describe('ProvaStore', () => {
   it('lista as em branco com número global e acha a primeira', () => {
     expect(store.emBranco().map((e) => e.numeroGlobal)).toEqual([1, 3]);
     expect(store.primeiraEmBranco()).toEqual({ slug: 'portugues', n: 1 });
+  });
+
+  it('marca e desmarca para revisar, guarda no navegador e lista pelo rótulo do mapa', () => {
+    store.alternarRevisar('p1');
+    store.alternarRevisar('m1');
+    expect(store.paraRevisar().map((e) => e.rotulo)).toEqual(['Português 1', 'Matemática 1']);
+    expect(store.marcadas()).toBe(2);
+    expect(JSON.parse(localStorage.getItem('revisar:cp-1')!)).toEqual(['p1', 'm1']);
+    store.definirPosicao('portugues', 1);
+    expect(store.proximaMarcada()).toEqual({ slug: 'matematica', n: 1 });
+    store.alternarRevisar('p1');
+    expect(store.marcadas()).toBe(1);
+    store.limparRevisao();
+    expect(store.marcadas()).toBe(0);
+    expect(localStorage.getItem('revisar:cp-1')).toBeNull();
+  });
+
+  it('ao carregar, recupera as marcas de revisão da mesma prova', async () => {
+    localStorage.setItem('revisar:cp-9', JSON.stringify(['p2']));
+    await store.carregar('cp-9');
+    expect(store.revisar()).toEqual({ p2: true });
+  });
+
+  it('acha a próxima em branco depois da atual e dá a volta no fim', async () => {
+    store.definirPosicao('portugues', 1);
+    expect(store.proximaEmBranco()).toEqual({ slug: 'matematica', n: 1 });
+    store.definirPosicao('matematica', 1);
+    expect(store.proximaEmBranco()).toEqual({ slug: 'portugues', n: 1 });
+    await store.responder('p1', 'p1-a');
+    await store.responder('m1', 'm1-a');
+    expect(store.proximaEmBranco()).toBeNull();
   });
 
   it('responder marca localmente e manda para a fila', async () => {

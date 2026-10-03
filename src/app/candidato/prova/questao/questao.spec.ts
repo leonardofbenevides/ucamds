@@ -90,6 +90,54 @@ describe('QuestaoPage', () => {
     expect(nav).toHaveBeenCalledWith(['/candidato', 'fip-1', 'prova', 'portugues', 2]);
   });
 
+  it('ao chegar numa questão o foco vai ao título dela, e a troca diz a direção', async () => {
+    const f = await montar();
+    const el = f.nativeElement as HTMLElement;
+    expect(document.activeElement).toBe(el.querySelector('h2'));
+    expect(el.querySelector('article')?.getAttribute('data-entrada')).toBe('frente');
+
+    f.componentRef.setInput('n', 2);
+    await f.whenStable();
+    expect(el.querySelector('h2')?.textContent).toContain('Questão 2 de 2');
+    expect(document.activeElement).toBe(el.querySelector('h2'));
+
+    f.componentRef.setInput('n', 1);
+    await f.whenStable();
+    expect(el.querySelector('article')?.getAttribute('data-entrada')).toBe('tras');
+    expect(document.activeElement).toBe(el.querySelector('h2'));
+  });
+
+  it('anuncia a alternativa marcada por status, sem repetir ao trocar de questão', async () => {
+    const f = await montar();
+    const el = f.nativeElement as HTMLElement;
+    const status = el.querySelector('[role="status"]') as HTMLElement;
+    expect(status.textContent?.trim()).toBe('');
+    (el.querySelector('input[value="b"]') as HTMLInputElement).click();
+    await f.whenStable();
+    expect(status.textContent).toContain('Alternativa B marcada');
+    f.componentRef.setInput('n', 2);
+    await f.whenStable();
+    expect((el.querySelector('[role="status"]') as HTMLElement).textContent?.trim()).toBe('');
+  });
+
+  it('marca e desmarca a questão para revisar por um botão de alternância, anunciando', async () => {
+    const f = await montar();
+    const el = f.nativeElement as HTMLElement;
+    const alternar = el.querySelector('button[aria-pressed]') as HTMLButtonElement;
+    expect(alternar.getAttribute('aria-pressed')).toBe('false');
+    expect(alternar.textContent).toContain('Marcar para revisar');
+    alternar.click();
+    await f.whenStable();
+    expect(alternar.getAttribute('aria-pressed')).toBe('true');
+    expect(store.revisar()['p1']).toBe(true);
+    expect(el.querySelector('[role="status"]')?.textContent).toContain('marcada para revisar');
+    alternar.click();
+    await f.whenStable();
+    expect(alternar.getAttribute('aria-pressed')).toBe('false');
+    expect(store.revisar()['p1']).toBeUndefined();
+    expect(el.querySelector('[role="status"]')?.textContent).toContain('retirada');
+  });
+
   it('na última questão a ação vira Entregar prova', async () => {
     const f = await montar('portugues', 2);
     expect(f.nativeElement.textContent).toContain('Entregar prova');

@@ -9,6 +9,7 @@ export interface Posicao {
   slug: string;
   n: number;
 }
+/** Uma questão nomeada como o mapa a chama — serve às em branco e às marcadas para revisar. */
 export interface EmBranco extends Posicao {
   numeroGlobal: number;
   /** Como o mapa chama o caderno: "Português 3". */
@@ -73,6 +74,12 @@ export class ProvaStore {
   readonly posicao = signal<Posicao | null>(null);
   /** Depois de entregue nada mais é gravado. */
   readonly entregue = signal(false);
+  /**
+   * Questões que a pessoa marcou para voltar antes de entregar. É anotação
+   * dela, não resposta: o backend não tem campo para isso, então vive só no
+   * navegador (`revisar:<oidCandidatoProva>`) e some com a entrega.
+   */
+  readonly revisar = signal<Record<string, true>>({});
 
   readonly objetivos = computed(() => this.cadernos().filter((c) => !ehRedacao(c.tipoprova)));
   readonly redacao = computed(() => this.cadernos().find((c) => ehRedacao(c.tipoprova)) ?? null);
@@ -80,6 +87,9 @@ export class ProvaStore {
   readonly totalObjetivas = computed(() => this.objetivos().reduce((s, c) => s + c.questoes.length, 0));
   readonly respondidas = computed(
     () => this.objetivos().flatMap((c) => c.questoes).filter((q) => !!this.respostas()[q.oid]).length,
+  );
+  readonly marcadas = computed(
+    () => this.objetivos().flatMap((c) => c.questoes).filter((q) => !!this.revisar()[q.oid]).length,
   );
   /** Conta o que está sendo digitado, não só o que já foi salvo. */
   readonly caracteresRedacao = computed(() => contarCaracteres(this.rascunhoRedacao() ?? this.textoRedacao()));
@@ -107,6 +117,7 @@ export class ProvaStore {
     this.rascunhoRedacao.set(null);
     this.posicao.set(null);
     this.entregue.set(false);
+    this.revisar.set(this.lerRevisao());
     this.fila.carregar(oidCp);
     try {
       const cadernos = (await firstValueFrom(this.api.cadernos(oidCp))) ?? [];
@@ -153,7 +164,8 @@ export class ProvaStore {
     return this.objetivos().flatMap((c) => c.questoes.map((_, i) => ({ slug: slugTipoProva(c.tipoprova), n: i + 1 })));
   }
 
-  private indiceAtual(): number {
+  /** Posição na sequência das objetivas (base 0); -1 na redação ou antes de haver posição. */
+  indiceAtual(): number {
     const p = this.posicao();
     return p ? this.sequencia().findIndex((s) => s.slug === p.slug && s.n === p.n) : -1;
   }
@@ -170,21 +182,84 @@ export class ProvaStore {
     return i > 0 ? this.sequencia()[i - 1] : null;
   }
 
-  emBranco(): EmBranco[] {
-    const r = this.respostas();
+  /** As objetivas que passam no filtro, nomeadas como o mapa as chama. */
+  private questoesOnde(filtro: (oid: string) => boolean): EmBranco[] {
     return this.objetivos()
       .flatMap((c) =>
         c.questoes.map((q, i) => ({ q, slug: slugTipoProva(c.tipoprova), n: i + 1, rotulo: `${rotuloTipoProva(c.tipoprova)} ${i + 1}` })),
       )
       .map((x, idx) => ({ ...x, numeroGlobal: idx + 1 }))
-      .filter((x) => !r[x.q.oid])
+      .filter((x) => filtro(x.q.oid))
       .map(({ slug, n, numeroGlobal, rotulo }) => ({ slug, n, numeroGlobal, rotulo }));
+  }
+
+  emBranco(): EmBranco[] {
+    const r = this.respostas();
+    return this.questoesOnde((oid) => !r[oid]);
+  }
+
+  paraRevisar(): EmBranco[] {
+    const m = this.revisar();
+    return this.questoesOnde((oid) => !!m[oid]);
   }
 
   /** A primeira em branco ou, se todas estão respondidas, a primeira da prova. */
   primeiraEmBranco(): Posicao | null {
     const b = this.emBranco()[0];
     return b ? { slug: b.slug, n: b.n } : (this.sequencia()[0] ?? null);
+  }
+
+  /** A próxima da lista depois da atual, dando a volta pelo começo; null com a lista vazia. */
+  private proximaDe(lista: EmBranco[]): Posicao | null {
+    if (!lista.length) return null;
+    const i = this.indiceAtual();
+    const alvo = lista.find((x) => x.numeroGlobal - 1 > i) ?? lista[0];
+    return { slug: alvo.slug, n: alvo.n };
+  }
+
+  proximaEmBranco(): Posicao | null {
+    return this.proximaDe(this.emBranco());
+  }
+
+  proximaMarcada(): Posicao | null {
+    return this.proximaDe(this.paraRevisar());
+  }
+
+  private chaveRevisao(): string {
+    return `revisar:${this.oidCp}`;
+  }
+
+  private lerRevisao(): Record<string, true> {
+    try {
+      const oids = JSON.parse(localStorage.getItem(this.chaveRevisao()) ?? '[]') as unknown;
+      return Array.isArray(oids) ? Object.fromEntries(oids.filter((o) => typeof o === 'string').map((o) => [o, true])) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  alternarRevisar(oidQuestao: string): void {
+    this.revisar.update((r) => {
+      const n = { ...r };
+      if (n[oidQuestao]) delete n[oidQuestao];
+      else n[oidQuestao] = true;
+      return n;
+    });
+    try {
+      localStorage.setItem(this.chaveRevisao(), JSON.stringify(Object.keys(this.revisar())));
+    } catch {
+      /* sem storage: a marca vale só nesta visita */
+    }
+  }
+
+  /** Com a prova entregue as marcas não servem mais a ninguém. */
+  limparRevisao(): void {
+    this.revisar.set({});
+    try {
+      localStorage.removeItem(this.chaveRevisao());
+    } catch {
+      /* sem storage */
+    }
   }
 
   async responder(oidQuestao: string, oidAlternativa: string): Promise<void> {

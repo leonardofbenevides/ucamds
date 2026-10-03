@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, afterNextRender, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { UcamButton, UcamCitacao, UcamSectionBar, UcamTextarea } from '@ucam/ui';
 import { ProvaProtegida } from '../../../core/directives/prova-protegida';
@@ -19,12 +19,20 @@ const INTERVALO_SALVAR = 30_000;
   selector: 'app-redacao',
   imports: [DecimalPipe, UcamButton, UcamCitacao, UcamSectionBar, UcamTextarea, ProvaProtegida],
   templateUrl: './redacao.html',
+  styles: `
+    /* Foco por programa: sem anel quando veio do ponteiro, com o anel do DS
+       quando veio do teclado. */
+    :host article:focus:not(:focus-visible) {
+      outline: none;
+    }
+  `,
 })
 export class RedacaoPage {
   readonly store = inject(ProvaStore);
   private readonly candidato = inject(CandidatoStore);
   private readonly router = inject(Router);
   private readonly pagina = inject(ProvaPage);
+  private readonly artigo = viewChild<ElementRef<HTMLElement>>('artigo');
 
   readonly minimo = environment.redacaoMin;
   readonly maximo = environment.redacaoMax;
@@ -51,6 +59,8 @@ export class RedacaoPage {
     // Já aqui, e não só no effect: é o rascunho que diz ao cabeçalho da prova
     // que a etapa é a redação, e ele não pode nascer dizendo "Prova objetiva".
     this.store.rascunhoRedacao.set(this.texto());
+
+    afterNextRender(() => this.artigo()?.nativeElement.focus());
 
     const timer = setInterval(() => void this.store.descarregarRedacao(), INTERVALO_SALVAR);
     inject(DestroyRef).onDestroy(() => {

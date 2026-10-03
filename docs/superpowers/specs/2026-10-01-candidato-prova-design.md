@@ -196,5 +196,5 @@ Vitest (padrão do CLI 21):
 ## 10. Decisões em aberto que não bloqueiam
 
 - Endpoint agregado de respostas (uma chamada em vez de N): pedido ao backend, fora da spec.
-- "Marcar para revisar" por questão: fica para uma versão seguinte; o mapa e o resumo de em branco já cobrem o caso principal.
+- "Marcar para revisar" por questão: ficava para uma versão seguinte; entrou em 02/10/2026, só no navegador (ver README, "Decisões da prova").
 - Texto definitivo das instruções e do contato da secretaria: vem do produto; a tela recebe por configuração.

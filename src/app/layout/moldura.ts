@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { UcamAppShell, UcamDescriptionList, UcamDrawer, UcamIcon } from '@ucam/ui';
+import { UcamAppShell, UcamAvatar, UcamCard, UcamDescriptionList, UcamDrawer, UcamIcon, type UcamDescriptionItem } from '@ucam/ui';
 import { InstrucoesLista } from '../candidato/instrucoes/instrucoes-lista';
 import { CandidatoStore } from '../core/store/candidato.store';
 import { environment } from '../../environments/environment';
@@ -21,7 +21,7 @@ import { RelogioFaixa } from './relogio-faixa';
 @Component({
   selector: 'app-moldura',
   hostDirectives: [LinksInternos],
-  imports: [UcamAppShell, UcamDescriptionList, UcamDrawer, UcamIcon, EtapasLateral, InstrucoesLista, TemaToggle, RelogioFaixa],
+  imports: [UcamAppShell, UcamAvatar, UcamCard, UcamDescriptionList, UcamDrawer, UcamIcon, EtapasLateral, InstrucoesLista, TemaToggle, RelogioFaixa],
   template: `
     <ucam-app-shell
       systemName="Vestibular Online"
@@ -58,30 +58,30 @@ import { RelogioFaixa } from './relogio-faixa';
 
       <app-etapas-lateral ucamShellNav (abrir)="abrir($event)" />
 
-      <!-- Quem está na prova, como lista de descrição do DS (contrato
-           description-list): um par por dado, o nome primeiro. -->
-      <dl ucamShellNav class="ucam-descricao border-t border-[var(--ucam-color-border-subtle)] pt-[var(--ucam-space-stack-md)]" aria-label="Candidato">
-        <div class="ucam-descricao__par">
-          <dt class="ucam-descricao__rotulo">Candidato</dt>
-          <dd class="ucam-descricao__valor">{{ store.nome() }}</dd>
-        </div>
-        <div class="ucam-descricao__par">
-          <dt class="ucam-descricao__rotulo">CPF</dt>
-          <dd class="ucam-descricao__valor">{{ store.cpf() }}</dd>
-        </div>
-        @if (store.curso(); as curso) {
-          <div class="ucam-descricao__par">
-            <dt class="ucam-descricao__rotulo">Curso</dt>
-            <dd class="ucam-descricao__valor">{{ curso }}</dd>
+      <!-- Quem está na prova: um cartão com as iniciais e o nome no alto e,
+           abaixo, os dados da inscrição no arranjo "painel" da lista de
+           descrição do DS — uma linha por dado, com um ícone decorativo no
+           rótulo para o olho achar o dado sem ler os três. O avatar é
+           decorativo porque o nome está ao lado. A coluna do rótulo encolhe
+           (o DS a declara ajustável por --ucam-descricao-rotulo) porque os
+           rótulos aqui são curtos e o valor — o nome do curso — é o que
+           precisa de uma linha inteira. -->
+      <div ucamShellNav>
+        <ucam-card>
+          <div class="ucam-stack ucam-stack--sm">
+            <div class="ucam-cluster" data-candidato>
+              <ucam-avatar [name]="store.nome()" decorative />
+              <div class="min-w-0">
+                <p class="ucam-descricao__valor truncate">{{ store.nome() }}</p>
+                <p class="ucam-descricao__rotulo">Candidato</p>
+              </div>
+            </div>
+            <div class="border-t border-[var(--ucam-color-border-subtle)]" data-dados-candidato>
+              <ucam-description-list layout="painel" [items]="dadosColuna()" />
+            </div>
           </div>
-        }
-        @if (store.turno(); as turno) {
-          <div class="ucam-descricao__par">
-            <dt class="ucam-descricao__rotulo">Turno</dt>
-            <dd class="ucam-descricao__valor">{{ turno }}</dd>
-          </div>
-        }
-      </dl>
+        </ucam-card>
+      </div>
 
       <div ucamShellNavRodape class="ucam-cluster ucam-cluster--entre">
         <a class="ucam-link ucam-cluster" [href]="'mailto:' + contato">
@@ -108,6 +108,16 @@ import { RelogioFaixa } from './relogio-faixa';
       <app-instrucoes-lista />
     </ucam-drawer>
   `,
+  styles: `
+    /* A coluna do rótulo do painel de dados: o DS a declara no próprio dl
+       (8.5rem, para "Setor responsável"), por isso nem a herança nem uma
+       utilitária em camada chegam lá — só uma regra sem camada que alcance o
+       dl dentro do componente filho. Rótulos aqui são curtos, e o valor é o
+       que precisa da linha inteira. */
+    :host ::ng-deep [data-dados-candidato] .ucam-descricao--painel {
+      --ucam-descricao-rotulo: 5rem;
+    }
+  `,
 })
 export class Moldura {
   readonly store = inject(CandidatoStore);
@@ -119,6 +129,22 @@ export class Moldura {
   readonly usuario = computed(() => (this.store.nome() ? { name: this.store.nome() } : null));
   readonly home = computed(() => `/candidato/${this.store.oidFip() ?? ''}`);
   readonly unidade = computed(() => this.store.unidade()?.nome ?? this.store.unidade()?.sigla ?? null);
+
+  /**
+   * O resumo da coluna, abaixo do nome: os dados da inscrição. Os ícones são
+   * do conjunto curado, no significado registrado — fileText é documento,
+   * graduationCap é graduação. O relógio no turno é o desenho mais próximo
+   * que o conjunto tem; se o DS ganhar um ícone de turno, troca aqui.
+   */
+  readonly dadosColuna = computed<UcamDescriptionItem[]>(() => {
+    const curso = this.store.curso();
+    const turno = this.store.turno();
+    return [
+      { label: 'CPF', value: this.store.cpf(), icon: 'fileText' },
+      ...(curso ? [{ label: 'Curso', value: curso, icon: 'graduationCap' as const }] : []),
+      ...(turno ? [{ label: 'Turno', value: turno, icon: 'clock' as const }] : []),
+    ];
+  });
 
   /** Tudo o que a inscrição diz sobre a pessoa, para conferir a qualquer momento. */
   readonly dados = computed(() => {

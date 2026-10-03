@@ -48,6 +48,14 @@ describe('RedacaoPage', () => {
     expect(t).toContain('Faltam 295 caracteres para o mínimo');
   });
 
+  it('ao abrir, o foco vai para a redação e ela entra com o mesmo movimento da questão', async () => {
+    const f = await montar();
+    const artigo = f.nativeElement.querySelector('article') as HTMLElement;
+    expect(artigo.getAttribute('data-entrada')).toBe('frente');
+    expect(artigo.getAttribute('aria-label')).toBe('Redação');
+    expect(document.activeElement).toBe(artigo);
+  });
+
   it('salva ao sair do campo quando houve mudança', async () => {
     const f = await montar();
     f.componentInstance.texto.set('novo texto');

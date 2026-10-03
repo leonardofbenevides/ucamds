@@ -91,6 +91,7 @@ export class ProvaPage {
     this.relogio.parar();
     this.fila.pararReenvioPeriodico();
     this.fila.limpar(oidCp);
+    this.store.limparRevisao();
     try {
       localStorage.removeItem(`rascunho:${oidCp}`);
     } catch {

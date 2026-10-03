@@ -50,6 +50,20 @@ describe('EntregaDialog', () => {
     expect(f.nativeElement.textContent).toContain('Revisar');
   });
 
+  it('nomeia as marcadas para revisar e, sem em branco, Revisar vai à primeira marcada', async () => {
+    const f = await montar('manual', { p1: 'x', p2: 'x', p3: 'x' });
+    TestBed.inject(ProvaStore).alternarRevisar('p3');
+    await f.whenStable();
+    const t = f.nativeElement.textContent as string;
+    expect(t).not.toContain('em branco');
+    expect(t).toContain('1 questão está marcada para revisar');
+    expect(t).toContain('Português 3');
+    const emitidos: unknown[] = [];
+    f.componentInstance.revisar.subscribe((p) => emitidos.push(p));
+    f.componentInstance.revisarAgora();
+    expect(emitidos).toEqual([{ slug: 'portugues', n: 3 }]);
+  });
+
   it('entrega chama a API e emite entregue', async () => {
     const f = await montar('manual', { p1: 'a', p2: 'b', p3: 'c' });
     let entregue = false;

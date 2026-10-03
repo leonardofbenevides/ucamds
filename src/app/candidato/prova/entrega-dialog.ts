@@ -4,8 +4,13 @@ import { UcamAlert, UcamButton, UcamDialog } from '@ucam/ui';
 import { ProvaApi } from '../../core/api/prova.api';
 import { FilaRespostas } from '../../core/offline/fila-respostas';
 import { CandidatoStore } from '../../core/store/candidato.store';
-import { Posicao, ProvaStore } from '../../core/store/prova.store';
+import { EmBranco, Posicao, ProvaStore } from '../../core/store/prova.store';
 import { environment } from '../../../environments/environment';
+
+/** Até dez nomes como o mapa os chama; além disso, reticências. */
+function listar(itens: EmBranco[]): string {
+  return itens.slice(0, 10).map((e) => e.rotulo).join(', ') + (itens.length > 10 ? '…' : '');
+}
 
 /**
  * Confirmação da entrega. Nomeia o que fica em branco e oferece revisar;
@@ -35,6 +40,12 @@ import { environment } from '../../../environments/environment';
             <p>
               <strong>{{ emBranco().length }} {{ emBranco().length === 1 ? 'questão está' : 'questões estão' }} em branco:</strong>
               {{ nomes() }}.
+            </p>
+          }
+          @if (paraRevisar().length) {
+            <p>
+              <strong>{{ paraRevisar().length }} {{ paraRevisar().length === 1 ? 'questão está marcada' : 'questões estão marcadas' }} para revisar:</strong>
+              {{ nomesRevisar() }}.
             </p>
           }
           @if (!store.redacaoAtingeMinimo()) {
@@ -84,13 +95,9 @@ export class EntregaDialog {
   readonly aberto = computed(() => this.modo() !== null);
   readonly titulo = computed(() => (this.modo() === 'tempo' ? 'Tempo esgotado' : 'Entregar a prova?'));
   readonly emBranco = computed(() => this.store.emBranco());
-  readonly nomes = computed(
-    () =>
-      this.emBranco()
-        .slice(0, 10)
-        .map((e) => e.rotulo)
-        .join(', ') + (this.emBranco().length > 10 ? '…' : ''),
-  );
+  readonly paraRevisar = computed(() => this.store.paraRevisar());
+  readonly nomes = computed(() => listar(this.emBranco()));
+  readonly nomesRevisar = computed(() => listar(this.paraRevisar()));
 
   constructor() {
     // Só o `modo` é dependência: `entregar()` lê outros signals e, rastreado,
@@ -101,8 +108,10 @@ export class EntregaDialog {
     });
   }
 
+  /** Primeiro o que está em branco; sem em branco, o que a pessoa marcou para voltar. */
   revisarAgora(): void {
-    const p = this.store.primeiraEmBranco();
+    const marcada = this.store.paraRevisar()[0];
+    const p = this.store.emBranco().length || !marcada ? this.store.primeiraEmBranco() : { slug: marcada.slug, n: marcada.n };
     if (p) this.revisar.emit(p);
     this.fechar.emit();
   }
