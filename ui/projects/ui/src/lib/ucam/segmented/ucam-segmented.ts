@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, model, ViewEncapsulation } from '@angular/core';
+import { afterNextRender, booleanAttribute, ChangeDetectionStrategy, Component, computed, input, model, ViewEncapsulation } from '@angular/core';
 
 /**
  * Contrato: spec/components/segmented.json
@@ -176,6 +176,15 @@ export class UcamSegmented {
    * ocupa um terço da largura sem oferecer nada.
    */
   readonly disabled = input(false);
+  /**
+   * Admite o grupo SEM escolha: value vazio ('') é "ainda não decidido". É
+   * para a escolha que a pessoa ainda vai fazer — a decisão por disciplina
+   * numa análise —, onde fingir uma opção marcada seria inventar resposta, e
+   * uma quarta opção "Sem decisão" gastaria um quarto do trilho com o que não
+   * é opção. Com allowEmpty, clicar no escolhido desfaz a escolha. Em filtro
+   * e recorte continua proibido: lá sempre há um "Todas".
+   */
+  readonly allowEmpty = input(false, { transform: booleanAttribute });
 
   protected readonly idRotulo = `ucam-seg-${++seq}`;
 
@@ -183,12 +192,15 @@ export class UcamSegmented {
 
   protected escolher(id: string): void {
     if (this.disabled()) return;
-    this.value.set(id);
+    this.value.set(this.allowEmpty() && this.value() === id ? '' : id);
   }
 
   constructor() {
     if (ngDevMode) {
-      queueMicrotask(() => {
+      // afterNextRender, não queueMicrotask: o microtask corria antes de o
+      // primeiro ciclo ligar os inputs e lia `items` sem valor (NG0950) —
+      // em teste e, no app zoneless, no navegador. Mesma correção das abas.
+      afterNextRender(() => {
         const n = this.items().length;
         if (n < 2 || n > 4) {
           throw new Error(
@@ -196,8 +208,9 @@ export class UcamSegmented {
           );
         }
         // Valor fora da lista deixa o trilho inteiro sem escolhido — o estado
-        // cinza que o contrato proíbe, e que lê como grupo desabilitado.
-        if (!this.items().some((i) => i.id === this.value())) {
+        // cinza que o contrato proíbe, e que lê como grupo desabilitado. Com
+        // allowEmpty, o vazio é o estado "ainda não decidido", e é legítimo.
+        if (!(this.allowEmpty() && this.value() === '') && !this.items().some((i) => i.id === this.value())) {
           throw new Error(
             `[ucam-segmented] value="${this.value()}" não é id de nenhum segmento: o grupo ficaria sem escolha.`,
           );

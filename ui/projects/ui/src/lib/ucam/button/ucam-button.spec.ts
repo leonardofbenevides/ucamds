@@ -37,3 +37,14 @@ describe('UcamButton e UcamIconButton — estados no primeiro render (ADR-042)',
     }
   });
 });
+
+describe('UcamButton — chão e aresta do desabilitado (ADR-042)', () => {
+  it('o botão interno diz a variante em data-ucam-variant, que é o gancho da folha do desabilitado', async () => {
+    await TestBed.configureTestingModule({ imports: [Host] }).compileComponents();
+    const f = TestBed.createComponent(Host);
+    await f.whenStable();
+    const botoes = [...(f.nativeElement as HTMLElement).querySelectorAll('button')];
+    expect(botoes[0].getAttribute('data-ucam-variant')).toBe('secondary');
+    expect(botoes[2].getAttribute('data-ucam-variant')).toBe('ghost');
+  });
+});

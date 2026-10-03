@@ -315,7 +315,7 @@ export function cssDaSubpaleta(tokensCss) {
       /* O shell do Trilho B (<ucam-app-shell>) leva data-sistema no host e não
        * tem a classe .ucam-shell: entra no mesmo seletor para a faixa de marca
        * dele sair na cor do sistema quando a folha do Trilho A está carregada. */
-      const alvo = ` :is(.ucam-shell, ucam-app-shell)[data-sistema="${s}"]`;
+      const alvo = ` :is(.ucam-shell, ucam-app-shell, .cdk-overlay-container)[data-sistema="${s}"]`;
       regras.push(`${ajusta(qualquer(alvo))} {${NL}${declara(p, false)}${NL}}`);
       regras.push(`${ajusta(cheio(alvo))} {${NL}${declara(p, true)}${NL}}`);
     }

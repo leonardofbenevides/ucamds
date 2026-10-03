@@ -383,6 +383,9 @@ export class UcamFileField {
         nome: file.name,
         tamanho: file.size,
         tipo: file.type || null,
+        // O File vai no modelo: é o que a aplicação sobe. Também no recusado,
+        // para quem registra a recusa.
+        file,
       };
       if (motivo) {
         recusados.push({ file, motivo });

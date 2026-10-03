@@ -76,6 +76,7 @@ const SIZE_MAP: Record<'sm' | 'md', ZardButtonSizeVariants> = {
       [zType]="zType()"
       [zSize]="zSize()"
       [class]="extraClasses()"
+      [attr.data-ucam-variant]="variant()"
       [attr.data-tone]="tone() === 'neutral' ? null : tone()"
       type="button"
       [attr.aria-pressed]="ariaPressed()"
@@ -130,6 +131,24 @@ const SIZE_MAP: Record<'sm' | 'md', ZardButtonSizeVariants> = {
        só o encanamento difere. */
     ucam-icon-button button ucam-icon svg {
       fill: var(--ucam-icon-fill, none);
+    }
+
+    /* DESABILITADO — ADR-042, o mesmo bloco do <ucam-button> e de
+       .ucam-btn:disabled em tools/build-css.mjs: chão único e perda da
+       aresta em cor explícita, no lugar do opacity-50 da base. O fantasma,
+       que é o padrão aqui, fica sem fundo e cai para text.disabled — doze
+       lápis de "editar" em doze caixas cinzas é o que o chão evitaria de
+       dizer. Especificidade (0,2,2) vence a utilitária (0,2,0). */
+    ucam-icon-button button[data-ucam-variant]:is(:disabled, [aria-disabled='true']) {
+      opacity: 1;
+      background: var(--ucam-color-action-disabled-background);
+      color: var(--ucam-color-action-disabled-text);
+      border-color: transparent;
+      cursor: not-allowed;
+    }
+    ucam-icon-button button[data-ucam-variant='ghost']:is(:disabled, [aria-disabled='true']) {
+      background: transparent;
+      color: var(--ucam-color-text-disabled);
     }
   `,
 })

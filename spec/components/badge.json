@@ -132,6 +132,12 @@
           "classe": "ucam-badge--plain"
         }
       }
+    },
+    {
+      "nome": "icon",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Troca o ícone do indicador na variante soft. Nulo, o tom escolhe o seu — info, check, alerta, x —, e é o que vale na quase totalidade dos casos: o ícone por tom é o que faz um olho treinado identificar o estado antes de ler. Só para o estado cujo tom tem mais de um sentido no mesmo módulo e o ícone precisa desempatar. Ignorado em dot, outline e plain, que não desenham ícone."
     }
   ],
   "estados": [

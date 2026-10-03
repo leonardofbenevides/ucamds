@@ -26,6 +26,13 @@ export interface UcamFile {
   progresso?: number | null;
   mensagem?: string | null;
   url?: string | null;
+  /**
+   * O File de verdade, no arquivo que a pessoa acabou de escolher ou soltar.
+   * É o que a aplicação envia — sem ele, o campo mostrava o anexo e a tela
+   * tinha de pescar o File por fora, no change do input. Nulo no arquivo
+   * que veio do servidor.
+   */
+  file?: File | null;
 }
 
 const IMAGEM = /^(jpe?g|png|gif|webp)$/i;

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { UcamPageHeader } from '../page-header/ucam-page-header';
 import { UcamAppShell } from './ucam-app-shell';
 
@@ -40,5 +41,15 @@ describe('UcamAppShell — a faixa de marca e o que gruda sob ela', () => {
     const barra = el.querySelector('ucam-page-header')!;
     expect(barra.className).toContain('top-[var(--ucam-sticky-top,0px)]');
     expect(barra.className.split(/\s+/)).not.toContain('top-0');
+  });
+});
+
+describe('UcamAppShell — a subpaleta chega ao que a base monta fora do shell', () => {
+  it('carimba data-sistema no contêiner de overlay do CDK, onde gaveta, menu e select são montados', async () => {
+    await TestBed.configureTestingModule({ imports: [Host] }).compileComponents();
+    const f = TestBed.createComponent(Host);
+    await f.whenStable();
+    const container = TestBed.inject(OverlayContainer).getContainerElement();
+    expect(container.getAttribute('data-sistema')).toBe('pessoas');
   });
 });

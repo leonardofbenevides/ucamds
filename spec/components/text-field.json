@@ -99,6 +99,12 @@
       "descricao": "Rótulo visível. Campo sem rótulo é erro de build, não aviso."
     },
     {
+      "nome": "labelHidden",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Esconde o rótulo VISUALMENTE, mantendo-o na árvore de acessibilidade. Só para o campo cujo rótulo é redundante no contexto — a busca dentro de uma barra que já diz Pesquisar. Não é atalho para tela apertada. Herdado do field, que é quem desenha o rótulo; o campo só repassa."
+    },
+    {
       "nome": "hint",
       "tipo": "string | null",
       "default": "null",

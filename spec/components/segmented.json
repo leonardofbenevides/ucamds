@@ -58,7 +58,7 @@
       "nome": "value",
       "tipo": "string",
       "obrigatorio": true,
-      "descricao": "O id do segmento escolhido. Two-way: [(value)]. Nunca fica vazio — grupo segmentado sem escolha não tem estado neutro que faça sentido, e um trilho todo cinza parece desabilitado."
+      "descricao": "O id do segmento escolhido. Two-way: [(value)]. Nunca fica vazio — grupo segmentado sem escolha não tem estado neutro que faça sentido, e um trilho todo cinza parece desabilitado. A exceção é allowEmpty, onde o vazio ('') é a resposta que ainda não foi dada."
     },
     {
       "nome": "ariaLabel",
@@ -83,6 +83,12 @@
       "tipo": "boolean",
       "default": "false",
       "descricao": "Desabilita o grupo inteiro. Não existe desabilitar um segmento: opção indisponível some da lista, porque um segmento morto num trilho de três ocupa um terço da largura sem oferecer nada."
+    },
+    {
+      "nome": "allowEmpty",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Admite o grupo sem escolha: value vazio ('') é \"ainda não decidido\", e clicar no segmento escolhido desfaz a escolha. É para a escolha que a pessoa ainda vai fazer — a decisão por disciplina numa análise de isenção —, onde fingir uma opção marcada seria inventar resposta, e uma quarta opção \"Sem decisão\" gastaria um quarto do trilho com o que não é opção. Em filtro e recorte continua proibido: lá sempre há um \"Todas\", e o trilho sem escolhido parece desabilitado."
     }
   ],
   "schemas": {
@@ -284,6 +290,6 @@
       ],
       "nota": "O Trilho A NÃO entrega o role=group nem o aria-label — os dois são atributos do markup. É justamente o que falta no legado, então a migração por CSS sozinha não corrige o defeito de acessibilidade. Nas telas de exemplo o segmented é também o PORTADOR dos recortes, sempre com data-valor em cada botão e o efeito declarado no grupo: data-filtra (esconde o que não casa), data-ordena (reordena sem esconder ninguém), data-cenario (troca os números de um recorte que, na aplicação, seria outra consulta) e data-timeline-filtro. O grupo escolhido continua sendo lido de aria-pressed — os atributos dizem o EFEITO, nunca o estado."
     },
-    "trilho_b": "ui/projects/ui/src/lib/ucam/segmented/ucam-segmented.ts — pronto. Grupo com um segmento sempre escolhido, teclado por setas e ariaLabel OBRIGATÓRIO: é a pergunta que o par Sim/Não do SIGFIN não faz."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/segmented/ucam-segmented.ts — pronto. Grupo com um segmento sempre escolhido (salvo allowEmpty, desde 03/10/2026), teclado por setas e ariaLabel OBRIGATÓRIO: é a pergunta que o par Sim/Não do SIGFIN não faz."
   }
 }

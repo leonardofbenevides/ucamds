@@ -109,6 +109,7 @@ const ICON_SIZE_MAP: Record<UcamButtonSize, ZardButtonSizeVariants> = {
       [zType]="zType()"
       [zSize]="zSize()"
       [class]="extraClasses()"
+      [attr.data-ucam-variant]="variant()"
       [attr.data-tone]="tone() === 'neutral' ? null : tone()"
       [attr.type]="type()"
       [attr.aria-busy]="loading() ? 'true' : null"
@@ -125,6 +126,31 @@ const ICON_SIZE_MAP: Record<UcamButtonSize, ZardButtonSizeVariants> = {
         <ucam-icon [name]="iconEnd()!" size="sm" data-icon="inline-end" />
       }
     </button>
+  `,
+  styles: `
+    /* DESABILITADO — ADR-042, o mesmo bloco de .ucam-btn:disabled em
+       tools/build-css.mjs. A base diz desabilitado com opacity-50, que a
+       decisão proíbe: o contraste cai sem ninguém escrever um número. Aqui
+       são os dois sinais do modelo de estados — o chão único de
+       action.disabled.background e a perda da aresta — em cor explícita.
+       Vale também para aria-disabled (carregando), como no Trilho A.
+       O seletor tem elemento, atributo e :is(pseudo, atributo): (0,2,2),
+       que vence a utilitária disabled:opacity-50 (0,2,0) e os hover das
+       variantes sem !important. */
+    ucam-button button[data-ucam-variant]:is(:disabled, [aria-disabled='true']) {
+      opacity: 1;
+      background: var(--ucam-color-action-disabled-background);
+      color: var(--ucam-color-action-disabled-text);
+      border-color: transparent;
+      cursor: not-allowed;
+    }
+    /* Fantasma indisponível continua sem fundo: o cinza de disabled num
+       botão que em repouso não tem superfície vira um quadrado cinza por
+       linha. Sem chão próprio, a tinta cai sobre o card — text.disabled. */
+    ucam-button button[data-ucam-variant='ghost']:is(:disabled, [aria-disabled='true']) {
+      background: transparent;
+      color: var(--ucam-color-text-disabled);
+    }
   `,
 })
 export class UcamButton {

@@ -1,4 +1,5 @@
 import {
+  afterRenderEffect,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
@@ -9,6 +10,7 @@ import {
   signal,
   ViewEncapsulation,
 } from '@angular/core';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 import { UcamAvatar } from '../avatar/ucam-avatar';
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
@@ -284,6 +286,26 @@ export class UcamAppShell {
   protected readonly largura = signal(true);
 
   constructor() {
+    /**
+     * A SUBPALETA CHEGA AO QUE A BASE MONTA FORA DO SHELL. Gaveta, menu,
+     * select, combobox e tooltip da ZardUI são montados no contêiner de
+     * overlay do CDK, filho do <body>: lá os tokens de ação são os do :root
+     * — o bordô —, e a gaveta de questões do Vestibular (teal) abria com a
+     * legenda e as bolhas em bordô. Medido em 03/10/2026, em 390px. O shell
+     * carimba o próprio data-sistema no contêiner, e a folha e a ponte
+     * declaram a subpaleta também nele. Uma página tem um shell; se houver
+     * dois, vale o último que renderizou, e é o que o site de demonstração
+     * já aceita para a faixa.
+     */
+    const overlay = inject(OverlayContainer);
+    afterRenderEffect(() => {
+      const el = overlay.getContainerElement();
+      const sistema = this.systemCategory();
+      if (sistema) el.setAttribute('data-sistema', sistema);
+      else el.removeAttribute('data-sistema');
+    });
+    inject(DestroyRef).onDestroy(() => overlay.getContainerElement().removeAttribute('data-sistema'));
+
     // matchMedia, e não resize: o navegador avisa só quando a fronteira é
     // cruzada, em vez de a cada pixel arrastado. Roda no construtor porque
     // afterNextRender fica FORA do contexto de injeção, e o DestroyRef

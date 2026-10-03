@@ -162,7 +162,7 @@
     {
       "nome": "filesChange",
       "payload": "UcamFile[]",
-      "descricao": "A lista inteira depois de cada escolha ou remoção, já sem os recusados."
+      "descricao": "A lista inteira depois de cada escolha ou remoção, já sem os recusados. Cada linha nova traz o File em file, para o envio."
     },
     {
       "nome": "rejected",
@@ -225,6 +225,11 @@
         "tipo": "string | null",
         "default": "null",
         "descricao": "Onde o arquivo já enviado pode ser aberto. Presente, o nome vira link."
+      },
+      "file": {
+        "tipo": "File | null",
+        "default": "null",
+        "descricao": "O File de verdade, no arquivo que a pessoa acabou de escolher ou soltar — aceito ou recusado. É o que a aplicação envia: sem ele (até 03/10/2026), o campo mostrava o anexo e a tela tinha de pescar o File por fora, no change do input oculto. Nulo no arquivo que veio do servidor."
       }
     }
   },

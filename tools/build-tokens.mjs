@@ -429,7 +429,7 @@ ${['sm', 'md', 'lg', 'xl'].map((d) => `  --radius-${d}: var(--${P}-radius-${d});
  * var() resolver contra os tokens já trocados. Sem data-sistema (ou com
  * data-paleta="comum"/"moldura"), os tokens não mudam e a redeclaração só
  * repete o valor do :root — por isso nenhum guarda de paleta aqui. */
-:is(.ucam-shell, ucam-app-shell)[data-sistema] {
+:is(.ucam-shell, ucam-app-shell, .cdk-overlay-container)[data-sistema] {
 ${PONTE.filter(([shad]) => /^(primary|primary-foreground|accent|accent-foreground|sidebar-primary|sidebar-primary-foreground)$/.test(shad))
   .map(([shad, ucam]) => `  --${shad}: var(--${P}-${ucam});`)
   .join('\n')}
