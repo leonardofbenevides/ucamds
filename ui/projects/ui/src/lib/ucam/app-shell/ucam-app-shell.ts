@@ -298,13 +298,17 @@ export class UcamAppShell {
      * já aceita para a faixa.
      */
     const overlay = inject(OverlayContainer);
+    // Só o efeito pede o contêiner (que o CDK cria na primeira chamada). Na
+    // destruição vale o que o efeito tocou: pedir o contêiner ali, no
+    // prerender do site, criava-o num injetor já destruído (NG0205).
+    let carimbado: HTMLElement | null = null;
     afterRenderEffect(() => {
-      const el = overlay.getContainerElement();
+      carimbado = overlay.getContainerElement();
       const sistema = this.systemCategory();
-      if (sistema) el.setAttribute('data-sistema', sistema);
-      else el.removeAttribute('data-sistema');
+      if (sistema) carimbado.setAttribute('data-sistema', sistema);
+      else carimbado.removeAttribute('data-sistema');
     });
-    inject(DestroyRef).onDestroy(() => overlay.getContainerElement().removeAttribute('data-sistema'));
+    inject(DestroyRef).onDestroy(() => carimbado?.removeAttribute('data-sistema'));
 
     // matchMedia, e não resize: o navegador avisa só quando a fronteira é
     // cruzada, em vez de a cada pixel arrastado. Roda no construtor porque
