@@ -8,7 +8,7 @@ import {
   ZardSidebarMenuSubButtonComponent,
   ZardSidebarMenuSubComponent,
   ZardSidebarMenuSubItemComponent,
-} from '@/shared/components/sidebar/sidebar-menu.component';
+} from './sidebar-menu.component';
 import {
   ZardSidebarContentComponent,
   ZardSidebarFooterComponent,
@@ -19,14 +19,14 @@ import {
   ZardSidebarHeaderComponent,
   ZardSidebarInputDirective,
   ZardSidebarSeparatorComponent,
-} from '@/shared/components/sidebar/sidebar-primitives.component';
+} from './sidebar-primitives.component';
 import {
   ZardSidebarComponent,
   ZardSidebarInsetComponent,
   ZardSidebarProviderComponent,
   ZardSidebarRailComponent,
   ZardSidebarTriggerComponent,
-} from '@/shared/components/sidebar/sidebar.component';
+} from './sidebar.component';
 
 export const ZardSidebarImports = [
   ZardSidebarProviderComponent,

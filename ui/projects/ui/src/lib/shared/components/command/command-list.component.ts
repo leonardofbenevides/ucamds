@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation 
 
 import type { ClassValue } from 'clsx';
 
-import { commandListVariants } from '@/shared/components/command/command.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { commandListVariants } from './command.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'z-command-list',

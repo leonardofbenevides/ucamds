@@ -5,7 +5,7 @@ import {
   ZardDrawerFooterComponent,
   ZardDrawerHeaderComponent,
   ZardDrawerTitleComponent,
-} from '@/shared/components/drawer/drawer.component';
+} from './drawer.component';
 
 export const ZardDrawerImports = [
   ZardDrawerComponent,

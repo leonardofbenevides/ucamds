@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, model, output, ViewEncapsulation } from '@angular/core';
 
-import { ZardDrawerImports } from '@/shared/components/drawer/drawer.imports';
-import type { ZardDrawerCloseReason } from '@/shared/components/drawer/drawer-host';
+import { ZardDrawerImports } from '../../shared/components/drawer/drawer.imports';
+import type { ZardDrawerCloseReason } from '../../shared/components/drawer/drawer-host';
 import { UcamIconButton } from '../icon-button/ucam-icon-button';
 
 /**

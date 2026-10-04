@@ -13,9 +13,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {
   ZardSelectGroupComponent,
   ZardSelectLabelComponent,
-} from '@/shared/components/select/select-group.component';
-import { ZardSelectItemComponent } from '@/shared/components/select/select-item.component';
-import { ZardSelectComponent } from '@/shared/components/select/select.component';
+} from '../../shared/components/select/select-group.component';
+import { ZardSelectItemComponent } from '../../shared/components/select/select-item.component';
+import { ZardSelectComponent } from '../../shared/components/select/select.component';
 
 import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
 import { UcamIcon } from '../icon/ucam-icon';

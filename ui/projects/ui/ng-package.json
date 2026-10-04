@@ -9,6 +9,16 @@
       "glob": "styles.css",
       "input": "src",
       "output": "/"
+    },
+    {
+      "glob": "lib/shared/core/css/*.css",
+      "input": "src",
+      "output": "/"
+    },
+    {
+      "glob": "tokens/*.css",
+      "input": "src",
+      "output": "/"
     }
   ],
   "allowedNonPeerDependencies": [

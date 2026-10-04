@@ -1,6 +1,6 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
 
-import { ZardInputGroupImports } from '@/shared/components/input-group/input-group.imports';
+import { ZardInputGroupImports } from '../../shared/components/input-group/input-group.imports';
 import { UcamIcon } from '../icon/ucam-icon';
 import type { UcamIconName } from '../icon/ucam-icons.generated';
 

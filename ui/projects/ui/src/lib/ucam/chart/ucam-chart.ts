@@ -13,8 +13,8 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { ZardChartImports } from '@/shared/components/chart/chart.imports';
-import type { ZardChartConfig, ZardChartSeries as ZardSeriesDef } from '@/shared/components/chart/chart.types';
+import { ZardChartImports } from '../../shared/components/chart/chart.imports';
+import type { ZardChartConfig, ZardChartSeries as ZardSeriesDef } from '../../shared/components/chart/chart.types';
 import { UcamButton } from '../button/ucam-button';
 import { UcamEmptyState } from '../empty-state/ucam-empty-state';
 import { UcamSkeleton } from '../skeleton/ucam-skeleton';

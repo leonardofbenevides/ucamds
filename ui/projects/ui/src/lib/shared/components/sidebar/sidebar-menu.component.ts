@@ -18,7 +18,7 @@ import {
 
 import type { ClassValue } from 'clsx';
 
-import { ZardSidebarService } from '@/shared/components/sidebar/sidebar.service';
+import { ZardSidebarService } from './sidebar.service';
 import {
   sidebarMenuActionVariants,
   sidebarMenuBadgeVariants,
@@ -32,12 +32,12 @@ import {
   type ZardSidebarMenuButtonSizeVariants,
   type ZardSidebarMenuButtonTypeVariants,
   type ZardSidebarMenuSubButtonSizeVariants,
-} from '@/shared/components/sidebar/sidebar.variants';
-import { ZardSkeletonComponent } from '@/shared/components/skeleton/skeleton.component';
-import { ZardTooltipComponent } from '@/shared/components/tooltip/tooltip';
-import { TOOLTIP_POSITIONS_MAP } from '@/shared/components/tooltip/tooltip-positions';
-import { ZardIdDirective } from '@/shared/core';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './sidebar.variants';
+import { ZardSkeletonComponent } from '../skeleton/skeleton.component';
+import { ZardTooltipComponent } from '../tooltip/tooltip';
+import { TOOLTIP_POSITIONS_MAP } from '../tooltip/tooltip-positions';
+import { ZardIdDirective } from '../../core';
+import { mergeClasses } from '../../utils/merge-classes';
 
 /**
  * shadcn picks a random width between 50% and 90% for every skeleton row. Doing that per render

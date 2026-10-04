@@ -22,8 +22,8 @@ import {
   tabContainerVariants,
   tabNavVariants,
   type ZardTabVariants,
-} from '@/shared/components/tabs/tabs.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './tabs.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'z-tab',

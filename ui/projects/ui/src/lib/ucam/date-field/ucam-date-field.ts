@@ -16,7 +16,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { ZardInputComponent } from '@/shared/components/input/input.component';
+import { ZardInputComponent } from '../../shared/components/input/input.component';
 import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
 import { UcamButton } from '../button/ucam-button';
 import { UcamIcon } from '../icon/ucam-icon';

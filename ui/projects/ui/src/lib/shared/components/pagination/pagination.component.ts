@@ -18,15 +18,15 @@ import {
   ZardButtonComponent,
   type ZardButtonSizeVariants,
   type ZardButtonTypeVariants,
-} from '@/shared/components/button';
+} from '../button';
 import {
   paginationContentVariants,
   paginationEllipsisVariants,
   paginationNextVariants,
   paginationPreviousVariants,
   paginationVariants,
-} from '@/shared/components/pagination/pagination.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './pagination.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 type PaginationItemSizeType = Exclude<ZardButtonSizeVariants, 'default' | 'xs' | 'sm' | 'lg'>;
 type PaginationNavSizeType = Exclude<ZardButtonSizeVariants, 'icon' | 'icon-xs' | 'icon-sm' | 'icon-lg'>;

@@ -1,7 +1,7 @@
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, forwardRef, input, model, ViewEncapsulation } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { ZardTextareaComponent } from '@/shared/components/textarea/textarea.component';
+import { ZardTextareaComponent } from '../../shared/components/textarea/textarea.component';
 import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
 
 /**

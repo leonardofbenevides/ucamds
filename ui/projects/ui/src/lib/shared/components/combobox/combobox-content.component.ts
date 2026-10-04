@@ -35,8 +35,8 @@ import {
   comboboxEmptyVariants,
   comboboxListVariants,
   comboboxSeparatorVariants,
-} from '@/shared/components/combobox/combobox.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './combobox.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { type ZardComboboxAlignVariants, ZardComboboxRoot, type ZardComboboxSideVariants } from './combobox.types';
 

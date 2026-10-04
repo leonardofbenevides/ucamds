@@ -6,8 +6,8 @@ import {
   selectGroupVariants,
   selectLabelVariants,
   selectSeparatorVariants,
-} from '@/shared/components/select/select.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './select.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 @Component({
   selector: 'z-select-group, [z-select-group]',

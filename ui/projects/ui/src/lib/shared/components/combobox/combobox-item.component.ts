@@ -20,8 +20,8 @@ import {
   comboboxItemIndicatorVariants,
   comboboxItemVariants,
   type ZardComboboxItemVariants,
-} from '@/shared/components/combobox/combobox.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from './combobox.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { type ZardComboboxItemRef, ZardComboboxRoot } from './combobox.types';
 

@@ -11,10 +11,10 @@ import {
 
 import type { ClassValue } from 'clsx';
 
-import { ZardCommandOptionComponent } from '@/shared/components/command/command-option.component';
-import { ZardCommandComponent } from '@/shared/components/command/command.component';
-import { commandGroupVariants } from '@/shared/components/command/command.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { ZardCommandOptionComponent } from './command-option.component';
+import { ZardCommandComponent } from './command.component';
+import { commandGroupVariants } from './command.variants';
+import { mergeClasses } from '../../utils/merge-classes';
 
 export abstract class ZardCommandOptionGroup {
   abstract registerOption(option: ZardCommandOptionComponent): void;

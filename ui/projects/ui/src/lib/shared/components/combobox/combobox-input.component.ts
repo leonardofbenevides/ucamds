@@ -22,14 +22,14 @@ import {
   comboboxInputGroupVariants,
   comboboxInputHostVariants,
   comboboxTriggerVariants,
-} from '@/shared/components/combobox/combobox.variants';
-import { ZardInputComponent } from '@/shared/components/input/input.component';
+} from './combobox.variants';
+import { ZardInputComponent } from '../input/input.component';
 import {
   ZardInputGroupAddonComponent,
   ZardInputGroupButtonDirective,
   ZardInputGroupComponent,
-} from '@/shared/components/input-group';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+} from '../input-group';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { ZardComboboxContentComponent } from './combobox-content.component';
 import { ZardComboboxRoot } from './combobox.types';

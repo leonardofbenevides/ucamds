@@ -23,7 +23,7 @@ import {
 
 import type { ClassValue } from 'clsx';
 
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { DRAWER_STACK_PEEK, DRAWER_STACK_STEP, drawerDepth, popDrawerPanel, pushDrawerPanel } from './drawer-stack';
 import {

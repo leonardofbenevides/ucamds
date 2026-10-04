@@ -22,10 +22,10 @@ import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgIcon } from '@ng-icons/core';
 import type { ClassValue } from 'clsx';
 
-import type { ZardButtonTypeVariants } from '@/shared/components/button';
-import { comboboxValueVariants, comboboxVariants } from '@/shared/components/combobox/combobox.variants';
-import { mergeClasses } from '@/shared/utils/merge-classes';
-import { noopFn } from '@/shared/utils/noop';
+import type { ZardButtonTypeVariants } from '../button';
+import { comboboxValueVariants, comboboxVariants } from './combobox.variants';
+import { mergeClasses } from '../../utils/merge-classes';
+import { noopFn } from '../../utils/noop';
 
 import {
   ZardComboboxContentComponent,

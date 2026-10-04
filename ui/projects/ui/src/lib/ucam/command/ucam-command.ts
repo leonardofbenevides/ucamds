@@ -14,9 +14,9 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { ZardCommandComponent } from '@/shared/components/command/command.component';
-import { ZardCommandImports } from '@/shared/components/command/command.imports';
-import type { ZardCommandOption } from '@/shared/components/command/command.component';
+import { ZardCommandComponent } from '../../shared/components/command/command.component';
+import { ZardCommandImports } from '../../shared/components/command/command.imports';
+import type { ZardCommandOption } from '../../shared/components/command/command.component';
 import { UcamIcon } from '../icon/ucam-icon';
 import type { UcamIconName } from '../icon/ucam-icons.generated';
 

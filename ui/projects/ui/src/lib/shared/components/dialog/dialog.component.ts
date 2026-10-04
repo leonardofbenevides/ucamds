@@ -28,9 +28,9 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
 import type { ClassValue } from 'clsx';
 
-import { ZardIdDirective } from '@/shared/core';
-import { mergeClasses } from '@/shared/utils/merge-classes';
-import { noopFn } from '@/shared/utils/noop';
+import { ZardIdDirective } from '../../core';
+import { mergeClasses } from '../../utils/merge-classes';
+import { noopFn } from '../../utils/noop';
 
 import type { ZardDialogRef } from './dialog-ref';
 import {
@@ -40,7 +40,7 @@ import {
   dialogTitleVariants,
   dialogVariants,
 } from './dialog.variants';
-import { ZardButtonComponent } from '@/shared/components/button/button.component';
+import { ZardButtonComponent } from '../button/button.component';
 
 export type OnClickCallback<T> = (instance: T) => false | void | object;
 export class ZardDialogOptions<T, U> {

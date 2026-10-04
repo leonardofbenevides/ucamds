@@ -9,7 +9,7 @@ import {
   ZARD_SIDEBAR_COOKIE_MAX_AGE,
   ZARD_SIDEBAR_COOKIE_NAME,
   ZARD_SIDEBAR_MOBILE_BREAKPOINT,
-} from '@/shared/components/sidebar/sidebar.constants';
+} from './sidebar.constants';
 
 export type ZardSidebarState = 'expanded' | 'collapsed';
 

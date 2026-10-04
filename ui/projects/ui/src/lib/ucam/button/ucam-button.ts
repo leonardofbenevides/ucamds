@@ -1,16 +1,21 @@
 import {
+  afterNextRender,
+  afterRenderEffect,
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
+  ElementRef,
+  inject,
   input,
-  
+  Renderer2,
+  viewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { UcamIcon, type UcamIconName } from '@/ucam/icon';
+import { UcamIcon, type UcamIconName } from '../icon';
 
-import { ZardButtonComponent } from '@/shared/components/button/button.component';
-import type { ZardButtonSizeVariants, ZardButtonTypeVariants } from '@/shared/components/button/button.variants';
+import { ZardButtonComponent } from '../../shared/components/button/button.component';
+import type { ZardButtonSizeVariants, ZardButtonTypeVariants } from '../../shared/components/button/button.variants';
 
 /**
  * Contrato: spec/components/button.json
@@ -99,14 +104,13 @@ const ICON_SIZE_MAP: Record<UcamButtonSize, ZardButtonSizeVariants> = {
   encapsulation: ViewEncapsulation.None,
   template: `
     <button
+      #botao
       z-button
       [zType]="zType()"
       [zSize]="zSize()"
       [class]="extraClasses()"
       [attr.data-tone]="tone() === 'neutral' ? null : tone()"
       [attr.type]="type()"
-      [attr.disabled]="disabled() ? '' : null"
-      [attr.aria-disabled]="loading() ? 'true' : null"
       [attr.aria-busy]="loading() ? 'true' : null"
       [attr.aria-label]="ariaLabel()"
       (click)="onClick($event)"
@@ -175,14 +179,36 @@ export class UcamButton {
     this.tone() === 'danger' ? TONE_CLASSES[this.variant()] : '',
   );
 
+  // `read: ElementRef` é obrigatório: o <button z-button> é um componente da
+  // base, e sem o read a consulta devolve a instância dele, não o elemento.
+  private readonly botao = viewChild.required('botao', { read: ElementRef<HTMLButtonElement> });
+  private readonly renderer = inject(Renderer2);
+
   constructor() {
+    /**
+     * CORREÇÃO 5 — a base declara `[attr.disabled]` e `[attr.aria-disabled]`
+     * em host binding a partir do próprio zDisabled, que o wrapper não usa
+     * (ele traz opacity-50, que a ADR-042 proíbe). No primeiro render o host
+     * binding corre DEPOIS do template e zera o que ele escreveu: um
+     * <ucam-button [disabled]="true"> nascia sem `disabled`, e um em loading
+     * nascia sem `aria-disabled`. Os dois atributos passam a ser aplicados
+     * depois do render, onde ninguém mais os toca.
+     */
+    afterRenderEffect(() => {
+      const el = this.botao().nativeElement;
+      aplicarEstado(this.renderer, el, 'disabled', this.disabled() ? '' : null);
+      aplicarEstado(this.renderer, el, 'aria-disabled', this.loading() ? 'true' : null);
+    });
+
     /**
      * CORREÇÃO 3 — botão só de ícone sem nome acessível é a falha mais
      * repetida do parque atual: o × dos diálogos e os quatro controles de
      * paginação de cada tabela. Aqui é erro em desenvolvimento, não aviso.
      */
     if (ngDevMode) {
-      queueMicrotask(() => {
+      // afterNextRender, não queueMicrotask: nos testes o microtask corria antes de
+      // o primeiro ciclo ligar os inputs e lia um `label` ainda sem valor (NG0950).
+      afterNextRender(() => {
         if (this.iconOnly() && !this.ariaLabel()) {
           throw new Error(
             '[ucam-button] iconOnly exige ariaLabel. Um botão só com ícone é anônimo para leitor de tela. Ver spec/components/button.json.',
@@ -205,6 +231,12 @@ export class UcamButton {
       return;
     }
   }
+}
+
+/** Escreve ou remove um atributo de estado fora do ciclo de bindings. Também usado pelo icon-button. */
+export function aplicarEstado(renderer: Renderer2, el: HTMLElement, atributo: string, valor: string | null): void {
+  if (valor === null) renderer.removeAttribute(el, atributo);
+  else renderer.setAttribute(el, atributo, valor);
 }
 
 declare const ngDevMode: boolean;

@@ -15,9 +15,9 @@ import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideSearch } from '@ng-icons/lucide';
 
-import { ZardCommand } from '@/shared/components/command/command.tokens';
-import { ZardInputComponent } from '@/shared/components/input/input.component';
-import { ZardInputGroupImports } from '@/shared/components/input-group/input-group.imports';
+import { ZardCommand } from './command.tokens';
+import { ZardInputComponent } from '../input/input.component';
+import { ZardInputGroupImports } from '../input-group/input-group.imports';
 
 @Component({
   selector: 'z-command-input',

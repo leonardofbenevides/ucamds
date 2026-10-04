@@ -8,7 +8,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { ZardBadgeComponent } from '@/shared/components/badge/badge.component';
+import { ZardBadgeComponent } from '../../shared/components/badge/badge.component';
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
 
 /**

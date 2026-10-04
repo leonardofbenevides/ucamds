@@ -27,8 +27,8 @@ import type { EChartsOption } from 'echarts';
 import type { ECElementEvent, EChartsType } from 'echarts/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
 
-import { EDarkModes, ZardDarkMode } from '@/shared/services/dark-mode';
-import { mergeClasses } from '@/shared/utils/merge-classes';
+import { EDarkModes, ZardDarkMode } from '../../services/dark-mode';
+import { mergeClasses } from '../../utils/merge-classes';
 
 import { resolveChartChrome, resolveChartColors, resolveCssColor } from './chart-colors.util';
 import { ZARD_CHART, type ZardChartHost } from './chart-context';
