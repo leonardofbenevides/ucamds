@@ -50,6 +50,17 @@ const CONTROL_SM = classeAltura('control-sm');
 const CONTROL_MD = classeAltura('control-md');
 const CONTROL_LG = classeAltura('control-lg');
 
+/** O degrau primitivo que o papel radius.control referencia → classe do Tailwind. */
+function classeRaio(papel) {
+  const ref = semantic.radius?.[papel]?.$value;
+  const m = /^\{radius\.([a-z0-9]+)\}$/.exec(ref ?? '');
+  if (!m) {
+    throw new Error(`spec/tokens/semantic.json: radius.${papel} não referencia um degrau primitivo ({radius.x})`);
+  }
+  return `rounded-${m[1]}`;
+}
+const RAIO_CONTROLE = classeRaio('control');
+
 /**
  * Onde a base declara geometria de controle, e o que a spec manda ali.
  *
@@ -77,11 +88,20 @@ const EXIGENCIAS = [
     /field-sizing-content (min-h-\d+) w-full/,
   ],
 
-  // --- raio do botão
-  // A base fecha o botão em `rounded-md` (calc(--radius - 2px) = 8px) enquanto
-  // o Trilho A usa radius-lg (10px) — a ponte de tokens já aponta `--radius`
-  // para o lg justamente porque é o que a base assume no resto.
-  ['button/button.variants.ts', 'zShape.default', 'rounded-lg', /zShape: \{\s*default: '(rounded-[a-z]+)'/],
+  // --- raio do controle
+  // O raio sai do TOKEN (semantic radius.control), como as alturas. Até
+  // 04/10/2026 este bloco cravava 'rounded-lg' com o comentário "o Trilho A
+  // usa radius-lg" — verdade até 09/09, quando radius.control desceu para
+  // radius.md (6px). O portão continuou exigindo o valor velho e passou a
+  // SEGURAR a divergência: botão, campo, select e textarea com 8px de raio
+  // no Trilho B e 6 no A, medido pela prova de paridade de tela (ADR-058).
+  // Portão com valor escrito à mão envelhece junto com a decisão que copiou.
+  ['button/button.variants.ts', 'zShape.default', RAIO_CONTROLE, /zShape: \{\s*default: '(rounded-[a-z]+)'/],
+  ['button/button.variants.ts', 'base', RAIO_CONTROLE, /justify-center (rounded-[a-z]+) border border-transparent bg-clip-padding text-sm/],
+  ['input/input.variants.ts', 'inputVariants', RAIO_CONTROLE, /w-full min-w-0 (rounded-[a-z]+) border border-input/],
+  ['select/select.variants.ts', 'selectTriggerVariants', RAIO_CONTROLE, /justify-between gap-2 (rounded-[a-z]+) border border-input/],
+  ['input-group/input-group.variants.ts', 'inputGroupVariants', RAIO_CONTROLE, /min-w-0 items-center (rounded-[a-z]+) border border-input/],
+  ['textarea/textarea.variants.ts', 'textareaVariants', RAIO_CONTROLE, /w-full (rounded-[a-z]+) border border-input bg-transparent px-2\.5 py-2/],
 ];
 
 const problemas = [];

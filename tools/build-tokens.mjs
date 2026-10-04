@@ -394,6 +394,26 @@ ${PONTE.map(([shad, ucam]) => `  --${shad}: var(--${P}-${ucam});`).join('\n')}
    * para o token que a spec declara, e nenhuma conta acontece pelo caminho. */
 ${['sm', 'md', 'lg', 'xl'].map((d) => `  --radius-${d}: var(--${P}-radius-${d});`).join('\n')}
 
+  /* O TAMANHO DO TEXTO, pela mesma porta (04/10/2026).
+   *
+   * A base escreve tudo em text-sm e text-xs do Tailwind, que de fábrica são
+   * 14 e 12px. A spec levou o texto de trabalho a 15px e a legenda a 14 em
+   * 01/10 (ADR-056), "texto e caixa JUNTOS, pelos tokens" — e só a caixa
+   * chegou à base, porque a altura tem portão (check-geometria) e o texto não
+   * passava por lugar nenhum. Medido pela prova de paridade de tela
+   * (ADR-058): botão, campo e select a 14px no Trilho B e 15 no A; selo e
+   * trilha a 12 e 14. Um pixel em todo controle de toda aplicação Angular.
+   *
+   * A utilitária do Tailwind v4 lê a variável em tempo de execução
+   * (font-size: var(--text-sm); line-height: var(--text-sm--line-height)),
+   * então apontar as duas para o papel da spec basta — a próxima mudança de
+   * dimensão chega à base sem ninguém tocar em componente. text-base fica de
+   * fábrica (16px): é o que o campo usa no telefone para o iOS não dar zoom. */
+  --text-sm: var(--${P}-typography-body-sm-font-size);
+  --text-sm--line-height: var(--${P}-typography-body-sm-line-height);
+  --text-xs: var(--${P}-typography-caption-font-size);
+  --text-xs--line-height: var(--${P}-typography-caption-line-height);
+
   /* A CURVA, pela mesma porta que o raio.
    *
    * A ponte existe para que a base obedeça à UCAM sem reescrever a base. O
