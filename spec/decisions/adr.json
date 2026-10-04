@@ -1140,6 +1140,37 @@
         "card",
         "anexo"
       ]
+    },
+    {
+      "id": "ADR-057",
+      "titulo": "O comportamento das telas de referência sai para a aplicação no mesmo arquivo, e o serviço fica atrás de um evento",
+      "status": "aceita",
+      "data": "2026-10-03",
+      "contexto": "Pergunta de 03/10/2026: \"a gente tem assertividade na hora dos devs pegarem pra fazer as telas? 100% igual aos exemplos\". No visual, o Trilho A chegava: a marcação da tela, copiada, renderiza igual com a mesma folha. No comportamento não havia como chegar. As 31 telas de referência ganham vida por 24 scripts em tools/lib/shell.mjs (navegação sobreposta, menu da conta, busca, abas, gaveta, diálogo, confirmação, toast, menu de coluna, ordenação e seleção da tabela, calendário, listbox do select…), embutidos só nas páginas autônomas; o guia de migração dizia, com razão, que o Trilho A \"não entrega comportamento\" e que cada tela o escreveria. Uma tela copiada ficava idêntica e morta, e o dev reescrevia à mão o que a referência já tinha — a terceira versão do mesmo comportamento, depois do Angular e do protótipo. Ao mesmo tempo, parte desses scripts não é componente: é o protótipo fingindo o servidor (arquivar tira a linha, finalizar análise troca o selo, salvar grava na linha da tabela), e isso não pode chegar a uma aplicação que tem servidor de verdade.",
+      "decisao": "O Trilho A passa a entregar dist/css/ucam-comportamento.js, que é a concatenação dos MESMOS exports de shell.mjs que as telas autônomas carregam — não uma cópia, o mesmo texto, gerado por tools/lib/comportamento.mjs no pnpm css. A diferença entre referência e aplicação é um atributo: a tela autônoma leva data-referencia no <html>, e só com ele os tratadores que fingem o servidor rodam. Sem ele, o clique em [data-acao] dispara o evento ucam:acao (bolha, cancelável, detail { acao, controle }) e para; preventDefault() nele diz \"já cuidei\", e sem isso o clique segue o seu curso. As ações que são só interface (filtros, limpar, etapas do stepper, anexar e remover tile, marcar lidas, imprimir, copiar) rodam nos dois lugares. Os scripts que só montam fixture (grupo × menu, registro criado por ?criado=, soma por período) ficam fora do arquivo. Todo export *Script de shell.mjs tem de estar numa das duas listas, ou o build cai. O arquivo é ensinado na instalação do Trilho A, sai no tarball @ucam/css e é cobrado pelo portão de publicação.",
+      "consequencias": [
+        "Uma tela de referência copiada com a folha e o script responde como no site: abas, gaveta, menu, ordenação, calendário. O que não responde é ação de sistema, e isso agora é visível no código (ucam:acao) em vez de ser um buraco silencioso.",
+        "O Trilho A ganha um comportamento próprio, em JavaScript sem framework, ao lado do Angular do Trilho B. A paridade entre os dois não é cobrada por portão — é cobrada pelo fato de o mesmo script ser o que as telas de referência rodam, e as telas são o que a prova por CDP e a sonda de controles mortos verificam.",
+        "Script novo em shell.mjs exige decisão: aplicação ou referência. O portão em build-css recusa o build sem ela.",
+        "O Trilho A+ continua sendo o caminho para o que a marcação não carrega: combobox com busca e paginação acessível.",
+        "A página da tela no site e o kit de agentes param de dizer que o comportamento 'não vem junto': vem, e o que fica de fora é o serviço."
+      ],
+      "afeta": ["*", "app-shell", "tabs", "drawer", "dialog", "data-table", "date-field", "select", "menu", "textarea", "alert"]
+    },
+    {
+      "id": "ADR-058",
+      "titulo": "A tela de referência existe também em Angular, e a paridade com o Trilho A é medida em pixel",
+      "status": "aceita",
+      "data": "2026-10-04",
+      "contexto": "Até 03/10/2026 nenhuma das 31 telas de referência existia montada com @ucam/ui. O campo codigo de templates.json era um esboço dez vezes menor que a marcação, que ninguém compilava, e o dev do Trilho B remontava a tela olhando o iframe do Trilho A. As provas por CDP que existiam comparavam componente (A contra A+) e a geometria da base; tela inteira nunca tinha sido posta lado a lado. A primeira comparação (protocolo/naturezas a 1180px) achou o que ninguém via: a base alinhava célula ao topo e a folha ao centro, o recuo lateral era 16px contra 12, o cabeçalho de tabela saía em mono por uma regra do site, a caixa de seleção era o input nativo de 13px, o menu da coluna escondido dava largura mínima ao cabeçalho, a coluna de ações empilhava os botões, e a tabela media 957px onde a referência media 804.",
+      "decisao": "Cada tela de referência pode ganhar uma gêmea em Angular em site/src/app/pages/vivo/<projeto>/<tela>.page.ts, escrita como uma aplicação a escreveria: <ucam-*> para componente, classes de arranjo para layout (ADR-012), os mesmos dados e o mesmo estado da foto. A rota /vivo/* sai sem o cromo do site (app.component rende só o roteador e marca body.vivo; styles.css desliga ali as regras de elemento e a tipografia do site). Quando a tela viva existe, o seu template É o codigo que o site e o kit mostram (tools/lib/telas-vivas.mjs); o esboço da spec fica para trás. tools/prova-paridade-tela.mjs fotografa a tela viva e a página autônoma do Trilho A na mesma largura e devolve a fração de pixels diferentes, no todo e por região, com o mapa das diferenças. Não é portão de build — precisa de site construído e Chrome —, é a régua: toda divergência que ela acusa é defeito de um dos dois trilhos, e a folha do Trilho A é a referência enquanto a decisão escrita não disser o contrário.",
+      "consequencias": [
+        "O Trilho B passa a ser medido contra a referência, e não contra a impressão de quem olha. Mexer em componente do Trilho B pede rodar a prova nas telas vivas que o usam.",
+        "O data-table do Trilho B foi alinhado pela primeira medição: recuos 8/13 por 12px, papel table-header, centro na célula, caixa de seleção desenhada, coluna de ações sem menu e sem empilhar, arranjo apertado por ResizeObserver, fio do cabeçalho por sombra, menu da coluna fora do fluxo e a prop selected. A tabela de naturezas foi de 957 para 804px, igual à referência.",
+        "O que a régua ainda acusa em naturezas fica listado para o próximo passo: o app-shell do Trilho B não tem busca global na faixa, selo no sino, hambúrguer, ação de criar antes dos grupos nem chevron de Favoritos; a trilha do page-header sublinha o link no B e não no A, por decisão escrita no B que precisa ser resolvida; o selo do B mede 22px onde a ADR-056 pôs 24; barra de lote e paginação continuam escritas à mão na tela viva.",
+        "Uma tela viva por vez: a prova é cara (build do site e navegador). A primeira é protocolo/naturezas; as próximas seguem o mesmo molde."
+      ],
+      "afeta": ["*", "data-table", "app-shell", "page-header", "badge"]
     }
   ]
 }

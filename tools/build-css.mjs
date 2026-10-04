@@ -13671,6 +13671,22 @@ const foraDoToken = [...new Set(larguras)].filter((l) => !breakpointsEmitidos.ha
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
 writeFileSync(join(OUT, 'ucam.css'), css, 'utf8');
 
+/* ------------------------------------------- o comportamento (ADR-057) --- */
+// O mesmo código que as telas de referência carregam, num arquivo que a
+// aplicação do Trilho A pode linkar. Ver o cabeçalho de lib/comportamento.mjs.
+{
+  const { bundleComportamento, classificar } = await import('./lib/comportamento.mjs');
+  const { semClasse, semExport } = classificar();
+  if (semClasse.length || semExport.length) {
+    for (const s of semClasse) console.error(`✗ lib/shell.mjs exporta ${s} e lib/comportamento.mjs não diz se ele vai para a aplicação (COMPONENTE) ou fica na referência (REFERENCIA)`);
+    for (const s of semExport) console.error(`✗ lib/comportamento.mjs cita ${s}, que lib/shell.mjs não exporta`);
+    process.exit(1);
+  }
+  const js = bundleComportamento();
+  writeFileSync(join(OUT, 'ucam-comportamento.js'), js, 'utf8');
+  console.log(`  ucam-comportamento.js  ${(js.length / 1024).toFixed(1)} KB  o comportamento das telas, para a aplicação`);
+}
+
 console.log('@ucam/css → dist/css/');
 console.log(
   `  ucam.css  ${(css.length / 1024).toFixed(1)} KB  ${unicas.filter((t) => !declaradas.has(t)).length} tokens · ${declaradas.size} variáveis de bloco`

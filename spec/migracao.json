@@ -15,10 +15,10 @@
         "id": "a",
         "nome": "Trilho A — @ucam/css",
         "quando": "A aplicação é AngularJS, JSF/PrimeFaces, Angular ≤ 14 — qualquer coisa que aceite um <link> e não vá subir de versão nos próximos meses.",
-        "entrega": "Identidade visual, tokens, tipografia, espaçamento e o desenho de todos os componentes, por classe CSS.",
-        "naoEntrega": "Comportamento. Nada de foco gerenciado, navegação por seta, roving tabindex, anúncio ARIA ou estado. O CSS desenha; quem escreve o markup é responsável por for/id, aria-describedby, aria-current, role e nome acessível.",
+        "entrega": "Identidade visual, tokens, tipografia, espaçamento e o desenho de todos os componentes, por classe CSS — e, com ucam-comportamento.js, o comportamento dessa marcação: o mesmo código que as telas de referência rodam (ADR-057). Navegação sobreposta, menu da conta, busca da faixa, abas, gaveta, diálogo, confirmação, toast, menu de coluna, ordenação e seleção da tabela, calendário do campo de data, listbox do select, contador do textarea, estrela de favorito.",
+        "naoEntrega": "O serviço. Todo controle com data-acao dispara o evento ucam:acao e para: arquivar, bloquear, salvar, finalizar são chamadas que a aplicação escreve. Nem a fiação ARIA da marcação: quem escreve o markup é responsável por for/id, aria-describedby, aria-current, role e nome acessível — copiar a tela de referência traz tudo isso pronto; escrever do zero, não.",
         "custo": "Uma tag de link e uma classe no elemento raiz. Zero build, zero dependência, zero risco de conflito: tudo é escopado sob .ucam, sem reset global e sem preflight.",
-        "armadilha": "É o trilho em que a migração PARECE pronta e não está. Uma tela com o visual certo e sem a fiação ARIA é uma tela que ficou bonita e continua inacessível — e o defeito fica mais difícil de encontrar do que era antes, porque agora nada mais chama atenção."
+        "armadilha": "É o trilho em que a migração PARECE pronta e não está. Uma tela com o visual certo e sem a fiação ARIA é uma tela que ficou bonita e continua inacessível — e o defeito fica mais difícil de encontrar do que era antes, porque agora nada mais chama atenção. A segunda armadilha é copiar a tela de referência e esquecer o ucam:acao: a tela responde a tudo que é interface e não responde a nenhuma ação de sistema, sem erro no console."
       },
       {
         "id": "a-mais",
@@ -311,13 +311,17 @@
       { "pergunta": "Qual token usar para esta cor ou este espaço?", "onde": "spec/tokens/semantic.json. Nunca primitive.json: componente que lê a camada primitiva quebra tema e marca (ADR-007)" },
       { "pergunta": "Como esta tela inteira deveria ficar?", "onde": "spec/templates.json e as telas renderizadas em docs/t/ — são HTML de verdade, com o CSS de produção, não maquete" },
       { "pergunta": "Que composição usar para esta tarefa?", "onde": "spec/patterns/patterns.json" },
-      { "pergunta": "O componente já existe em Angular?", "onde": "campo implementacao.trilho_b do contrato" }
+      { "pergunta": "O componente já existe em Angular?", "onde": "campo implementacao.trilho_b do contrato" },
+      {
+        "pergunta": "Como esta tela inteira fica em Angular, com os componentes de verdade?",
+        "onde": "Na tela viva, quando existe: site/src/app/pages/vivo/<projeto>/<tela>.page.ts, servida em /vivo/<projeto>/<tela> sem o cromo do site. O campo codigo da tela no site e no kit passa a ser o template dela (vivo: true), e tools/prova-paridade-tela.mjs mede, pixel a pixel, quanto ela difere da página autônoma do Trilho A (ADR-058). Tela sem gêmea viva ainda traz o esboço, rotulado como ponto de partida."
+      }
     ]
   },
 
   "aindaNaoExiste": {
     "$descricao": "O que o design system ainda não entrega. Cada lacuna abaixo muda o que a tela precisa resolver por conta própria.",
-    "regra": "Contrato sem implementação Angular NÃO é impedimento: o Trilho A desenha todos eles hoje. O que falta é o comportamento, e é isso que precisa ser escrito na tela — ou adiado com a lacuna registrada.",
+    "regra": "Contrato sem implementação Angular NÃO é impedimento: o Trilho A desenha todos eles hoje, e ucam-comportamento.js dá à marcação o comportamento das telas de referência (ADR-057). O que a tela escreve por conta própria é o serviço por trás de cada data-acao — ou adia, com a lacuna registrada.",
     "avisos": [
       "Nenhum contrato está em stable. A promoção exige dois consumidores reais em produção, e ainda não há dois. Props podem mudar em 0.x.",
       "O modo empilhado da data-table em tela estreita está descrito no contrato e não existe: enquanto não existir, a tabela rola na horizontal dentro da própria moldura.",

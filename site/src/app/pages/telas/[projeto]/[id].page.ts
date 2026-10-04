@@ -9,7 +9,9 @@ import {
   viewChild,
   DestroyRef,
   ElementRef,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 
@@ -109,6 +111,81 @@ const SITUACOES = [
           desenhando em {{ pxEfetivo() }}px — é a viewport que o arranjo documenta.
         </p>
       }
+
+      <!-- O CÓDIGO DA TELA (03/10/2026). A pergunta era "o dev chega 100% igual
+           ao exemplo?". No Trilho A chega, se copiar a marcação que o quadro
+           acima renderiza — e ela não estava à mão: a página só tinha "Abrir
+           em nova aba", e o fonte da página autônoma começa com cinco mil
+           linhas de CSS. A marcação chega por fetch, de um arquivo irmão da
+           página autônoma, porque o spec.data.json deixa o preview de fora
+           de propósito (620 mil caracteres não cabem no bundle). No prerender
+           não há fetch: fica o link para o arquivo, que é a mesma entrega. -->
+      <section class="codigo-tela">
+        <h2>Código desta tela</h2>
+        <div class="codigo-abas" role="tablist" aria-label="Código desta tela">
+          <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="abaCodigo() === 'html'"
+            (click)="abaCodigo.set('html')"
+          >
+            HTML <span class="trilho">Trilho A</span>
+          </button>
+          @if (d.tela.codigo) {
+            <button
+              type="button"
+              role="tab"
+              [attr.aria-selected]="abaCodigo() === 'angular'"
+              (click)="abaCodigo.set('angular')"
+            >
+              Angular <span class="trilho">{{ d.tela.vivo ? 'Trilho B' : 'Trilho B, ponto de partida' }}</span>
+            </button>
+          }
+          <button type="button" class="copiar" (click)="copiar()" [disabled]="!textoAtual()">
+            {{ copiado() ? 'Copiado' : 'Copiar' }}
+          </button>
+        </div>
+        @if (abaCodigo() === 'html') {
+          <p class="codigo-nota small muted">
+            É a marcação que o quadro acima renderiza, sem a moldura: faixa, menu e conta vêm do
+            <a routerLink="/catalogo/app-shell">app-shell</a>. Com a folha e o
+            <code>ucam-comportamento.js</code> carregados, fica idêntica e responde como aqui
+            (abas, filtros, gaveta, confirmação, toast). O que não vem junto é o serviço: cada
+            <code>data-acao</code> dispara o evento <code>ucam:acao</code>, e a aplicação responde
+            (<a routerLink="/decisoes/adr-057">ADR-057</a>).
+          </p>
+          <div class="codigo-corpo" role="tabpanel">
+            @if (fonte(); as f) {
+              <pre><code>{{ f }}</code></pre>
+            } @else {
+              <p class="small muted">
+                <a [href]="'/t/' + fonteArquivo(d.tela.arquivo)" target="_blank" rel="noopener">
+                  Abrir a marcação da tela
+                </a>
+              </p>
+            }
+          </div>
+        } @else {
+          @if (d.tela.vivo) {
+            <p class="codigo-nota small muted">
+              A tela montada com &#64;ucam/ui, que o site compila e compara pixel a pixel com o
+              HTML ao lado (tools/prova-paridade-tela.mjs).
+              <a [href]="'/vivo/' + d.projeto.id + '/' + d.tela.id" target="_blank" rel="noopener">
+                Abrir a tela viva
+              </a>
+            </p>
+          } @else {
+            <p class="codigo-nota small muted">
+              Esboço: os componentes e as ligações existem no &#64;ucam/ui e são conferidos no
+              build, mas o arranjo da tela não está aqui. Use o HTML como mapa dos blocos de
+              layout (ADR-012).
+            </p>
+          }
+          <div class="codigo-corpo" role="tabpanel">
+            <pre><code>{{ d.tela.codigo }}</code></pre>
+          </div>
+        }
+      </section>
 
       <div class="colunas">
         <section>
@@ -306,6 +383,88 @@ const SITUACOES = [
       margin-block: -2.25rem 3rem;
     }
 
+    .codigo-tela {
+      margin-block-end: 3rem;
+    }
+    /* O mesmo trilho de segmentos do seletor de largura: o ativo SOBE em
+       cartão branco, não é pintado de marca. */
+    .codigo-abas {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-control);
+      background: var(--ucam-color-surface-subtle);
+    }
+    .codigo-abas [role='tab'] {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      padding: 0.3rem 0.7rem;
+      border: 0;
+      border-radius: var(--ucam-radius-md);
+      background: none;
+      font: inherit;
+      font-size: 0.8125rem;
+      color: var(--ucam-color-text-secondary);
+      cursor: pointer;
+    }
+    .codigo-abas [role='tab']:hover {
+      background: var(--ucam-color-action-secondary-hover);
+    }
+    .codigo-abas [role='tab'][aria-selected='true'] {
+      background: var(--ucam-color-surface-default);
+      color: var(--ucam-color-text-primary);
+      font-weight: 600;
+      box-shadow: var(--ucam-elevation-raised);
+    }
+    .codigo-abas .trilho {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.75;
+    }
+    .codigo-abas .copiar {
+      margin-inline-start: auto;
+      padding: 0.3rem 0.7rem;
+      border: 0;
+      border-radius: var(--ucam-radius-md);
+      background: none;
+      font: inherit;
+      font-size: 0.8125rem;
+      color: var(--ucam-color-text-link);
+      cursor: pointer;
+    }
+    .codigo-abas .copiar:disabled {
+      color: var(--ucam-color-text-disabled);
+      cursor: default;
+    }
+    .codigo-nota {
+      max-inline-size: var(--measure);
+      margin: 0.75rem 0;
+    }
+    .codigo-corpo pre {
+      max-block-size: 32rem;
+      margin: 0;
+      padding: 1rem;
+      overflow: auto;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-md);
+      background: var(--ucam-color-surface-subtle);
+      font-family: var(--f-mono);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      /* A marcação é uma linha só de propósito: quebrar o HTML em linhas
+         poria espaço em branco entre elementos e mudaria o que se vê. Aqui
+         ela quebra para ler; copiada, continua inteira. */
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .codigo-corpo p {
+      margin: 0;
+    }
+
     .colunas {
       display: grid;
       gap: 2rem;
@@ -453,6 +612,55 @@ export default class TelaPage {
     this.palcoLargura.set(el.clientWidth);
     this.escala.set(Math.min(1, el.clientWidth / this.pxEfetivo()));
   });
+
+  /* ------------------------------------------------- o código da tela --- */
+
+  private readonly ehNavegador = isPlatformBrowser(inject(PLATFORM_ID));
+  protected readonly abaCodigo = signal<'html' | 'angular'>('html');
+  protected readonly copiado = signal(false);
+
+  /** A marcação da tela, buscada no navegador. `undefined` enquanto não chega. */
+  protected readonly fonte = signal<string | undefined>(undefined);
+
+  /** A marcação da tela, em /t/fonte/, escrita por tools/build-templates.mjs. */
+  protected fonteArquivo(arquivo: string): string {
+    return `fonte/${arquivo}`;
+  }
+
+  /**
+   * Busca de novo a cada tela: o parâmetro de rota muda sem recriar a página,
+   * e a marcação da anterior não pode ficar à vista sob o título da seguinte.
+   * A resposta só entra se a tela ainda for a mesma que a pediu.
+   */
+  private readonly carregaFonte = effect(() => {
+    const d = this.dados();
+    this.fonte.set(undefined);
+    if (!d || !this.ehNavegador) return;
+    fetch(`/t/${this.fonteArquivo(d.tela.arquivo)}`)
+      .then((r) => (r.ok ? r.text() : undefined))
+      .then((texto) => {
+        if (this.dados() === d) this.fonte.set(texto);
+      })
+      .catch(() => {
+        // Sem a marcação, fica o link para o arquivo, que é a mesma entrega.
+      });
+  });
+
+  protected readonly textoAtual = computed(() =>
+    this.abaCodigo() === 'html' ? this.fonte() : this.dados()?.tela.codigo,
+  );
+
+  protected async copiar() {
+    const texto = this.textoAtual();
+    if (!texto) return;
+    try {
+      await navigator.clipboard.writeText(texto);
+      this.copiado.set(true);
+      setTimeout(() => this.copiado.set(false), 1600);
+    } catch {
+      // Sem permissão de área de transferência: o código está à vista.
+    }
+  }
 
   constructor() {
     // A moldura é um documento próprio e nunca soube do tema do site: ficava

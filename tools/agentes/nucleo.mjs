@@ -131,14 +131,14 @@ export const FERRAMENTAS = [
   {
     name: 'ucam_get_template',
     description:
-      'Uma tela de referência inteira: problemas do legado, notas de decisão, componentes usados, código Angular de partida, fluxos (de onde se chega e o que cada ação faz), regras_negocio (o que a tela supõe do negócio: só legado e confirmada são regra; proposta e aberta são perguntas para quem decide) e, se pedido, o HTML do Trilho A.',
+      'Uma tela de referência inteira: problemas do legado, notas de decisão, componentes usados, fluxos (de onde se chega e o que cada ação faz), regras_negocio (o que a tela supõe do negócio: só legado e confirmada são regra; proposta e aberta são perguntas para quem decide), o código Angular de partida (um esboço, dez vezes menor que a tela) e o preview: o HTML do Trilho A que o site renderiza, que É a tela. No Trilho A ele se copia; no Trilho B ele diz o arranjo e os blocos de layout que a tela em Angular tem de reproduzir (ADR-012).',
     inputSchema: {
       type: 'object',
       required: ['projeto', 'tela'],
       properties: {
         projeto: { type: 'string' },
         tela: { type: 'string' },
-        incluirPreview: { type: 'boolean', description: 'Inclui o HTML do Trilho A (grande). Padrão: false.' },
+        incluirPreview: { type: 'boolean', description: 'false omite o preview (o HTML do Trilho A, ~20 mil caracteres) quando só as notas e regras interessam. Padrão: true, porque sem ele a resposta descreve a tela e não a entrega.' },
       },
     },
   },
@@ -227,7 +227,11 @@ function listarTelas({ projeto } = {}) {
     }));
 }
 
-function obterTela({ projeto, tela, incluirPreview = false } = {}) {
+// O preview vem POR PADRÃO desde 03/10/2026. Antes era opt-in, e a resposta
+// padrão era uma tela sem a tela: notas, regras e um esboço em Angular dez
+// vezes menor que a marcação real. Um agente que não sabia da chave construía
+// a tela a partir da descrição e chegava parecido, nunca igual.
+function obterTela({ projeto, tela, incluirPreview = true } = {}) {
   const p = dados().projetos.find((x) => x.id === projeto);
   const t = p?.templates.find((x) => x.id === tela);
   if (!t) return { erro: `Tela "${projeto}/${tela}" não existe.`, existentes: listarTelas({ projeto }) };

@@ -2045,6 +2045,20 @@ const FN_ANUNCIA = `
 
 export const estadoScript = `
 (function () {
+  /* REFERÊNCIA OU APLICAÇÃO (ADR-057, 03/10/2026). Este mesmo script sai em
+   * dist/css/ucam-comportamento.js para a aplicação do Trilho A. A diferença
+   * entre os dois lugares é UMA: a tela de referência carrega data-referencia
+   * no <html>, e só nela os tratadores de agir() que fingem o servidor
+   * (arquivar, bloquear, finalizar análise…) rodam. Na aplicação o clique em
+   * [data-acao] dispara o evento ucam:acao e para — o serviço é de quem a
+   * escreve. As ações que são só interface (UI abaixo) rodam nos dois. */
+  var REF = document.documentElement.hasAttribute('data-referencia');
+  var UI = {
+    'imprimir': 1, 'marcar-lidas': 1, 'anexar': 1, 'remover-anexo': 1,
+    'etapa-continuar': 1, 'etapa-voltar': 1, 'etapa-inicio': 1,
+    'filtros': 1, 'limpar-busca': 1, 'limpar-filtros': 1, 'remover-filtro': 1,
+    'limpar-selecao': 1, 'limpar-campos': 1, 'descartar-form': 1, 'copiar': 1
+  };
   var RE = /^(Fixar|Remover) (.+) (nos|dos) (.+)$/;
 
   function alvoDe(botao) {
@@ -4168,9 +4182,15 @@ ${FN_ANUNCIA}
     // chamada ao serviço.
     var acao = t.closest('[data-acao]');
     if (acao) {
+      if (acao.getAttribute('aria-disabled') === 'true') { e.preventDefault(); return; }
+      var qual = acao.getAttribute('data-acao');
+      // A aplicação escuta aqui. preventDefault() no evento ucam:acao diz
+      // "já cuidei" e nada mais corre — nem o padrão do clique.
+      var evento = new CustomEvent('ucam:acao', { bubbles: true, cancelable: true, detail: { acao: qual, controle: acao } });
+      if (!acao.dispatchEvent(evento)) { e.preventDefault(); return; }
+      if (!REF && !UI[qual]) return; // ação de sistema fora da referência: o clique segue o seu curso
       e.preventDefault();
-      if (acao.getAttribute('aria-disabled') === 'true') return;
-      agir(acao, acao.getAttribute('data-acao'));
+      agir(acao, qual);
       return;
     }
 
@@ -4992,7 +5012,7 @@ ${FN_ANUNCIA}
    * caminho de ordenação que pode divergir do primeiro. */
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-acao="salvar-preferencias"]');
-    if (!b) return;
+    if (!b || !document.documentElement.hasAttribute('data-referencia')) return; // ADR-057: gravar é do servidor
     var painel = b.closest('.ucam-drawer') || document;
     Array.prototype.forEach.call(painel.querySelectorAll('[data-pref-mostra]'), function (cx) {
       var seletor = cx.getAttribute('data-pref-mostra');
@@ -5133,6 +5153,7 @@ ${FN_ANUNCIA}
     // Salvar grava: o que está marcado passa a ser o estado salvo.
     document.addEventListener('click', function (e) {
       if (!(e.target.closest && e.target.closest('[data-acao="salvar"]'))) return;
+      if (!document.documentElement.hasAttribute('data-referencia')) return; // ADR-057: gravar é do servidor
       Array.prototype.forEach.call(document.querySelectorAll('tbody .td--selecao input[type="checkbox"]'), function (c) { c.defaultChecked = c.checked; c.checked = c.defaultChecked; });
       limpaSelos(false);
       contaAlteracoes();
@@ -6002,12 +6023,15 @@ ${FN_ANUNCIA}
     }
     if (!aberta) return;
     // Salvar que NÃO fecha: o que está nos controles passa a ser o salvo.
+    // ADR-057: gravar na linha é o protótipo fingindo o servidor; na
+    // aplicação a gaveta só abre, prende o foco e fecha.
+    var REF = document.documentElement.hasAttribute('data-referencia');
     if (e.target.closest('[data-acao="salvar"]:not([data-fecha-gaveta])') && aberta.contains(e.target)) {
-      gravar(aberta, gatilho && gatilho.closest('tr'));
+      if (REF) gravar(aberta, gatilho && gatilho.closest('tr'));
       return fotografar(aberta);
     }
     if (e.target.closest('[data-fecha-gaveta]')) {
-      if (e.target.closest('[data-acao="salvar"]')) gravar(aberta, gatilho && gatilho.closest('tr'));
+      if (REF && e.target.closest('[data-acao="salvar"]')) gravar(aberta, gatilho && gatilho.closest('tr'));
       return fechar();
     }
     if (e.target.classList && e.target.classList.contains('ucam-drawer-scrim')) return fechar();

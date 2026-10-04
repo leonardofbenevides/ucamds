@@ -15,6 +15,8 @@ import {
   signal,
   TemplateRef,
   ViewEncapsulation,
+  afterRenderEffect,
+  viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 
@@ -165,7 +167,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       [attr.aria-label]="responsive() === 'scroll' ? caption() : null"
       [attr.aria-busy]="state() === 'loading' ? 'true' : null"
     >
-      <table [class]="classesTabela()">
+      <table [class]="classesTabela()" [attr.data-apertada]="apertada() ? '' : null">
         <caption class="ucam-sr-only">
           {{ caption() }}
         </caption>
@@ -173,13 +175,15 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
           <tr>
             @if (selectable() === 'multiple') {
               <th scope="col" class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')">
-                <input
-                  type="checkbox"
-                  [checked]="todasMarcadas()"
-                  [indeterminate]="parcialmenteMarcadas()"
-                  aria-label="Selecionar todas as linhas desta página"
-                  (change)="alternarTodas($event)"
-                />
+                <label class="ucam-table__check">
+                  <input
+                    type="checkbox"
+                    [checked]="todasMarcadas()"
+                    [indeterminate]="parcialmenteMarcadas()"
+                    aria-label="Selecionar todas as linhas desta página"
+                    (change)="alternarTodas($event)"
+                  />
+                </label>
               </th>
             } @else if (selectable() === 'single') {
               <th scope="col" class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')"><span class="ucam-sr-only">Seleção</span></th>
@@ -191,11 +195,17 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 [style.text-align]="alinhamento(col)"
                 [attr.aria-sort]="ariaSort(col)"
                 [class.ucam-table__col-min]="col.width === 'min'"
+                [class.ucam-table__acoes]="col.type === 'actions'"
                 [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
                 [class.ucam-col--fixa-fim]="ladoFixo(col) === 'end'"
                 [style.--ucam-col-x]="deslocamento(col)"
               >
-                @if (columnMenu()) {
+                @if (col.type === 'actions') {
+                  <!-- A coluna de ações não ordena, não fixa e não se oculta: o
+                       rótulo existe para quem ouve, como na folha do Trilho A
+                       (th--acoes). Um menu aqui prometia três coisas vazias. -->
+                  <span class="ucam-sr-only">{{ col.header }}</span>
+                } @else if (columnMenu()) {
                   <!-- O cabeçalho ABRE o menu da coluna (contrato data-table,
                        column-menu). O indicador fica sempre visível: é ele que
                        diz qual coluna governa a ordem sem abrir nada. -->
@@ -237,13 +247,15 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
               >
                 @if (selectable() !== 'none') {
                   <td class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')">
-                    <input
-                      [type]="selectable() === 'single' ? 'radio' : 'checkbox'"
-                      [attr.name]="selectable() === 'single' ? nomeGrupo : null"
-                      [checked]="marcadas().has(linha)"
-                      [attr.aria-label]="'Selecionar ' + identificador(linha)"
-                      (change)="alternarLinha(linha)"
-                    />
+                    <label class="ucam-table__check">
+                      <input
+                        [type]="selectable() === 'single' ? 'radio' : 'checkbox'"
+                        [attr.name]="selectable() === 'single' ? nomeGrupo : null"
+                        [checked]="marcadas().has(linha)"
+                        [attr.aria-label]="'Selecionar ' + identificador(linha)"
+                        (change)="alternarLinha(linha)"
+                      />
+                    </label>
                   </td>
                 }
 
@@ -251,6 +263,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                   <td
                     [style.text-align]="alinhamento(col)"
                     [attr.data-label]="col.header"
+                    [class.ucam-table__acoes]="col.type === 'actions'"
                     [class.ucam-table__num]="col.type === 'number' || col.type === 'currency'"
                     [class.td--pessoa]="col.type === 'person'"
                     [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
@@ -358,6 +371,10 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       overflow: clip;
     }
     .ucam-table-moldura--faixa > .ucam-table-wrap { border: 0; border-radius: 0; }
+    /* Dentro de um cartão a moldura é do cartão, como na folha do Trilho A:
+       com a própria borda, a tabela entrava 1px para dentro e a prova de
+       paridade via toda a grade deslocada (04/10/2026). */
+    .ucam-card > ucam-data-table > .ucam-table-moldura > .ucam-table-wrap { border: 0; border-radius: 0; }
     /* Linha acionável: o ponteiro diz que a linha inteira responde. O
        caminho do teclado continua sendo o link da célula identificadora. */
     .ucam-table__linha--acionavel { cursor: pointer; }
@@ -379,14 +396,34 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
          secundária e o ícone de coluna dizem que a fileira é rótulo. */
       background: var(--ucam-color-surface-default);
       border-block-end: 1px solid var(--ucam-color-border-default);
-      padding: var(--ucam-space-inset-sm) var(--ucam-space-inset-md);
+      /* OS MESMOS RECUOS DA FOLHA DO TRILHO A (03/10/2026). A prova de
+         paridade de tela (tools/prova-paridade-tela.mjs) mediu a tabela de
+         naturezas 957px larga aqui contra 804px lá, com a mesma fonte e as
+         mesmas colunas: 16px de recuo lateral contra 12 — a folha baixou para
+         12 em 25/09 (seis colunas gastavam 192px só de recuo) e esta base
+         não acompanhou. 8px na vertical do cabeçalho e 13px na célula são os
+         números da folha, medidos, e dão a linha de 87px que ela dá. */
+      padding: var(--ucam-space-inline-sm) var(--ucam-space-inset-sm);
+      /* O papel table-header inteiro, como a folha: sem a entrelinha do
+         papel o cabeçalho media 36px aqui e 40 lá. */
+      font-size: var(--ucam-typography-table-header-font-size);
+      letter-spacing: var(--ucam-typography-table-header-letter-spacing);
+      line-height: var(--ucam-typography-table-header-line-height);
       white-space: nowrap;
     }
     /* Fio vertical entre colunas (ADR-051), menos logo depois da seleção.
        :where() segura em (0,1,1), empatado com o "border: 0" do empilhado,
        que vem depois e por isso vence. */
-    .ucam-table tr > :where(th, td):where(:not(.ucam-table__sel)) + :where(th, td) {
+    /* Só na CÉLULA: o cabeçalho já desenha o mesmo fio por sombra interna
+       (regra do sticky, abaixo), e com borda por cima ele media 1px a mais
+       que a célula em cada coluna — quatro pixels tirados da identificadora
+       (prova de paridade, 04/10/2026). A folha do Trilho A faz igual: borda
+       no corpo, sombra no cabeçalho. */
+    .ucam-table tr > :where(td):where(:not(.ucam-table__sel)) + :where(td) {
       border-inline-start: 1px solid var(--ucam-color-border-subtle);
+    }
+    .ucam-table thead tr > :where(th):where(:not(.ucam-table__sel)) + :where(th) {
+      box-shadow: inset 1px 0 0 var(--ucam-color-border-subtle);
     }
     .ucam-table th .ucam-table__icone { color: var(--ucam-color-text-placeholder); }
     .ucam-table th > .ucam-table__icone {
@@ -411,11 +448,16 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       z-index: 1;
     }
     .ucam-table td {
-      padding: var(--ucam-space-inset-sm) var(--ucam-space-inset-md);
+      /* 13px na vertical: ver o comentário do th. */
+      padding: 0.8125rem var(--ucam-space-inset-sm);
       border-block-end: 1px solid var(--ucam-color-border-subtle);
-      /* Alinhamento ao TOPO: o padrão do navegador é middle, e basta uma
-         célula com duas linhas para desalinhar a fileira inteira. */
-      vertical-align: top;
+      /* CENTRO, como a folha do Trilho A (04/10/2026). Esta base alinhava ao
+         topo "para a célula de duas linhas não desalinhar a fileira"; a
+         folha argumenta o contrário e mede: com o topo, a célula de texto
+         puro assenta na primeira linha-base e a vizinha com selo assenta a
+         caixa do selo, e as duas nunca coincidem. A prova de paridade pegou
+         toda célula de uma linha pintada 20px acima da referência. */
+      vertical-align: middle;
       color: var(--ucam-color-text-primary);
     }
     .ucam-table tbody tr:last-child td { border-block-end: 0; }
@@ -431,6 +473,24 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table .td--pessoa__nome:focus-visible { text-decoration: underline; }
     .ucam-table .td--apoio { font-size: var(--ucam-typography-caption-font-size); color: var(--ucam-color-text-secondary); white-space: nowrap; }
     .ucam-table__col-min { inline-size: 1%; white-space: nowrap; }
+    /* A CÉLULA IDENTIFICADORA DE DUAS LINHAS (título + apoio) tem piso de
+       8rem, como na folha do Trilho A: sem ele o algoritmo da tabela a
+       espremia a 134px e o apoio descia para três linhas enquanto a coluna
+       vizinha sobrava (prova de paridade, 04/10/2026). */
+    .ucam-table tbody tr > td:not(.ucam-table__sel):nth-child(1 of :not(.ucam-table__sel)):has(> .ucam-card__titulo) { min-inline-size: 8rem; }
+    /* A coluna de AÇÕES mede o que os botões medem e nunca os empilha — como
+       o .td--acoes da folha do Trilho A. Sem isto a prova de paridade pegou
+       dois botões de 36px um sobre o outro numa célula de 70px, e a linha
+       inteira crescendo de 87 para 107px por causa deles (03/10/2026). */
+    .ucam-table__acoes { inline-size: 1%; white-space: nowrap; }
+    .ucam-table__acoes > * { flex-wrap: nowrap; }
+    /* O ARRANJO APERTADO, como na folha do Trilho A (tabelaScript, 03/10/2026):
+       quando a tabela não cabe no invólucro, antes de rolar ela abre mão do
+       ícone de tipo no cabeçalho e deixa o apoio quebrar. Medido pela prova
+       de paridade: os quatro ícones custavam 80px e eram a diferença entre
+       uma tabela que cabe em 804px e uma que rola a 847. */
+    .ucam-table[data-apertada] thead .ucam-table__icone { display: none; }
+    .ucam-table[data-apertada] .td--apoio { white-space: normal; }
 
     /* O realce da linha sob o ponteiro faz o trabalho da zebra e faz melhor:
        acompanha o olho em vez de pintar metade da tabela. */
@@ -474,6 +534,70 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        junto e o deslocamento da fixa é exatamente esta medida. */
     .ucam-data-table-host { --ucam-table-sel-w: 3rem; }
     .ucam-table__sel { inline-size: var(--ucam-table-sel-w); min-inline-size: var(--ucam-table-sel-w); }
+    /* A CAIXA DE SELEÇÃO DA TABELA, com o desenho do .ucam-check da folha do
+       Trilho A (03/10/2026). Era o <input> nativo de 13px: a linha de
+       cabeçalho media 36px aqui e 40 lá, porque lá é o rótulo de 24px que
+       dá a altura. O alvo é o rótulo (24px); a caixa desenhada tem 20. */
+    .ucam-table__check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-inline-size: var(--ucam-size-icon-lg);
+      min-block-size: var(--ucam-size-icon-lg);
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    .ucam-table__check input {
+      appearance: none;
+      margin: 0;
+      flex: none;
+      inline-size: var(--ucam-size-icon-md);
+      block-size: var(--ucam-size-icon-md);
+      background: var(--ucam-color-surface-default);
+      border: 1px solid var(--ucam-color-border-default);
+      border-radius: var(--ucam-radius-miudo);
+      cursor: pointer;
+      position: relative;
+      display: block;
+    }
+    .ucam-table__check input[type='radio'] { border-radius: 50%; }
+    .ucam-table__check input::after {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      translate: -50% -50%;
+    }
+    .ucam-table__check input:checked,
+    .ucam-table__check input:indeterminate {
+      background: var(--ucam-color-action-primary-default);
+      border-color: var(--ucam-color-action-primary-default);
+    }
+    .ucam-table__check input[type='checkbox']:checked::after {
+      content: '';
+      inline-size: 0.3rem;
+      block-size: 0.55rem;
+      border: solid var(--ucam-color-text-on-action);
+      border-width: 0 2px 2px 0;
+      transform: translateY(-1px) rotate(45deg);
+    }
+    .ucam-table__check input[type='radio']:checked::after {
+      content: '';
+      inline-size: 0.5rem;
+      block-size: 0.5rem;
+      border-radius: 50%;
+      background: var(--ucam-color-text-on-action);
+    }
+    .ucam-table__check input:indeterminate::after {
+      content: '';
+      inline-size: 0.55rem;
+      block-size: 2px;
+      background: var(--ucam-color-text-on-action);
+    }
+    .ucam-table__check:hover input:not(:checked):not(:indeterminate) { border-color: var(--ucam-color-border-strong); }
+    .ucam-table__check input:focus-visible {
+      outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+      outline-offset: var(--ucam-focus-ring-offset);
+    }
 
     /* -- menu da coluna ---------------------------------------------------- */
     .ucam-table__coluna {
@@ -487,6 +611,14 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       color: inherit;
       cursor: pointer;
     }
+    /* O menu da coluna é um <ucam-menu> ao lado do botão, e o painel dele
+       abre no overlay do CDK — o host no th é só o molde. Em fluxo, o molde
+       dava largura MÍNIMA ao cabeçalho: os itens escondidos ("Fixar à
+       esquerda", "Ocultar coluna") mediam 163px e a coluna Unidades saía
+       188 em vez de 182, roubando seis pixels da coluna identificadora
+       (prova de paridade, 03/10/2026). Fora do fluxo, ele não mede nada;
+       o th é sticky, logo posicionado, e segura o absoluto. */
+    .ucam-table th > ucam-menu { position: absolute; inline-size: 0; block-size: 0; overflow: hidden; }
     .ucam-table__coluna ucam-icon { color: var(--ucam-color-text-placeholder); }
     .ucam-table__coluna:hover,
     .ucam-table__coluna[aria-expanded='true'] { color: var(--ucam-color-text-primary); }
@@ -696,18 +828,60 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
   protected readonly marcadas = this.selecao.asReadonly();
 
   /**
+   * A SELEÇÃO VINDA DE FORA (03/10/2026). Até aqui a tabela só EMITIA o que
+   * estava marcado (selectionChange); a aplicação não tinha como marcar —
+   * restaurar a escolha ao voltar de um detalhe, limpar pela barra de lote
+   * que ela mesma desenha, ou montar a tela de referência no estado da foto.
+   * Com `selected`, o par [selected]/(selectionChange) fecha o ciclo. A
+   * tabela só reage quando a lista de fora MUDA: o que a pessoa marca
+   * continua passando por selecao, sem voltar por aqui.
+   */
+  readonly selected = input<readonly T[]>([]);
+  private readonly selecaoDeFora = effect(() => {
+    this.selecao.set(new Set(this.selected()));
+  });
+
+  /**
    * Quantas colunas cabem em `priority`. Medido no CONTÊINER, com
    * ResizeObserver: a estratégia depende de quanto espaço a tabela tem, e não
    * de qual é a janela.
    */
   private readonly largura = signal(Number.POSITIVE_INFINITY);
 
+  /**
+   * A tabela não cabe no invólucro? Então o arranjo apertado (ver o CSS de
+   * [data-apertada]) — a mesma regra do tabelaScript da folha do Trilho A.
+   * Mede-se com o atributo tirado, senão a tabela que já apertou passa a
+   * caber e o laço nunca fecha.
+   */
+  protected readonly apertada = signal(false);
+  private readonly caixa = viewChild<ElementRef<HTMLElement>>('caixa');
+  private mede(): void {
+    const caixa = this.caixa()?.nativeElement;
+    const tabela = caixa?.querySelector('table');
+    if (!caixa || !tabela || this.responsive() !== 'scroll') return;
+    tabela.removeAttribute('data-apertada');
+    const cabe = caixa.scrollWidth <= caixa.clientWidth + 1;
+    if (!cabe) tabela.setAttribute('data-apertada', '');
+    this.apertada.set(!cabe);
+  }
+
   constructor() {
     if (typeof ResizeObserver !== 'undefined') {
-      const ro = new ResizeObserver((e) => this.largura.set(e[0].contentRect.width));
+      const ro = new ResizeObserver((e) => {
+        this.largura.set(e[0].contentRect.width);
+        this.mede();
+      });
       ro.observe(this.hospedeiro.nativeElement);
       inject(DestroyRef).onDestroy(() => ro.disconnect());
     }
+    // Depois de cada pintura em que as linhas ou as colunas mudaram.
+    afterRenderEffect(() => {
+      this.rows();
+      this.columns();
+      this.hidden();
+      this.mede();
+    });
 
     if (ngDevMode) {
       effect(() => {

@@ -17,6 +17,7 @@ import { contrast, grade } from './lib/wcag.mjs';
 import { listboxSelects, listboxScript } from './lib/select-listbox.mjs';
 import { menuContaScript, estadoScript, descricaoScript, linhaDoTempoScript, abasScript } from './lib/shell.mjs';
 import { iconCss } from './lib/icon-css.mjs';
+import { comTelasVivas } from './lib/telas-vivas.mjs';
 import { SISTEMAS, HERDA_MARCA, DESVIO_L, subpaleta } from './lib/subpaleta.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -666,7 +667,11 @@ const densidade = {
 // código do site lia mais, num arquivo que o bundle do cliente importa
 // inteiro. Quem monta o shell para valer é tools/build-templates.mjs, que
 // sempre teve o seu próprio renderShell.
-const telas = projetos.map((proj) => ({
+// A TELA VIVA substitui o esboço (03/10/2026): quando a tela existe montada em
+// Angular (site/src/app/pages/vivo/), o `codigo` que o site mostra é o
+// template dela, e `vivo: true` liga a rota /vivo/<projeto>/<tela>. Ver
+// lib/telas-vivas.mjs — o kit de agentes faz o mesmo, pelo mesmo módulo.
+const telas = comTelasVivas(projetos).map((proj) => ({
   ...proj,
   // O preview CRU também fica de fora: é a entrada de quem monta a tela, e
   // quem monta a tela é o build. O site só precisa do nome do arquivo.

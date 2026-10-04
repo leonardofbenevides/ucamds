@@ -221,6 +221,12 @@
       }
     },
     {
+      "nome": "selected",
+      "tipo": "readonly T[]",
+      "default": "[]",
+      "descricao": "As linhas marcadas, vindas da aplicação. Entrou em 03/10/2026 porque a tabela só EMITIA a seleção (selectionChange) e ninguém conseguia marcá-la por fora: restaurar a escolha ao voltar de um detalhe, limpar pela barra de lote que a página monta, ou abrir a tela de referência no estado da foto. O par [selected]/(selectionChange) fecha o ciclo; a tabela só reage quando a lista de fora muda, e o que a pessoa marca continua saindo por selectionChange."
+    },
+    {
       "nome": "rowClickable",
       "tipo": "boolean",
       "default": "false",
@@ -606,6 +612,6 @@
       "raiz": ".ucam-table-wrap mais .ucam-table",
       "nota": "A barra de seleção em lote é .ucam-lote, irmã da tabela e não filha: ela aparece e some conforme a seleção, e dentro do <table> não haveria onde pôr um elemento que não é linha. O menu da coluna é .ucam-table__coluna (o gatilho, dentro do th) mais .ucam-menu.ucam-menu--coluna; quem ordena, fixa e oculta de verdade é o estadoScript de tools/lib/shell.mjs, e as colunas fixas são .ucam-col--fixa-inicio / .ucam-col--fixa-fim."
     },
-    "trilho_b": "ui/projects/ui/src/lib/ucam/data-table/ucam-data-table.ts — pronto. Tabela semântica com menu da coluna (ordenar, fixar, ocultar), seleção, estados, célula de status e de pessoa, moldes por coluna (ng-template ucamCelula), rowClickable + rowClick e a faixa no topo (ucam-table-faixa.ts, componente de atributo [ucamTableFaixa], projetado). Não desenha a barra de lote (.ucam-lote) nem a paginação, que são irmãs da tabela."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/data-table/ucam-data-table.ts — pronto. Tabela semântica com menu da coluna (ordenar, fixar, ocultar), seleção (por dentro e por fora, com [selected]), estados, célula de status e de pessoa, moldes por coluna (ng-template ucamCelula), rowClickable + rowClick e a faixa no topo (ucam-table-faixa.ts, componente de atributo [ucamTableFaixa], projetado). Não desenha a barra de lote (.ucam-lote) nem a paginação, que são irmãs da tabela. Em 03/10/2026 a prova de paridade de tela (tools/prova-paridade-tela.mjs, protocolo/naturezas) alinhou a geometria à folha do Trilho A: recuos de 8/13px por 12px, papel table-header inteiro no cabeçalho, caixa de seleção desenhada (24px de alvo, 20 de caixa), coluna de ações sem menu e sem empilhar os botões, e o arranjo apertado ([data-apertada]: ícone de tipo some e o apoio quebra quando a tabela não cabe), medido por ResizeObserver como o tabelaScript faz."
   }
 }

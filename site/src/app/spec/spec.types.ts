@@ -810,6 +810,11 @@ export interface Tela {
   notas?: string[];
   problemas?: string[];
   codigo?: string;
+  /**
+   * A tela existe montada em Angular (site/src/app/pages/vivo/): `codigo` é o
+   * template dela, não o esboço, e /vivo/<projeto>/<tela> a mostra viva.
+   */
+  vivo?: boolean;
   /** Página autônoma em docs/t/, para abrir a tela em tamanho real. */
   arquivo: string;
   /** De onde se chega e o que cada ação faz (ADR-033). */

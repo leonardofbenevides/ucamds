@@ -730,7 +730,24 @@ kbd {
   background: var(--ucam-color-surface-default);
 }
 
-table {
+/* A TIPOGRAFIA DO SITE TAMBÉM NÃO VALE NA TELA VIVA. O body liga ligaduras
+   e optimizeLegibility para a prosa da documentação; uma aplicação do
+   Trilho B não liga, e a folha do Trilho A tampouco. Com elas ligadas, o
+   mesmo texto media um ou dois pixels diferente de uma tela para a outra, e
+   a prova de paridade acusava diferença onde não há (04/10/2026). */
+body.vivo {
+  font-variant-ligatures: normal;
+  text-rendering: auto;
+  line-height: normal;
+}
+
+/* AS REGRAS DE ELEMENTO DA TABELA NÃO VALEM NA TELA VIVA (03/10/2026). As
+   rotas /vivo/* montam a tela de referência em Angular, sem o cromo do site,
+   para serem comparadas pixel a pixel com o Trilho A — e uma aplicação do
+   Trilho B não tem um `th` em mono nem um `td` com o recuo da documentação.
+   O <body> leva a classe `vivo` nessas rotas (app.component), e :where()
+   mantém a especificidade de elemento: nada mais no site muda de peso. */
+:where(body:not(.vivo)) table {
   inline-size: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
@@ -739,11 +756,11 @@ table {
 
 /* O cabeçalho é a única faixa tingida da tabela. Era isso ou a zebra — as
    duas juntas dão três tons de cinza em quatro linhas. */
-thead th {
+:where(body:not(.vivo)) thead th {
   background: var(--ucam-color-surface-subtle);
 }
 
-th {
+:where(body:not(.vivo)) th {
   text-align: start;
   font-family: var(--f-mono);
   font-size: 0.6875rem;
@@ -757,13 +774,13 @@ th {
   white-space: nowrap;
 }
 
-td {
+:where(body:not(.vivo)) td {
   padding: 0.7rem 0.9rem;
   border-bottom: 1px solid var(--ucam-color-border-subtle);
   vertical-align: top;
 }
 
-tbody tr:last-child td {
+:where(body:not(.vivo)) tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -772,11 +789,11 @@ tbody tr:last-child td {
    canvas branco, é o mesmo cinza dos legados voltando pela porta dos fundos.
    O realce de hover faz o mesmo trabalho, e só quando o olho precisa dele.
    Quem lê por teclado ou toque não perde nada: as réguas continuam lá. */
-tbody tr {
+:where(body:not(.vivo)) tbody tr {
   transition: background var(--transicao);
 }
 
-tbody tr:hover {
+:where(body:not(.vivo)) tbody tr:hover {
   background: var(--ucam-color-surface-subtle);
 }
 
@@ -786,8 +803,8 @@ tbody tr:hover {
    lugar. Com nowrap, o mínimo da coluna passa a ser o token inteiro — e se a
    soma não couber, quem resolve é o overflow-x do .scroller, que é o
    comportamento certo para uma tabela larga. */
-td code,
-th code {
+:where(body:not(.vivo)) td code,
+:where(body:not(.vivo)) th code {
   font-size: 0.75rem;
   white-space: nowrap;
 }

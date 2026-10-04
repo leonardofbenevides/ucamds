@@ -184,8 +184,12 @@ for (const d of DESTINOS.map((x) => join(x.dir, '..', 'marca'))) {
 let n = 0;
 for (const proj of projetos) {
   for (const t of proj.templates) {
+    // data-referencia (ADR-057): é o que liga, nos scripts, os tratadores que
+    // fingem o servidor. A aplicação carrega os mesmos scripts por
+    // dist/css/ucam-comportamento.js, sem o atributo — e neles o clique em
+    // [data-acao] vira o evento ucam:acao em vez de agir.
     const html = `<!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-referencia>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -339,12 +343,35 @@ ${sprite}
 </body>
 </html>`;
 
+    /* A MARCAÇÃO DA TELA, SOZINHA (03/10/2026).
+     *
+     * A pergunta que motivou isto: "o dev chega 100% igual ao exemplo?". No
+     * Trilho A chega, desde que copie o HTML que o quadro renderiza — e esse
+     * HTML não estava à mão de ninguém. A página do site só tinha "Abrir em
+     * nova aba"; o fonte da página autônoma traz cinco mil linhas de CSS
+     * embutido e vinte e oito scripts antes de qualquer marcação; e o
+     * spec.data.json do site deixa o preview de fora de propósito, porque
+     * 620 mil caracteres não cabem no bundle do cliente (ver build-index).
+     *
+     * Este arquivo é o pedaço copiável: o conteúdo da tela, EXATAMENTE como a
+     * página autônoma o monta (título promovido, links religados, select
+     * aposentado trocado pelo listbox), sem a moldura e sem os scripts. A
+     * moldura é do app-shell e se copia no catálogo; os scripts são do
+     * protótipo e não saem em pacote nenhum — a página da tela diz isso ao
+     * lado do botão de copiar, para que a cópia não pareça mais pronta do
+     * que é. */
+    const marcacao = listboxSelects(promoveTitulo(religaPreview(t.preview)));
+
     for (const d of DESTINOS) {
       writeFileSync(
         join(d.dir, `${proj.id}-${t.id}.html`),
         html.replace('__DOC__', esc(d.doc(proj, t))),
         'utf8',
       );
+      // Em fonte/, e não ao lado: as sondas de scratchpad varrem docs/t/*.html
+      // como "as telas", e um fragmento sem script passaria por tela morta.
+      if (!existsSync(join(d.dir, 'fonte'))) mkdirSync(join(d.dir, 'fonte'), { recursive: true });
+      writeFileSync(join(d.dir, 'fonte', `${proj.id}-${t.id}.html`), marcacao.trim() + '\n', 'utf8');
     }
     n++;
   }
