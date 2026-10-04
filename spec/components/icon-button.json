@@ -335,6 +335,7 @@
       "contrato": "O botão comum com o modificador de ícone, que iguala largura e altura e centra o desenho.",
       "raiz": ".ucam-btn--icon",
       "nota": "Não tem classe de raiz própria: é .ucam-btn mais o modificador. O aria-label é obrigatório e é do markup — sem ele o botão fica sem nome acessível, que é o defeito mais comum do parque legado."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/icon-button/ucam-icon-button.ts — <ucam-icon-button>. Separado do Button porque aqui o nome acessível deixa de ser opcional. Entradas: icon, label, variant, tone, size, pressed, disabled, loading, tooltip. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

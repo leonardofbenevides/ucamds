@@ -55,8 +55,8 @@
         "$description": "Texto de leitura. 17,78:1 sobre surface.default e 16,36:1 sobre surface.chao. Grafite, não slate, desde 14/09/2026 (ADR-034): o neutral.900 dava 18:1, mas com 0,04 de croma o texto lia azul-marinho sobre um chão também azulado, e a tela perdia nitidez sem perder contraste numérico."
       },
       "secondary": {
-        "$value": "{grafite.600}",
-        "$description": "Rótulo, legenda, apoio, ícone. 7,77:1 sobre surface.default, 7,15:1 sobre surface.chao e 6,91:1 sobre surface.sunken. Era neutral.550 (5,70:1) desde 10/09/2026 — o pedido de 14/09 foi \"mais contraste nas telas\", e o apoio era o texto que mais pesava na queixa: rótulo de campo, meta de indicador e ícone de navegação saem todos daqui. A hierarquia com o primário continua de 17,8 para 7,8, mais que o dobro, e o peso segue fazendo o resto."
+        "$value": "{grafite.700}",
+        "$description": "Rótulo, legenda, apoio, ícone. 10,43:1 sobre surface.default. Era grafite.600 (7,77:1): em 29/09/2026 a queixa foi \"as telas estão muito cinzas\", e a medida explicou — de 55% a 80% do texto visível de cada tela saía nesta tinta, então o cinza não era claro, era MAIORIA. Um degrau mais escuro devolve peso ao que se lê e mantém a hierarquia (a primária segue 1,7 vez acima, e tamanho e peso fazem o resto). Antes disso: neutral.550 (5,70:1) até 14/09."
       },
       "placeholder": {
         "$value": "{neutral.500}",
@@ -247,8 +247,8 @@
     },
     "border": {
       "subtle": {
-        "$value": "{neutral.200}",
-        "$description": "FIO: divisor de linha de tabela, borda de card, separador de grupo, filete de faixa. Subiu de neutral.150 para neutral.200 em 14/09/2026 (ADR-034): com o conteúdo assentado no chão cinza, o 150 dava 1,09:1 contra o chão e o cartão branco perdia o limite. Quem contorna CONTROLE continua sendo border.default."
+        "$value": "{neutral.250}",
+        "$description": "FIO: divisor de linha de tabela, borda de card, separador de grupo, filete de faixa. Subiu de neutral.150 para neutral.200 em 14/09/2026 (ADR-034): com o conteúdo assentado no chão cinza, o 150 dava 1,09:1 contra o chão e o cartão branco perdia o limite. Quem contorna CONTROLE continua sendo border.default. Subiu de neutral.200 para neutral.250 em 29/09/2026 (\"telas muito cinzas\"): o limite do cartão sobre o branco lia lavado; o 250 fica meio degrau abaixo do 300 de controle, para cartão e campo não se confundirem."
       },
       "default": {
         "$value": "{neutral.300}",
@@ -267,30 +267,30 @@
       }
     },
     "chart": {
-      "$description": "Identidade de SÉRIE em gráfico. Seis slots, atribuídos em ordem fixa e NUNCA reciclados: a sétima série não ganha cor nova, ela vira \"Outros\" ou o gráfico vira pequenos múltiplos. A ordem não é estética — é o mecanismo que mantém os pares VIZINHOS separáveis sob daltonismo, e trocá-la exige rodar tools/check-daltonismo.mjs, que roda no build e reprova distância abaixo de 0,100. O que a ordem NÃO resolve, e nenhuma ordem resolve, é o par não-vizinho: seis matizes não cabem separáveis duas a duas nas três dicromacias, e a partir de quatro séries em cena existe par confundível. Quem carrega a informação sem cor é a tabela equivalente que o contrato do chart obriga a estar sempre no DOM. Estes tokens são proibidos fora de visualização de dados, e as cores de feedback são proibidas aqui: verde não pode significar 'sucesso' num lugar e 'série 6' no outro.",
+      "$description": "Identidade de SÉRIE em gráfico. Refeita em 28/09/2026 pelo validador de paleta (faixa de luminosidade, croma mínimo, separação sob protanopia e deuteranopia, piso de visão normal de ΔE 15 entre vizinhas, contraste): azul, laranja, turquesa, fúcsia, índigo, oliva. Saíram o vinho da marca (é a cor da ação) e o ocre (é o âmbar de atenção). Seis slots, atribuídos em ordem fixa e NUNCA reciclados: a sétima série não ganha cor nova, ela vira \"Outros\" ou o gráfico vira pequenos múltiplos. A ordem não é estética — é o mecanismo que mantém os pares VIZINHOS separáveis sob daltonismo, e trocá-la exige rodar tools/check-daltonismo.mjs, que roda no build e reprova distância abaixo de 0,100. O que a ordem NÃO resolve, e nenhuma ordem resolve, é o par não-vizinho: seis matizes não cabem separáveis duas a duas nas três dicromacias, e a partir de quatro séries em cena existe par confundível. Quem carrega a informação sem cor é a tabela equivalente que o contrato do chart obriga a estar sempre no DOM. Estes tokens são proibidos fora de visualização de dados, e as cores de feedback são proibidas aqui: verde não pode significar 'sucesso' num lugar e 'série 6' no outro.",
       "series-1": {
-        "$value": "{wine.600}",
-        "$description": "Slot 1 — vinho. A primeira série é a cor da marca: o gráfico de uma série só sai bordô."
+        "$value": "{blue.550}",
+        "$description": "Slot 1 — azul. A primeira série NÃO é a marca: o vinho é a cor da ação e fica a ΔE 9 do vermelho de perigo (o portão da marca já avisava), e a barra \"Em caixa\" lia Dinheiro como botão ou alerta (28/09/2026)."
       },
       "series-2": {
-        "$value": "{blue.500}",
-        "$description": "Slot 2 — azul."
+        "$value": "{orange.700}",
+        "$description": "Slot 2 — laranja queimado. Azul, laranja e turquesa são o único trio que passa em TODOS os pares nas duas visões: pizza, dispersão e barra de três partes cabem nele."
       },
       "series-3": {
-        "$value": "{ochre.500}",
-        "$description": "Slot 3 — ocre."
+        "$value": "{teal.500}",
+        "$description": "Slot 3 — turquesa."
       },
       "series-4": {
-        "$value": "{violet.500}",
-        "$description": "Slot 4 — violeta. Vem depois da turquesa, e não antes: violeta e oliva vizinhas reprovam sob tritanopia (d=0,080 no claro e 0,029 no escuro, contra o mínimo de 0,100 do portão da ADR-016), e a turquesa entre as duas resolve. Azul e turquesa ficam a três slots de distância, longe o bastante."
+        "$value": "{fuchsia.700}",
+        "$description": "Slot 4 — fúcsia."
       },
       "series-5": {
-        "$value": "{teal.500}",
-        "$description": "Slot 5 — turquesa. Fica longe do azul na ordem de propósito: encostados, o par reprova no piso de visão normal."
+        "$value": "{indigo.450}",
+        "$description": "Slot 5 — índigo. Longe do azul na ordem: encostados, o par reprova."
       },
       "series-6": {
-        "$value": "{olive.500}",
-        "$description": "Slot 6 — oliva."
+        "$value": "{olive.600}",
+        "$description": "Slot 6 — oliva. Não encosta mais na turquesa: vizinhas, reprovavam o piso de visão normal (ΔE 11,4 < 15)."
       }
     },
     "categoria": {
@@ -386,57 +386,63 @@
     "section-title": {
       "$type": "typography",
       "$value": {
-        "fontSize": "{fontSize.lg}",
+        "fontSize": "{fontSize.xl}",
         "fontWeight": "{fontWeight.semibold}",
         "lineHeight": "1.5rem",
         "letterSpacing": "-0.01em"
-      }
+      },
+      "$description": "18px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 16px, e a 1px do corpo novo deixaria de ler como título."
     },
     "body": {
       "$type": "typography",
       "$value": {
-        "fontSize": "{fontSize.base}",
+        "fontSize": "{fontSize.md}",
         "fontWeight": "{fontWeight.regular}",
         "lineHeight": "1.25rem"
-      }
+      },
+      "$description": "15px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 14px."
     },
     "body-sm": {
       "$type": "typography",
       "$value": {
-        "fontSize": "{fontSize.base}",
+        "fontSize": "{fontSize.md}",
         "fontWeight": "{fontWeight.regular}",
         "lineHeight": "1.25rem"
-      }
+      },
+      "$description": "15px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 14px."
     },
     "label": {
       "$type": "typography",
       "$value": {
-        "fontSize": "{fontSize.base}",
+        "fontSize": "{fontSize.md}",
         "fontWeight": "{fontWeight.medium}",
         "lineHeight": "1.25rem"
-      }
+      },
+      "$description": "15px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 14px."
     },
     "action": {
       "$type": "typography",
       "$value": {
-        "fontSize": "{fontSize.base}",
+        "fontSize": "{fontSize.md}",
         "fontWeight": "{fontWeight.semibold}",
         "lineHeight": "1rem"
-      }
+      },
+      "$description": "15px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 14px."
     },
     "caption": {
       "$type": "typography",
       "$value": {
-        "fontSize": "{fontSize.sm}",
+        "fontSize": "{fontSize.base}",
         "fontWeight": "{fontWeight.regular}",
-        "lineHeight": "1rem"
-      }
+        "lineHeight": "1.125rem"
+      },
+      "$description": "14px em linha de 18px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 13px em 16px."
     },
     "table-header": {
       "$type": "typography",
-      "$description": "O rótulo da coluna é o papel label — 13/500, sem tracking — em tinta secundária. A versão anterior, 12/560 com 0.04em de tracking, lia como monoespaçada ao lado do corpo em 13/400: dois registros tipográficos numa tabela só, e o cabeçalho pesando mais que o dado que ele rotula. A hierarquia entre cabeçalho e célula é de COR (secundária contra primária) e de peso um degrau acima, nunca de família nem de tracking. Mesma régua do rótulo de campo e do título de grupo do menu.",
+      "$description": "O rótulo da coluna é o papel label — 13/500, sem tracking — em tinta secundária. A versão anterior, 12/560 com 0.04em de tracking, lia como monoespaçada ao lado do corpo em 13/400: dois registros tipográficos numa tabela só, e o cabeçalho pesando mais que o dado que ele rotula. A hierarquia entre cabeçalho e célula é de COR (secundária contra primária) e de peso um degrau acima, nunca de família nem de tracking. Mesma régua do rótulo de campo e do título de grupo do menu. 15px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 14px.",
       "$value": {
-        "fontSize": "{fontSize.base}",
+        "fontSize": "{fontSize.md}",
         "fontWeight": "{fontWeight.medium}",
         "lineHeight": "1.25rem",
         "letterSpacing": "0"
@@ -486,19 +492,20 @@
     "$type": "dimension",
     "$description": "Alvos de toque. Mínimo 44x44 CSS px para alvo primário (WCAG 2.5.5 AAA / 2.5.8 AA em 24px).",
     "control-sm": {
-      "$value": "1.75rem",
-      "$description": "28px. Controle de barra de ferramentas e de linha de tabela, onde a altura disputa espaço com o dado."
+      "$value": "2rem",
+      "$description": "28px. Controle de barra de ferramentas e de linha de tabela, onde a altura disputa espaço com o dado. 2rem desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 1.75rem."
     },
     "control-md": {
-      "$value": "2rem",
-      "$description": "32px. Altura padrão de botão e campo.\n\nEsta medida já foi 2rem, subiu para 2.25rem em 29/08 e volta agora — a reversão é deliberada e o motivo mudou. Naquela decisão o corpo do sistema era 16px, e 32px de controle apertavam texto de 16 contra as bordas. Com a escala tipográfica recalibrada o rótulo de botão passa a 13px: 36px de altura em volta de 13px de texto é ar, não conforto, e é justamente o que engorda a interface.\n\nEfeito colateral bem-vindo: 32px é o h-8 nativo da ZardUI. O portão de check-geometria.mjs existe porque a base e a spec discordavam em quatro pixels em TODO controle de formulário; nesta medida elas param de discordar."
+      "$value": "2.25rem",
+      "$description": "32px. Altura padrão de botão e campo.\n\nEsta medida já foi 2rem, subiu para 2.25rem em 29/08 e volta agora — a reversão é deliberada e o motivo mudou. Naquela decisão o corpo do sistema era 16px, e 32px de controle apertavam texto de 16 contra as bordas. Com a escala tipográfica recalibrada o rótulo de botão passa a 13px: 36px de altura em volta de 13px de texto é ar, não conforto, e é justamente o que engorda a interface.\n\nEfeito colateral bem-vindo: 32px é o h-8 nativo da ZardUI. O portão de check-geometria.mjs existe porque a base e a spec discordavam em quatro pixels em TODO controle de formulário; nesta medida elas param de discordar. 2.25rem desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 2rem."
     },
     "control-lg": {
-      "$value": "2.5rem"
+      "$value": "2.75rem",
+      "$description": "2.75rem desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 2.5rem."
     },
     "marcador": {
-      "$value": "1.375rem",
-      "$description": "22px. A altura ÚNICA de toda peça de micro-rótulo: selo de estado, chip de filtro, marcador de prazo.\n\nPeça de micro-rótulo declara altura. Sem isso, cada uma resulta do line-height do próprio texto mais o próprio padding e a família chega à mesma linha com alturas fracionárias diferentes — selo 22,19px, chip 22,78px, prazo 24,19px numa tela só. Peças lado a lado que não fecham no mesmo topo e na mesma base são a diferença entre uma interface desenhada e uma montada.\n\n22px e não 24: o selo tem de caber dentro da linha de tabela e ao lado de um rótulo de 13px sem empurrar a linha para baixo."
+      "$value": "1.5rem",
+      "$description": "22px. A altura ÚNICA de toda peça de micro-rótulo: selo de estado, chip de filtro, marcador de prazo.\n\nPeça de micro-rótulo declara altura. Sem isso, cada uma resulta do line-height do próprio texto mais o próprio padding e a família chega à mesma linha com alturas fracionárias diferentes — selo 22,19px, chip 22,78px, prazo 24,19px numa tela só. Peças lado a lado que não fecham no mesmo topo e na mesma base são a diferença entre uma interface desenhada e uma montada.\n\n22px e não 24: o selo tem de caber dentro da linha de tabela e ao lado de um rótulo de 13px sem empurrar a linha para baixo. 1.5rem desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 1.375rem."
     },
     "contagem": {
       "$value": "1.125rem",
@@ -580,6 +587,26 @@
       "$value": "52rem",
       "$description": "A partir daqui o bloco de divisão põe o painel de apoio ao lado do conteúdo. 52rem = 30rem para o conteúdo (uma tabela de cinco colunas sem cortar a última) + 22rem do painel de apoio mais largo em uso. Abaixo, empilha: painel de apoio espremido em 12rem não apoia nada, e tabela em 24rem esconde coluna."
     },
+    "duas-colunas-largo": {
+      "$value": "60rem",
+      "$description": "A partir daqui o bloco de divisão LARGO (.ucam-split--largo) põe o painel de apoio ao lado. Existe para o conteúdo que tem um controle por linha e não encolhe: a tabela de decisões da isenção, com o seletor Isentar · Não isentar · Pedir documento, mede 571px no mínimo. Com duas-colunas (52rem) ela ficava em 533px a 1280 e rolava na horizontal, cortando o próprio controle da decisão (medido em 28/09/2026). 56rem = 36rem de conteúdo + 18rem do painel padrão + o vão; abaixo, empilha. Painel mais largo que o padrão devolve a rolagem logo acima do limiar e a tabela volta à largura inteira. 60rem desde 01/10/2026 (ADR-056); eram 56. Com o texto a 15px a análise da isenção a 1280 (corpo de 923px) punha o painel ao lado e a tabela rolava 42px com a disciplina em três linhas; a 60rem o painel desce nessa largura e volta ao lado a 1366."
+    },
+    "formulario-2col": {
+      "$value": "35rem",
+      "$description": "Largura da GRADE DE FORMULÁRIO (.ucam-form-grid é o contêiner 'formulario') a partir da qual cabem duas trilhas de campo. A trilha mínima é 17rem — o rótulo mais longo em uso ('Setor responsável', 'Prazo de resposta') e um select de nome de setor sem reticência — e o vão é inline-md (1rem): 2 × 17 + 1 = 35rem. A grade conta as trilhas sozinha (auto-fill); o papel serve às regras que dependem de quantas trilhas há. Entrou em 28/09/2026 com a ADR da grade de formulário, quando a auditoria mediu formulários usando 347px de um cartão de 1547."
+    },
+    "formulario-3col": {
+      "$value": "53rem",
+      "$description": "Três trilhas de 17rem e dois vãos de 1rem. A partir daqui o campo largo (.ucam-field--largo) ocupa duas trilhas e a textarea fica em 1 / span 2 (~48rem, a medida de leitura do corpo) em vez da linha inteira."
+    },
+    "formulario-4col": {
+      "$value": "71rem",
+      "$description": "Quatro trilhas de 17rem e três vãos. É o máximo: acima daqui as trilhas crescem até 30rem (o teto do controle) e a grade para — 4 × 30 + 3 = 123rem —, em vez de abrir uma quinta coluna que separaria o fim da linha do começo da próxima."
+    },
+    "grade-quatro-em-fileira": {
+      "$value": "70rem",
+      "$description": "Largura do CORPO a partir da qual uma grade de quatro cartões (.ucam-grid, trilha mínima de 16rem) cabe numa fileira: 4 × 16rem + 3 vãos de inset-md + o recuo do corpo. Abaixo, a grade de quatro vai a 2 + 2 — nunca 3 + 1, o cartão órfão que o catálogo de relatórios mostrava a 768 (28/09/2026)."
+    },
     "formulario-em-fileira": {
       "$value": "60rem",
       "$description": "Largura do CORPO (.ucam-corpo) a partir da qual uma fileira de formulário de quatro campos cabe numa linha: a coluna do CPF (14ch mais o recuo), três de no mínimo 14rem, os vãos e o recuo do cartão. Abaixo, a fileira que declara .ucam-form-row--quebra passa a duas colunas por linha, em vez de estourar o cartão. Entrou em 25/09/2026, quando o Novo usuário passou de duas colunas de 22rem — metade de um cartão de 1500px vazio — a uma fileira de quatro."
@@ -595,6 +622,10 @@
     "indicadores-em-fileira": {
       "$value": "47rem",
       "$description": "Largura do PRÓPRIO grupo de indicadores (.ucam-stats é contêiner 'indicadores') a partir da qual quatro ladrilhos de 11rem cabem numa fileira: 4 × 11rem + 3 vãos de 1rem. Abaixo, um grupo de quatro vai a 2 + 2 em vez de 3 + 1 — o quarto sozinho na largura inteira lia como o mais importante. Grupo de três não muda: três cabem até 35rem e abaixo disso já caem em 2 + 1 sozinhos."
+    },
+    "lista-em-duas-colunas": {
+      "$value": "64rem",
+      "$description": "Largura do CARTÃO que carrega uma lista de itens (.ucam-card com .ucam-list como filho é contêiner 'lista') a partir da qual a lista vai a duas colunas, na ordem de leitura (1 2 / 3 4). Medido em 29/09/2026 na fila do painel gerencial do Protocolo: a 1920 o cartão tinha 1547px, e nome e data de cada linha ficavam a 1198px um do outro. 64rem = duas colunas de 32rem, e cada linha de 32rem ainda leva avatar, nome, assunto, dois marcadores e o tempo sem reticência. Abaixo, uma coluna, com o conteúdo da linha parando em 40rem."
     }
   },
   "focus": {

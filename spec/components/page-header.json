@@ -302,7 +302,8 @@
       "contrato": "Título da página com descrição e ações opcionais.",
       "raiz": ".ucam-page-header",
       "nota": "Nas telas com .ucam-viewbar ele não aparece: a barra de visão o substitui, e as duas peças juntas desenhariam dois títulos de página empilhados."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/page-header/ucam-page-header.ts — <ucam-page-header>. Implementação nossa. Entradas: variante, title, count, description, breadcrumb, backLink, sticky, favorite. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   },
   "eventos": [
     {

@@ -248,6 +248,7 @@
       "contrato": "<label class=\"ucam-check\"> envolvendo o <input type=\"checkbox\">. O rótulo é o alvo, não só o quadrado.",
       "raiz": ".ucam-check",
       "nota": "O <label> é obrigatório mesmo quando não há texto: é dele que sai a área de toque de 24px que a WCAG 2.5.8 exige, e a seleção de linha de tabela — que nomeia o controle por aria-label — depende só disso."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/checkbox/ucam-checkbox.ts — <ucam-checkbox>. NÃO envolve o z-checkbox da base: ela não tem estado indeterminado, que é requisito do cabeçalho de seleção da DataTable. Entradas: label, labelHidden, hint, checked, indeterminate, disabled, invalid, errorMessage. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

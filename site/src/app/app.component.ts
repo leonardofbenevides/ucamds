@@ -2,6 +2,7 @@ import {
   Component,
   ChangeDetectionStrategy,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -128,6 +129,14 @@ const normaliza = (s: string) =>
          como caixa vazia. Fica no shell para valer em qualquer rota. -->
     <div class="sprite" [innerHTML]="sprite"></div>
 
+    <!-- TELA VIVA SEM MOLDURA (03/10/2026). As rotas /vivo/* são as telas de
+         referência montadas em Angular com @ucam/ui, e existem para serem
+         comparadas pixel a pixel com a página autônoma do Trilho A
+         (tools/prova-paridade-tela.mjs). Qualquer cromo do site em volta
+         estragaria a medida; aqui só sai o roteador. -->
+    @if (vivo()) {
+      <router-outlet />
+    } @else {
     <!-- routerLink + fragment, não href="#conteudo": com <base href="/">, um
          href de fragmento resolve contra a BASE. O skip-link levava para a
          HOME em toda página que não fosse a home — o contrário de pular para
@@ -469,6 +478,7 @@ const normaliza = (s: string) =>
         </p>
       </div>
     </footer>
+    }
   `,
   styles: `
     .sprite {
@@ -1467,6 +1477,21 @@ export class AppComponent {
    *  primeira área para o template nunca ler `null`, mas nada que dependa de
    *  área aparece ali: nem área acesa, nem segundo andar, nem lateral. */
   protected readonly naHome = computed(() => !this.abaAtual());
+
+  /** /vivo/<projeto>/<tela>: a tela de referência em Angular, sem o cromo do site. */
+  protected readonly vivo = computed(() => /^\/vivo(\/|$)/.test(this.url().split(/[?#]/)[0]));
+
+  /**
+   * O <body> carrega `vivo` enquanto a tela viva está no ar. É o gancho que
+   * styles.css usa para NÃO aplicar ali as regras de elemento do site (th em
+   * mono, td com recuo de documentação): uma aplicação do Trilho B não as tem,
+   * e a tela viva precisa medir a aplicação, não o site. Só no navegador —
+   * no prerender não há body a tocar, e a classe chega na hidratação.
+   */
+  private readonly marcaVivo = effect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.classList.toggle('vivo', this.vivo());
+  });
 
   protected readonly navAberta = signal(false);
   protected readonly filtro = signal('');

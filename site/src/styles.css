@@ -97,7 +97,7 @@
      palcos — já paravam. `none` aqui solta de uma vez todo
      `max-inline-size: var(--measure)` do site: .prose, .prose p, .prose li,
      .lede e os usos locais das páginas. A coluna continua tendo limite: o
-     contêiner de 80rem e, nas páginas com índice, a grade de .pagina.
+     contêiner de 96rem (--app-max) e, nas páginas com índice, a grade de .pagina.
 
      O que se perde, e foi aceito: a 1440px uma linha de 16px chega a ~130
      caracteres, acima dos 80 da WCAG 1.4.8 — que é técnica suficiente do
@@ -138,8 +138,15 @@
      esquerda, tema colado na direita, e nada dizendo onde a página começa. O
      número saiu MEDIDO da referência (me-vibe-design.vercel.app: container de
      1280px, com a faixa do cabeçalho de largura total por fora), não estimado
-     no olho. */
-  --app-max: 80rem;
+     no olho.
+
+     96rem = 1536px desde 28/09/2026 (pedido do Leonardo: "mais largura em
+     tudo"). A conta que fecha o número: 1536 − 240 da lateral − 48 de gutter
+     deixa 1248px de coluna, e o preview Desktop das telas (1180px) passa a
+     caber sem escala — a 80rem ele saía reduzido a 84%. O preço conhecido:
+     numa janela de 1440 a régua volta a ser a borda da janela menos o gutter;
+     o contêiner só aparece acima de 1536. */
+  --app-max: 96rem;
   /* Recuo que alinha qualquer faixa de largura total à coluna da aplicação.
      Abaixo de --app-max vale o gutter; acima, soma-se a sobra de cada lado. */
   --recuo-app: max(var(--gutter), calc((100% - var(--app-max)) / 2 + var(--gutter)));
@@ -723,7 +730,24 @@ kbd {
   background: var(--ucam-color-surface-default);
 }
 
-table {
+/* A TIPOGRAFIA DO SITE TAMBÉM NÃO VALE NA TELA VIVA. O body liga ligaduras
+   e optimizeLegibility para a prosa da documentação; uma aplicação do
+   Trilho B não liga, e a folha do Trilho A tampouco. Com elas ligadas, o
+   mesmo texto media um ou dois pixels diferente de uma tela para a outra, e
+   a prova de paridade acusava diferença onde não há (04/10/2026). */
+body.vivo {
+  font-variant-ligatures: normal;
+  text-rendering: auto;
+  line-height: normal;
+}
+
+/* AS REGRAS DE ELEMENTO DA TABELA NÃO VALEM NA TELA VIVA (03/10/2026). As
+   rotas /vivo/* montam a tela de referência em Angular, sem o cromo do site,
+   para serem comparadas pixel a pixel com o Trilho A — e uma aplicação do
+   Trilho B não tem um `th` em mono nem um `td` com o recuo da documentação.
+   O <body> leva a classe `vivo` nessas rotas (app.component), e :where()
+   mantém a especificidade de elemento: nada mais no site muda de peso. */
+:where(body:not(.vivo)) table {
   inline-size: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
@@ -732,11 +756,11 @@ table {
 
 /* O cabeçalho é a única faixa tingida da tabela. Era isso ou a zebra — as
    duas juntas dão três tons de cinza em quatro linhas. */
-thead th {
+:where(body:not(.vivo)) thead th {
   background: var(--ucam-color-surface-subtle);
 }
 
-th {
+:where(body:not(.vivo)) th {
   text-align: start;
   font-family: var(--f-mono);
   font-size: 0.6875rem;
@@ -750,13 +774,13 @@ th {
   white-space: nowrap;
 }
 
-td {
+:where(body:not(.vivo)) td {
   padding: 0.7rem 0.9rem;
   border-bottom: 1px solid var(--ucam-color-border-subtle);
   vertical-align: top;
 }
 
-tbody tr:last-child td {
+:where(body:not(.vivo)) tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -765,11 +789,11 @@ tbody tr:last-child td {
    canvas branco, é o mesmo cinza dos legados voltando pela porta dos fundos.
    O realce de hover faz o mesmo trabalho, e só quando o olho precisa dele.
    Quem lê por teclado ou toque não perde nada: as réguas continuam lá. */
-tbody tr {
+:where(body:not(.vivo)) tbody tr {
   transition: background var(--transicao);
 }
 
-tbody tr:hover {
+:where(body:not(.vivo)) tbody tr:hover {
   background: var(--ucam-color-surface-subtle);
 }
 
@@ -779,8 +803,8 @@ tbody tr:hover {
    lugar. Com nowrap, o mínimo da coluna passa a ser o token inteiro — e se a
    soma não couber, quem resolve é o overflow-x do .scroller, que é o
    comportamento certo para uma tabela larga. */
-td code,
-th code {
+:where(body:not(.vivo)) td code,
+:where(body:not(.vivo)) th code {
   font-size: 0.75rem;
   white-space: nowrap;
 }
@@ -1080,7 +1104,7 @@ a.card:active {
    cartões, palco de demonstração, bloco de pontos, figura.
 
    O que esta regra NÃO faz é alargar a aplicação: --app-max continua em
-   80rem. Aquele número é medido, e a volta de 100rem foi o que produziu um
+   --app-max (96rem desde 28/09). A volta de 100rem foi o que produziu um
    site sem contêiner nenhum numa tela de 1440 — marca colada na esquerda,
    tema colado na direita. A largura que faltava nas páginas não vem de
    esticar a moldura, vem de ENCHER a coluna: é o trabalho de .pontos e da

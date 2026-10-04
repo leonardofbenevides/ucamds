@@ -271,6 +271,7 @@
       "contrato": "O mesmo .ucam-field do campo de texto, com <textarea class=\"ucam-textarea\"> no lugar do input.",
       "raiz": ".ucam-field com .ucam-textarea",
       "nota": "A altura mínima é da classe; o redimensionamento vertical fica com o navegador de propósito, porque texto longo é o caso normal deste controle."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/textarea/ucam-textarea.ts — <ucam-textarea>. Somente leitura (revisão de estados, 13/09/2026): chão sem papel e contorno de fio, com o texto na tinta primária. Entradas: label, labelHidden, hint, placeholder, rows, maxRows, autoGrow, maxLength, required, disabled, readonly, invalid, errorMessage, value. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

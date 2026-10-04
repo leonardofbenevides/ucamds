@@ -938,7 +938,7 @@
       "status": "aceita",
       "data": "2026-09-23",
       "contexto": "Revisão visual das 23 telas de referência em 23/09/2026, por captura de página inteira a 1440px e leitura contra seis referências do gênero (Repliq, Attio, Untitled UI, AlignUI, um painel de portfólio e um de restaurante em tablet). O sistema já era do mesmo gênero; o que o separava das referências era acabamento. (1) O estado escolhido tinha dois sinais na linha de tabela e no item de lista — realce tinto e tarja de 4px na entrada — e quatro no cartão de escolha: borda a 55%, fundo rosado, chip do ícone em tinta cheia e check. É o empilhamento que o usuário recusou na navegação em 09/09 (\"cara de IA\"), e a ADR-022 já dizia que o escolhido se diz pela superfície. A tarja tinha uma medida a favor: o realce sozinho dá 1,08:1 no claro e 1,04:1 no escuro. O número é verdadeiro e a resposta estava errada — a medida pedia um segundo sinal, não uma tarja, e o item ativo da navegação já mostrava qual: o peso. (2) O subitem de navegação ativo subia para surface.default, branco sobre a coluna branca desde a ADR-040: um estado que não se via. (3) Título de grupo da coluna e período/fase da linha do tempo eram as últimas peças em caixa alta com tracking, contra a ADR-003; as referências usam caixa natural em 12px e tinta secundária. (4) As referências trabalham linhas de tabela de 36 a 44px com uma linha; as nossas tinham 67px com duas linhas em toda tabela. O contrato do data-table declarava density compact desde a primeira versão e o Trilho B já emitia a classe; a folha nunca a escreveu. (5) Faltavam quatro peças que as referências têm: barra segmentada com legenda, indicador com ladrilho de ícone, grupo de indicadores com cabeçalho e célula de pessoa com avatar.",
-      "decisao": "Escolhido é UM sinal de superfície (realce action.primary.subtle) e UM de tipografia (peso de ação, 560); a cor fica com o controle que já existe — a caixa marcada, o check do cartão. A tarja de 4px sai da linha de tabela e do item de lista; a célula que nomeia o registro e o título do item sobem ao peso de ação. O cartão de escolha marcado tem borda em tinta cheia de ação e o check, e mais nada: fundo branco, chip neutro. O subitem de navegação ativo fala a mesma língua do item pai: realce tinto e peso, sem borda. Nenhum papel da moldura usa caixa alta forçada: título de grupo da coluna e período/fase da linha do tempo vão a caixa natural, 12px, peso de rótulo e tinta secundária — a exceção que a ADR-003 tolerava deixa de existir. A tabela ganha .ucam-table--compact (8 × 12 na célula, ~36px por linha), só para tabelas em que toda célula tem uma linha. Entram, com contrato e nos dois trilhos: a barra segmentada com legenda (progress, partes de um todo), o indicador com ladrilho de ícone neutro (stat), a composição cartão com cabeçalho + grade contínua para números que se somam, e a célula de pessoa (avatar neutro + nome + apoio na mesma linha). REVISTO EM 24/09/2026: na TABELA o sinal de superfície deixou de ser o fundo tinto e virou um traço de 3px na borda direita da linha, com pontas arredondadas e recuado 6px em cima e embaixo (\"o highlight podia ser só um traço no canto direito, um shape no lado direito\"). Com várias linhas marcadas a tinta em bloco pintava faixas inteiras e o olho perdia a caixa marcada; o traço aponta a linha sem cobri-la. Não é a tarja de 4px na entrada que saiu em 23/09: aquela atravessava a altura e vivia do lado do controle; esta é um shape curto, na ponta oposta, e a tipografia continua sendo o segundo sinal. Em 25/09/2026 a lista foi junto: o item aberto perde o fundo tinto e leva o mesmo shape sólido de 4px na borda direita, de ponta a ponta; o pill de 3px recuado da tabela virou esse mesmo shape (lia como bolinha); e o não lido perde o fundo e o ponto — fica o peso do título (\"queremos fundo branco e com o highlight no lado, um shape sólido de 4px\").",
+      "decisao": "Escolhido é UM sinal de superfície (realce action.primary.subtle) e UM de tipografia (peso de ação, 560); a cor fica com o controle que já existe — a caixa marcada, o check do cartão. A tarja de 4px sai da linha de tabela e do item de lista; a célula que nomeia o registro e o título do item sobem ao peso de ação. O cartão de escolha marcado tem borda em tinta cheia de ação e o check, e mais nada: fundo branco, chip neutro. O subitem de navegação ativo fala a mesma língua do item pai: realce tinto e peso, sem borda. Nenhum papel da moldura usa caixa alta forçada: título de grupo da coluna e período/fase da linha do tempo vão a caixa natural, 12px, peso de rótulo e tinta secundária — a exceção que a ADR-003 tolerava deixa de existir. A tabela ganha .ucam-table--compact (8 × 12 na célula, ~36px por linha), só para tabelas em que toda célula tem uma linha. Entram, com contrato e nos dois trilhos: a barra segmentada com legenda (progress, partes de um todo), o indicador com ladrilho de ícone neutro (stat), a composição cartão com cabeçalho + grade contínua para números que se somam, e a célula de pessoa (avatar neutro + nome + apoio na mesma linha). REVISTO EM 24/09/2026: na TABELA o sinal de superfície deixou de ser o fundo tinto e virou um traço de 3px na borda direita da linha, com pontas arredondadas e recuado 6px em cima e embaixo (\"o highlight podia ser só um traço no canto direito, um shape no lado direito\"). Com várias linhas marcadas a tinta em bloco pintava faixas inteiras e o olho perdia a caixa marcada; o traço aponta a linha sem cobri-la. Não é a tarja de 4px na entrada que saiu em 23/09: aquela atravessava a altura e vivia do lado do controle; esta é um shape curto, na ponta oposta, e a tipografia continua sendo o segundo sinal. Em 25/09/2026 a lista foi junto: o item aberto perde o fundo tinto e leva o mesmo shape sólido de 4px na borda direita, de ponta a ponta; o pill de 3px recuado da tabela virou esse mesmo shape (lia como bolinha); e o não lido perde o fundo e o ponto — fica o peso do título (\"queremos fundo branco e com o highlight no lado, um shape sólido de 4px\"). REVISTO EM 28/09/2026: o shape de 4px da linha escolhida da tabela passa para a borda ESQUERDA, a de entrada (\"o highlight deveria ser do outro lado, sempre no lado esquerdo\"), o mesmo lado do destaque da caixa de entrada: a escolha fala num lado só no sistema.",
       "consequencias": [
         "A folha perde dois blocos de tarja (tabela e lista) e o Trilho B perde os espelhos deles. Nenhuma tela muda de marcação por isso.",
         "A distinção entre título de grupo e item da navegação passa a ser tamanho (12 contra 13), peso e tinta — a mesma das referências. O argumento antigo (os itens do SIGFIN são todos em caixa alta) não se aplica ao DSUCAM, que nunca escreve item em caixa alta.",
@@ -1083,13 +1083,94 @@
         "A escala primitiva não muda: 12px continua existindo para o que é de fato miúdo (iniciais do avatar, ordinal de etapa), e o texto de trabalho deixa de usá-lo."
       ],
       "afeta": [
-        "tokens",
+        "*",
         "data-table",
         "field",
         "button",
         "badge",
         "app-shell"
       ]
+    },
+    {
+      "id": "ADR-055",
+      "titulo": "Formulário ocupa a largura por grade responsiva; o campo tem teto pelo dado",
+      "status": "aceita",
+      "data": "2026-09-28",
+      "contexto": "Pedido de 28/09/2026: \"revisar a largura e o uso da largura dos formulários e das telas no geral, usar melhor a largura sendo responsivo\". A auditoria mediu as 31 telas a 768, 1280, 1440 e 1920 e achou dois modelos de formulário, nenhum respondendo à largura: a fileira com --ucam-cols fixo no style de cada tela (Nova natureza parava em x=737 com o cartão indo a 1547 — 793px de vão morto a 1920; o cartão de parâmetros do cálculo usava 388 de 1514; \"Calcular\" ficava a 560px do último campo) e o campo solto numa pilha, que esticava sem teto (o Tipo do requerimento e o Curso dos filtros chegavam a 1205px; a descrição do requerimento, ~170 caracteres por linha). As grades de cartões saíam 5 + 1, 4 + 2 e com trilhas vazias de 521px.",
+      "decisao": "Uma grade de formulário (.ucam-form-grid) que conta as próprias trilhas: mínimo de 17rem, no máximo quatro, cada uma até 30rem; campos como subgrade de três fileiras; --largo em duas trilhas, --linha na linha inteira, textarea em duas trilhas a partir de três; o grupo (.ucam-form-row dentro da grade) para campos curtos que andam juntos, com a medida do dado. O teto de 30rem passa a valer em todo .ucam-field (menos textarea, --linha e --grow), e a textarea fora da grade para em 48rem. Medidas do dado para CPF, CNPJ, CEP, data, mês, valor, percentual, código, telefone e quantidade. Seção com título ao lado (.ucam-section--lateral) nos formulários longos de seções curtas. Grades de cartões equilibradas pela contagem. Papéis de contêiner novos: formulario-2col/3col/4col e grade-quatro-em-fileira.",
+      "consequencias": [
+        "Nova natureza, Novo integrante e Novo usuário ganham seções com título ao lado e grade de 3 trilhas a 1440 e 4 a 1920; o cálculo de mensalidade põe a matrícula larga e as três datas num grupo na mesma linha; os filtros de relatório fecham em duas linhas de três trilhas com \"Ingresso de/até\" juntos.",
+        "Nenhuma tela passa a rolar na horizontal (medido de 390 a 1920).",
+        "O --ucam-cols no style vira exceção contável, como a boa prática de layouts.json já pedia.",
+        "Pendente: tabelas de até três colunas e listas esticadas a 1920 (grupo-menu, fila do gerencial) seguem na largura do corpo; a grade de sete setores do gerencial tem cartões desiguais e continua 4 + 2 + 1."
+      ],
+      "afeta": [
+        "field",
+        "text-field",
+        "select",
+        "textarea",
+        "date-field",
+        "choice-card",
+        "card"
+      ]
+    },
+    {
+      "id": "ADR-056",
+      "titulo": "Um degrau a mais: texto de trabalho a 15px e controle a 36px",
+      "status": "aceita",
+      "data": "2026-10-01",
+      "contexto": "Pedido de 01/10/2026: \"aumente um pouco a dimensão das coisas nas telas\". A ADR-054 já tinha subido a letra (13 para 14px) sem mexer nas caixas — o botão e o campo continuaram em 32px, o selo em 22, a linha compacta em 41. O resultado era letra maior dentro da mesma caixa: mais legível, mas a tela seguia lendo miúda, porque o que dá a dimensão de uma interface é a caixa e não só o texto. A altura de 32px vinha de uma reversão deliberada (o controle já foi 36px quando o corpo era 16, e voltou a 32 quando o rótulo de botão caiu a 13px: \"36 em volta de 13 é ar\"). Com o rótulo a 15px esse argumento deixa de valer.",
+      "decisao": "Texto e caixa sobem JUNTOS, um degrau cada, pelos tokens. Texto: entra a primitiva fontSize.md (15px) e os papéis body, body-sm, label, action e table-header passam a ela; caption vai a 14px em linha de 18px; section-title vai a 18px, para não ficar a 1px do corpo. O título de página fica em 22px. Caixa: size.control-sm 28 → 32px, control-md 32 → 36px, control-lg 40 → 44px, size.marcador (selo, chip) 22 → 24px. A base ZardUI acompanha (h-8, h-9, h-11, textarea min-h-27), cobrada pelo portão de geometria. A tabela compacta ganha 1px de recuo em cima e embaixo: a linha da fila vai de 42 para 43px. Ícones, avatares, espaçamentos, raios e a faixa do topo não mudam.",
+      "consequencias": [
+        "O controle volta aos 36px de 29/08: a medida segue o tamanho do rótulo, e não o contrário. A base ZardUI deixa de coincidir com o h-8 nativo — o portão check-geometria.mjs é quem segura a divergência.",
+        "Tudo ocupa cerca de 7% a mais na horizontal. Medido em 31 telas a 390, 768, 1280 e 1920px: nenhuma vaza. A fila da isenção passava 18px a 1280 e voltou a caber com o apoio de célula descendo no arranjo apertado (curso em cima, período embaixo).",
+        "O que cortava com reticências numa linha passou a ter duas antes de cortar: apoio do cabeçalho de cartão e apoio do anexo. O rótulo da lista de descrição em painel quebra em vez de cortar; alargar a coluna dele foi tentado e empurrava o valor a três linhas.",
+        "No celular o seletor de período da análise (quatro opções) passava 12px da fileira e rolava; abaixo de controle-deitado o recuo do segmento vai de 12 para 10px e ele volta a caber.",
+        "O limiar do bloco de divisão largo (container.duas-colunas-largo) foi de 56 para 60rem: a 1280 o painel de apoio da análise desce para baixo da tabela, que rolava 42px ao lado dele; a 1366 volta ao lado.",
+        "O avatar pequeno foi a 28px e voltou a 24: a célula de pessoa é toda calculada sobre 1.5rem (linha, recuo, teto do texto), e com 28 o nome saía 2px acima do centro da fileira."
+      ],
+      "afeta": [
+        "*",
+        "button",
+        "text-field",
+        "select",
+        "badge",
+        "data-table",
+        "description-list",
+        "card",
+        "anexo"
+      ]
+    },
+    {
+      "id": "ADR-057",
+      "titulo": "O comportamento das telas de referência sai para a aplicação no mesmo arquivo, e o serviço fica atrás de um evento",
+      "status": "aceita",
+      "data": "2026-10-03",
+      "contexto": "Pergunta de 03/10/2026: \"a gente tem assertividade na hora dos devs pegarem pra fazer as telas? 100% igual aos exemplos\". No visual, o Trilho A chegava: a marcação da tela, copiada, renderiza igual com a mesma folha. No comportamento não havia como chegar. As 31 telas de referência ganham vida por 24 scripts em tools/lib/shell.mjs (navegação sobreposta, menu da conta, busca, abas, gaveta, diálogo, confirmação, toast, menu de coluna, ordenação e seleção da tabela, calendário, listbox do select…), embutidos só nas páginas autônomas; o guia de migração dizia, com razão, que o Trilho A \"não entrega comportamento\" e que cada tela o escreveria. Uma tela copiada ficava idêntica e morta, e o dev reescrevia à mão o que a referência já tinha — a terceira versão do mesmo comportamento, depois do Angular e do protótipo. Ao mesmo tempo, parte desses scripts não é componente: é o protótipo fingindo o servidor (arquivar tira a linha, finalizar análise troca o selo, salvar grava na linha da tabela), e isso não pode chegar a uma aplicação que tem servidor de verdade.",
+      "decisao": "O Trilho A passa a entregar dist/css/ucam-comportamento.js, que é a concatenação dos MESMOS exports de shell.mjs que as telas autônomas carregam — não uma cópia, o mesmo texto, gerado por tools/lib/comportamento.mjs no pnpm css. A diferença entre referência e aplicação é um atributo: a tela autônoma leva data-referencia no <html>, e só com ele os tratadores que fingem o servidor rodam. Sem ele, o clique em [data-acao] dispara o evento ucam:acao (bolha, cancelável, detail { acao, controle }) e para; preventDefault() nele diz \"já cuidei\", e sem isso o clique segue o seu curso. As ações que são só interface (filtros, limpar, etapas do stepper, anexar e remover tile, marcar lidas, imprimir, copiar) rodam nos dois lugares. Os scripts que só montam fixture (grupo × menu, registro criado por ?criado=, soma por período) ficam fora do arquivo. Todo export *Script de shell.mjs tem de estar numa das duas listas, ou o build cai. O arquivo é ensinado na instalação do Trilho A, sai no tarball @ucam/css e é cobrado pelo portão de publicação.",
+      "consequencias": [
+        "Uma tela de referência copiada com a folha e o script responde como no site: abas, gaveta, menu, ordenação, calendário. O que não responde é ação de sistema, e isso agora é visível no código (ucam:acao) em vez de ser um buraco silencioso.",
+        "O Trilho A ganha um comportamento próprio, em JavaScript sem framework, ao lado do Angular do Trilho B. A paridade entre os dois não é cobrada por portão — é cobrada pelo fato de o mesmo script ser o que as telas de referência rodam, e as telas são o que a prova por CDP e a sonda de controles mortos verificam.",
+        "Script novo em shell.mjs exige decisão: aplicação ou referência. O portão em build-css recusa o build sem ela.",
+        "O Trilho A+ continua sendo o caminho para o que a marcação não carrega: combobox com busca e paginação acessível.",
+        "A página da tela no site e o kit de agentes param de dizer que o comportamento 'não vem junto': vem, e o que fica de fora é o serviço."
+      ],
+      "afeta": ["*", "app-shell", "tabs", "drawer", "dialog", "data-table", "date-field", "select", "menu", "textarea", "alert"]
+    },
+    {
+      "id": "ADR-058",
+      "titulo": "A tela de referência existe também em Angular, e a paridade com o Trilho A é medida em pixel",
+      "status": "aceita",
+      "data": "2026-10-04",
+      "contexto": "Até 03/10/2026 nenhuma das 31 telas de referência existia montada com @ucam/ui. O campo codigo de templates.json era um esboço dez vezes menor que a marcação, que ninguém compilava, e o dev do Trilho B remontava a tela olhando o iframe do Trilho A. As provas por CDP que existiam comparavam componente (A contra A+) e a geometria da base; tela inteira nunca tinha sido posta lado a lado. A primeira comparação (protocolo/naturezas a 1180px) achou o que ninguém via: a base alinhava célula ao topo e a folha ao centro, o recuo lateral era 16px contra 12, o cabeçalho de tabela saía em mono por uma regra do site, a caixa de seleção era o input nativo de 13px, o menu da coluna escondido dava largura mínima ao cabeçalho, a coluna de ações empilhava os botões, e a tabela media 957px onde a referência media 804.",
+      "decisao": "Cada tela de referência pode ganhar uma gêmea em Angular em site/src/app/pages/vivo/<projeto>/<tela>.page.ts, escrita como uma aplicação a escreveria: <ucam-*> para componente, classes de arranjo para layout (ADR-012), os mesmos dados e o mesmo estado da foto. A rota /vivo/* sai sem o cromo do site (app.component rende só o roteador e marca body.vivo; styles.css desliga ali as regras de elemento e a tipografia do site). Quando a tela viva existe, o seu template É o codigo que o site e o kit mostram (tools/lib/telas-vivas.mjs); o esboço da spec fica para trás. tools/prova-paridade-tela.mjs fotografa a tela viva e a página autônoma do Trilho A na mesma largura e devolve a fração de pixels diferentes, no todo e por região, com o mapa das diferenças. Não é portão de build — precisa de site construído e Chrome —, é a régua: toda divergência que ela acusa é defeito de um dos dois trilhos, e a folha do Trilho A é a referência enquanto a decisão escrita não disser o contrário.",
+      "consequencias": [
+        "O Trilho B passa a ser medido contra a referência, e não contra a impressão de quem olha. Mexer em componente do Trilho B pede rodar a prova nas telas vivas que o usam.",
+        "O data-table do Trilho B foi alinhado pela primeira medição: recuos 8/13 por 12px, papel table-header, centro na célula, caixa de seleção desenhada, coluna de ações sem menu e sem empilhar, arranjo apertado por ResizeObserver, fio do cabeçalho por sombra, menu da coluna fora do fluxo e a prop selected. A tabela de naturezas foi de 957 para 804px, igual à referência.",
+        "O que a régua ainda acusa em naturezas fica listado para o próximo passo: o app-shell do Trilho B não tem busca global na faixa, selo no sino, hambúrguer, ação de criar antes dos grupos nem chevron de Favoritos; a trilha do page-header sublinha o link no B e não no A, por decisão escrita no B que precisa ser resolvida; o selo do B mede 22px onde a ADR-056 pôs 24; barra de lote e paginação continuam escritas à mão na tela viva.",
+        "Uma tela viva por vez: a prova é cara (build do site e navegador). A primeira é protocolo/naturezas; as próximas seguem o mesmo molde."
+      ],
+      "afeta": ["*", "data-table", "app-shell", "page-header", "badge"]
     }
   ]
 }

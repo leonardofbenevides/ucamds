@@ -1,7 +1,7 @@
 // GERADO por tools/build-icons.mjs a partir de spec/icons.json.
 // NÃO EDITAR À MÃO. Para adicionar um ícone, edite a spec e rode: pnpm run icons
 //
-// 81 ícones em 4 grupos.
+// 82 ícones em 4 grupos.
 
 import { lucideArchive,
   lucideArrowDownRight,
@@ -73,6 +73,7 @@ import { lucideArchive,
   lucideSearch,
   lucideSend,
   lucideSettings,
+  lucideSparkles,
   lucideStar,
   lucideSun,
   lucideTag,
@@ -157,6 +158,7 @@ export type UcamIconName =
   | 'search'
   | 'send'
   | 'settings'
+  | 'sparkles'
   | 'star'
   | 'sun'
   | 'tag'
@@ -218,6 +220,7 @@ export const UCAM_ICONS: Record<string, string> = {
   lucideLoaderCircle,
   lucideInbox,
   lucideClock,
+  lucideSparkles,
   lucideFileText,
   lucideImage,
   lucideFile,
@@ -303,6 +306,7 @@ export const UCAM_ICON_KEY: Record<UcamIconName, string> = {
   'loaderCircle': 'lucideLoaderCircle',
   'inbox': 'lucideInbox',
   'clock': 'lucideClock',
+  'sparkles': 'lucideSparkles',
   'fileText': 'lucideFileText',
   'image': 'lucideImage',
   'file': 'lucideFile',
@@ -388,6 +392,7 @@ export const UCAM_ICON_USO: Record<UcamIconName, string> = {
   'loaderCircle': "Carregando. Sempre com aria-busy no contêiner.",
   'inbox': "Estado vazio.",
   'clock': "Prazo. Acompanha SEMPRE o texto do prazo — o relógio sozinho não diz se falta ou passou (WCAG 1.4.1).",
+  'sparkles': "O que a MÁQUINA sugeriu (sugestão automatizada): a opção sugerida no seletor de decisão e o ladrilho da faixa da IA no topo da tabela. Nunca como ação e nunca sozinho: a mesma tela diz em palavras o que ele marca (a legenda da faixa), e o nome acessível da opção leva \", sugestão\".",
   'fileText': "Requerimento, documento.",
   'image': "Anexo de imagem (JPG, PNG) na figura do Anexo. Não é ícone de galeria nem de foto de perfil — pessoa tem avatar.",
   'file': "Anexo de formato que não é PDF nem imagem, na figura do Anexo. O fileText fica para o documento de texto: é ele que diz \"isto é um comprovante\".",

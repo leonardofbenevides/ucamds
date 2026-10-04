@@ -187,7 +187,9 @@
     {
       "id": "largura-pelo-dado",
       "regra": "A largura do campo sai do tamanho esperado do dado — CPF, CEP e data são campos curtos, nome é campo longo.",
-      "porque": "As larguras arbitrárias do legado ensinam o formato errado: um CPF em campo menor que o do Nome, sem relação com o conteúdo, sugere que cabe menos do que cabe."
+      "porque": "As larguras arbitrárias do legado ensinam o formato errado: um CPF em campo menor que o do Nome, sem relação com o conteúdo, sugere que cabe menos do que cabe.",
+      "medidas": {"ucam-field--cpf":"14ch","ucam-field--cnpj":"18ch","ucam-field--cep":"9ch","ucam-field--data":"10ch + o ícone de calendário (3rem)","ucam-field--mes":"7ch","ucam-field--valor":"14ch, alinhado ao fim, dígitos tabulares","ucam-field--pct":"6ch, alinhado ao fim","ucam-field--codigo":"12ch (código, matrícula)","ucam-field--tel":"15ch","ucam-field--qtd":"8ch + os botões de passo","texto curto, nome, e-mail, select":"a trilha da grade, com teto de 30rem","texto longo (textarea)":"duas trilhas (~48rem) ou a linha inteira; fora da grade, teto de 48rem"},
+      "desde": "28/09/2026, ADR-055: a tabela completa e o teto de 30rem valendo em todo .ucam-field, não só na fileira."
     },
     {
       "id": "erro-diz-o-esperado",

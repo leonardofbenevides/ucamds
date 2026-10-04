@@ -153,6 +153,7 @@ function css() {
     exports: {
       './ucam.css': './css/ucam.css',
       './ucam-fonts.css': './css/ucam-fonts.css',
+      './ucam-comportamento.js': './css/ucam-comportamento.js',
       './tokens/*': './tokens/*',
       './icons/sprite.svg': './icons/sprite.svg',
       './fonts/*': './fonts/*',
@@ -179,6 +180,23 @@ legado — AngularJS, Angular 14 ou anterior, qualquer coisa que aceite um
 \`\`\`
 
 \`ucam.css\` já importa os tokens — não é preciso um terceiro \`<link>\`.
+
+## Comportamento
+
+A folha desenha; \`css/ucam-comportamento.js\` dá à mesma marcação o
+comportamento das telas de referência do design system — é o mesmo código que
+elas rodam (ADR-057): navegação sobreposta, menu da conta, busca da faixa,
+abas, gaveta, diálogo, confirmação, toast, ordenação e seleção da tabela,
+calendário do campo de data, listbox do select.
+
+\`\`\`html
+<script src="node_modules/@ucam/css/css/ucam-comportamento.js" defer></script>
+\`\`\`
+
+Todo controle com \`data-acao\` dispara o evento \`ucam:acao\` (\`detail.acao\`,
+\`detail.controle\`). \`preventDefault()\` nele diz "já cuidei"; sem isso o clique
+segue normal. Os tratadores que fingem o servidor nas telas de referência não
+rodam fora do site do design system.
 
 ## Escopo, e por que ele existe
 

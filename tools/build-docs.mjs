@@ -844,6 +844,12 @@ function templatePage(proj, t) {
     <ul class="list">${t.notas.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
   </section>
 
+  ${t.regras_negocio?.length ? `<section class="sec">
+    <h2>Regras de negócio que a tela supõe</h2>
+    <p class="muted small">O design system não decide estas regras. Só as do legado e as confirmadas são regra; propostas e abertas são perguntas para quem decide.</p>
+    <ul class="list">${t.regras_negocio.map((r) => `<li><strong>${esc({ aberta: 'Sem resposta', proposta: 'Proposta', legado: 'Legado', confirmada: 'Confirmada' }[r.situacao])}.</strong> ${esc(r.regra)} <span class="muted small">Decide: ${esc(r.decide)}</span></li>`).join('')}</ul>
+  </section>` : ''}
+
   <section class="sec">
     <h2>Componentes usados</h2>
     <div class="chips">${t.usa.map((sel) => {

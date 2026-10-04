@@ -42,7 +42,7 @@
     {
       "parte": "tab",
       "obrigatorio": true,
-      "descricao": "Cada recorte. É um <button>, não um link: a aba não muda de endereço. O selecionado ganha tinta de marca e um filete de 2px que cobre o filete da tira — a seleção é uma continuidade entre a aba e o painel, não um destaque solto.",
+      "descricao": "Cada recorte. É um <button>, não um link: a aba não muda de endereço. O selecionado ganha tinta de marca e um traço de 3px que cobre o filete da tira — a seleção é uma continuidade entre a aba e o painel, não um destaque solto.",
       "classe": "ucam-tabs__tab"
     },
     {

@@ -21,6 +21,7 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, copyFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { comTelasVivas } from './lib/telas-vivas.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SAIDA = join(ROOT, 'dist', 'agentes');
@@ -110,7 +111,7 @@ const REGRAS_DE_OURO = [
   'Antes de concluir, rode `ucam_check_usage` (ou `npx ucam-ds checar <arquivo>`) e corrija todo erro.',
 ];
 
-const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042', 'ADR-044']);
+const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042', 'ADR-044', 'ADR-054', 'ADR-055', 'ADR-056']);
 
 
 const secaoEstados = () => {
@@ -231,7 +232,7 @@ ${padroes.map((p) => `- **\`${p.id}\` — ${p.nome}.** ${umaLinha(p.problema, 22
 
 ## Telas de referência
 
-Cada tela já resolvida com o design system, com os problemas do legado, as notas de decisão e o código Angular de partida. Construa a sua a partir da mais parecida: \`ucam_get_template({ projeto, tela })\`.
+Cada tela já resolvida com o design system, com os problemas do legado, as notas de decisão, o código Angular de partida e, em \`preview\`, o HTML do Trilho A que o site renderiza — a tela de verdade, não uma descrição dela. Construa a sua a partir da mais parecida: \`ucam_get_template({ projeto, tela })\`. No Trilho A o \`preview\` se copia e se preenche; no Trilho B ele mostra o arranjo e os blocos de layout que a tela em Angular reproduz com classes (ADR-012). O comportamento que a tela de referência exibe (abas, filtros, gaveta, confirmação, toast) vem junto no Trilho A por \`ucam-comportamento.js\`, o mesmo código das telas (ADR-057); o que a aplicação escreve é o serviço atrás de cada \`data-acao\`, escutando o evento \`ucam:acao\`. No Trilho B vem dos componentes. Tela com \`vivo: true\` já existe montada em Angular: o \`codigo\` dela é o template real, compilado pelo site e comparado pixel a pixel com o Trilho A (ADR-058) — parta dele; sem \`vivo\`, o \`codigo\` é esboço, e o arranjo vem do \`preview\`.
 
 ${secaoTelas}
 `;
@@ -282,7 +283,7 @@ ${fonteDeDados}
 
 ## Ordem de trabalho
 
-1. **Ache a tela parecida.** \`ucam_list_templates\` e \`ucam_get_template\`. Leia \`problemas\` e \`notas\`: são as decisões que a tela de referência já tomou, e a sua deve seguir as mesmas.
+1. **Ache a tela parecida.** \`ucam_list_templates\` e \`ucam_get_template\`. O \`preview\` da resposta é o HTML da tela como o site a renderiza: no Trilho A é o que se copia, no Trilho B é o arranjo a reproduzir. Leia \`problemas\` e \`notas\`: são as decisões que a tela de referência já tomou, e a sua deve seguir as mesmas. Leia também \`regras_negocio\`: é o que a tela SUPÕE do negócio, e não é o design system que decide. Só \`legado\` e \`confirmada\` são regra; \`proposta\` e \`aberta\` são perguntas para quem está em \`decide\` — não as implemente como fato sem essa resposta, e diga ao usuário quais ficaram pendentes. Os números das telas são exemplo, nunca regra.
 2. **Confirme o padrão.** \`ucam_get_pattern\` com o \`padrao\` da tela. As \`regras\` do padrão são obrigatórias (onde fica a ação de criar, onde vive a ordenação, como é o estado vazio).
 3. **Leia o contrato de cada componente** que vai usar, com \`ucam_get_component\`. Olhe \`props\` (nomes e valores válidos), \`limites\` (quando NÃO usar) e \`acessibilidade\`.
 4. **Escreva** com \`<ucam-*>\` (Trilho B) ou com as classes do Trilho A, só com tokens semânticos (\`ucam_get_tokens\`).
@@ -327,7 +328,7 @@ ${lista(migracao.ordem).map((o, i) => `${i + 1}. ${umaLinha(itemTexto(o), 320)}`
 
 1. Passe o trecho legado para \`ucam_migrate_from_legacy\`. Ela devolve as \`sugestoes\` (legado → novo, com a nota quando a conversão não é 1:1) e os \`semCorrespondencia\`.
 2. Para cada sugestão, abra o contrato com \`ucam_get_component\` e confira as props — a nota do mapa muitas vezes diz que o legado estava errado (vermelho em ação que não destrói, diálogo para formulário longo).
-3. Procure a tela de referência do mesmo sistema em \`ucam_list_templates\`: os \`problemas\` dela costumam ser os mesmos da sua tela.
+3. Procure a tela de referência do mesmo sistema em \`ucam_list_templates\` e abra-a com \`ucam_get_template\`: os \`problemas\` dela costumam ser os mesmos da sua tela, e o \`preview\` é o HTML dela como o site o renderiza. No Trilho A, parta DESSE HTML e troque o conteúdo, em vez de converter o legado tag por tag; no Trilho B, ele é o arranjo que a tela em Angular reproduz.
 4. **Refaça os estados, não converta.** \`ucam_get_states\`. O legado desabilita por opacidade e por classe própria (\`.botao--desabilitado\`), e a conversão literal carrega isso para dentro do sistema novo: vira um botão que o portão de contraste dá por bom e ninguém lê. Carregando vira \`aria-busy\`, nunca \`disabled\`.
 5. Rode \`ucam_check_usage\` no resultado.
 
@@ -382,7 +383,14 @@ for (const [nome, conteudo] of [['ucam-ds', skillDs], ['ucam-migrate', skillMigr
 // spec copiada: só o que as ferramentas leem
 const spec = join(SAIDA, 'spec');
 for (const d of ['components', 'patterns', 'decisions']) cpSync(join(ROOT, 'spec', d), join(spec, d), { recursive: true });
-for (const f of ['templates.json', 'migracao.json', 'writing.json', 'layouts.json', 'states.json', 'icons.json']) copyFileSync(join(ROOT, 'spec', f), join(spec, f));
+for (const f of ['migracao.json', 'writing.json', 'layouts.json', 'states.json', 'icons.json']) copyFileSync(join(ROOT, 'spec', f), join(spec, f));
+// templates.json vai ENRIQUECIDO: onde a tela existe montada em Angular, o
+// `codigo` é o template dela e não o esboço — o mesmo que o site mostra
+// (lib/telas-vivas.mjs). O kit é saída gerada; a spec continua intocada.
+{
+  const t = ler('spec/templates.json');
+  writeFileSync(join(spec, 'templates.json'), JSON.stringify({ ...t, projetos: comTelasVivas(t.projetos) }, null, 2) + '\n', 'utf8');
+}
 mkdirSync(join(spec, 'tokens'), { recursive: true });
 for (const f of ['semantic.json', 'theme.dark.json']) copyFileSync(join(ROOT, 'spec', 'tokens', f), join(spec, 'tokens', f));
 copyFileSync(join(ROOT, 'dist', 'tokens', 'ucam-tokens.json'), join(spec, 'tokens', 'ucam-tokens.json'));

@@ -349,6 +349,7 @@
     "trilho_a": {
       "contrato": "Não existe no Trilho A. O painel, o filtro e o teclado precisam de JavaScript; a camada CSS entrega apenas .ucam-select, e o contrato manda cair para ele em tela legada.",
       "raiz": "não entrega"
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/combobox/ucam-combobox.ts — <ucam-combobox>. A escala do Select. Entradas: label, labelHidden, options, placeholder, searchPlaceholder, emptyText, hint, required, disabled, loading, invalid, errorMessage, clearable, width, dependsOn, dependencyFilled, value. Saídas: queryChange. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

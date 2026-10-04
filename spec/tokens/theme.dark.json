@@ -234,22 +234,22 @@
     "chart": {
       "$description": "Os mesmos seis matizes, redegrauados para a superfície escura — não é o claro invertido nem clareado por conta. O conjunto foi verificado de novo contra {neutral.800}: a banda de lightness do escuro é mais estreita (L 0,48–0,67) que a do claro (0,43–0,77), e slot que ficasse fora dela reprovava.",
       "series-1": {
-        "$value": "{wine.400}"
+        "$value": "{blue.450}"
       },
       "series-2": {
-        "$value": "{blue.400}"
+        "$value": "{orange.600}"
       },
       "series-3": {
-        "$value": "{ochre.400}"
-      },
-      "series-4": {
-        "$value": "{violet.400}"
-      },
-      "series-5": {
         "$value": "{teal.400}"
       },
+      "series-4": {
+        "$value": "{fuchsia.650}"
+      },
+      "series-5": {
+        "$value": "{indigo.450}"
+      },
       "series-6": {
-        "$value": "{olive.400}"
+        "$value": "{olive.450}"
       }
     },
     "categoria": {

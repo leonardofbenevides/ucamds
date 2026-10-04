@@ -125,11 +125,22 @@ function remDoContentor(papel) {
   return parseFloat(no.$value);
 }
 
-const contentorAcima = (papel) => {
+const contentorAcima = (papel, nome = 'corpo') => {
   const r = remDoContentor(papel);
   breakpointsEmitidos.add(`min:${r}rem`);
-  return `@container corpo (min-width: ${r}rem)`;
+  return `@container ${nome} (min-width: ${r}rem)`;
 };
+
+/* O que conta como ITEM de uma grade equilibrada: todo filho menos o estado
+ * vazio do filtro, a região de anúncio e o cartão que o filtro escondeu.
+ * Usado dentro de :nth-child(N of …) — ver .ucam-grid. */
+const ITEM_DE_GRADE = ':not(.ucam-empty, .ucam-sr-only, [hidden], template, script)';
+
+/* Tabela de até N colunas de DADO (a de seleção não conta) e o cartão que
+ * pode ter medida própria — ver "A TABELA CURTA TEM TETO". Um :has() só,
+ * porque :has() não aninha: a última coluna de dado é a N-ésima ou antes. */
+const TABELA_ATE = (n) => `.ucam-table > thead > tr > th:nth-last-child(1 of :not(.th--selecao, [hidden])):nth-child(-n+${n} of :not(.th--selecao, [hidden]))`;
+const TABELA_SOLTA = ':not(.ucam-split:not(.ucam-split--apoio-inicio) *):not(:has(~ :is(.ucam-card, .ucam-stats, .ucam-grid))):not(:is(.ucam-card, .ucam-stats, .ucam-grid) ~ *)';
 
 const contentorAbaixo = (papel, nome = 'corpo') => {
   const r = (remDoContentor(papel) - 0.001).toFixed(3);
@@ -355,6 +366,11 @@ const css = `/* @ucam/css — Trilho A
  * componente (menu.json, prop align) e a origem tem de segui-lo — origem
  * fixa faria o painel da esquerda parecer vir da direita. */
 .ucam-menu--inicio { --ucam-surgir-origem: 0 0; }
+/* O alinhamento pelo início POSICIONA, não só muda a origem do surgimento.
+ * O menuContaScript também põe esta classe quando o painel alinhado pela
+ * direita sairia pela borda esquerda da janela (o "⋮" encostado no começo da
+ * linha num telefone) — ver menu.json, prop align. */
+.ucam-menu.ucam-menu--inicio:not(.ucam-menu--coluna) { inset-inline-start: 0; inset-inline-end: auto; }
 /* Painel ancorado ACIMA do gatilho cresce de baixo para cima. */
 .ucam-menu--acima  { --ucam-surgir-origem: 100% 100%; }
 .ucam-menu--acima.ucam-menu--inicio { --ucam-surgir-origem: 0 100%; }
@@ -420,6 +436,13 @@ const css = `/* @ucam/css — Trilho A
   line-height: 1;
   /* text-transform ausente de propósito — ADR-003. */
   white-space: nowrap;
+  /* O botão NÃO encolhe abaixo do rótulo. Com nowrap e o flex-shrink padrão,
+   * a linha apertada espremia a caixa e o texto vazava por cima do vizinho:
+   * a 390px "Copiar linha digitável" (134 em 111), "Continuar para revisão"
+   * com o C cortado, "Alterar filtros" sobre o chip (revisão de 28/09/2026).
+   * Quem cede é a fileira — .ucam-form-actions quebra linha, o rolo de chips
+   * encolhe. */
+  flex-shrink: 0;
   /* Arrastar o ponteiro sobre um botão não deve selecionar o rótulo: seleção
    * azul em cima de ação lê como defeito. */
   user-select: none;
@@ -680,6 +703,29 @@ a.ucam-btn { text-decoration: none; }
   min-inline-size: 0;
 }
 
+/* A LEGENDA NÃO ENTRA NO GAP. O <legend> de um fieldset é "legenda
+ * renderizada": o navegador a desenha fora do fluxo flex do fieldset, e o
+ * gap de 8px entre rótulo e controle nunca chegava nela — medido em
+ * 26/09/2026, "Unidades atendidas" encostava nas caixas com 0px ("faça o
+ * espaçamento correto / maior aqui e nos similares"). A margem dá à legenda
+ * o mesmo degrau que o rótulo de qualquer campo tem até o controle. */
+fieldset.ucam-field > legend {
+  padding: 0;
+  margin-block-end: var(--ucam-space-stack-sm);
+}
+/* OPÇÕES EM FILEIRA respiram mais que botões em fileira: 24px entre uma
+ * caixa e a próxima, contra 16, porque o texto de uma opção e a caixa da
+ * seguinte liam como um par ("Presencial ☐ Anchieta"). Quebrando linha, 12px
+ * entre as fileiras. */
+.ucam-field > .ucam-cluster:has(> :is(.ucam-check, .ucam-radio, .ucam-switch)) {
+  column-gap: calc(var(--ucam-space-inline-md) + var(--ucam-space-inline-sm));
+  row-gap: calc(var(--ucam-space-stack-sm) + var(--ucam-space-inline-xs));
+}
+/* Em coluna (interruptores com apoio), 12px entre uma opção e a outra. */
+.ucam-field > .ucam-stack:has(> :is(.ucam-check, .ucam-radio, .ucam-switch)) {
+  gap: calc(var(--ucam-space-stack-sm) + var(--ucam-space-inline-xs));
+}
+
 .ucam-field + .ucam-field { margin-block-start: var(--ucam-space-stack-md); }
 
 /* A regra acima é de EMPILHAMENTO: dois campos um sob o outro precisam do vão
@@ -851,6 +897,128 @@ ${abaixo('controle-deitado')} {
     inline-size: 100%;
   }
 
+}
+
+/* ------------------------------------------------ teto de todo controle --- */
+/* A TEXTAREA FORA DA GRADE para na medida de leitura (48rem, a mesma de
+ * .ucam-corpo--leitura): a descrição do Novo requerimento abria em 1205px a
+ * 1920, ~170 caracteres por linha (28/09/2026). Na grade quem manda é a
+ * trilha (1 / span 2). */
+:where(:not(.ucam-form-grid) > .ucam-field) > .ucam-textarea { max-inline-size: 48rem; }
+
+/* O TETO É DO CAMPO, não da fileira (28/09/2026, auditoria de largura). O
+ * teto de 30rem só valia em .ucam-form-row > .ucam-field; campo solto numa
+ * pilha esticava até a coluna — o Tipo do requerimento chegava a 1205px a
+ * 1920, e o Curso dos filtros de relatório também. Valem as exceções de
+ * sempre: textarea e compositor (texto de vários parágrafos), campo que
+ * declara ocupar a linha (--linha) ou crescer na barra (--grow). */
+.ucam-field:not(.ucam-field--linha, .ucam-field--grow) > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) {
+  max-inline-size: 30rem;
+}
+
+/* --------------------------------------------------- grade de formulário --- */
+/* A GRADE DE FORMULÁRIO (ADR-055, 28/09/2026: "revisar a largura e o uso da
+ * largura dos formulários, usar melhor a largura sendo responsivo"). Havia
+ * dois modelos e nenhum respondia à largura: a fileira com --ucam-cols fixo
+ * no style de cada tela (Natureza parava em x=737 com o cartão indo a 1547,
+ * 793px de vão morto a 1920) e o campo solto que esticava sem teto.
+ *
+ * A grade conta as trilhas sozinha: trilha mínima de 17rem, no máximo
+ * QUATRO — a conta dentro do minmax impede a quinta —, e cada trilha cresce
+ * até 30rem, o teto do controle. 1 trilha até 35rem, 2 até 53, 3 até 71, 4
+ * acima (container.formulario-*). Num diálogo de 34rem ou no painel de 18rem,
+ * uma; a 768, duas; a 1440, três; a 1920, quatro.
+ *
+ * Cada campo continua sendo subgrade de três fileiras (rótulo, controle,
+ * apoio): rótulo com rótulo e controle com controle alinham na fileira,
+ * mesmo com apoio de duas linhas ao lado de campo sem apoio. O vão entre
+ * rótulo e controle é o do campo (subgrade com gap próprio); entre uma
+ * fileira de campos e a próxima, o da grade. */
+.ucam-form-grid {
+  container: formulario / inline-size;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(max(min(100%, 17rem), calc((100% - 3 * var(--ucam-space-inline-md)) / 4)), 1fr));
+  grid-auto-flow: row;
+  gap: var(--ucam-space-stack-lg) var(--ucam-space-inline-md);
+  align-items: start;
+  max-inline-size: calc(4 * 30rem + 3 * var(--ucam-space-inline-md));
+}
+/* A grade é contêiner (inline-size): não tem largura de conteúdo. Quem a
+ * contém tem de dar a largura — cartão e seção que encolhem pelo conteúdo
+ * (align-items:start) a deixavam crescer até o teto de 123rem, passando da
+ * tela. Ela e o cartão dela esticam na coluna. */
+.ucam-form-grid { inline-size: 100%; }
+:is(.ucam-card, .ucam-section, .ucam-stack, .ucam-dialog__corpo, form):has(> .ucam-form-grid) { align-self: stretch; }
+.ucam-section > .ucam-card:has(> .ucam-form-grid) { align-self: stretch; }
+
+.ucam-form-grid > .ucam-field,
+.ucam-form-grid > .ucam-form-row {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: var(--ucam-space-stack-sm);
+  margin-block-start: 0;
+  min-inline-size: 0;
+}
+/* Na grade o controle preenche a trilha (ela já tem no máximo 30rem); quem
+ * declara a medida do dado (--cpf, --data, --valor...) guarda a sua. */
+.ucam-form-grid > .ucam-field:not([class*="ucam-field--"]) > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]),
+.ucam-form-grid > .ucam-field.ucam-field--largo > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) {
+  inline-size: 100%;
+}
+/* O LARGO preenche as duas trilhas: o teto de 30rem é de UMA trilha, e
+ * parar nele deixava meio palmo de branco antes do vizinho (Nome e Unidade,
+ * Novo usuário a 1440). */
+.ucam-form-grid > .ucam-field--largo > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) { max-inline-size: none; }
+/* O GRUPO: campos curtos que andam juntos (De/Até, Referência + Vencimento +
+ * Desconto, CPF + Nome) numa trilha só. É a .ucam-form-row de sempre posta
+ * na grade: subgrade das três fileiras dela, e os campos, subgrade da
+ * fileira. */
+.ucam-form-grid > .ucam-form-row { grid-template-columns: var(--ucam-cols); gap: 0 var(--ucam-space-inline-md); grid-column: 1 / -1; }
+/* Com uma ou duas trilhas o grupo ocupa a linha: três datas não cabem numa
+ * trilha de 17rem. Com três ou mais, o grupo sem --largo volta a uma trilha
+ * (regra do contêiner abaixo). */
+/* O que ocupa a LINHA INTEIRA: grupo de caixas, grade de escolha, grupo de
+ * interruptores, aviso, anexos. Uma fileira só, sem subgrade. */
+.ucam-form-grid > .ucam-field--linha,
+.ucam-form-grid > :not(.ucam-field, .ucam-form-row) {
+  grid-column: 1 / -1;
+  grid-row: auto;
+}
+.ucam-form-grid > fieldset.ucam-field--linha { display: flex; }
+/* Texto longo: a linha inteira com uma ou duas trilhas; com três ou mais, as
+ * duas primeiras (~48rem, a medida de leitura do corpo). A textarea termina
+ * numa borda de trilha, e não em 45rem num lugar e 1205px no outro. */
+.ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / -1; }
+.ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) > :is(.ucam-textarea, .ucam-compositor) { inline-size: 100%; }
+${contentorAcima('formulario-3col', 'formulario')} {
+  .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / span 2; }
+  /* O campo LARGO (autocompletar de pessoa, curso, tipo): duas trilhas. */
+  .ucam-form-grid > .ucam-field--largo,
+  .ucam-form-grid > .ucam-form-row.ucam-field--largo { grid-column: span 2; }
+  .ucam-form-grid > .ucam-form-row:not(.ucam-field--largo) { grid-column: auto; }
+}
+/* Sem subgrade o campo volta a ser pilha própria: controles podem
+ * desalinhar se um rótulo quebrar, mas nada se sobrepõe. */
+@supports not (grid-template-rows: subgrid) {
+  .ucam-form-grid > .ucam-field { display: flex; grid-row: auto; }
+}
+
+/* A SEÇÃO COM TÍTULO AO LADO (.ucam-section--lateral): em formulário longo
+ * feito de seções curtas, com o corpo acima de duas-colunas, o título e a
+ * descrição vão para uma coluna de até 16rem e o cartão de campos ocupa o
+ * resto — o padrão de página de configuração. Corta o bloco título +
+ * parágrafo + cartão que se repetia na vertical e usa a largura sem
+ * esticar campo. Abaixo, empilha como qualquer seção. */
+${contentorAcima('duas-colunas')} {
+  /* Classe dobrada: .ucam-section (display:flex) vem depois na folha com a
+   * mesma especificidade e desfazia a grade. */
+  .ucam-section.ucam-section--lateral {
+    display: grid;
+    grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+    column-gap: var(--ucam-space-inset-lg);
+    align-items: start;
+  }
 }
 
 .ucam-field__label {
@@ -1304,9 +1472,13 @@ button.ucam-anexo__nome {
 /* Formato, tamanho, estado e motivo da recusa moram na mesma linha de apoio:
  * são as respostas que o parque não dava, e juntas cabem numa caption. */
 .ucam-anexo__apoio {
+  /* Duas linhas antes de cortar (01/10/2026, ADR-056): no painel estreito o
+   * tipo e o tamanho cabiam, e o que o arquivo É ("histórico escolar") sumia. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   font-size: var(--ucam-typography-caption-font-size);
   line-height: var(--ucam-typography-caption-line-height);
   color: var(--ucam-color-text-secondary);
@@ -1672,7 +1844,116 @@ ${selectChevronCss}
  * era o que cortava 10/09/2026 em "10/09/202". */
 .ucam-field--cpf   .ucam-input { inline-size: calc(14ch + 1.5rem); }
 .ucam-field--cep   .ucam-input { inline-size: calc(9ch  + 1.5rem); }
+/* A MEDIDA DO DADO, completa (formats.json > largura-pelo-dado, 28/09/2026):
+ * CNPJ, valor em reais (alinhado ao fim, dígitos tabulares), percentual,
+ * código/matrícula, telefone e quantidade. O controle mede o dado, e não a
+ * trilha — o vão até o vizinho é o que diz "isto é curto". */
+.ucam-field--cnpj   .ucam-input { inline-size: calc(18ch + 1.5rem); }
+.ucam-field--valor  .ucam-input { inline-size: calc(14ch + 1.5rem); text-align: end; font-variant-numeric: tabular-nums; }
+.ucam-field--pct    .ucam-input { inline-size: calc(6ch  + 1.5rem); text-align: end; font-variant-numeric: tabular-nums; }
+.ucam-field--codigo .ucam-input { inline-size: calc(12ch + 1.5rem); }
+.ucam-field--tel    .ucam-input { inline-size: calc(15ch + 1.5rem); }
+.ucam-field--qtd    .ucam-input-group { inline-size: calc(8ch + 5rem); }
 .ucam-field--data  .ucam-input { inline-size: calc(10ch + 1.5rem); }
+
+/* O CAMPO DE DATA COM CALENDÁRIO (date-field.json, Trilho A desde 28/09/2026).
+ * O ícone mora DENTRO do campo, no início, decorativo — o campo inteiro é o
+ * gatilho (clique abre o calendário; digitar continua valendo). O calendário
+ * é um popover do sistema (.ucam-calendario), com a mesma pele do listbox:
+ * superfície, fio, raio de superfície e sombra de sobreposição. */
+.ucam-date-field {
+  display: inline-block;
+  position: relative;
+}
+.ucam-date-field__icone {
+  position: absolute;
+  inset-inline-start: 0.625rem;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
+  pointer-events: none;
+}
+.ucam-field--data .ucam-date-field .ucam-input {
+  padding-inline-start: 2.125rem;
+  inline-size: calc(10ch + 3rem);
+  cursor: pointer;
+}
+.ucam-calendario {
+  position: absolute;
+  z-index: var(--ucam-z-overlay);
+  inset-inline-start: 0;
+  inset-block-start: calc(100% + 0.25rem);
+  inline-size: 17.5rem;
+  padding: var(--ucam-space-inline-sm);
+  background: var(--ucam-color-surface-default);
+  color: var(--ucam-color-text-primary);
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--ucam-radius-surface);
+  box-shadow: var(--ucam-elevation-overlay);
+}
+.ucam-calendario--acima { inset-block-start: auto; inset-block-end: calc(100% + 0.25rem); }
+.ucam-calendario__cabeca {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ucam-space-inline-xs);
+  margin-block-end: var(--ucam-space-inline-xs);
+}
+.ucam-calendario__mes {
+  font-weight: var(--ucam-typography-label-font-weight);
+  font-size: var(--ucam-typography-body-sm-font-size);
+}
+.ucam-calendario__mes::first-letter { text-transform: uppercase; }
+.ucam-calendario__grade { inline-size: 100%; border-collapse: collapse; table-layout: fixed; }
+.ucam-calendario__grade th {
+  padding-block: 0.25rem;
+  font-size: var(--ucam-typography-caption-font-size);
+  font-weight: var(--ucam-typography-label-font-weight);
+  color: var(--ucam-color-text-secondary);
+  text-align: center;
+}
+.ucam-calendario__grade td { padding: 1px; text-align: center; }
+.ucam-calendario__dia {
+  inline-size: 100%;
+  aspect-ratio: 1;
+  min-block-size: 2rem;
+  border: 0;
+  border-radius: var(--ucam-radius-control);
+  background: none;
+  font: inherit;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--ucam-color-text-primary);
+  cursor: pointer;
+}
+.ucam-calendario__dia:hover { background: var(--ucam-color-interaction-hover); }
+.ucam-calendario__dia:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: 1px;
+}
+/* Hoje: peso e um traço embaixo — não cor, que é do escolhido. */
+.ucam-calendario__dia[aria-current="date"] {
+  font-weight: var(--ucam-typography-action-font-weight);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.ucam-calendario__dia[aria-pressed="true"] {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+  font-weight: var(--ucam-typography-action-font-weight);
+}
+.ucam-calendario__pe {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-start: var(--ucam-space-inline-xs);
+  padding-block-start: var(--ucam-space-inline-xs);
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+}
+@media (forced-colors: active) {
+  .ucam-calendario__dia[aria-pressed="true"] { outline: 2px solid CanvasText; }
+}
 .ucam-field--mes   .ucam-input { inline-size: calc(7ch  + 1.5rem); }
 
 /* ------------------------------------------------------------- tabela --- */
@@ -1832,8 +2113,6 @@ ${selectChevronCss}
 }
 .ucam-table thead th:first-child { border-start-start-radius: calc(var(--ucam-radius-surface) - 1px); }
 .ucam-table thead th:last-child { border-start-end-radius: calc(var(--ucam-radius-surface) - 1px); }
-.ucam-table thead .ucam-col--fixa-inicio,
-.ucam-table thead .ucam-col--fixa-fim { z-index: 3; }
 
 /* Quando o invólucro ROLA na horizontal ele vira contêiner de rolagem, e o
  * cabeçalho grudado passa a medir o deslocamento a partir DELE: a soma da
@@ -1874,7 +2153,27 @@ ${selectChevronCss}
  * ações à direita, na primeira linha. O cabeçalho sai da pintura mas fica
  * para o leitor de tela, e a ordenação por cabeçalho sai com ele (contrato:
  * ela migra para a toolbar). */
+/* O "ORDENAR POR" (estadoScript, data-table.json responsividade.ordenacao): nasce
+ * dentro do invólucro de toda tabela ordenável e só é pintado quando ela
+ * empilha — em colunas, quem ordena é o cabeçalho. */
+.ucam-table__ordenar { display: none; }
 ${contentorAbaixo('tabela-empilhada', 'tabela')} {
+  .ucam-table__ordenar {
+    display: flex;
+    align-items: center;
+    gap: var(--ucam-space-inline-sm);
+    padding-block-end: var(--ucam-space-inset-sm);
+    border-block-end: 1px solid var(--ucam-color-border-subtle);
+  }
+  .ucam-table__ordenar-rotulo {
+    flex: none;
+    font-size: var(--ucam-typography-caption-font-size);
+    color: var(--ucam-color-text-secondary);
+  }
+  .ucam-table__ordenar .ucam-select { flex: 1 1 auto; min-inline-size: 0; }
+  /* Convertido em listbox (o select nasce depois e vira gatilho + lista). */
+  .ucam-table__ordenar .ucam-select-wrap { flex: 1 1 auto; min-inline-size: 0; }
+  .ucam-table__ordenar .ucam-select-wrap > .ucam-select-trigger { inline-size: 100%; }
   .ucam-table-wrap { overflow: visible; border: 0; border-radius: 0; }
   /* O piso por número de colunas (até 56rem) é de tabela EM COLUNAS. Aqui
    * ele fazia a tabela empilhada mais larga que o telefone, e o cartão
@@ -1928,6 +2227,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   }
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes)::before {
     content: attr(data-label);
+    /* O rótulo é texto de interface, não o dado: numa célula de código
+     * (.ucam-codigo, a "Origem" da auditoria) ele herdava a mono. */
+    font-family: var(--ucam-font-body);
     font-size: var(--ucam-typography-caption-font-size);
     line-height: var(--ucam-typography-caption-line-height);
     color: var(--ucam-color-text-secondary);
@@ -1939,24 +2241,55 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   }
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):nth-child(1 of :not(.td--selecao))::before { content: none; }
   .ucam-table tbody tr > :is(th, td):empty::before { content: none; }
-  .ucam-table tbody tr > .td--num { text-align: start; padding: 0; }
+  /* inline-size: a base dá 1% à célula numérica (tabela em colunas encolhe
+   * até o número). Empilhada, esse 1% virava 3px: o valor transbordava para
+   * fora da própria célula, saía 16px à esquerda dos outros valores do
+   * cartão e o link do número ("5" em análise) ficava com 8px de alvo
+   * (isenção a 390px, 28/09/2026). */
+  .ucam-table tbody tr > .td--num { text-align: start; padding: 0; inline-size: auto; }
+  /* SELETOR SEGMENTADO NA CÉLULA: rótulo em cima, controle na largura do
+   * cartão. Ao lado do rótulo ele ganhava 60% do cartão (187px a 390) e a
+   * terceira posição — "Pedir documento" na análise da isenção — ficava
+   * inteira atrás da rolagem, com o selecionado cortado em "Pe…". O seletor
+   * mede 305px e o cartão tem 317: em cima ele cabe. Mesmo seletor comprido
+   * da ficha, com o :has() na frente, para vencer a regra de duas colunas. */
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))):has(> .ucam-segmented) {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--ucam-space-inline-xs);
+  }
+  .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))):has(> .ucam-segmented) > * { grid-column: 1; }
+  /* PESSOA FORA DA PRIMEIRA CÉLULA (a coordenação de um curso): avatar e
+   * nome na MESMA linha do valor. A regra da ficha manda todo filho para a
+   * coluna do valor, um embaixo do outro — o avatar ficava sozinho numa
+   * linha e o nome caía na seguinte. Três colunas: rótulo, avatar, nome. */
+  .ucam-table tbody tr > :is(th, td).td--pessoa:not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) {
+    grid-template-columns: minmax(6.5rem, 38%) auto minmax(0, 1fr);
+    align-items: center;
+  }
+  .ucam-table tbody tr > :is(th, td).td--pessoa:not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) > .ucam-avatar { grid-column: 2; }
+  .ucam-table tbody tr > :is(th, td).td--pessoa:not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) > :not(.ucam-avatar) { grid-column: 3; max-inline-size: none; }
   /* tbody na frente: este bloco vem ANTES das regras base da célula na
    * folha, e com a mesma especificidade perderia para elas. */
   .ucam-table tbody .td--pessoa__texto { flex-wrap: wrap; max-inline-size: calc(100% - 1.5rem - var(--ucam-space-inline-sm)); }
   .ucam-table tbody .td--pessoa__texto > * { flex: 0 1 auto; min-inline-size: 0; }
   .ucam-table tbody .td--pessoa { white-space: normal; }
   .ucam-table tbody .td--apoio { white-space: normal; }
+  /* E-mail é uma palavra só: "amanda.vasques@aluno.ucam.edu.br" passava 53px
+   * da borda do cartão a 390px (Relatórios, 28/09/2026). */
+  .ucam-table tbody .td--pessoa .td--apoio { overflow-wrap: anywhere; }
   .ucam-table tbody .ucam-copiar { position: relative; }
   .ucam-table tbody tr > td:not(.td--selecao):nth-child(1 of :not(.td--selecao)):has(> .ucam-card__titulo) { min-inline-size: 0; }
-  /* A linha marcada: o shape de 4px sai da última célula (que virou bloco no
-   * meio) e vai para a borda direita do bloco inteiro. */
+  /* A linha marcada: o shape de 4px sai da primeira célula (que virou bloco)
+   * e vai para a borda ESQUERDA do cartão inteiro (28/09/2026). */
   .ucam-table tbody tr[aria-selected="true"] { position: relative; }
-  .ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child::after { content: none; }
+  /* Classe repetida: a regra da célula vem DEPOIS na folha com a mesma
+   * especificidade e desenhava uma segunda barra dentro do cartão. */
+  .ucam-table.ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child::after { content: none; }
   .ucam-table tbody tr[aria-selected="true"]::after {
     content: "";
     position: absolute;
     inset-block: 0;
-    inset-inline-end: 0;
+    inset-inline-start: 0;
     inline-size: 0.25rem;
     background: var(--ucam-color-action-primary-default);
     pointer-events: none;
@@ -1971,6 +2304,35 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table:has(thead th:nth-child(6 of :not([hidden]))) { --ucam-table-piso: 48rem; }
 .ucam-table:has(thead th:nth-child(7 of :not([hidden]))) { --ucam-table-piso: 56rem; }
 .ucam-split .ucam-table { min-inline-size: min(var(--ucam-table-piso), 34rem); }
+
+/* A TABELA CURTA TEM TETO (29/09/2026). O piso acima impede a tabela larga
+ * de espremer; faltava o contrário. Com duas ou três colunas de dado ela
+ * esticava até a largura do corpo, e quem recebia a sobra era a coluna do
+ * nome: a 1920 o Grupo × Menu dava 1043px a "Menu" e a data de concessão
+ * ficava a mais de mil pixels do nome que ela data; os Grupos do usuário,
+ * 966px; a consulta da isenção, 946. O olho perde a linha no vão.
+ *
+ * Quem para é o CARTÃO que carrega a tabela (e a faixa e a paginação dele),
+ * não a tabela dentro de um cartão largo: fio de cabeçalho e fio de linha
+ * terminando antes da borda liam como tabela quebrada. Três colunas de dado,
+ * 64rem; duas, 48rem — o nome fica com o que sobra das colunas curtas (558px
+ * no Grupo × Menu), a medida de uma linha de leitura. A coluna de seleção
+ * não conta: ela é controle, não dado. Quatro colunas ou mais seguem na
+ * largura cheia: ali a largura é das colunas, não de um vão.
+ *
+ * SÓ O CARTÃO SOLTO. Ao lado de um painel de apoio à direita (a análise e a
+ * consulta da isenção) o teto abria um buraco de 236px entre a tabela e o
+ * painel; empilhada com indicadores ou com outro cartão (o resultado do
+ * cálculo de mensalidade) a tabela terminava antes dos vizinhos de baixo.
+ * Nesses casos a largura é da coluna, e a tabela a acompanha. */
+.ucam-card${TABELA_SOLTA}:has(> .ucam-table-wrap > ${TABELA_ATE(3)}),
+.ucam-table-wrap:not(.ucam-card *)${TABELA_SOLTA}:has(> ${TABELA_ATE(3)}) {
+  max-inline-size: 64rem;
+}
+.ucam-card${TABELA_SOLTA}:has(> .ucam-table-wrap > ${TABELA_ATE(2)}),
+.ucam-table-wrap:not(.ucam-card *)${TABELA_SOLTA}:has(> ${TABELA_ATE(2)}) {
+  max-inline-size: 48rem;
+}
 
 .ucam-table caption {
   text-align: start;
@@ -2100,8 +2462,11 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * inteira lê mais apertada sem ficar mais curta. A ação de linha continua
  * com alvo de 28px (ucam-btn--sm), acima dos 24 da 2.5.8. */
 .ucam-table--compact th,
-.ucam-table--compact td { padding: 0.5rem var(--ucam-space-inset-sm); }
-.ucam-table--compact thead th { padding-block: 0.375rem; }
+.ucam-table--compact td { padding: 0.5625rem var(--ucam-space-inset-sm); }
+/* 9px e 8px desde 01/10/2026 (ADR-056); eram 8 e 6. O texto subiu a 15px e
+ * o selo a 24: com o recuo antigo a linha continuava em 41px e a letra maior
+ * lia apertada. Com 10px a linha ia a 45; com 9 fecha em 43 — "um pouco". */
+.ucam-table--compact thead th { padding-block: 0.5rem; }
 /* A ação de linha desce um degrau (28px): com o botão de 32 a linha compacta
  * fechava em 48, o mesmo que a confortável sem ação — a densidade sumia na
  * coluna de ações. 28 ainda passa os 24 da WCAG 2.5.8. */
@@ -2169,14 +2534,19 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * mora na última célula porque é a única que tem borda direita de verdade;
  * a linha ganha o hover normal, já que não há mais tom de escolha para o
  * hover cobrir. */
-.ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child { position: relative; }
-.ucam-table tbody tr[aria-selected="true"] > :is(th, td):last-child::after {
+/* 28/09/2026: "o highlight deveria ser do outro lado, sempre no lado
+ * esquerdo". O traço passa para a BORDA DE ENTRADA, na primeira célula —
+ * o mesmo lado do destaque da caixa de entrada (.ucam-list-item), para a
+ * escolha falar num lado só em todo o sistema. Coluna fixa já é sticky, que
+ * serve de âncora; só a célula comum ganha position: relative. */
+.ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child:not(.ucam-col--fixa-inicio):not(.ucam-col--fixa-fim) { position: relative; }
+.ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child::after {
   content: "";
   position: absolute;
   /* 25/09/2026: era um pill de 3px recuado 6px em cima e embaixo, e leu como
    * "bolinha" em vez de traço. Shape SÓLIDO de 4px, de ponta a ponta. */
   inset-block: 0;
-  inset-inline-end: 0;
+  inset-inline-start: 0;
   inline-size: 0.25rem;
   background: var(--ucam-color-action-primary-default);
   pointer-events: none;
@@ -2346,6 +2716,22 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
    * confirma o alvo. */
   text-decoration: none;
 }
+/* O NOME COMO BOTÃO (28/09/2026): quando a linha abre uma gaveta na própria
+ * tela, e não um registro com endereço, o nome é <button> — link sem destino
+ * contraria link.json, e é o mesmo caso do alvo do ListItem que governa um
+ * painel. Desenhado igual ao nome em <a>: só o reset do botão nativo. */
+.ucam-table button.td--pessoa__nome {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: var(--ucam-typography-label-font-weight);
+  text-align: start;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
 .ucam-table .td--pessoa__nome:hover,
 .ucam-table .td--pessoa__nome:focus-visible,
 .ucam-table--linha-clicavel tbody tr:hover .td--pessoa__nome { text-decoration: underline; }
@@ -2362,6 +2748,11 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * texto de trabalho a 14px, Usuários passava 49px da largura cheia, o
  * Resultado do relatório 17 e a fila da isenção 8. */
 .ucam-table[data-apertada] .td--apoio { white-space: normal; }
+/* O apoio que vem depois de um TEXTO solto na célula (curso e período, setor
+ * e os demais) também desce — 01/10/2026, ADR-056. Só o da célula de pessoa
+ * descia; com o texto a 15px a fila da isenção passava 18px a 1280 com o
+ * período ainda ao lado do curso. */
+.ucam-table[data-apertada] td > .td--apoio { display: block; }
 /* Recuo lateral de 8px, o degrau inteiro abaixo dos 12: seis colunas
  * devolvem 48px, o que tira a rolagem a 768px e a reduz a 1024 com a
  * navegação fixa (área de 666px). */
@@ -2552,7 +2943,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * das duas referências de tabela densa que o projeto adotou, e é a razão de o
  * ícone existir: ele não informa a ordem, informa que HÁ ordem a pedir. */
 .ucam-table th > button .ic {
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
   transition: color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
 }
 
@@ -2641,9 +3034,15 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table .ucam-col--fixa-inicio { inset-inline-start: var(--ucam-col-x); }
 .ucam-table .ucam-col--fixa-fim    { inset-inline-end: var(--ucam-col-x); }
 
+/* z-index 3, não 2: o cabeçalho inteiro é sticky com z-index 2, e com o
+ * mesmo nível a célula que vem DEPOIS no HTML pinta por cima. Rolada a
+ * tabela, Curso e Período passavam por cima de "Candidato" fixo e o rótulo
+ * da coluna sumia enquanto as células dela ficavam (26/09/2026). O nível
+ * mora SÓ aqui: havia uma segunda declaração junto do cabeçalho grudado que
+ * dizia 3, e esta, mais abaixo, dizia 2 e a desfazia sem ninguém ver. */
 .ucam-table thead .ucam-col--fixa-inicio,
 .ucam-table thead .ucam-col--fixa-fim {
-  z-index: 2;
+  z-index: 3;
   background-color: var(--ucam-color-surface-default);
 }
 
@@ -2656,13 +3055,40 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 }
 
 /* A coluna fixa da linha marcada não tem mais tom próprio: o sinal da
- * escolha é o traço na borda direita (ver a regra de aria-selected). */
+ * escolha é o traço na borda esquerda (ver a regra de aria-selected). */
 
 /* A borda do bloco fixo é um FILETE, só na última fixa de cada lado — é o que
  * diz onde a parte que rola começa. Sombra de lado exigiria cor literal, e a
  * ADR-007 não deixa. */
 .ucam-table .ucam-col--borda-inicio { box-shadow: inset -1px 0 0 var(--ucam-color-border-default); }
 .ucam-table .ucam-col--borda-fim    { box-shadow: inset 1px 0 0 var(--ucam-color-border-default); }
+/* NO CABEÇALHO a borda do bloco fixo SOMA às sombras da célula, não as
+ * troca. O box-shadow acima substituía a lista inteira, e é nela que o
+ * cabeçalho desenha o fio do pé (e, fora de cartão, o de cima): a célula
+ * "Candidato" fixa ficava sem o fio que separa o rótulo das linhas
+ * (26/09/2026: "ficou com o header bugado"). */
+.ucam-table thead .ucam-col--borda-inicio {
+  box-shadow: var(--ucam-table-fio-coluna), inset -1px 0 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+.ucam-table thead .ucam-col--borda-fim {
+  box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead .ucam-col--borda-inicio {
+  box-shadow: var(--ucam-table-fio-coluna), inset -1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead .ucam-col--borda-fim {
+  box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
+}
+/* UM FIO SÓ na borda do bloco fixo. O fio de coluna da vizinha (borda
+ * subtle à esquerda) encostava na borda default do bloco e desenhava uma
+ * linha dupla, mais grossa e de dois tons. A vizinha apaga o dela; na coluna
+ * fixa do fim, é a própria célula fixa que apaga o seu. */
+.ucam-table tbody tr > .ucam-col--borda-inicio + :is(th, td),
+.ucam-table tbody tr > .ucam-col--borda-fim { border-inline-start-color: transparent; }
+/* th:not(.th--selecao) no seletor: a regra do fio de coluna pesa (0,2,3), e
+ * sem ele esta perdia e a linha dupla ficava no cabeçalho. */
+.ucam-table thead tr > th.ucam-col--borda-inicio + th:not(.th--selecao),
+.ucam-table thead tr > th.ucam-col--borda-fim:not(.th--selecao) { --ucam-table-fio-coluna: 0 0 transparent; }
 
 /* COLUNAS OCULTAS. Ocultar sem caminho de volta é apagar: a barra aparece
  * acima da tabela enquanto houver coluna oculta, diz quantas e oferece
@@ -3061,11 +3487,20 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   flex-direction: column;
 }
 
-.ucam-card__cabecalho-texto > .ucam-card__titulo,
-.ucam-card__cabecalho-texto > .ucam-card__apoio {
+.ucam-card__cabecalho-texto > .ucam-card__titulo {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+/* O apoio vai a DUAS linhas antes de cortar (01/10/2026, ADR-056). Numa só,
+ * com a legenda a 14px, "em análise desde hoje, 09:40" perdia a hora — e a
+ * hora é o dado. O título segue numa linha: é ele que segura a forma. */
+.ucam-card__cabecalho-texto > .ucam-card__apoio {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 /* O que vem depois do texto assenta na ponta direita: selo de período, menu
@@ -4581,6 +5016,57 @@ ${abaixo('nav-fixa')} {
   .ucam-appbar__search { display: none; }
 }
 
+/* A BUSCA ABAIXO DE nav-fixa: uma lupa na faixa, e o MESMO campo por cima.
+ *
+ * O campo saía da faixa e a frase acima prometia que a busca viraria "a
+ * primeira coisa da tela de conteúdo" — nenhuma tela fez isso. A 390 e a 768
+ * a busca global (candidato, curso, matriz, disciplina na isenção) não tinha
+ * caminho nenhum (revisão de 28/09/2026). A lupa (.ucam-appbar__buscar) abre
+ * a caixa de sempre, com o painel de sempre, deitada sobre a faixa inteira;
+ * o foco sair dela, Esc ou tocar fora fecham (buscaGlobalScript). A barra "/"
+ * continua valendo. Acima de nav-fixa a lupa não existe: o campo está lá. */
+.ucam-appbar__lancador.ucam-appbar__buscar { display: none; }
+${abaixo('nav-fixa')} {
+  .ucam-appbar__lancador.ucam-appbar__buscar { display: inline-flex; }
+  /* O espaçador que vinha DEPOIS da caixa sai com ela. Com largura zero ele
+   * ainda cobrava um vão da faixa (16px sob toque), e a lupa nova custava
+   * outro: a 390px o nome do sistema cortava em "Is…". Um espaçador só já
+   * empurra o grupo da direita. */
+  .ucam-appbar__search + .ucam-appbar__spacer { display: none; }
+  /* Sem translate para centrar: transform faz da caixa o bloco contenedor
+   * do painel, que abaixo de respiro-completo é position: fixed — e o painel
+   * de largura da janela encolhia para a largura da caixa, 17px para dentro. */
+  .ucam-appbar__search[data-aberta] {
+    display: flex;
+    position: absolute;
+    inset-inline: var(--ucam-space-inset-md);
+    inset-block-start: calc((100% - var(--ucam-size-control-md)) / 2);
+    max-inline-size: none;
+    z-index: 1;
+  }
+  /* O resto da faixa sai da vista enquanto a caixa está deitada: o papel
+   * dela é translúcido na faixa de marca, e a marquinha, o sino e o avatar
+   * apareciam através do campo. visibility, e não display: a faixa não
+   * muda de altura nem de arranjo, e fechar devolve tudo no mesmo lugar. */
+  .ucam-appbar:has(> .ucam-appbar__search[data-aberta]) > :not(.ucam-appbar__search) { visibility: hidden; }
+  /* O painel acompanha a caixa na largura; na altura, o que sobra da tela
+   * abaixo da faixa, para a última linha de resultado não ficar sob o dedo
+   * fora da janela. */
+  .ucam-appbar__search[data-aberta] .ucam-busca {
+    max-block-size: min(28rem, calc(100dvh - var(--ucam-appbar-height) - var(--ucam-space-inset-md)));
+  }
+}
+
+/* AS TECLAS DO RODAPÉ DO PAINEL. A pastilha .ucam-kbd lê as tintas da faixa
+ * (--ucam-appbar-muted, branco a 72%), porque o uso dominante é dentro dela —
+ * e o painel da busca é FILHO da caixa da faixa, mas pinta papel branco. As
+ * setas, o Enter e o esc saíam brancos em branco: "   navegar   abrir". No
+ * painel, as tintas do papel. */
+.ucam-busca .ucam-kbd {
+  color: var(--ucam-color-text-secondary);
+  border-color: var(--ucam-color-border-subtle);
+}
+
 /* ------------------------------------------------------ tecla (kbd) --- */
 /* Atalho desenhado como tecla. aria-hidden na marcação: para quem ouve, o
  * atalho é anunciado por aria-keyshortcuts no campo, e uma sigla solta no
@@ -4627,6 +5113,69 @@ ${abaixo('nav-fixa')} {
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+/* Inteiro ou nenhum (viewbarScript mede): "Isen…" não diz o sistema melhor
+ * que a marquinha sozinha, e ocupa o lugar dela. Fora da vista, não do
+ * leitor de tela — é ele o nome acessível do link da faixa. */
+.ucam-appbar__system[data-cortado] {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* O NOME DO SISTEMA CABE NO TELEFONE (revisão móvel de 28/09/2026). Sob toque,
+ * a 390px, "Protocolo" e "Gerencial" saíam da vista por 14px — e o que os
+ * comia era o espaçador: largura zero, mas um vão de 16px da faixa. Abaixo de
+ * nav-fixa quem empurra o grupo da direita é a própria marca (margem
+ * automática), e o espaçador sai. Nome de duas palavras ("Relatórios
+ * Acadêmicos", "Isenção de disciplinas") quebra em duas linhas num corpo
+ * menor antes de sair da vista: a regra "inteiro ou nenhum" segue valendo para
+ * a PALAVRA — o viewbarScript só esconde o nome se uma palavra não couber. */
+${abaixo('nav-fixa')} {
+  .ucam-appbar > .ucam-appbar__spacer { display: none; }
+  .ucam-appbar > .ucam-appbar__brand { margin-inline-end: auto; }
+}
+${abaixo('faixa-minima')} {
+  /* A marquinha desce um degrau (40 → 32px): os 8px são os que faltavam
+   * para "Relatórios" caber inteiro na linha dele a 390px. */
+  .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
+    inline-size: var(--ucam-size-control-md);
+    block-size: var(--ucam-size-control-md);
+  }
+  .ucam-appbar__system:not([data-cortado]) {
+    font-size: 0.875rem;
+    line-height: 1.15;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  /* SOB TOQUE, O NOME AINDA CABE (29/09/2026). O vão da faixa sob toque é
+   * 16px (alvo de 44 menos a peça de 28), e ele é que come o nome: a 360px
+   * "Gerencial" (62px) e "Protocolo" (63px) tinham 60 e saíam da vista pela
+   * regra do inteiro ou nenhum; "Relatórios Acadêmicos" saía já a 375, com
+   * "Acadêmicos" sem caber na segunda linha. Três ajustes, nenhum às custas
+   * de alvo:
+   * - a marquinha desce mais um degrau, 32 → 28 (control-sm);
+   * - o vão entre ela e o nome vai a inline-xs;
+   * - o vão ANTES da marca cai à metade. O vão de 16 existe para o extensor
+   *   de 44 do botão de menu (8px para cada lado) não invadir a peça vizinha;
+   *   a marca não tem extensor — o link é ela inteira —, então 8px bastam
+   *   para os dois alvos se encostarem sem se sobrepor (medido: extensor do
+   *   menu termina em x=56, a marca começa em x=56).
+   * Juntos devolvem 16px ao nome: a 360 cabem "Gerencial" e "Protocolo"; a
+   * 375, "Relatórios / Acadêmicos" em duas linhas. */
+  @media (pointer: coarse) {
+    .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
+      inline-size: var(--ucam-size-control-sm);
+      block-size: var(--ucam-size-control-sm);
+    }
+    .ucam-appbar > .ucam-appbar__brand { column-gap: var(--ucam-space-inline-xs); }
+    .ucam-appbar > .ucam-btn + .ucam-appbar__brand { margin-inline-start: calc(var(--ucam-space-inline-sm) * -1); }
+  }
 }
 
 /* A logo encolhe: as DUAS medidas encolhem juntas, senão "contain" volta a
@@ -4998,7 +5547,9 @@ ${acima('nav-fixa')} {
 
 .ucam-busca__item .ic {
   flex: none;
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
 }
 
 /* O CORRENTE é o mesmo destaque do hover, e de propósito: o teclado e o
@@ -6012,6 +6563,22 @@ ${acima('nav-fixa')} {
   overflow-y: auto;
 }
 
+/* NO TELEFONE A LISTA SE PRENDE À JANELA, não ao sino. Alinhada pela direita
+ * do sino (x≈290 num telefone de 390), a lista de 358px nascia em x=−68 e
+ * cortava o começo de cada aviso — medido nas 22 telas em 28/09/2026. Abaixo
+ * de 30rem ela ocupa a largura da janela menos o respiro de 1rem de cada lado,
+ * logo abaixo da faixa. */
+${abaixo('faixa-minima')} {
+  .ucam-menu.ucam-menu--notificacoes {
+    position: fixed;
+    inset-inline: 1rem;
+    inset-block-start: 3.5rem;
+    inline-size: auto;
+    max-inline-size: none;
+    translate: none;
+  }
+}
+
 /* O aviso ocupa duas linhas e o ícone pertence à PRIMEIRA: centralizado, ele
  * desceria para o meio do parágrafo e deixaria de apontar para o título. */
 .ucam-menu--notificacoes .ucam-menu__item { align-items: flex-start; }
@@ -6983,8 +7550,31 @@ ${acima('nav-fixa')} {
 .ucam-grid {
   display: grid;
   --ucam-grid-min: 16rem;
-  grid-template-columns: repeat(auto-fill, minmax(var(--ucam-grid-min), 1fr));
+  /* GRADE EQUILIBRADA (28/09/2026): o número de colunas tem teto pela
+   * CONTAGEM de itens — 6 cartões a 1920 saíam 5 + 1, 4 cartões deixavam
+   * duas trilhas vazias de 521px. --ucam-grid-max limita as colunas pela
+   * conta dentro do minmax; sem teto declarado, vale o auto-fill de sempre. */
+  --ucam-grid-max: 99;
+  grid-template-columns: repeat(auto-fill, minmax(max(min(100%, var(--ucam-grid-min)), calc((100% - (var(--ucam-grid-max) - 1) * var(--ucam-space-inset-md)) / var(--ucam-grid-max))), 1fr));
   gap: var(--ucam-space-inset-md);
+}
+/* 4 itens: 4 ou 2 por linha, nunca 3 + 1. 6: 3 + 3. 9: 3 + 3 + 3. 8: 4 + 4.
+ *
+ * A CONTA É DE CARTÃO, não de filho (29/09/2026). Com :nth-child(N):last-child
+ * a grade contava tudo o que morava nela — o estado vazio do filtro
+ * (.ucam-empty, escondido) e a região de anúncio (.ucam-sr-only) —, e os
+ * seis setores do painel gerencial do Protocolo eram lidos como OITO: teto
+ * de 4, e a 1920 a grade saía 4 + 2. Com "of" a conta pula quem não ocupa
+ * trilha, e o cartão que o filtro esconde ([hidden]) sai da conta também:
+ * filtrar para cinco devolve o teto de cinco, não o de seis. */
+.ucam-grid:has(> :nth-child(4 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})),
+.ucam-grid:has(> :nth-child(8 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 4; }
+.ucam-grid:has(> :nth-child(6 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})),
+.ucam-grid:has(> :nth-child(9 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 3; }
+.ucam-grid:has(> :nth-child(2 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 2; }
+.ucam-grid:has(> :nth-child(7 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 4; }
+${contentorAbaixo('grade-quatro-em-fileira')} {
+  .ucam-grid:has(> :nth-child(4 of ${ITEM_DE_GRADE}):nth-last-child(1 of ${ITEM_DE_GRADE})) { --ucam-grid-max: 2; }
 }
 
 /* VISTA DE LISTA da mesma grade — o outro lado do segmented "Grade | Lista".
@@ -7073,6 +7663,18 @@ ${contentorAcima('duas-colunas')} {
   .ucam-split--apoio-inicio { grid-template-columns: var(--ucam-split-aside) minmax(0, 1fr); }
   .ucam-split--apoio-inicio > :first-child { grid-column: 2; }
   .ucam-split--apoio-inicio > :last-child { grid-column: 1; grid-row: 1; }
+}
+
+/* LARGO: o conteúdo principal tem um piso que duas-colunas não comporta — a
+ * tabela de decisões da isenção, com um seletor de três posições por linha.
+ * Entre duas-colunas e duas-colunas-largo ele continua empilhado, em vez de
+ * pôr o apoio ao lado e cortar o controle da decisão numa rolagem lateral.
+ * Conta feita com o painel padrão (18rem); ver container.duas-colunas-largo. */
+${contentorAcima('duas-colunas')} {
+  .ucam-split--largo { grid-template-columns: minmax(0, 1fr); }
+}
+${contentorAcima('duas-colunas-largo')} {
+  .ucam-split--largo { grid-template-columns: minmax(0, 1fr) var(--ucam-split-aside); }
 }
 
 /* Duas colunas de MESMO peso — resumo ao lado de resumo, não conteúdo ao lado
@@ -7620,15 +8222,25 @@ ${acima('duas-colunas')} {
  * dois casos, e o desenho do trilho não muda: quem cresce é a área. */
 .ucam-switch {
   display: inline-flex;
-  align-items: center;
+  /* Pelo início, como a caixa de marcação: com apoio embaixo do rótulo, o
+   * centro punha a chave boiando no meio do parágrafo (Cursos, 28/09/2026). */
+  align-items: flex-start;
   gap: var(--ucam-space-inline-sm);
   min-block-size: var(--ucam-size-icon-lg);
   cursor: pointer;
 }
 
+.ucam-switch:not(:has(.ucam-check__label)) { align-items: center; }
+.ucam-switch:not(:has(.ucam-check__label)) input[type="checkbox"] { margin-block-start: 0; }
+
 .ucam-switch input[type="checkbox"] {
   appearance: none;
   margin: 0;
+  /* Sem flex:none o trilho ENCOLHIA quando o rótulo quebrava em duas linhas
+   * — o polegar de 0,85rem transbordava da pílula espremida. A margem
+   * centra os 17,6px do trilho na primeira linha de 24 do rótulo. */
+  flex: none;
+  margin-block-start: calc((var(--ucam-size-icon-lg) - 1.1rem) / 2);
   inline-size: 1.9rem;
   block-size: 1.1rem;
   background: var(--ucam-color-border-strong);
@@ -8042,8 +8654,10 @@ dialog.ucam-dialog:not([open]) { display: none; }
 .ucam-tabs__tab {
   background: none;
   border: 0;
-  border-block-end: 2px solid transparent;
-  padding: var(--ucam-space-inset-sm) var(--ucam-space-inline-xs);
+  /* 3px, não 2 (26/09/2026: "o traço da tab deveria ser mais grosso"). O
+   * pixel a mais sai do recuo de baixo, e a aba mede o mesmo de antes. */
+  border-block-end: 3px solid transparent;
+  padding: var(--ucam-space-inset-sm) var(--ucam-space-inline-xs) calc(var(--ucam-space-inset-sm) - 1px);
   margin-block-end: -1px;
   font: inherit;
   font-size: var(--ucam-typography-label-font-size);
@@ -8200,6 +8814,9 @@ dialog.ucam-dialog:not([open]) { display: none; }
  * de verde por ser positivo seria a cor mentindo. Quando o sinal importar, o
  * .ucam-stat--success/--danger continua governando o VALOR, que é onde o
  * julgamento pertence. */
+/* Recortado o período, a comparação com o anterior deixa de valer e a
+ * pastilha diz só "no período escolhido" (periodoScript): sem seta e sem tom. */
+.ucam-stat .ucam-stat__delta[data-neutro] { color: var(--ucam-color-text-secondary); }
 .ucam-stat__delta {
   display: inline-block;
   /* PASTILHA, não faixa. O ladrilho é uma coluna flex, e como item de flex o
@@ -8550,6 +9167,73 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   font-weight: var(--ucam-typography-action-font-weight);
 }
 
+/* A OPÇÃO QUE A MÁQUINA SUGERE (28/09/2026: "ao invés de 'diferente da
+ * sugestão', coloque um elemento na que a sugestão quer"). Um sparkles
+ * pequeno depois do rótulo, na tinta do próprio botão: solto ele é
+ * secundário como o texto, escolhido ele toma o tom da escolha. Quando a
+ * decisão diverge, a divergência se vê sem frase nenhuma — a marcada é uma, a
+ * sugerida é outra. O nome acessível leva ", sugestão" (ucam-sr-only). */
+/* 29/09/2026: "o ícone de sparkle podia ser menor, ficou bruto". De 13 para
+ * 11px e a 70%: o traço do símbolo é fixo (2 em 24), então o que afina é o
+ * tamanho — a 11px ele fica abaixo de 1px — e a intensidade. A marca
+ * acompanha o rótulo em vez de disputar com ele. */
+.ucam-segmented__sugerido {
+  inline-size: 0.6875rem;
+  block-size: 0.6875rem;
+  opacity: 0.7;
+  margin-inline-start: 0.1875rem;
+  flex: none;
+  vertical-align: -0.125em;
+}
+
+/* A NOTA DA IA (29/09/2026, ações de IA): o que a máquina escreveu ou
+ * verificou vem ROTULADO como dela — o brilho discreto e a frase "Rascunho da
+ * IA…" — em tinta secundária, sem cor própria de IA (ADR-049: sem varinha,
+ * sem roxo de marketing). Em caixa (--caixa), o resultado de uma
+ * verificação: superfície rebaixada, fio, e o texto em tinta primária. */
+.ucam-ia-nota {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ucam-space-inline-xs);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-ia-nota > .ic { flex: none; inline-size: 0.8125rem; block-size: 0.8125rem; margin-block-start: 0.2em; opacity: 0.8; }
+.ucam-ia-nota--caixa {
+  padding: var(--ucam-space-inline-sm) var(--ucam-space-inline-md);
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--ucam-radius-control);
+  background: var(--ucam-color-surface-subtle);
+  color: var(--ucam-color-text-primary);
+  font-size: var(--ucam-typography-body-sm-font-size);
+}
+.ucam-ia-nota[hidden] { display: none; }
+/* O detalhe da explicação dentro da célula de sugestão: apoio que quebra. */
+.ucam-table .td--apoio[data-ia-detalhe] { display: block; white-space: normal; max-inline-size: 22rem; margin-block-start: var(--ucam-space-inline-xs); }
+/* O botão de explicar fica na PRÓPRIA linha, sob o motivo, e o detalhe abre
+ * embaixo dele — lado a lado, "Ocultar" encostava na primeira palavra. */
+.ucam-table td > button[data-acao="ia-explicar"] { display: flex; margin-block-start: var(--ucam-space-inline-xs); margin-inline-start: calc(-1 * var(--ucam-space-inline-sm)); }
+
+/* O ESCOLHIDO COM TOM (28/09/2026). Onde cada segmento É um desfecho —
+ * a decisão por disciplina da isenção: Isentar, Não isentar, Pedir
+ * documento —, o bordô claro dizia só "escolhido", e nove linhas de
+ * decisões diferentes liam iguais. data-tom no botão dá ao escolhido o tom
+ * do desfecho, o mesmo par fundo + tinta do selo (badge.json), e o peso
+ * continua sendo o segundo sinal. Solto, o botão não tem tom: a cor só
+ * nasce da escolha. Na mesma linha a sugestão da máquina é texto neutro,
+ * para a linha ter um portador de cor só (ADR-027). */
+.ucam-segmented button[aria-pressed="true"][data-tom="success"] {
+  background: var(--ucam-color-feedback-success-background);
+  color: var(--ucam-color-feedback-success-foreground);
+}
+.ucam-segmented button[aria-pressed="true"][data-tom="danger"] {
+  background: var(--ucam-color-feedback-danger-background);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+.ucam-segmented button[aria-pressed="true"][data-tom="warning"] {
+  background: var(--ucam-color-feedback-warning-background);
+  color: var(--ucam-color-feedback-warning-foreground);
+}
+
 /* OS DOIS TAMANHOS, que o contrato declara desde a primeira versão e o Trilho
  * A nunca desenhou. Enquanto só o Angular os tinha, o mesmo componente tinha
  * duas anatomias conforme o trilho — e foi por ali que a divergência de 2px
@@ -8770,6 +9454,12 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   margin: 0;
 }
 .ucam-toolbar--compacta .ucam-field { gap: 0; }
+/* EXCETO A DATA. O campo de data nasce preenchido — não há placeholder que
+ * diga o que ele é —, e De/Até lado a lado (ou empilhados no telefone) eram
+ * duas datas sem nome (Analytics, 28/09/2026). O tabelaScript deixa o rótulo
+ * dela em paz, e aqui ele volta a ter altura. */
+.ucam-toolbar--compacta .ucam-field.ucam-field--data { gap: var(--ucam-space-inline-sm); }
+.ucam-toolbar--compacta .ucam-field--data > .ucam-field__label { block-size: auto; }
 
 /* Abaixo de 40rem o rótulo deitado não cabe: "Pesquisar setor" mais o campo
  * somam mais que a largura de um celular, e o campo encolhia até caber três
@@ -8945,12 +9635,38 @@ ${abaixo('controle-deitado')} {
 @media (prefers-reduced-motion: reduce) {
   .ucam-toast, .ucam-toast[data-saindo] { animation: none; }
 }
+/* RECUSA NÃO É CONFIRMAÇÃO. O toast de sucesso é a superfície invertida com
+ * o círculo de visto; um arquivo recusado saía IGUAL — "grande.pdf tem 11 MB"
+ * com o visto de "deu certo" (acompanhamento da isenção, 28/09/2026). Erro e
+ * atenção saem na superfície do feedback do tom, com o ícone do tom, como o
+ * alerta de mesmo tom: é outra notícia e tem de parecer outra. */
+.ucam-toast--danger,
+.ucam-toast--warning { box-shadow: var(--ucam-elevation-overlay), inset 0 0 0 1px var(--ucam-toast-borda); }
+.ucam-toast--danger {
+  --ucam-toast-borda: var(--ucam-color-feedback-danger-border);
+  background: var(--ucam-color-feedback-danger-background);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+.ucam-toast--danger > .ic { color: var(--ucam-color-feedback-danger-graphic); }
+.ucam-toast--warning {
+  --ucam-toast-borda: var(--ucam-color-feedback-warning-border);
+  background: var(--ucam-color-feedback-warning-background);
+  color: var(--ucam-color-feedback-warning-foreground);
+}
+.ucam-toast--warning > .ic { color: var(--ucam-color-feedback-warning-graphic); }
+/* Quantos cabem na pilha. O toastScript LÊ esta variável: a largura em que a
+ * pilha cai para um é papel de viewport, e papel mora na folha, não no JS. */
+.ucam-toasts { --ucam-toasts-max: 3; }
 ${abaixo('controle-deitado')} {
   .ucam-toasts {
     inset-inline: var(--ucam-space-inset-md);
     inset-block-end: var(--ucam-space-inset-md);
     max-inline-size: none;
     align-items: stretch;
+    /* UM DE CADA VEZ no telefone: três toasts de três linhas tapavam 300px
+     * de uma tela de 844 — justamente as linhas que se estava decidindo. O
+     * novo substitui o anterior. */
+    --ucam-toasts-max: 1;
   }
 }
 
@@ -9152,6 +9868,9 @@ ${abaixo('controle-deitado')} {
 /* Rodapé de ações que acompanha a rolagem em formulário longo. */
 .ucam-form-actions {
   display: flex;
+  /* Quebra quando não cabe: os botões não encolhem (ver .ucam-btn), então a
+   * fileira do boleto a 390px desce o terceiro botão em vez de sobrepor. */
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--ucam-space-inline-sm);
   padding-block-start: var(--ucam-space-inset-md);
@@ -9169,6 +9888,12 @@ ${abaixo('controle-deitado')} {
 .ucam-form-actions--sticky {
   position: sticky;
   inset-block-end: 0;
+  /* Acima do cabeçalho de tabela grudado (z-index 2, e 3 na coluna fixa): com
+   * z auto, o thead da tabela seguinte aparecia POR BAIXO da barra e pegava o
+   * toque — em 768px, o ponto (650, 838) da Grupo × Menu caía no "Concedido
+   * em". Abaixo de z.sticky de propósito: a barra de visão, que gruda no topo,
+   * continua por cima quando a barra de ações passa por ela ao rolar. */
+  z-index: 4;
   background: var(--ucam-color-surface-default);
   /* Mantém o fio de cima ao somar a elevação. */
   box-shadow: inset 0 1px 0 var(--ucam-color-border-subtle), var(--ucam-elevation-sticky);
@@ -9218,6 +9943,33 @@ ${abaixo('controle-deitado')} {
 }
 
 .ucam-list-item:last-child { box-shadow: none; }
+
+/* LISTA LARGA VAI A DUAS COLUNAS (29/09/2026). No cartão da largura do corpo
+ * a linha de uma lista era uma faixa de 1547px com o conteúdo em 400: na
+ * fila do painel gerencial do Protocolo, a 1920, nome e data ficavam a
+ * 1198px um do outro. Quem pergunta é o CARTÃO que carrega a lista (a lista
+ * na caixa de entrada ou no painel de apoio nunca chega lá). A ordem é a de
+ * leitura, 1 2 / 3 4, a mesma da grade de cartões logo acima na mesma tela.
+ * O fio entre as colunas é o mesmo fio entre linhas, e a última fileira não
+ * leva fio embaixo. Abaixo do limiar, uma coluna — e o conteúdo da linha
+ * para em 40rem (ver .ucam-list-item__corpo). */
+.ucam-card:has(> .ucam-list) { container: lista / inline-size; }
+${contentorAcima('lista-em-duas-colunas', 'lista')} {
+  .ucam-card > .ucam-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ucam-card > .ucam-list > .ucam-list-item:nth-child(odd) {
+    box-shadow: inset 0 -1px 0 var(--ucam-color-border-subtle), inset -1px 0 0 var(--ucam-color-border-subtle);
+  }
+  .ucam-card > .ucam-list > .ucam-list-item:nth-child(odd):nth-last-child(-n+2) {
+    box-shadow: inset -1px 0 0 var(--ucam-color-border-subtle);
+  }
+  .ucam-card > .ucam-list > .ucam-list-item:nth-child(even):nth-last-child(1) { box-shadow: none; }
+  /* Na coluna, a medida já é a da coluna: o teto de 40rem deixava o tempo
+   * 75px antes do fio, fora da prumada da coluna vizinha. */
+  .ucam-card > .ucam-list > .ucam-list-item > .ucam-list-item__corpo { max-inline-size: none; }
+}
 
 /* LISTA DENTRO DE CARTÃO COM RECUO. A linha traz o próprio recuo de 16px e
  * o cartão também: o texto nascia a 32px da borda, 16 à direita do ladrilho e
@@ -9438,6 +10190,16 @@ a.ucam-list-item:active,
   /* Sem isto o item de flex adota a largura do conteúdo e o texto longo
    * empurra a hora para fora em vez de truncar. */
   min-inline-size: 0;
+  /* O CONTEÚDO DA LINHA TEM MEDIDA (29/09/2026). O tempo encosta à direita
+   * do corpo, e numa lista na largura do corpo da página isso era a borda
+   * da tela: na fila do painel gerencial do Protocolo, a 1920, "Carlos
+   * Eduardo Martins Souza" e "16/08/2026" ficavam a 1198px um do outro. O
+   * fio e o realce da linha seguem de ponta a ponta — a linha continua sendo
+   * a peça —, mas nome, assunto e tempo param em 40rem, a medida de uma
+   * linha de leitura; o tempo fica ao alcance do nome que ele data. Em
+   * lista estreita (caixa de entrada, painel de apoio) o teto não chega a
+   * valer. */
+  max-inline-size: 40rem;
 }
 
 .ucam-list-item__linha {
@@ -9655,6 +10417,73 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 
 .ucam-descricao--inline .ucam-descricao__rotulo { margin: 0; }
 
+/* O BALÃO DO MOTIVO (motivoScript, 28/09/2026): o .ucam-tooltip de sempre,
+ * aberto pelo clique num controle bloqueado e posto pelo script ao lado dele.
+ * Fixo, acima de tudo que não é modal, e sem pegar o ponteiro — ele explica,
+ * não se clica. */
+.ucam-motivo {
+  position: fixed;
+  z-index: var(--ucam-z-overlay);
+  pointer-events: none;
+  animation: ucam-esmaecer var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+@media (prefers-reduced-motion: reduce) { .ucam-motivo { animation: none; } }
+
+/* A FAIXA NO TOPO DA TABELA (data-table.json, parte "faixa"). Dentro do
+ * cartão, antes do cabeçalho de colunas: o que vale para a tabela inteira e
+ * não é filtro — na análise da isenção, a sugestão automatizada (quando foi
+ * feita, o que sugeriu, a legenda da marca, Aplicar). Ladrilho, título e
+ * apoio à esquerda, a ação à direita; quebra para baixo quando aperta. */
+.ucam-table-faixa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ucam-space-inline-md);
+  padding: var(--ucam-space-inset-md);
+  border-block-end: 1px solid var(--ucam-color-border-subtle);
+}
+.ucam-table-faixa > .ucam-card__cabecalho { flex: 1 1 20rem; min-inline-size: 0; }
+/* O apoio da faixa QUEBRA: no cabeçalho de cartão ele corta com reticências,
+ * e aqui o fim da frase é a legenda da marca — cortada, a marca fica sem
+ * explicação. */
+.ucam-table-faixa .ucam-card__apoio { white-space: normal; overflow: visible; text-overflow: clip; }
+.ucam-table-faixa .ucam-card__apoio .ic { inline-size: 0.8125rem; block-size: 0.8125rem; vertical-align: -0.125em; }
+
+/* FIO ENTRE PARES (28/09/2026). Lista longa de pares deitados — as
+ * disciplinas de um período na gaveta de Matrizes — lia como parágrafo: com
+ * oito linhas o olho perdia qual carga era de qual nome. O fio vai ENTRE os
+ * pares, como no painel, e a linha ganha a altura de linha de lista. */
+.ucam-descricao--fio { gap: 0; }
+.ucam-descricao--fio .ucam-descricao__par {
+  align-items: center;
+  padding-block: var(--ucam-space-inline-xs);
+  min-block-size: 2.25rem;
+}
+/* Na lista com fio o rótulo É o item (o nome da disciplina), não a legenda
+ * de um campo: sobe ao tamanho e à tinta do texto, e o valor segue um degrau
+ * acima só no peso. */
+.ucam-descricao--fio .ucam-descricao__rotulo {
+  font-size: var(--ucam-typography-body-sm-font-size);
+  line-height: var(--ucam-typography-body-sm-line-height);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-descricao--fio .ucam-descricao__par + .ucam-descricao__par {
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+}
+
+/* NA GAVETA, a seção que vem depois de outro bloco ganha o mesmo fio inteiro
+ * e o mesmo ar do corpo da página (.ucam-corpo > * + .ucam-section): o resumo
+ * de uma matriz e cada período dela são unidades, e sem o fio os títulos dos
+ * períodos colavam na lista de cima. */
+.ucam-drawer__body > .ucam-stack > * + section {
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+  /* 16 acima do fio (o vão da pilha) e 24 abaixo: o do corpo (24 + 24)
+   * punha quase 50px entre um período e o seguinte na gaveta estreita, e 16
+   * + 16 fazia o fio do período ler como mais um fio de linha da lista. */
+  padding-block-start: var(--ucam-space-stack-lg);
+}
+
 /* PAINEL: uma linha por par, ícone e rótulo numa coluna de largura fixa,
  * valor na outra.
  *
@@ -9711,16 +10540,23 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
   margin: 0;
   font-size: var(--ucam-typography-caption-font-size);
   min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  /* QUEBRA, não corta (01/10/2026, ADR-056). Com a legenda a 14px "Setor
+   * responsável" perdia a última letra nas reticências. Alargar a coluna do
+   * rótulo foi tentado e tirava do valor: "Universidade Estácio de Sá" ia a
+   * três linhas. O rótulo comprido desce uma linha e o valor fica onde está. */
+  overflow-wrap: break-word;
 }
+.ucam-descricao--painel .ucam-descricao__rotulo > .ic { flex: none; }
 
-.ucam-descricao--painel .ucam-descricao__valor { min-inline-size: 0; }
+/* E-mail e outro valor sem espaço QUEBRAM em qualquer ponto: sem isso
+ * "ana.rocha@email.com" saía pela borda do painel (sem-documentos, 28/09). */
+.ucam-descricao--painel .ucam-descricao__valor { min-inline-size: 0; overflow-wrap: anywhere; }
 
 .ucam-descricao__icone {
   flex: none;
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
 }
 
 /* O par escondido atrás do "mostrar todos". O atributo hidden perde para o
@@ -9927,14 +10763,19 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 }
 
 .ucam-timeline__seta {
-  color: var(--ucam-color-text-placeholder);
+  /* Tinta secundária desde 29/09/2026 ("telas muito cinzas"): o placeholder
+   * azulado deixava o ícone lavado; placeholder é para o texto de exemplo. */
+  color: var(--ucam-color-text-secondary);
   flex: none;
 }
 
 .ucam-timeline__corpo {
   margin: 0.375rem 0 0;
   font-size: var(--ucam-typography-body-sm-font-size);
-  color: var(--ucam-color-text-secondary);
+  /* O corpo É a mensagem — o que se veio ler. Em tinta secundária ele lia
+   * como rodapé do próprio evento (29/09/2026, "telas muito cinzas"); quem
+   * fica secundário é o carimbo: autor, papel e hora. */
+  color: var(--ucam-color-text-primary);
 }
 
 /* MENSAGEM É FALA CITADA, NÃO BALÃO (ADR-036).
@@ -10170,7 +11011,7 @@ figure:has(> .ucam-citacao) { margin: 0; }
   min-block-size: var(--ucam-size-contagem);
 }
 
-.ucam-timeline__campo .ic { color: var(--ucam-color-text-placeholder); }
+.ucam-timeline__campo .ic { color: var(--ucam-color-text-secondary); }
 
 .ucam-timeline__novo {
   display: flex;
@@ -10392,26 +11233,41 @@ figure:has(> .ucam-citacao) { margin: 0; }
  * parte. O valor em tabular para as três colunas de dígito alinharem quando
  * a fileira empilha. */
 .ucam-progress__series {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ucam-space-inline-xs) var(--ucam-space-inline-md);
+  /* A LEGENDA É UMA TABELINHA (28/09/2026, revisão de gráficos): ponto e
+   * nome, valor e parte, em colunas. Em fileira que quebrava, os valores não
+   * alinhavam e a parte de cada forma (32%, 51%, 17%) só existia no
+   * aria-label — quem vê tinha de estimar pelo comprimento do segmento. O
+   * valor é o número exato (dataviz.json: o desenho mostra a forma) e a
+   * parte é o que a barra desenha; os dois em dígitos tabulares, à direita. */
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  column-gap: var(--ucam-space-inline-sm);
+  row-gap: var(--ucam-space-inline-xs);
   margin: 0.5rem 0 0;
   padding: 0;
   list-style: none;
-  font-size: var(--ucam-typography-caption-font-size);
-  line-height: var(--ucam-typography-caption-line-height);
+  font-size: var(--ucam-typography-body-sm-font-size);
   color: var(--ucam-color-text-secondary);
 }
 .ucam-progress__series > li {
-  display: inline-flex;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
-  gap: var(--ucam-space-inline-xs);
-  min-block-size: 1rem;
+  min-block-size: 1.25rem;
 }
 .ucam-progress__series b {
   font-weight: var(--ucam-typography-label-font-weight);
   color: var(--ucam-color-text-primary);
   font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+/* O nome encolhe com a coluna e quebra, sem empurrar valor e parte. */
+.ucam-progress__nome { min-inline-size: 0; overflow-wrap: anywhere; color: var(--ucam-color-text-primary); }
+.ucam-progress__parte {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  min-inline-size: 3.5ch;
 }
 .ucam-progress__ponto {
   flex: none;
@@ -10613,13 +11469,22 @@ figure:has(> .ucam-citacao) { margin: 0; }
 
 .ucam-choice-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  /* Equilibrada pela contagem, como .ucam-grid: 6 naturezas a 1920 saíam
+   * 5 + 1 (28/09/2026). A legenda do fieldset não conta como filho de
+   * grade, mas conta no :nth-child — por isso os números aqui somam um. */
+  --ucam-grid-max: 99;
+  grid-template-columns: repeat(auto-fit, minmax(max(min(100%, 13rem), calc((100% - (var(--ucam-grid-max) - 1) * var(--ucam-space-inline-sm)) / var(--ucam-grid-max))), 1fr));
   gap: var(--ucam-space-inline-sm);
   border: 0;
   padding: 0;
   margin: 0;
   min-inline-size: 0;
 }
+
+.ucam-choice-grid:has(> legend + * + * + * + * + * + *:last-child),
+.ucam-choice-grid:not(:has(> legend)):has(> :nth-child(6):last-child) { --ucam-grid-max: 3; }
+.ucam-choice-grid:has(> legend + * + * + * + *:last-child),
+.ucam-choice-grid:not(:has(> legend)):has(> :nth-child(4):last-child) { --ucam-grid-max: 4; }
 
 /* O RÓTULO DO GRUPO precisa de ar antes da grade.
  *
@@ -10913,6 +11778,16 @@ ${abaixo('controle-deitado')} {
   /* NO TELEFONE A BARRA NÃO GRUDA. Faixa (4.5rem) mais barra de três fileiras
    * (11.7rem) grudadas levariam 40% de uma tela de 667px; as abas e os
    * filtros rolam com a página e o conteúdo fica com a tela. */
+  .ucam-main .ucam-viewbar { position: static; }
+}
+
+/* NO TABLET EM PÉ ELA TAMBÉM NÃO GRUDA quando a janela é baixa. A 768×844 a
+ * faixa (72px) mais a barra de três fileiras (125–134px) grudadas tomavam
+ * 197–206px — um quarto da tela — em nove telas, e na Grupo × Menu, somada à
+ * barra de ações de 64px, quase um terço (revisão de 28/09/2026). Abaixo de
+ * nav-fixa e com até 900px de altura, a barra rola com a página; o cabeçalho
+ * da tabela continua grudando sob a faixa. */
+${abaixo('nav-fixa')} and (max-height: 56.25rem) {
   .ucam-main .ucam-viewbar { position: static; }
 }
 
@@ -11704,6 +12579,57 @@ ${abaixo('controle-deitado')} {
   content: "·";
   color: var(--ucam-color-border-strong);
 }
+/* A META QUE QUEBROU PARA A LINHA DE BAIXO perde o ponto médio em QUALQUER
+ * largura, não só abaixo de controle-deitado: a 768px a frase da fila
+ * ("Abra uma solicitação…") não cabia ao lado do título e abria a linha dela
+ * com "·", que lê como marcador de lista. CSS não sabe se um item de flex
+ * quebrou; o viewbarScript (lib/shell.mjs) mede e marca data-quebrada. */
+.ucam-viewbar__meta[data-quebrada]::before { content: none; }
+
+/* O FECHO DA TELA DE TRABALHO: a ação que conclui (Finalizar análise) e o
+ * resumo que ela confere, embrulhados em .ucam-viewbar__fecho dentro das
+ * ações da barra.
+ *
+ * Na mesa o embrulho não existe (display: contents): o primário fica onde
+ * sempre esteve, no fim da barra, e o resumo não aparece — ele já está no
+ * rodapé da tabela. No TELEFONE a barra não gruda (ver .ucam-main
+ * .ucam-viewbar, logo acima): a análise da isenção media 4.200px e o
+ * primário ficava a 266px do topo, a 1.700px da última decisão. Ali o fecho
+ * desce para o pé da janela, fixo, com o resumo em cima do botão. É o MESMO
+ * botão, movido pela folha, não uma cópia — um primário só na tela (ADR-023).
+ *
+ * Some quando o botão some (pedido enviado, análise concluída): barra fixa
+ * sem ação seria área morta em cima do conteúdo. */
+.ucam-viewbar__fecho { display: contents; }
+.ucam-viewbar__resumo { display: none; }
+${abaixo('controle-deitado')} {
+  .ucam-viewbar__fecho:has(> .ucam-btn:not([hidden])) {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--ucam-space-inline-xs);
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--ucam-z-sticky);
+    padding: var(--ucam-space-inset-sm) var(--ucam-space-inset-md);
+    padding-block-end: max(var(--ucam-space-inset-sm), env(safe-area-inset-bottom));
+    background: var(--ucam-color-surface-default);
+    box-shadow: inset 0 1px 0 var(--ucam-color-border-subtle), var(--ucam-elevation-sticky);
+  }
+  .ucam-viewbar__fecho:has(> .ucam-btn:not([hidden])) > .ucam-viewbar__resumo {
+    display: block;
+    font-size: var(--ucam-typography-caption-font-size);
+    line-height: var(--ucam-typography-caption-line-height);
+    color: var(--ucam-color-text-secondary);
+  }
+  .ucam-viewbar__fecho:has(> .ucam-btn:not([hidden])) > .ucam-btn { inline-size: 100%; justify-content: center; }
+  /* O conteúdo não termina embaixo da barra: a última linha de atividade
+   * e o rodapé do shell ganham o respiro da altura dela. */
+  .ucam-main:has(.ucam-viewbar__fecho > .ucam-btn:not([hidden])) { padding-block-end: 6rem; }
+  /* O toast sobe acima da barra, como sobe acima da barra de lote. */
+  :root:has(.ucam-viewbar__fecho > .ucam-btn:not([hidden])) .ucam-toasts { inset-block-end: 6.5rem; }
+}
 
 /* O separador vertical entre grupos de controle da mesma fileira. */
 .ucam-viewbar__sep {
@@ -11755,6 +12681,48 @@ ${abaixo('nav-fixa')} {
    * para dentro do segmento enquanto o trilho rola. */
   .ucam-segmented { max-inline-size: 100%; overflow-x: auto; scrollbar-width: none; }
   .ucam-segmented button:focus-visible { outline-offset: calc(-1 * var(--ucam-focus-ring-width)); }
+  /* Recuo de 10px, não 12, nesta largura (02/10/2026, ADR-056). Com o texto
+   * a 15px o seletor de período da análise (quatro opções) passava 12px da
+   * fileira de 350 e rolava por tão pouco; 2px a menos de cada lado fecham. */
+  .ucam-segmented:not(.ucam-segmented--sm) button { padding-inline: 0.625rem; }
+  /* O TRILHO QUE ROLA RECORTAVA O ALVO (29/09/2026). Contêiner de rolagem
+   * recorta tudo na própria caixa, e o extensor de 44 de cada segmento ia
+   * junto: sob toque, a 390px, o filtro da linha do tempo (Todos ·
+   * Mensagens · Tramitação, trilho de 28) dava 27px de alvo; o de 32 dos
+   * Usuários, 30; os seletores de decisão da isenção, 26. Crescer a peça
+   * para 44 contraria a regra do alvo (extensor ou vão, nunca peça maior).
+   *
+   * A caixa cresce sem a peça crescer: a folga que falta ao alvo ((44 −
+   * altura do trilho) / 2 de cada lado, mais 1px da borda — o recorte é na
+   * caixa de RECUO, por dentro da borda) entra como recuo, uma margem
+   * negativa do mesmo tamanho devolve o lugar que ela ocupava na fileira, e
+   * o fio do trilho passa a ser um contorno recuado para dentro na mesma
+   * medida — cai exatamente onde a borda estava, com o mesmo raio. A caixa
+   * maior é transparente ao ponteiro; só os segmentos respondem. */
+  @media (pointer: coarse) {
+    .ucam-segmented {
+      --ucam-segmented-folga: calc((var(--ucam-alvo-min) - var(--ucam-size-control-md)) / 2 + 1px);
+      block-size: calc(var(--ucam-size-control-md) + 2 * var(--ucam-segmented-folga));
+      padding: calc(0.1875rem + var(--ucam-segmented-folga));
+      margin: calc(-1 * var(--ucam-segmented-folga));
+      max-inline-size: calc(100% + 2 * var(--ucam-segmented-folga));
+      border-color: transparent;
+      border-radius: calc(var(--ucam-radius-control) + var(--ucam-segmented-folga));
+      outline: 1px solid var(--ucam-color-border-subtle);
+      outline-offset: calc(-1px - var(--ucam-segmented-folga));
+      pointer-events: none;
+    }
+    .ucam-segmented--sm {
+      --ucam-segmented-folga: calc((var(--ucam-alvo-min) - var(--ucam-size-control-sm)) / 2 + 1px);
+      block-size: calc(var(--ucam-size-control-sm) + 2 * var(--ucam-segmented-folga));
+    }
+    .ucam-segmented > * { pointer-events: auto; }
+    /* O degrau abaixo do título do painel continua medindo do FIO. */
+    .ucam-aside__title + .ucam-segmented,
+    .ucam-section__title--painel + .ucam-segmented {
+      margin-block-start: calc(var(--ucam-space-stack-sm) - var(--ucam-segmented-folga));
+    }
+  }
 }
 
 /* As abas ROLAM na horizontal antes de encolher. Sete filas num telefone não
@@ -12377,6 +13345,23 @@ ${acima('nav-fixa')} {
   block-size: var(--ucam-alvo-min);
 }
 
+/* O NÚMERO QUE É LINK numa célula numérica ("5" solicitações em análise,
+ * que abre a fila recortada). Um algarismo mede 8px de largura: o mesmo
+ * extensor centrado, que cresce o alvo sem mexer na coluna. Só o link que é
+ * a célula inteira — número dentro de frase fica com a regra de texto. */
+.ucam-table .td--num > a:only-child { position: relative; }
+.ucam-table .td--num > a:only-child::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  inline-size: 100%;
+  block-size: 100%;
+  min-inline-size: var(--ucam-alvo-min);
+  min-block-size: var(--ucam-alvo-min);
+}
+
 /* SOB O DEDO, TODO CONTROLE — NÃO SÓ BOTÃO.
  *
  * O density.json promete 44px de acerto a "todo controle, sob ponteiro
@@ -12685,6 +13670,22 @@ const foraDoToken = [...new Set(larguras)].filter((l) => !breakpointsEmitidos.ha
 
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
 writeFileSync(join(OUT, 'ucam.css'), css, 'utf8');
+
+/* ------------------------------------------- o comportamento (ADR-057) --- */
+// O mesmo código que as telas de referência carregam, num arquivo que a
+// aplicação do Trilho A pode linkar. Ver o cabeçalho de lib/comportamento.mjs.
+{
+  const { bundleComportamento, classificar } = await import('./lib/comportamento.mjs');
+  const { semClasse, semExport } = classificar();
+  if (semClasse.length || semExport.length) {
+    for (const s of semClasse) console.error(`✗ lib/shell.mjs exporta ${s} e lib/comportamento.mjs não diz se ele vai para a aplicação (COMPONENTE) ou fica na referência (REFERENCIA)`);
+    for (const s of semExport) console.error(`✗ lib/comportamento.mjs cita ${s}, que lib/shell.mjs não exporta`);
+    process.exit(1);
+  }
+  const js = bundleComportamento();
+  writeFileSync(join(OUT, 'ucam-comportamento.js'), js, 'utf8');
+  console.log(`  ucam-comportamento.js  ${(js.length / 1024).toFixed(1)} KB  o comportamento das telas, para a aplicação`);
+}
 
 console.log('@ucam/css → dist/css/');
 console.log(

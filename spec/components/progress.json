@@ -53,7 +53,7 @@
     {
       "parte": "series",
       "obrigatorio": false,
-      "descricao": "A legenda da barra segmentada: uma lista com ponto, nome e valor de cada parte. Obrigatória quando há segmentos — a barra sozinha não diz de quanto é a parte, e é aqui que o número exato mora (dataviz.json).",
+      "descricao": "A legenda da barra segmentada: uma lista em colunas com ponto, nome (.ucam-progress__nome), valor (<b>, o número exato) e a parte do todo (.ucam-progress__parte, em %). Obrigatória quando há segmentos — a barra sozinha não diz de quanto é a parte, e é aqui que o número exato mora (dataviz.json). A cor de cada parte é o token de série na ordem fixa (color.chart.series-N): a primeira série é azul, não a marca.",
       "classe": "ucam-progress__series"
     },
     {

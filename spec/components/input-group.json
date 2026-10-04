@@ -86,7 +86,7 @@
       "nome": "size",
       "tipo": "'sm' | 'md' | 'lg'",
       "default": "'md'",
-      "descricao": "Altura do conjunto, na mesma escala dos demais controles: sm 28px, md 32px, lg 40px."
+      "descricao": "Altura do conjunto, na mesma escala dos demais controles: sm 32px, md 36px, lg 44px (ADR-056)."
     },
     {
       "nome": "disabled",

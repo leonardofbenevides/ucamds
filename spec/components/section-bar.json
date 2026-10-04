@@ -288,6 +288,7 @@
       "contrato": "Seção recolhível: o cabeçalho é o gatilho, e a região que ele abre vem logo abaixo.",
       "raiz": ".ucam-section com .ucam-section__gatilho",
       "nota": "O estado mora no aria-expanded do botão e no hidden da região, não em classe. A anatomia deste contrato ainda cita .ucam-section__regiao, que a folha não emite — a região é um <div hidden> sem classe própria."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/section-bar/ucam-section-bar.ts — <ucam-section-bar>. O legado tem quatro tratamentos para a mesma função — barra cinza no Portal, barra cinza no Protocolo, barra verde com gradiente no SIGFIN e texto com fio, também no SIGFIN. Entradas: title, level, count, description, rule, collapsible, open. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }

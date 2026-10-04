@@ -95,7 +95,7 @@
       "nome": "align",
       "tipo": "'start' | 'end'",
       "default": "'end'",
-      "descricao": "De que lado do gatilho o painel alinha.",
+      "descricao": "De que lado do gatilho o painel alinha. É a PREFERÊNCIA, não uma garantia: ao abrir, o script do menu mede o painel e, se o lado escolhido o jogaria para fora da janela, vira para o outro (fim → início quando sairia pela esquerda, início → fim quando sairia pela direita); se nenhum dos dois cabe, desliza pelo que falta com a propriedade translate, deixando 8px de respiro da borda. Medido em 28/09/2026: o \"⋮\" encostado no começo da linha abria em x=−58 a 390px. A lista de notificações, abaixo de 30rem, não segue o sino: prende-se à janela (fixa, 1rem de cada lado).",
       "valores": {
         "start": {
           "uso": "Menu encostado na borda inicial do gatilho. É o alinhamento de quem abre da esquerda — a conta na coluna lateral, o lançador da faixa.",
@@ -266,6 +266,7 @@
       "contrato": "O popover e seus itens. Abre e fecha pelo atributo hidden.",
       "raiz": ".ucam-menu",
       "nota": "Fecha por hidden e não por classe: o atributo tira o menu da ordem de tabulação e da árvore de acessibilidade de uma vez. Posicionamento, foco e teclado são do markup e do script da página."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/menu/ucam-menu.ts — o painel mora num overlay do CDK e o gatilho é a diretiva [ucamMenuTrigger], que põe aria-haspopup, aria-expanded e aria-controls no botão de verdade. Setas, Home/End, Esc devolvendo o foco e Tab fechando sem devolver. placement (29/09/2026): 'below' desce do gatilho, 'above' sobe dele e ganha .ucam-menu--acima; nos dois a posição oposta fica de reserva, e o CDK troca quando a primeira não cabe — o menu que sobe no alto da página não perde a lista fora da vista. align escolhe a borda (start|end)."
   }
 }

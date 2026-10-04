@@ -191,10 +191,16 @@ const TINTA: Record<UcamDescriptionTone, string> = {
       white-space: nowrap;
     }
     ucam-description-list .ucam-descricao--painel .ucam-descricao__valor {
+      overflow-wrap: anywhere;
       margin: 0;
       font-size: var(--ucam-typography-body-sm-font-size);
       min-inline-size: 0;
     }
+    /* Espelho de .ucam-descricao--fio em tools/build-css.mjs. */
+    ucam-description-list .ucam-descricao--fio { row-gap: 0; }
+    ucam-description-list .ucam-descricao--fio > div { align-items: center; padding-block: var(--ucam-space-inline-xs); min-block-size: 2.25rem; }
+    ucam-description-list .ucam-descricao--fio dt { font-size: var(--ucam-typography-body-sm-font-size); line-height: var(--ucam-typography-body-sm-line-height); color: var(--ucam-color-text-primary); }
+    ucam-description-list .ucam-descricao--fio > div + div { border-block-start: 1px solid var(--ucam-color-border-subtle); }
     ucam-description-list .ucam-descricao__icone { flex: none; color: var(--ucam-color-text-placeholder); }
     ucam-description-list .ucam-descricao__mais {
       display: inline-flex;
@@ -218,6 +224,8 @@ export class UcamDescriptionList {
   readonly items = input.required<UcamDescriptionItem[]>();
   readonly columns = input<'auto' | 1 | 2 | 3>('auto');
   readonly layout = input<'stacked' | 'inline' | 'painel'>('stacked');
+  /** Fio entre os pares (lista longa no inline). Ver description-list.json, divided. */
+  readonly divided = input(false);
   /**
    * Quantos pares ficam à vista antes do "Mostrar todos os N valores". null
    * mostra todos. Só age no layout painel — nos outros a lista é curta e a
@@ -257,6 +265,11 @@ export class UcamDescriptionList {
   }
 
   protected readonly classes = computed(() => {
+    const fio = this.divided() && !this.painel() ? ' ucam-descricao--fio' : '';
+    return this.classesBase() + fio;
+  });
+
+  private readonly classesBase = computed(() => {
     if (this.painel()) return 'ucam-descricao ucam-descricao--painel';
     // 16px entre linhas e 20px entre colunas, como no Trilho A (20/09/2026):
     // com 8px o vão ENTRE pares era quase o de dentro do par, e a grade lia

@@ -810,10 +810,29 @@ export interface Tela {
   notas?: string[];
   problemas?: string[];
   codigo?: string;
+  /**
+   * A tela existe montada em Angular (site/src/app/pages/vivo/): `codigo` é o
+   * template dela, não o esboço, e /vivo/<projeto>/<tela> a mostra viva.
+   */
+  vivo?: boolean;
   /** Página autônoma em docs/t/, para abrir a tela em tamanho real. */
   arquivo: string;
   /** De onde se chega e o que cada ação faz (ADR-033). */
   fluxos?: FluxoTela;
+  /** O que a tela supõe do negócio, e quem decide cada suposição. */
+  regras_negocio?: RegraNegocio[];
+}
+
+/**
+ * legado: o sistema de hoje já faz assim. proposta: o desenho escolheu e
+ * precisa de aceite. aberta: a tela precisa da resposta e não a tem.
+ * confirmada: quem decide aceitou. Só legado e confirmada são regra.
+ */
+export interface RegraNegocio {
+  situacao: 'legado' | 'proposta' | 'aberta' | 'confirmada';
+  regra: string;
+  /** Papel que decide, não pessoa: "Secretaria acadêmica". */
+  decide: string;
 }
 
 /**

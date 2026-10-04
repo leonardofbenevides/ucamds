@@ -212,6 +212,10 @@
         {
           "lucide": "clock",
           "uso": "Prazo. Acompanha SEMPRE o texto do prazo — o relógio sozinho não diz se falta ou passou (WCAG 1.4.1)."
+        },
+        {
+          "lucide": "sparkles",
+          "uso": "O que a MÁQUINA sugeriu (sugestão automatizada): a opção sugerida no seletor de decisão e o ladrilho da faixa da IA no topo da tabela. Nunca como ação e nunca sozinho: a mesma tela diz em palavras o que ele marca (a legenda da faixa), e o nome acessível da opção leva \", sugestão\"."
         }
       ]
     },

@@ -367,6 +367,142 @@ for (const projeto of templates.projetos ?? []) {
   }
 }
 
+/* ------------------------------ 4c''. as LIGAÇÕES do codigo contra o Trilho B --- */
+// O bloco acima só pergunta se a TAG tem contrato. Ninguém perguntava se o
+// que o código liga nela existe: em 28/09/2026 as oito telas da isenção
+// chegaram à entrega com (pressed) num botão que não tem essa saída, [back]
+// onde o page-header tem backLink, [options] no segmented, [name] no anexo,
+// (rowActivate) numa tabela que não emite nada com esse nome — 111 ligações
+// mortas em 31 telas, e o portão verde. O código é o que o desenvolvedor
+// copia; ligação que não compila é pior que ligação nenhuma.
+//
+// A API é lida do fonte do Trilho B (input, model, output, com alias), por
+// componente e por diretiva de atributo ([ucamTooltip] e afins ampliam o que a
+// tag aceita). Três respostas:
+//   · a ligação não existe no Trilho B nem no contrato → FALHA (é erro de nome);
+//   · existe no contrato e ainda não no Trilho B → AVISO (o contrato está à
+//     frente da implementação, como o shellLayout do app-shell);
+//   · falta entrada obrigatória (input.required / model.required) → FALHA.
+// Atributos nativos, aria-*, data-*, attr./class./style., eventos do DOM,
+// formulários do Angular e marcadores de projeção (ucamXxx) passam direto.
+{
+  const LIB = join(ROOT, 'ui/projects/ui/src/lib/ucam');
+  const api = new Map();
+  const diretivas = new Map();
+  if (existsSync(LIB)) {
+    for (const dir of readdirSync(LIB)) {
+      const pasta = join(LIB, dir);
+      let arqs;
+      try { arqs = readdirSync(pasta); } catch { continue; }
+      for (const arq of arqs.filter((f) => f.endsWith('.ts') && !f.endsWith('.spec.ts') && f !== 'index.ts')) {
+        const src = readFileSync(join(pasta, arq), 'utf8');
+        for (const p of src.split(/@(?=Component\(|Directive\()/).slice(1)) {
+          const sel = p.match(/selector:\s*'([^']+)'/)?.[1];
+          if (!sel) continue;
+          const entradas = new Set();
+          const saidas = new Set();
+          const obrigatorias = new Set();
+          for (const m of p.matchAll(/readonly\s+(\w+)\s*=\s*(input|model|output)(?:\.required)?\s*[<(]([^\n]*)/g)) {
+            const [todo, nome, tipo, resto] = m;
+            const n = resto.match(/alias:\s*'(\w+)'/)?.[1] ?? nome;
+            if (tipo === 'output') saidas.add(n);
+            else entradas.add(n);
+            if (tipo === 'model') saidas.add(n + 'Change');
+            if (/=\s*(input|model)\.required/.test(todo)) obrigatorias.add(n);
+          }
+          for (const s of sel.split(',').map((x) => x.trim())) {
+            const el = s.match(/^([a-z][a-z0-9-]*)$/)?.[1];
+            const attr = s.match(/^\[(\w+)\]$/)?.[1];
+            if (el) api.set(el, { entradas, saidas, obrigatorias });
+            else if (attr) diretivas.set(attr, { entradas, saidas });
+          }
+        }
+      }
+    }
+  }
+  const contratoPor = new Map(components.map((c) => [c.spec.selector, c.spec]));
+  const NATIVOS = new Set(['class', 'style', 'id', 'role', 'tabindex', 'hidden', 'slot', 'lang', 'dir', 'inert']);
+  const EVENTOS_DOM = new Set(['click', 'dblclick', 'keydown', 'keyup', 'focus', 'blur', 'focusin', 'focusout', 'mouseenter', 'mouseleave', 'input', 'change', 'submit', 'pointerdown', 'pointerup']);
+  const ANGULAR = new Set(['ngModel', 'ngModelChange', 'formControlName', 'formControl', 'formGroup', 'routerLink', 'routerLinkActive', 'queryParams', 'ngClass', 'ngStyle']);
+  const semEnvelope = (a) => a.replace(/^\[\(?|\)?\]$|^\(|\)$/g, '');
+  const tag = /<(ucam-[a-z0-9-]+)((?:\s+[^\s=>/"']+(?:\s*=\s*(?:"[^"]*"|'[^']*'))?)*)\s*\/?>/g;
+
+  for (const projeto of templates.projetos ?? []) {
+    for (const t of projeto.templates ?? []) {
+      const onde = `templates.json (${projeto.id}/${t.id})`;
+      for (const m of (t.codigo ?? '').matchAll(tag)) {
+        const el = m[1];
+        const comp = api.get(el);
+        if (!comp) continue; // sem Trilho B: quem responde é o portão de contrato
+        const contrato = contratoPor.get(el);
+        const cProps = new Set((contrato?.props ?? []).map((p) => p.nome));
+        const cEventos = new Set((contrato?.eventos ?? []).map((e) => e.nome));
+        const attrs = [...m[2].matchAll(/([^\s=>/"']+)(?:\s*=\s*(?:"[^"]*"|'[^']*'))?/g)].map((a) => a[1]);
+        const extra = { entradas: new Set(), saidas: new Set() };
+        for (const a of attrs) {
+          const d = diretivas.get(semEnvelope(a));
+          if (d) { d.entradas.forEach((x) => extra.entradas.add(x)); d.saidas.forEach((x) => extra.saidas.add(x)); }
+        }
+        const ditos = new Set(attrs.map(semEnvelope));
+        for (const r of comp.obrigatorias) {
+          if (!ditos.has(r)) falha(onde, `<${el}> sem ${r}, que é entrada obrigatória no Trilho B`);
+        }
+        for (const a of attrs) {
+          if (/^[*#]|^let-/.test(a)) continue;
+          const tipo = a.startsWith('[(') ? 'duplo' : a.startsWith('[') ? 'entrada' : a.startsWith('(') ? 'saida' : 'estatico';
+          const nome = semEnvelope(a);
+          if (/^(attr|class|style)\./.test(nome) || /^(aria|data)-/.test(nome)) continue;
+          if (NATIVOS.has(nome) || ANGULAR.has(nome) || diretivas.has(nome) || /^ucam[A-Z]/.test(nome)) continue;
+          if (tipo === 'saida' && (EVENTOS_DOM.has(nome) || nome.startsWith('keydown.'))) continue;
+          const ent = (n) => comp.entradas.has(n) || extra.entradas.has(n);
+          const sai = (n) => comp.saidas.has(n) || extra.saidas.has(n);
+          const ok = tipo === 'saida' ? sai(nome) : tipo === 'duplo' ? ent(nome) && sai(nome + 'Change') : ent(nome);
+          if (ok) continue;
+          const noContrato = tipo === 'saida' ? cEventos.has(nome) : cProps.has(nome);
+          const desc = tipo === 'saida' ? `(${nome})` : tipo === 'duplo' ? `[(${nome})]` : tipo === 'entrada' ? `[${nome}]` : nome;
+          if (noContrato) avisa(onde, `<${el}> ${desc} está no contrato e ainda não no Trilho B — o código não compila até ele chegar`);
+          else falha(onde, `<${el}> ${desc} não existe no Trilho B nem no contrato — confira o nome em spec/components/${contrato?.id ?? el.slice(5)}.json`);
+        }
+      }
+    }
+  }
+}
+
+/* ------------------------------------- 4c'. regras de negócio das telas --- */
+// A tela desenha supondo regras que o design system não decide. Sem este
+// campo, o dev lê o protótipo como especificação e o desenho passa a decidir
+// o negócio. Proposta e aberta precisam dizer QUEM decide, senão a pergunta
+// não tem para onde ir. Tela sem o campo é falha desde 27/09/2026, quando
+// as 29 telas foram levantadas: tela nova nasce dizendo o que supõe.
+const SITUACOES_REGRA = new Set(['legado', 'proposta', 'aberta', 'confirmada']);
+const semRegras = [];
+for (const projeto of templates.projetos ?? []) {
+  for (const t of projeto.templates ?? []) {
+    const onde = `templates.json (${projeto.id}/${t.id})`;
+    if (!('regras_negocio' in t)) {
+      semRegras.push(`${projeto.id}/${t.id}`);
+      continue;
+    }
+    if (!Array.isArray(t.regras_negocio) || !t.regras_negocio.length) {
+      falha(onde, '"regras_negocio" existe e está vazio — tela sem suposição nenhuma não precisa do campo');
+      continue;
+    }
+    const vistas = new Set();
+    for (const r of t.regras_negocio) {
+      if (!SITUACOES_REGRA.has(r.situacao)) falha(onde, `regra com situação "${r.situacao}" — use ${[...SITUACOES_REGRA].join(', ')}`);
+      if (!r.regra?.trim()) falha(onde, 'regra sem texto');
+      if (!r.decide?.trim()) falha(onde, `"${r.regra?.slice(0, 50)}…" não diz quem decide`);
+      if (vistas.has(r.regra)) falha(onde, `regra repetida: "${r.regra.slice(0, 50)}…"`);
+      vistas.add(r.regra);
+      const extras = Object.keys(r).filter((k) => !['situacao', 'regra', 'decide'].includes(k));
+      if (extras.length) falha(onde, `regra com campo desconhecido: ${extras.join(', ')}`);
+    }
+  }
+}
+if (semRegras.length) {
+  falha('templates.json', `${semRegras.length} telas sem "regras_negocio" — diga o que a tela supõe do negócio e quem decide: ${semRegras.join(', ')}`);
+}
+
 /* ------------------------------------------- 4d. a MARCAÇÃO dos templates --- */
 // O bloco acima olha o campo "codigo" — o exemplo em Angular que o
 // desenvolvedor copia. Ninguém olhava o campo "preview", que é a TELA: o HTML

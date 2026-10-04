@@ -145,16 +145,16 @@ Barra de visão em três fileiras: trilha (Meus sistemas / Isenção),
 título "Fila de análise" com contagem, ferramentas. Abas: Em análise
 (8) · Concluídas (5). Toolbar: busca por nome ou inscrição, select de
 curso, segmented de situação (Todas 8 · Aguardando envio 3 · Aguardando
-análise 3 · Aguardando candidato 2), chips removíveis dos filtros
+análise 4 · Aguardando candidato 1), chips removíveis dos filtros
 aplicados, contagem com `aria-live`.
 
 Tabela compacta (ADR-046): Candidato (célula de pessoa: nome, inscrição
 em `.ucam-id`), Curso, Período letivo, Solicitada em, Situação (selo),
 Sugestão (selo por estado; coluna existe porque a análise automatizada
-está ligada), ação "Abrir" como link da linha. Cabeçalho de grupo por
-curso: Direito (5), Administração (3). Linha de quem está aguardando
-envio traz telefone e e-mail no apoio da célula de pessoa, porque é o
-que a coordenação faz com ela: ligar.
+está ligada), ação "Abrir" como link da linha. Sem cabeçalho de grupo por
+curso: o select de curso filtra (Direito 5, Administração 3). O
+contato de quem está aguardando envio fica na tela sem-documentos,
+não na tabela compacta.
 
 Aba Concluídas: mesma tabela sem a coluna Sugestão, com "Concluída em"
 e o resultado (n de m isentas) no lugar de Sugestão; ação "Consultar".
@@ -167,7 +167,7 @@ Imprimir (c, como no Protocolo); Matrizes e Cursos (b).
 ### 2. `analise` — Análise da solicitação (triagem-lista-detalhe)
 
 Barra de visão: trilha (Fila de análise / João Cutrim), título "João
-Cutrim" com o selo "Aguardando análise", apoio "Direito · 2026.1 ·
+Cutrim" com o selo "Aguardando análise", apoio "Direito · 2026.2 ·
 inscrição 2026-01187 · solicitada em 12/09/2026". Ações: "Salvar
 rascunho" (secundário), "Finalizar análise" (primário). Situação de
 rascunho vira "Em rascunho — salvo às 14h32" abaixo do título.
@@ -178,19 +178,26 @@ nome da disciplina, carga horária, a sugestão automatizada como selo
 (Isentar / Revisar / Não isentar, com o motivo curto em apoio: "Ementa
 compatível: 92%"), e a decisão como segmented de três posições
 (Isentar · Não isentar · Pedir documento; nenhuma marcada é sem
-decisão). Rodapé da seção: "9 disciplinas · 4 isentas · 2 não isentas
-· 1 aguardando documento · 2 sem decisão", com `aria-live`. Direito
+decisão). Rodapé da seção: "9 disciplinas · 0 isentas · 0 não isentas
+· 1 aguardando documento · 8 sem decisão", com `aria-live`: a tela abre
+antes do trabalho, para mostrar o que a sugestão faz. Direito
 Civil I (ementa parcial, 61%) começa em Pedir documento, por isso a
 ação primária do cabeçalho abre como "Enviar pedido ao candidato".
 
 Painel de apoio: cartão "Solicitação" (lista de descrição: candidato,
 inscrição, curso, período letivo, instituição de origem, matriz
-curricular como select com DIR20222 e DIR20201); cartão "Documentos"
+curricular só leitura, DIR20222: a matriz é a do curso, definida em
+Cursos; DIR20201 está em extinção e não vale para quem entra agora); cartão "Documentos"
 (anexos: Histórico escolar, Ementas, cada um com nome do arquivo em
 `.ucam-id`, tamanho e "Baixar"); cartão "Sugestão automatizada"
 ("Analisada em 12/09 às 09h40 · 4 isentar, 2 revisar, 3 não isentar",
-ação "Aplicar sugestões" que preenche as sem decisão com isentar/não
-isentar e deixa revisar sem decisão, e diz quantas preencheu); cartão
+e como ela é feita, com o critério de cada resultado). "Aplicar N
+sugestões" fica ACIMA da tabela, ao lado do filtro de período, e conta
+as sem decisão com sugestão firme; aplicar marca cada linha "Pela
+sugestão", abre um aviso com o que foi preenchido, o que ficou com a
+coordenação (as de revisar, com o motivo) e Desfazer, e registra na
+atividade. Decidir contra uma sugestão firme marca "Diferente da
+sugestão". Cartão
 "Observação ao candidato" (textarea com contador de 150, apoio "O
 candidato lê esta observação na tela de acompanhamento", ação "Enviar
 ao candidato" que muda a situação para Aguardando candidato).
@@ -228,34 +235,50 @@ anuncia. A lista de disciplinas aparece desabilitada, com o motivo
 
 ### 5. `acompanhamento` — Acompanhamento da isenção (candidato)
 
-Portal Universitário, largura estreita, conta "João Cutrim". Trilha
-(Meus sistemas / Isenção de disciplinas), título "Isenção de
-disciplinas" com selo "Aguardando candidato", apoio "Direito · 2026.1
-· solicitada em 12/09/2026". Alerta de aviso com a observação da
-coordenação ("Aguardando complementação de ementas: as de Direito
-Civil I e História do Direito não vieram.") e a ação "Enviar
-documento", que abre o diálogo (descrição, arquivo PDF até 10 MB,
-Enviar) e adiciona o anexo à lista com anúncio. Seção "Documentos
-enviados" com os anexos. Seção "Disciplinas" com segmented de período
-e lista: nome, situação (Isenta, Em análise, Aguardando documento com
-motivo). Rodapé: "9 disciplinas · 2 isentas · 5 em análise · 2
-aguardando documento".
+Portal Universitário, largura padrão com painel (26/09/2026), conta
+"João Cutrim". É o estado de João logo depois do "Enviar pedido ao
+candidato" da tela de análise, em 28/09/2026. Trilha (Meus sistemas /
+Isenção de disciplinas), título "Isenção de disciplinas" com selo
+"Aguardando você" (o "Aguardando candidato" da coordenação, dito ao
+candidato). Alerta de aviso com o pedido da coordenação ("A coordenação
+pediu um documento (28/09/2026): a ementa de Direito Civil I não veio
+no arquivo enviado. Envie até 13/10/2026.") e a ação "Enviar
+documento", que abre o diálogo (descrição; confirmar abre o seletor de
+PDF até 10 MB) e adiciona o anexo à lista com anúncio. Seção
+"Documentos enviados" com os anexos. Seção "Disciplinas" com segmented
+de período e lista: nome, período, carga, situação. Sem resultado
+parcial antes do parecer (decisão 11): as disciplinas que a coordenação
+já decidiu aparecem "Em análise", e só a que espera o candidato aparece
+"Aguardando documento", com o motivo. Rodapé: "9 disciplinas · 8 em
+análise · 1 aguardando documento". Painel "Sua solicitação" com
+inscrição, curso, período, instituição de origem, data da solicitação
+e prazo do documento. O sino mostra só o aviso do próprio candidato.
 
 ### 6. `resultado` — Isenção concluída (candidato)
 
 A mesma página para o caso concluído: selo Concluída, resumo "6 de 9
 disciplinas isentas", lista por período com Isenta / Não isenta e o
-motivo quando não isenta, "Baixar parecer" (c). Sem ação de envio.
+motivo quando não isenta, em palavras do candidato ("Conteúdo da ementa
+não equivale", "Sem disciplina equivalente no histórico" — nunca a
+porcentagem da sugestão automatizada), "Baixar parecer" (c). Sem ação
+de envio. Painel com a carga isenta (400h de 640h), o que fica na grade
+(240h, 3 disciplinas) e os documentos enviados. O motivo ainda não tem
+campo na tela de análise (regra aberta).
 
 ## Números que fecham
 
-- Fila: 8 em análise = 3 aguardando análise + 3 aguardando envio + 2
-  aguardando candidato; 5 concluídas. Direito 5, Administração 3.
+- Fila: 8 em análise = 4 aguardando análise + 3 aguardando envio + 1
+  aguardando candidato; 5 concluídas (período letivo 2026.1; as em
+  análise são de 2026.2). Direito 5, Administração 3.
 - João Cutrim, DIR20222: 9 disciplinas = 4 (1º) + 3 (2º) + 2 (3º).
-  Sugestões: 4 isentar, 2 revisar, 3 não isentar. Na tela de análise, 4
-  isentas, 2 não isentas, 1 aguardando documento, 2 sem decisão. No acompanhamento (antes da
-  conclusão): 2 isentas, 5 em análise, 2 aguardando documento.
-- Pedro Alves (concluída): 6 de 9 isentas.
+  Sugestões: 4 isentar, 2 revisar, 3 não isentar. Na tela de análise, abre
+  com 1 aguardando documento e 8 sem decisão; Aplicar preenche 7 (4 isentas, 3 não
+  isentas) e deixa Direito Constitucional I (revisar) com a coordenação. No acompanhamento (depois
+  do pedido, antes da conclusão): 8 em análise, 1 aguardando documento (Direito Civil I).
+- Matriz DIR20222: 240h (1º) + 240h (2º) + 160h (3º) = 640h. Pedro Alves: 400h isentas + 240h
+  que ficam na grade = 640h.
+- Pedro Alves (concluída, 2025-02044): 6 de 9 isentas. Sugestões: 5
+  isentar, 2 revisar, 2 não isentar; a coordenação seguiu as 7 firmes.
 
 ## Contratos e componentes
 

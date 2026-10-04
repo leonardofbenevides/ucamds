@@ -9,7 +9,9 @@ import {
   viewChild,
   DestroyRef,
   ElementRef,
+  PLATFORM_ID,
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 
@@ -20,9 +22,16 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../../docs/tema-pr
 
 /** Larguras da moldura. Os nomes são os pontos de virada do próprio shell. */
 const LARGURAS = [
-  { id: 'desktop', rotulo: 'Desktop', px: 1180, nota: 'Navegação fixa — a partir de 64rem.' },
+  { id: 'desktop', rotulo: 'Desktop', px: 1180, nota: 'Navegação fixa — a partir de 64rem. Ocupa a coluna inteira, com piso de 1180px.' },
   { id: 'tablet', rotulo: 'Tablet', px: 900, nota: 'Navegação sobreposta; conteúdo ainda em duas colunas.' },
   { id: 'celular', rotulo: 'Celular', px: 390, nota: 'Navegação sobreposta e conteúdo em coluna única.' },
+] as const;
+
+const SITUACOES = [
+  { situacao: 'aberta', rotulo: 'Sem resposta' },
+  { situacao: 'proposta', rotulo: 'Propostas pelo desenho' },
+  { situacao: 'legado', rotulo: 'Como o sistema de hoje faz' },
+  { situacao: 'confirmada', rotulo: 'Confirmadas' },
 ] as const;
 
 /**
@@ -61,7 +70,7 @@ const LARGURAS = [
               (click)="largura.set(l)"
             >
               {{ l.rotulo }}
-              <span class="px">{{ l.px }}px</span>
+              <span class="px">{{ pxDe(l) }}px</span>
             </button>
           }
         </div>
@@ -86,11 +95,11 @@ const LARGURAS = [
            abaixo já evitava para a altura. O palco não tem borda nem
            tamanho próprio, então sua largura é a da coluna, sempre. -->
       <div class="palco" #palco>
-        <div class="moldura" [style.--px.px]="largura().px" [style.--escala]="escala()">
+        <div class="moldura" [style.--px.px]="pxEfetivo()" [style.--escala]="escala()">
           <iframe
             [src]="url(d.tela.arquivo)"
             data-preview
-            [attr.width]="largura().px"
+            [attr.width]="pxEfetivo()"
             [title]="'Tela ' + d.tela.nome + ' — ' + d.projeto.nome"
             loading="lazy"
           ></iframe>
@@ -99,9 +108,84 @@ const LARGURAS = [
       @if (escala() < 1) {
         <p class="escala-nota small muted">
           Reduzido a {{ (escala() * 100).toFixed(0) }}% para caber na coluna. A tela continua
-          desenhando em {{ largura().px }}px — é a viewport que o arranjo documenta.
+          desenhando em {{ pxEfetivo() }}px — é a viewport que o arranjo documenta.
         </p>
       }
+
+      <!-- O CÓDIGO DA TELA (03/10/2026). A pergunta era "o dev chega 100% igual
+           ao exemplo?". No Trilho A chega, se copiar a marcação que o quadro
+           acima renderiza — e ela não estava à mão: a página só tinha "Abrir
+           em nova aba", e o fonte da página autônoma começa com cinco mil
+           linhas de CSS. A marcação chega por fetch, de um arquivo irmão da
+           página autônoma, porque o spec.data.json deixa o preview de fora
+           de propósito (620 mil caracteres não cabem no bundle). No prerender
+           não há fetch: fica o link para o arquivo, que é a mesma entrega. -->
+      <section class="codigo-tela">
+        <h2>Código desta tela</h2>
+        <div class="codigo-abas" role="tablist" aria-label="Código desta tela">
+          <button
+            type="button"
+            role="tab"
+            [attr.aria-selected]="abaCodigo() === 'html'"
+            (click)="abaCodigo.set('html')"
+          >
+            HTML <span class="trilho">Trilho A</span>
+          </button>
+          @if (d.tela.codigo) {
+            <button
+              type="button"
+              role="tab"
+              [attr.aria-selected]="abaCodigo() === 'angular'"
+              (click)="abaCodigo.set('angular')"
+            >
+              Angular <span class="trilho">{{ d.tela.vivo ? 'Trilho B' : 'Trilho B, ponto de partida' }}</span>
+            </button>
+          }
+          <button type="button" class="copiar" (click)="copiar()" [disabled]="!textoAtual()">
+            {{ copiado() ? 'Copiado' : 'Copiar' }}
+          </button>
+        </div>
+        @if (abaCodigo() === 'html') {
+          <p class="codigo-nota small muted">
+            É a marcação que o quadro acima renderiza, sem a moldura: faixa, menu e conta vêm do
+            <a routerLink="/catalogo/app-shell">app-shell</a>. Com a folha e o
+            <code>ucam-comportamento.js</code> carregados, fica idêntica e responde como aqui
+            (abas, filtros, gaveta, confirmação, toast). O que não vem junto é o serviço: cada
+            <code>data-acao</code> dispara o evento <code>ucam:acao</code>, e a aplicação responde
+            (<a routerLink="/decisoes/adr-057">ADR-057</a>).
+          </p>
+          <div class="codigo-corpo" role="tabpanel">
+            @if (fonte(); as f) {
+              <pre><code>{{ f }}</code></pre>
+            } @else {
+              <p class="small muted">
+                <a [href]="'/t/' + fonteArquivo(d.tela.arquivo)" target="_blank" rel="noopener">
+                  Abrir a marcação da tela
+                </a>
+              </p>
+            }
+          </div>
+        } @else {
+          @if (d.tela.vivo) {
+            <p class="codigo-nota small muted">
+              A tela montada com &#64;ucam/ui, que o site compila e compara pixel a pixel com o
+              HTML ao lado (tools/prova-paridade-tela.mjs).
+              <a [href]="'/vivo/' + d.projeto.id + '/' + d.tela.id" target="_blank" rel="noopener">
+                Abrir a tela viva
+              </a>
+            </p>
+          } @else {
+            <p class="codigo-nota small muted">
+              Esboço: os componentes e as ligações existem no &#64;ucam/ui e são conferidos no
+              build, mas o arranjo da tela não está aqui. Use o HTML como mapa dos blocos de
+              layout (ADR-012).
+            </p>
+          }
+          <div class="codigo-corpo" role="tabpanel">
+            <pre><code>{{ d.tela.codigo }}</code></pre>
+          </div>
+        }
+      </section>
 
       <div class="colunas">
         <section>
@@ -111,6 +195,28 @@ const LARGURAS = [
               <li>{{ n }}</li>
             }
           </ul>
+
+          @if (regras().length) {
+            <h2>Regras de negócio que a tela supõe</h2>
+            <div class="regras">
+              <p class="small muted">
+                O design system não decide estas regras. A tela foi desenhada supondo cada uma; quem
+                decide está ao lado. Só as do legado e as confirmadas são regra. Os números da tela
+                são exemplo.
+              </p>
+              @for (g of regras(); track g.situacao) {
+                <h3>{{ g.rotulo }} · {{ g.itens.length }}</h3>
+                <ul class="regras" [attr.data-situacao]="g.situacao">
+                  @for (r of g.itens; track r.regra) {
+                    <li>
+                      {{ r.regra }}
+                      <span class="decide small muted">Decide: {{ r.decide }}</span>
+                    </li>
+                  }
+                </ul>
+              }
+            </div>
+          }
 
           @if (d.tela.problemas?.length) {
             <h2>O que o legado faz aqui</h2>
@@ -277,6 +383,88 @@ const LARGURAS = [
       margin-block: -2.25rem 3rem;
     }
 
+    .codigo-tela {
+      margin-block-end: 3rem;
+    }
+    /* O mesmo trilho de segmentos do seletor de largura: o ativo SOBE em
+       cartão branco, não é pintado de marca. */
+    .codigo-abas {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-control);
+      background: var(--ucam-color-surface-subtle);
+    }
+    .codigo-abas [role='tab'] {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.4rem;
+      padding: 0.3rem 0.7rem;
+      border: 0;
+      border-radius: var(--ucam-radius-md);
+      background: none;
+      font: inherit;
+      font-size: 0.8125rem;
+      color: var(--ucam-color-text-secondary);
+      cursor: pointer;
+    }
+    .codigo-abas [role='tab']:hover {
+      background: var(--ucam-color-action-secondary-hover);
+    }
+    .codigo-abas [role='tab'][aria-selected='true'] {
+      background: var(--ucam-color-surface-default);
+      color: var(--ucam-color-text-primary);
+      font-weight: 600;
+      box-shadow: var(--ucam-elevation-raised);
+    }
+    .codigo-abas .trilho {
+      font-size: 0.75rem;
+      font-weight: 400;
+      opacity: 0.75;
+    }
+    .codigo-abas .copiar {
+      margin-inline-start: auto;
+      padding: 0.3rem 0.7rem;
+      border: 0;
+      border-radius: var(--ucam-radius-md);
+      background: none;
+      font: inherit;
+      font-size: 0.8125rem;
+      color: var(--ucam-color-text-link);
+      cursor: pointer;
+    }
+    .codigo-abas .copiar:disabled {
+      color: var(--ucam-color-text-disabled);
+      cursor: default;
+    }
+    .codigo-nota {
+      max-inline-size: var(--measure);
+      margin: 0.75rem 0;
+    }
+    .codigo-corpo pre {
+      max-block-size: 32rem;
+      margin: 0;
+      padding: 1rem;
+      overflow: auto;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-md);
+      background: var(--ucam-color-surface-subtle);
+      font-family: var(--f-mono);
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      /* A marcação é uma linha só de propósito: quebrar o HTML em linhas
+         poria espaço em branco entre elementos e mudaria o que se vê. Aqui
+         ela quebra para ler; copiada, continua inteira. */
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+    .codigo-corpo p {
+      margin: 0;
+    }
+
     .colunas {
       display: grid;
       gap: 2rem;
@@ -322,6 +510,35 @@ const LARGURAS = [
     ul.problemas li {
       border-inline-start-color: var(--ucam-color-feedback-danger-border);
       color: var(--ucam-color-text-secondary);
+    }
+    div.regras h3 {
+      margin: 1.25rem 0 0.5rem;
+      font-size: 0.9375rem;
+      font-weight: 560;
+    }
+    div.regras > p {
+      max-inline-size: var(--measure);
+      margin: 0;
+    }
+    ul.regras {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.6rem;
+    }
+    ul.regras li {
+      max-inline-size: var(--measure);
+      padding-inline-start: 0.9rem;
+      border-inline-start: 2px solid var(--ucam-color-border-subtle);
+      font-size: 0.9375rem;
+    }
+    /* Aberta é a única que pede ação de alguém antes de a tela virar código. */
+    ul.regras[data-situacao='aberta'] li {
+      border-inline-start-color: var(--ucam-color-feedback-warning-border);
+    }
+    ul.regras .decide {
+      display: block;
     }
     ul.usa {
       gap: 0.35rem;
@@ -369,17 +586,81 @@ export default class TelaPage {
   protected readonly escala = signal(1);
 
   /**
+   * DESKTOP É A COLUNA INTEIRA (28/09/2026: "a tela deveria estar full aqui em
+   * largura"). Com --app-max em 96rem a coluna chega a ~1250px e o quadro
+   * fixo de 1180 deixava uma faixa vazia à direita. Desktop agora desenha na
+   * largura do palco, com 1180 de piso: abaixo disso volta a reduzir por
+   * escala, que é o que mantém o arranjo de desktop numa coluna estreita.
+   * Tablet e Celular continuam fixos — são pontos de virada, não "a tela
+   * que cabe". No prerender o palco mede 0 e vale o piso.
+   */
+  private readonly palcoLargura = signal(0);
+  protected pxDe(l: (typeof LARGURAS)[number]): number {
+    return l.id === 'desktop' ? Math.max(l.px, Math.floor(this.palcoLargura())) : l.px;
+  }
+  protected readonly pxEfetivo = computed(() => this.pxDe(this.largura()));
+
+  /**
    * Recalcula quando o quadro aparece (o viewChild é signal) e quando o botão
    * de largura muda o divisor. O ResizeObserver do construtor cobre o terceiro
    * gatilho, que é a janela mudar de tamanho.
    */
   private readonly ajusta = effect(() => {
     const el = this.palco()?.nativeElement;
-    const px = this.largura().px;
     // clientWidth ausente = prerender. Zero também não serve de divisor.
     if (!el?.clientWidth) return;
-    this.escala.set(Math.min(1, el.clientWidth / px));
+    this.palcoLargura.set(el.clientWidth);
+    this.escala.set(Math.min(1, el.clientWidth / this.pxEfetivo()));
   });
+
+  /* ------------------------------------------------- o código da tela --- */
+
+  private readonly ehNavegador = isPlatformBrowser(inject(PLATFORM_ID));
+  protected readonly abaCodigo = signal<'html' | 'angular'>('html');
+  protected readonly copiado = signal(false);
+
+  /** A marcação da tela, buscada no navegador. `undefined` enquanto não chega. */
+  protected readonly fonte = signal<string | undefined>(undefined);
+
+  /** A marcação da tela, em /t/fonte/, escrita por tools/build-templates.mjs. */
+  protected fonteArquivo(arquivo: string): string {
+    return `fonte/${arquivo}`;
+  }
+
+  /**
+   * Busca de novo a cada tela: o parâmetro de rota muda sem recriar a página,
+   * e a marcação da anterior não pode ficar à vista sob o título da seguinte.
+   * A resposta só entra se a tela ainda for a mesma que a pediu.
+   */
+  private readonly carregaFonte = effect(() => {
+    const d = this.dados();
+    this.fonte.set(undefined);
+    if (!d || !this.ehNavegador) return;
+    fetch(`/t/${this.fonteArquivo(d.tela.arquivo)}`)
+      .then((r) => (r.ok ? r.text() : undefined))
+      .then((texto) => {
+        if (this.dados() === d) this.fonte.set(texto);
+      })
+      .catch(() => {
+        // Sem a marcação, fica o link para o arquivo, que é a mesma entrega.
+      });
+  });
+
+  protected readonly textoAtual = computed(() =>
+    this.abaCodigo() === 'html' ? this.fonte() : this.dados()?.tela.codigo,
+  );
+
+  protected async copiar() {
+    const texto = this.textoAtual();
+    if (!texto) return;
+    try {
+      await navigator.clipboard.writeText(texto);
+      this.copiado.set(true);
+      setTimeout(() => this.copiado.set(false), 1600);
+    } catch {
+      // Sem permissão de área de transferência: o código está à vista.
+    }
+  }
 
   constructor() {
     // A moldura é um documento próprio e nunca soube do tema do site: ficava
@@ -394,7 +675,9 @@ export default class TelaPage {
         // derivada da escala; medi-la para calcular a escala fecharia o laço
         // que este comentário já alertava para a altura — a caixa encolheria
         // a cada passada até desaparecer. O palco não depende da escala.
-        if (el.clientWidth) this.escala.set(Math.min(1, el.clientWidth / this.largura().px));
+        if (!el.clientWidth) return;
+        this.palcoLargura.set(el.clientWidth);
+        this.escala.set(Math.min(1, el.clientWidth / this.pxEfetivo()));
       });
       obs.observe(el);
       this.destroy.onDestroy(() => obs.disconnect());
@@ -406,6 +689,17 @@ export default class TelaPage {
   protected readonly padrao = computed(() => {
     const d = this.dados();
     return d ? padraoPorId(d.tela.padrao) : undefined;
+  });
+
+  /**
+   * Agrupadas pela pergunta que o dev faz: o que ainda não tem resposta vem
+   * primeiro, o que já é regra vem por último.
+   */
+  protected readonly regras = computed(() => {
+    const todas = this.dados()?.tela.regras_negocio ?? [];
+    return SITUACOES.map((s) => ({ ...s, itens: todas.filter((r) => r.situacao === s.situacao) })).filter(
+      (g) => g.itens.length,
+    );
   });
 
   /**

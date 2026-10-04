@@ -362,6 +362,7 @@
       "raiz": ".ucam-field com .ucam-input",
       "nota": "São duas classes porque são duas coisas: o campo é o arranjo de rótulo, controle e dica; o input é o controle. Um .ucam-input solto funciona e perde o rótulo, que é justamente o defeito que o contrato existe para impedir.",
       "estado": "loading: .ucam-input-group com o input em .ucam-input-group__controle, aria-busy=true, e um .ucam-input-group__adorno final com svg.ic.ucam-spinner (ícone loaderCircle). readonly: o atributo nativo; a folha dá o chão sem papel e o contorno de fio."
-    }
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/text-field/ucam-text-field.ts — <ucam-text-field>. Somente leitura (revisão de estados, 13/09/2026): chão sem papel e contorno de fio, com o texto na tinta primária. Entradas: label, labelHidden, hint, placeholder, type, mask, required, disabled, readonly, loading, invalid, errorMessage, maxLength, width, autocomplete, value. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"
   }
 }
