@@ -229,7 +229,8 @@
       "padrao-consulta-relatorio",
       "padrao-formulario-entidade",
       "padrao-listagem-crud",
-      "ucam-dialog"
+      "ucam-dialog",
+      "padrao-fluxo-guiado"
     ]
   },
   "migracao": {

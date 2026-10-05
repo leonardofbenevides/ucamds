@@ -213,7 +213,8 @@
   "composicao": {
     "usada_por": [
       "padrao-painel-indicadores",
-      "ucam-stat"
+      "ucam-stat",
+      "padrao-fluxo-guiado"
     ]
   },
   "migracao": {

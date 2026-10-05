@@ -225,7 +225,8 @@
     "usada_por": [
       "padrao-formulario-entidade",
       "padrao-painel-indicadores",
-      "ucam-page-header"
+      "ucam-page-header",
+      "padrao-fluxo-guiado"
     ],
     "usa": [
       "ucam-icon-tile",

@@ -405,7 +405,8 @@
       "ucam-page-header",
       "ucam-section-bar",
       "ucam-compositor",
-      "ucam-date-field"
+      "ucam-date-field",
+      "padrao-fluxo-guiado"
     ],
     "usa": [
       "ucam-icon"

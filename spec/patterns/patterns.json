@@ -277,6 +277,43 @@
         "ucam-stat"
       ],
       "evidencia": "Relatórios Acadêmicos (Spring Boot + Thymeleaf), 74 templates gerados a partir do mesmo layout, entregues como skill em 08/09/2026: references/04-paginas.md descreve o par formulário/resultado com .resumo-filtros, .link-voltar, .botoes-exportacao, .paginacao e .nota-dados; 05-interacoes-js.md descreve cascata, acumulador e overlay. O que este padrão muda em relação à origem: o overlay sai (ADR-005), o resumo vira chip na barra de visão em vez de faixa em tom de marca, a exportação vira menu em vez de fileira de três botões outline, e a paginação ganha a faixa de contagem. As três telas de referência estão em spec/templates.json, projeto relatorios."
+    },
+    {
+      "id": "fluxo-guiado",
+      "nome": "Fluxo guiado",
+      "resumo": "Uma pessoa, uma tarefa com começo e fim: etapas visíveis, uma ação que avança por etapa, tempo e progresso sempre à vista.",
+      "status": "draft",
+      "frequencia": "Entrou em 04/10/2026 com o Vestibular Online, o primeiro fluxo do parque em que uma pessoa faz UMA tarefa com começo e fim, contra o relógio. Nenhum dos oito padrões anteriores descreve isso: todos supõem alguém que trabalha numa fila ou num cadastro e volta amanhã. A mesma forma serve a matrícula, a rematrícula e qualquer prova ou inscrição feita de uma vez.",
+      "problema": "No legado a prova é uma página só. Ela não diz em que ponto a pessoa está nem quanto falta; o relógio mora no corpo e some ao rolar a questão; a alternativa escolhida não tem estado próprio; e entregar é um botão igual aos outros, no fim da rolagem. Quem faz a prova no celular não sabe se a resposta foi gravada e descobre o que deixou em branco só depois de entregar.",
+      "estrutura": [
+        "Moldura com as etapas na coluna esquerda, no lugar do menu: a pessoa não navega por um sistema, percorre uma tarefa. Abaixo de 64rem a coluna vira gaveta e as etapas reaparecem em barra no corpo",
+        "Cartão de quem está fazendo a tarefa na mesma coluna, e no pé dela o contato de quem ajuda",
+        "Barra da tela com o título da etapa, o progresso em palavras, o estado de salvamento e o relógio em barra de progresso",
+        "Corpo com uma coisa a fazer: uma questão, uma folha, uma confirmação",
+        "Apoio lateral com o mapa do que já foi feito, que vira gaveta abaixo de 64rem",
+        "Rodapé do corpo com voltar à esquerda e a ação que avança à direita",
+        "Diálogo de entrega, que lista o que ficou em branco antes de confirmar"
+      ],
+      "regras": [
+        "Uma ação primária por etapa, e ela avança. Voltar é secundário; sair da tarefa não é botão da etapa.",
+        "As etapas ficam visíveis o tempo todo e não se pula para frente. Voltar é permitido onde não desfaz nada.",
+        "Tempo e progresso moram na barra da tela, não no corpo: rolar a questão não pode esconder o relógio. O último terço muda de tom com palavra junto, nunca só de cor.",
+        "O que a pessoa faz é salvo sem pedir, e a tela diz que salvou. Sem conexão, diz quantas respostas esperam para ser enviadas.",
+        "Sair da tarefa é uma só ação, com confirmação que lista o que ficou em branco. Não há botão desabilitado sem saída: quando falta a redação, a ação é \"Ir para a redação\", não \"Entregar\" cinza.",
+        "Trocar de passo move o foco para o título do passo novo.",
+        "O estado de cada item se lê em forma e palavra (bolha cheia e bolha vazia, com nome acessível), não em matiz."
+      ],
+      "usa": [
+        "ucam-alert",
+        "ucam-app-shell",
+        "ucam-button",
+        "ucam-card",
+        "ucam-dialog",
+        "ucam-drawer",
+        "ucam-progress",
+        "ucam-stepper"
+      ],
+      "evidencia": "As rotas /candidato/:oid/** do app Vestibular Online (apps/vestibular-online, Angular 21 com @ucam/ui), com testes: instrucoes, prova/:caderno/:n, prova/redacao e resultado. Substitui a prova do processo-seletivo-frontend (Angular 9). As ADRs que o padrão puxa (o desvio do check no choice-card, a bolha cheia fora da conta da ADR-023, o relógio na faixa) ficam para o detalhamento do padrão."
     }
   ]
 }

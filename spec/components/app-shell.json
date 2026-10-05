@@ -472,7 +472,8 @@
     "usada_por": [
       "padrao-painel-indicadores",
       "padrao-shell-aplicacao",
-      "padrao-triagem-lista-detalhe"
+      "padrao-triagem-lista-detalhe",
+      "padrao-fluxo-guiado"
     ]
   },
   "migracao": {

@@ -187,7 +187,8 @@
   },
   "composicao": {
     "usada_por": [
-      "ucam-drawer"
+      "ucam-drawer",
+      "padrao-fluxo-guiado"
     ]
   },
   "migracao": {

@@ -210,7 +210,8 @@
       "ucam-timeline"
     ],
     "usada_por": [
-      "ucam-app-shell"
+      "ucam-app-shell",
+      "padrao-fluxo-guiado"
     ]
   },
   "migracao": {

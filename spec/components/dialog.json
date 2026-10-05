@@ -212,7 +212,8 @@
     "usada_por": [
       "padrao-confirmacao-destrutiva",
       "padrao-formulario-entidade",
-      "padrao-listagem-crud"
+      "padrao-listagem-crud",
+      "padrao-fluxo-guiado"
     ]
   },
   "conteudo": {
