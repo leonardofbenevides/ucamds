@@ -32,7 +32,7 @@ Backend: `src/environments/environment.ts` (`backend`, `backendApi`). Em produç
 
 ## Design system
 
-`@ucam/ui`, `@ucam/tokens` e `@ucam/css` entram por tarball (ver `package.json`; hoje por `file:` a partir de `../ucamds/dist/pacotes`, até a 0.1.2 ser publicada em `ucam-ds.vercel.app`). Para subir de versão, troque o número nas três URLs e rode `npm install`. Regras e contratos: `../AGENTS.ucam.md` e o servidor MCP `ucamds`.
+`@ucam/ui`, `@ucam/tokens` e `@ucam/css` entram por tarball (ver `package.json`; hoje por `file:` a partir de `../../dist/pacotes`, gerados por `pnpm dist` na raiz do repositório, até a 0.1.2 ser publicada em `ucam-ds.vercel.app`). Para subir de versão, troque o número nas três URLs e rode `npm install`. Regras e contratos: o `AGENTS.ucam.md` que o kit `@ucam/ds-mcp` instala e o servidor MCP `ucamds`.
 
 No Trilho B o app importa também `@ucam/css/ucam.css` e põe `class="ucam"` no `<body>`: os componentes `<ucam-*>` usam classes `.ucam-*` e os blocos de layout (`ucam-stack`, `ucam-split`, `ucam-login`…) vivem nessa folha.
 
