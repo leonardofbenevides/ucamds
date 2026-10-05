@@ -133,7 +133,7 @@ export type UcamSystemCategory =
       max-inline-size: 14rem;
       background: transparent;
       color: inherit;
-      border-color: color-mix(in srgb, currentColor 30%, transparent);
+      border-color: color-mix(in srgb, currentColor 20%, transparent);
       padding-inline: var(--ucam-space-inline-sm);
       font-size: var(--ucam-typography-body-sm-font-size);
       font-weight: var(--ucam-typography-label-font-weight);
@@ -155,6 +155,12 @@ export type UcamSystemCategory =
        que esta moldura não emite. Dentro dela, o degrau é o --ucam-sticky-top. */
     ucam-app-shell .ucam-viewbar {
       inset-block-start: var(--ucam-sticky-top);
+    }
+    /* O botão de ícone que a aplicação projeta na faixa ou no rail (o
+       lançador de sistemas) herda a tinta DELA: a tinta secundária do
+       fantasma é grafite, e sobre o bordô some. */
+    ucam-app-shell :is(header, nav[aria-label='Módulos']) ucam-icon-button button[data-ucam-variant='ghost'] {
+      color: color-mix(in srgb, currentColor 72%, transparent);
     }
     /* Botão de ícone da faixa — sino, lupa: 32px, tinta apagada que acende. */
     ucam-app-shell .ucam-shell-lancador {

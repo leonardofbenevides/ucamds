@@ -149,6 +149,8 @@ const NATUREZAS: Natureza[] = [
             itemLabel="naturezas"
             identifierKey="nome"
             [selected]="marcadas()"
+            [rowSelectable]="ativa"
+            [sort]="{ column: 'requerimentos', direction: 'desc' }"
             [state]="linhas().length ? 'idle' : 'empty'"
             emptyReason="no-results"
             (selectionChange)="marcadas.set($event)"
@@ -254,13 +256,15 @@ export default class VivoProtocoloNaturezasPage {
   /** As três linhas marcadas da referência, para a foto comparar o mesmo estado. */
   protected readonly marcadas = signal<readonly Natureza[]>(NATUREZAS.slice(7, 10));
   protected readonly anuncio = signal('');
+  /** Natureza arquivada não entra em ação de lote: a caixa fica, desabilitada. */
+  protected readonly ativa = (n: Natureza) => !n.selo;
 
   protected readonly colunas: UcamColumnDef[] = [
-    { key: 'nome', header: 'Natureza', icon: 'text', type: 'text', sortable: true },
-    { key: 'setor', header: 'Setor responsável', icon: 'building2', type: 'text', width: 'min', sortable: true },
+    { key: 'nome', header: 'Natureza', icon: 'text', type: 'text' },
+    { key: 'setor', header: 'Setor responsável', icon: 'building2', type: 'text', width: 'min' },
     // 'min' no cabeçalho e não na célula: a coluna mede o rótulo e o texto
     // longo das unidades quebra, como o th--min da referência.
-    { key: 'unidades', header: 'Unidades atendidas', icon: 'mapPin', type: 'text', width: 'min', sortable: true },
+    { key: 'unidades', header: 'Unidades atendidas', icon: 'mapPin', type: 'text', width: 'min' },
     { key: 'requerimentos', header: 'Requerimentos', icon: 'hash', type: 'number', width: 'min', sortable: true },
     { key: 'acoes', header: 'Ações', type: 'actions' },
   ];

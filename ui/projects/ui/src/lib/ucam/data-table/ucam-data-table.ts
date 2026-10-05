@@ -174,7 +174,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
         <thead>
           <tr>
             @if (selectable() === 'multiple') {
-              <th scope="col" class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')">
+              <th scope="col" class="ucam-table__sel th--selecao" [class.ucam-col--fixa-inicio]="temFixa('start')">
                 <label class="ucam-table__check">
                   <input
                     type="checkbox"
@@ -186,7 +186,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 </label>
               </th>
             } @else if (selectable() === 'single') {
-              <th scope="col" class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')"><span class="ucam-sr-only">Seleção</span></th>
+              <th scope="col" class="ucam-table__sel th--selecao" [class.ucam-col--fixa-inicio]="temFixa('start')"><span class="ucam-sr-only">Seleção</span></th>
             }
 
             @for (col of colunasVisiveis(); track col.key) {
@@ -246,12 +246,13 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 (click)="aoClicarLinha(linha, $event)"
               >
                 @if (selectable() !== 'none') {
-                  <td class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')">
+                  <td class="ucam-table__sel td--selecao" [class.ucam-col--fixa-inicio]="temFixa('start')">
                     <label class="ucam-table__check">
                       <input
                         [type]="selectable() === 'single' ? 'radio' : 'checkbox'"
                         [attr.name]="selectable() === 'single' ? nomeGrupo : null"
                         [checked]="marcadas().has(linha)"
+                        [disabled]="!selecionavel(linha)"
                         [attr.aria-label]="'Selecionar ' + identificador(linha)"
                         (change)="alternarLinha(linha)"
                       />
@@ -506,14 +507,16 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        fundo sozinho dá 1,08:1, saiu junto com a do Trilho A: a medida pedia um
        segundo sinal, não uma tarja. */
     /* 25/09/2026: o fundo tinto saiu também daqui. Fundo branco e um shape
-       sólido de 4px na borda DIREITA, de ponta a ponta, na última célula —
-       o que a folha do Trilho A e a ADR-046 já diziam. */
-    .ucam-table__linha--marcada > td:last-child { position: relative; }
-    .ucam-table__linha--marcada > td:last-child::after {
+       sólido de 4px, de ponta a ponta. 05/10/2026: o shape passa à borda
+       ESQUERDA, na primeira célula — a folha do Trilho A mudou de lado em
+       28/09 e este bloco ficou na direita; com as duas folhas carregadas a
+       linha marcada saía com DUAS barras (prova de paridade). */
+    .ucam-table__linha--marcada > td:first-child:not(.ucam-col--fixa-inicio):not(.ucam-col--fixa-fim) { position: relative; }
+    .ucam-table__linha--marcada > td:first-child::after {
       content: '';
       position: absolute;
       inset-block: 0;
-      inset-inline-end: 0;
+      inset-inline-start: 0;
       inline-size: 0.25rem;
       background: var(--ucam-color-action-primary-default);
       pointer-events: none;
@@ -561,6 +564,14 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       display: block;
     }
     .ucam-table__check input[type='radio'] { border-radius: 50%; }
+    /* Linha que não aceita seleção (rowSelectable): o chão do desabilitado
+       da ADR-042, como .ucam-check input:disabled. */
+    .ucam-table__check input:disabled {
+      background: var(--ucam-color-action-disabled-background);
+      border-color: var(--ucam-color-border-subtle);
+      cursor: not-allowed;
+    }
+    .ucam-table__check:has(input:disabled) { cursor: not-allowed; }
     .ucam-table__check input::after {
       position: absolute;
       inset-block-start: 50%;
@@ -593,7 +604,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       block-size: 2px;
       background: var(--ucam-color-text-on-action);
     }
-    .ucam-table__check:hover input:not(:checked):not(:indeterminate) { border-color: var(--ucam-color-border-strong); }
+    .ucam-table__check:hover input:not(:checked):not(:indeterminate):not(:disabled) { border-color: var(--ucam-color-border-strong); }
     .ucam-table__check input:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: var(--ucam-focus-ring-offset);
@@ -619,11 +630,13 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        (prova de paridade, 03/10/2026). Fora do fluxo, ele não mede nada;
        o th é sticky, logo posicionado, e segura o absoluto. */
     .ucam-table th > ucam-menu { position: absolute; inline-size: 0; block-size: 0; overflow: hidden; }
-    .ucam-table__coluna ucam-icon { color: var(--ucam-color-text-placeholder); }
+    /* Só o ícone da COLUNA é apagado; a seta do gatilho herda a tinta do
+       rótulo, como na folha do Trilho A (prova de paridade, 05/10/2026). */
+    .ucam-table__coluna ucam-icon.ucam-table__icone { color: var(--ucam-color-text-placeholder); }
     .ucam-table__coluna:hover,
     .ucam-table__coluna[aria-expanded='true'] { color: var(--ucam-color-text-primary); }
-    th[aria-sort='ascending'] .ucam-table__coluna ucam-icon,
-    th[aria-sort='descending'] .ucam-table__coluna ucam-icon { color: var(--ucam-color-action-primary-default); }
+    th[aria-sort='ascending'] .ucam-table__coluna ucam-icon:not(.ucam-table__icone),
+    th[aria-sort='descending'] .ucam-table__coluna ucam-icon:not(.ucam-table__icone) { color: var(--ucam-color-action-primary-default); }
     .ucam-table__coluna:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: 2px;
@@ -837,6 +850,12 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
    * continua passando por selecao, sem voltar por aqui.
    */
   readonly selected = input<readonly T[]>([]);
+  /**
+   * Quais linhas aceitam seleção. A que não aceita mantém a caixa, desabilitada
+   * — registro arquivado numa lista com ação em lote, por exemplo —, e fica
+   * fora do "selecionar todas": a coluna não muda de forma por causa dela.
+   */
+  readonly rowSelectable = input<((linha: T) => boolean) | null>(null);
   private readonly selecaoDeFora = effect(() => {
     this.selecao.set(new Set(this.selected()));
   });
@@ -1043,8 +1062,14 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
     return p.join(' ');
   });
 
+  protected selecionavel(linha: T): boolean {
+    return this.rowSelectable()?.(linha) ?? true;
+  }
+
+  private readonly selecionaveis = computed(() => this.rows().filter((l) => this.selecionavel(l)));
+
   protected readonly todasMarcadas = computed(
-    () => this.rows().length > 0 && this.rows().every((l) => this.selecao().has(l)),
+    () => this.selecionaveis().length > 0 && this.selecionaveis().every((l) => this.selecao().has(l)),
   );
   protected readonly parcialmenteMarcadas = computed(
     () => this.selecao().size > 0 && !this.todasMarcadas(),
@@ -1121,7 +1146,7 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
 
   protected alternarTodas(evento: Event): void {
     const marcar = (evento.target as HTMLInputElement).checked;
-    const atual = marcar ? new Set(this.rows()) : new Set<T>();
+    const atual = marcar ? new Set(this.selecionaveis()) : new Set<T>();
     this.selecao.set(atual);
     this.selectionChange.emit([...atual]);
   }
