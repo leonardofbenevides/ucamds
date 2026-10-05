@@ -5313,6 +5313,316 @@
               "vestibular/redacao"
             ]
           }
+        },
+        {
+          "id": "redacoes",
+          "nome": "Correção de redações",
+          "perfil": "Banca",
+          "padrao": "triagem-lista-detalhe",
+          "origem": "Vestibular Online, rota /banca/redacoes (apps/vestibular-online/src/app/banca/correcao/)",
+          "descricao": "A fila de redações da banca: abas Em espera e Corrigidas, a lista à esquerda e, à direita, os dados do candidato, a proposta, o texto e a nota.",
+          "usa": [
+            "ucam-alert",
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-chip",
+            "ucam-citacao",
+            "ucam-description-list",
+            "ucam-drawer",
+            "ucam-empty-state",
+            "ucam-list-item",
+            "ucam-page-header",
+            "ucam-section-bar",
+            "ucam-select",
+            "ucam-skeleton",
+            "ucam-tabs",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "No legado a correção é uma tabela de candidatos; o texto abre num modal por cima dela e a nota é digitada na linha da tabela, longe do texto.",
+            "Período e forma de ingresso são dois campos obrigatórios acima da tabela, e nada diz de que recorte é a fila que está na tela.",
+            "Redação corrigida e redação em espera aparecem misturadas, diferenciadas só pela coluna da nota vazia.",
+            "O texto chega com a formatação que o candidato colou no editor rico.",
+            "A tela de correção abre sem login para quem tiver o endereço."
+          ],
+          "notas": [
+            "É a caixa de entrada do DS (lista e detalhe): a banca lê e dá a nota sem sair da fila. Gravar a nota tira a redação de Em espera e abre a próxima.",
+            "As abas são os dois recortes da fila, com contagem. O escopo (período e forma de ingresso) fica sempre à vista em chips sem o x, porque as duas escolhas são obrigatórias; trocar é pela gaveta de Filtros.",
+            "A linha da fila tem um portador de cor só (ADR-022): na aba Corrigidas, a nota aparece em selo neutro.",
+            "O detalhe abre com o nome do candidato no título e a situação em selo; o título recebe o foco ao trocar de redação.",
+            "Proposta e texto do candidato são citações, cada uma com a sua seção; o texto do candidato traz a contagem de caracteres. Redação em branco vira um alerta de aviso, não uma citação vazia.",
+            "A nota é um campo curto com a regra na dica (de 0 a 10, de meio em meio ponto) e um só primário, Gravar nota. Em redação já corrigida o rótulo passa a Gravar nova nota.",
+            "Estados: carregando a fila e carregando o texto (esqueleto), erro em cada um (estado vazio de erro com Tentar de novo), fila vazia por recorte (com a saída para o outro recorte), pesquisa sem resultado (com Limpar pesquisa) e nota não gravada (alerta de erro acima do campo).",
+            "Abaixo de 64rem a lista e o detalhe viram duas vistas, com Voltar para a fila no alto do detalhe."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "A fila de redações é consultada por período de ingresso e por forma de ingresso, os dois obrigatórios.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A nota da redação vai de 0 a 10.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A nota é dada de meio em meio ponto.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Uma redação já corrigida pode receber nova nota, que substitui a anterior.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A correção exige login na área interna, ao contrário do legado, porque a fila mostra nome, CPF e texto de candidato.",
+              "decide": "TI (dono do sistema)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "A banca corrige sem conta no login único? Se sim, como ela entra?",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><span>Correção</span><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Redações</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Redações</h2><span class='ucam-viewbar__contagem'>3</span><div class='ucam-tabs' role='tablist' aria-label='Recortes da fila de redações'><button class='ucam-tabs__tab' type='button' role='tab' id='vb-aba-espera' aria-controls='vb-fila' aria-selected='true' tabindex='0' data-fluxo='b'>Em espera<span class='ucam-tabs__contagem' aria-hidden='true'>3</span><span class='ucam-sr-only'>, 3 itens</span></button><button class='ucam-tabs__tab' type='button' role='tab' id='vb-aba-corrigidas' aria-controls='vb-fila' aria-selected='false' tabindex='-1' data-fluxo='b'>Corrigidas<span class='ucam-tabs__contagem' aria-hidden='true'>12</span><span class='ucam-sr-only'>, 12 itens</span></button></div><span class='ucam-viewbar__folga'></span><button type='button' class='ucam-btn ucam-btn--secondary' data-fluxo='b'><svg class='ic' aria-hidden='true'><use href='#i-listFilter'/></svg> Filtros</button></div><div class='ucam-viewbar__fileira ucam-viewbar__fileira--filtros'><div class='ucam-viewbar__chips'><span class='ucam-chip ucam-chip--fixo'><span class='ucam-chip__dimensao'>Período:</span> 2026.2</span><span class='ucam-chip ucam-chip--fixo'><span class='ucam-chip__dimensao'>Forma de ingresso:</span> Vestibular online</span></div></div></div><div class='ucam-corpo ucam-corpo--pleno'><div class='ucam-inbox' id='vb-fila' role='tabpanel' aria-labelledby='vb-aba-espera'><div class='ucam-inbox__lista'><div class='ucam-inbox__lista-topo'><div class='ucam-field'><label class='ucam-field__label' for='vb-busca'>Pesquisar candidato</label><input class='ucam-input' id='vb-busca' type='search' placeholder='Nome ou CPF'></div></div><div class='ucam-inbox__rolagem'><ul class='ucam-list' aria-label='Redações: em espera'><li class='ucam-list-item' aria-current='true'><button class='ucam-list-item__alvo' type='button' aria-pressed='true' data-fluxo='b'><span class='ucam-avatar ucam-list-item__figura' aria-hidden='true'>AS</span><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Ana Souza</span><span class='ucam-list-item__tempo'>há 20 min</span></span><span class='ucam-list-item__apoio'>Engenharia de Software · Noite</span></span></button></li><li class='ucam-list-item'><button class='ucam-list-item__alvo' type='button' aria-pressed='false' data-fluxo='b'><span class='ucam-avatar ucam-list-item__figura' aria-hidden='true'>CM</span><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Carla Menezes</span><span class='ucam-list-item__tempo'>há 2h</span></span><span class='ucam-list-item__apoio'>Direito · Manhã</span></span></button></li><li class='ucam-list-item'><button class='ucam-list-item__alvo' type='button' aria-pressed='false' data-fluxo='b'><span class='ucam-avatar ucam-list-item__figura' aria-hidden='true'>DP</span><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Diego Prado</span><span class='ucam-list-item__tempo'>ontem</span></span><span class='ucam-list-item__apoio'>Administração · Noite</span></span></button></li></ul></div></div><section class='ucam-inbox__detalhe' aria-labelledby='vb-titulo'><div class='ucam-inbox__detalhe-topo ucam-cluster ucam-cluster--entre'><h3 class='ucam-page-header__title' id='vb-titulo'>Redação de Ana Souza</h3><span class='ucam-badge ucam-badge--info'><span class='ucam-badge__ponto' aria-hidden='true'></span>Em espera</span></div><div class='ucam-inbox__detalhe-corpo ucam-stack ucam-stack--lg'><dl class='ucam-descricao' aria-label='Dados do candidato'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>CPF</dt><dd class='ucam-descricao__valor'>123.456.789-01</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Engenharia de Software</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Turno</dt><dd class='ucam-descricao__valor'>Noite</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Prova feita em</dt><dd class='ucam-descricao__valor'>04/10/2026, 20h47</dd></div></dl><section class='ucam-stack'><h4 class='ucam-aside__title'>Proposta</h4><blockquote class='ucam-citacao'>\"Ler é, antes de tudo, aprender a pensar com a cabeça dos outros para depois pensar com a própria.\"<p class='ucam-citacao__autoria'>Adaptado de ensaio sobre leitura e formação.</p></blockquote><p>Escreva um texto dissertativo-argumentativo sobre <strong>o papel da leitura na formação do cidadão</strong>.</p></section><section class='ucam-stack'><h4 class='ucam-cluster ucam-aside__title'><span>Texto do candidato</span><span class='ucam-badge ucam-badge--neutral'>1.482 caracteres</span></h4><blockquote class='ucam-citacao'><p>A leitura forma o cidadão porque dá a ele palavras. Quem lê com frequência aprende a nomear o que sente, a comparar versões de um mesmo fato e a desconfiar de respostas fáceis.</p><p>Por isso a escola e a família, que são as portas de entrada para o primeiro livro, têm um papel que nenhuma política de acesso substitui: o de mostrar que ler vale o esforço.</p></blockquote></section><section class='ucam-stack'><h4 class='ucam-aside__title'>Nota</h4><div class='ucam-field' style='max-inline-size:12rem'><label class='ucam-field__label' for='vb-nota'>Nota da redação</label><input class='ucam-input' id='vb-nota' type='text' inputmode='decimal' autocomplete='off' maxlength='4' value='7,5' aria-describedby='vb-nota-h'><span class='ucam-field__hint' id='vb-nota-h'>De 0 a 10, de meio em meio ponto.</span></div><div class='ucam-cluster'><button type='button' class='ucam-btn ucam-btn--primary' data-fluxo='c'>Gravar nota</button></div></section></div></section></div></div>",
+          "codigo": "<app-moldura-banca secao=\"redacoes\" [emEspera]=\"totalEspera()\">\n  <ucam-page-header variante=\"barra\" title=\"Redações\" [count]=\"totalDoRecorte()\" [breadcrumb]=\"trilha\">\n    <div ucamFerramentas class=\"ucam-cluster ucam-cluster--entre flex-1\">\n      <ucam-tabs ariaLabel=\"Recortes da fila de redações\" [items]=\"abas()\" [value]=\"recorte()\" (valueChange)=\"trocarRecorte($event)\" />\n      <ucam-button variant=\"secondary\" iconStart=\"listFilter\" (click)=\"filtrosAbertos.set(true)\">Filtros</ucam-button>\n    </div>\n    <!-- O escopo fica à vista; período e forma são obrigatórios, por isso sem o x. -->\n    <div ucamFiltros class=\"ucam-cluster\" aria-live=\"polite\">\n      <ucam-chip dimension=\"Período\" [label]=\"periodoAtual()\" [removable]=\"false\" />\n      <ucam-chip dimension=\"Forma de ingresso\" [label]=\"formaAtual()\" [removable]=\"false\" />\n    </div>\n  </ucam-page-header>\n\n  <div class=\"ucam-corpo ucam-corpo--pleno\">\n    <div class=\"ucam-inbox\" [attr.data-painel]=\"painel()\">\n      <div class=\"ucam-inbox__lista\">\n        <div class=\"ucam-inbox__lista-topo\">\n          <ucam-text-field label=\"Pesquisar candidato\" type=\"search\" placeholder=\"Nome ou CPF\" [(value)]=\"busca\" />\n        </div>\n        <div class=\"ucam-inbox__rolagem\">\n          <ul class=\"ucam-list\" [attr.aria-label]=\"'Redações: ' + nomeDoRecorte()\">\n            @for (r of fila(); track r.oid) {\n              <ucam-list-item [title]=\"nome(r)\" [support]=\"apoio(r)\" [name]=\"nome(r)\" [time]=\"quando(r)\"\n                [selected]=\"r.oid === aberta()?.oid\" selectable (open)=\"abrir(r)\" />\n            }\n          </ul>\n        </div>\n      </div>\n\n      <section class=\"ucam-inbox__detalhe\" aria-labelledby=\"t-redacao\">\n        <div class=\"ucam-inbox__detalhe-topo ucam-cluster ucam-cluster--entre\">\n          <h2 class=\"ucam-page-header__title\" id=\"t-redacao\" tabindex=\"-1\" #titulo>Redação de {{ nome(r) }}</h2>\n          <ucam-badge tone=\"info\" variant=\"dot\" label=\"Em espera\" />\n        </div>\n        <div class=\"ucam-inbox__detalhe-corpo ucam-stack ucam-stack--lg\">\n          <ucam-description-list [items]=\"dados()\" columns=\"auto\" />\n          <ucam-section-bar title=\"Texto do candidato\" [level]=\"3\" [count]=\"contagemTexto()\" />\n          <ucam-citacao><div [innerHTML]=\"t.respostaTextual\"></div></ucam-citacao>\n\n          <ucam-section-bar title=\"Nota\" [level]=\"3\" />\n          <form class=\"ucam-stack\" novalidate (submit)=\"salvar($event)\">\n            <ucam-text-field label=\"Nota da redação\" hint=\"De 0 a 10, de meio em meio ponto.\" width=\"content\"\n              [maxLength]=\"4\" [(value)]=\"nota\" [invalid]=\"!!erroNota()\" [errorMessage]=\"erroNota()\" />\n            <ucam-button variant=\"primary\" type=\"submit\" [loading]=\"salvando()\">Gravar nota</ucam-button>\n          </form>\n        </div>\n      </section>\n    </div>\n  </div>\n</app-moldura-banca>",
+          "shell": {
+            "navAtivo": "redacoes",
+            "largura": "larga",
+            "busca": null,
+            "notificacoes": null
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Gravar nota",
+                "classe": "c",
+                "efeito": "Nota fora da regra recebe o erro no campo. Gravada, a redação sai de Em espera, a contagem das abas muda e a próxima da fila abre com o foco no título."
+              },
+              {
+                "rotulo": "Linhas da fila",
+                "classe": "b",
+                "efeito": "Abrem a redação escolhida no detalhe, com o foco no título."
+              },
+              {
+                "rotulo": "Em espera · Corrigidas",
+                "classe": "b",
+                "efeito": "Trocam o recorte da fila."
+              },
+              {
+                "rotulo": "Filtros",
+                "classe": "b",
+                "efeito": "Abre a gaveta com Período de ingresso e Forma de ingresso; mudar um deles refaz a fila e os chips."
+              },
+              {
+                "rotulo": "Pesquisar candidato",
+                "classe": "b",
+                "efeito": "Filtra a fila por nome ou CPF; o termo vira um chip removível."
+              }
+            ],
+            "chega_de": [
+              "login único da universidade",
+              "menu Redações"
+            ]
+          }
+        },
+        {
+          "id": "provas",
+          "nome": "Cadastro de provas",
+          "perfil": "Banca",
+          "padrao": "listagem-inspetor",
+          "origem": "Vestibular Online, rota /banca/provas (apps/vestibular-online/src/app/banca/provas/provas.html)",
+          "descricao": "Os cadernos da prova online de um processo seletivo, uma forma de ingresso e uma captação, com as questões de cada um; excluir caderno passa por um diálogo destrutivo.",
+          "usa": [
+            "ucam-alert",
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-card",
+            "ucam-chip",
+            "ucam-dialog",
+            "ucam-drawer",
+            "ucam-empty-state",
+            "ucam-list-item",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-skeleton"
+          ],
+          "problemas": [
+            "No legado o cadastro começa por três campos obrigatórios e uma tabela vazia; depois de consultar, nada lembra de que processo, forma e captação são os cadernos na tela.",
+            "Criar, editar e excluir questão acontecem em modais empilhados sobre a tabela.",
+            "Excluir caderno é um ícone de lixeira na linha, com um \"Tem certeza?\" que não diz que as questões vão junto.",
+            "Caderno sem questão aparece como uma linha normal: ninguém percebe que o candidato vai receber a prova sem ela."
+          ],
+          "notas": [
+            "O recorte (processo seletivo, forma de ingresso e captação) fica à vista em chips sem o x, porque as três escolhas são obrigatórias; trocar é pela gaveta de Filtros. A tela abre no recorte corrente, não numa tabela vazia.",
+            "Cada caderno é um cartão com o nome, a contagem de questões e a lista delas. A linha da questão mostra o começo do enunciado e, no apoio, quanto vale e se tem texto de apoio; ela é um link para a página da questão.",
+            "Não há primário na tela enquanto há cadernos: a tela é de consulta, e Adicionar questão é secundário dentro do cartão do caderno. O primário só aparece no estado vazio (Adicionar caderno de redação).",
+            "Excluir caderno é fantasma em tom de perigo dentro do cartão e abre o diálogo destrutivo, que diz quantas questões vão junto e quem é afetado. O foco inicial do diálogo é Cancelar.",
+            "Caderno sem questão mostra um alerta de aviso no lugar da lista, dizendo a consequência para o candidato.",
+            "Estados: carregando (esqueleto em bloco), erro (estado vazio de erro com Tentar de novo), sem caderno no recorte (estado vazio com a ação de criar o de redação) e combinação sem prova online (estado vazio com Alterar os filtros).",
+            "Na referência as questões estão sempre à vista dentro do cartão do caderno; não há painel de inspetor separado, porque o que se inspeciona é a lista curta de questões."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Os cadernos pertencem a um processo seletivo, a uma forma de ingresso e a uma captação (a vigência do legado).",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Excluir um caderno exclui as questões dele.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Por esta tela só se cria o caderno de redação; os cadernos objetivos vêm de outro cadastro.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Pode-se excluir caderno de um processo seletivo em que algum candidato já fez a prova?",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><span>Cadastro</span><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Provas</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Provas</h2><span class='ucam-viewbar__contagem'>3</span><span class='ucam-viewbar__meta'>Os cadernos da prova online e as questões de cada um.</span><span class='ucam-viewbar__folga'></span><button type='button' class='ucam-btn ucam-btn--secondary' data-fluxo='b'><svg class='ic' aria-hidden='true'><use href='#i-listFilter'/></svg> Filtros</button></div><div class='ucam-viewbar__fileira ucam-viewbar__fileira--filtros'><div class='ucam-viewbar__chips'><span class='ucam-chip ucam-chip--fixo'><span class='ucam-chip__dimensao'>Processo seletivo:</span> 2026.2</span><span class='ucam-chip ucam-chip--fixo'><span class='ucam-chip__dimensao'>Forma de ingresso:</span> Vestibular online</span><span class='ucam-chip ucam-chip--fixo'><span class='ucam-chip__dimensao'>Captação:</span> Geral</span></div></div></div><div class='ucam-corpo ucam-stack ucam-stack--lg'><section class='ucam-card ucam-stack' aria-label='Caderno de Português'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Português</span><span class='ucam-card__apoio'>3 questões</span></span></div><div class='ucam-stack'><ul class='ucam-list' aria-label='Questões do caderno de Português'><li class='ucam-list-item'><a class='ucam-list-item__alvo' href='#/templates/vestibular/questao-form' style='text-decoration:none' data-fluxo='a'><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Assinale a alternativa em que a concordância verbal está correta.</span></span><span class='ucam-list-item__apoio'>Vale 1 · com texto de apoio</span></span></a></li><li class='ucam-list-item'><a class='ucam-list-item__alvo' href='#/templates/vestibular/questao-form' style='text-decoration:none' data-fluxo='a'><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>No trecho de apoio, a palavra vivo funciona como:</span></span><span class='ucam-list-item__apoio'>Vale 1 · com texto de apoio</span></span></a></li><li class='ucam-list-item'><a class='ucam-list-item__alvo' href='#/templates/vestibular/questao-form' style='text-decoration:none' data-fluxo='a'><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Qual frase usa a crase corretamente?</span></span><span class='ucam-list-item__apoio'>Vale 1</span></span></a></li></ul><div class='ucam-cluster ucam-cluster--entre'><button type='button' class='ucam-btn ucam-btn--ghost' data-fluxo='c' data-abre-dialogo='vp-excluir'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg> Excluir caderno</button><a class='ucam-btn ucam-btn--secondary' href='#/templates/vestibular/questao-form' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar questão</a></div></div></section><section class='ucam-card ucam-stack' aria-label='Caderno de Matemática'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Matemática</span><span class='ucam-card__apoio'>2 questões</span></span></div><div class='ucam-stack'><ul class='ucam-list' aria-label='Questões do caderno de Matemática'><li class='ucam-list-item'><a class='ucam-list-item__alvo' href='#/templates/vestibular/questao-form' style='text-decoration:none' data-fluxo='a'><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Se x + 3 = 10, então 2x vale:</span></span><span class='ucam-list-item__apoio'>Vale 1</span></span></a></li><li class='ucam-list-item'><a class='ucam-list-item__alvo' href='#/templates/vestibular/questao-form' style='text-decoration:none' data-fluxo='a'><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Um produto de R$ 200,00 recebe desconto de 15%. Quanto se paga?</span></span><span class='ucam-list-item__apoio'>Vale 1</span></span></a></li></ul><div class='ucam-cluster ucam-cluster--entre'><button type='button' class='ucam-btn ucam-btn--ghost' data-fluxo='b'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg> Excluir caderno</button><a class='ucam-btn ucam-btn--secondary' href='#/templates/vestibular/questao-form' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar questão</a></div></div></section><section class='ucam-card ucam-stack' aria-label='Caderno de Redação'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Redação</span><span class='ucam-card__apoio'>1 questão</span></span></div><div class='ucam-stack'><ul class='ucam-list' aria-label='Questões do caderno de Redação'><li class='ucam-list-item'><a class='ucam-list-item__alvo' href='#/templates/vestibular/questao-form' style='text-decoration:none' data-fluxo='a'><span class='ucam-list-item__corpo'><span class='ucam-list-item__linha'><span class='ucam-list-item__titulo'>Com base nos textos de apoio e no que você conhece do assunto, escreva um texto dissertativo-argumentativo sobre o papel da leitura na formação do cidadão.</span></span><span class='ucam-list-item__apoio'>Vale 10 · com texto de apoio</span></span></a></li></ul><div class='ucam-cluster ucam-cluster--entre'><button type='button' class='ucam-btn ucam-btn--ghost' data-fluxo='b'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg> Excluir caderno</button><a class='ucam-btn ucam-btn--secondary' href='#/templates/vestibular/questao-form' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar questão</a></div></div></section></div><dialog class='ucam-dialog' id='vp-excluir'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Excluir caderno</h2></div><div class='ucam-dialog__body'><p>Excluir o caderno de Português de 2026.2? As 3 questões dele são excluídas junto, e quem ainda não fez a prova deixa de receber a português. Esta ação não pode ser desfeita.</p></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao'>Cancelar</button><button class='ucam-btn ucam-btn--danger' type='submit' value='ok'>Excluir caderno</button></div></form></dialog>",
+          "codigo": "<app-moldura-banca secao=\"provas\">\n  <ucam-page-header variante=\"barra\" title=\"Provas\" [count]=\"store.cadernos().length\" [breadcrumb]=\"trilha\">\n    <div ucamFerramentas class=\"ucam-cluster ucam-cluster--entre flex-1\">\n      <span class=\"ucam-section__hint\">Os cadernos da prova online e as questões de cada um.</span>\n      <ucam-button variant=\"secondary\" iconStart=\"listFilter\" (click)=\"filtrosAbertos.set(true)\">Filtros</ucam-button>\n    </div>\n    <div ucamFiltros class=\"ucam-cluster\">\n      <ucam-chip dimension=\"Processo seletivo\" [label]=\"store.rotulos().processo\" [removable]=\"false\" />\n      <ucam-chip dimension=\"Forma de ingresso\" [label]=\"store.rotulos().forma\" [removable]=\"false\" />\n      <ucam-chip dimension=\"Captação\" [label]=\"store.rotulos().captacao\" [removable]=\"false\" />\n    </div>\n  </ucam-page-header>\n\n  <div class=\"ucam-corpo ucam-stack ucam-stack--lg\">\n    @for (c of store.cadernos(); track c.oid) {\n      <ucam-card as=\"section\" [titulo]=\"rotulo(c)\" [apoio]=\"contagem(c)\" [icone]=\"icone(c)\">\n        <div class=\"ucam-stack\">\n          @if (c.questoes.length) {\n            <ul class=\"ucam-list\" [attr.aria-label]=\"'Questões do caderno de ' + rotulo(c)\">\n              @for (q of c.questoes; track q.oid) {\n                <ucam-list-item [title]=\"trecho(q)\" [support]=\"apoio(q)\" [href]=\"linkQuestao(c, q)\" (click)=\"abrirQuestao($event, c, q)\" />\n              }\n            </ul>\n          } @else {\n            <ucam-alert tone=\"warning\">Este caderno ainda não tem questão.</ucam-alert>\n          }\n          <div class=\"ucam-cluster ucam-cluster--entre\">\n            <ucam-button variant=\"ghost\" tone=\"danger\" iconStart=\"trash2\" (click)=\"pedirExclusao(c)\">Excluir caderno</ucam-button>\n            <ucam-button variant=\"secondary\" iconStart=\"plus\" (click)=\"novaQuestao(c)\">Adicionar questão</ucam-button>\n          </div>\n        </div>\n      </ucam-card>\n    } @empty {\n      <ucam-empty-state reason=\"no-data\" title=\"Nenhum caderno neste processo seletivo\"\n        description=\"A prova desta forma de ingresso e desta captação ainda não tem caderno.\">\n        <ucam-button variant=\"primary\" iconStart=\"plus\" [loading]=\"criando()\" (click)=\"criarRedacao()\">Adicionar caderno de redação</ucam-button>\n      </ucam-empty-state>\n    }\n  </div>\n\n  <ucam-dialog title=\"Excluir caderno\" variant=\"destructive\" size=\"sm\" [open]=\"!!excluindo()\" (openChange)=\"dialogoMudou($event)\"\n    [loading]=\"excluindoEmCurso()\" initialFocus=\"[data-foco]\">\n    <p>Excluir o caderno de {{ rotulo(c) }}? As questões dele são excluídas junto. Esta ação não pode ser desfeita.</p>\n    <div ucamDialogAcoes class=\"ucam-cluster ucam-cluster--fim\">\n      <ucam-button variant=\"secondary\" data-foco (click)=\"dialogoMudou(false)\">Cancelar</ucam-button>\n      <ucam-button variant=\"primary\" tone=\"danger\" [loading]=\"excluindoEmCurso()\" (click)=\"excluirCaderno()\">Excluir caderno</ucam-button>\n    </div>\n  </ucam-dialog>\n</app-moldura-banca>",
+          "shell": {
+            "navAtivo": "provas",
+            "busca": null,
+            "notificacoes": null
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Linhas de questão",
+                "classe": "a",
+                "destino": "vestibular/questao-form",
+                "efeito": "Abrem a página da questão para editar."
+              },
+              {
+                "rotulo": "Adicionar questão (×3)",
+                "classe": "a",
+                "destino": "vestibular/questao-form",
+                "efeito": "Abre a página da questão em branco, no caderno escolhido."
+              },
+              {
+                "rotulo": "Excluir caderno (Português)",
+                "classe": "c",
+                "efeito": "Abre o diálogo destrutivo com a contagem de questões e a consequência. Confirmado no app, o cartão sai e o resultado é anunciado."
+              },
+              {
+                "rotulo": "Excluir caderno (os outros)",
+                "classe": "b",
+                "efeito": "O mesmo diálogo, com o nome e a contagem do caderno."
+              },
+              {
+                "rotulo": "Filtros",
+                "classe": "b",
+                "efeito": "Abre a gaveta com Processo seletivo, Forma de ingresso e Captação; mudar um deles refaz a lista e os chips."
+              }
+            ],
+            "chega_de": [
+              "menu Provas",
+              "vestibular/questao-form"
+            ]
+          }
+        },
+        {
+          "id": "questao-form",
+          "nome": "Questão do caderno",
+          "perfil": "Banca",
+          "padrao": "formulario-entidade",
+          "origem": "Vestibular Online, rotas /banca/provas/:caderno/questao/:questao e …/questao/nova (apps/vestibular-online/src/app/banca/provas/questao-form.html)",
+          "descricao": "Criar ou editar uma questão em página própria: texto de apoio, enunciado, pontuação e ordem no caderno; excluir passa por um diálogo destrutivo.",
+          "usa": [
+            "ucam-alert",
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-dialog",
+            "ucam-empty-state",
+            "ucam-page-header",
+            "ucam-skeleton",
+            "ucam-text-field",
+            "ucam-textarea"
+          ],
+          "problemas": [
+            "No legado a questão é editada num modal com dois editores ricos, estreito demais para um texto de apoio de vários parágrafos.",
+            "O editor rico grava a formatação colada de outros lugares, e é ela que o candidato vê na prova.",
+            "Fechar o modal por engano perde o que foi escrito, sem aviso.",
+            "Excluir é um ícone ao lado de editar, com a mesma cor."
+          ],
+          "notas": [
+            "Página própria, não diálogo: a tela se abre para escrever, e um texto de apoio de vários parágrafos precisa de largura e altura. Por isso o cabeçalho é o de página, com voltar, e não a barra das filas.",
+            "Os dois textos são áreas de texto simples; parágrafos se separam com uma linha em branco, e a dica do campo diz isso. O texto de apoio nasce mais alto (8 linhas) que o enunciado (4).",
+            "Pontuação e ordem são campos curtos lado a lado, com a regra na dica.",
+            "No rodapé: Excluir questão à esquerda, em tom de perigo e secundário; Cancelar fantasma e o único primário, Salvar questão, à direita (ADR-023 e ADR-029). Em questão nova não há Excluir e o primário é Criar questão.",
+            "Excluir abre o diálogo destrutivo com a consequência (quem ainda não fez a prova deixa de recebê-la); o foco inicial é Cancelar.",
+            "Estados: carregando (esqueleto de texto), erro (estado vazio de erro com Tentar de novo), questão que não está mais no cadastro (estado vazio com Voltar para as provas), erro de campo no próprio campo e falha ao gravar (alerta de erro no alto do formulário)."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "A questão tem texto de apoio opcional, enunciado obrigatório, pontuação e ordem no caderno.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A pontuação vai de 0 a 10, de meio em meio ponto.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "O editor de questão passa a ser de texto simples, sem negrito, itálico, imagem ou fórmula, ao contrário do editor rico do legado?",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "As alternativas e o gabarito das questões objetivas são cadastrados por aqui? O app só edita apoio, enunciado, pontuação e ordem.",
+              "decide": "Banca do vestibular"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/vestibular/provas'>Provas</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span>Redação</span><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Editar questão</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Editar questão</h2><span class='ucam-viewbar__meta'>Caderno de Redação · 2026.2</span></div></div><div class='ucam-corpo'><form class='ucam-stack ucam-stack--lg'><div class='ucam-field'><label class='ucam-field__label' for='vf-apoio'>Texto de apoio</label><textarea class='ucam-textarea' id='vf-apoio' rows='8' aria-describedby='vf-apoio-h'>Texto I\n\n\"Ler é, antes de tudo, aprender a pensar com a cabeça dos outros para depois pensar com a própria.\"\n\nAdaptado de ensaio sobre leitura e formação.</textarea><span class='ucam-field__hint' id='vf-apoio-h'>Opcional. É o que o candidato lê antes do enunciado; separe os parágrafos com uma linha em branco.</span></div><div class='ucam-field'><label class='ucam-field__label' for='vf-enun'>Enunciado <span class='ucam-field__required' aria-hidden='true'>*</span></label><textarea class='ucam-textarea' id='vf-enun' rows='4' required aria-describedby='vf-enun-h'>Com base nos textos de apoio e no que você conhece do assunto, escreva um texto dissertativo-argumentativo sobre o papel da leitura na formação do cidadão.</textarea><span class='ucam-field__hint' id='vf-enun-h'>O que o candidato deve fazer.</span></div><div class='ucam-form-row' style='--ucam-cols: max-content max-content'><div class='ucam-field'><label class='ucam-field__label' for='vf-pont'>Pontuação <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='vf-pont' type='text' inputmode='decimal' maxlength='4' value='10' required aria-describedby='vf-pont-h'><span class='ucam-field__hint' id='vf-pont-h'>De 0 a 10, de meio em meio ponto.</span></div><div class='ucam-field'><label class='ucam-field__label' for='vf-ordem'>Ordem no caderno <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='vf-ordem' type='text' inputmode='numeric' maxlength='3' value='1' required aria-describedby='vf-ordem-h'><span class='ucam-field__hint' id='vf-ordem-h'>1 para a primeira questão.</span></div></div><footer class='ucam-cluster ucam-cluster--entre'><a class='ucam-btn ucam-btn--secondary' href='#/templates/vestibular/provas' data-fluxo='c' data-abre-dialogo='vf-excluir'><svg class='ic' aria-hidden='true'><use href='#i-trash2'/></svg> Excluir questão</a><span class='ucam-cluster'><a class='ucam-btn ucam-btn--ghost' href='#/templates/vestibular/provas' data-fluxo='a'>Cancelar</a><a class='ucam-btn ucam-btn--primary' href='#/templates/vestibular/provas' data-fluxo='a'>Salvar questão</a></span></footer></form></div><dialog class='ucam-dialog' id='vf-excluir'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Excluir questão</h2></div><div class='ucam-dialog__body'><p>Excluir esta questão do caderno de Redação? Quem ainda não fez a prova deixa de recebê-la. Esta ação não pode ser desfeita.</p></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao'>Cancelar</button><button class='ucam-btn ucam-btn--danger' type='submit' value='ok'>Excluir questão</button></div></form></dialog>",
+          "codigo": "<app-moldura-banca secao=\"provas\">\n  <!-- Cabeçalho de página, não a barra das filas: esta tela se abre para escrever. -->\n  <div class=\"ucam-corpo ucam-stack ucam-stack--lg\">\n    <ucam-page-header [title]=\"titulo()\" [breadcrumb]=\"trilha()\" backLink=\"/banca/provas\"\n      [description]=\"'Caderno de ' + nomeCaderno() + ' · ' + store.rotulos().processo\" />\n\n    <form class=\"ucam-stack ucam-stack--lg\" novalidate (submit)=\"salvar($event)\">\n      @if (erroAoSalvar()) {\n        <ucam-alert tone=\"danger\" live=\"assertive\">A questão não foi gravada. Confira sua conexão e tente de novo.</ucam-alert>\n      }\n      <ucam-textarea label=\"Texto de apoio\" [rows]=\"8\" [maxRows]=\"30\" [(value)]=\"apoio\"\n        hint=\"Opcional. É o que o candidato lê antes do enunciado; separe os parágrafos com uma linha em branco.\" />\n      <ucam-textarea label=\"Enunciado\" hint=\"O que o candidato deve fazer.\" required [rows]=\"4\" [maxRows]=\"20\"\n        [(value)]=\"enunciado\" [invalid]=\"!!erroEnunciado()\" [errorMessage]=\"erroEnunciado()\" />\n      <div class=\"ucam-form-row\">\n        <ucam-text-field label=\"Pontuação\" hint=\"De 0 a 10, de meio em meio ponto.\" width=\"content\" required\n          [maxLength]=\"4\" [(value)]=\"pontuacao\" [invalid]=\"!!erroPontuacao()\" [errorMessage]=\"erroPontuacao()\" />\n        <ucam-text-field label=\"Ordem no caderno\" hint=\"1 para a primeira questão.\" width=\"content\" required\n          [maxLength]=\"3\" [(value)]=\"ordem\" [invalid]=\"!!erroOrdem()\" [errorMessage]=\"erroOrdem()\" />\n      </div>\n\n      <footer class=\"ucam-cluster ucam-cluster--entre\">\n        <ucam-button variant=\"secondary\" tone=\"danger\" iconStart=\"trash2\" (click)=\"confirmandoExclusao.set(true)\">Excluir questão</ucam-button>\n        <span class=\"ucam-cluster\">\n          <ucam-button variant=\"ghost\" (click)=\"cancelar()\">Cancelar</ucam-button>\n          <ucam-button variant=\"primary\" type=\"submit\" [loading]=\"salvando()\">Salvar questão</ucam-button>\n        </span>\n      </footer>\n    </form>\n  </div>\n\n  <ucam-dialog title=\"Excluir questão\" variant=\"destructive\" size=\"sm\" [open]=\"confirmandoExclusao()\" (openChange)=\"dialogoMudou($event)\"\n    [loading]=\"excluindo()\" initialFocus=\"[data-foco]\">\n    <p>Excluir esta questão do caderno de {{ nomeCaderno() }}? Esta ação não pode ser desfeita.</p>\n    <div ucamDialogAcoes class=\"ucam-cluster ucam-cluster--fim\">\n      <ucam-button variant=\"secondary\" data-foco (click)=\"dialogoMudou(false)\">Cancelar</ucam-button>\n      <ucam-button variant=\"primary\" tone=\"danger\" [loading]=\"excluindo()\" (click)=\"excluir()\">Excluir questão</ucam-button>\n    </div>\n  </ucam-dialog>\n</app-moldura-banca>",
+          "shell": {
+            "navAtivo": "provas",
+            "busca": null,
+            "notificacoes": null
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Salvar questão",
+                "classe": "a",
+                "destino": "vestibular/provas",
+                "efeito": "Campo obrigatório vazio ou pontuação fora da regra recebe o erro no próprio campo. Gravada, volta ao cadastro de provas e o resultado é anunciado."
+              },
+              {
+                "rotulo": "Cancelar",
+                "classe": "a",
+                "destino": "vestibular/provas",
+                "efeito": "Volta ao cadastro de provas sem gravar."
+              },
+              {
+                "rotulo": "Excluir questão",
+                "classe": "c",
+                "destino": "vestibular/provas",
+                "efeito": "Abre o diálogo destrutivo com a consequência. Confirmado, a questão sai do caderno e a tela volta ao cadastro de provas."
+              },
+              {
+                "rotulo": "Provas (trilha)",
+                "classe": "a",
+                "destino": "vestibular/provas",
+                "efeito": "Volta ao cadastro de provas."
+              }
+            ],
+            "chega_de": [
+              "vestibular/provas"
+            ]
+          }
         }
       ]
     }
