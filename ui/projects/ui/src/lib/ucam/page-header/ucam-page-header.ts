@@ -83,11 +83,11 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
         fecha a barra contra o conteúdo, e ele mora no hospedeiro.
       -->
       @if (breadcrumb()?.length) {
-        <div class="flex items-center min-h-9 pt-1 px-6 text-xs">
+        <div class="flex items-center min-h-9 pt-1 px-[var(--ucam-space-inset-lg)] text-xs">
           <ng-container [ngTemplateOutlet]="trilha" />
         </div>
       }
-      <div class="flex items-center gap-2 min-h-11 px-6">
+      <div class="flex items-center gap-2 min-h-11 px-[var(--ucam-space-inset-lg)]">
         @if (backLink()) {
           <a
             [href]="backLink()"
@@ -100,7 +100,7 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
         <!-- A contagem vai DENTRO do h1: quem ouve recebe "Setores, 58" numa
              leitura só, em vez de uma frase de apoio que gastava uma linha. -->
         <h1
-          class="flex items-baseline gap-2 min-w-0 m-0 text-[length:var(--ucam-typography-page-title-font-size)] leading-[var(--ucam-typography-page-title-line-height)] tracking-[var(--ucam-typography-page-title-letter-spacing)] font-semibold"
+          class="flex items-baseline gap-2 min-w-0 m-0 text-[length:var(--ucam-typography-page-title-font-size)] leading-[var(--ucam-typography-page-title-line-height)] tracking-[var(--ucam-typography-page-title-letter-spacing)] [font-weight:var(--ucam-typography-page-title-font-weight)]"
         >
           <span class="truncate">{{ title() }}</span>
           @if (count() !== null) {
@@ -121,10 +121,10 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
         <div class="flex items-center gap-2 ms-auto shrink-0"><ng-container [ngTemplateOutlet]="acoes" /></div>
       </div>
       <!-- Ferramentas: abas de fila à esquerda, ordenação e filtros à direita. -->
-      <div class="flex flex-wrap items-center gap-2 min-h-11 px-6 empty:hidden"><ng-content select="[ucamFerramentas]" /></div>
+      <div class="flex flex-wrap items-center gap-2 min-h-11 px-[var(--ucam-space-inset-lg)] empty:hidden"><ng-content select="[ucamFerramentas]" /></div>
       <!-- Filtros aplicados: condicional no markup de quem chama, nunca
            escondida por CSS — sem chip, a fileira não existe. -->
-      <div class="flex flex-wrap items-center gap-2 min-h-10 px-6 border-t border-border empty:hidden"><ng-content select="[ucamFiltros]" /></div>
+      <div class="flex flex-wrap items-center gap-2 min-h-10 px-[var(--ucam-space-inset-lg)] border-t border-border empty:hidden"><ng-content select="[ucamFiltros]" /></div>
     } @else {
     @if (breadcrumb()?.length) {
       <div class="mb-2"><ng-container [ngTemplateOutlet]="trilha" /></div>
