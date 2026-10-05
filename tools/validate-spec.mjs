@@ -615,8 +615,13 @@ for (const projeto of templates.projetos ?? []) {
     // --- a marcação fecha, e toda classe do design system pinta? ---
     conferaMarcacao(onde, html);
 
+    // A coluna que não é menu (shell.navHtml) é marcação da tela como o
+    // preview, e passa pelo mesmo portão: fecha, pinta e os links chegam.
+    const navHtml = t.shell?.navHtml ?? '';
+    if (navHtml) conferaMarcacao(onde + ', navHtml', navHtml);
+
     // --- todo link interno chega a alguma tela? ---
-    for (const m of html.matchAll(HREFS)) {
+    for (const m of (html + navHtml).matchAll(HREFS)) {
       const u = m[1];
       if (u.startsWith('#i-')) continue; // referência a ícone do sprite
       const rota = u.match(ROTA);

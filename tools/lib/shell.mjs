@@ -212,9 +212,18 @@ export function renderShell(cfg = {}, conteudo = '') {
     notificacoes = null,
     notificacoesItens = [],
     saida = null,
+    /* A COLUNA QUE NÃO É MENU. Marcação do Trilho A que ocupa o
+     * .ucam-nav__scroll no lugar dos grupos: as etapas da prova e o cartão do
+     * candidato, no Vestibular (04/10/2026). A coluna continua sendo o mesmo
+     * <nav>, com a mesma gaveta abaixo de 64rem e o mesmo rodapé; só o miolo
+     * muda. Desenhar as etapas no corpo da tela faria a referência mentir
+     * sobre onde elas ficam. `navRotulo` nomeia o <nav> quando o que está
+     * nele não é a navegação principal ("Etapas da prova"). */
+    navHtml = null,
+    navRotulo = null,
   } = cfg;
 
-  const temNav = Array.isArray(nav) && nav.length > 0;
+  const temNav = (Array.isArray(nav) && nav.length > 0) || Boolean(navHtml);
 
   /* A COLUNA de 72px só existe quando o rail não virou menu. As três molduras
    * saem destas duas linhas, e não de `rail` cru espalhado por dez condições:
@@ -816,7 +825,7 @@ export function renderShell(cfg = {}, conteudo = '') {
       '</div></div>'
     : '';
 
-  const grupos = grupoFavoritos + (nav || [])
+  const grupos = navHtml ? navHtml : grupoFavoritos + (nav || [])
     .map((g) => {
       const itens = (g.itens || []).map((i) => item(i, navId)).join('');
       const titulo = g.titulo
@@ -1074,7 +1083,7 @@ export function renderShell(cfg = {}, conteudo = '') {
     : '';
 
   const blocoNav = temNav
-    ? `<nav class="ucam-nav" id="${esc(navId)}" aria-label="Navegação principal">${barraRecolher}${cabecaGaveta}${navTopo}${seletorSistema}${acaoNav}${buscaLateral}${buscaNav}<div class="ucam-nav__scroll">${grupos}</div>${rodapeNav}${contaLateral}</nav><div class="ucam-nav-scrim"></div>`
+    ? `<nav class="ucam-nav" id="${esc(navId)}" aria-label="${esc(navRotulo || 'Navegação principal')}">${barraRecolher}${cabecaGaveta}${navTopo}${seletorSistema}${acaoNav}${buscaLateral}${buscaNav}<div class="ucam-nav__scroll">${grupos}</div>${rodapeNav}${contaLateral}</nav><div class="ucam-nav-scrim"></div>`
     : '';
 
   /* `pleno` é o único valor que NÃO é largura de leitura: ele desliga o teto
