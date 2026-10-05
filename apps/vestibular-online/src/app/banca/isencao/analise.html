@@ -1,0 +1,226 @@
+<app-moldura-banca secao="isencao">
+  <ucam-page-header variante="barra" [title]="nome()" backLink="/banca/isencao" [breadcrumb]="trilha()">
+    @if (selo(); as s) {
+      <ucam-badge variant="dot" [label]="s.label" [tone]="s.tone" />
+    }
+    @if (editavel()) {
+      <ucam-button variant="secondary" [loading]="salvando()" (click)="salvarRascunho()">Salvar rascunho</ucam-button>
+      <ucam-button variant="primary" (click)="pedirFechamento()">{{ rotuloFechar() }}</ucam-button>
+    }
+  </ucam-page-header>
+
+  <p class="ucam-sr-only" role="status" data-anuncio>{{ anuncio() }}</p>
+
+  <div class="ucam-corpo ucam-stack">
+    @if (apoio()) {
+      <p class="ucam-section__hint">
+        {{ apoio() }}
+        @if (rascunhoSalvoAs(); as hora) {
+          · Rascunho salvo às {{ hora }}
+        }
+      </p>
+    }
+
+    @if (store.estado() === 'loading') {
+      <div class="ucam-stack" aria-busy="true">
+        <span class="ucam-sr-only">Buscando a solicitação…</span>
+        <ucam-skeleton variant="text" [lines]="8" />
+      </div>
+    } @else if (store.estado() === 'error') {
+      <ucam-empty-state reason="error" title="Não foi possível buscar a solicitação" description="Confira sua conexão e tente de novo.">
+        <ucam-button variant="secondary" (click)="store.carregar()">Tentar de novo</ucam-button>
+      </ucam-empty-state>
+    } @else if (naoEncontrada()) {
+      <ucam-empty-state reason="no-results" title="Esta solicitação não está na fila" description="Ela pode ser de outra unidade, ou o endereço está incompleto." />
+    } @else {
+      <div class="ucam-split">
+        <div class="ucam-stack ucam-stack--lg">
+          @if (erroAoSalvar()) {
+            <ucam-alert tone="danger" live="assertive">O rascunho não foi salvo. Confira sua conexão e tente de novo.</ucam-alert>
+          }
+          @if (incompletas()) {
+            <ucam-alert tone="danger" live="assertive">
+              {{ incompletas() === 1 ? 'Uma disciplina tem campo por preencher' : incompletas() + ' disciplinas têm campo por preencher' }}. O que falta está marcado em cada uma.
+            </ucam-alert>
+          }
+
+          @if (semDocumentos()) {
+            <!-- Sem documento não há o que decidir. O que a secretaria faz com
+                 esta solicitação é falar com a pessoa: o contato está ao lado. -->
+            <ucam-empty-state
+              reason="no-data"
+              title="Nenhum documento enviado"
+              description="A decisão por disciplina só começa depois dos documentos. Use o telefone ou o e-mail ao lado para pedir o histórico e as ementas."
+            />
+          } @else {
+            @switch (estadoAnalise()) {
+              @case ('loading') {
+                <div class="ucam-stack" aria-busy="true">
+                  <span class="ucam-sr-only">Buscando as disciplinas…</span>
+                  <ucam-skeleton variant="block" />
+                  <ucam-skeleton variant="block" />
+                </div>
+              }
+              @case ('error') {
+                <ucam-empty-state reason="error" title="Não foi possível buscar as disciplinas" description="Confira sua conexão e tente de novo.">
+                  <ucam-button variant="secondary" (click)="tentarDeNovo()">Tentar de novo</ucam-button>
+                </ucam-empty-state>
+              }
+              @case ('sem-matriz') {
+                <ucam-alert tone="info" title="Escolha a matriz curricular">As disciplinas a analisar são as da matriz do curso. Escolha a matriz no painel da solicitação.</ucam-alert>
+              }
+              @default {
+                <section class="ucam-stack">
+                  <ucam-section-bar [title]="'Disciplinas da matriz ' + (codigoMatriz() ?? '')" [level]="2" />
+                  @if (opcoesPeriodo().length > 2) {
+                    <div class="ucam-toolbar">
+                      <ucam-select label="Período" width="content" [options]="opcoesPeriodo()" [(value)]="periodo" />
+                    </div>
+                  }
+
+                  @for (l of visiveis(); track l.chave) {
+                    <div [attr.data-disciplina]="l.chave">
+                      <ucam-card as="section" [titulo]="l.d.nome" [apoio]="l.periodo + 'º período'" padding="md">
+                        <div class="ucam-stack">
+                          @if (travada()) {
+                            <ucam-badge variant="dot" [label]="seloDecisao(l).label" [tone]="seloDecisao(l).tone" />
+                            @if (origem(l)) {
+                              <p class="ucam-section__hint">Equivale a {{ origem(l) }}</p>
+                            }
+                          } @else {
+                            <ucam-segmented size="sm" allowEmpty [ariaLabel]="'Decisão para ' + l.d.nome" [items]="opcoesDecisao" [value]="idDecisao(l)" (valueChange)="decidir(l, $event)" />
+                            @switch (idDecisao(l)) {
+                              @case ('isentar') {
+                                <div class="ucam-form-row">
+                                  <ucam-text-field
+                                    label="Disciplina de origem"
+                                    required
+                                    autocomplete="off"
+                                    [maxLength]="150"
+                                    [value]="l.d.descricao ?? ''"
+                                    (valueChange)="escrever(l, 'descricao', $event)"
+                                    [invalid]="!!l.erros.descricao"
+                                    [errorMessage]="l.erros.descricao ?? null"
+                                  />
+                                  <ucam-text-field
+                                    label="Instituição de origem"
+                                    required
+                                    autocomplete="off"
+                                    [maxLength]="150"
+                                    [value]="l.d.ies ?? ''"
+                                    (valueChange)="escrever(l, 'ies', $event)"
+                                    [invalid]="!!l.erros.ies"
+                                    [errorMessage]="l.erros.ies ?? null"
+                                  />
+                                  <ucam-text-field
+                                    label="Carga horária cursada"
+                                    hint="Em horas."
+                                    required
+                                    autocomplete="off"
+                                    [maxLength]="150"
+                                    [value]="l.d.cargaHoraria ?? ''"
+                                    (valueChange)="escrever(l, 'cargaHoraria', $event)"
+                                    [invalid]="!!l.erros.cargaHoraria"
+                                    [errorMessage]="l.erros.cargaHoraria ?? null"
+                                  />
+                                </div>
+                              }
+                              @case ('documento') {
+                                <ucam-textarea
+                                  label="O que o candidato deve enviar"
+                                  hint="O candidato lê este texto na tela de acompanhamento."
+                                  required
+                                  [rows]="2"
+                                  [maxLength]="maxMotivo"
+                                  [value]="l.d.motivo ?? ''"
+                                  (valueChange)="escrever(l, 'motivo', $event)"
+                                  [invalid]="!!l.erros.motivo"
+                                  [errorMessage]="l.erros.motivo ?? null"
+                                />
+                              }
+                            }
+                          }
+                        </div>
+                      </ucam-card>
+                    </div>
+                  }
+                  <p class="ucam-pagination__range" role="status">{{ totais() }}</p>
+                </section>
+              }
+            }
+          }
+        </div>
+
+        <aside class="ucam-aside ucam-stack">
+          <ucam-card as="section" titulo="Solicitação" padding="md">
+            <div class="ucam-stack">
+              <ucam-description-list [items]="dados()" [columns]="1" layout="stacked" />
+              @if (!travada() && !semDocumentos() && opcoesMatriz().length) {
+                <ucam-select
+                  label="Matriz curricular"
+                  hint="As disciplinas a analisar são as desta matriz. Trocar de matriz descarta as decisões ainda não salvas."
+                  placeholder="Escolha a matriz"
+                  [options]="opcoesMatriz()"
+                  [value]="matrizOid()"
+                  (valueChange)="trocarMatriz($event)"
+                />
+              }
+            </div>
+          </ucam-card>
+
+          @if (!semDocumentos()) {
+            <ucam-card as="section" titulo="Documentos" padding="md">
+              @if (anexos().length) {
+                <div class="ucam-anexos" role="list" aria-label="Documentos da solicitação">
+                  @for (d of anexos(); track d.id) {
+                    <div role="listitem"><ucam-anexo [file]="d" /></div>
+                  }
+                </div>
+              } @else {
+                <p class="ucam-section__hint">Os documentos aparecem aqui depois de escolhida a matriz.</p>
+              }
+            </ucam-card>
+
+            <ucam-card as="section" titulo="Observação ao candidato" padding="md">
+              @if (travada()) {
+                <p>{{ observacao() || 'Nenhuma observação foi enviada.' }}</p>
+              } @else {
+                <ucam-textarea
+                  label="Observação"
+                  hint="O candidato lê esta observação na tela de acompanhamento."
+                  [rows]="3"
+                  [maxLength]="maxObservacao"
+                  [disabled]="!editavel()"
+                  [(value)]="observacao"
+                />
+              }
+            </ucam-card>
+          }
+        </aside>
+      </div>
+    }
+  </div>
+
+  <ucam-dialog size="sm" variant="confirm" [title]="dialogo()?.titulo ?? 'Análise'" [open]="!!dialogo()" (openChange)="dialogoMudou($event)" [loading]="confirmando()" initialFocus="[data-foco]">
+    @if (dialogo(); as d) {
+      <div class="ucam-stack">
+        <p>{{ d.texto }}</p>
+        @if (erroAoConfirmar()) {
+          <ucam-alert tone="danger" live="assertive">A análise não foi gravada. Confira sua conexão e tente de novo.</ucam-alert>
+        }
+      </div>
+    }
+    <!-- As ações só vão para o rodapé do diálogo quando vêm marcadas, e o
+         bloco tem de ter uma raiz só para ser projetado no lugar delas. -->
+    @if (dialogo(); as d) {
+      <div ucamDialogAcoes class="ucam-cluster ucam-cluster--fim">
+        @if (d.tipo === 'faltam') {
+          <ucam-button variant="primary" data-foco (click)="irParaPrimeira()">Ir para a primeira</ucam-button>
+        } @else {
+          <ucam-button variant="secondary" data-foco (click)="dialogoMudou(false)">Cancelar</ucam-button>
+          <ucam-button variant="primary" [loading]="confirmando()" (click)="confirmar()">{{ d.tipo === 'pedido' ? 'Enviar pedido' : 'Finalizar análise' }}</ucam-button>
+        }
+      </div>
+    }
+  </ucam-dialog>
+</app-moldura-banca>

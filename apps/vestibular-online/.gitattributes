@@ -1,0 +1,10 @@
+# Fim de linha: LF no repositório e na árvore de trabalho, em todo sistema.
+# A árvore já estava toda em LF (prettier endOfLine lf), mas com
+# core.autocrlf=true o git avisava a cada diff que ia converter para CRLF.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

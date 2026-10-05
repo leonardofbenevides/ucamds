@@ -1,0 +1,53 @@
+<app-moldura #moldura>
+  <div ucamShellAcoes>
+    <ucam-icon-button icon="info" label="Como a prova funciona" variant="ghost" (click)="moldura.instrucoesAbertas.set(true)" />
+  </div>
+
+  @switch (store.estado()) {
+    @case ('carregando') {
+      <div class="ucam-content ucam-stack">
+        <ucam-skeleton variant="heading" />
+        <ucam-skeleton variant="text" [lines]="6" />
+      </div>
+    }
+    @case ('vazio') {
+      <div class="ucam-content">
+        <ucam-empty-state
+          reason="error"
+          title="Esta prova ainda não tem caderno cadastrado"
+          [description]="'Fale com a secretaria: ' + contato"
+        />
+      </div>
+    }
+    @case ('erro') {
+      <div class="ucam-content ucam-stack">
+        <ucam-alert tone="danger" live="assertive">Não conseguimos carregar a prova. Confira sua conexão e tente de novo.</ucam-alert>
+        <ucam-button variant="primary" (click)="recarregar()">Tentar de novo</ucam-button>
+      </div>
+    }
+    @default {
+      <app-cabecalho-prova />
+      <div class="ucam-corpo">
+        <!-- Os div sem classe do DS existem para o Tailwind decidir o display:
+             o CSS do DS não tem camada e venceria `lg:hidden` num .ucam-cluster. -->
+        <div class="lg:hidden">
+          <div class="ucam-cluster ucam-cluster--fim">
+            <ucam-button variant="secondary" iconStart="listChecks" (click)="mapaAberto.set(true)">Questões</ucam-button>
+          </div>
+        </div>
+        <div class="ucam-split">
+          <div class="ucam-stack ucam-stack--lg"><router-outlet /></div>
+          <div class="hidden lg:block">
+            <aside class="ucam-aside" aria-label="Mapa de questões">
+              <app-mapa-questoes (navegar)="irPara($event)" />
+            </aside>
+          </div>
+        </div>
+      </div>
+      <ucam-drawer [(open)]="mapaAberto" title="Questões" side="end" size="sm">
+        <app-mapa-questoes (navegar)="irPara($event)" />
+      </ucam-drawer>
+      <app-entrega-dialog [modo]="pedirEntrega()" (fechar)="pedirEntrega.set(null)" (revisar)="irPara($event)" (entregue)="entregue()" />
+    }
+  }
+</app-moldura>

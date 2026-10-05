@@ -1,0 +1,49 @@
+<p class="etapas__titulo">
+  <span>Etapas</span>
+  <span aria-hidden="true">{{ posicao() }} de {{ etapas().length }}</span>
+</p>
+<ol class="ucam-stepper etapas" aria-label="Etapas do vestibular online">
+  @for (e of etapas(); track e.id; let i = $index) {
+    @if (i > 0) {
+      <li class="ucam-stepper__conector" aria-hidden="true"></li>
+    }
+    <li
+      class="ucam-stepper__passo"
+      [class.ucam-stepper__passo--done]="e.estado === 'done'"
+      [class.ucam-stepper__passo--current]="e.estado === 'current'"
+      [attr.aria-current]="e.estado === 'current' ? 'step' : null"
+      [attr.data-etapa]="e.id"
+    >
+      @if (e.link) {
+        <a class="etapas__linha" [routerLink]="e.link" [attr.aria-current]="e.vista ? 'page' : null">
+          <ng-container *ngTemplateOutlet="miolo; context: { $implicit: e, n: i + 1 }" />
+        </a>
+      } @else if (e.abre; as gaveta) {
+        <button type="button" class="etapas__linha" aria-haspopup="dialog" (click)="abrir.emit(gaveta)">
+          <ng-container *ngTemplateOutlet="miolo; context: { $implicit: e, n: i + 1 }" />
+        </button>
+      } @else {
+        <span class="etapas__linha">
+          <ng-container *ngTemplateOutlet="miolo; context: { $implicit: e, n: i + 1 }" />
+        </span>
+      }
+    </li>
+  }
+</ol>
+
+<ng-template #miolo let-e let-n="n">
+  <span class="ucam-stepper__marcador" aria-hidden="true">
+    @if (e.estado === 'done') {
+      <ucam-icon name="check" size="sm" />
+    } @else {
+      {{ n }}
+    }
+  </span>
+  <span class="etapas__texto">
+    <span>{{ e.label }}</span>
+    @if (e.dica) {
+      <span class="ucam-stepper__dica">{{ e.dica }}</span>
+    }
+  </span>
+  <span class="ucam-sr-only">, etapa {{ n }} de {{ etapas().length }}, {{ rotuloEstado(e.estado) }}</span>
+</ng-template>

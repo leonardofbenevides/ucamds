@@ -1,0 +1,108 @@
+<app-moldura-banca secao="provas">
+  <ucam-page-header variante="barra" title="Provas" [count]="store.estado() === 'pronto' ? store.cadernos().length : null" [breadcrumb]="trilha">
+    <div ucamFerramentas class="ucam-cluster ucam-cluster--entre flex-1">
+      <span class="ucam-section__hint">Os cadernos da prova online e as questões de cada um.</span>
+      <ucam-button variant="secondary" iconStart="listFilter" (click)="filtrosAbertos.set(true)">Filtros</ucam-button>
+    </div>
+    <!-- O escopo fica à vista: os cadernos são DESTE processo seletivo, desta
+         forma de ingresso e desta captação, e as três escolhas são
+         obrigatórias — por isso os chips não têm o x. -->
+    @if (store.escopo()) {
+      <div ucamFiltros class="ucam-cluster">
+        @if (store.rotulos().processo; as p) {
+          <ucam-chip dimension="Processo seletivo" [label]="p" [removable]="false" />
+        }
+        @if (store.rotulos().forma; as f) {
+          <ucam-chip dimension="Forma de ingresso" [label]="f" [removable]="false" />
+        }
+        @if (store.rotulos().captacao; as c) {
+          <ucam-chip dimension="Captação" [label]="c" [removable]="false" />
+        }
+      </div>
+    }
+  </ucam-page-header>
+
+  <p class="ucam-sr-only" role="status" data-anuncio>{{ anuncio() }}</p>
+
+  <ucam-drawer [(open)]="filtrosAbertos" title="Filtros das provas" description="Os cadernos pertencem a um processo seletivo, a uma forma de ingresso e a uma captação." side="end" size="sm">
+    @if (store.escopo(); as e) {
+      <div class="ucam-stack">
+        <ucam-select label="Processo seletivo" [options]="opcoesProcesso()" [value]="e.processo" (valueChange)="mudar({ processo: $event })" />
+        <ucam-select label="Forma de ingresso" [options]="opcoesForma()" [value]="e.forma" (valueChange)="mudar({ forma: $event })" />
+        <ucam-select label="Captação" [options]="opcoesCaptacao()" [value]="e.captacao" (valueChange)="mudar({ captacao: $event })" />
+      </div>
+    }
+  </ucam-drawer>
+
+  <div class="ucam-corpo ucam-stack ucam-stack--lg">
+    @switch (store.estado()) {
+      @case ('loading') {
+        <div class="ucam-stack" aria-busy="true">
+          <span class="ucam-sr-only">Buscando os cadernos…</span>
+          <ucam-skeleton variant="block" />
+        </div>
+      }
+      @case ('error') {
+        <ucam-empty-state reason="error" title="Não foi possível buscar os cadernos" description="Confira sua conexão e tente de novo.">
+          <ucam-button variant="secondary" (click)="store.recarregar()">Tentar de novo</ucam-button>
+        </ucam-empty-state>
+      }
+      @default {
+        @if (erroAoCriar()) {
+          <ucam-alert tone="danger" live="assertive">O caderno não foi criado. Confira sua conexão e tente de novo.</ucam-alert>
+        }
+        @for (c of store.cadernos(); track c.oid) {
+          <ucam-card as="section" [titulo]="rotulo(c)" [apoio]="contagem(c)" [icone]="icone(c)">
+            <div class="ucam-stack">
+              @if (c.questoes.length) {
+                <ul class="ucam-list" [attr.aria-label]="'Questões do caderno de ' + rotulo(c)">
+                  @for (q of c.questoes; track q.oid) {
+                    <ucam-list-item [title]="trecho(q)" [support]="apoio(q)" [href]="linkQuestao(c, q)" (click)="abrirQuestao($event, c, q)" />
+                  }
+                </ul>
+              } @else {
+                <ucam-alert tone="warning">Este caderno ainda não tem questão. Sem ela, o candidato não recebe a {{ rotulo(c).toLowerCase() }}.</ucam-alert>
+              }
+              <div class="ucam-cluster ucam-cluster--entre">
+                <ucam-button variant="ghost" tone="danger" iconStart="trash2" (click)="pedirExclusao(c)">Excluir caderno</ucam-button>
+                <ucam-button variant="secondary" iconStart="plus" (click)="novaQuestao(c)">Adicionar questão</ucam-button>
+              </div>
+            </div>
+          </ucam-card>
+        } @empty {
+          @if (podeCriarRedacao()) {
+            <ucam-empty-state reason="no-data" title="Nenhum caderno neste processo seletivo" description="A prova desta forma de ingresso e desta captação ainda não tem caderno. O que se cadastra por aqui é o caderno de redação.">
+              <ucam-button variant="primary" iconStart="plus" [loading]="criando()" (click)="criarRedacao()">Adicionar caderno de redação</ucam-button>
+            </ucam-empty-state>
+          } @else {
+            <ucam-empty-state reason="no-data" title="Esta combinação não tem prova online" description="O processo seletivo escolhido não oferece esta forma de ingresso com esta captação.">
+              <ucam-button variant="secondary" (click)="filtrosAbertos.set(true)">Alterar os filtros</ucam-button>
+            </ucam-empty-state>
+          }
+        }
+      }
+    }
+  </div>
+
+  <ucam-dialog title="Excluir caderno" variant="destructive" size="sm" [open]="!!excluindo()" (openChange)="dialogoMudou($event)" [loading]="excluindoEmCurso()" initialFocus="[data-foco]">
+    @if (excluindo(); as c) {
+      <div class="ucam-stack">
+        <p>
+          Excluir o caderno de {{ rotulo(c) }} de {{ store.rotulos().processo }}?
+          @if (c.questoes.length) {
+            {{ c.questoes.length === 1 ? 'A questão dele é excluída junto' : 'As ' + c.questoes.length + ' questões dele são excluídas junto' }}, e quem
+            ainda não fez a prova deixa de receber a {{ rotulo(c).toLowerCase() }}.
+          }
+          Esta ação não pode ser desfeita.
+        </p>
+        @if (erroAoExcluir()) {
+          <ucam-alert tone="danger" live="assertive">O caderno não foi excluído. Confira sua conexão e tente de novo.</ucam-alert>
+        }
+      </div>
+    }
+    <div ucamDialogAcoes class="ucam-cluster ucam-cluster--fim">
+      <ucam-button variant="secondary" data-foco (click)="dialogoMudou(false)">Cancelar</ucam-button>
+      <ucam-button variant="primary" tone="danger" [loading]="excluindoEmCurso()" (click)="excluirCaderno()">Excluir caderno</ucam-button>
+    </div>
+  </ucam-dialog>
+</app-moldura-banca>

@@ -1,0 +1,76 @@
+/* Fonte Geist auto-hospedada: sai do pacote do DS, não de CDN. */
+@import "@ucam/css/ucam-fonts.css";
+/* Trilho A do DS: layout (ucam-stack, ucam-split…), tela de entrada
+   (ucam-login) e as classes .ucam-* que os componentes do @ucam/ui usam.
+   Quase tudo é global; o que depende do ancestral .ucam (box-sizing, fonte,
+   anel de foco) vale porque <body class="ucam">. */
+@import "@ucam/css/ucam.css";
+
+@import "tailwindcss";
+/* Tokens como @theme do Tailwind: bg-surface-canvas, text-text-primary… */
+@import "@ucam/tokens/ucam-theme.css";
+/* Base dos componentes <ucam-*>: utilities do bundle (via @source),
+   ponte para os tokens e o @layer base da biblioteca. */
+@import "@ucam/ui/styles.css";
+
+/* O TAMANHO DE TUDO. O DS mede as telas de trabalho — texto de 14px, controle
+   de 32px —, que é a densidade certa para quem opera uma fila o dia inteiro.
+   O candidato abre isto uma vez, muitas vezes no celular, para ler uma prova:
+   aqui a medida sobe. Como todo token do DS é rem, subir a base sobe texto,
+   controle, ícone e espaço juntos e mantém as proporções que o DS desenhou
+   (texto ~16px, botão 36px, botão grande 45px). É o único número a mexer para
+   deixar tudo maior ou menor; em % para respeitar o tamanho de fonte que a
+   pessoa escolheu no navegador. */
+html {
+  font-size: 112.5%;
+}
+
+/* A marca entra por máscara (faixa, tela de entrada): o DS pede que a página
+   hospedeira aponte o arquivo. É o lockup horizontal, em uma cor só. */
+.ucam .ucam-shell,
+.ucam .ucam-login {
+  --ucam-appbar-logo: url("/assets/logo-ucam.svg");
+}
+
+/* A TROCA DE QUESTÃO. O conteúdo novo entra do lado de onde veio — avançando,
+   da direita; voltando, da esquerda — com opacidade e deslocamento, que são
+   as duas propriedades que não recalculam layout, na duração e na curva de
+   "superfície que aparece" do DS. O deslocamento é o dobro do de menu
+   porque aqui o que entra é a coluna inteira, não um painel de 15rem.
+   prefers-reduced-motion: a regra global do DS (.ucam *) zera a duração. */
+@keyframes app-entrar-frente {
+  from {
+    opacity: 0;
+    translate: calc(var(--ucam-motion-reveal-shift) * 2) 0;
+  }
+}
+@keyframes app-entrar-tras {
+  from {
+    opacity: 0;
+    translate: calc(var(--ucam-motion-reveal-shift) * -2) 0;
+  }
+}
+.ucam [data-entrada="frente"] {
+  animation: app-entrar-frente var(--ucam-motion-duration-reveal) var(--ucam-motion-easing-entrance) both;
+}
+.ucam [data-entrada="tras"] {
+  animation: app-entrar-tras var(--ucam-motion-duration-reveal) var(--ucam-motion-easing-entrance) both;
+}
+
+/* A ENTRADA EM JANELA LARGA. O bloco de entrada do DS foi medido em 1440: o
+   miolo tem 25rem e o título 22px, e é a proporção certa ali. Num monitor de
+   2560 a coluna dobra de largura e o mesmo miolo vira um selo no meio de um
+   campo vazio. Em vez de trocar medida por medida — e sair da escala do DS —,
+   o bloco INTEIRO sobe de degrau: tipografia, controles, recuo e ilustração
+   crescem juntos e a tela mantém as relações que o DS desenhou. Os degraus
+   pedem também altura, para a coluna não passar da dobra num ultrawide baixo.
+   Só a entrada: tela de trabalho continua na densidade do sistema. */
+@media (min-width: 100rem) and (min-height: 50rem) {
+  .ucam .ucam-login { zoom: 1.125; }
+}
+@media (min-width: 120rem) and (min-height: 60rem) {
+  .ucam .ucam-login { zoom: 1.25; }
+}
+@media (min-width: 150rem) and (min-height: 70rem) {
+  .ucam .ucam-login { zoom: 1.5; }
+}

@@ -1,0 +1,60 @@
+@if (questao(); as q) {
+  <!-- O @for de um item só existe para RECRIAR o artigo a cada questão: é o
+       que faz a entrada animar e o foco voltar ao título. -->
+  @for (chave of [chave()]; track chave) {
+    <article class="ucam-stack ucam-stack--lg" appProvaProtegida [attr.data-entrada]="direcao()">
+      <header class="ucam-cluster ucam-cluster--entre">
+        <span class="ucam-cluster">
+          <ucam-icon-tile [icon]="iconeCaderno()" />
+          <h2 #titulo class="ucam-section__title" tabindex="-1">{{ rotuloCaderno() }} · Questão {{ n() }} de {{ totalNoCaderno() }}</h2>
+        </span>
+        <span class="ucam-cluster">
+          <ucam-badge
+            [tone]="escolhida() ? 'success' : 'neutral'"
+            variant="dot"
+            [label]="escolhida() ? 'Respondida' : 'Em branco'"
+          />
+          <!-- Alternância: o rótulo não muda, quem diz o estado é aria-pressed
+               (e o realce). Sem ícone: o conjunto curado não tem bandeira, e
+               star e pin têm outro uso no contrato. -->
+          <button type="button" class="ucam-btn ucam-btn--ghost" [attr.aria-pressed]="marcada()" (click)="alternarRevisar()">
+            Marcar para revisar
+          </button>
+        </span>
+      </header>
+
+      @if (q.textoreferencia) {
+        <section class="ucam-stack">
+          <ucam-section-bar title="Texto de apoio" [level]="3" />
+          <ucam-citacao><div class="ucam-stack ucam-stack--sm" data-texto-referencia [innerHTML]="q.textoreferencia"></div></ucam-citacao>
+        </section>
+      }
+      <div data-enunciado [innerHTML]="q.descricao"></div>
+
+      <fieldset class="ucam-stack ucam-stack--sm">
+        <legend class="ucam-sr-only">Alternativas da questão {{ n() }}</legend>
+        @for (a of alternativas(); track a.oid) {
+          <label class="ucam-choice-card">
+            <input type="radio" [name]="'questao-' + q.oid" [value]="a.oid" [checked]="escolhida() === a.oid" (change)="escolher(a.oid)" />
+            <span class="ucam-choice-card__figura" aria-hidden="true">{{ a.letra }}</span>
+            <span class="ucam-choice-card__titulo">
+              <span class="ucam-sr-only">Alternativa {{ a.letra }}: </span>
+              <span [innerHTML]="a.descricao"></span>
+            </span>
+          </label>
+        }
+      </fieldset>
+
+      <footer class="ucam-cluster ucam-cluster--entre">
+        <span [ucamTooltip]="'Esta é a primeira questão'" [tooltipDisabled]="!ehPrimeira()">
+          <ucam-button variant="secondary" size="lg" iconStart="chevronLeft" [disabled]="ehPrimeira()" (click)="anterior()">Anterior</ucam-button>
+        </span>
+        @if (ehPrimeira()) {
+          <span class="ucam-sr-only">Esta é a primeira questão.</span>
+        }
+        <ucam-button variant="primary" size="lg" [iconEnd]="proximaEhFim() ? 'send' : 'chevronRight'" (click)="proxima()">{{ rotuloProxima() }}</ucam-button>
+      </footer>
+    </article>
+  }
+  <p class="ucam-sr-only" role="status">{{ anuncio() }}</p>
+}

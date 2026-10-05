@@ -1,0 +1,168 @@
+import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { vi } from 'vitest';
+import { ProvaStore } from './prova.store';
+import { ProvaApi } from '../api/prova.api';
+import { FilaRespostas } from '../offline/fila-respostas';
+
+const q = (oid: string) => ({
+  oid,
+  descricao: `<p>${oid}</p>`,
+  alternativas: [
+    { oid: `${oid}-a`, descricao: 'A' },
+    { oid: `${oid}-b`, descricao: 'B' },
+  ],
+});
+const cadernos = [
+  { oid: 'c1', tipoprova: 'PORTUGUES', questoes: [q('p1'), q('p2')] },
+  { oid: 'c2', tipoprova: 'MATEMATICA', questoes: [q('m1')] },
+  { oid: 'c3', tipoprova: 'REDACAO', questoes: [{ oid: 'r1', descricao: 'Tema', alternativas: [] }] },
+];
+
+describe('ProvaStore', () => {
+  const api = { cadernos: vi.fn(() => of(cadernos)), resposta: vi.fn() };
+  const fila = {
+    enviar: vi.fn(async () => 'enviada' as const),
+    carregar: vi.fn(),
+    pendentes: () => [] as { oidQuestao: string; oidAlternativa: string | null; respostaTextual: string | null; em: number }[],
+  };
+  let store: ProvaStore;
+
+  beforeEach(async () => {
+    localStorage.clear();
+    api.resposta.mockImplementation((oid: string) =>
+      of(
+        oid === 'p2'
+          ? { oidAlternativa: 'p2-b', respostaTextual: null }
+          : oid === 'r1'
+            ? { oidAlternativa: null, respostaTextual: 'texto salvo' }
+            : null,
+      ),
+    );
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: ProvaApi, useValue: api },
+        { provide: FilaRespostas, useValue: fila },
+      ],
+    });
+    store = TestBed.inject(ProvaStore);
+    await store.carregar('cp-1');
+  });
+
+  it('separa objetivas de redação e carrega as respostas existentes', () => {
+    expect(store.estado()).toBe('pronto');
+    expect(store.objetivos().map((c) => c.tipoprova)).toEqual(['PORTUGUES', 'MATEMATICA']);
+    expect(store.redacao()?.tipoprova).toBe('REDACAO');
+    expect(store.totalObjetivas()).toBe(3);
+    expect(store.respondidas()).toBe(1);
+    expect(store.textoRedacao()).toBe('texto salvo');
+  });
+
+  it('navega entre cadernos e termina na redação', () => {
+    store.definirPosicao('portugues', 2);
+    expect(store.questaoAtual()?.oid).toBe('p2');
+    expect(store.proxima()).toEqual({ slug: 'matematica', n: 1 });
+    store.definirPosicao('matematica', 1);
+    expect(store.proxima()).toBe('redacao');
+    expect(store.anterior()).toEqual({ slug: 'portugues', n: 2 });
+    store.definirPosicao('portugues', 1);
+    expect(store.anterior()).toBeNull();
+  });
+
+  it('lista as em branco com número global e acha a primeira', () => {
+    expect(store.emBranco().map((e) => e.numeroGlobal)).toEqual([1, 3]);
+    expect(store.primeiraEmBranco()).toEqual({ slug: 'portugues', n: 1 });
+  });
+
+  it('marca e desmarca para revisar, guarda no navegador e lista pelo rótulo do mapa', () => {
+    store.alternarRevisar('p1');
+    store.alternarRevisar('m1');
+    expect(store.paraRevisar().map((e) => e.rotulo)).toEqual(['Português 1', 'Matemática 1']);
+    expect(store.marcadas()).toBe(2);
+    expect(JSON.parse(localStorage.getItem('revisar:cp-1')!)).toEqual(['p1', 'm1']);
+    store.definirPosicao('portugues', 1);
+    expect(store.proximaMarcada()).toEqual({ slug: 'matematica', n: 1 });
+    store.alternarRevisar('p1');
+    expect(store.marcadas()).toBe(1);
+    store.limparRevisao();
+    expect(store.marcadas()).toBe(0);
+    expect(localStorage.getItem('revisar:cp-1')).toBeNull();
+  });
+
+  it('ao carregar, recupera as marcas de revisão da mesma prova', async () => {
+    localStorage.setItem('revisar:cp-9', JSON.stringify(['p2']));
+    await store.carregar('cp-9');
+    expect(store.revisar()).toEqual({ p2: true });
+  });
+
+  it('acha a próxima em branco depois da atual e dá a volta no fim', async () => {
+    store.definirPosicao('portugues', 1);
+    expect(store.proximaEmBranco()).toEqual({ slug: 'matematica', n: 1 });
+    store.definirPosicao('matematica', 1);
+    expect(store.proximaEmBranco()).toEqual({ slug: 'portugues', n: 1 });
+    await store.responder('p1', 'p1-a');
+    await store.responder('m1', 'm1-a');
+    expect(store.proximaEmBranco()).toBeNull();
+  });
+
+  it('responder marca localmente e manda para a fila', async () => {
+    await store.responder('p1', 'p1-a');
+    expect(store.respostas()['p1']).toBe('p1-a');
+    expect(store.respondidas()).toBe(2);
+    expect(fila.enviar).toHaveBeenCalledWith('cp-1', { oidQuestao: 'p1', oidAlternativa: 'p1-a', respostaTextual: null });
+  });
+
+  it('carregar de novo esquece respostas e redação da prova anterior', async () => {
+    await store.responder('p1', 'p1-a');
+    store.textoRedacao.set('antigo');
+    api.resposta.mockReturnValue(of(null));
+    await store.carregar('cp-2');
+    expect(store.respostas()).toEqual({});
+    expect(store.textoRedacao()).toBe('');
+    expect(store.entregue()).toBe(false);
+  });
+
+  it('ao carregar, as respostas pendentes na fila valem mais que as do servidor', async () => {
+    fila.pendentes = () => [
+      { oidQuestao: 'p1', oidAlternativa: 'p1-b', respostaTextual: null, em: 1 },
+      { oidQuestao: 'r1', oidAlternativa: null, respostaTextual: 'pendente local', em: 2 },
+    ];
+    await store.carregar('cp-1');
+    expect(store.respostas()['p1']).toBe('p1-b');
+    expect(store.textoRedacao()).toBe('pendente local');
+    fila.pendentes = () => [];
+  });
+
+  it('a redação vai ao backend como parágrafos HTML escapados e volta como texto', async () => {
+    await store.salvarRedacao('a < b\n\nsegundo');
+    expect(fila.enviar).toHaveBeenLastCalledWith('cp-1', {
+      oidQuestao: 'r1',
+      oidAlternativa: null,
+      respostaTextual: '<p>a &lt; b</p><p>segundo</p>',
+    });
+    api.resposta.mockImplementation((oid: string) =>
+      of(oid === 'r1' ? { oidAlternativa: null, respostaTextual: '<p>um</p><p>dois &amp; três</p>' } : null),
+    );
+    await store.carregar('cp-1');
+    expect(store.textoRedacao()).toBe('um\n\ndois & três');
+  });
+
+  it('descarregarRedacao envia o rascunho só quando ele mudou', async () => {
+    fila.enviar.mockClear();
+    store.rascunhoRedacao.set('texto salvo');
+    await store.descarregarRedacao();
+    expect(fila.enviar).not.toHaveBeenCalled();
+    store.rascunhoRedacao.set('mudou');
+    await store.descarregarRedacao();
+    expect(fila.enviar).toHaveBeenCalledTimes(1);
+    expect(store.textoRedacao()).toBe('mudou');
+  });
+
+  it('conta caracteres não brancos da redação', async () => {
+    await store.salvarRedacao('abc de  f\n');
+    expect(store.caracteresRedacao()).toBe(6);
+    expect(store.redacaoAtingeMinimo()).toBe(false);
+    await store.salvarRedacao('x'.repeat(300));
+    expect(store.redacaoAtingeMinimo()).toBe(true);
+  });
+});

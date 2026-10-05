@@ -1,0 +1,185 @@
+<app-moldura-banca secao="redacoes" [emEspera]="estado() === 'pronto' ? totalEspera() : null">
+  <ucam-page-header variante="barra" title="Redações" [count]="estado() === 'pronto' ? totalDoRecorte() : null" [breadcrumb]="trilha">
+    <div ucamFerramentas class="ucam-cluster ucam-cluster--entre flex-1">
+      <ucam-tabs ariaLabel="Recortes da fila de redações" [items]="abas()" [value]="recorte()" (valueChange)="trocarRecorte($event)" />
+      <ucam-button variant="secondary" iconStart="listFilter" (click)="filtrosAbertos.set(true)">Filtros</ucam-button>
+    </div>
+    <!-- O escopo da fila fica sempre à vista: ninguém pode concluir que a
+         fila está curta sem ver de que período e de que forma de ingresso ela
+         é. Período e forma são obrigatórios na consulta, por isso não têm o x. -->
+    @if (periodoAtual() || termo()) {
+      <div ucamFiltros class="ucam-cluster" aria-live="polite">
+        @if (periodoAtual(); as p) {
+          <ucam-chip dimension="Período" [label]="p" [removable]="false" />
+        }
+        @if (formaAtual(); as fi) {
+          <ucam-chip dimension="Forma de ingresso" [label]="fi" [removable]="false" />
+        }
+        @if (termo()) {
+          <ucam-chip dimension="Pesquisa" [label]="termo()" (remove)="limparBusca()" />
+        }
+      </div>
+    }
+  </ucam-page-header>
+
+  <p class="ucam-sr-only" role="status" data-anuncio>{{ anuncio() }}</p>
+
+  <ucam-drawer [(open)]="filtrosAbertos" title="Filtros da fila" description="A fila mostra as redações de um período e de uma forma de ingresso." side="end" size="sm">
+    <div class="ucam-stack">
+      <ucam-select label="Período de ingresso" [options]="opcoesPeriodo()" [(value)]="periodoOid" />
+      <ucam-select label="Forma de ingresso" [options]="opcoesForma()" [(value)]="formaOid" />
+    </div>
+  </ucam-drawer>
+
+  <div class="ucam-corpo ucam-corpo--pleno">
+    <div class="ucam-inbox" [attr.data-painel]="painel()">
+      <div class="ucam-inbox__lista">
+        <div class="ucam-inbox__lista-topo">
+          <ucam-text-field label="Pesquisar candidato" type="search" placeholder="Nome ou CPF" [(value)]="busca" />
+        </div>
+        @switch (estado()) {
+          @case ('loading') {
+            <div class="ucam-inbox__lista-topo ucam-stack" aria-busy="true">
+              <span class="ucam-sr-only">Buscando as redações…</span>
+              <ucam-skeleton variant="text" [lines]="6" />
+            </div>
+          }
+          @case ('error') {
+            <ucam-empty-state reason="error" size="sm" title="Não foi possível buscar as redações" description="Confira sua conexão e tente de novo.">
+              <ucam-button variant="secondary" (click)="recarregar()">Tentar de novo</ucam-button>
+            </ucam-empty-state>
+          }
+          @default {
+            @if (fila().length) {
+              <div class="ucam-inbox__rolagem">
+                <ul class="ucam-list" [attr.aria-label]="'Redações: ' + nomeDoRecorte()">
+                  @for (r of fila(); track r.oid) {
+                    <ucam-list-item
+                      [title]="nome(r)"
+                      [support]="apoio(r)"
+                      [name]="nome(r)"
+                      [time]="quando(r)"
+                      [timeValue]="feita(r)"
+                      [selected]="r.oid === aberta()?.oid"
+                      selectable
+                      (open)="abrir(r)"
+                    >
+                      @if (rotuloNota(r); as n) {
+                        <ucam-badge tone="neutral" variant="soft" [label]="n" />
+                      }
+                    </ucam-list-item>
+                  }
+                </ul>
+              </div>
+              @if (temMais()) {
+                <div class="ucam-inbox__lista-rodape ucam-cluster ucam-cluster--entre">
+                  <span>{{ fila().length }} de {{ totalDoRecorte() }}</span>
+                  <ucam-button variant="ghost" size="sm" [loading]="buscandoMais()" (click)="mostrarMais()">Mostrar mais</ucam-button>
+                </div>
+              }
+            } @else if (termo()) {
+              <ucam-empty-state reason="no-results" size="sm" [scope]="nomeDoRecorte()" [title]="'Nenhuma redação encontrada para “' + termo() + '”'" description="A pesquisa procura pelo nome ou pelo CPF do candidato.">
+                <ucam-button variant="secondary" (click)="limparBusca()">Limpar pesquisa</ucam-button>
+              </ucam-empty-state>
+            } @else if (recorte() === 'espera') {
+              <ucam-empty-state reason="no-data" size="sm" title="Nenhuma redação em espera" description="Todas as redações deste período e desta forma de ingresso já têm nota. As próximas aparecem aqui quando os candidatos entregarem a prova.">
+                @if (totalCorrigidas()) {
+                  <ucam-button variant="secondary" (click)="trocarRecorte('corrigidas')">Ver as corrigidas</ucam-button>
+                }
+              </ucam-empty-state>
+            } @else {
+              <ucam-empty-state reason="no-data" size="sm" title="Nenhuma redação corrigida ainda" description="As redações aparecem aqui depois de receberem nota.">
+                @if (totalEspera()) {
+                  <ucam-button variant="secondary" (click)="trocarRecorte('espera')">Ver as que esperam</ucam-button>
+                }
+              </ucam-empty-state>
+            }
+          }
+        }
+      </div>
+
+      <section class="ucam-inbox__detalhe" aria-labelledby="t-redacao">
+        @if (aberta(); as r) {
+          <p class="ucam-inbox__voltar-linha">
+            <ucam-button variant="ghost" iconStart="arrowLeft" (click)="voltarParaFila()">Voltar para a fila</ucam-button>
+          </p>
+          <div class="ucam-inbox__detalhe-topo ucam-cluster ucam-cluster--entre">
+            <h2 class="ucam-page-header__title" id="t-redacao" tabindex="-1" #titulo>Redação de {{ nome(r) }}</h2>
+            @if (corrigida()) {
+              <ucam-badge tone="success" variant="dot" label="Corrigida" />
+            } @else {
+              <ucam-badge tone="info" variant="dot" label="Em espera" />
+            }
+          </div>
+
+          <div class="ucam-inbox__detalhe-corpo ucam-stack ucam-stack--lg">
+            <ucam-description-list [items]="dados()" columns="auto" />
+
+            @switch (estadoTexto()) {
+              @case ('loading') {
+                <div class="ucam-stack" aria-busy="true">
+                  <span class="ucam-sr-only">Buscando o texto do candidato…</span>
+                  <ucam-skeleton variant="text" [lines]="8" />
+                </div>
+              }
+              @case ('error') {
+                <ucam-empty-state reason="error" size="sm" title="Não foi possível buscar o texto do candidato" description="Confira sua conexão e tente de novo.">
+                  <ucam-button variant="secondary" (click)="tentarTextoDeNovo()">Tentar de novo</ucam-button>
+                </ucam-empty-state>
+              }
+              @default {
+                @if (resposta(); as t) {
+                  <section class="ucam-stack">
+                    <ucam-section-bar title="Proposta" [level]="3" />
+                    @if (t.textoReferencia) {
+                      <ucam-citacao><div class="ucam-stack ucam-stack--sm" data-texto-referencia [innerHTML]="t.textoReferencia"></div></ucam-citacao>
+                    }
+                    @if (t.descricaoQuestao) {
+                      <div class="ucam-stack ucam-stack--sm" data-proposta [innerHTML]="t.descricaoQuestao"></div>
+                    }
+                  </section>
+
+                  <section class="ucam-stack">
+                    <ucam-section-bar title="Texto do candidato" [level]="3" [count]="contagemTexto()" />
+                    @if (caracteres()) {
+                      <ucam-citacao><div data-texto-candidato class="ucam-stack" [innerHTML]="t.respostaTextual"></div></ucam-citacao>
+                    } @else {
+                      <ucam-alert tone="warning">O candidato entregou a prova sem escrever a redação.</ucam-alert>
+                    }
+                  </section>
+                }
+
+                <section class="ucam-stack">
+                  <ucam-section-bar title="Nota" [level]="3" />
+                  @if (erroAoSalvar()) {
+                    <ucam-alert tone="danger" live="assertive">A nota não foi gravada. Confira sua conexão e tente de novo.</ucam-alert>
+                  }
+                  <form class="ucam-stack" novalidate (submit)="salvar($event)">
+                    <ucam-text-field
+                      label="Nota da redação"
+                      hint="De 0 a 10, de meio em meio ponto."
+                      width="content"
+                      autocomplete="off"
+                      [maxLength]="4"
+                      [(value)]="nota"
+                      [invalid]="!!erroNota()"
+                      [errorMessage]="erroNota()"
+                    />
+                    <div class="ucam-cluster">
+                      <ucam-button variant="primary" type="submit" [loading]="salvando()">{{ corrigida() ? 'Gravar nova nota' : 'Gravar nota' }}</ucam-button>
+                    </div>
+                  </form>
+                </section>
+              }
+            }
+          </div>
+        } @else if (estado() === 'pronto') {
+          <h2 class="ucam-sr-only" id="t-redacao">Redação</h2>
+          <ucam-empty-state reason="no-data" title="Nenhuma redação aberta" description="Quando houver redação neste recorte, ela abre aqui para leitura e nota." />
+        } @else {
+          <h2 class="ucam-sr-only" id="t-redacao">Redação</h2>
+        }
+      </section>
+    </div>
+  </div>
+</app-moldura-banca>
