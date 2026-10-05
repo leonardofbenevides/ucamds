@@ -254,7 +254,10 @@ body {
   border-radius: var(--ucam-radius-sm);
 }
 
-a {
+/* Fora das telas vivas: regra sem camada vence as utilitárias do @ucam/ui, e
+   em /vivo/* o link da trilha saía na tinta cheia do corpo em vez da
+   secundária (05/10/2026). Lá o preflight já devolve o inherit. */
+:where(body:not(.vivo)) a {
   color: inherit;
 }
 

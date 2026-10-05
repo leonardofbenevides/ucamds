@@ -38,7 +38,7 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
     -->
     <ng-template #trilha>
       <nav aria-label="Trilha">
-        <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs m-0 p-0 list-none">
+        <ol class="flex flex-wrap items-center gap-x-2 gap-y-0 text-xs leading-[1.6] m-0 p-0 list-none">
           @for (c of breadcrumb(); track c.label; let last = $last) {
             <li class="flex items-center gap-x-2">
               @if (c.link && !last) {
@@ -50,7 +50,7 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
                 -->
                 <a
                   [href]="c.link"
-                  class="text-muted-foreground underline decoration-border decoration-1 underline-offset-[0.25em] rounded-sm transition-colors hover:text-foreground hover:decoration-current"
+                  class="text-[var(--ucam-color-text-secondary)] underline decoration-[var(--ucam-color-border-default)] decoration-1 underline-offset-[0.25em] rounded-sm transition-colors hover:text-foreground hover:decoration-current"
                   >{{ c.label }}</a
                 >
               } @else {
@@ -63,7 +63,7 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
                 aria-hidden no separador: sem isso o leitor de tela lê "barra"
                 entre cada degrau. A estrutura de lista já entrega a hierarquia.
               -->
-              @if (!last) { <span class="text-border select-none" aria-hidden="true">/</span> }
+              @if (!last) { <span class="text-[var(--ucam-color-border-strong)] select-none" aria-hidden="true">/</span> }
             </li>
           }
         </ol>
