@@ -4681,6 +4681,640 @@
           }
         }
       ]
+    },
+    {
+      "id": "vestibular",
+      "nome": "Vestibular Online",
+      "icone": "graduationCap",
+      "categoria": "pessoas",
+      "descricao": "A prova do candidato, a correção da banca e o cadastro de provas; a isenção de disciplinas do mesmo processo é o projeto isencao. Ao contrário dos outros projetos, a evidência é um app que roda: cada tela descreve uma rota de apps/vestibular-online, com testes. A spec de design está em docs/superpowers/specs/2026-10-04-vestibular-telas-design.md.",
+      "stack_atual": "Angular 21 com @ucam/ui (Trilho B); substitui o processo-seletivo-frontend, Angular 9",
+      "shell": {
+        "sistema": "Vestibular Online",
+        "campus": "Campos dos Goytacazes",
+        "usuario": "Marta Reis",
+        "railComoMenu": true,
+        "$porque_railComoMenu": "A banca usa a mesma moldura dos outros sistemas: faixa em cima e coluna à esquerda. A moldura do candidato é por tela, com as etapas no lugar do menu (shell.navHtml).",
+        "nav": [
+          {
+            "titulo": "Correção",
+            "itens": [
+              {
+                "id": "redacoes",
+                "rotulo": "Redações",
+                "icone": "pencil",
+                "contagem": 3
+              }
+            ]
+          },
+          {
+            "titulo": "Isenção",
+            "itens": [
+              {
+                "id": "fila-isencao",
+                "rotulo": "Fila de análise",
+                "icone": "inbox"
+              }
+            ]
+          },
+          {
+            "titulo": "Cadastro",
+            "itens": [
+              {
+                "id": "provas",
+                "rotulo": "Provas",
+                "icone": "listChecks"
+              }
+            ]
+          }
+        ]
+      },
+      "templates": [
+        {
+          "id": "entrada",
+          "nome": "Entrada sem link",
+          "perfil": "Candidato",
+          "padrao": "formulario-entidade",
+          "origem": "Vestibular Online, rota / (apps/vestibular-online/src/app/candidato/sem-link/sem-link.ts)",
+          "descricao": "A porta de quem chega sem o link do e-mail: um campo para o código da inscrição, que também aceita o link inteiro colado, e o contato da secretaria.",
+          "usa": [
+            "ucam-button",
+            "ucam-field",
+            "ucam-icon",
+            "ucam-icon-tile",
+            "ucam-input-group"
+          ],
+          "problemas": [
+            "No legado, abrir o endereço sem o código da inscrição cai numa página em branco: não há porta para quem perdeu o link.",
+            "O código só entra pela barra de endereço. Quem recebe o link cortado pelo cliente de e-mail não tem onde colá-lo.",
+            "Não há contato da secretaria na tela em que a pessoa mais precisa dele."
+          ],
+          "notas": [
+            "É o bloco de entrada do DS (ucam-login), sem faixa e sem coluna, como a entrada do Portal: antes de entrar não há campus nem conta para hospedar.",
+            "Um campo só. Ele aceita o código ou o link inteiro colado, e o app extrai o código; a dica do campo diz isso, para a pessoa não precisar recortar o link.",
+            "Campo e ação no degrau lg: numa tela de tarefa única, alturas diferentes leem como peças de sistemas diferentes. O degrau do campo é a variante ucam-field--lg sobre o grupo do Trilho A; o <ucam-text-field> não tem esse degrau.",
+            "O app mostra abaixo do formulário os perfis de teste do protótipo (candidatos do backend de mentira). Eles não fazem parte da tela e ficam fora da referência.",
+            "A coluna institucional do app leva uma cena isométrica própria (cena-prova.ts); a referência mostra o discurso e deixa a cena de fora."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "O candidato entra pelo link pessoal enviado por e-mail; o código da inscrição é o trecho final desse link.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Quem abre o endereço sem o código encontra um campo para informá-lo, em vez de uma página vazia.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Qual é o canal de contato definitivo da secretaria nesta tela: e-mail, telefone ou os dois?",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-login'><section class='ucam-login__acesso' aria-labelledby='ve-t'><div class='ucam-login__miolo ucam-stack ucam-stack--lg'><div class='ucam-login__marca'><span class='ucam-login__logo' aria-hidden='true'></span><span class='ucam-sr-only'>Universidade Candido Mendes</span></div><div class='ucam-stack ucam-stack--sm'><h2 class='ucam-page-header__title' id='ve-t'>Entre com o código da inscrição</h2><p class='ucam-lede'>A universidade enviou por e-mail um link só seu. Abra o link — ou informe aqui o código que vem no fim dele.</p></div><form class='ucam-stack' action='#/templates/vestibular/conferir-dados'><div class='ucam-field ucam-field--lg'><label class='ucam-field__label' for='ve-cod'>Código da inscrição</label><div class='ucam-input-group'><span class='ucam-input-group__adorno' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-hash'/></svg></span><input class='ucam-input-group__controle' id='ve-cod' type='text' autocomplete='off' autocapitalize='off' spellcheck='false' value='ana' aria-describedby='ve-cod-h'></div><span class='ucam-field__hint' id='ve-cod-h'>É o trecho final do link do e-mail. Colar o link inteiro também funciona.</span></div><a class='ucam-btn ucam-btn--primary ucam-btn--lg' href='#/templates/vestibular/conferir-dados' data-fluxo='a'>Entrar <svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></a></form></div><p class='ucam-login__apoio'><svg class='ic' aria-hidden='true'><use href='#i-mail'/></svg><span>Não recebeu o link? Fale com a secretaria: secretaria@candidomendes.edu.br</span></p></section><aside class='ucam-login__institucional' aria-label='Sobre a prova'><div class='ucam-login__discurso'><p class='ucam-login__frase'>O vestibular da Candido Mendes, no seu tempo e no seu aparelho.</p><ul class='ucam-login__sistemas'><li class='ucam-login__sistema'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Prova com tempo</span><span class='ucam-login__sistema-apoio'>O relógio só começa quando você clicar em Iniciar prova.</span></span></li><li class='ucam-login__sistema'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Tudo salvo sozinho</span><span class='ucam-login__sistema-apoio'>Cada resposta é gravada na hora.</span></span></li><li class='ucam-login__sistema'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardCheck'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Resultado na tela</span><span class='ucam-login__sistema-apoio'>Ao entregar, você vê o que vem depois.</span></span></li></ul></div></aside></div>",
+          "codigo": "<!-- A moldura da entrada do DS: shell sem faixa e sem navegação, conteúdo pleno. -->\n<div class=\"ucam-login\">\n  <section class=\"ucam-login__acesso\" aria-labelledby=\"t-sem-link\">\n    <div class=\"ucam-login__miolo ucam-stack ucam-stack--lg\">\n      <h1 class=\"ucam-page-header__title\" id=\"t-sem-link\">Entre com o código da inscrição</h1>\n      <form class=\"ucam-stack\" novalidate (submit)=\"entrar($event)\">\n        <ucam-field class=\"ucam-field--lg\" label=\"Código da inscrição\"\n          hint=\"É o trecho final do link do e-mail. Colar o link inteiro também funciona.\"\n          [controlId]=\"ids.controlId\" [hintId]=\"ids.hintId\" [errorId]=\"ids.errorId\"\n          [invalid]=\"!!erro()\" [errorMessage]=\"erro()\">\n          <div class=\"ucam-input-group\">\n            <span class=\"ucam-input-group__adorno\" aria-hidden=\"true\"><ucam-icon name=\"hash\" size=\"sm\" /></span>\n            <input class=\"ucam-input-group__controle\" [id]=\"ids.controlId\" type=\"text\" autocomplete=\"off\"\n              [value]=\"texto()\" (input)=\"digitar($event)\" [attr.aria-invalid]=\"erro() ? 'true' : null\" />\n          </div>\n        </ucam-field>\n        <ucam-button variant=\"primary\" size=\"lg\" iconEnd=\"arrowRight\" (click)=\"entrar($event)\">Entrar</ucam-button>\n      </form>\n    </div>\n  </section>\n</div>",
+          "shell": {
+            "sistema": "Vestibular Online",
+            "campus": null,
+            "usuario": null,
+            "semNav": true,
+            "semFaixa": true,
+            "largura": "pleno",
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": []
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Entrar",
+                "classe": "a",
+                "destino": "vestibular/conferir-dados",
+                "efeito": "Campo vazio ou código que não existe recebe o erro no próprio campo; código válido abre a conferência dos dados."
+              }
+            ],
+            "chega_de": [
+              "endereço do vestibular aberto sem o código da inscrição"
+            ]
+          }
+        },
+        {
+          "id": "conferir-dados",
+          "nome": "Conferir os dados",
+          "perfil": "Candidato",
+          "padrao": "formulario-entidade",
+          "origem": "Vestibular Online, rota /candidato/:oid (apps/vestibular-online/src/app/candidato/entrada/)",
+          "descricao": "A primeira tela de quem abre o link: os dados da inscrição para conferir, o contato da secretaria e uma só ação, Continuar.",
+          "usa": [
+            "ucam-alert",
+            "ucam-button",
+            "ucam-description-list",
+            "ucam-icon",
+            "ucam-icon-tile"
+          ],
+          "problemas": [
+            "No legado o link abre direto a prova: a pessoa só descobre que o curso ou o turno estão errados depois de começar.",
+            "Os dados aparecem numa tabela sem título, com os rótulos em caixa alta.",
+            "Quem já usou todas as tentativas só fica sabendo ao tentar iniciar a prova."
+          ],
+          "notas": [
+            "Usa o bloco de entrada do DS, como a tela sem link: é a mesma porta, agora com a inscrição reconhecida.",
+            "Os dados são uma lista de descrição empilhada, só de leitura. Corrigir dado é com a secretaria, e o contato está no pé da coluna.",
+            "O rótulo da ação muda com a situação da inscrição: Continuar, Continuar a prova (prova em andamento) ou Ver resultado (prova entregue). É sempre uma ação só.",
+            "Estados: sem tentativa disponível, um alerta de aviso acima dos dados diz quantas tentativas foram usadas e a ação leva ao resultado."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Cada inscrição tem um número limitado de tentativas de prova.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O candidato confere os dados da inscrição antes de ver as instruções; não há edição nesta tela.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Qual é o prazo para pedir correção de dado antes da prova, e a tela deve dizê-lo?",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-login'><section class='ucam-login__acesso' aria-labelledby='vc-t'><div class='ucam-login__miolo ucam-stack ucam-stack--lg'><div class='ucam-login__marca'><span class='ucam-login__logo' aria-hidden='true'></span><span class='ucam-sr-only'>Universidade Candido Mendes</span></div><div class='ucam-stack ucam-stack--sm'><h2 class='ucam-page-header__title' id='vc-t'>Confira seus dados</h2><p class='ucam-lede'>Se algo estiver errado, fale com a secretaria antes de começar.</p></div><dl class='ucam-descricao' aria-label='Dados da inscrição'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nome</dt><dd class='ucam-descricao__valor'>Ana Souza</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>CPF</dt><dd class='ucam-descricao__valor'>123.456.789-01</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Engenharia de Software</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Turno</dt><dd class='ucam-descricao__valor'>Noite</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Campus</dt><dd class='ucam-descricao__valor'>Campos dos Goytacazes</dd></div></dl><a class='ucam-btn ucam-btn--primary ucam-btn--lg' href='#/templates/vestibular/instrucoes' data-fluxo='a'>Continuar</a></div><p class='ucam-login__apoio'><svg class='ic' aria-hidden='true'><use href='#i-mail'/></svg><span>Fale com a secretaria: secretaria@candidomendes.edu.br</span></p></section><aside class='ucam-login__institucional' aria-label='Sobre a prova'><div class='ucam-login__discurso'><p class='ucam-login__frase'>O vestibular da Candido Mendes, no seu tempo e no seu aparelho.</p><ul class='ucam-login__sistemas'><li class='ucam-login__sistema'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Prova com tempo</span><span class='ucam-login__sistema-apoio'>O relógio só começa quando você clicar em Iniciar prova.</span></span></li><li class='ucam-login__sistema'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Tudo salvo sozinho</span><span class='ucam-login__sistema-apoio'>Cada resposta é gravada na hora.</span></span></li><li class='ucam-login__sistema'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardCheck'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Resultado na tela</span><span class='ucam-login__sistema-apoio'>Ao entregar, você vê o que vem depois.</span></span></li></ul></div></aside></div>",
+          "codigo": "<div class=\"ucam-login\">\n  <section class=\"ucam-login__acesso\" aria-labelledby=\"t-entrada\">\n    <div class=\"ucam-login__miolo ucam-stack ucam-stack--lg\">\n      <div class=\"ucam-stack ucam-stack--sm\">\n        <h1 class=\"ucam-page-header__title\" id=\"t-entrada\">Confira seus dados</h1>\n        <p class=\"ucam-lede\">Se algo estiver errado, fale com a secretaria antes de começar.</p>\n      </div>\n      @if (semTentativas()) {\n        <ucam-alert tone=\"warning\">Você já usou as {{ totalTentativas() }} tentativas desta inscrição.</ucam-alert>\n      }\n      <ucam-description-list [items]=\"itens()\" [columns]=\"1\" layout=\"stacked\" />\n      <ucam-button variant=\"primary\" size=\"lg\" (click)=\"seguir()\">{{ rotulo() }}</ucam-button>\n    </div>\n  </section>\n</div>",
+          "shell": {
+            "sistema": "Vestibular Online",
+            "campus": null,
+            "usuario": null,
+            "semNav": true,
+            "semFaixa": true,
+            "largura": "pleno",
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": []
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Continuar",
+                "classe": "a",
+                "destino": "vestibular/instrucoes",
+                "efeito": "Abre Antes de começar. Com prova em andamento o rótulo é Continuar a prova; com prova entregue, Ver resultado."
+              }
+            ],
+            "chega_de": [
+              "link do e-mail",
+              "vestibular/entrada"
+            ]
+          }
+        },
+        {
+          "id": "instrucoes",
+          "nome": "Antes de começar",
+          "perfil": "Candidato",
+          "padrao": "fluxo-guiado",
+          "origem": "Vestibular Online, rota /candidato/:oid/instrucoes (apps/vestibular-online/src/app/candidato/instrucoes/)",
+          "descricao": "O que a prova tem e como funciona, antes de o relógio começar: três indicadores, três orientações, a confirmação de leitura e Iniciar prova.",
+          "usa": [
+            "ucam-alert",
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-card",
+            "ucam-checkbox",
+            "ucam-page-header",
+            "ucam-stat",
+            "ucam-stepper"
+          ],
+          "problemas": [
+            "No legado as instruções são um parágrafo corrido acima da primeira questão, com o relógio já correndo.",
+            "A pessoa não sabe quantas questões a prova tem nem se há redação antes de começar.",
+            "Não há confirmação de leitura: o tempo começa ao abrir a página."
+          ],
+          "notas": [
+            "A coluna esquerda da moldura leva as etapas e o cartão do candidato no lugar do menu (shell.navHtml): a pessoa percorre uma tarefa, não navega por um sistema. Abaixo de 64rem a coluna vira gaveta e o app repete as etapas em barra no alto do corpo.",
+            "Os indicadores são três e respondem o que a pessoa pergunta antes de começar: quanto tempo, quantas questões, tem redação. O tom não pinta o ladrilho (ADR-034).",
+            "As orientações são cartões com o texto como conteúdo, não como apoio: o apoio do cartão é de uma linha e cortava a frase.",
+            "Iniciar prova é o único primário (ADR-023) e a frase ao lado diz o que o clique faz: o tempo começa a contar e não para.",
+            "Estados: sem marcar a confirmação, o clique não inicia e o erro aparece na caixa de seleção; falha ao iniciar vira alerta de erro acima da ação; iniciando, o botão fica em carregando, sem o atributo disabled (ADR-042)."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "O tempo de prova é o cadastrado para o processo seletivo e conta sem pausa a partir do início.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O tempo só começa quando o candidato clica em Iniciar prova, depois de confirmar que leu as orientações.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A redação tem mínimo de 300 caracteres, sem contar espaços.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Qual é o texto definitivo das orientações da prova?",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/vestibular/conferir-dados'>Seus dados</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Antes de começar</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Antes de começar</h2></div></div><div class='ucam-corpo ucam-stack ucam-stack--lg'><section class='ucam-stack' aria-labelledby='vi-prova'><h3 class='ucam-section__title' id='vi-prova'>Sua prova</h3><div class='ucam-stats'><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Tempo de prova</span><span class='ucam-stat__value'>2 h</span><span class='ucam-stat__meta'>Começa a contar ao iniciar</span></div></div><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-listChecks'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Questões objetivas</span><span class='ucam-stat__value'>5</span><span class='ucam-stat__meta'>Português, Matemática</span></div></div><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Redação</span><span class='ucam-stat__value'>Sim</span><span class='ucam-stat__meta'>Mínimo de 300 caracteres</span></div></div></div></section><section class='ucam-stack' aria-labelledby='vi-como'><h3 class='ucam-section__title' id='vi-como'>Como a prova funciona</h3><div class='ucam-grid' role='list' aria-label='Como a prova funciona'><div class='ucam-card ucam-stack ucam-stack--sm' role='listitem'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-monitor'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Computador ou celular</span></span></div><p>Funciona nos dois. Se a conexão cair, suas respostas ficam guardadas e são enviadas quando ela voltar.</p></div><div class='ucam-card ucam-stack ucam-stack--sm' role='listitem'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Tempo à vista</span></span></div><p>O relógio fica no topo. A barra avisa quando faltar um terço e quando faltarem 10 minutos.</p></div><div class='ucam-card ucam-stack ucam-stack--sm' role='listitem'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Tudo salvo na hora</span></span></div><p>Cada resposta é gravada ao escolher. Você pode mudar de ideia até entregar a prova.</p></div></div></section><section class='ucam-card ucam-stack'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardCheck'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Pronto para começar?</span><span class='ucam-card__apoio'>Confirme que leu as orientações.</span></span></div><div><label class='ucam-check'><input type='checkbox' checked><span class='ucam-check__label'>Li as orientações e estou pronto para começar</span></label></div><div class='ucam-cluster ucam-cluster--entre'><span class='ucam-field__hint'>Ao clicar, o tempo de 2 h começa a contar e não para.</span><a class='ucam-btn ucam-btn--primary ucam-btn--lg' href='#/templates/vestibular/questao' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-doorOpen'/></svg> Iniciar prova</a></div></section></div>",
+          "codigo": "<app-moldura>\n  <ucam-page-header variante=\"barra\" title=\"Antes de começar\" [breadcrumb]=\"trilha()\" />\n  <div class=\"ucam-corpo ucam-stack ucam-stack--lg\">\n    <!-- Só na janela estreita: em janela larga as etapas estão na coluna da moldura. -->\n    <ucam-stepper label=\"Etapas do vestibular online\" variant=\"bar\" [current]=\"1\" [steps]=\"etapas\" />\n\n    <section class=\"ucam-stack\" aria-labelledby=\"t-sua-prova\">\n      <h2 class=\"ucam-section__title\" id=\"t-sua-prova\">Sua prova</h2>\n      <div class=\"ucam-stats\">\n        <ucam-stat label=\"Tempo de prova\" [value]=\"tempoTexto()\" meta=\"Começa a contar ao iniciar\" icon=\"clock\" />\n        <ucam-stat label=\"Questões objetivas\" [value]=\"totalQuestoes()\" [meta]=\"cadernosTexto()\" icon=\"listChecks\" />\n        <ucam-stat label=\"Redação\" [value]=\"temRedacao() ? 'Sim' : 'Não'\" icon=\"pencil\" />\n      </div>\n    </section>\n\n    <ucam-card as=\"section\" titulo=\"Pronto para começar?\" apoio=\"Confirme que leu as orientações.\" icone=\"clipboardCheck\">\n      <div class=\"ucam-stack\">\n        <ucam-checkbox label=\"Li as orientações e estou pronto para começar\" [(checked)]=\"confirmado\"\n          [invalid]=\"faltaConfirmar()\" [errorMessage]=\"faltaConfirmar() ? 'Marque a confirmação para começar a prova.' : null\" />\n        @if (erro()) {\n          <ucam-alert tone=\"danger\" live=\"assertive\">{{ erro() }}</ucam-alert>\n        }\n        <div class=\"ucam-cluster ucam-cluster--entre\">\n          <span class=\"ucam-field__hint\">Ao clicar, o tempo de {{ tempoTexto() }} começa a contar e não para.</span>\n          <ucam-button variant=\"primary\" size=\"lg\" iconStart=\"doorOpen\" [loading]=\"iniciando()\" (click)=\"iniciar()\">Iniciar prova</ucam-button>\n        </div>\n      </div>\n    </ucam-card>\n  </div>\n</app-moldura>",
+          "shell": {
+            "sistema": "Vestibular Online",
+            "campus": "Campos dos Goytacazes",
+            "campusOpcoes": null,
+            "usuario": "Ana Souza",
+            "semNav": true,
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": [
+              {
+                "rotulo": "Falar com a secretaria",
+                "icone": "mail"
+              }
+            ],
+            "navRotulo": "Etapas da prova",
+            "navHtml": "<div class='ucam-nav__group'><p class='ucam-nav__group-title'>Etapas · 2 de 5</p><ol class='ucam-stepper' aria-label='Etapas do vestibular online' style='flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:var(--ucam-space-stack-xs)'><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><a class='ucam-nav__item' href='#/templates/vestibular/conferir-dados'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Seus dados</span></span><span class='ucam-sr-only'>, etapa 1 de 5, concluída</span></a></li><li class='ucam-stepper__passo ucam-stepper__passo--current' style='display:block' aria-current='step'><a class='ucam-nav__item' href='#/templates/vestibular/instrucoes' aria-current='page'><span class='ucam-stepper__marcador' aria-hidden='true'>2</span><span class='ucam-stack' style='gap:0'><span>Antes de começar</span></span><span class='ucam-sr-only'>, etapa 2 de 5, atual</span></a></li><li class='ucam-stepper__passo' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'>3</span><span class='ucam-stack' style='gap:0'><span>Prova objetiva</span></span><span class='ucam-sr-only'>, etapa 3 de 5, a fazer</span></span></li><li class='ucam-stepper__passo' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'>4</span><span class='ucam-stack' style='gap:0'><span>Redação</span></span><span class='ucam-sr-only'>, etapa 4 de 5, a fazer</span></span></li><li class='ucam-stepper__passo' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'>5</span><span class='ucam-stack' style='gap:0'><span>Resultado</span></span><span class='ucam-sr-only'>, etapa 5 de 5, a fazer</span></span></li></ol></div><div class='ucam-nav__group'><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-cluster'><span class='ucam-avatar' aria-hidden='true'>AS</span><div><p class='ucam-descricao__valor'>Ana Souza</p><p class='ucam-descricao__rotulo'>Candidato</p></div></div><dl class='ucam-descricao ucam-descricao--painel' aria-label='Dados da inscrição'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg>CPF</dt><dd class='ucam-descricao__valor'>123.456.789-01</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg>Curso</dt><dd class='ucam-descricao__valor'>Engenharia de Software</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>Turno</dt><dd class='ucam-descricao__valor'>Noite</dd></div></dl></div></div>"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Iniciar prova",
+                "classe": "a",
+                "destino": "vestibular/questao",
+                "efeito": "Com a confirmação marcada, inicia a prova e o relógio e abre a primeira questão. Sem ela, o erro aparece na caixa de seleção."
+              },
+              {
+                "rotulo": "Seus dados (trilha e etapa)",
+                "classe": "a",
+                "destino": "vestibular/conferir-dados",
+                "efeito": "Volta à conferência dos dados. No app, a etapa abre os dados numa gaveta, sem sair da tela."
+              }
+            ],
+            "chega_de": [
+              "vestibular/conferir-dados"
+            ]
+          }
+        },
+        {
+          "id": "questao",
+          "nome": "Questão da prova objetiva",
+          "perfil": "Candidato",
+          "padrao": "fluxo-guiado",
+          "origem": "Vestibular Online, rota /candidato/:oid/prova/:caderno/:n (apps/vestibular-online/src/app/candidato/prova/ e prova/questao/)",
+          "descricao": "Uma questão por vez: o texto de apoio, o enunciado, as alternativas com a letra preenchida, marcar para revisar, anterior e próxima, com o mapa de questões ao lado e o relógio na barra.",
+          "usa": [
+            "ucam-alert",
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-choice-card",
+            "ucam-citacao",
+            "ucam-drawer",
+            "ucam-empty-state",
+            "ucam-icon-button",
+            "ucam-icon-tile",
+            "ucam-progress",
+            "ucam-section-bar",
+            "ucam-skeleton"
+          ],
+          "problemas": [
+            "No legado a prova inteira é uma página: todas as questões em sequência, e a pessoa rola sem saber quantas faltam.",
+            "O relógio fica no corpo e some ao rolar; no celular a pessoa precisa voltar ao topo para ver o tempo.",
+            "A alternativa escolhida não tem estado próprio além do ponto do rádio nativo, e não há como marcar uma questão para voltar depois.",
+            "Nada diz se a resposta foi gravada. Se a conexão cai, a resposta se perde em silêncio."
+          ],
+          "notas": [
+            "A barra da tela leva o título da etapa, o progresso em palavras (\"3 de 5 respondidas\"), o estado de salvamento e o relógio em barra de progresso. Ela gruda sob a faixa: rolar a questão não esconde o tempo.",
+            "O relógio muda de tom no último terço (aviso) e nos últimos 10 minutos (perigo), sempre com o texto do tempo ao lado, e a mudança é anunciada a leitor de tela.",
+            "As alternativas são cartões de escolha com a letra no lugar da figura; a escolhida fica com a letra preenchida. Escolher grava na hora.",
+            "Marcar para revisar é uma alternância (aria-pressed), sem ícone: o conjunto curado não tem bandeira. A marca aparece no mapa como um ponto na bolha.",
+            "O mapa de questões fica ao lado em janela larga e vira gaveta abaixo de 64rem, aberta pelo botão Questões. Bolha cheia é respondida, vazia é em branco; o nome acessível de cada bolha diz o estado. Na referência as bolhas são botões do DS com raio cheio; no app elas têm folha própria.",
+            "Trocar de questão recria o artigo e move o foco para o título dela. Na primeira questão, Anterior fica desabilitado com a razão dita em dica e em texto para leitor de tela.",
+            "Na última questão, a ação primária deixa de ser Próxima: é Ir para a redação quando a prova tem redação, ou Entregar prova quando não tem. A entrega abre o diálogo de confirmação, desenhado na tela da redação.",
+            "Estados: carregando (esqueleto de título e texto), sem caderno cadastrado (estado vazio com o contato da secretaria) e erro ao carregar (alerta de erro com Tentar de novo). Sem conexão, a barra diz quantas respostas serão enviadas quando ela voltar."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "A prova objetiva é dividida em cadernos por disciplina, e cada questão tem uma só alternativa correta.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Quando o tempo acaba, a prova é entregue com as respostas dadas até ali.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O candidato pode mudar a resposta de qualquer questão até entregar a prova.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Marcar para revisar fica só no navegador do candidato: não é enviado nem aparece para a banca.",
+              "decide": "TI (dono do sistema)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O tempo de 2 horas dos exemplos é dado de teste, não regra.",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar' aria-label='Andamento da prova'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Prova objetiva</h2><span class='ucam-viewbar__contagem'>3 de 5 respondidas</span><span class='ucam-viewbar__folga'></span><p class='ucam-cluster' role='status'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg> Salvo</p></div><div class='ucam-viewbar__fileira'><div style='inline-size:100%'><div class='ucam-progress' role='progressbar' aria-label='Tempo da prova' aria-valuemin='0' aria-valuemax='120' aria-valuenow='38' aria-valuetext='Faltam 1 h 22 min'><span class='ucam-progress__fill' style='--ucam-progress-valor:32%'></span></div><p class='ucam-progress__legenda' id='vq-tempo'><span>Faltam 1 h 22 min</span><span>01:22:14</span></p></div></div></div><div class='ucam-corpo'><div class='ucam-split'><article class='ucam-stack ucam-stack--lg'><header class='ucam-cluster ucam-cluster--entre'><span class='ucam-cluster'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><h3 class='ucam-section__title'>Português · Questão 2 de 3</h3></span><span class='ucam-cluster'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Respondida</span><button type='button' class='ucam-btn ucam-btn--ghost' aria-pressed='true' data-fluxo='c'>Marcar para revisar</button></span></header><section class='ucam-stack'><h4 class='ucam-aside__title'>Texto de apoio</h4><blockquote class='ucam-citacao'>Leia o trecho: \"A língua é um sistema vivo, que muda com quem a usa.\"</blockquote></section><p>No trecho de apoio, a palavra <em>vivo</em> funciona como:</p><fieldset class='ucam-stack ucam-stack--sm' style='border:0;margin:0;padding:0;min-inline-size:0'><legend class='ucam-sr-only'>Alternativas da questão 2</legend><label class='ucam-choice-card' for='vq-a'><input type='radio' name='vq-alt' id='vq-a'><span class='ucam-choice-card__figura' aria-hidden='true'>A</span><span class='ucam-choice-card__titulo'><span class='ucam-sr-only'>Alternativa A: </span>substantivo</span></label><label class='ucam-choice-card' for='vq-b'><input type='radio' name='vq-alt' id='vq-b' checked><span class='ucam-choice-card__figura' aria-hidden='true'>B</span><span class='ucam-choice-card__titulo'><span class='ucam-sr-only'>Alternativa B: </span>adjetivo</span></label><label class='ucam-choice-card' for='vq-c'><input type='radio' name='vq-alt' id='vq-c'><span class='ucam-choice-card__figura' aria-hidden='true'>C</span><span class='ucam-choice-card__titulo'><span class='ucam-sr-only'>Alternativa C: </span>advérbio</span></label><label class='ucam-choice-card' for='vq-d'><input type='radio' name='vq-alt' id='vq-d'><span class='ucam-choice-card__figura' aria-hidden='true'>D</span><span class='ucam-choice-card__titulo'><span class='ucam-sr-only'>Alternativa D: </span>verbo</span></label><label class='ucam-choice-card' for='vq-e'><input type='radio' name='vq-alt' id='vq-e'><span class='ucam-choice-card__figura' aria-hidden='true'>E</span><span class='ucam-choice-card__titulo'><span class='ucam-sr-only'>Alternativa E: </span>conjunção</span></label></fieldset><footer class='ucam-cluster ucam-cluster--entre'><button type='button' class='ucam-btn ucam-btn--secondary ucam-btn--lg' data-fluxo='b'><svg class='ic' aria-hidden='true'><use href='#i-chevronLeft'/></svg> Anterior</button><a class='ucam-btn ucam-btn--primary ucam-btn--lg' href='#/templates/vestibular/redacao' data-fluxo='a'>Próxima <svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></a></footer></article><aside class='ucam-aside' aria-label='Mapa de questões'><nav class='ucam-stack' aria-label='Questões da prova'><div class='ucam-stack ucam-stack--sm'><div class='ucam-progress ucam-progress--sm' role='progressbar' aria-label='Questões respondidas' aria-valuemin='0' aria-valuemax='5' aria-valuenow='3' aria-valuetext='3 de 5 respondidas'><span class='ucam-progress__fill' style='--ucam-progress-valor:60%'></span></div><p class='ucam-progress__legenda'><span>3 de 5 respondidas</span></p><div><button type='button' class='ucam-btn ucam-btn--secondary ucam-btn--sm' data-fluxo='b'>Próxima em branco <svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></button></div></div><section class='ucam-stack ucam-stack--sm' aria-labelledby='vm-pt'><h3 class='ucam-cluster ucam-cluster--entre ucam-aside__title' id='vm-pt'><span>Português</span><span class='ucam-field__hint'>2 de 3</span></h3><ol class='ucam-cluster' style='list-style:none;margin:0;padding:0'><li><button type='button' class='ucam-btn ucam-btn--primary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 1, respondida' data-fluxo='b'>1</button></li><li><a class='ucam-btn ucam-btn--primary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' href='#/templates/vestibular/questao' aria-label='Questão 2, respondida, marcada para revisar' aria-current='page'>2<span class='ucam-badge__ponto' aria-hidden='true'></span></a></li><li><button type='button' class='ucam-btn ucam-btn--secondary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 3, em branco' data-fluxo='b'>3</button></li></ol></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='vm-mt'><h3 class='ucam-cluster ucam-cluster--entre ucam-aside__title' id='vm-mt'><span>Matemática</span><span class='ucam-field__hint'>1 de 2</span></h3><ol class='ucam-cluster' style='list-style:none;margin:0;padding:0'><li><button type='button' class='ucam-btn ucam-btn--primary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 1, respondida' data-fluxo='b'>1</button></li><li><button type='button' class='ucam-btn ucam-btn--secondary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 2, em branco' data-fluxo='b'>2</button></li></ol></section><a class='ucam-btn ucam-btn--secondary' href='#/templates/vestibular/redacao' aria-label='Redação, rascunho' style='justify-content:space-between'><span class='ucam-cluster'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg> Redação</span><span class='ucam-field__hint'>Rascunho</span></a><p class='ucam-field__hint' aria-hidden='true'>Bolha cheia: respondida · bolha vazia: em branco · ponto: para revisar</p></nav></aside></div></div>",
+          "codigo": "<!-- prova.html: a barra da prova, o corpo em duas colunas e o mapa. -->\n<app-cabecalho-prova />\n<div class=\"ucam-corpo\">\n  <div class=\"ucam-split\">\n    <div class=\"ucam-stack ucam-stack--lg\"><router-outlet /></div>\n    <aside class=\"ucam-aside\" aria-label=\"Mapa de questões\">\n      <app-mapa-questoes (navegar)=\"irPara($event)\" />\n    </aside>\n  </div>\n</div>\n<ucam-drawer [(open)]=\"mapaAberto\" title=\"Questões\" side=\"end\" size=\"sm\">\n  <app-mapa-questoes (navegar)=\"irPara($event)\" />\n</ucam-drawer>\n\n<!-- cabecalho-prova.ts: o relógio mora na barra, não no corpo. -->\n<ucam-progress label=\"Tempo da prova\" [value]=\"relogio.decorrido()\" [max]=\"relogio.total()\" [tone]=\"relogio.tom()\"\n  [valueText]=\"relogio.texto()\" [legendStart]=\"relogio.texto()\" [legendEnd]=\"relogio.hms()\" />\n\n<!-- questao.html: uma questão por vez. -->\n<article class=\"ucam-stack ucam-stack--lg\">\n  <header class=\"ucam-cluster ucam-cluster--entre\">\n    <span class=\"ucam-cluster\">\n      <ucam-icon-tile [icon]=\"iconeCaderno()\" />\n      <h2 #titulo class=\"ucam-section__title\" tabindex=\"-1\">{{ rotuloCaderno() }} · Questão {{ n() }} de {{ totalNoCaderno() }}</h2>\n    </span>\n    <span class=\"ucam-cluster\">\n      <ucam-badge [tone]=\"escolhida() ? 'success' : 'neutral'\" variant=\"dot\" [label]=\"escolhida() ? 'Respondida' : 'Em branco'\" />\n      <button type=\"button\" class=\"ucam-btn ucam-btn--ghost\" [attr.aria-pressed]=\"marcada()\" (click)=\"alternarRevisar()\">Marcar para revisar</button>\n    </span>\n  </header>\n\n  <ucam-section-bar title=\"Texto de apoio\" [level]=\"3\" />\n  <ucam-citacao><div [innerHTML]=\"q.textoreferencia\"></div></ucam-citacao>\n  <div [innerHTML]=\"q.descricao\"></div>\n\n  <fieldset class=\"ucam-stack ucam-stack--sm\">\n    <legend class=\"ucam-sr-only\">Alternativas da questão {{ n() }}</legend>\n    @for (a of alternativas(); track a.oid) {\n      <label class=\"ucam-choice-card\">\n        <input type=\"radio\" [name]=\"'questao-' + q.oid\" [value]=\"a.oid\" [checked]=\"escolhida() === a.oid\" (change)=\"escolher(a.oid)\" />\n        <span class=\"ucam-choice-card__figura\" aria-hidden=\"true\">{{ a.letra }}</span>\n        <span class=\"ucam-choice-card__titulo\"><span class=\"ucam-sr-only\">Alternativa {{ a.letra }}: </span><span [innerHTML]=\"a.descricao\"></span></span>\n      </label>\n    }\n  </fieldset>\n\n  <footer class=\"ucam-cluster ucam-cluster--entre\">\n    <ucam-button variant=\"secondary\" size=\"lg\" iconStart=\"chevronLeft\" [disabled]=\"ehPrimeira()\" (click)=\"anterior()\">Anterior</ucam-button>\n    <ucam-button variant=\"primary\" size=\"lg\" [iconEnd]=\"proximaEhFim() ? 'send' : 'chevronRight'\" (click)=\"proxima()\">{{ rotuloProxima() }}</ucam-button>\n  </footer>\n</article>",
+          "shell": {
+            "sistema": "Vestibular Online",
+            "campus": "Campos dos Goytacazes",
+            "campusOpcoes": null,
+            "usuario": "Ana Souza",
+            "semNav": true,
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": [
+              {
+                "rotulo": "Falar com a secretaria",
+                "icone": "mail"
+              }
+            ],
+            "navRotulo": "Etapas da prova",
+            "navHtml": "<div class='ucam-nav__group'><p class='ucam-nav__group-title'>Etapas · 3 de 5</p><ol class='ucam-stepper' aria-label='Etapas do vestibular online' style='flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:var(--ucam-space-stack-xs)'><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Seus dados</span></span><span class='ucam-sr-only'>, etapa 1 de 5, concluída</span></span></li><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Antes de começar</span></span><span class='ucam-sr-only'>, etapa 2 de 5, concluída</span></span></li><li class='ucam-stepper__passo ucam-stepper__passo--current' style='display:block' aria-current='step'><a class='ucam-nav__item' href='#/templates/vestibular/questao' aria-current='page'><span class='ucam-stepper__marcador' aria-hidden='true'>3</span><span class='ucam-stack' style='gap:0'><span>Prova objetiva</span><span class='ucam-stepper__dica'>3 de 5 respondidas</span></span><span class='ucam-sr-only'>, etapa 3 de 5, atual</span></a></li><li class='ucam-stepper__passo' style='display:block'><a class='ucam-nav__item' href='#/templates/vestibular/redacao'><span class='ucam-stepper__marcador' aria-hidden='true'>4</span><span class='ucam-stack' style='gap:0'><span>Redação</span><span class='ucam-stepper__dica'>Rascunho</span></span><span class='ucam-sr-only'>, etapa 4 de 5, a fazer</span></a></li><li class='ucam-stepper__passo' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'>5</span><span class='ucam-stack' style='gap:0'><span>Resultado</span></span><span class='ucam-sr-only'>, etapa 5 de 5, a fazer</span></span></li></ol></div><div class='ucam-nav__group'><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-cluster'><span class='ucam-avatar' aria-hidden='true'>AS</span><div><p class='ucam-descricao__valor'>Ana Souza</p><p class='ucam-descricao__rotulo'>Candidato</p></div></div><dl class='ucam-descricao ucam-descricao--painel' aria-label='Dados da inscrição'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg>CPF</dt><dd class='ucam-descricao__valor'>123.456.789-01</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg>Curso</dt><dd class='ucam-descricao__valor'>Engenharia de Software</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>Turno</dt><dd class='ucam-descricao__valor'>Noite</dd></div></dl></div></div>"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Alternativas A a E",
+                "classe": "c",
+                "efeito": "Escolher grava a resposta na hora; a barra mostra Salvando e depois Salvo, a bolha da questão enche e a contagem sobe."
+              },
+              {
+                "rotulo": "Marcar para revisar",
+                "classe": "c",
+                "efeito": "Alterna a marca da questão; o ponto aparece na bolha do mapa."
+              },
+              {
+                "rotulo": "Próxima",
+                "classe": "a",
+                "destino": "vestibular/redacao",
+                "efeito": "No app, abre a questão seguinte e move o foco para o título dela; na última, vira Ir para a redação. Na referência leva direto à redação."
+              },
+              {
+                "rotulo": "Anterior",
+                "classe": "b",
+                "efeito": "Abre a questão anterior. Na primeira questão fica desabilitado, com a razão dita."
+              },
+              {
+                "rotulo": "Bolhas do mapa e Próxima em branco",
+                "classe": "b",
+                "efeito": "Levam à questão escolhida ou à primeira ainda em branco."
+              },
+              {
+                "rotulo": "Redação (mapa e etapa)",
+                "classe": "a",
+                "destino": "vestibular/redacao",
+                "efeito": "Abre a redação."
+              }
+            ],
+            "chega_de": [
+              "vestibular/instrucoes",
+              "vestibular/redacao"
+            ]
+          }
+        },
+        {
+          "id": "redacao",
+          "nome": "Redação",
+          "perfil": "Candidato",
+          "padrao": "fluxo-guiado",
+          "origem": "Vestibular Online, rota /candidato/:oid/prova/redacao (apps/vestibular-online/src/app/candidato/prova/redacao/ e prova/entrega-dialog.ts)",
+          "descricao": "Os textos de apoio em citação, a proposta, a folha com o contador contra o mínimo e a entrega da prova, que passa por um diálogo com o que ficou em branco.",
+          "usa": [
+            "ucam-alert",
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-citacao",
+            "ucam-dialog",
+            "ucam-progress",
+            "ucam-section-bar",
+            "ucam-textarea"
+          ],
+          "problemas": [
+            "No legado a redação é escrita num editor rico, que cola a formatação de onde o texto veio e entrega HTML para a banca corrigir.",
+            "O texto de apoio vem solto no enunciado: a pessoa não distingue a fala citada da proposta.",
+            "Não há contador: a pessoa só descobre que não atingiu o mínimo depois de entregar.",
+            "Entregar é um botão igual aos outros, sem confirmação e sem dizer o que ficou em branco."
+          ],
+          "notas": [
+            "Sem título próprio no corpo: Redação e o estado dela (\"Rascunho\") estão na barra da prova, e as seções descem dela.",
+            "O texto de apoio é fala de outra pessoa, e a tela o diz: seção com nome e o bloco de citação do DS.",
+            "A folha é uma área de texto simples que nasce com a altura de uma redação (22 linhas) e cresce com o texto. O texto é salvo ao sair do campo, e a barra diz que salvou.",
+            "O contador mora na dica do campo e a frase abaixo diz quanto falta para o mínimo; atingido o mínimo, diz até onde dá para continuar.",
+            "Sem o mínimo, Entregar prova fica desabilitado com a razão escrita ao lado. No diálogo de entrega, a mesma situação troca a ação por Ir para a redação: não há botão desabilitado sem saída.",
+            "O diálogo de entrega lista as questões em branco e as marcadas para revisar, e a ação que recebe o foco é Revisar, a segura. Quando o tempo acaba, o mesmo diálogo abre sem ações, dizendo que a prova está sendo entregue."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Depois de entregue, a prova não pode ser alterada.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A redação tem mínimo de 300 e máximo de 3.000 caracteres, sem contar espaços, e não é entregue abaixo do mínimo.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A prova pode ser entregue com questões objetivas em branco, depois de o candidato confirmar a lista delas.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "A redação é escrita em texto simples, sem negrito, itálico ou parágrafo formatado, ao contrário do editor rico do legado?",
+              "decide": "Banca do vestibular"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar' aria-label='Andamento da prova'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Redação</h2><span class='ucam-viewbar__contagem'>Rascunho</span><span class='ucam-viewbar__folga'></span><p class='ucam-cluster' role='status'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg> Salvo</p></div><div class='ucam-viewbar__fileira'><div style='inline-size:100%'><div class='ucam-progress' role='progressbar' aria-label='Tempo da prova' aria-valuemin='0' aria-valuemax='120' aria-valuenow='38' aria-valuetext='Faltam 1 h 22 min'><span class='ucam-progress__fill' style='--ucam-progress-valor:32%'></span></div><p class='ucam-progress__legenda' id='vr-tempo'><span>Faltam 1 h 22 min</span><span>01:22:14</span></p></div></div></div><div class='ucam-corpo'><div class='ucam-split'><article class='ucam-stack ucam-stack--lg' aria-label='Redação'><section class='ucam-stack'><h3 class='ucam-section__title'>Texto de apoio</h3><blockquote class='ucam-citacao'><p><strong>Texto I</strong></p><p>\"Ler é, antes de tudo, aprender a pensar com a cabeça dos outros para depois pensar com a própria. Quem lê pouco não fica apenas com menos informação: fica com menos palavras para dizer o que sente e menos caminhos para discordar do que ouve.\"</p><p class='ucam-citacao__autoria'>Adaptado de ensaio sobre leitura e formação.</p></blockquote></section><section class='ucam-stack'><h3 class='ucam-section__title'>Proposta</h3><p>Com base nos textos de apoio e no que você conhece do assunto, escreva um texto dissertativo-argumentativo sobre <strong>o papel da leitura na formação do cidadão</strong>. Defenda um ponto de vista e sustente-o com argumentos.</p></section><div class='ucam-field'><label class='ucam-field__label' for='vr-texto'>Seu texto</label><textarea class='ucam-textarea' id='vr-texto' rows='14' aria-describedby='vr-texto-h'>A leitura forma o cidadão porque dá a ele palavras. Quem lê com frequência aprende a nomear o que sente, a comparar versões de um mesmo fato e a desconfiar de respostas fáceis. Não se trata apenas de acumular informação: trata-se de exercitar o juízo.</textarea><span class='ucam-field__hint' id='vr-texto-h'>Mínimo de 300 caracteres, sem contar espaços. 208 de 3.000.</span></div><p class='ucam-field__hint' aria-live='polite'>Faltam 92 caracteres para o mínimo.</p><footer class='ucam-cluster ucam-cluster--entre'><a class='ucam-btn ucam-btn--secondary ucam-btn--lg' href='#/templates/vestibular/questao' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-chevronLeft'/></svg> Voltar para a prova objetiva</a><a class='ucam-btn ucam-btn--primary ucam-btn--lg' href='#/templates/vestibular/resultado' data-fluxo='c' data-abre-dialogo='vr-entrega'><svg class='ic' aria-hidden='true'><use href='#i-send'/></svg> Entregar prova</a></footer></article><aside class='ucam-aside' aria-label='Mapa de questões'><nav class='ucam-stack' aria-label='Questões da prova'><div class='ucam-stack ucam-stack--sm'><div class='ucam-progress ucam-progress--sm' role='progressbar' aria-label='Questões respondidas' aria-valuemin='0' aria-valuemax='5' aria-valuenow='3' aria-valuetext='3 de 5 respondidas'><span class='ucam-progress__fill' style='--ucam-progress-valor:60%'></span></div><p class='ucam-progress__legenda'><span>3 de 5 respondidas</span></p><div><button type='button' class='ucam-btn ucam-btn--secondary ucam-btn--sm' data-fluxo='b'>Próxima em branco <svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></button></div></div><section class='ucam-stack ucam-stack--sm' aria-labelledby='vm-pt'><h3 class='ucam-cluster ucam-cluster--entre ucam-aside__title' id='vm-pt'><span>Português</span><span class='ucam-field__hint'>2 de 3</span></h3><ol class='ucam-cluster' style='list-style:none;margin:0;padding:0'><li><button type='button' class='ucam-btn ucam-btn--primary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 1, respondida' data-fluxo='b'>1</button></li><li><a class='ucam-btn ucam-btn--primary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' href='#/templates/vestibular/questao' aria-label='Questão 2, respondida, marcada para revisar'>2<span class='ucam-badge__ponto' aria-hidden='true'></span></a></li><li><button type='button' class='ucam-btn ucam-btn--secondary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 3, em branco' data-fluxo='b'>3</button></li></ol></section><section class='ucam-stack ucam-stack--sm' aria-labelledby='vm-mt'><h3 class='ucam-cluster ucam-cluster--entre ucam-aside__title' id='vm-mt'><span>Matemática</span><span class='ucam-field__hint'>1 de 2</span></h3><ol class='ucam-cluster' style='list-style:none;margin:0;padding:0'><li><button type='button' class='ucam-btn ucam-btn--primary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 1, respondida' data-fluxo='b'>1</button></li><li><button type='button' class='ucam-btn ucam-btn--secondary ucam-btn--sm' style='min-inline-size:var(--ucam-size-control-md);border-radius:var(--ucam-radius-full)' aria-label='Questão 2, em branco' data-fluxo='b'>2</button></li></ol></section><a class='ucam-btn ucam-btn--secondary' href='#/templates/vestibular/redacao' aria-label='Redação, rascunho' aria-current='page' style='justify-content:space-between'><span class='ucam-cluster'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg> Redação</span><span class='ucam-field__hint'>Rascunho</span></a><p class='ucam-field__hint' aria-hidden='true'>Bolha cheia: respondida · bolha vazia: em branco · ponto: para revisar</p></nav></aside></div></div><dialog class='ucam-dialog' id='vr-entrega'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Entregar a prova?</h2></div><div class='ucam-dialog__body ucam-stack'><p>Depois de entregar você não poderá alterar as respostas.</p><p><strong>2 questões estão em branco:</strong> Português 3 e Matemática 2.</p><p><strong>1 questão está marcada para revisar:</strong> Português 2.</p></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao'>Revisar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'><svg class='ic' aria-hidden='true'><use href='#i-send'/></svg> Entregar prova</button></div></form></dialog>",
+          "codigo": "<!-- redacao.html -->\n<article class=\"ucam-stack ucam-stack--lg\" tabindex=\"-1\" aria-label=\"Redação\">\n  <section class=\"ucam-stack\">\n    <ucam-section-bar title=\"Texto de apoio\" [level]=\"2\" />\n    <ucam-citacao><div [innerHTML]=\"q.textoreferencia\"></div></ucam-citacao>\n  </section>\n  <section class=\"ucam-stack\">\n    <ucam-section-bar title=\"Proposta\" [level]=\"2\" />\n    <div [innerHTML]=\"q.descricao\"></div>\n  </section>\n\n  <!-- A folha: nasce com a altura de uma redação, não de um recado. -->\n  <ucam-textarea label=\"Seu texto\" [rows]=\"22\" [maxRows]=\"60\" autoGrow [maxLength]=\"maximo\" [(value)]=\"texto\"\n    [hint]=\"'Mínimo de ' + minimo + ' caracteres, sem contar espaços. ' + contador()\" />\n\n  <footer class=\"ucam-cluster ucam-cluster--entre\">\n    <ucam-button variant=\"secondary\" size=\"lg\" iconStart=\"chevronLeft\" (click)=\"voltarParaObjetiva()\">Voltar para a prova objetiva</ucam-button>\n    <ucam-button variant=\"primary\" size=\"lg\" iconStart=\"send\" [disabled]=\"!atingeMinimo()\" (click)=\"entregar()\">Entregar prova</ucam-button>\n  </footer>\n</article>\n\n<!-- entrega-dialog.ts: sair da tarefa é uma só ação, com o que ficou em branco. -->\n<ucam-dialog [title]=\"titulo()\" variant=\"confirm\" size=\"sm\" [open]=\"aberto()\" (openChange)=\"!$event && fechar.emit()\"\n  [dismissible]=\"modo() === 'manual' && !entregando()\" [loading]=\"entregando()\" initialFocus=\"[data-foco]\">\n  <div class=\"ucam-stack\">\n    <p>Depois de entregar você não poderá alterar as respostas.</p>\n    @if (!store.redacaoAtingeMinimo()) {\n      <ucam-alert tone=\"warning\">A redação ainda não tem o mínimo de {{ minimo }} caracteres.</ucam-alert>\n    }\n  </div>\n  <div ucamDialogAcoes class=\"ucam-cluster ucam-cluster--fim\">\n    <ucam-button variant=\"secondary\" data-foco (click)=\"revisarAgora()\">Revisar</ucam-button>\n    @if (store.redacaoAtingeMinimo()) {\n      <ucam-button variant=\"primary\" iconStart=\"send\" [loading]=\"entregando()\" (click)=\"entregar()\">Entregar prova</ucam-button>\n    } @else {\n      <ucam-button variant=\"primary\" iconStart=\"pencil\" (click)=\"irParaRedacao()\">Ir para a redação</ucam-button>\n    }\n  </div>\n</ucam-dialog>",
+          "shell": {
+            "sistema": "Vestibular Online",
+            "campus": "Campos dos Goytacazes",
+            "campusOpcoes": null,
+            "usuario": "Ana Souza",
+            "semNav": true,
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": [
+              {
+                "rotulo": "Falar com a secretaria",
+                "icone": "mail"
+              }
+            ],
+            "navRotulo": "Etapas da prova",
+            "navHtml": "<div class='ucam-nav__group'><p class='ucam-nav__group-title'>Etapas · 4 de 5</p><ol class='ucam-stepper' aria-label='Etapas do vestibular online' style='flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:var(--ucam-space-stack-xs)'><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Seus dados</span></span><span class='ucam-sr-only'>, etapa 1 de 5, concluída</span></span></li><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Antes de começar</span></span><span class='ucam-sr-only'>, etapa 2 de 5, concluída</span></span></li><li class='ucam-stepper__passo' style='display:block'><a class='ucam-nav__item' href='#/templates/vestibular/questao'><span class='ucam-stepper__marcador' aria-hidden='true'>3</span><span class='ucam-stack' style='gap:0'><span>Prova objetiva</span><span class='ucam-stepper__dica'>3 de 5 respondidas</span></span><span class='ucam-sr-only'>, etapa 3 de 5, a fazer</span></a></li><li class='ucam-stepper__passo ucam-stepper__passo--current' style='display:block' aria-current='step'><a class='ucam-nav__item' href='#/templates/vestibular/redacao' aria-current='page'><span class='ucam-stepper__marcador' aria-hidden='true'>4</span><span class='ucam-stack' style='gap:0'><span>Redação</span><span class='ucam-stepper__dica'>Rascunho</span></span><span class='ucam-sr-only'>, etapa 4 de 5, atual</span></a></li><li class='ucam-stepper__passo' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'>5</span><span class='ucam-stack' style='gap:0'><span>Resultado</span></span><span class='ucam-sr-only'>, etapa 5 de 5, a fazer</span></span></li></ol></div><div class='ucam-nav__group'><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-cluster'><span class='ucam-avatar' aria-hidden='true'>AS</span><div><p class='ucam-descricao__valor'>Ana Souza</p><p class='ucam-descricao__rotulo'>Candidato</p></div></div><dl class='ucam-descricao ucam-descricao--painel' aria-label='Dados da inscrição'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg>CPF</dt><dd class='ucam-descricao__valor'>123.456.789-01</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg>Curso</dt><dd class='ucam-descricao__valor'>Engenharia de Software</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>Turno</dt><dd class='ucam-descricao__valor'>Noite</dd></div></dl></div></div>"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Entregar prova",
+                "classe": "c",
+                "destino": "vestibular/resultado",
+                "efeito": "Abre o diálogo com as questões em branco e as marcadas para revisar. Revisar fecha e volta à prova; Entregar prova confirma e abre o resultado. No app, abaixo do mínimo da redação o botão fica desabilitado com a razão ao lado."
+              },
+              {
+                "rotulo": "Voltar para a prova objetiva",
+                "classe": "a",
+                "destino": "vestibular/questao",
+                "efeito": "Volta à prova objetiva; o texto já escrito fica salvo."
+              },
+              {
+                "rotulo": "Seu texto",
+                "classe": "b",
+                "efeito": "No app, o contador acompanha a digitação e o texto é salvo ao sair do campo."
+              }
+            ],
+            "chega_de": [
+              "vestibular/questao"
+            ]
+          }
+        },
+        {
+          "id": "resultado",
+          "nome": "Prova entregue e resultado",
+          "perfil": "Candidato",
+          "padrao": "fluxo-guiado",
+          "origem": "Vestibular Online, rota /candidato/:oid/resultado (apps/vestibular-online/src/app/candidato/resultado/)",
+          "descricao": "O que acontece depois de entregar: os números da prova feita e um cartão com a situação e o próximo passo — aguardando a banca, aprovado ou nova tentativa.",
+          "usa": [
+            "ucam-alert",
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-page-header",
+            "ucam-skeleton",
+            "ucam-stat",
+            "ucam-stepper"
+          ],
+          "problemas": [
+            "No legado, entregar a prova devolve a pessoa a uma página que só diz \"Prova finalizada\", sem próximo passo.",
+            "Quem fez redação não sabe que o resultado depende da banca nem onde ele vai aparecer.",
+            "O reprovado com tentativa disponível não encontra na tela a ação de tentar de novo."
+          ],
+          "notas": [
+            "O título da tela é Prova entregue enquanto não há desfecho e Resultado depois: o nome diz em que pé a coisa está (ADR-029).",
+            "Os indicadores contam a prova feita: quando foi entregue, quanto tempo levou, quantas questões foram respondidas e quais cadernos.",
+            "O desfecho é um cartão com ícone, título, uma frase de apoio, o selo da situação e a ação do próximo passo. A referência desenha a espera pela banca; as outras variações estão nos estados.",
+            "Ver se já saiu consulta a correção sem recarregar a página, e a resposta vira um alerta com a hora da última consulta.",
+            "Estados: aprovado (selo Aprovado e o primário Concluir matrícula, que leva à área do inscrito); nota mínima não atingida com tentativa disponível (selo neutro e o primário Tentar novamente); sem tentativa (selo neutro, o contato da secretaria e Ir para o site); carregando (esqueleto em bloco); erro (alerta de erro com Tentar de novo).",
+            "Reprovado é selo neutro, não vermelho: vermelho é reservado a destruição irreversível (ADR-002)."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "O resultado da prova com redação só sai depois da nota da banca.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O aprovado conclui a matrícula na área do inscrito, fora deste sistema.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A aprovação pede metade da prova objetiva e nota 5 na redação. É a suposição do backend de teste, não a regra da universidade.",
+              "decide": "Banca do vestibular"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Com tentativa disponível, o reprovado pode começar uma prova nova pela mesma inscrição.",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/vestibular/conferir-dados'>Seus dados</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Prova entregue</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Prova entregue</h2></div></div><div class='ucam-corpo ucam-stack ucam-stack--lg'><section class='ucam-stack' aria-labelledby='vf-prova'><h3 class='ucam-section__title' id='vf-prova'>Sua prova</h3><div class='ucam-stats'><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-calendar'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Entregue em</span><span class='ucam-stat__value'>04/10/2026</span><span class='ucam-stat__meta'>às 20h47</span></div></div><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Tempo usado</span><span class='ucam-stat__value'>1 h 12 min</span><span class='ucam-stat__meta'>Do início à entrega</span></div></div><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardCheck'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Questões respondidas</span><span class='ucam-stat__value'>5 de 5</span><span class='ucam-stat__meta'>Na prova objetiva</span></div></div><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-listChecks'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Cadernos</span><span class='ucam-stat__value'>3</span><span class='ucam-stat__meta'>Português, Matemática, Redação</span></div></div></div></section><section class='ucam-card ucam-stack'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></span><span class='ucam-card__cabecalho-texto'><span class='ucam-card__titulo'>Aguardando a correção da banca</span><span class='ucam-card__apoio'>Sua redação será lida pela banca; a prova objetiva é corrigida junto.</span></span></div><div><span class='ucam-badge ucam-badge--info'><span class='ucam-badge__ponto' aria-hidden='true'></span>Em correção</span></div><p>Sua prova está entregue e nada mais precisa ser feito. Assim que a banca terminar, o resultado aparece aqui, por este mesmo link, e no site da universidade.</p><div class='ucam-alert ucam-alert--info'><svg class='ic' aria-hidden='true'><use href='#i-info'/></svg><div class='ucam-alert__corpo'>A banca ainda não terminou a correção. Última consulta às 20h52.</div></div><div class='ucam-cluster ucam-cluster--fim'><button type='button' class='ucam-btn ucam-btn--secondary' data-fluxo='c'><svg class='ic' aria-hidden='true'><use href='#i-refreshCw'/></svg> Ver se já saiu</button><button type='button' class='ucam-btn ucam-btn--primary' data-fluxo='b'>Ir para o site <svg class='ic' aria-hidden='true'><use href='#i-externalLink'/></svg></button></div></section></div>",
+          "codigo": "<app-moldura>\n  <ucam-page-header variante=\"barra\" [title]=\"titulo()\" [breadcrumb]=\"trilha()\" />\n  <div class=\"ucam-corpo ucam-stack ucam-stack--lg\">\n    <ucam-stepper label=\"Etapas do vestibular online\" variant=\"bar\" [current]=\"3\" [steps]=\"etapas\" />\n\n    <section class=\"ucam-stack\" aria-labelledby=\"t-sua-prova\">\n      <h2 class=\"ucam-section__title\" id=\"t-sua-prova\">Sua prova</h2>\n      <div class=\"ucam-stats\">\n        <ucam-stat label=\"Entregue em\" [value]=\"entregueDia() ?? '—'\" [meta]=\"entregueHora()\" icon=\"calendar\" />\n        <ucam-stat label=\"Tempo usado\" [value]=\"tempoUsado() ?? '—'\" meta=\"Do início à entrega\" icon=\"clock\" />\n      </div>\n    </section>\n\n    <!-- O desfecho manda: a espera pela banca só aparece enquanto não há resultado. -->\n    @if (carregando()) {\n      <ucam-skeleton variant=\"block\" />\n    } @else if (situacao() === null) {\n      <ucam-card as=\"section\" titulo=\"Aguardando a correção da banca\" apoio=\"Sua redação será lida pela banca; a prova objetiva é corrigida junto.\" icone=\"pencil\">\n        <div class=\"ucam-stack\">\n          <ucam-badge tone=\"info\" variant=\"dot\" label=\"Em correção\" />\n          @if (verificadoAs(); as hora) {\n            <ucam-alert tone=\"info\" live=\"polite\">A banca ainda não terminou a correção. Última consulta às {{ hora }}.</ucam-alert>\n          }\n          <div class=\"ucam-cluster ucam-cluster--fim\">\n            <ucam-button variant=\"secondary\" iconStart=\"refreshCw\" [loading]=\"verificando()\" (click)=\"verificar()\">Ver se já saiu</ucam-button>\n            <ucam-button variant=\"primary\" iconEnd=\"externalLink\" (click)=\"irParaSite()\">Ir para o site</ucam-button>\n          </div>\n        </div>\n      </ucam-card>\n    } @else if (situacao() === 'APROVADO') {\n      <ucam-card as=\"section\" titulo=\"Você foi aprovado\" apoio=\"Parabéns! O próximo passo é concluir a matrícula na área do inscrito.\" icone=\"circleCheck\">\n        <div class=\"ucam-stack\">\n          <ucam-badge tone=\"success\" variant=\"dot\" label=\"Aprovado\" />\n          <ucam-button variant=\"primary\" size=\"lg\" iconEnd=\"externalLink\" (click)=\"concluirMatricula()\">Concluir matrícula</ucam-button>\n        </div>\n      </ucam-card>\n    }\n  </div>\n</app-moldura>",
+          "shell": {
+            "sistema": "Vestibular Online",
+            "campus": "Campos dos Goytacazes",
+            "campusOpcoes": null,
+            "usuario": "Ana Souza",
+            "semNav": true,
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": [
+              {
+                "rotulo": "Falar com a secretaria",
+                "icone": "mail"
+              }
+            ],
+            "navRotulo": "Etapas da prova",
+            "navHtml": "<div class='ucam-nav__group'><p class='ucam-nav__group-title'>Etapas · 5 de 5</p><ol class='ucam-stepper' aria-label='Etapas do vestibular online' style='flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:var(--ucam-space-stack-xs)'><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Seus dados</span></span><span class='ucam-sr-only'>, etapa 1 de 5, concluída</span></span></li><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Antes de começar</span></span><span class='ucam-sr-only'>, etapa 2 de 5, concluída</span></span></li><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Prova objetiva</span></span><span class='ucam-sr-only'>, etapa 3 de 5, concluída</span></span></li><li class='ucam-stepper__passo ucam-stepper__passo--done' style='display:block'><span class='ucam-nav__item'><span class='ucam-stepper__marcador' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span><span class='ucam-stack' style='gap:0'><span>Redação</span></span><span class='ucam-sr-only'>, etapa 4 de 5, concluída</span></span></li><li class='ucam-stepper__passo ucam-stepper__passo--current' style='display:block' aria-current='step'><a class='ucam-nav__item' href='#/templates/vestibular/resultado' aria-current='page'><span class='ucam-stepper__marcador' aria-hidden='true'>5</span><span class='ucam-stack' style='gap:0'><span>Resultado</span></span><span class='ucam-sr-only'>, etapa 5 de 5, atual</span></a></li></ol></div><div class='ucam-nav__group'><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-cluster'><span class='ucam-avatar' aria-hidden='true'>AS</span><div><p class='ucam-descricao__valor'>Ana Souza</p><p class='ucam-descricao__rotulo'>Candidato</p></div></div><dl class='ucam-descricao ucam-descricao--painel' aria-label='Dados da inscrição'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg>CPF</dt><dd class='ucam-descricao__valor'>123.456.789-01</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg>Curso</dt><dd class='ucam-descricao__valor'>Engenharia de Software</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>Turno</dt><dd class='ucam-descricao__valor'>Noite</dd></div></dl></div></div>"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Ver se já saiu",
+                "classe": "c",
+                "efeito": "Consulta a correção; enquanto a banca não termina, o alerta mostra a hora da última consulta. Com o resultado, o cartão troca pelo desfecho."
+              },
+              {
+                "rotulo": "Ir para o site",
+                "classe": "b",
+                "efeito": "Abre o site da universidade."
+              },
+              {
+                "rotulo": "Seus dados (trilha)",
+                "classe": "a",
+                "destino": "vestibular/conferir-dados",
+                "efeito": "Volta à conferência dos dados."
+              }
+            ],
+            "chega_de": [
+              "vestibular/redacao"
+            ]
+          }
+        }
+      ]
     }
   ]
 }
