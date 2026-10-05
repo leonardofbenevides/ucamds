@@ -122,6 +122,18 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "Nome acessível do menu, quando o gatilho é só um ícone e não há texto visível para apontar com aria-labelledby. Com gatilho rotulado, fica nulo — repetir o rótulo em dois atributos faz o leitor de tela dizer a mesma coisa duas vezes."
+    },
+    {
+      "nome": "heading",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Identificação acima dos itens, no Trilho B: o nome por extenso no menu da conta (a .ucam-menu__conta do Trilho A). É texto e não item — não recebe foco nem entra no rodízio das setas. Não é brecha para texto informativo no menu: serve para dizer DE QUEM são as ações abaixo."
+    },
+    {
+      "nome": "subheading",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Linha de apoio do heading: o campus, no menu da conta. Sem heading não é desenhada."
     }
   ],
   "estados": [

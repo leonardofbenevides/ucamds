@@ -250,10 +250,28 @@
       "default": "null"
     },
     {
+      "nome": "userMenuItems",
+      "tipo": "UcamMenuItem[]",
+      "default": "[]",
+      "descricao": "Itens da aplicação no menu da conta, acima do Sair — \"Meu perfil\", \"Preferências\". O Sair é do shell e é sempre o último; a escolha de um destes emite userMenuSelect."
+    },
+    {
+      "nome": "notifications",
+      "tipo": "number | null",
+      "default": "null",
+      "descricao": "Notificações não lidas (parte notifications). NÚMERO, não booleano: zero mostra o sino sem selo, null não mostra sino. A contagem entra no nome acessível do botão; o selo é só para quem vê. A lista é da aplicação: o clique emite openNotifications."
+    },
+    {
       "nome": "favorites",
       "tipo": "NavItem[] | null",
       "default": "null",
       "descricao": "Os itens fixados por quem usa, na ordem em que fixou. null ou vazio: o grupo não existe. Quem persiste é a aplicação — o shell só desenha e emite."
+    },
+    {
+      "nome": "navAction",
+      "tipo": "{ label: string; icon?: IconName; href?: string } | null",
+      "default": "null",
+      "descricao": "A ação do módulo no alto da coluna (parte nav-acao). Uma por módulo, e por isso é prop e não slot: slot aceitaria a segunda. Com href é link; sem, é botão e emite navActionClick."
     },
     {
       "nome": "navMode",
@@ -280,6 +298,18 @@
       "descricao": "Atalho de teclado anunciado dentro do campo, desenhado como tecla. Só declarar quando a aplicação REALMENTE registra a tecla: atalho escrito e não implementado é promessa falsa, e quem depende de teclado é justamente quem tenta usá-lo primeiro."
     },
     {
+      "nome": "searchLabel",
+      "tipo": "string",
+      "default": "'Buscar'",
+      "descricao": "Nome acessível e placeholder do campo de busca global. Diz O QUE se procura — \"Buscar requerimento, setor ou pessoa\" —, porque \"Buscar\" sozinho não diz em que entidades a caixa procura."
+    },
+    {
+      "nome": "searchQuery",
+      "tipo": "string",
+      "default": "''",
+      "descricao": "O texto do campo, a cada tecla (two-way). É com ele que a aplicação filtra ou consulta; o shell desenha o campo e não sabe o que há para achar. Esc limpa."
+    },
+    {
       "nome": "maxContentWidth",
       "tipo": "string",
       "default": "'88rem'",
@@ -301,7 +331,7 @@
       "nome": "navCollapsed",
       "tipo": "boolean",
       "default": "false",
-      "descricao": "Estado inicial da coluna. Aberta por padrão: é o estado que ensina onde estão os destinos a quem chega pela primeira vez. A escolha de quem usa persiste em localStorage e vence este valor a partir da segunda visita."
+      "descricao": "Estado inicial da coluna. Aberta por padrão: é o estado que ensina onde estão os destinos a quem chega pela primeira vez. A escolha de quem usa persiste em localStorage e vence este valor a partir da segunda visita. No Trilho B é two-way: o botão de recolher o troca e a aplicação pode ler a escolha."
     },
     {
       "nome": "appbarAppearance",
@@ -385,6 +415,26 @@
       "nome": "unpin",
       "payload": "NavItem",
       "descricao": "O item cujo botão de desfixar foi acionado. A aplicação remove da preferência e reflete em favorites."
+    },
+    {
+      "nome": "search",
+      "payload": "string",
+      "descricao": "Enter no campo de busca global, com o texto digitado."
+    },
+    {
+      "nome": "openNotifications",
+      "payload": "void",
+      "descricao": "Sino acionado. Abrir a lista — gaveta, menu ou tela — é da aplicação."
+    },
+    {
+      "nome": "navActionClick",
+      "payload": "void",
+      "descricao": "Ação do módulo acionada, quando navAction não tem href."
+    },
+    {
+      "nome": "userMenuSelect",
+      "payload": "UcamMenuItem",
+      "descricao": "Item da aplicação escolhido no menu da conta."
     }
   ],
   "estados": [
@@ -589,7 +639,7 @@
       ],
       "nota": "A folha entrega a grade, os modos da navegação e o contêiner de conteúdo. O que ela NÃO entrega, porque é comportamento: alternar data-nav, reter foco no modo sobreposto, fechar com Esc e manter aria-expanded em dia. Isso é do <ucam-app-shell> ou de dez linhas de script na aplicação legada. A raiz aqui vinha escrita sem o ponto, e por isso caía no ramo de \"não entrega\" do validador: a moldura de toda tela do parque foi a única do catálogo que nunca teve a classe conferida contra a folha."
     },
-    "trilho_b": "ui/projects/ui/src/lib/ucam/app-shell/ucam-app-shell.ts — primeira versão em 20/09/2026 com o arranjo appbar (faixa em cima, navegação à esquerda, conteúdo no resto) e as partes obrigatórias do contrato: skip-link que move o FOCO, região viva vazia, faixa, marca com marquinha do sistema, navegação em grupos, conta e main com id fixo e tabindex -1. A navegação é coluna a partir de 64rem e sobreposta abaixo, com escurecimento e inert quando fechada. Declara as próprias variáveis de moldura (--ucam-appbar-height, --ucam-nav-width, --ucam-content-max): elas moram na folha do Trilho A e não existem em @ucam/tokens. Em 29/09/2026 ganhou shellLayout e o contexto: 'lateral' não emite faixa — marca, ações e campus (rótulo visível) sobem para o alto da coluna, a conta com nome visível desce para o pé, e abaixo de 64rem a mobilebar carrega o gatilho da navegação; 'rail' troca a faixa por uma coluna de módulos de 72px em marca cheia, com os módulos projetados pela aplicação em [ucamShellRail], o gatilho da navegação abaixo de 64rem e o nome do sistema no alto da navegação (sem campus: é a dívida que o contrato declara para o rail). context é model (emite contextChange), contextOptions com mais de uma opção vira <ucam-select> — rótulo só para leitor de tela na faixa, visível na coluna —, e com uma só é texto; contextLabel troca a palavra \"Campus\". As ações da faixa ([ucamShellAcoes]) seguem o arranjo: faixa, alto da coluna ou rail. NÃO cobre ainda: busca global, lançador de sistemas, sino, menu da conta (signOut), Favoritos (favorites/unpin), navSearchable e navCollapsible. Paridade do appbar medida em scratchpad/prova-paridade-shell.mjs — faixa de 72px, recuo de 20px e coluna de 318px iguais nos dois trilhos."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/app-shell/ucam-app-shell.ts — primeira versão em 20/09/2026 com o arranjo appbar (faixa em cima, navegação à esquerda, conteúdo no resto) e as partes obrigatórias do contrato: skip-link que move o FOCO, região viva vazia, faixa, marca com marquinha do sistema, navegação em grupos, conta e main com id fixo e tabindex -1. A navegação é coluna a partir de 64rem e sobreposta abaixo, com escurecimento e inert quando fechada. Declara as próprias variáveis de moldura (--ucam-appbar-height, --ucam-nav-width, --ucam-content-max): elas moram na folha do Trilho A e não existem em @ucam/tokens. Em 29/09/2026 ganhou shellLayout e o contexto: 'lateral' não emite faixa — marca, ações e campus (rótulo visível) sobem para o alto da coluna, a conta com nome visível desce para o pé, e abaixo de 64rem a mobilebar carrega o gatilho da navegação; 'rail' troca a faixa por uma coluna de módulos de 72px em marca cheia, com os módulos projetados pela aplicação em [ucamShellRail], o gatilho da navegação abaixo de 64rem e o nome do sistema no alto da navegação (sem campus: é a dívida que o contrato declara para o rail). context é model (emite contextChange), contextOptions com mais de uma opção vira <ucam-select> — rótulo só para leitor de tela na faixa, visível na coluna —, e com uma só é texto; contextLabel troca a palavra \"Campus\". As ações da faixa ([ucamShellAcoes]) seguem o arranjo: faixa, alto da coluna ou rail. Em 05/10/2026 entraram as peças que a prova de paridade de tela (ADR-058) acusava: a busca global da faixa (searchable, searchLabel, searchShortcut — o shell registra a tecla, fora de campo de texto e sem modificador —, searchQuery two-way e o evento search; abaixo de 64rem o campo sai e uma lupa o deita sobre a faixa inteira, e Esc ou o foco saindo o fecham); o sino com contagem (notifications, openNotifications); o gatilho da conta com iniciais e chevron, que abre o <ucam-menu> com o nome por extenso, o campus e o Sair (signOut), mais os itens da aplicação (userMenuItems, userMenuSelect); na coluna, o botão de recolher (navCollapsible; navCollapsed two-way; 3.5rem recolhida, rótulo recortado e não removido, contagem em ponto, preferência em localStorage na mesma chave do Trilho A — só no arranjo appbar), a ação do módulo (navAction, navActionClick) e o grupo Favoritos, que recolhe e emite unpin. Abaixo de faixa-minima o campus, o divisor e o chevron da conta saem da faixa, a marquinha desce um degrau e o campus aparece no alto da gaveta. O filete da faixa passou a sombra interna: a borda tirava 1px da caixa e centrava tudo meio pixel acima da referência. NÃO cobre ainda: o lançador de sistemas (a aplicação o projeta em [ucamShellAcoes]), o painel de resultados da busca, navSearchable, os subitens, e o recolher nos arranjos rail e lateral. Paridade medida por tools/prova-paridade-tela.mjs em protocolo/naturezas a 1180px: faixa 1,45% e navegação 0,01% de pixels diferentes (eram 8,78% e 3,91%), com todas as caixas da faixa na mesma posição e medida dos dois trilhos; a 390px, faixa 1,08%."
   },
   "limites": {
     "regras": [

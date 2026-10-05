@@ -93,6 +93,20 @@ let seq = 0;
         [attr.aria-labelledby]="ariaLabel() ? null : idGatilho()"
         (keydown)="aoTeclar($event)"
       >
+        @if (heading()) {
+          <!-- IDENTIFICAÇÃO, e não item: quem abre o menu da conta lê o nome
+               por extenso antes das ações. Fica fora do rodízio das setas
+               porque não se aciona — é a .ucam-menu__conta do Trilho A. -->
+          <div class="ucam-menu__conta">
+            <span class="ucam-menu__identidade">
+              <span class="ucam-menu__nome">{{ heading() }}</span>
+              @if (subheading()) {
+                <span class="ucam-menu__meta">{{ subheading() }}</span>
+              }
+            </span>
+          </div>
+          <hr class="ucam-menu__sep" aria-hidden="true" />
+        }
         @for (item of items(); track item.id; let i = $index) {
           @if (item.separadorAntes) {
             <hr class="ucam-menu__sep" aria-hidden="true" />
@@ -177,6 +191,28 @@ let seq = 0;
       color: var(--ucam-color-text-disabled);
       cursor: not-allowed;
     }
+    .ucam-menu__conta {
+      display: flex;
+      align-items: center;
+      gap: var(--ucam-space-inline-sm);
+      padding: var(--ucam-space-inline-sm);
+    }
+    .ucam-menu__identidade {
+      display: flex;
+      flex-direction: column;
+      min-inline-size: 0;
+    }
+    .ucam-menu__nome {
+      overflow: hidden;
+      font-size: var(--ucam-typography-body-sm-font-size);
+      font-weight: var(--ucam-typography-action-font-weight);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ucam-menu__meta {
+      color: var(--ucam-color-text-secondary);
+      font-size: var(--ucam-typography-caption-font-size);
+    }
     .ucam-menu__sep {
       margin: var(--ucam-space-1) 0;
       border: 0;
@@ -195,6 +231,12 @@ export class UcamMenu {
   readonly align = input<'start' | 'end'>('end');
   /** Desce do gatilho ('below') ou sobe dele ('above'). Ver ACIMA. */
   readonly placement = input<UcamMenuPlacement>('below');
+  /**
+   * Cabeçalho de identificação acima dos itens — o nome por extenso no menu da
+   * conta, com o campus em subheading. Texto, não item: não recebe foco.
+   */
+  readonly heading = input<string | null>(null);
+  readonly subheading = input<string | null>(null);
 
   readonly escolher = output<UcamMenuItem>();
 
