@@ -87,7 +87,7 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
           <ng-container [ngTemplateOutlet]="trilha" />
         </div>
       }
-      <div class="flex items-center gap-2 min-h-11 px-[var(--ucam-space-inset-lg)]">
+      <div class="flex items-center gap-2 min-h-11 px-[var(--ucam-space-inset-lg)] max-lg:flex-wrap max-lg:pb-2">
         @if (backLink()) {
           <a
             [href]="backLink()"
@@ -118,10 +118,10 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
             (click)="favorite.set(!favorite())"
           />
         }
-        <div class="flex items-center gap-2 ms-auto shrink-0"><ng-container [ngTemplateOutlet]="acoes" /></div>
+        <div class="flex items-center gap-2 lg:ms-auto max-lg:flex-wrap max-lg:min-w-0 lg:shrink-0"><ng-container [ngTemplateOutlet]="acoes" /></div>
       </div>
       <!-- Ferramentas: abas de fila à esquerda, ordenação e filtros à direita. -->
-      <div class="flex flex-wrap items-center gap-2 min-h-11 px-[var(--ucam-space-inset-lg)] empty:hidden"><ng-content select="[ucamFerramentas]" /></div>
+      <div class="flex flex-wrap items-center gap-2 min-h-11 px-[var(--ucam-space-inset-lg)] max-lg:min-h-0 max-lg:pb-2 empty:hidden"><ng-content select="[ucamFerramentas]" /></div>
       <!-- Filtros aplicados: condicional no markup de quem chama, nunca
            escondida por CSS — sem chip, a fileira não existe. -->
       <div class="flex flex-wrap items-center gap-2 min-h-10 px-[var(--ucam-space-inset-lg)] border-t border-border empty:hidden"><ng-content select="[ucamFiltros]" /></div>

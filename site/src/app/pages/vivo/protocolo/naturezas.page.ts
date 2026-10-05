@@ -128,7 +128,7 @@ const NATUREZAS: Natureza[] = [
 
         <div class="ucam-toolbar ucam-toolbar--compacta">
           <ucam-text-field
-            class="ucam-field--grow"
+            class="ucam-field ucam-field--grow"
             label="Pesquisar natureza"
             labelHidden
             type="search"

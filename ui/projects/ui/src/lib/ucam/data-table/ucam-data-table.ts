@@ -21,6 +21,7 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
+import { UcamSelect, type UcamOption } from '../select/ucam-select';
 import { UcamBadge, type UcamBadgeTone } from '../badge/ucam-badge';
 import { UcamAvatar } from '../avatar/ucam-avatar';
 import { UcamMenu, UcamMenuTrigger, type UcamMenuItem } from '../menu/ucam-menu';
@@ -132,7 +133,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
 @Component({
   selector: 'ucam-data-table',
   exportAs: 'ucamDataTable',
-  imports: [NgTemplateOutlet, UcamIcon, UcamBadge, UcamMenu, UcamMenuTrigger, UcamAvatar],
+  imports: [NgTemplateOutlet, UcamIcon, UcamBadge, UcamMenu, UcamMenuTrigger, UcamAvatar, UcamSelect],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { class: 'ucam-data-table-host' },
@@ -167,6 +168,26 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       [attr.aria-label]="responsive() === 'scroll' ? caption() : null"
       [attr.aria-busy]="state() === 'loading' ? 'true' : null"
     >
+      @if (opcoesOrdem().length > 1) {
+        <!--
+          ORDENAR POR. Empilhada, a tabela perde o cabeçalho — e com ele o
+          único lugar onde se ordenava. A fileira nasce com toda tabela
+          ordenável e só é pintada quando ela empilha (contrato data-table,
+          responsividade.ordenacao). O rótulo visível é decorativo: o nome
+          acessível é o do próprio select.
+        -->
+        <div class="ucam-table__ordenar">
+          <span class="ucam-table__ordenar-rotulo" aria-hidden="true">Ordenar por</span>
+          <ucam-select
+            label="Ordenar por"
+            labelHidden
+            width="full"
+            [options]="opcoesOrdem()"
+            [value]="valorOrdem()"
+            (valueChange)="ordenarPeloSeletor($event)"
+          />
+        </div>
+      }
       <table [class]="classesTabela()" [attr.data-apertada]="apertada() ? '' : null">
         <caption class="ucam-sr-only">
           {{ caption() }}
@@ -196,6 +217,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 [attr.aria-sort]="ariaSort(col)"
                 [class.ucam-table__col-min]="col.width === 'min'"
                 [class.ucam-table__acoes]="col.type === 'actions'"
+                [class.th--acoes]="col.type === 'actions'"
                 [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
                 [class.ucam-col--fixa-fim]="ladoFixo(col) === 'end'"
                 [style.--ucam-col-x]="deslocamento(col)"
@@ -218,7 +240,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                   </button>
                   <ucam-menu #menuCol [items]="itensColuna(col)" align="start" (escolher)="agirColuna(col, $event)" />
                 } @else if (col.sortable) {
-                  <button type="button" class="ucam-table__ordenar" [attr.aria-label]="rotuloOrdenar(col)" (click)="ordenarPor(col)">
+                  <button type="button" class="ucam-table__ordem" [attr.aria-label]="rotuloOrdenar(col)" (click)="ordenarPor(col)">
                     @if (col.icon) {
                       <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
                     }
@@ -265,7 +287,9 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                     [style.text-align]="alinhamento(col)"
                     [attr.data-label]="col.header"
                     [class.ucam-table__acoes]="col.type === 'actions'"
+                    [class.td--acoes]="col.type === 'actions'"
                     [class.ucam-table__num]="col.type === 'number' || col.type === 'currency'"
+                    [class.td--num]="col.type === 'number' || col.type === 'currency'"
                     [class.td--pessoa]="col.type === 'person'"
                     [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
                     [class.ucam-col--fixa-fim]="ladoFixo(col) === 'end'"
@@ -705,7 +729,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       outline-offset: 2px;
     }
 
-    .ucam-table__ordenar {
+    .ucam-table__ordem {
       display: inline-flex;
       align-items: center;
       gap: 0.25rem;
@@ -727,7 +751,25 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        A marcação continua sendo uma <table> para o DOM e para o leitor de
        tela; só a PINTURA muda. Remontar a lista em divs custaria a semântica
        de tabela — que é justamente o que quem ouve a tela usa para navegar. */
+    /* :where() zera a especificidade: com a folha do Trilho A carregada, é
+       a regra DELA que decide quando a fileira aparece (a tabela empilha
+       por contêiner, em qualquer modo), e um display: none daqui, vindo
+       depois, a escondia de novo. */
+    :where(.ucam-table__ordenar) { display: none; }
+    .ucam-table__ordenar ucam-select { flex: 1 1 auto; min-inline-size: 0; }
     @container ucam-tabela (max-width: 40rem) {
+      .ucam-table-wrap:has(> .ucam-table--stack) > .ucam-table__ordenar {
+        display: flex;
+        align-items: center;
+        gap: var(--ucam-space-inline-sm);
+        padding-block-end: var(--ucam-space-inset-sm);
+        border-block-end: 1px solid var(--ucam-color-border-subtle);
+      }
+      .ucam-table__ordenar-rotulo {
+        flex: none;
+        font-size: var(--ucam-typography-caption-font-size);
+        color: var(--ucam-color-text-secondary);
+      }
       .ucam-table--stack thead { display: none; }
       .ucam-table--stack tbody tr {
         display: block;
@@ -1118,6 +1160,28 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
     return s.direction === 'asc'
       ? `Ordenar por ${col.header}, decrescente`
       : `Remover ordenação de ${col.header}`;
+  }
+
+  /** As escolhas do "Ordenar por": cada coluna ordenável nos dois sentidos. */
+  protected readonly opcoesOrdem = computed<UcamOption[]>(() => [
+    { value: '', label: 'Ordem original' },
+    ...this.columns()
+      .filter((c) => c.sortable)
+      .flatMap((c) => [
+        { value: c.key + '|asc', label: c.header + ', crescente' },
+        { value: c.key + '|desc', label: c.header + ', decrescente' },
+      ]),
+  ]);
+
+  protected readonly valorOrdem = computed(() => {
+    const s = this.sort();
+    return s ? s.column + '|' + s.direction : '';
+  });
+
+  protected ordenarPeloSeletor(valor: string): void {
+    if (valor === this.valorOrdem()) return;
+    const [column, direction] = valor.split('|');
+    this.sort.set(column ? { column, direction: direction === 'desc' ? 'desc' : 'asc' } : null);
   }
 
   protected ordenarPor(col: UcamColumnDef): void {
