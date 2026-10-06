@@ -6,6 +6,7 @@ import { componentesPorCategoria, meta } from '../../spec/spec';
 import type { Componente } from '../../spec/spec.types';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { noNavegador } from '../../docs/no-navegador';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Catálogo em grade visual, agrupado por categoria.
@@ -20,7 +21,7 @@ import { noNavegador } from '../../docs/no-navegador';
  */
 @Component({
   selector: 'ucam-catalogo',
-  imports: [RouterLink, PageHeaderComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -37,7 +38,7 @@ import { noNavegador } from '../../docs/no-navegador';
         <div class="grupo-cabeca">
           <h2>{{ g.rotulo }} <span class="num">{{ g.itens.length }}</span></h2>
           @if (g.nota) {
-            <p class="small muted">{{ g.nota }}</p>
+            <p class="small muted"><ucam-t [t]="g.nota" /></p>
           }
         </div>
 
@@ -62,7 +63,7 @@ import { noNavegador } from '../../docs/no-navegador';
                     <span class="pill" [class]="'pill-' + c.status">{{ c.status }}</span>
                   }
                 </h3>
-                <p class="small muted">{{ c.description }}</p>
+                <p class="small muted"><ucam-t [t]="c.description" /></p>
               </div>
             </a>
           }

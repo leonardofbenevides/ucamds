@@ -3,6 +3,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Sombra, elevação e camadas.
@@ -19,7 +20,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-elevacao',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -34,7 +35,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <div class="prose largo">
       <section id="papeis">
         <h2>Os quatro papéis</h2>
-        <p>{{ e.descricao }}</p>
+        <p><ucam-t [t]="e.descricao" /></p>
 
         <div class="palco">
           @for (p of e.papeis; track p.token) {
@@ -44,7 +45,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <code>elevation.{{ p.token }}</code>
                 <span class="muted num">{{ p.ref }}</span>
               </p>
-              <p class="small muted">{{ p.descricao }}</p>
+              <p class="small muted"><ucam-t [t]="p.descricao" /></p>
             </div>
           }
         </div>
@@ -52,7 +53,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="escuro">
         <h2>No tema escuro o degrau muda</h2>
-        <p>{{ e.escuroDescricao }}</p>
+        <p><ucam-t [t]="e.escuroDescricao" /></p>
         <!-- A tabela compara os DOIS temas na mesma linha de propósito. Ver o
              claro numa página e o escuro noutra é como o mesmo papel acaba
              com sombras que ninguém comparou. -->
@@ -111,7 +112,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="camadas">
         <h2>Camadas de empilhamento</h2>
-        <p>{{ e.camadasDescricao }}</p>
+        <p><ucam-t [t]="e.camadasDescricao" /></p>
 
         <div class="scroller">
           <table>
@@ -127,7 +128,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <tr>
                   <td><code>z.{{ c.token }}</code></td>
                   <td class="num">{{ c.valor }}</td>
-                  <td class="small">{{ c.descricao }}</td>
+                  <td class="small"><ucam-t [t]="c.descricao" /></td>
                 </tr>
               }
             </tbody>

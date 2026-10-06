@@ -1,0 +1,173 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "mapa-questoes",
+  "name": "MapaQuestoes",
+  "selector": "ucam-mapa-questoes",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.4",
+  "category": "navegacao",
+  "description": "O cartão-resposta em miniatura: uma bolha numerada por questão, em grade de colunas fixas, que diz de relance o que já foi respondido, onde a pessoa está e o que ela marcou para rever. É navegação e é resumo ao mesmo tempo.",
+  "quando_usar": [
+    "Uma prova ou um questionário longo, em que a pessoa responde fora de ordem e precisa saber o que falta.",
+    "Um formulário de muitos itens equivalentes e numerados, em que pular e voltar é o uso normal."
+  ],
+  "evidencia": {
+    "origem": "vestibular-online (reescrita em Angular 21 sobre @ucam/ui 0.1.2)",
+    "ocorrencias": [
+      {
+        "tela": "candidato/prova/mapa-questoes.ts",
+        "problema": "a peça foi escrita à mão com cerca de 150 linhas de CSS, porque o design system não tinha nada entre o stepper (poucos passos, em ordem) e a paginação (páginas sem estado)"
+      },
+      {
+        "tela": "processo-seletivo-frontend (legado), /prova",
+        "problema": "a prova é uma sequência de Anterior e Próxima sem visão do todo: para saber se ficou questão em branco é preciso percorrer tudo de novo antes de entregar"
+      }
+    ],
+    "conclusao": "Quem faz prova precisa de três respostas sem sair da questão: o que falta, onde estou, o que marquei para rever. Cada uma tem um sinal próprio, e nenhum deles é só cor."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "O contêiner do mapa: um nav com nome acessível (\"Questões da prova\").",
+      "classe": "ucam-mapa"
+    },
+    {
+      "parte": "grupo",
+      "descricao": "O nome do caderno acima da sua grade (Português, Matemática). Aparece quando a prova tem mais de um caderno.",
+      "classe": "ucam-mapa__grupo"
+    },
+    {
+      "parte": "grade",
+      "obrigatorio": true,
+      "descricao": "A lista das bolhas, em colunas fixas (5 por padrão, em --ucam-mapa-colunas): a posição de cada número não muda quando o estado muda.",
+      "classe": "ucam-mapa__grade"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "A bolha: um botão com o número. Cheia quando respondida, com anel quando é a atual, com ponto no canto quando marcada para revisar. O nome acessível diz tudo por extenso: \"Questão 7, respondida, marcada para revisar\".",
+      "classe": "ucam-mapa__item"
+    },
+    {
+      "parte": "legenda",
+      "obrigatorio": true,
+      "descricao": "O que cada sinal quer dizer, com a mesma bolha em miniatura. Obrigatória: a forma sozinha não se explica.",
+      "classe": "ucam-mapa__legenda"
+    }
+  ],
+  "props": [
+    {
+      "nome": "itens",
+      "tipo": "MapaItem[]",
+      "obrigatorio": true,
+      "descricao": "As questões, na ordem da prova: número, estado (em branco ou respondida) e se está marcada para revisar."
+    },
+    {
+      "nome": "atual",
+      "tipo": "number",
+      "descricao": "O número da questão em que a pessoa está."
+    },
+    {
+      "nome": "colunas",
+      "tipo": "number",
+      "default": "5",
+      "descricao": "Quantas bolhas por linha. Fixo por prova, para a posição virar memória."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "ir",
+      "payload": "number",
+      "descricao": "A pessoa escolheu uma questão no mapa."
+    }
+  ],
+  "estados": [
+    "default",
+    "selected",
+    "current",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para passos que têm ordem obrigatória: isso é o stepper.",
+      "Não usar com menos de 6 itens: uma linha de texto (\"3 de 5 respondidas\") diz o mesmo.",
+      "Não criar um quarto estado de cor (certa, errada) no mesmo mapa da prova em andamento; o gabarito é outra tela.",
+      "A grade não reflui para outro número de colunas no meio da prova."
+    ]
+  },
+  "acessibilidade": {
+    "papel": "navigation",
+    "requisitos": [
+      "Cada bolha é um botão com nome acessível completo: número, estado e marca, por extenso.",
+      "A questão atual leva aria-current=\"true\"; o anel é o sinal visível do mesmo fato.",
+      "Respondida é forma (bolha cheia) e marcada é forma (ponto no canto): nenhum estado depende só de cor (WCAG 1.4.1).",
+      "Alvo de toque de 36px com 6px de vão, acima do mínimo de 24px (WCAG 2.5.8).",
+      "O foco visível usa o anel do sistema e não se confunde com o anel de \"atual\", que é interno e escuro."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.7",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "A legenda usa as palavras da prova: Respondida, Em branco, Atual, Marcada para revisar.",
+      "O nome do caderno é o da disciplina, sem \"Caderno de\".",
+      "O atalho ao lado do mapa diz para onde leva: \"Próxima em branco\"; com tudo respondido, \"Próxima marcada\"."
+    ],
+    "exemplos": {
+      "bom": [
+        "Questão 7, respondida, marcada para revisar",
+        "Próxima em branco"
+      ],
+      "ruim": [
+        "7 ✓",
+        "Pendências"
+      ]
+    }
+  },
+  "migracao": {
+    "de": "Peça escrita à mão na reescrita do vestibular; no legado não existe",
+    "mapa": [
+      {
+        "legado": "candidato/prova/mapa-questoes.ts (vestibular-online)",
+        "novo": "nav.ucam-mapa com ol.ucam-mapa__grade e button.ucam-mapa__item",
+        "nota": "Os quatro estados e a legenda são os mesmos; a redação continua sendo o item largo."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Mapa de uma prova de 10 questões",
+      "codigo": "<nav class=\"ucam-mapa\" aria-label=\"Questões da prova\">\n  <ol class=\"ucam-mapa__grade\">\n    <li><button class=\"ucam-mapa__item\" data-estado=\"respondida\" aria-label=\"Questão 1, respondida\">1</button></li>\n    <li><button class=\"ucam-mapa__item\" aria-current=\"true\" aria-label=\"Questão 2, em branco, atual\">2</button></li>\n  </ol>\n  <ul class=\"ucam-mapa__legenda\">…</ul>\n</nav>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Ponha o mapa ao lado da questão em tela larga e numa gaveta no telefone.",
+      "evite": "Esconder o mapa atrás de um botão em tela larga."
+    },
+    {
+      "faca": "Ofereça ao lado dele o atalho \"Próxima em branco\".",
+      "evite": "Usar a cor de sucesso para \"respondida\": respondida não é certa."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "mapa-questoes.json",
+      "raiz": ".ucam-mapa",
+      "estado": "data-estado=\"respondida\" na bolha; aria-current=\"true\" na atual; data-revisar na marcada.",
+      "variaveis": [
+        "--ucam-mapa-colunas"
+      ]
+    },
+    "trilho_b": "A escrever. A reescrita do vestibular tem a peça feita à mão e serve de ponto de partida; o wrapper entra em ui/projects/ui/src/lib/ucam quando a tela de prova for portada."
+  }
+}

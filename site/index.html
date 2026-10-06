@@ -27,6 +27,9 @@
           if (t === 'dark' || t === 'light') {
             document.documentElement.setAttribute('data-theme', t);
           }
+          if (localStorage.getItem('ucam-leitura') === 'completo') {
+            document.documentElement.setAttribute('data-leitura', 'completo');
+          }
         } catch (e) {}
       })();
     </script>

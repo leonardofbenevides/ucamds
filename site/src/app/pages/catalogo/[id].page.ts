@@ -12,10 +12,12 @@ import { DemoPainelComponent } from '../../docs/demo-painel.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
 import { AnatomiaDiagramaComponent } from '../../docs/anatomia-diagrama.component';
 import { EstadosGradeComponent } from '../../docs/estados-grade.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-componente',
   imports: [
+    TextoComponent,
     RouterLink,
     UcamSectionBar,
     KeyValuePipe,
@@ -87,7 +89,6 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
       <div class="prose">
         <div class="area" id="area-ver">
           <p class="area-nome">Ver</p>
-          <p class="area-nota">O componente rodando, e cada aparência que ele tem.</p>
         </div>
 
         <!-- O exemplo abre a página, sempre. Quem chega aqui quer ver o
@@ -115,7 +116,7 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
           }
 
           @if (c.demo?.$nota) {
-            <p class="small muted nota">{{ c.demo?.$nota }}</p>
+            <p class="small muted nota"><ucam-t [t]="c.demo?.$nota" /></p>
           }
         </section>
 
@@ -126,18 +127,13 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
         @if (temDemoViva() && c.demo?.principal) {
           <section id="trilho-a">
             <h2>O mesmo componente em CSS puro</h2>
-            <p>
-              O Trilho A é o que uma tela AngularJS ou Angular 14 do parque consegue carregar hoje:
-              uma folha de estilo e mais nada. Mesma marca, mesmos tokens, sem JavaScript.
-            </p>
+            <p>O que uma tela do parque legado carrega hoje: uma folha de estilo, sem JavaScript.</p>
             <ucam-demo-painel [painel]="c.demo!.principal!" />
             @if (temListaNativa()) {
               <div class="callout callout-limit">
                 <p>
-                  <strong>A lista aberta aqui é a do sistema operacional.</strong> Sem JavaScript o
-                  controle é um <code>&lt;select&gt;</code> nativo, e navegador nenhum permite
-                  estilizar a lista que ele abre — só o campo fechado. Em tela nova use o componente
-                  de cima, que resolve isso com um painel próprio (ADR-011).
+                  <strong>A lista aberta aqui é a do sistema operacional.</strong> Em tela nova use
+                  o componente de cima (ADR-011).
                 </p>
               </div>
             }
@@ -168,14 +164,14 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
             @for (v of p.valores | keyvalue; track v.key) {
               <article class="variante" [id]="'v-' + p.nome + '-' + v.key">
                 <h3><code>{{ v.key }}</code></h3>
-                <p>{{ v.value.uso }}</p>
+                <p><ucam-t [t]="v.value.uso" /></p>
 
                 @if (v.value.limite) {
-                  <p class="limite"><strong class="k">Limite.</strong> {{ v.value.limite }}</p>
+                  <p class="limite"><strong class="k">Limite.</strong>&ngsp;<ucam-t [t]="v.value.limite" /></p>
                 }
 
                 @if (v.value.tokens) {
-                  <p class="small muted tokens">
+                  <p class="small muted tokens resto">
                     @for (t of v.value.tokens | keyvalue; track t.key) {
                       <span class="par"><strong>{{ t.key }}</strong> <code>{{ t.value }}</code></span>
                     }
@@ -189,7 +185,6 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
 
         <div class="area" id="area-decidir">
           <p class="area-nome">Decidir</p>
-          <p class="area-nota">Se é este o componente, e como usá-lo sem errar.</p>
         </div>
 
         <!-- QUANDO USAR e QUANDO NÃO USAR, juntos e ANTES de props e anatomia.
@@ -215,7 +210,7 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
                   </p>
                   <ul class="list">
                     @for (q of c.quando_usar; track q) {
-                      <li>{{ q }}</li>
+                      <li><ucam-t [t]="q" /></li>
                     }
                   </ul>
                 </div>
@@ -238,7 +233,7 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
                  desequilibrava o do/don't e se lia como se fosse mais uma
                  regra a consultar. -->
             @if (motivoDoLimite(); as motivo) {
-              <p class="quando-motivo"><strong class="k">Por quê.</strong> {{ motivo }}</p>
+              <p class="quando-motivo resto"><strong class="k">Por quê.</strong> {{ motivo }}</p>
             }
           </section>
         }
@@ -247,19 +242,18 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
         @if (c.boas_praticas; as praticas) {
           <section id="boas-praticas">
             <h2>Boas práticas</h2>
-            <p class="small muted">
-              O que fazer e o que evitar em cada situação, com o motivo. É o que se cobra em
-              revisão de código.
-            </p>
             <ul class="praticas">
               @for (p of praticas; track p.faca) {
-                <li>
-                  <p class="lado faca"><span class="rotulo">Faça</span> {{ p.faca }}</p>
-                  <p class="lado evite"><span class="rotulo">Evite</span> {{ p.evite }}</p>
+                <li [class.resto]="$index >= CORTE">
+                  <p class="lado faca"><span class="rotulo">Faça</span> <span><ucam-t [t]="p.faca" /></span></p>
+                  <p class="lado evite"><span class="rotulo">Evite</span> <span><ucam-t [t]="p.evite" /></span></p>
                   @if (p.porque) {
-                    <p class="porque small muted">{{ p.porque }}</p>
+                    <p class="porque small muted resto">{{ p.porque }}</p>
                   }
                 </li>
+              }
+              @if (praticas.length > CORTE) {
+                <li class="so-resumo mais">Mais {{ praticas.length - CORTE }} no texto completo.</li>
               }
             </ul>
           </section>
@@ -269,18 +263,15 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
         @if (c.vs; as vizinhos) {
           <section id="vs">
             <h2>Qual dos dois eu uso?</h2>
-            <p class="small muted">
-              Componentes próximos a este, e o critério para escolher entre eles.
-            </p>
             <ul class="vs-lista">
               @for (v of vizinhos; track v.componente) {
                 <li>
                   <a class="vs-alvo" [routerLink]="['/catalogo', v.componente]">
                     {{ v.componente }}
                   </a>
-                  <p class="vs-diferenca">{{ v.diferenca }}</p>
+                  <p class="vs-diferenca"><ucam-t [t]="v.diferenca" /></p>
                   @if (v.escolha) {
-                    <p class="vs-escolha small muted">{{ v.escolha }}</p>
+                    <p class="vs-escolha small muted resto">{{ v.escolha }}</p>
                   }
                 </li>
               }
@@ -292,7 +283,15 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
         @if (decisoes().length) {
           <section id="decisoes">
             <h2>Decisões que governam este componente</h2>
-            <div class="grade-cartoes">
+            <!-- No resumo, só o número de cada ADR: os vinte títulos do Button
+                 somavam 150 palavras, e o título está a um clique (e no
+                 title). Os cartões voltam no texto completo. -->
+            <p class="chips so-resumo">
+              @for (a of decisoes(); track a.slug) {
+                <a class="chip" [routerLink]="'/decisoes/' + a.slug" [title]="a.titulo">{{ a.id }}</a>
+              }
+            </p>
+            <div class="grade-cartoes resto">
               @for (a of decisoes(); track a.slug) {
                 <a class="card cartao-adr plain" [routerLink]="'/decisoes/' + a.slug">
                   <span class="ucam-icon-tile" aria-hidden="true">
@@ -309,14 +308,13 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
 
         <div class="area" id="area-construir">
           <p class="area-nome">Construir</p>
-          <p class="area-nota">Instalar, ligar as props, compor com os vizinhos.</p>
         </div>
 
         @if (c.demo?.instalacao) {
           <section id="instalacao">
             <h2>Instalação</h2>
             <pre class="code"><code>{{ c.demo?.instalacao }}</code></pre>
-            <p class="small muted">
+            <p class="small muted resto">
               O CLI copia o código-fonte do componente para dentro do projeto. Você passa a ser dono
               dele — não há dependência de runtime.
             </p>
@@ -341,7 +339,7 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
               </thead>
               <tbody>
                 @for (p of c.props; track p.nome) {
-                  <tr>
+                  <tr [class.resto]="$index >= CORTE_PROPS">
                     <td><code>{{ p.nome }}</code></td>
                     <td><code>{{ p.tipo }}</code></td>
                     <td>
@@ -351,7 +349,14 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
                         <span class="muted">—</span>
                       }
                     </td>
-                    <td>{{ p.descricao }}</td>
+                    <td><ucam-t [t]="p.descricao" /></td>
+                  </tr>
+                }
+                @if (c.props.length > CORTE_PROPS) {
+                  <tr class="so-resumo">
+                    <td colspan="4" class="small muted">
+                      Mais {{ c.props.length - CORTE_PROPS }} no texto completo.
+                    </td>
                   </tr>
                 }
               </tbody>
@@ -373,7 +378,7 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
         <section id="composicao">
           <h2>Composição</h2>
           @if (c.composicao?.$descricao) {
-            <p>{{ c.composicao?.$descricao }}</p>
+            <p><ucam-t [t]="c.composicao?.$descricao" /></p>
           }
           @if (c.composicao?.usa?.length) {
             <h4>Usa</h4>
@@ -398,7 +403,6 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
 
         <div class="area" id="area-garantir">
           <p class="area-nome">Garantir</p>
-          <p class="area-nota">As partes, o teclado, o texto e o caminho do legado.</p>
         </div>
 
         <section id="anatomia">
@@ -453,7 +457,7 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
                   @for (t of c.acessibilidade.teclado; track t.tecla) {
                     <tr>
                       <td><kbd>{{ t.tecla }}</kbd></td>
-                      <td>{{ t.comportamento }}</td>
+                      <td><ucam-t [t]="t.comportamento" /></td>
                     </tr>
                   }
                 </tbody>
@@ -464,12 +468,17 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
           <h3>Requisitos</h3>
           <div class="pontos">
             @for (r of c.acessibilidade.requisitos; track r) {
-              <div class="ponto" data-tom="bom">
+              <div class="ponto" data-tom="bom" [class.resto]="$index >= CORTE">
                 <span class="ucam-icon-tile" aria-hidden="true">
                   <svg class="ic"><use href="#i-circleCheck" /></svg>
                 </span>
-                <p>{{ r }}</p>
+                <p><ucam-t [t]="r" /></p>
               </div>
+            }
+            @if (c.acessibilidade.requisitos.length > CORTE) {
+              <p class="so-resumo small muted">
+                Mais {{ c.acessibilidade.requisitos.length - CORTE }} no texto completo.
+              </p>
             }
           </div>
 
@@ -933,6 +942,12 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
         grid-column: 1 / -1;
       }
     }
+    /* A linha "Mais N" não é um par faça/evite: sem moldura nem fundo. */
+    .praticas li.mais {
+      display: block;
+      border: 0;
+      background: none;
+    }
     .praticas .lado {
       display: flex;
       gap: 0.5rem;
@@ -1037,6 +1052,15 @@ import { EstadosGradeComponent } from '../../docs/estados-grade.component';
   `,
 })
 export default class ComponentePage {
+  /**
+   * Quantos itens de uma lista a página mostra no resumo (06/10/2026, segunda
+   * rodada do corte de texto). A lista inteira continua no texto completo e na
+   * spec; a linha "Mais N" diz que existe. Props tem teto próprio e mais alto:
+   * é a tabela que se consulta com o editor aberto.
+   */
+  protected readonly CORTE = 5;
+  protected readonly CORTE_PROPS = 8;
+
   /**
    * Parâmetro de rota `[id]`, ligado por `withComponentInputBinding()`. É
    * signal: ler `rota.snapshot` num `computed` congelava a página no primeiro

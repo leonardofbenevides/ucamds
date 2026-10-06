@@ -1356,3 +1356,68 @@ input[type='search']:not(.ucam input, .ucam-input, .ucam-input-group__controle):
 input[type='search']:not(.ucam input, .ucam-input, .ucam-input-group__controle)::-webkit-search-cancel-button:hover {
   background-color: var(--ucam-color-text-primary);
 }
+
+/* ------------------------------------------------------------- leitura ---
+
+   RESUMO × COMPLETO (06/10/2026). O site somava 203 mil palavras visíveis em
+   181 páginas. A spec não encolheu — é o contrato —; o que encolheu é o que a
+   página mostra de saída: a primeira frase de cada item (docs/resumo.ts), e o
+   resto em .resto, que só o modo "Completo" mostra.
+
+   A regra esconde em vez de a exceção mostrar: assim o .resto que é parágrafo,
+   linha em flex ou célula volta ao display que já tinha, sem esta folha
+   precisar saber qual é. O !important é por isso — vence o display de quem
+   declarou o seu —, e a regra some inteira no modo completo. */
+:root:not([data-leitura='completo']) .resto {
+  display: none !important;
+}
+
+/* O botão mora no cabeçalho de TODA página e só aparece onde há o que abrir:
+   controle que não muda nada na tela é controle morto. */
+.leitura {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  margin-block-start: 1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--ucam-color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--ucam-radius-sm);
+}
+body:has(main .resto) .leitura {
+  display: inline-flex;
+}
+.leitura .ic {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  flex: none;
+}
+.leitura:hover {
+  color: var(--ucam-color-text-primary);
+}
+.leitura:focus-visible {
+  outline: var(--ucam-focus-ring-width, 2px) solid var(--ucam-color-border-focus);
+  outline-offset: 2px;
+}
+.leitura-completo,
+:root[data-leitura='completo'] .leitura-resumo {
+  display: none;
+}
+:root[data-leitura='completo'] .leitura-completo {
+  display: inline;
+}
+
+/* O avesso do .resto: o que só existe no resumo — a linha "Mais N no texto
+   completo" de uma lista cortada, a fileira de chips que substitui cartões. */
+:root[data-leitura='completo'] .so-resumo {
+  display: none !important;
+}
+li.so-resumo.mais {
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--ucam-color-text-secondary);
+}

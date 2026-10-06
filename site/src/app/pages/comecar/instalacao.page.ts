@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { migracao, recursos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-instalacao',
-  imports: [PageHeaderComponent, NestaPaginaComponent, RouterLink],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent, RouterLink],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -50,7 +51,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           </tbody>
         </table>
         </div>
-        <p>{{ escolha.nota }}</p>
+        <p><ucam-t [t]="escolha.nota" /></p>
         <p class="small muted">
           O que cada trilho entrega, o que não entrega e a armadilha de cada um estão em
           <a routerLink="/comecar/migrar">Migrar uma tela</a>, que é de onde esta tabela sai.
@@ -61,10 +62,10 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         <section [id]="'trilho-' + t.id">
           <h2>{{ t.nome }}</h2>
           <p class="small muted"><strong class="k">Para quem.</strong> {{ quando(t.id) }}</p>
-          <p>{{ t.como }}</p>
+          <p><ucam-t [t]="t.como" /></p>
           <pre class="code"><code>{{ t.codigo }}</code></pre>
           <div class="callout callout-limit">
-            <p><strong class="k">Limite.</strong> {{ t.limite }}</p>
+            <p><strong class="k">Limite.</strong>&ngsp;<ucam-t [t]="t.limite" /></p>
           </div>
         </section>
       }
@@ -72,7 +73,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       <section id="formatos">
         <h2>Formatos de token</h2>
         <p>
-          {{ r.formatosToken.$description }}
+          <ucam-t [t]="r.formatosToken.$description" />
         </p>
         <div class="scroller">
           <table>
@@ -102,7 +103,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="figma">
         <h2>Figma</h2>
-        <p>{{ r.figma.$description }}</p>
+        <p><ucam-t [t]="r.figma.$description" /></p>
         <p><span class="pill pill-draft">{{ r.figma.estado }}</span></p>
       </section>
     </div>

@@ -238,14 +238,10 @@
     },
     "600": {
       "$value": "#B85207",
-      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 2 no escuro. Fica a ΔE 11,4 do laranja da notificação — aceito porque a notificação é ponto de interface e nunca entra em gráfico."
-    },
-    "700": {
-      "$value": "#964101",
-      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 2 no claro. Queimado, longe do laranja da notificação (ΔE 19,6)."
+      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 2 nos dois temas desde 06/10/2026 — o 700 (#964101), que era o do claro, saiu por ler marrom. Fica a ΔE 11,4 do laranja da notificação — aceito porque a notificação é ponto de interface e nunca entra em gráfico."
     },
     "$type": "color",
-    "$description": "Laranja VIVO (500) é da notificação e nada mais: não é aviso (amber) nem erro (red). Os degraus 600 e 700, queimados, são a série 2 de gráfico desde 28/09/2026 — o ocre saiu da série por ser o âmbar de atenção. Nunca encosta no vinho: o ponto e o selo andam sempre dentro de um anel de 2px da cor do fundo em que pousam."
+    "$description": "Laranja VIVO (500) é da notificação e nada mais: não é aviso (amber) nem erro (red). O degrau 600, queimado, é a série 2 de gráfico desde 28/09/2026 — o ocre saiu da série por ser o âmbar de atenção. Nunca encosta no vinho: o ponto e o selo andam sempre dentro de um anel de 2px da cor do fundo em que pousam."
   },
   "ochre": {
     "400": {

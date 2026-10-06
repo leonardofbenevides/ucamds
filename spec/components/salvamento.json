@@ -1,0 +1,146 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "salvamento",
+  "name": "Salvamento",
+  "selector": "ucam-salvamento",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.4",
+  "category": "feedback",
+  "description": "A frase que diz se o que a pessoa acabou de fazer já está guardado: salvando, sem conexão, erro ou salvo. Existe para telas que gravam sozinhas, sem botão de salvar.",
+  "quando_usar": [
+    "A tela grava a cada resposta ou a cada intervalo, sem botão de salvar.",
+    "Perder o que foi feito custa caro (prova, redação, formulário longo) e a conexão pode cair."
+  ],
+  "evidencia": {
+    "origem": "vestibular-online (reescrita em Angular 21 sobre @ucam/ui 0.1.2)",
+    "ocorrencias": [
+      {
+        "tela": "candidato/prova/cabecalho-prova.ts",
+        "problema": "o indicador (Salvando, Sem conexão, erro, Salvo) e a sua região de anúncio foram escritos à mão dentro da barra da prova"
+      },
+      {
+        "tela": "secretaria-virtual-frontend, alocação de alunos",
+        "problema": "a tela grava e não diz se deu certo nem se deu errado"
+      }
+    ],
+    "conclusao": "Tela que grava sozinha deve dizer, sempre no mesmo lugar, em que pé está a gravação. O estado normal é quieto; só o problema chama atenção, e diz o que vai acontecer."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Um parágrafo com role=\"status\". O estado vem em data-estado: salvando, pendente, erro ou salvo.",
+      "classe": "ucam-salvamento"
+    },
+    {
+      "parte": "icone",
+      "descricao": "O ícone do estado: o círculo que gira ao salvar, o aviso quando há pendência ou erro, o check quando salvo."
+    },
+    {
+      "parte": "texto",
+      "obrigatorio": true,
+      "descricao": "A frase do estado. No problema, diz o que acontece em seguida."
+    }
+  ],
+  "props": [
+    {
+      "nome": "estado",
+      "tipo": "'salvando' | 'pendente' | 'erro' | 'salvo'",
+      "obrigatorio": true,
+      "descricao": "O estado da gravação. Quando há mais de um ao mesmo tempo, vale a ordem: salvando, pendente, erro, salvo."
+    },
+    {
+      "nome": "pendentes",
+      "tipo": "number",
+      "descricao": "Quantos itens esperam a conexão voltar. Entra na frase do estado pendente."
+    },
+    {
+      "nome": "mensagem",
+      "tipo": "string",
+      "descricao": "A frase do erro, quando o servidor recusou."
+    }
+  ],
+  "estados": [
+    "default",
+    "loading",
+    "warning",
+    "error"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar em formulário com botão Salvar: ali o retorno é do botão.",
+      "Não é toast: fica sempre no mesmo lugar e não some.",
+      "Um indicador por tela.",
+      "Não mostrar hora de salvamento com precisão de segundos."
+    ]
+  },
+  "acessibilidade": {
+    "papel": "status",
+    "requisitos": [
+      "role=\"status\": a mudança é anunciada sem tirar o foco de onde a pessoa está.",
+      "\"Salvando…\" não é anunciado a cada resposta; só o problema e a volta ao normal depois dele.",
+      "O problema tem ícone e frase, não só cor (WCAG 1.4.1).",
+      "A frase do estado pendente diz o que vai acontecer: as respostas serão enviadas quando a conexão voltar."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Salvando…",
+      "Sem conexão. {n} respostas serão enviadas quando ela voltar.",
+      "No erro, a frase do servidor em palavras da pessoa, com o que fazer.",
+      "Salvo"
+    ],
+    "exemplos": {
+      "bom": [
+        "Salvo",
+        "Sem conexão. 2 respostas serão enviadas quando ela voltar."
+      ],
+      "ruim": [
+        "Erro 500",
+        "Sincronizando dados com o servidor…"
+      ]
+    }
+  },
+  "migracao": {
+    "de": "Peça escrita à mão na reescrita do vestibular",
+    "mapa": [
+      {
+        "legado": "bloco do indicador em candidato/prova/cabecalho-prova.ts",
+        "novo": "p.ucam-salvamento com data-estado e role=\"status\"",
+        "nota": "A prioridade entre os estados é a mesma de fila-respostas.ts."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Sem conexão, com respostas na fila",
+      "codigo": "<p class=\"ucam-salvamento\" data-estado=\"pendente\" role=\"status\">\n  <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-triangleAlert\"/></svg>\n  Sem conexão. 2 respostas serão enviadas quando ela voltar.\n</p>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Ponha o indicador na barra da tela, perto do título.",
+      "evite": "Bloquear a tela enquanto salva."
+    },
+    {
+      "faca": "Guarde no aparelho o que não pôde ser enviado e reenvie sozinho.",
+      "evite": "Deixar a pessoa entregar com resposta pendente sem avisar."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "salvamento.json",
+      "raiz": ".ucam-salvamento",
+      "estado": "data-estado no elemento raiz.",
+      "variaveis": []
+    },
+    "trilho_b": "A escrever. A reescrita do vestibular tem a peça feita à mão e serve de ponto de partida; o wrapper entra em ui/projects/ui/src/lib/ucam quando a tela de prova for portada."
+  }
+}

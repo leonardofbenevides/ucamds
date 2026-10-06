@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-tipografia',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -31,7 +32,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <div class="prose largo">
       <section id="familia">
         <h2>Família</h2>
-        <p>{{ f.fontes.descricao }}</p>
+        <p><ucam-t [t]="f.fontes.descricao" /></p>
         <p class="small muted">{{ f.fontes.origem }}</p>
 
         <div class="familias">
@@ -40,7 +41,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               <p class="especime" [style.font-family]="fam.valor">Aa Bb Cc 0123456789</p>
               <p class="rotulo">
                 <code>font.{{ fam.token }}</code>
-                <span class="muted">{{ fam.descricao }}</span>
+                <span class="muted"><ucam-t [t]="fam.descricao" /></span>
               </p>
               <p class="small muted num pilha">{{ fam.valor }}</p>
             </div>

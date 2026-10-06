@@ -3,10 +3,11 @@ import { RouterLink } from '@angular/router';
 
 import { adrs } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-decisoes',
-  imports: [RouterLink, PageHeaderComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -25,7 +26,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
               <span class="num muted data">{{ a.data }}</span>
             </div>
             <h2>{{ a.titulo }}</h2>
-            <p class="small muted">{{ a.decisao }}</p>
+            <p class="small muted"><ucam-t [t]="a.decisao" /></p>
           </a>
         </li>
       }

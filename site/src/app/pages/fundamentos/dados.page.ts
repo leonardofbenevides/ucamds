@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Visualização de dados.
@@ -20,7 +21,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-dados',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -61,8 +62,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   </td>
                   <td class="small">{{ v.forma }}</td>
                   <td class="small muted">
-                    {{ v.evite }}
-                    <span class="porque">{{ v.porque }}</span>
+                    <ucam-t [t]="v.evite" />&ngsp;
+                    <span class="porque"><ucam-t [t]="v.porque" /></span>
                   </td>
                 </tr>
               }
@@ -81,8 +82,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <div class="forma">
               <dt><code>{{ f.id }}</code></dt>
               <dd>
-                <p>{{ f.uso }}</p>
-                <p class="small muted"><strong>Limite:</strong> {{ f.limite }}</p>
+                <p><ucam-t [t]="f.uso" /></p>
+                <p class="small muted"><strong>Limite:</strong>&ngsp;<ucam-t [t]="f.limite" /></p>
               </dd>
             </div>
           }
@@ -96,7 +97,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
            quer o parágrafo inteiro abre o token. -->
       <section id="paleta">
         <h2>A paleta de série</h2>
-        <p>{{ d.paleta.regra }}</p>
+        <p><ucam-t [t]="d.paleta.regra" /></p>
 
         <div class="temas">
           <div>
@@ -125,15 +126,15 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
         <ul class="list">
           <li>{{ d.paleta.ordem }}</li>
-          <li>{{ d.paleta.identidade }}</li>
-          <li>{{ d.paleta.fronteira }}</li>
+          <li><ucam-t [t]="d.paleta.identidade" /></li>
+          <li><ucam-t [t]="d.paleta.fronteira" /></li>
         </ul>
 
         <!-- O limite fica ABERTO, não em nota de rodapé. Uma fundação que
              promete separabilidade e não diz onde ela acaba ensina a confiar
              na cor exatamente no ponto em que ela para de funcionar. -->
         <div class="callout callout-warn">
-          <p><strong>Onde a paleta acaba.</strong> {{ d.paleta.limite_honesto }}</p>
+          <p><strong>Onde a paleta acaba.</strong>&ngsp;<ucam-t [t]="d.paleta.limite_honesto" /></p>
         </div>
       </section>
 
@@ -143,7 +144,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           @for (r of d.integridade; track r.id) {
             <div class="regra">
               <h3>{{ r.regra }}</h3>
-              <p class="small muted">{{ r.porque }}</p>
+              <p class="small muted"><ucam-t [t]="r.porque" /></p>
             </div>
           }
         </div>
@@ -154,14 +155,14 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         <div class="callout">
           <p><strong>{{ d.equivalente.regra }}</strong></p>
         </div>
-        <p>{{ d.equivalente.porque }}</p>
+        <p><ucam-t [t]="d.equivalente.porque" /></p>
         <p class="small muted">{{ d.equivalente.forma }}</p>
       </section>
 
       <section id="limites">
         <h2>Limites</h2>
         <p class="small muted">
-          Do contrato do Chart. {{ d.limites.motivo }}
+          Do contrato do Chart. <ucam-t [t]="d.limites.motivo" />
         </p>
         <ul class="list">
           @for (r of d.limites.regras; track r) {
@@ -172,7 +173,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="portao">
         <h2>O portão de daltonismo</h2>
-        <p>{{ d.portao.o_que_faz }}</p>
+        <p><ucam-t [t]="d.portao.o_que_faz" /></p>
         <div class="scroller">
           <table>
             <tbody>
@@ -186,7 +187,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               </tr>
               <tr>
                 <th scope="row">Quando roda</th>
-                <td>{{ d.portao.quando_roda }}</td>
+                <td><ucam-t [t]="d.portao.quando_roda" /></td>
               </tr>
               <tr>
                 <th scope="row">Decisão</th>
@@ -197,7 +198,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             </tbody>
           </table>
         </div>
-        <p class="small muted">{{ d.portao.historia }}</p>
+        <p class="small muted"><ucam-t [t]="d.portao.historia" /></p>
       </section>
 
       <section id="proibido">

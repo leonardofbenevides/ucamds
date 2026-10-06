@@ -3,6 +3,7 @@ import { Component, ChangeDetectionStrategy, computed } from '@angular/core';
 import { componentes, migracao } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * O guia de migração.
@@ -15,7 +16,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-migrar',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -35,8 +36,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
              cada, e quem chega aqui tem uma dúvida só. A mesma frase abre a
              página de instalação e a home, do mesmo campo. -->
         <p class="pergunta">{{ m.escolhaDoTrilho.pergunta }}</p>
-        <p>{{ m.escolhaDoTrilho.$descricao }}</p>
-        <p>{{ m.escolhaDoTrilho.nota }}</p>
+        <p><ucam-t [t]="m.escolhaDoTrilho.$descricao" /></p>
+        <p><ucam-t [t]="m.escolhaDoTrilho.nota" /></p>
 
         <div class="trilhos">
           @for (t of m.escolhaDoTrilho.trilhos; track t.id) {
@@ -48,25 +49,25 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <h3>{{ t.nome }}</h3>
               </header>
               <dl>
-                <dt>Quando</dt><dd>{{ t.quando }}</dd>
-                <dt>Entrega</dt><dd>{{ t.entrega }}</dd>
-                <dt>Não entrega</dt><dd>{{ t.naoEntrega }}</dd>
-                <dt>Custo</dt><dd>{{ t.custo }}</dd>
+                <dt>Quando</dt><dd><ucam-t [t]="t.quando" /></dd>
+                <dt>Entrega</dt><dd><ucam-t [t]="t.entrega" /></dd>
+                <dt>Não entrega</dt><dd><ucam-t [t]="t.naoEntrega" /></dd>
+                <dt>Custo</dt><dd><ucam-t [t]="t.custo" /></dd>
               </dl>
               <p class="armadilha">
                 <svg class="ic" aria-hidden="true"><use href="#i-triangleAlert" /></svg>
-                <span>{{ t.armadilha }}</span>
+                <span><ucam-t [t]="t.armadilha" /></span>
               </p>
             </article>
           }
         </div>
 
-        <p class="small muted">{{ m.escolhaDoTrilho.misturar }}</p>
+        <p class="small muted"><ucam-t [t]="m.escolhaDoTrilho.misturar" /></p>
       </section>
 
       <section id="ordem">
         <h2>2. A ordem das operações</h2>
-        <p>{{ m.ordem.$descricao }}</p>
+        <p><ucam-t [t]="m.ordem.$descricao" /></p>
 
         <div class="scroller">
           <table>
@@ -82,9 +83,9 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               @for (p of m.ordem.passos; track p.n) {
                 <tr>
                   <th scope="row">{{ p.n }}. {{ p.titulo }}</th>
-                  <td class="small">{{ p.o_que }}</td>
-                  <td class="small muted">{{ p.por_que }}</td>
-                  <td class="small">{{ p.verificar }}</td>
+                  <td class="small"><ucam-t [t]="p.o_que" /></td>
+                  <td class="small muted"><ucam-t [t]="p.por_que" /></td>
+                  <td class="small"><ucam-t [t]="p.verificar" /></td>
                 </tr>
               }
             </tbody>
@@ -94,7 +95,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="mudancas">
         <h2>3. O que quem usa vai notar</h2>
-        <p>{{ m.mudancasVisiveis.$descricao }}</p>
+        <p><ucam-t [t]="m.mudancasVisiveis.$descricao" /></p>
 
         <div class="pontos">
           @for (i of m.mudancasVisiveis.itens; track i.adr) {
@@ -103,7 +104,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <svg class="ic"><use href="#i-eye" /></svg>
               </span>
               <h3>{{ i.mudanca }}</h3>
-              <p>{{ i.resposta }}</p>
+              <p><ucam-t [t]="i.resposta" /></p>
               <p class="porque">
                 <a [href]="'/decisoes/' + adrSlug(i.adr)">{{ i.adr }}</a>
               </p>
@@ -114,7 +115,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="anatomia">
         <h2>4. As quatro camadas de uma tela</h2>
-        <p>{{ m.anatomiaDeTela.$descricao }}</p>
+        <p><ucam-t [t]="m.anatomiaDeTela.$descricao" /></p>
 
         <div class="scroller">
           <table>
@@ -131,8 +132,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <tr>
                   <th scope="row">{{ c.camada }}</th>
                   <td class="small"><code>{{ c.quem }}</code></td>
-                  <td class="small">{{ c.responde }}</td>
-                  <td class="small muted">{{ c.erro_comum }}</td>
+                  <td class="small"><ucam-t [t]="c.responde" /></td>
+                  <td class="small muted"><ucam-t [t]="c.erro_comum" /></td>
                 </tr>
               }
             </tbody>
@@ -181,13 +182,13 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="erros">
         <h2>6. Os erros que sobrevivem à migração</h2>
-        <p>{{ m.errosQueSobrevivem.$descricao }}</p>
+        <p><ucam-t [t]="m.errosQueSobrevivem.$descricao" /></p>
 
         @for (e of m.errosQueSobrevivem.itens; track e.erro) {
           <div class="callout callout-limit">
             <p><strong class="k">{{ e.erro }}</strong></p>
             <p class="small muted">
-              <strong class="k">Passa despercebido porque.</strong> {{ e.porque_sobrevive }}
+              <strong class="k">Passa despercebido porque.</strong>&ngsp;<ucam-t [t]="e.porque_sobrevive" />
             </p>
             <p class="small"><strong class="k">Certo.</strong> {{ e.certo }}</p>
           </div>
@@ -196,7 +197,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="checklist">
         <h2>7. Conferência de tela</h2>
-        <p>{{ m.checklistDeTela.$descricao }}</p>
+        <p><ucam-t [t]="m.checklistDeTela.$descricao" /></p>
 
         @for (g of m.checklistDeTela.grupos; track g.grupo) {
           <section [id]="'check-' + slug(g.grupo)">
@@ -212,7 +213,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="onde">
         <h2>8. Onde está o quê</h2>
-        <p>{{ m.ondeEstaOQue.$descricao }}</p>
+        <p><ucam-t [t]="m.ondeEstaOQue.$descricao" /></p>
         <div class="scroller">
           <table>
             <thead>
@@ -235,10 +236,10 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="lacunas">
         <h2>9. O que ainda não existe</h2>
-        <p>{{ m.aindaNaoExiste.$descricao }}</p>
+        <p><ucam-t [t]="m.aindaNaoExiste.$descricao" /></p>
 
         <div class="callout callout-warn">
-          <p class="small">{{ m.aindaNaoExiste.regra }}</p>
+          <p class="small"><ucam-t [t]="m.aindaNaoExiste.regra" /></p>
         </div>
 
         <h3>Contratos sem implementação Angular</h3>

@@ -3,6 +3,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Raio.
@@ -15,7 +16,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-raio',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -43,7 +44,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <code>radius.{{ p.token }}</code>
                 <span class="muted num">{{ p.valor }}</span>
               </p>
-              <p class="small muted">{{ p.descricao }}</p>
+              <p class="small muted"><ucam-t [t]="p.descricao" /></p>
             </div>
           }
         </div>
@@ -68,7 +69,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
         @for (r of f.raio; track r.token) {
           @if (r.descricao) {
-            <p class="small muted nota"><code>radius.{{ r.token }}</code> — {{ r.descricao }}</p>
+            <p class="small muted nota"><code>radius.{{ r.token }}</code> — <ucam-t [t]="r.descricao" /></p>
           }
         }
       </section>

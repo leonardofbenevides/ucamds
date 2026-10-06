@@ -27,12 +27,17 @@ export interface UcamProgressSegment {
   tone?: UcamProgressTone;
 }
 
+/**
+ * GRAPHIC, não foreground — como no Trilho A (build-css.mjs). O foreground é
+ * calibrado para texto (4,5:1) e empurra o âmbar para #6B4504, que numa faixa
+ * de 8px lê como marrom, não como aviso. Barra é objeto gráfico: piso de 3:1.
+ */
 const PREENCHIMENTO: Record<UcamProgressTone, string> = {
   neutral: 'bg-muted-foreground',
-  info: 'bg-[var(--ucam-color-feedback-info-foreground)]',
-  success: 'bg-[var(--ucam-color-feedback-success-foreground)]',
-  warning: 'bg-[var(--ucam-color-feedback-warning-foreground)]',
-  danger: 'bg-[var(--ucam-color-feedback-danger-foreground)]',
+  info: 'bg-[var(--ucam-color-feedback-info-graphic)]',
+  success: 'bg-[var(--ucam-color-feedback-success-graphic)]',
+  warning: 'bg-[var(--ucam-color-feedback-warning-graphic)]',
+  danger: 'bg-[var(--ucam-color-feedback-danger-graphic)]',
 };
 
 let seq = 0;

@@ -5,6 +5,7 @@ import { layouts } from '../../spec/spec';
 import type { BlocoLayout } from '../../spec/spec.types';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * A camada entre componente e tela.
@@ -20,7 +21,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-layout',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -38,7 +39,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
          lado — e ficava como o único aviso do site fora da linguagem comum. O
          que sobra de local é só a medida e o vão. -->
     <section class="callout nota">
-      <p class="small">{{ regra }}</p>
+      <p class="small"><ucam-t [t]="regra" /></p>
     </section>
 
     <!-- ============================================================ shell -->
@@ -56,7 +57,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <details class="evidencia">
         <summary>Por que existe</summary>
-        <p class="small">{{ shell.evidencia }}</p>
+        <p class="small"><ucam-t [t]="shell.evidencia" /></p>
       </details>
 
       <h3>Áreas</h3>
@@ -70,13 +71,13 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               }
             </dt>
             <dd>
-              <p class="small">{{ a.descricao }}</p>
+              <p class="small"><ucam-t [t]="a.descricao" /></p>
               @if (a.partes?.length) {
                 <ul class="partes">
                   @for (p of a.partes; track p.classe) {
                     <li class="small">
                       <code>.{{ p.classe }}</code>
-                      <span class="muted">{{ p.descricao }}</span>
+                      <span class="muted"><ucam-t [t]="p.descricao" /></span>
                     </li>
                   }
                 </ul>
@@ -92,7 +93,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           <li class="small">
             <code>{{ v.nome }}</code>
             <span class="def">{{ v.default }}</span>
-            <span class="muted">{{ v.descricao }}</span>
+            <span class="muted"><ucam-t [t]="v.descricao" /></span>
           </li>
         }
       </ul>
@@ -113,17 +114,17 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           <code class="classe">.{{ b.classe }}</code>
         </header>
         <p class="papel">{{ b.papel }}</p>
-        <p class="small muted">{{ b.quando }}</p>
+        <p class="small muted"><ucam-t [t]="b.quando" /></p>
 
         <div class="palco">
           <div class="ucam" [innerHTML]="desenho(b)"></div>
         </div>
 
         @if (b.decisao) {
-          <p class="decisao small"><strong>Decisão:</strong> {{ b.decisao }}</p>
+          <p class="decisao small"><strong>Decisão:</strong>&ngsp;<ucam-t [t]="b.decisao" /></p>
         }
         @if (b.substitui) {
-          <p class="decisao small"><strong>Substitui:</strong> {{ b.substitui }}</p>
+          <p class="decisao small"><strong>Substitui:</strong>&ngsp;<ucam-t [t]="b.substitui" /></p>
         }
 
         @if (b.variantes?.length) {
@@ -132,9 +133,9 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             @for (v of b.variantes; track v.classe) {
               <li class="small">
                 <code>.{{ v.classe }}</code>
-                <span class="muted">{{ v.quando }}</span>
+                <span class="muted"><ucam-t [t]="v.quando" /></span>
                 @if (v.nota) {
-                  <em class="nota-variante">{{ v.nota }}</em>
+                  <em class="nota-variante"><ucam-t [t]="v.nota" /></em>
                 }
               </li>
             }
@@ -147,7 +148,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             @for (p of b.partes; track p.classe) {
               <li class="small">
                 <code>.{{ p.classe }}</code>
-                <span class="muted">{{ p.descricao }}</span>
+                <span class="muted"><ucam-t [t]="p.descricao" /></span>
               </li>
             }
           </ul>
@@ -160,7 +161,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               <li class="small">
                 <code>{{ v.nome }}</code>
                 <span class="def">{{ v.default }}</span>
-                <span class="muted">{{ v.descricao }}</span>
+                <span class="muted"><ucam-t [t]="v.descricao" /></span>
               </li>
             }
           </ul>
@@ -179,14 +180,14 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           <div class="pratica">
             <div class="faca">
               <span class="rotulo">Faça</span>
-              <p class="small">{{ p.faca }}</p>
+              <p class="small"><ucam-t [t]="p.faca" /></p>
             </div>
             <div class="evite">
               <span class="rotulo">Evite</span>
-              <p class="small">{{ p.evite }}</p>
+              <p class="small"><ucam-t [t]="p.evite" /></p>
             </div>
             @if (p.porque) {
-              <p class="porque small">{{ p.porque }}</p>
+              <p class="porque small"><ucam-t [t]="p.porque" /></p>
             }
           </div>
         }

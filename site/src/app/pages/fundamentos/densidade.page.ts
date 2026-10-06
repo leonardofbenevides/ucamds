@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Densidade e grade — as MEDIDAS.
@@ -20,7 +21,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-densidade',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -40,7 +41,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="larguras">
         <h2>Tetos de largura</h2>
-        <p>{{ d.larguras.regra }}</p>
+        <p><ucam-t [t]="d.larguras.regra" /></p>
         <p class="small muted">
           O arranjo — quem fica ao lado de quem — mora em
           <a routerLink="/layout">Blocos de layout</a>. Aqui está só a medida.
@@ -62,7 +63,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               </span>
               <span class="num muted">{{ l.valor }}</span>
               <p class="small papel">{{ l.papel }}</p>
-              <p class="small muted porque">{{ l.porque }}</p>
+              <p class="small muted porque"><ucam-t [t]="l.porque" /></p>
             </div>
           }
         </div>
@@ -70,7 +71,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="leitura">
         <h2>Medida de leitura</h2>
-        <p>{{ d.leitura.regra }}</p>
+        <p><ucam-t [t]="d.leitura.regra" /></p>
         <p class="small muted">{{ d.meta['unidade'] }}</p>
         <div class="scroller">
           <table>
@@ -85,8 +86,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               @for (m of d.leitura.medidas; track m.medida) {
                 <tr>
                   <td><code class="num">{{ m.medida }}</code></td>
-                  <td class="small">{{ m.onde }}</td>
-                  <td class="small muted">{{ m.porque }}</td>
+                  <td class="small"><ucam-t [t]="m.onde" /></td>
+                  <td class="small muted"><ucam-t [t]="m.porque" /></td>
                 </tr>
               }
             </tbody>
@@ -96,7 +97,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="alturas">
         <h2>Alturas por papel</h2>
-        <p>{{ d.alturas.regra }}</p>
+        <p><ucam-t [t]="d.alturas.regra" /></p>
 
         <ul class="alturas">
           @for (p of d.alturas.papeis; track p.token) {
@@ -110,7 +111,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               </span>
               <div>
                 <p class="papel">{{ p.papel }}</p>
-                <p class="small muted"><strong>Quem usa:</strong> {{ p.quem_usa }}</p>
+                <p class="small muted"><strong>Quem usa:</strong>&ngsp;<ucam-t [t]="p.quem_usa" /></p>
                 <p class="small muted mono">{{ p.token }}</p>
               </div>
             </li>
@@ -118,7 +119,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         </ul>
 
         <div class="callout callout-warn">
-          <p><strong>Uma densidade só.</strong> {{ d.alturas.excecao_de_densidade }}</p>
+          <p><strong>Uma densidade só.</strong>&ngsp;<ucam-t [t]="d.alturas.excecao_de_densidade" /></p>
         </div>
       </section>
 
@@ -133,14 +134,14 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <div class="patamar">
               <h3>{{ p.ponteiro }}</h3>
               <p class="medida num">{{ p.alvo }}</p>
-              <p class="small muted">{{ p.criterio }}</p>
-              <p class="small">{{ p.porque }}</p>
+              <p class="small muted"><ucam-t [t]="p.criterio" /></p>
+              <p class="small"><ucam-t [t]="p.porque" /></p>
             </div>
           }
         </div>
 
         <h3>O que a medição achou</h3>
-        <p class="small muted">{{ d.alvos.medicao.metodo }}</p>
+        <p class="small muted"><ucam-t [t]="d.alvos.medicao.metodo" /></p>
         <div class="scroller">
           <table>
             <thead>
@@ -155,7 +156,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <tr>
                   <td class="small">{{ a.alvo }}</td>
                   <td><code class="num">{{ a.media }}</code></td>
-                  <td class="small muted">{{ a.nota }}</td>
+                  <td class="small muted"><ucam-t [t]="a.nota" /></td>
                 </tr>
               }
             </tbody>
@@ -173,9 +174,9 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="portao">
         <h2>O portão de geometria</h2>
-        <p><code>{{ d.portao.ferramenta }}</code> — {{ d.portao.o_que_faz }}</p>
-        <p>{{ d.portao.porque }}</p>
-        <p class="small muted">{{ d.portao.custo_assumido }}</p>
+        <p><code>{{ d.portao.ferramenta }}</code> — <ucam-t [t]="d.portao.o_que_faz" /></p>
+        <p><ucam-t [t]="d.portao.porque" /></p>
+        <p class="small muted"><ucam-t [t]="d.portao.custo_assumido" /></p>
       </section>
 
       <section id="proibido">

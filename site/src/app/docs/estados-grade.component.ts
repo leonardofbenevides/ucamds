@@ -58,11 +58,10 @@ interface Palco {
 
     @if (foraDaGrade().length) {
       <p class="small muted estados-fora">
-        Declarados no contrato e fora da grade:
+        Fora da grade:
         @for (e of foraDaGrade(); track e) {
           <code>{{ e }}</code>
         }
-        — não são aparência que CSS sozinho produza.
       </p>
     }
   `,
