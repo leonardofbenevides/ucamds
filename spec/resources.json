@@ -186,7 +186,7 @@
   },
   "publicacao": {
     "$description": "Onde o design system é servido. Uma fonte só: o sitemap do site, os exemplos de instalação e o portão de publicação leem este host. O Trilho A inteiro vai ao ar como URL — folha, fontes e sprite —, e enquanto não existir registro privado os tarballs também saem daqui.",
-    "host": "https://ucam-ds.vercel.app",
+    "host": "https://dsucam.vercel.app",
     "tokens": "/tokens",
     "css": "/css",
     "icones": "/icons",
