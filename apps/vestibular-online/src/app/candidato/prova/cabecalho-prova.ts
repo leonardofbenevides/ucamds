@@ -43,7 +43,7 @@ import { RelogioProva } from '../../core/tempo/relogio-prova';
             label="Tempo da prova"
             [value]="relogio.decorrido()"
             [max]="relogio.total()"
-            [tone]="relogio.tom()"
+            [tone]="relogio.tom() === 'neutral' ? 'marca' : relogio.tom()"
             [valueText]="relogio.texto()"
             [legendStart]="relogio.texto()"
             [legendEnd]="relogio.hms()"

@@ -33,7 +33,7 @@
       @if (carregando()) {
         <ucam-skeleton variant="block" />
       } @else if (situacao() === null) {
-        <ucam-card as="section" titulo="Aguardando a correção da banca" apoio="Sua redação será lida pela banca; a prova objetiva é corrigida junto." icone="pencil">
+        <ucam-card as="section" iconeTom="pessoas" titulo="Aguardando a correção da banca" apoio="Sua redação será lida pela banca; a prova objetiva é corrigida junto." icone="pencil">
           <div class="ucam-stack">
             <ucam-badge tone="info" variant="dot" label="Em correção" />
             <p>Sua prova está entregue e nada mais precisa ser feito. Assim que a banca terminar, o resultado aparece aqui, por este mesmo link, e no site da universidade.</p>
@@ -49,7 +49,7 @@
           </div>
         </ucam-card>
       } @else if (situacao() === 'APROVADO') {
-        <ucam-card as="section" titulo="Você foi aprovado" apoio="Parabéns! O próximo passo é concluir a matrícula na área do inscrito." icone="circleCheck">
+        <ucam-card as="section" iconeTom="pessoas" titulo="Você foi aprovado" apoio="Parabéns! O próximo passo é concluir a matrícula na área do inscrito." icone="circleCheck">
           <div class="ucam-stack">
             <ucam-badge tone="success" variant="dot" label="Aprovado" />
             <div class="ucam-cluster ucam-cluster--fim">
@@ -58,7 +58,7 @@
           </div>
         </ucam-card>
       } @else if (store.podeTentarDeNovo()) {
-        <ucam-card as="section" titulo="Nota mínima não atingida" apoio="Ainda há tentativa disponível nesta inscrição. A prova nova começa do zero." icone="refreshCw">
+        <ucam-card as="section" iconeTom="pessoas" titulo="Nota mínima não atingida" apoio="Ainda há tentativa disponível nesta inscrição. A prova nova começa do zero." icone="refreshCw">
           <div class="ucam-stack">
             <ucam-badge tone="neutral" variant="dot" label="Reprovado nesta tentativa" />
             <div class="ucam-cluster ucam-cluster--fim">
@@ -68,7 +68,7 @@
           </div>
         </ucam-card>
       } @else {
-        <ucam-card as="section" titulo="Nota mínima não atingida" [apoio]="'Você já usou as ' + totalTentativas() + ' tentativas desta inscrição.'" icone="info">
+        <ucam-card as="section" iconeTom="pessoas" titulo="Nota mínima não atingida" [apoio]="'Você já usou as ' + totalTentativas() + ' tentativas desta inscrição.'" icone="info">
           <div class="ucam-stack">
             <ucam-badge tone="neutral" variant="dot" label="Reprovado" />
             <p>Fale com a secretaria para saber sobre outras formas de ingresso: {{ contato }}.</p>

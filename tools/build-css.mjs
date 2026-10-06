@@ -173,6 +173,30 @@ const css = `/* @ucam/css — Trilho A
 .ucam *::before,
 .ucam *::after { box-sizing: border-box; }
 
+/* A ESCALA AMPLA — <html data-escala="ampla"> (07/10/2026).
+ *
+ * O sistema tem UMA densidade (spec/density.json), medida para quem opera uma
+ * fila o dia inteiro: texto a 15px, controle a 36px. Isso continua valendo.
+ * A escala ampla não é uma segunda densidade — as proporções são as mesmas —,
+ * é o MESMO desenho em outra medida, para a tela que uma pessoa abre uma vez,
+ * para ler: a prova do candidato. Pedido do dia, sobre o Vestibular Online:
+ * "os componentes estão muito pequenos, aumente a dimensão de tudo", e
+ * "faça os componentes acompanharem os tamanhos de tela, até os maiores".
+ *
+ * Todo token do sistema é rem. Subir a base sobe texto, controle, ícone,
+ * recuo e teto de largura JUNTOS, sem trocar medida por medida — e por isso
+ * a conta vive num lugar só. Ela é fluida: 17px no celular, ~18,7 em 1440,
+ * ~20 em 1920, 22 em 2560, e para em 26px (3840). Abaixo do piso a tela é
+ * estreita demais para pagar a medida maior; acima do teto ela vira cartaz.
+ *
+ * O termo fixo é rem, e não px, para a base continuar respeitando o tamanho
+ * de fonte que a pessoa escolheu no navegador (WCAG 1.4.4). Os pontos de
+ * quebra da folha são em rem de media query, que não leem esta regra: a
+ * moldura muda de arranjo nas mesmas larguras de janela de sempre. */
+html[data-escala="ampla"] {
+  font-size: clamp(106.25%, 0.9rem + 0.3vw, 162.5%);
+}
+
 .ucam {
   color: var(--ucam-color-text-primary);
   /* A família precisa ser declarada AQUI. Sem ela, o escopo herda a fonte do
@@ -3339,6 +3363,19 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 
 .ucam-avatar--sm { inline-size: 1.5rem; block-size: 1.5rem; font-size: 0.6875rem; }
 .ucam-avatar--lg { inline-size: 3rem; block-size: 3rem; font-size: var(--ucam-typography-body-sm-font-size); }
+/* A PESSOA DE QUEM A TELA É — .ucam-avatar--marca (07/10/2026).
+ *
+ * O avatar neutro é o de uma pessoa entre outras: linha de tabela, autor de
+ * uma resposta. Quando o cartão é a IDENTIDADE de quem está usando a tela — o
+ * candidato na coluna da prova —, o avatar veste a superfície de marca do
+ * sistema, com o texto que ela carrega. É o mesmo par da faixa do topo
+ * (medido pelo portão da subpaleta, 4,5:1 ou mais nos dois temas), e por
+ * isso não é um portador de cor novo: é a faixa, em ponto pequeno. Um por
+ * tela. */
+.ucam-avatar--marca {
+  background: var(--ucam-color-surface-brand);
+  color: var(--ucam-color-text-on-brand);
+}
 .ucam-avatar img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 
 /* OS QUATRO AVATARES TINTOS SAÍRAM (ADR-022). Eram --1 a --4, reaproveitando
@@ -8875,6 +8912,11 @@ dialog.ucam-dialog:not([open]) { display: none; }
   flex-direction: row;
   align-items: flex-start;
   gap: var(--ucam-space-inline-sm);
+  /* Com a figura ao lado, a base de 11rem do indicador deixa só ~7rem para o
+   * número: "04/10/2026" vazava da caixa em três colunas apertadas (medido em
+   * 07/10/2026, 1024px). A base sobe a largura da figura e do vão, e o grupo
+   * quebra para duas fileiras em vez de espremer o valor. */
+  flex-basis: 14rem;
 }
 .ucam-stat__figura {
   display: inline-flex;
@@ -11189,6 +11231,17 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__fill--success { background: var(--ucam-color-feedback-success-graphic); }
 .ucam-progress__fill--warning { background: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__fill--danger  { background: var(--ucam-color-feedback-danger-graphic); }
+/* marca (07/10/2026): o andamento que é DA PESSOA numa tela de tarefa única —
+ * o tempo da prova, as questões respondidas. Não julga, como o neutro, mas é a
+ * peça principal da barra da tela, e em cinza ela lia como barra apagada. Veste
+ * a superfície de marca do sistema (o par da faixa; 3:1 ou mais como elemento
+ * gráfico sobre o trilho). Info continua sendo o andamento de um PROCESSO. */
+.ucam-progress__fill--marca   { background: var(--ucam-color-surface-brand); }
+/* No tema escuro a superfície de marca é FUNDA (ela carrega texto branco), e
+ * uma barra funda sobre o trilho escuro some — medido em 07/10/2026. Ali o
+ * preenchimento usa a tinta da ação, que no escuro é a clara do sistema. A
+ * primeira linha é a de quem não entende light-dark(). */
+.ucam-progress__fill--marca   { background: light-dark(var(--ucam-color-surface-brand), var(--ucam-color-action-primary-default)); }
 
 .ucam-progress__legenda {
   display: flex;
@@ -11628,6 +11681,39 @@ figure:has(> .ucam-citacao) { margin: 0; }
 }
 
 .ucam-choice-card:has(input:checked) .ucam-choice-card__marca { opacity: 1; }
+
+/* SEM APOIO, O TÍTULO FICA NO MEIO DA FIGURA (07/10/2026).
+ *
+ * O cartão alinhava tudo ao topo, que é o certo quando há título e apoio: a
+ * figura acompanha a primeira linha. Com uma linha só — a alternativa de uma
+ * prova, o sim e o não — o título ficava pendurado no alto de um chip de 32px,
+ * e o cartão lia como torto. Reclamado mais de uma vez ("isso tem acontecido").
+ * A regra olha o conteúdo, e não uma classe: quem escreve o cartão não tem de
+ * lembrar de pedir o alinhamento. */
+.ucam-choice-card:not(:has(.ucam-choice-card__apoio)) { align-items: center; }
+
+/* A ALTERNATIVA DE PROVA — .ucam-choice-card--letra.
+ *
+ * A figura é a LETRA da alternativa, e ela é o segundo sinal do escolhido no
+ * lugar do check: ao lado de uma resposta de prova, check lê como "certa", e
+ * o cartão não sabe se está. A letra preenche, como a bolha do
+ * cartão-resposta — forma e luminância, não matiz —, e o cartão assenta no
+ * fundo sutil da ação, que é a língua do "escolhido" no resto do sistema
+ * (ADR-046: um sinal de superfície e um de tipografia). Sem a faixa reservada
+ * para o check, o texto usa a largura toda. Nasceu no Vestibular Online. */
+.ucam-choice-card--letra { padding-inline-end: var(--ucam-space-inset-sm); }
+.ucam-choice-card--letra .ucam-choice-card__marca { display: none; }
+.ucam-choice-card--letra .ucam-choice-card__figura {
+  font-weight: var(--ucam-typography-action-font-weight);
+  font-variant-numeric: tabular-nums;
+}
+.ucam-choice-card--letra:has(input:checked) {
+  background: var(--ucam-color-action-primary-subtle);
+}
+.ucam-choice-card--letra:has(input:checked) .ucam-choice-card__figura {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+}
 
 /* --------------------------------------------------------------- gráfico --- */
 /* Contrato: chart.json — trilho A NÃO ENTREGA gráfico.

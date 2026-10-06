@@ -5,7 +5,7 @@
     <article class="ucam-stack ucam-stack--lg" appProvaProtegida [attr.data-entrada]="direcao()">
       <header class="ucam-cluster ucam-cluster--entre">
         <span class="ucam-cluster">
-          <ucam-icon-tile [icon]="iconeCaderno()" />
+          <ucam-icon-tile [icon]="iconeCaderno()" tone="pessoas" />
           <h2 #titulo class="ucam-section__title" tabindex="-1">{{ rotuloCaderno() }} · Questão {{ n() }} de {{ totalNoCaderno() }}</h2>
         </span>
         <span class="ucam-cluster">
@@ -34,7 +34,7 @@
       <fieldset class="ucam-stack ucam-stack--sm">
         <legend class="ucam-sr-only">Alternativas da questão {{ n() }}</legend>
         @for (a of alternativas(); track a.oid) {
-          <label class="ucam-choice-card">
+          <label class="ucam-choice-card ucam-choice-card--letra">
             <input type="radio" [name]="'questao-' + q.oid" [value]="a.oid" [checked]="escolhida() === a.oid" (change)="escolher(a.oid)" />
             <span class="ucam-choice-card__figura" aria-hidden="true">{{ a.letra }}</span>
             <span class="ucam-choice-card__titulo">

@@ -166,6 +166,12 @@
       "tipo": "UcamIconName | null",
       "default": "null",
       "descricao": "Ícone do ladrilho no cabeçalho. Com titulo, monta a parte cabecalho: ladrilho à esquerda, título e apoio à direita. Sem titulo é ignorado — ladrilho sem nome não diz nada."
+    },
+    {
+      "nome": "iconeTom",
+      "tipo": "'neutral' | 'brand' | 'academico' | 'financeiro' | 'atendimento' | 'gestao' | 'pessoas' | 'acervo' | 'pesquisa' | 'comunicacao'",
+      "default": "'neutral'",
+      "descricao": "O tom do ladrilho do cabeçalho, com os mesmos valores do icon-tile. neutral é o padrão. A categoria do sistema é para a tela em que os cartões falam pelo sistema — as orientações da prova do Vestibular —, e todos os ladrilhos da tela levam a mesma: tom por cartão viraria um arco-íris sem regra."
     }
   ],
   "estados": [

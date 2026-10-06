@@ -2,6 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
 
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
+import type { UcamIconTileTone } from '../icon-tile/ucam-icon-tile';
 
 /**
  * Contrato: spec/components/card.json
@@ -89,7 +90,7 @@ let seq = 0;
            tem de ser a mesma em todo cartão. -->
       @if (icone() && titulo()) {
         <div class="ucam-card__cabecalho">
-          <span class="ucam-icon-tile" aria-hidden="true"><ucam-icon [name]="icone()!" size="md" /></span>
+          <span [class]="classeLadrilho()" aria-hidden="true"><ucam-icon [name]="icone()!" size="md" /></span>
           <div class="ucam-card__cabecalho-texto">
             <p class="ucam-card__titulo" [id]="idTitulo">
               @if (acionavel() && href()) {
@@ -175,6 +176,14 @@ let seq = 0;
       border-radius: var(--ucam-radius-control);
       background: var(--ucam-color-surface-sunken);
       color: var(--ucam-color-text-secondary);
+    }
+    /* O ladrilho com tom (iconeTom). A regra acima pinta o neutro com três
+       partes de seletor e venceria a classe de tom da folha do Trilho A; a
+       pintura do tom é repetida aqui, com a cor que a folha declara em
+       --ucam-tile-cor. Marca usa a tinta da ação, como no <ucam-icon-tile>. */
+    ucam-card .ucam-card__cabecalho > .ucam-icon-tile[class*='ucam-icon-tile--'] {
+      background: color-mix(in srgb, var(--ucam-tile-cor, var(--ucam-color-action-primary-default)) 12%, transparent);
+      color: var(--ucam-tile-cor, var(--ucam-color-action-primary-default));
     }
     ucam-card .ucam-card__cabecalho-texto {
       flex: 1 1 auto;
@@ -284,6 +293,17 @@ export class UcamCard {
   readonly apoio = input<string | null>(null);
   /** Ícone do ladrilho no cabeçalho. Com titulo, monta a parte cabecalho. */
   readonly icone = input<UcamIconName | null>(null);
+  /**
+   * O tom do ladrilho do cabeçalho, com os mesmos valores do <ucam-icon-tile>.
+   * neutral é o padrão; a categoria do sistema (pessoas, acadêmico…) é para a
+   * tela em que os cartões são a voz do sistema — as orientações da prova.
+   */
+  readonly iconeTom = input<UcamIconTileTone>('neutral');
+  protected readonly classeLadrilho = computed(() =>
+    this.iconeTom() === 'neutral'
+      ? 'ucam-icon-tile'
+      : `ucam-icon-tile ucam-icon-tile--${this.iconeTom() === 'brand' ? 'marca' : this.iconeTom()}`,
+  );
   readonly elevation = input<UcamCardElevation>('flat');
   readonly padding = input<UcamCardPadding>('lg');
   /**

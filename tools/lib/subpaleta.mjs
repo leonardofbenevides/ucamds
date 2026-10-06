@@ -148,6 +148,27 @@ export const DESVIO_L = {
   pesquisa: { claro: -4, escuro: -8 },
 };
 
+/* A SUPERFÍCIE DE MARCA PRÓPRIA DE UM SISTEMA.
+ *
+ * Consequência direta do desvio acima, medida em 07/10/2026 no Vestibular
+ * Online: com a ação de pessoas em L 27 (#002E28, quase preto) e a faixa na
+ * altura comum de marca (L 35, #00453D), a tela inteira lia como um verde só,
+ * e escuro — faixa, botão, bolha e marcador no mesmo breu. Pedido do dia:
+ * "as cores estão muito escuras usando só esse verde mais escuro".
+ *
+ * A ação não tem para onde ir: é o portão do sucesso que a prende lá embaixo.
+ * A superfície de marca tem — ela carrega só texto branco e não disputa com
+ * numeral nem filete de sucesso, que nunca vivem sobre ela. Sobe para L 52 e
+ * recupera o croma inteiro da categoria (#007A6D, 5,24:1 com branco): a faixa
+ * passa a ser o teal que o token de categoria promete, e a ação escura fica
+ * sendo o contraponto, não a única voz.
+ *
+ * Só no claro. No escuro a faixa continua na altura comum (L 30): ali o chão
+ * já é escuro, e uma faixa a L 52 seria a peça mais clara da moldura. */
+export const MARCA_PROPRIA = {
+  pessoas: { claro: { L: 52, croma: 1 } },
+};
+
 /* O SISTEMA QUE NÃO DERIVA.
  *
  * Atendimento É a matiz da marca: categoria-atendimento e o bordô da ação
@@ -186,6 +207,7 @@ export function subpaleta(cor, tema, ctx, sistema) {
   const base = d.default + ((DESVIO_L[sistema] || {})[tema] || 0);
   const limita = (L) => (tema === 'claro' ? Math.max(d.teto, L) : Math.min(d.teto, L));
   const emL = (L) => oklchParaHex(L, c, H).hex;
+  const marcaPropria = (MARCA_PROPRIA[sistema] || {})[tema];
 
   return {
     'action-primary-default': emL(base),
@@ -198,7 +220,9 @@ export function subpaleta(cor, tema, ctx, sistema) {
     'action-primary-subtle': misturaOklab(ctx.surface, emL(base), d.subtle),
     /* Degrau próprio — ver a nota em DEGRAUS. Carrega texto BRANCO nos dois
      * temas, e é isso que a separa do preenchimento da ação. */
-    'surface-brand': emL(d.marca),
+    'surface-brand': marcaPropria
+      ? oklchParaHex(marcaPropria.L, C * marcaPropria.croma, H).hex
+      : emL(d.marca),
     /* O que a ação ACENDE e o que a busca MARCA — ver a nota em DEGRAUS. */
     'realce-background': emL(d.realce),
     /* A TINTA do sistema, para onde a cor aparece com a família da ação

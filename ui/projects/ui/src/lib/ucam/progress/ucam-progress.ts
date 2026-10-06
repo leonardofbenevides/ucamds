@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation 
  * frágil e ficaria calado quando quebrasse. O que a base entrega de fato aqui
  * são seis declarações de CSS — copiadas, com a geometria da spec.
  */
-export type UcamProgressTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger';
+export type UcamProgressTone = 'neutral' | 'marca' | 'info' | 'success' | 'warning' | 'danger';
 
 /**
  * Um segmento da barra SEGMENTADA (ADR-046): de que partes é feito um total.
@@ -29,6 +29,8 @@ export interface UcamProgressSegment {
 
 const PREENCHIMENTO: Record<UcamProgressTone, string> = {
   neutral: 'bg-muted-foreground',
+  // No escuro a superfície de marca é funda e some sobre o trilho: usa a tinta da ação.
+  marca: 'bg-[light-dark(var(--ucam-color-surface-brand),var(--ucam-color-action-primary-default))]',
   info: 'bg-[var(--ucam-color-feedback-info-foreground)]',
   success: 'bg-[var(--ucam-color-feedback-success-foreground)]',
   warning: 'bg-[var(--ucam-color-feedback-warning-foreground)]',

@@ -27,22 +27,26 @@ import { RelogioFaixa } from './relogio-faixa';
       systemName="Vestibular Online"
       systemIcon="graduationCap"
       systemCategory="pessoas"
+      maxContentWidth="none"
       [user]="usuario()"
       [homeHref]="home()"
     >
       <!-- O QUE CABE NA FAIXA. A 390px, menu, marca e conta já tomam a largura
            inteira: relógio, campus e ações embrulhavam para fora da faixa. O
-           campus só entra a partir de 48rem e o resto a partir de 40rem;
-           abaixo disso nada se perde — o tempo está na barra da prova, que
-           gruda sob a faixa, e o campus e as orientações abrem pelas etapas.
+           relógio e as ações entram a partir de 40rem e o campus só a partir
+           de 64rem — em 48rem, com a escala ampla, os três juntos quebravam a
+           faixa em duas linhas (medido em 07/10/2026). Abaixo disso nada se
+           perde: o tempo está na barra da prova, que gruda sob a faixa, e o
+           campus está no cartão do candidato, na coluna. A fileira não
+           embrulha nunca: o que não cabe sai, não desce.
            Os div sem classe do DS existem para o Tailwind decidir o display
            (contents: os filhos continuam sendo itens do cluster). -->
-      <div ucamShellAcoes class="ucam-cluster">
+      <div ucamShellAcoes class="ucam-cluster" style="flex-wrap: nowrap">
         <div class="hidden sm:contents">
           <app-relogio-faixa />
         </div>
         @if (unidade(); as u) {
-          <div class="hidden md:contents">
+          <div class="hidden lg:contents">
             <span class="ucam-campus ucam-campus--faixa">
               <ucam-icon name="mapPin" size="sm" aria-hidden="true" />
               <span class="ucam-sr-only">Campus:</span>
@@ -58,26 +62,26 @@ import { RelogioFaixa } from './relogio-faixa';
 
       <app-etapas-lateral ucamShellNav (abrir)="abrir($event)" />
 
-      <!-- Quem está na prova: um cartão com as iniciais e o nome no alto e,
-           abaixo, os dados da inscrição no arranjo "painel" da lista de
-           descrição do DS — uma linha por dado, com um ícone decorativo no
-           rótulo para o olho achar o dado sem ler os três. O avatar é
-           decorativo porque o nome está ao lado. A coluna do rótulo encolhe
-           (o DS a declara ajustável por --ucam-descricao-rotulo) porque os
-           rótulos aqui são curtos e o valor — o nome do curso — é o que
-           precisa de uma linha inteira. -->
+      <!-- Quem está na prova. O cartão é a IDENTIDADE de quem a tela é: o
+           avatar veste a superfície de marca (o par da faixa), o nome é o
+           título do cartão, e os dados da inscrição vêm empilhados — rótulo em
+           cima, valor embaixo, um por linha: num cartão de 16rem nem o CPF cabe
+           em meia coluna. Até 06/10/2026 era uma lista em duas colunas com um ícone
+           por rótulo: o nome do curso quebrava em três linhas numa coluna de
+           7rem, e três ícones cinza disputavam com três palavras. O avatar é
+           decorativo porque o nome está ao lado. -->
       <div ucamShellNav>
-        <ucam-card>
-          <div class="ucam-stack ucam-stack--sm">
-            <div class="ucam-cluster" data-candidato>
-              <ucam-avatar [name]="store.nome()" decorative />
-              <div class="min-w-0">
-                <p class="ucam-descricao__valor truncate">{{ store.nome() }}</p>
-                <p class="ucam-descricao__rotulo">Candidato</p>
-              </div>
+        <ucam-card as="section">
+          <div class="ucam-stack">
+            <div class="ucam-card__cabecalho" data-candidato>
+              <ucam-avatar [name]="store.nome()" size="lg" tone="marca" decorative />
+              <span class="ucam-card__cabecalho-texto">
+                <span class="ucam-card__titulo">{{ store.nome() }}</span>
+                <span class="ucam-card__apoio">Sua inscrição</span>
+              </span>
             </div>
-            <div class="border-t border-[var(--ucam-color-border-subtle)]" data-dados-candidato>
-              <ucam-description-list layout="painel" [items]="dadosColuna()" />
+            <div data-dados-candidato>
+              <ucam-description-list [items]="dadosColuna()" [columns]="1" />
             </div>
           </div>
         </ucam-card>
@@ -108,16 +112,6 @@ import { RelogioFaixa } from './relogio-faixa';
       <app-instrucoes-lista />
     </ucam-drawer>
   `,
-  styles: `
-    /* A coluna do rótulo do painel de dados: o DS a declara no próprio dl
-       (8.5rem, para "Setor responsável"), por isso nem a herança nem uma
-       utilitária em camada chegam lá — só uma regra sem camada que alcance o
-       dl dentro do componente filho. Rótulos aqui são curtos, e o valor é o
-       que precisa da linha inteira. */
-    :host ::ng-deep [data-dados-candidato] .ucam-descricao--painel {
-      --ucam-descricao-rotulo: 5rem;
-    }
-  `,
 })
 export class Moldura {
   readonly store = inject(CandidatoStore);
@@ -131,18 +125,19 @@ export class Moldura {
   readonly unidade = computed(() => this.store.unidade()?.nome ?? this.store.unidade()?.sigla ?? null);
 
   /**
-   * O resumo da coluna, abaixo do nome: os dados da inscrição. Os ícones são
-   * do conjunto curado, no significado registrado — fileText é documento,
-   * graduationCap é graduação. O relógio no turno é o desenho mais próximo
-   * que o conjunto tem; se o DS ganhar um ícone de turno, troca aqui.
+   * Os dados da inscrição no cartão da coluna, na ordem do que a pessoa
+   * confere primeiro: para que curso, em que campus, em que turno — e o CPF,
+   * que é como a secretaria a acha.
    */
   readonly dadosColuna = computed<UcamDescriptionItem[]>(() => {
     const curso = this.store.curso();
     const turno = this.store.turno();
+    const campus = this.unidade();
     return [
-      { label: 'CPF', value: this.store.cpf(), icon: 'fileText' },
-      ...(curso ? [{ label: 'Curso', value: curso, icon: 'graduationCap' as const }] : []),
-      ...(turno ? [{ label: 'Turno', value: turno, icon: 'clock' as const }] : []),
+      ...(curso ? [{ label: 'Curso', value: curso }] : []),
+      ...(campus ? [{ label: 'Campus', value: campus }] : []),
+      ...(turno ? [{ label: 'Turno', value: turno }] : []),
+      { label: 'CPF', value: this.store.cpf() },
     ];
   });
 

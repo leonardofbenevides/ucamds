@@ -46,7 +46,7 @@
     {
       "parte": "figura",
       "obrigatorio": false,
-      "descricao": "Ícone em chip, neutro no marcado e no não marcado. Decorativo — o título nomeia a opção, e decoração que muda de cor com o estado seria um portador de cor a mais (ADR-046).",
+      "descricao": "Ícone em chip, neutro no marcado e no não marcado. Decorativo — o título nomeia a opção, e decoração que muda de cor com o estado seria um portador de cor a mais (ADR-046). A exceção é a alternativa de prova (.ucam-choice-card--letra, 07/10/2026, nascida no Vestibular Online): ali a figura é a LETRA da alternativa e é ela o segundo sinal do escolhido, preenchida como a bolha de um cartão-resposta, sobre o fundo sutil da ação — porque check ao lado de uma resposta de prova lê como \"certa\". Com --letra o check não aparece. Sem apoio, o título de qualquer cartão fica no eixo da figura.",
       "classe": "ucam-choice-card__figura"
     },
     {

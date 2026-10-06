@@ -42,12 +42,17 @@ export class UcamAvatar {
   readonly name = input.required<string>();
   readonly photoUrl = input<string | null>(null);
   readonly size = input<'sm' | 'md' | 'lg'>('md');
+  /**
+   * marca: o avatar de QUEM a tela é (o candidato na coluna da prova) veste a
+   * superfície de marca do sistema, o mesmo par da faixa. Um por tela.
+   */
+  readonly tone = input<'neutral' | 'marca'>('neutral');
   /** Quando o nome já aparece ao lado, evita o leitor de tela repeti-lo. */
   readonly decorative = input(false, { transform: booleanAttribute });
 
   protected readonly falhou = signal(false);
   protected readonly iniciais = computed(() => iniciaisDe(this.name()));
   protected readonly classes = computed(() =>
-    `inline-flex shrink-0 items-center justify-center rounded-full overflow-hidden font-semibold bg-accent text-accent-foreground ${TAM[this.size()]}`,
+    `inline-flex shrink-0 items-center justify-center rounded-full overflow-hidden font-semibold ${this.tone() === 'marca' ? 'bg-[var(--ucam-color-surface-brand)] text-[var(--ucam-color-text-on-brand)]' : 'bg-accent text-accent-foreground'} ${TAM[this.size()]}`,
   );
 }

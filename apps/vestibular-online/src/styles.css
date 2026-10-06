@@ -13,17 +13,13 @@
    ponte para os tokens e o @layer base da biblioteca. */
 @import "@ucam/ui/styles.css";
 
-/* O TAMANHO DE TUDO. O DS mede as telas de trabalho — texto de 14px, controle
-   de 32px —, que é a densidade certa para quem opera uma fila o dia inteiro.
-   O candidato abre isto uma vez, muitas vezes no celular, para ler uma prova:
-   aqui a medida sobe. Como todo token do DS é rem, subir a base sobe texto,
-   controle, ícone e espaço juntos e mantém as proporções que o DS desenhou
-   (texto ~16px, botão 36px, botão grande 45px). É o único número a mexer para
-   deixar tudo maior ou menor; em % para respeitar o tamanho de fonte que a
-   pessoa escolheu no navegador. */
-html {
-  font-size: 112.5%;
-}
+/* O TAMANHO DE TUDO vem do DS: <html data-escala="ampla"> (index.html). A
+   base do rem sobe de forma fluida com a janela — 17px no celular, ~18,7 em
+   1440, 22 em 2560 — e leva texto, controle, ícone, recuo e teto de largura
+   juntos, porque todo token do DS é rem. Até 06/10/2026 este arquivo tinha um
+   número próprio (112,5% fixo) e um zoom em degraus só para a tela de
+   entrada; os dois saíram: fixo, o app ficava pequeno num monitor largo, e o
+   zoom deixava a entrada numa medida e a prova em outra. */
 
 /* A marca entra por máscara (faixa, tela de entrada): o DS pede que a página
    hospedeira aponte o arquivo. É o lockup horizontal, em uma cor só. */
@@ -55,22 +51,4 @@ html {
 }
 .ucam [data-entrada="tras"] {
   animation: app-entrar-tras var(--ucam-motion-duration-reveal) var(--ucam-motion-easing-entrance) both;
-}
-
-/* A ENTRADA EM JANELA LARGA. O bloco de entrada do DS foi medido em 1440: o
-   miolo tem 25rem e o título 22px, e é a proporção certa ali. Num monitor de
-   2560 a coluna dobra de largura e o mesmo miolo vira um selo no meio de um
-   campo vazio. Em vez de trocar medida por medida — e sair da escala do DS —,
-   o bloco INTEIRO sobe de degrau: tipografia, controles, recuo e ilustração
-   crescem juntos e a tela mantém as relações que o DS desenhou. Os degraus
-   pedem também altura, para a coluna não passar da dobra num ultrawide baixo.
-   Só a entrada: tela de trabalho continua na densidade do sistema. */
-@media (min-width: 100rem) and (min-height: 50rem) {
-  .ucam .ucam-login { zoom: 1.125; }
-}
-@media (min-width: 120rem) and (min-height: 60rem) {
-  .ucam .ucam-login { zoom: 1.25; }
-}
-@media (min-width: 150rem) and (min-height: 70rem) {
-  .ucam .ucam-login { zoom: 1.5; }
 }

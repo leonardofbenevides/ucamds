@@ -85,6 +85,21 @@
       }
     },
     {
+      "nome": "tone",
+      "tipo": "'neutral' | 'marca'",
+      "default": "'neutral'",
+      "descricao": "A tinta do círculo. neutral é o de uma pessoa entre outras: linha de tabela, autor de uma resposta. marca é para o cartão que identifica QUEM está usando a tela — o candidato na coluna da prova —, e veste a superfície de marca do sistema com o texto que ela carrega, o mesmo par da faixa do topo.",
+      "valores": {
+        "neutral": {
+          "uso": "O padrão: pessoa numa lista, numa célula, numa linha do tempo."
+        },
+        "marca": {
+          "uso": "A identidade de quem a tela é.",
+          "limite": "Um por tela. Vários avatares de marca numa lista viram uma coluna de cor, que é o que o neutro existe para evitar."
+        }
+      }
+    },
+    {
       "nome": "decorative",
       "tipo": "boolean",
       "default": "false",

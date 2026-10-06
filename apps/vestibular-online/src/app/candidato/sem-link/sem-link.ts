@@ -141,21 +141,21 @@ export function destinoDoLink(texto: string): { oid: string; tentativa: string |
                 <p class="ucam-login__frase">O vestibular da Candido Mendes, no seu tempo e no seu aparelho.</p>
                 <ul class="ucam-login__sistemas">
                   <li class="ucam-login__sistema">
-                    <ucam-icon-tile icon="mail" />
+                    <ucam-icon-tile icon="mail" tone="pessoas" />
                     <span class="ucam-login__sistema-texto">
                       <span class="ucam-login__sistema-nome">Um código, uma pessoa</span>
                       <span class="ucam-login__sistema-apoio">O código do e-mail já identifica você — não há senha.</span>
                     </span>
                   </li>
                   <li class="ucam-login__sistema">
-                    <ucam-icon-tile icon="clock" />
+                    <ucam-icon-tile icon="clock" tone="pessoas" />
                     <span class="ucam-login__sistema-texto">
                       <span class="ucam-login__sistema-nome">Prova com tempo</span>
                       <span class="ucam-login__sistema-apoio">O relógio só começa quando você clicar em Iniciar prova.</span>
                     </span>
                   </li>
                   <li class="ucam-login__sistema">
-                    <ucam-icon-tile icon="circleCheck" />
+                    <ucam-icon-tile icon="circleCheck" tone="pessoas" />
                     <span class="ucam-login__sistema-texto">
                       <span class="ucam-login__sistema-nome">Tudo salvo sozinho</span>
                       <span class="ucam-login__sistema-apoio">Cada resposta é gravada na hora; se a conexão cair, nada se perde.</span>

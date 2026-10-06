@@ -37,7 +37,7 @@ interface GrupoMapa {
           label="Questões respondidas"
           [value]="store.respondidas()"
           [max]="store.totalObjetivas()"
-          [tone]="store.respondidas() === store.totalObjetivas() ? 'success' : 'neutral'"
+          [tone]="store.respondidas() === store.totalObjetivas() ? 'success' : 'marca'"
           [valueText]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
           [legendStart]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
         />

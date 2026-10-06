@@ -84,13 +84,17 @@
     },
     {
       "nome": "tone",
-      "tipo": "'neutral' | 'info' | 'success' | 'warning' | 'danger'",
+      "tipo": "'neutral' | 'marca' | 'info' | 'success' | 'warning' | 'danger'",
       "default": "'neutral'",
       "descricao": "Tinta do preenchimento.",
       "valores": {
         "neutral": {
           "uso": "Proporção sem julgamento — quanto de uma cota foi usado.",
           "limite": "É o default. Tom colorido sem regra escrita vira decoração."
+        },
+        "marca": {
+          "uso": "O andamento que é da pessoa numa tela de tarefa única: o tempo da prova, as questões respondidas. Veste a superfície de marca do sistema.",
+          "limite": "Não julga, como o neutro. Em tela de trabalho, com várias barras por linha, o neutro continua sendo o certo: uma coluna de barras de marca vira faixa de cor."
         },
         "info": {
           "uso": "Andamento normal.",

@@ -60,6 +60,15 @@ export type UcamIconTileSize = 'sm' | 'md';
       background: color-mix(in srgb, var(--ucam-color-action-primary-default) 12%, transparent);
       color: var(--ucam-color-action-primary-default);
     }
+    /* AS CATEGORIAS (ADR-032). A cor de cada uma vem da folha do Trilho A, em
+       --ucam-tile-cor — mas a PINTURA tem de ser repetida aqui: a regra de base
+       deste componente (elemento + classe) vence a da folha (só classe), e o
+       ladrilho com tone="pessoas" saía cinza, igual ao neutro. Medido em
+       07/10/2026 no Vestibular Online. */
+    ucam-icon-tile :is(.ucam-icon-tile--academico, .ucam-icon-tile--financeiro, .ucam-icon-tile--atendimento, .ucam-icon-tile--gestao, .ucam-icon-tile--pessoas, .ucam-icon-tile--acervo, .ucam-icon-tile--pesquisa, .ucam-icon-tile--comunicacao) {
+      background: color-mix(in srgb, var(--ucam-tile-cor, var(--ucam-color-text-secondary)) 12%, transparent);
+      color: var(--ucam-tile-cor, var(--ucam-color-text-secondary));
+    }
     ucam-icon-tile .ucam-icon-tile--sm {
       inline-size: 1.75rem;
       block-size: 1.75rem;

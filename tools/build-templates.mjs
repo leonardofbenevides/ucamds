@@ -189,7 +189,7 @@ for (const proj of projetos) {
     // dist/css/ucam-comportamento.js, sem o atributo — e neles o clique em
     // [data-acao] vira o evento ucam:acao em vez de agir.
     const html = `<!doctype html>
-<html lang="pt-BR" data-referencia>
+<html lang="pt-BR" data-referencia${proj.escala === 'ampla' ? ' data-escala="ampla"' : ''}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">

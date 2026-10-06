@@ -26,22 +26,13 @@ const LETRAS = 'ABCDEFG';
   imports: [UcamBadge, UcamButton, UcamCitacao, UcamIconTile, UcamSectionBar, UcamTooltip, ProvaProtegida],
   templateUrl: './questao.html',
   styles: `
-    /* O cartão do DS alinha pelo topo porque prevê título + linha de apoio;
-       a alternativa é uma linha só, e o texto precisa ficar no eixo da letra. */
-    :host .ucam-choice-card {
-      align-items: center;
-      /* Sem a marca no canto, o recuo que a reservava volta ao do cartão. */
-      padding-inline-end: var(--ucam-space-inset-sm);
-    }
     /* A ESCOLHIDA NÃO LEVA CHECK. Numa prova, check ao lado da alternativa lê
        como "certa", e a tela não sabe se está certa — só que foi a escolhida.
-       O contrato do cartão pede um segundo sinal além da borda (WCAG 1.4.1),
-       e aqui ele é o do cartão-resposta: a letra preenchida. É desvio
-       declarado da ADR-046, que deixa o chip neutro — lá o chip é enfeite,
-       aqui a letra é o nome da alternativa. */
+       O segundo sinal além da borda (WCAG 1.4.1) é o do cartão-resposta: a
+       letra preenchida, sobre o fundo sutil da ação. Desde a 0.1.4 isso é a
+       variante .ucam-choice-card--letra do DS, que nasceu aqui: alinhamento,
+       recuo, letra e fundo vêm da folha, e este arquivo só guarda o pulso. */
     :host .ucam-choice-card:has(input:checked) .ucam-choice-card__figura {
-      background: var(--ucam-color-action-primary-default);
-      color: var(--ucam-color-text-on-action);
       /* A letra "assenta" ao ser marcada: um pulso curto de escala, só em
          propriedade que não recalcula layout, na duração de superfície que
          aparece. prefers-reduced-motion é respeitado pela regra global do DS. */
