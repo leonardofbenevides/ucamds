@@ -61,7 +61,7 @@
       "parte": "icone",
       "obrigatorio": false,
       "classe": "ucam-descricao__icone",
-      "descricao": "Ícone antes do rótulo, só no layout painel. Decorativo e aria-hidden: o dt é o que o leitor de tela lê, e ícone sem rótulo aqui é adivinhação. Existe porque é o que faz a varredura vertical achar \"Prazo\" entre doze pares sem ler os doze."
+      "descricao": "Ícone antes do rótulo, nos layouts painel e faixa. Decorativo e aria-hidden: o dt é o que o leitor de tela lê, e ícone sem rótulo aqui é adivinhação. Existe porque é o que faz a varredura vertical achar \"Prazo\" entre doze pares sem ler os doze."
     },
     {
       "parte": "mais",
@@ -97,9 +97,9 @@
     },
     {
       "nome": "layout",
-      "tipo": "'stacked' | 'inline' | 'painel'",
+      "tipo": "'stacked' | 'inline' | 'painel' | 'faixa'",
       "default": "'stacked'",
-      "descricao": "stacked põe o rótulo acima do valor; inline põe lado a lado, com os valores alinhados pelo maior rótulo; painel põe lado a lado com a coluna do rótulo em largura DECLARADA e um ícone por par.",
+      "descricao": "stacked põe o rótulo acima do valor; inline põe lado a lado, com os valores alinhados pelo maior rótulo; painel põe lado a lado com a coluna do rótulo em largura DECLARADA e um ícone por par; faixa põe os pares em fileira que quebra, cada um na largura do próprio valor.",
       "valores": {
         "stacked": {
           "uso": "Padrão. Funciona em qualquer largura e não depende do tamanho do maior rótulo.",
@@ -113,6 +113,11 @@
           "uso": "A coluna lateral de um registro — os dados do requerimento ao lado da atividade. Uma linha por par, ícone e rótulo em 9rem (ajustável por --ucam-descricao-rotulo), valor no resto. Com visibleCount, corta a lista e mostra o botão \"Mostrar todos\".",
           "limite": "Só em coluna de até ~24rem. Em largura cheia a coluna do valor fica com 60% de vazio, e o stacked em três colunas usa melhor a tela.",
           "classe": "ucam-descricao--painel"
+        },
+        "faixa": {
+          "uso": "Os dados do registro ACIMA do conteúdo dele, quando o conteúdo precisa da largura inteira — a solicitação de isenção sobre a tabela de decisões (06/10/2026). Rótulo com ícone acima do valor, pares de largura natural em fileira que quebra: 'Curso: Direito' não ocupa o mesmo que 'Instituição: Universidade Estácio de Sá'.",
+          "limite": "Até uns oito pares curtos. Sem trilha, os valores não alinham em coluna entre uma linha e outra: para conferir números ou varrer doze pares, stacked em colunas ou painel.",
+          "classe": "ucam-descricao--faixa"
         }
       }
     },

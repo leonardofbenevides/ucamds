@@ -1216,6 +1216,30 @@
         "Selo neutro continua neutro: o que é Rascunho ou Arquivado não ganha tom por esta decisão. Trocar o tom de um estado é revisão de tela, não de folha."
       ],
       "afeta": ["*", "badge", "avatar", "icon-tile", "app-shell", "data-table"]
+    },
+    {
+      "id": "ADR-063",
+      "titulo": "Tarefa de vários passos é uma página em rolagem única, com os passos numerados",
+      "status": "aceita",
+      "data": "2026-10-06",
+      "contexto": "A análise da isenção punha a tabela de decisões numa coluna e, à direita, um painel com cinco cartões: solicitação, documentos, sugestão, observação e atividade. Quem usou não entendeu por onde começar — retorno negativo relatado em 06/10/2026 (\"o pessoal não entendeu muito bem as telas\"). O painel lateral tirava 18rem de uma tabela com um controle de três posições por linha, punha os documentos (o que se abre primeiro) abaixo da dobra de uma coluna estreita, e não dizia em que ordem as coisas se fazem.",
+      "decisao": "Tela em que a pessoa cumpre uma tarefa com mais de um gesto é UMA coluna em rolagem, com os blocos um em cima do outro na ordem de uso. No alto, a ficha de quem é o registro (foto, nome, identificação) e os dados em faixa. Cada bloco que pede um gesto é uma seção cujo título abre com o número do passo (.ucam-section__passo); o último passo explica a ação principal, que continua uma só e continua no alto. Blocos de leitura (critérios, atividade) vêm depois, sem número. O painel lateral (split) fica para apoio que se consulta ENQUANTO se preenche — prévia, memória de cálculo —, não para etapas.",
+      "consequencias": [
+        "As cinco telas de detalhe da isenção perdem o aside: análise, consulta, sem documentos, acompanhamento e resultado.",
+        "A tabela de decisões ocupa a largura inteira; a de três colunas dentro da pilha não leva o teto de tabela curta.",
+        "Os documentos sobem para o passo 1, em fileira, como anexos de email (anexo.json, fileira).",
+        "A barra segmentada das decisões fica acima da tabela e acompanha cada clique; a legenda vai em fileira.",
+        "Cada matéria ganha um ladrilho de ícone na primeira célula (data-table.json, célula com figura), e a sugestão veste a tinta do que sugere, em contorno.",
+        "A página fica mais longa: a análise passa de uma tela e meia para três. É o preço, e a faixa do alto com a ação principal continua grudada.",
+        "Os retratos das telas de referência são ilustrações de exemplo; no sistema entra a foto do cadastro, e sem foto o avatar de iniciais."
+      ],
+      "afeta": [
+        "anexo",
+        "avatar",
+        "data-table",
+        "description-list",
+        "progress"
+      ]
     }
   ]
 }

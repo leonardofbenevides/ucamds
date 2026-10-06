@@ -117,7 +117,7 @@
     {
       "parte": "cell-person",
       "obrigatorio": false,
-      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro; <button> quando a linha abre uma gaveta na própria tela, sem endereço) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047)."
+      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro; <button> quando a linha abre uma gaveta na própria tela, sem endereço) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047). CÉLULA COM FIGURA (.td--figura, 06/10/2026): um ladrilho de ícone (.ucam-icon-tile--sm, aria-hidden) antes do nome da linha, com o texto em .td--figura__texto — a disciplina na tabela da isenção. Dá ao olho onde cada linha começa numa tabela em que a primeira coluna é texto e as outras são controle; o ícone é decorativo, o nome é o dado, e a coluna continua ordenando pelo texto."
     },
     {
       "parte": "cell-support",

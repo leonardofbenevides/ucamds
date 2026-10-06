@@ -98,6 +98,17 @@ let seq = 0;
       background: var(--ucam-color-surface-default);
       transition: border-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
     }
+    /* Espelho de .ucam-anexos--fileira (anexos como no pé de um email): a ul
+       de quem monta a lista leva o modificador, e o tile encolhe para a
+       largura do nome, com a figura cheia na tinta da ação. */
+    .ucam-anexos--fileira { display: flex; flex-wrap: wrap; gap: var(--ucam-space-inline-sm); margin: 0; padding: 0; list-style: none; }
+    .ucam-anexos--fileira > * { flex: 0 1 auto; min-inline-size: 0; max-inline-size: min(100%, 18rem); }
+    .ucam-anexos--fileira ucam-anexo .ucam-anexo { padding: var(--ucam-space-inline-xs); padding-inline-end: var(--ucam-space-inline-sm); }
+    .ucam-anexos--fileira ucam-anexo .ucam-anexo__figura { inline-size: 2rem; block-size: 2rem; }
+    .ucam-anexos--fileira ucam-anexo .ucam-anexo:not(.ucam-anexo--recusado, .ucam-anexo--erro) .ucam-anexo__figura {
+      background: var(--ucam-color-action-primary-default);
+      color: var(--ucam-color-text-on-action);
+    }
     ucam-anexo .ucam-anexo__figura {
       flex: none;
       display: inline-flex;

@@ -2974,6 +2974,18 @@ ${FN_ANUNCIA}
     // O resumo do rodapé da tabela e o eco dele no fecho do telefone
     // (.ucam-viewbar__resumo, aria-hidden: quem ouve já tem o de cima).
     Array.prototype.forEach.call(document.querySelectorAll('[data-totais], [data-totais-eco]'), function (alvo) { alvo.textContent = linhaTot; });
+    // A BARRA das decisões, acima da tabela (06/10/2026): cada segmento e cada
+    // número da legenda seguem a mesma conta do rodapé.
+    var barraTot = document.querySelector('[data-totais-barra]');
+    if (barraTot && t.total) {
+      [['isentas', t.isentas], ['nao', t.nao], ['documento', t.documento], ['pendentes', t.pendentes]].forEach(function (par) {
+        var seg = barraTot.querySelector('[data-parte="' + par[0] + '"]');
+        if (seg) seg.style.setProperty('--ucam-progress-valor', (par[1] / t.total * 100).toFixed(1) + '%');
+        var num = document.querySelector('[data-parte-n="' + par[0] + '"]');
+        if (num) num.textContent = String(par[1]);
+      });
+      barraTot.setAttribute('aria-label', 'Decisões: ' + linhaTot.replace(/ · /g, ', '));
+    }
     var fim = document.querySelector('[data-acao="finalizar-analise"]');
     if (fim) {
       fim.setAttribute('data-pendentes', String(t.pendentes));
@@ -4376,6 +4388,14 @@ ${FN_ANUNCIA}
         td.removeAttribute('data-aguarda-documento');
       });
       trocaDicas('enviado');
+      // A barra de andamento do candidato acompanha: o que aguardava
+      // documento volta a "em análise".
+      Array.prototype.forEach.call(document.querySelectorAll('[data-valor-enviado]'), function (seg) {
+        seg.style.setProperty('--ucam-progress-valor', seg.getAttribute('data-valor-enviado'));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-rotulo-enviado]'), function (b) {
+        b.setAttribute('aria-label', b.getAttribute('data-rotulo-enviado'));
+      });
       var alertaE = botao.closest('.ucam-alert');
       var textoE = 'Documento enviado em ' + diaE + ' às ' + hora() + '. A coordenação volta a analisar sua solicitação.';
       if (alertaE) {

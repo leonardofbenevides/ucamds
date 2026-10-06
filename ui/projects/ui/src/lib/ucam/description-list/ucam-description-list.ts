@@ -95,7 +95,7 @@ const TINTA: Record<UcamDescriptionTone, string> = {
              Além do corte (visibleCount) o par leva o atributo hidden — estado
              legível na marcação, e o que o Trilho A também faz. -->
         <div class="min-w-0" [class.col-span-full]="item.span" [hidden]="escondido(i)">
-          @if (painel()) {
+          @if (painel() || faixa()) {
             <dt class="ucam-descricao__rotulo">
               @if (item.icon) { <ucam-icon [name]="item.icon" size="sm" class="ucam-descricao__icone" /> }
               {{ item.label }}
@@ -196,6 +196,32 @@ const TINTA: Record<UcamDescriptionTone, string> = {
       font-size: var(--ucam-typography-body-sm-font-size);
       min-inline-size: 0;
     }
+    /* Espelho de .ucam-descricao--faixa em tools/build-css.mjs: os pares em
+       fileira que quebra, cada um na largura do próprio valor. */
+    ucam-description-list .ucam-descricao--faixa {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ucam-space-stack-md) var(--ucam-space-inset-xl);
+      margin: 0;
+    }
+    ucam-description-list .ucam-descricao--faixa > div { flex: 0 1 auto; max-inline-size: 100%; }
+    ucam-description-list .ucam-descricao--faixa > div[hidden] { display: none; }
+    ucam-description-list .ucam-descricao--faixa .ucam-descricao__rotulo {
+      display: flex;
+      align-items: center;
+      gap: var(--ucam-space-inline-xs);
+      margin: 0 0 0.125rem;
+      font-size: var(--ucam-typography-caption-font-size);
+      line-height: var(--ucam-typography-caption-line-height);
+      color: var(--ucam-color-text-secondary);
+    }
+    ucam-description-list .ucam-descricao--faixa .ucam-descricao__valor {
+      margin: 0;
+      font-size: var(--ucam-typography-body-sm-font-size);
+      font-weight: var(--ucam-typography-label-font-weight);
+      line-height: var(--ucam-typography-body-sm-line-height);
+      overflow-wrap: anywhere;
+    }
     /* Espelho de .ucam-descricao--fio em tools/build-css.mjs. */
     ucam-description-list .ucam-descricao--fio { row-gap: 0; }
     ucam-description-list .ucam-descricao--fio > div { align-items: center; padding-block: var(--ucam-space-inline-xs); min-block-size: 2.25rem; }
@@ -223,7 +249,7 @@ const TINTA: Record<UcamDescriptionTone, string> = {
 export class UcamDescriptionList {
   readonly items = input.required<UcamDescriptionItem[]>();
   readonly columns = input<'auto' | 1 | 2 | 3>('auto');
-  readonly layout = input<'stacked' | 'inline' | 'painel'>('stacked');
+  readonly layout = input<'stacked' | 'inline' | 'painel' | 'faixa'>('stacked');
   /** Fio entre os pares (lista longa no inline). Ver description-list.json, divided. */
   readonly divided = input(false);
   /**
@@ -240,6 +266,8 @@ export class UcamDescriptionList {
   protected readonly idLista = `ucam-descricao-${++seq}`;
   protected readonly aberto = signal(false);
   protected readonly painel = computed(() => this.layout() === 'painel');
+  /** Os dados do registro numa fileira acima do conteúdo. Ver description-list.json, layout faixa. */
+  protected readonly faixa = computed(() => this.layout() === 'faixa');
   protected readonly temCorte = computed(() => {
     const n = this.visibleCount();
     return this.painel() && n !== null && n < this.items().length;
@@ -265,12 +293,13 @@ export class UcamDescriptionList {
   }
 
   protected readonly classes = computed(() => {
-    const fio = this.divided() && !this.painel() ? ' ucam-descricao--fio' : '';
+    const fio = this.divided() && !this.painel() && !this.faixa() ? ' ucam-descricao--fio' : '';
     return this.classesBase() + fio;
   });
 
   private readonly classesBase = computed(() => {
     if (this.painel()) return 'ucam-descricao ucam-descricao--painel';
+    if (this.faixa()) return 'ucam-descricao--faixa';
     // 16px entre linhas e 20px entre colunas, como no Trilho A (20/09/2026):
     // com 8px o vão ENTRE pares era quase o de dentro do par, e a grade lia
     // como um bloco de texto em vez de seis itens.

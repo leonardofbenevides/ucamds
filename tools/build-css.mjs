@@ -140,7 +140,9 @@ const ITEM_DE_GRADE = ':not(.ucam-empty, .ucam-sr-only, [hidden], template, scri
  * pode ter medida própria — ver "A TABELA CURTA TEM TETO". Um :has() só,
  * porque :has() não aninha: a última coluna de dado é a N-ésima ou antes. */
 const TABELA_ATE = (n) => `.ucam-table > thead > tr > th:nth-last-child(1 of :not(.th--selecao, [hidden])):nth-child(-n+${n} of :not(.th--selecao, [hidden]))`;
-const TABELA_SOLTA = ':not(.ucam-split:not(.ucam-split--apoio-inicio) *):not(:has(~ :is(.ucam-card, .ucam-stats, .ucam-grid))):not(:is(.ucam-card, .ucam-stats, .ucam-grid) ~ *)';
+/* E não é solta a tabela de uma PILHA de blocos (06/10/2026): na isenção em rolagem única os
+ * cartões de cima e de baixo vão na largura do corpo, e a tabela de três colunas parava antes deles. */
+const TABELA_SOLTA = ':not(.ucam-corpo > .ucam-stack > .ucam-section *):not(.ucam-split:not(.ucam-split--apoio-inicio) *):not(:has(~ :is(.ucam-card, .ucam-stats, .ucam-grid))):not(:is(.ucam-card, .ucam-stats, .ucam-grid) ~ *)';
 
 const contentorAbaixo = (papel, nome = 'corpo') => {
   const r = (remDoContentor(papel) - 0.001).toFixed(3);
@@ -1560,6 +1562,78 @@ button.ucam-anexo__nome {
 .ucam-anexo--erro .ucam-anexo__apoio {
   color: var(--ucam-color-feedback-danger-foreground);
   white-space: normal;
+}
+
+/* FILEIRA (06/10/2026): os anexos como no pé de um email. Na grade cada tile
+ * ocupa a trilha inteira, e no painel lateral da isenção dois PDFs viravam
+ * dois blocos de 80px com o nome cortado em "historico-joao-cutri…" — a peça
+ * mais alta da coluna para o dado menos lido. Na fileira o tile tem a largura
+ * do NOME, corre na linha e quebra para a de baixo; o teto de 18rem é o que
+ * segura um nome longo, que aí trunca como na grade.
+ *
+ * A figura é CHEIA na tinta da ação, com o desenho em text.on-action: o
+ * quadrado colorido do formato que o cliente de email põe antes do nome. O
+ * poço cinza de 32px sumia contra o filete, e a receita a 12% lia cinza do
+ * mesmo jeito. A recusa e o erro continuam em tom de erro. */
+.ucam-anexos--fileira {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-inline-sm);
+}
+
+.ucam-anexos--fileira .ucam-anexo {
+  flex: 0 1 auto;
+  max-inline-size: min(100%, 18rem);
+  padding: var(--ucam-space-inline-xs);
+  padding-inline-end: var(--ucam-space-inline-sm);
+}
+
+.ucam-anexos--fileira .ucam-anexo__figura {
+  inline-size: 2rem;
+  block-size: 2rem;
+}
+
+.ucam-anexos--fileira .ucam-anexo:not(.ucam-anexo--recusado, .ucam-anexo--erro) .ucam-anexo__figura {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+}
+
+.ucam-anexos--fileira .ucam-anexo__figura .ic,
+.ucam-anexos--fileira .ucam-anexo__indicio {
+  inline-size: var(--ucam-size-icon-sm);
+  block-size: var(--ucam-size-icon-sm);
+}
+
+/* Uma linha de apoio: o tile da fileira tem duas linhas e a mesma altura em
+ * todos, senão a fileira serrilha. */
+.ucam-anexos--fileira .ucam-anexo__apoio {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+/* O CABEÇALHO da lista: clipe, contagem e de quando são. É a linha que o
+ * email põe acima dos anexos. O clipe fica na PRIMEIRA linha: no telefone o
+ * título quebra em três, e centrado ele descia para o meio do parágrafo. */
+.ucam-anexos__titulo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ucam-space-inline-xs);
+  margin: 0 0 var(--ucam-space-inline-sm);
+  font-size: var(--ucam-typography-caption-font-size);
+  line-height: var(--ucam-typography-caption-line-height);
+  color: var(--ucam-color-text-secondary);
+}
+
+.ucam-anexos__titulo .ic {
+  flex: none;
+  inline-size: var(--ucam-size-icon-sm);
+  block-size: var(--ucam-size-icon-sm);
+  margin-block-start: 0.0625rem;
+}
+
+.ucam-anexos__titulo b {
+  font-weight: var(--ucam-typography-label-font-weight);
+  color: var(--ucam-color-text-primary);
 }
 
 /* --------------------------------------------------------- file-field --- */
@@ -3326,6 +3400,68 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   border-color: var(--ucam-color-border-default);
   color: var(--ucam-color-text-secondary);
 }
+
+/* O PASSO (06/10/2026): o número que diz em que ordem a tela se usa. Retorno
+ * de quem usou a análise da isenção: "não entendi por onde começar". Com a
+ * tela em rolagem única, cada seção que pede um gesto abre com o número —
+ * 1 confira, 2 decida, 3 escreva, 4 finalize — num disco na tinta da ação.
+ * Só em seção que é tarefa: seção de leitura (atividade, critérios) não leva
+ * número, e é a ausência dele que a diz opcional. Decorativo para o leitor
+ * de tela não é: o número vai no texto do título ("Passo 1:" em .ucam-sr-only). */
+.ucam-section__passo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-inline-end: var(--ucam-space-inline-sm);
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+  font-size: var(--ucam-typography-caption-font-size);
+  font-weight: var(--ucam-typography-action-font-weight);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  vertical-align: 0.125em;
+}
+
+/* A FICHA: a pessoa de quem a tela é, no alto do cartão de dados — foto,
+ * nome e a linha de identificação. É o cabeçalho do registro quando ele é
+ * uma pessoa; os pares vêm abaixo, em faixa. */
+.ucam-ficha {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-md);
+  min-inline-size: 0;
+}
+.ucam-ficha__texto { min-inline-size: 0; }
+.ucam-ficha__nome {
+  margin: 0;
+  font-size: var(--ucam-typography-section-title-font-size);
+  font-weight: var(--ucam-typography-section-title-font-weight);
+  line-height: var(--ucam-typography-section-title-line-height);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-ficha__apoio {
+  margin: 0;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  line-height: var(--ucam-typography-body-sm-line-height);
+  color: var(--ucam-color-text-secondary);
+}
+
+/* A CÉLULA COM FIGURA: o ladrilho do ícone antes do nome da linha — a
+ * disciplina na tabela da isenção. A figura dá ao olho onde cada linha
+ * começa numa tabela em que a primeira coluna é texto e as outras são
+ * controle; o ícone é decorativo, o nome é o dado. */
+.ucam-table .td--figura {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-sm);
+  min-inline-size: 0;
+}
+.ucam-table .td--figura > .ucam-icon-tile { flex: none; }
+.ucam-table .td--figura__texto { min-inline-size: 0; }
 
 /* ------------------------------------------------------ selo: ponto --- */
 /* O PONTO substitui o ícone em densidade alta. Contrato: badge.json.
@@ -10782,6 +10918,29 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 
 .ucam-descricao--inline .ucam-descricao__rotulo { margin: 0; }
 
+/* FAIXA (06/10/2026): os dados do registro numa fileira ACIMA do conteúdo, e
+ * não numa coluna ao lado dele. Na isenção o painel da direita levava 18rem
+ * de uma tabela que tem um seletor de três posições por linha, para mostrar
+ * sete pares que se leem uma vez. Cada par tem a largura do próprio valor e
+ * a fileira quebra: sem trilha de 12rem, "Curso: Direito" não ocupa o mesmo
+ * que "Instituição: Universidade Estácio de Sá". O ícone no rótulo é o do
+ * painel, decorativo. */
+.ucam-descricao--faixa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-stack-md) var(--ucam-space-inset-xl);
+}
+
+.ucam-descricao--faixa .ucam-descricao__par { flex: 0 1 auto; max-inline-size: 100%; }
+
+.ucam-descricao--faixa .ucam-descricao__rotulo {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-xs);
+}
+.ucam-descricao--faixa .ucam-descricao__rotulo > .ic { flex: none; }
+.ucam-descricao--faixa .ucam-descricao__valor { overflow-wrap: anywhere; }
+
 /* O BALÃO DO MOTIVO (motivoScript, 28/09/2026): o .ucam-tooltip de sempre,
  * aberto pelo clique num controle bloqueado e posto pelo script ao lado dele.
  * Fixo, acima de tudo que não é modal, e sem pegar o ponteiro — ele explica,
@@ -11548,6 +11707,11 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__fill--success { background: var(--ucam-color-feedback-success-graphic); }
 .ucam-progress__fill--warning { background: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__fill--danger  { background: var(--ucam-color-feedback-danger-graphic); }
+/* O NEUTRO declarado (06/10/2026): na segmentada, a parte que ainda não tem
+ * julgamento — "sem decisão" na isenção — é segmento desenhado, na mesma
+ * tinta do ponto da legenda (.ucam-progress__ponto--neutral). Era o valor de
+ * base, sem nome: o Trilho B já emitia a classe e aqui ela não existia. */
+.ucam-progress__fill--neutral { background: var(--ucam-color-text-secondary); }
 /* marca (07/10/2026): o andamento que é DA PESSOA numa tela de tarefa única —
  * o tempo da prova, as questões respondidas. Não julga, como o neutro, mas é a
  * peça principal da barra da tela, e em cinza ela lia como barra apagada. Veste
@@ -11663,6 +11827,22 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__ponto--warning { color: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__ponto--danger  { color: var(--ucam-color-feedback-danger-graphic); }
 .ucam-progress__ponto--neutral { color: var(--ucam-color-text-secondary); }
+
+/* LEGENDA EM FILEIRA (06/10/2026): a barra na largura inteira da página. A
+ * tabelinha põe o nome à esquerda e o número à direita, e com a barra em
+ * 1100px os dois ficavam a um metro um do outro. Aqui cada série é ponto,
+ * nome e número juntos, uma ao lado da outra, quebrando quando aperta. */
+.ucam-progress__series--fileira {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-inline-xs) var(--ucam-space-inset-lg);
+}
+.ucam-progress__series--fileira > li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-xs);
+}
+.ucam-progress__series--fileira .ucam-progress__parte { min-inline-size: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .ucam-progress__fill { transition: none; }

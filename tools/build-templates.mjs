@@ -177,7 +177,9 @@ for (const { dir } of DESTINOS) if (!existsSync(dir)) mkdirSync(dir, { recursive
 // horizontal não cabe em 72px), e a moldura com faixa usa o lockup. Uma tela
 // que declarasse o rail sem o símbolo copiado ganharia uma máscara apontando
 // para 404 — que não dá erro nenhum, só não pinta.
-const MARCAS = ['ucam-logo-horizontal.svg', 'ucamds-simbolo-inverso.svg'];
+// E os RETRATOS de exemplo (06/10/2026): ilustrações, não fotos de ninguém — a
+// ficha do aluno na isenção mostra onde a foto do cadastro entra.
+const MARCAS = ['ucam-logo-horizontal.svg', 'ucamds-simbolo-inverso.svg', 'retrato-1.svg', 'retrato-2.svg', 'retrato-3.svg'];
 for (const d of DESTINOS.map((x) => join(x.dir, '..', 'marca'))) {
   if (!existsSync(d)) mkdirSync(d, { recursive: true });
   for (const m of MARCAS) copyFileSync(join(ROOT, 'site/src/assets/marca', m), join(d, m));
