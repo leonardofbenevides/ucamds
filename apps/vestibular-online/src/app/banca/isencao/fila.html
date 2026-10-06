@@ -21,7 +21,19 @@
       @default {
         <div class="ucam-toolbar">
           @if (recorte() === 'analise') {
-            <ucam-segmented label="Situação" ariaLabel="Situação da solicitação" [items]="situacoes" [(value)]="situacao" />
+            <!-- A MESMA escolha em dois controles. O segmentado mostra as quatro
+                 situações de uma vez, que é o que ele tem de melhor — mas com
+                 rótulos de duas palavras ele não cabe em 390px: rolava de lado
+                 dentro do trilho e escondia opções (07/10/2026). Abaixo de 48rem
+                 entra a seleção, que é o que o contrato do segmentado manda
+                 quando as opções deixam de caber à vista. Os div sem classe do
+                 DS existem para o Tailwind decidir o display. -->
+            <div class="hidden md:block" data-situacao="larga">
+              <ucam-segmented label="Situação" ariaLabel="Situação da solicitação" [items]="situacoes" [(value)]="situacao" />
+            </div>
+            <div class="md:hidden" data-situacao="estreita">
+              <ucam-select label="Situação" width="content" [options]="opcoesSituacao" [(value)]="situacao" />
+            </div>
           }
           <ucam-text-field label="Pesquisar candidato" type="search" placeholder="Nome" width="content" [(value)]="busca" />
           <ucam-select label="Curso" width="content" [options]="opcoesCurso()" [(value)]="curso" />

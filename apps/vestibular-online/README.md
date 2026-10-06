@@ -82,7 +82,7 @@ Decisões de 07/10/2026 (tamanho, cor, largura e o cartão do candidato), todas 
 - **Alternativa.** A alternativa de prova virou variante do DS (`.ucam-choice-card--letra`): texto no eixo da letra, letra preenchida e fundo sutil quando escolhida, sem check. O `questao.ts` só guarda o pulso da letra.
 - **Cartão do candidato** (`layout/moldura.ts`): avatar de marca com as iniciais, o nome como título e "Sua inscrição" como apoio; abaixo, curso, campus, turno e CPF empilhados, um por linha. A versão anterior punha rótulo e valor em duas colunas com um ícone por rótulo, e o nome do curso quebrava em três linhas.
 - **Faixa.** O campus só entra na faixa a partir de 64rem e a fileira de ações não embrulha: em 768px, relógio, campus e ajuda quebravam a faixa em duas linhas.
-- **Responsividade é critério de aceite.** Conferida de 320 a 3440px em dez rotas (entrada, dados, instruções, questão, redação, redações, provas, fila e acompanhamento da isenção): nada rola na horizontal nem vaza da caixa. A única rolagem lateral que fica é a do seletor segmentado de quatro opções da fila de isenção no celular, que é o comportamento do DS.
+- **Responsividade é critério de aceite.** Conferida de 320 a 3440px em dez rotas (entrada, dados, instruções, questão, redação, redações, provas, fila e acompanhamento da isenção): nada rola na horizontal nem vaza da caixa. Na fila de isenção, o seletor segmentado de situação (quatro rótulos de duas palavras) rolava de lado no celular e escondia opções: abaixo de 48rem ele dá lugar a uma seleção com as mesmas opções (`banca/isencao/fila.html`).
 
 ## Backend de mentira (desenvolvimento)
 

@@ -56,6 +56,8 @@ export class FilaIsencaoPage {
     { id: 'analise', label: SITUACOES.analise.label },
     { id: 'candidato', label: SITUACOES.candidato.label },
   ];
+  /** As mesmas situações, para a seleção que substitui o segmentado em tela estreita. */
+  readonly opcoesSituacao: UcamOption[] = this.situacoes.map((s) => ({ value: s.id, label: s.label }));
   private readonly doRecorte = computed(() => (this.recorte() === 'analise' ? this.store.emAnalise() : this.store.concluidas()));
   readonly opcoesCurso = computed<UcamOption[]>(() => [
     { value: TODOS_OS_CURSOS, label: 'Todos os cursos' },

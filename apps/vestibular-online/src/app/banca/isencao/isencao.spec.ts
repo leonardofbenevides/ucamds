@@ -136,6 +136,18 @@ describe('Isenção — secretaria', () => {
       expect(el.querySelector('a[href="/banca/isencao/joao"]')).not.toBeNull();
     });
 
+    it('a situação existe em dois controles com o mesmo valor: segmentado em tela larga, seleção em tela estreita', async () => {
+      // Quatro rótulos longos não cabem em 390px: o segmentado rolava de lado
+      // e escondia opções. Abaixo de 48rem quem aparece é a seleção.
+      const { el } = await montar();
+      const larga = el.querySelector('[data-situacao="larga"]');
+      const estreita = el.querySelector('[data-situacao="estreita"]');
+      expect(larga?.querySelector('ucam-segmented')).toBeTruthy();
+      expect(estreita?.querySelector('ucam-select')).toBeTruthy();
+      expect(larga?.className).toContain('md:block');
+      expect(estreita?.className).toContain('md:hidden');
+    });
+
     it('a situação, o curso e a busca recortam a fila; sem resultado, o vazio oferece limpar', async () => {
       const { el, pagina, estavel } = await montar();
       pagina.situacao.set('envio');
