@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * O catálogo de ícones.
@@ -20,7 +21,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-icones',
-  imports: [PageHeaderComponent, NestaPaginaComponent, FormsModule, RouterLink],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent, FormsModule, RouterLink],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -129,7 +130,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               <li class="ladrilho">
                 <svg class="ic" aria-hidden="true"><use [attr.href]="'#i-' + ic.lucide" /></svg>
                 <code class="nome">{{ ic.lucide }}</code>
-                <span class="small muted uso">{{ ic.uso }}</span>
+                <span class="small muted uso"><ucam-t [t]="ic.uso" /></span>
               </li>
             }
           </ul>

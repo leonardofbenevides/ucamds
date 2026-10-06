@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal, El
 import { DomSanitizer } from '@angular/platform-browser';
 
 import type { DemoPainel } from '../spec/spec.types';
+import { TextoComponent } from './texto.component';
 
 let seq = 0;
 
@@ -20,6 +21,7 @@ let seq = 0;
  */
 @Component({
   selector: 'ucam-demo-painel',
+  imports: [TextoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let d = painel();
@@ -29,7 +31,7 @@ let seq = 0;
         <figcaption class="demo-cabeca">
           <h3>{{ d.titulo }}</h3>
           @if (d.descricao) {
-            <p>{{ d.descricao }}</p>
+            <p><ucam-t [t]="d.descricao" /></p>
           }
         </figcaption>
       }

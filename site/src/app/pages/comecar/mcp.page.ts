@@ -2,10 +2,11 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { recursos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-mcp',
-  imports: [PageHeaderComponent],
+  imports: [TextoComponent, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -41,7 +42,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
               @for (f of mcp.ferramentas; track f.nome) {
                 <tr>
                   <td><code>{{ f.nome }}</code></td>
-                  <td class="small">{{ f.faz }}</td>
+                  <td class="small"><ucam-t [t]="f.faz" /></td>
                   <td><span class="pill pill-draft">{{ f.estado }}</span></td>
                 </tr>
               }

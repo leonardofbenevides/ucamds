@@ -7,6 +7,7 @@ import type { AcaoFluxo, Tela } from '../../spec/spec.types';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { noNavegador } from '../../docs/no-navegador';
 import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-preview';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Telas inteiras, agrupadas por sistema.
@@ -23,7 +24,7 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
  */
 @Component({
   selector: 'ucam-telas',
-  imports: [RouterLink, PageHeaderComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -45,7 +46,7 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
           </span>
           <div class="projeto-texto">
             <h2>{{ p.nome }} <span class="num">{{ p.templates.length }}</span></h2>
-            <p class="small muted">{{ p.descricao }}</p>
+            <p class="small muted"><ucam-t [t]="p.descricao" /></p>
             <p class="stack small">
               <span class="rotulo">Hoje</span>
               {{ p.stack_atual }}
@@ -72,7 +73,7 @@ import { consultaDeTema, sincronizaTemaDosPreviews } from '../../docs/tema-previ
                   <p class="perfil small"><span class="rotulo">Quem vê</span>{{ t.perfil }}</p>
                 }
                 <h3>{{ t.nome }}</h3>
-                <p class="small muted">{{ t.descricao }}</p>
+                <p class="small muted"><ucam-t [t]="t.descricao" /></p>
                 <p class="rodape small">
                   <span>{{ t.padrao }}</span>
                   <span>{{ t.usa.length }} componentes</span>

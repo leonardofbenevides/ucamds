@@ -19,6 +19,7 @@ import { telaPorId, componentePorId, padraoPorId } from '../../../spec/spec';
 import { PageHeaderComponent } from '../../../docs/page-header.component';
 import { noNavegador } from '../../../docs/no-navegador';
 import { consultaDeTema, sincronizaTemaDosPreviews } from '../../../docs/tema-preview';
+import { TextoComponent } from '../../../docs/texto.component';
 
 /** Larguras da moldura. Os nomes são os pontos de virada do próprio shell. */
 const LARGURAS = [
@@ -50,7 +51,7 @@ const SITUACOES = [
  */
 @Component({
   selector: 'ucam-tela',
-  imports: [RouterLink, PageHeaderComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (dados(); as d) {
@@ -78,7 +79,7 @@ const SITUACOES = [
           Abrir em nova aba
         </a>
       </div>
-      <p class="nota small muted">{{ largura().nota }}</p>
+      <p class="nota small muted"><ucam-t [t]="largura().nota" /></p>
 
       <!-- A moldura reduz por ESCALA, nunca por largura: reduzir a largura
            mudaria a viewport do iframe e, com ela, o arranjo documentado.
@@ -107,8 +108,8 @@ const SITUACOES = [
       </div>
       @if (escala() < 1) {
         <p class="escala-nota small muted">
-          Reduzido a {{ (escala() * 100).toFixed(0) }}% para caber na coluna. A tela continua
-          desenhando em {{ pxEfetivo() }}px — é a viewport que o arranjo documenta.
+          Reduzido a {{ (escala() * 100).toFixed(0) }}% para caber na coluna; a tela desenha em
+          {{ pxEfetivo() }}px.
         </p>
       }
 
@@ -146,7 +147,7 @@ const SITUACOES = [
           </button>
         </div>
         @if (abaCodigo() === 'html') {
-          <p class="codigo-nota small muted">
+          <p class="codigo-nota small muted resto">
             É a marcação que o quadro acima renderiza, sem a moldura: faixa, menu e conta vêm do
             <a routerLink="/catalogo/app-shell">app-shell</a>. Com a folha e o
             <code>ucam-comportamento.js</code> carregados, fica idêntica e responde como aqui
@@ -192,7 +193,10 @@ const SITUACOES = [
           <h2>Decisões desta tela</h2>
           <ul class="notas">
             @for (n of d.tela.notas ?? []; track n) {
-              <li>{{ n }}</li>
+              <li [class.resto]="$index >= CORTE"><ucam-t [t]="n" /></li>
+            }
+            @if ((d.tela.notas?.length ?? 0) > CORTE) {
+              <li class="so-resumo mais">Mais {{ (d.tela.notas?.length ?? 0) - CORTE }} no texto completo.</li>
             }
           </ul>
 
@@ -200,18 +204,19 @@ const SITUACOES = [
             <h2>Regras de negócio que a tela supõe</h2>
             <div class="regras">
               <p class="small muted">
-                O design system não decide estas regras. A tela foi desenhada supondo cada uma; quem
-                decide está ao lado. Só as do legado e as confirmadas são regra. Os números da tela
-                são exemplo.
+                A tela supõe cada regra abaixo; quem decide está ao lado.
               </p>
               @for (g of regras(); track g.situacao) {
                 <h3>{{ g.rotulo }} · {{ g.itens.length }}</h3>
                 <ul class="regras" [attr.data-situacao]="g.situacao">
                   @for (r of g.itens; track r.regra) {
-                    <li>
-                      {{ r.regra }}
+                    <li [class.resto]="jaRespondida(g.situacao) && $index >= 3">
+                      <ucam-t [t]="r.regra" />&ngsp;
                       <span class="decide small muted">Decide: {{ r.decide }}</span>
                     </li>
+                  }
+                  @if (jaRespondida(g.situacao) && g.itens.length > 3) {
+                    <li class="so-resumo mais">Mais {{ g.itens.length - 3 }} no texto completo.</li>
                   }
                 </ul>
               }
@@ -222,7 +227,10 @@ const SITUACOES = [
             <h2>O que o legado faz aqui</h2>
             <ul class="problemas">
               @for (p of d.tela.problemas ?? []; track p) {
-                <li>{{ p }}</li>
+                <li [class.resto]="$index >= CORTE"><ucam-t [t]="p" /></li>
+              }
+              @if ((d.tela.problemas?.length ?? 0) > CORTE) {
+                <li class="so-resumo mais">Mais {{ (d.tela.problemas?.length ?? 0) - CORTE }} no texto completo.</li>
               }
             </ul>
           }
@@ -564,6 +572,22 @@ const SITUACOES = [
   `,
 })
 export default class TelaPage {
+  /**
+   * Quantos itens de uma lista longa a página mostra no resumo (06/10/2026).
+   * A caixa de entrada do Protocolo tinha 23 decisões e 24 regras: a lista
+   * inteira continua no texto completo, e a linha "Mais N" diz que existe.
+   */
+  protected readonly CORTE = 5;
+
+  /**
+   * Regra que já tem resposta — a do legado e a confirmada. As ABERTAS e as
+   * propostas nunca são cortadas: são as que alguém do time precisa ver para
+   * responder.
+   */
+  protected jaRespondida(situacao: string): boolean {
+    return situacao === 'legado' || situacao === 'confirmada';
+  }
+
   private readonly sanitizer = inject(DomSanitizer);
   private readonly destroy = inject(DestroyRef);
 

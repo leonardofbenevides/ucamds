@@ -3,10 +3,11 @@ import { RouterLink } from '@angular/router';
 
 import { padroes, telas } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-padroes',
-  imports: [RouterLink, PageHeaderComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -19,7 +20,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       @for (p of lista; track p.id) {
         <a class="card" [routerLink]="'/padroes/' + p.id">
           <h2>{{ p.nome }}</h2>
-          <p class="small muted">{{ p.resumo }}</p>
+          <p class="small muted"><ucam-t [t]="p.resumo" /></p>
           <p class="rodape small">
             @if (rotuloTelas(p.id); as t) {
               <span>{{ t }}</span>

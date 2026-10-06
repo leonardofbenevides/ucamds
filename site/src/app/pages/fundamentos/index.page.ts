@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 
 import { fundamentos, meta } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * A porta das fundações.
@@ -18,7 +19,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
  */
 @Component({
   selector: 'ucam-fundamentos',
-  imports: [RouterLink, PageHeaderComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -28,12 +29,12 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     />
 
     <div class="callout callout-warn">
-      <p><strong>Origem da paleta.</strong> {{ aviso.origem }} {{ aviso.pendencia }}</p>
+      <p><strong>Origem da paleta.</strong> {{ aviso.origem }} <ucam-t [t]="aviso.pendencia" /></p>
     </div>
 
     <div class="prose">
       <h2>Três camadas, uma regra</h2>
-      <p>{{ f.regraCamadas }}</p>
+      <p><ucam-t [t]="f.regraCamadas" /></p>
     </div>
 
     <div class="scroller">
@@ -73,7 +74,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       @for (c of cartoes; track c.link) {
         <a class="card" [routerLink]="c.link">
           <h3>{{ c.titulo }}</h3>
-          <p class="small muted">{{ c.resumo }}</p>
+          <p class="small muted"><ucam-t [t]="c.resumo" /></p>
         </a>
       }
     </div>

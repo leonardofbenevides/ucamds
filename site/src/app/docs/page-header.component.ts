@@ -1,8 +1,11 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
+
+import { Leitura, TextoComponent } from './texto.component';
 
 /** Cabeçalho padrão de página da documentação. */
 @Component({
   selector: 'ucam-page-header',
+  imports: [TextoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="cabecalho">
@@ -14,7 +17,7 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
         <ng-content select="[slot=selo]" />
       </div>
       @if (lede()) {
-        <p class="lede">{{ lede() }}</p>
+        <p class="lede"><ucam-t [t]="lede()" /></p>
       }
       <!-- O PORQUÊ VEM FECHADO. O lede era o $description da spec, que é
            racional, não chamada: oitenta palavras e nove linhas antes de a
@@ -28,6 +31,21 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
         </details>
       }
       <ng-content />
+      <!-- RESUMO × COMPLETO (06/10/2026). A página mostra a primeira frase de
+           cada item da spec; o resto — o motivo, a medição, o defeito que
+           originou a regra — abre aqui, de uma vez, para a página inteira. Um
+           controle só, em vez de um "mais" por item: seriam quarenta numa
+           página de componente. Só aparece onde há o que abrir (styles.css). -->
+      <button
+        type="button"
+        class="leitura"
+        [attr.aria-pressed]="leitura.completo()"
+        (click)="leitura.alternar()"
+      >
+        <svg class="ic" aria-hidden="true"><use href="#i-text" /></svg>
+        <span class="leitura-resumo">Página resumida · mostrar o texto completo</span>
+        <span class="leitura-completo">Texto completo · voltar ao resumo</span>
+      </button>
     </header>
   `,
   styles: `
@@ -113,6 +131,8 @@ export class PageHeaderComponent {
   // prerender, enquanto o build ainda termina "com sucesso". Um input com
   // padrão é o que funciona; a obrigatoriedade fica com o TypeScript de quem
   // chama.
+  protected readonly leitura = inject(Leitura);
+
   readonly secao = input<string>('');
   readonly titulo = input<string>('');
   readonly lede = input<string>('');

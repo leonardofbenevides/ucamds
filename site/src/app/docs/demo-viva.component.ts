@@ -135,8 +135,7 @@ export const TEM_DEMO_VIVA = new Set([
       <section>
         <h2>Componente real</h2>
         <p class="small muted">
-          Não é imagem nem HTML de mentira: é o <code>&lt;{{ seletor() }}&gt;</code> de
-          <code>&#64;ucam/ui</code>, compilado por fonte junto com este site. Mexa nele.
+          O <code>&lt;{{ seletor() }}&gt;</code> de <code>&#64;ucam/ui</code>, rodando. Mexa nele.
         </p>
 
         <div class="palco-vivo">
@@ -149,7 +148,7 @@ export const TEM_DEMO_VIVA = new Set([
                 <ucam-button variant="secondary">Cancelar</ucam-button>
                 <ucam-button variant="ghost" iconStart="scrollText">Ver histórico</ucam-button>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Clique em Salvar: o <code>loading</code> troca o ícone por spinner, marca
                 <code>aria-busy</code> e bloqueia o segundo clique. Uma primária só na cena — é o
                 limite que o contrato impõe.
@@ -162,7 +161,7 @@ export const TEM_DEMO_VIVA = new Set([
                 <ucam-button variant="secondary" tone="danger" size="sm">Excluir</ucam-button>
                 <ucam-button variant="ghost" tone="danger" iconStart="trash2">Excluir</ucam-button>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 A mesma ação destrutiva em três pesos — é a ADR-015. O <code>tone</code> diz que
                 destrói; o <code>variant</code> diz quanto pesa. O preenchido pertence ao diálogo
                 que confirma, o contornado à linha de tabela, o de texto ao menu. Antes existia só
@@ -181,7 +180,7 @@ export const TEM_DEMO_VIVA = new Set([
                   (click)="excluiu.set(true)"
                 />
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Passe o teclado (Tab) por eles: cada um anuncia a ação <em>e o alvo</em>. No
                 Protocolo os mesmos três botões são anônimos para leitor de tela.
                 @if (excluiu()) {
@@ -203,7 +202,7 @@ export const TEM_DEMO_VIVA = new Set([
                 <ucam-icon-button icon="star" [pressed]="false" label="Fixar Financeiro nos favoritos" />
                 <ucam-icon-button icon="star" [pressed]="true" label="Remover Relatórios dos favoritos" />
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Clique na primeira. O que muda não é só a cor: a estrela vai de traçado a
                 <em>sólida</em>, porque cor sozinha não distingue numa grade de vinte iguais. E o
                 nome acessível é o verbo do PRÓXIMO clique — “Fixar…” quando solta, “Remover…”
@@ -227,7 +226,7 @@ export const TEM_DEMO_VIVA = new Set([
                   <li class="small muted">Nenhum sistema para “{{ termoBusca() }}”.</li>
                 }
               </ul>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Digite <strong>acad pos</strong>: o termo quebra nos espaços e acha
                 <em>Acadêmico pós-graduação e extensão</em> — o nome mais longo da grade e o mais
                 buscado. O redesenho interno do SIGU exige a sequência contígua e devolve nada
@@ -247,7 +246,7 @@ export const TEM_DEMO_VIVA = new Set([
                 [items]="modalidades"
                 [(value)]="modalidade"
               />
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Escolhido: <strong>{{ rotuloModalidade() }}</strong>. A escolha não é comunicada só
                 pela superfície: o <code>aria-pressed</code> carrega o estado, e o rótulo escolhido
                 muda de tinta e de peso além de ganhar plano (WCAG 1.4.1). O
@@ -264,7 +263,7 @@ export const TEM_DEMO_VIVA = new Set([
                 [(value)]="cpf"
                 width="content"
               />
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Valor cru no formulário: <code>{{ cpf() || '—' }}</code
                 >. O rótulo fica acima e não some ao digitar — é a ADR-004, que aposentou o rótulo
                 flutuante do Material.
@@ -278,7 +277,7 @@ export const TEM_DEMO_VIVA = new Set([
                 [maxLength]="280"
                 [(value)]="descricao"
               />
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Digite várias linhas: o campo cresce até <code>maxRows</code> em vez de abrir barra
                 de rolagem própria. É o que evita a rolagem aninhada do diálogo do legado.
               </p>
@@ -301,7 +300,7 @@ export const TEM_DEMO_VIVA = new Set([
                   width="full"
                 />
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Escolha a Natureza primeiro. Antes disso o segundo campo diz de quem depende, em vez
                 de aparecer vazio e habilitado — que é como o Protocolo falha, em silêncio.
               </p>
@@ -316,7 +315,7 @@ export const TEM_DEMO_VIVA = new Set([
                 emptyText="Nenhum setor encontrado. Revise a busca."
                 hint="A mesma lista que no legado obrigava a rolar 6 páginas."
               />
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Valor no formulário: <code>{{ setorEscolhido() || '—' }}</code
                 >. Digite “col” para filtrar; “zzzz” mostra o estado vazio do contrato.
               </p>
@@ -340,7 +339,7 @@ export const TEM_DEMO_VIVA = new Set([
                   }
                 </div>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Marque uma linha só: o cabeçalho vai para o estado indeterminado, que não mente sobre
                 quantas linhas a ação em massa vai atingir. Selecionadas:
                 {{ selecionados().size }} de {{ requerimentos.length }}.
@@ -356,7 +355,7 @@ export const TEM_DEMO_VIVA = new Set([
                 <ucam-switch label="Registrar boleto" [(checked)]="boleto" />
                 <ucam-switch label="Impressão pelo banco" [disabled]="!boleto()" />
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 O rótulo nomeia o que fica ligado; o estado vem do controle. Nada de par SIM/NÃO, que
                 no legado não deixa claro se é o estado atual ou a ação de mudá-lo.
               </p>
@@ -373,7 +372,7 @@ export const TEM_DEMO_VIVA = new Set([
                   <ucam-badge [tone]="e.tone" [label]="e.label" variant="dot" />
                 }
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 A máquina de estados do requerimento, com vocabulário do domínio. O texto vai junto
                 da cor sempre — cor sozinha não é informação acessível (WCAG 1.4.1).
               </p>
@@ -385,7 +384,7 @@ export const TEM_DEMO_VIVA = new Set([
                   <ucam-avatar [name]="p" size="md" />
                 }
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Iniciais do primeiro e do último nome, sem preposições: “Ana de Souza” vira AS. O
                 clipart genérico do legado era igual para todos — não identificava ninguém.
               </p>
@@ -407,7 +406,7 @@ export const TEM_DEMO_VIVA = new Set([
                   {{ carregando() ? 'Carregando' : 'Recarregar' }}
                 </ucam-button>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 O skeleton ocupa o lugar do conteúdo que está chegando. Ele não cobre a tela: o
                 overlay bloqueante saiu do catálogo pela ADR-005.
               </p>
@@ -445,7 +444,7 @@ export const TEM_DEMO_VIVA = new Set([
                   </ucam-empty-state>
                 }
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Troque entre os dois: são situações opostas. Uma pede criar o primeiro registro, a
                 outra pede corrigir o filtro — e por isso a ação muda de peso junto com a mensagem.
               </p>
@@ -461,7 +460,7 @@ export const TEM_DEMO_VIVA = new Set([
                 <ucam-button variant="secondary" iconStart="download">Exportar</ucam-button>
                 <ucam-button variant="primary" iconStart="plus">Novo setor</ucam-button>
               </ucam-page-header>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Ação primária à direita do título, sempre no mesmo lugar. No legado a mesma ação
                 aparece em três posições diferentes dentro da mesma aplicação.
               </p>
@@ -474,7 +473,7 @@ export const TEM_DEMO_VIVA = new Set([
                 <ucam-section-bar title="Campos" [count]="6" />
                 <p class="small muted">Cartões dos módulos deste campus.</p>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 A hierarquia vem de peso tipográfico e de um fio. A barra cinza preenchida do legado
                 dava à seção mais peso visual do que ao conteúdo que ela agrupa.
               </p>
@@ -484,7 +483,7 @@ export const TEM_DEMO_VIVA = new Set([
                   Financeiro · Gerencial · Relatórios · Acadêmico extensão
                 </p>
               </ucam-section-bar>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Abra e feche pelo cabeçalho. A CONTAGEM não some quando recolhe — é ela que
                 responde se vale abrir; grupo fechado sem número é rótulo sem conteúdo. E o gatilho
                 é um <code>button</code> DENTRO do cabeçalho: o inverso, que o SIGU faz nos quatro
@@ -499,7 +498,7 @@ export const TEM_DEMO_VIVA = new Set([
                   <li><ucam-anexo [file]="a" removable (remove)="tirarAnexo($event)" (retry)="reenviar($event)" /></li>
                 }
               </ul>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Três arquivos no mesmo estado em que o campo os entrega: um anexado, um subindo e um
                 recusado. Tire o recusado pelo × — ele SAI porque alguém mandou, e não sozinho: no
                 parque o arquivo grande some em silêncio, e quem anexou tenta o mesmo arquivo três
@@ -533,7 +532,7 @@ export const TEM_DEMO_VIVA = new Set([
                   </div>
                 </ucam-app-shell>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Abaixo de 64rem a navegação sai do fluxo e passa a sobrepor, com escurecimento
                 atrás e <code>inert</code> quando fechada — fechada ela não recebe foco.
               </p>
@@ -558,7 +557,7 @@ export const TEM_DEMO_VIVA = new Set([
                   </ucam-list-item>
                 }
               </ul>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Escolha uma linha: a aberta declara <code>aria-current</code>, ganha realce
                 tinto e uma barra de 4px na borda de entrada — uma por lista, e não uma por
                 linha. Quem informa a situação continua sendo o selo, em palavra.
@@ -577,7 +576,7 @@ export const TEM_DEMO_VIVA = new Set([
                   <ucam-description-list [columns]="colunas()" [items]="dadosRequerimento" />
                 </div>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Troque o número de colunas: o par rótulo e valor não se separa. Sem o embrulho do
                 par, uma grade de três colunas põe o rótulo de um ao lado do valor do outro — foi o
                 defeito encontrado na primeira captura da tela de requerimento. O número é TETO, e
@@ -599,7 +598,7 @@ export const TEM_DEMO_VIVA = new Set([
                 </div>
                 <ucam-timeline density="compact" groupBy="phase" [filter]="filtroAtividade()" [items]="atividade" />
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Duas naturezas de item, distinguidas por FORMA e pelo papel escrito: a fala do
                 aluno ganha o filete de citação, a mudança de estado é texto secundário. O corte é
                 pela situação do registro, e o parecer pedido ao professor mostra os passos que
@@ -628,7 +627,7 @@ export const TEM_DEMO_VIVA = new Set([
                   </ucam-button>
                 </div>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 O que a barra anuncia é <code>24 de 40 requerimentos abertos</code>, não
                 <code>60</code>: o total real é o número que quem distribui conhece. E a legenda
                 continua ali porque entre 58% e 64% ninguém distingue comprimento.
@@ -656,7 +655,7 @@ export const TEM_DEMO_VIVA = new Set([
                   </ucam-button>
                 </div>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Clique numa etapa já concluída: ela é <code>&lt;button&gt;</code> e leva de volta.
                 A futura nunca é focável — o caminho para a frente passa pela validação. Deixe a
                 etapa 2 pendente e veja o erro ancorado nela, com contagem, em vez de numa lista
@@ -684,7 +683,7 @@ export const TEM_DEMO_VIVA = new Set([
                   Escolhida: <code>{{ escolhida() }}</code>
                 </p>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Ande pelas opções com as setas: são radios de verdade por baixo, e o comportamento
                 é o do navegador. Div com clique não entra na tabulação, não é anunciada como
                 escolha e não vai no envio do formulário.
@@ -694,7 +693,7 @@ export const TEM_DEMO_VIVA = new Set([
             @case ('command') {
               <div class="coluna">
                 <ucam-button (click)="paleta.set(true)">Abrir a paleta</ucam-button>
-                <p class="small muted retorno">
+                <p class="small muted retorno resto">
                   Ou aperte <strong>Ctrl+K</strong> (⌘K no Mac) com o foco em qualquer lugar desta página —
                   o ouvinte é do componente, não desta demo. Esc fecha e devolve o foco ao botão.
                 </p>
@@ -714,7 +713,7 @@ export const TEM_DEMO_VIVA = new Set([
                 [data]="volume"
                 [series]="seriesVolume"
               />
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 A tabela ao pé não é opcional: <code>showTable</code> só a recolhe num
                 <code>&lt;details&gt;</code>, nunca a tira do DOM. Sem equivalente textual o dado
                 não existe para leitor de tela nem para impressão em preto e branco.
@@ -752,7 +751,7 @@ export const TEM_DEMO_VIVA = new Set([
                   </ucam-button>
                 </ucam-drawer>
               </div>
-              <p class="small muted retorno">
+              <p class="small muted retorno resto">
                 Feche pelo véu, pela tecla Esc e pelo botão: o motivo aparece acima. Ele importa —
                 fechar pelo véu com formulário sujo pede confirmação, fechar pela ação não. A base
                 colapsava os três caminhos numa chamada só.

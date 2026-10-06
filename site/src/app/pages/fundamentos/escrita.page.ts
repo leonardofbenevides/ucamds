@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * A fundação de texto.
@@ -21,7 +22,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-escrita',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -37,15 +38,15 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <div class="prose largo">
       <section id="voz">
         <h2>A voz</h2>
-        <p>{{ e.voz.resumo }}</p>
+        <p><ucam-t [t]="e.voz.resumo" /></p>
 
         <div class="eixos">
           @for (x of e.voz.eixos; track x.eixo) {
             <div class="eixo">
               <h3>{{ x.eixo }}</h3>
-              <p class="small">{{ x.regra }}</p>
-              <p class="amostra amostra-bom"><span class="marca">assim</span>{{ x.bom }}</p>
-              <p class="amostra amostra-ruim"><span class="marca">não assim</span>{{ x.ruim }}</p>
+              <p class="small"><ucam-t [t]="x.regra" /></p>
+              <p class="amostra amostra-bom"><span class="marca">assim</span><ucam-t [t]="x.bom" /></p>
+              <p class="amostra amostra-ruim"><span class="marca">não assim</span><ucam-t [t]="x.ruim" /></p>
             </div>
           }
         </div>
@@ -63,8 +64,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               <a [routerLink]="['/decisoes', adrSlug(p.adr)]">{{ p.adr }}</a>
             </p>
           }
-          <p class="regra">{{ p.regra }}</p>
-          <p>{{ p.porque }}</p>
+          <p class="regra"><ucam-t [t]="p.regra" /></p>
+          <p><ucam-t [t]="p.porque" /></p>
 
           <div class="par">
             <div class="lado lado-bom">
@@ -103,7 +104,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="vocabulario">
         <h2>Vocabulário</h2>
-        <p>{{ e.vocabulario.regra }}</p>
+        <p><ucam-t [t]="e.vocabulario.regra" /></p>
         <div class="scroller">
           <table>
             <thead>
@@ -117,8 +118,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               @for (t of e.vocabulario.termos; track t.use) {
                 <tr>
                   <td><strong>{{ t.use }}</strong></td>
-                  <td class="small muted riscado">{{ t.evite }}</td>
-                  <td class="small">{{ t.nota }}</td>
+                  <td class="small muted riscado"><ucam-t [t]="t.evite" /></td>
+                  <td class="small"><ucam-t [t]="t.nota" /></td>
                 </tr>
               }
             </tbody>
@@ -152,8 +153,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                     </a>
                   </td>
                   <td class="small">{{ f.forma }}</td>
-                  <td class="small exemplo-bom">{{ f.bom }}</td>
-                  <td class="small exemplo-ruim">{{ f.ruim }}</td>
+                  <td class="small exemplo-bom"><ucam-t [t]="f.bom" /></td>
+                  <td class="small exemplo-ruim"><ucam-t [t]="f.ruim" /></td>
                 </tr>
               }
             </tbody>

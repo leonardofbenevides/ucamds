@@ -3,10 +3,11 @@ import { Component, ChangeDetectionStrategy, signal, computed } from '@angular/c
 import { fundamentos, meta } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-cor',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -20,7 +21,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
     <div class="callout callout-warn">
       <p>
-        <strong>Origem da paleta.</strong> {{ aviso.origem }} {{ aviso.pendencia }}
+        <strong>Origem da paleta.</strong> {{ aviso.origem }} <ucam-t [t]="aviso.pendencia" />
       </p>
     </div>
 
@@ -37,7 +38,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <div class="rampa-topo">
               <h3>{{ r.nome }}</h3>
               @if (r.descricao) {
-                <p class="small muted">{{ r.descricao }}</p>
+                <p class="small muted"><ucam-t [t]="r.descricao" /></p>
               }
             </div>
             <div class="rampa-faixa">
@@ -112,12 +113,12 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   <td>
                     <span class="dot" [style.background]="t.hex"></span><code>{{ t.ref }}</code>
                   </td>
-                  <td class="num">{{ t.razao }}:1</td>
+                  <td class="num"><ucam-t [t]="t.razao" />:1</td>
                   <td><span class="chip" [class]="'chip-' + t.wcag.tone">{{ t.wcag.label }}</span></td>
                 </tr>
                 @if (notas() && t.descricao) {
                   <tr class="linha-nota">
-                    <td colspan="4"><p>{{ t.descricao }}</p></td>
+                    <td colspan="4"><p><ucam-t [t]="t.descricao" /></p></td>
                   </tr>
                 }
               }
@@ -147,12 +148,12 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   <td>
                     <span class="dot" [style.background]="a.hex"></span><code>{{ a.hex }}</code>
                   </td>
-                  <td class="num">{{ a.razao }}:1</td>
+                  <td class="num"><ucam-t [t]="a.razao" />:1</td>
                   <td><span class="chip" [class]="'chip-' + a.wcag.tone">{{ a.wcag.label }}</span></td>
                 </tr>
                 @if (notas() && a.descricao) {
                   <tr class="linha-nota">
-                    <td colspan="4"><p>{{ a.descricao }}</p></td>
+                    <td colspan="4"><p><ucam-t [t]="a.descricao" /></p></td>
                   </tr>
                 }
               }
@@ -172,7 +173,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         @for (fam of familias(); track fam.id) {
           <h3>{{ rotuloFamilia(fam.id) }}</h3>
           @if (fam.descricao) {
-            <p class="small muted">{{ fam.descricao }}</p>
+            <p class="small muted"><ucam-t [t]="fam.descricao" /></p>
           }
           <ul class="amostras">
             @for (a of fam.amostras; track a.token) {
@@ -184,7 +185,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 >{{ a.hex }}</span>
                 <code class="nome">{{ a.nome }}</code>
                 @if (a.descricao) {
-                  <span class="small muted nota">{{ a.descricao }}</span>
+                  <span class="small muted nota"><ucam-t [t]="a.descricao" /></span>
                 }
               </li>
             }
@@ -226,7 +227,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   </td>
                   <td><code class="num">{{ t.background }}</code></td>
                   <td><code class="num">{{ t.foreground }}</code></td>
-                  <td class="num">{{ t.razao }}:1</td>
+                  <td class="num"><ucam-t [t]="t.razao" />:1</td>
                   <td>
                     @if (t.wcag; as w) {
                       <span class="chip" [class]="'chip-' + w.tone">{{ w.label }}</span>
@@ -265,7 +266,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <code>{{ s.id }}</code>
               </span>
               <div class="sistema-corpo">
-                <p class="small">{{ s.descricao }}</p>
+                <p class="small"><ucam-t [t]="s.descricao" /></p>
                 <dl class="sistema-valores small">
                   <div><dt>Categoria</dt><dd><code class="num">{{ s.categoria }}</code> <span class="muted">{{ s.origem }}</span></dd></div>
                   <div><dt>Faixa</dt><dd><code class="num">{{ s.faixa }}</code></dd></div>
@@ -301,8 +302,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="escuro">
         <h2>Tema escuro</h2>
-        <p>{{ f.temaEscuro.descricao }}</p>
-        <p class="muted">{{ f.temaEscuro.regra }}</p>
+        <p><ucam-t [t]="f.temaEscuro.descricao" /></p>
+        <p class="muted"><ucam-t [t]="f.temaEscuro.regra" /></p>
         <p class="small muted">
           O botão de tema no cabeçalho troca esta página junto. Se a camada escura estiver errada,
           quebra aqui primeiro.

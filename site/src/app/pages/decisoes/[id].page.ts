@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { adrPorSlug, componentes } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-decisao',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -27,7 +28,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       <div class="prose">
         <section id="contexto">
           <h2>Contexto</h2>
-          <p>{{ a.contexto }}</p>
+          <p><ucam-t [t]="a.contexto" /></p>
         </section>
 
         <section id="decisao">
@@ -39,7 +40,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           <h2>Consequências</h2>
           <ul class="list">
             @for (c of a.consequencias; track c) {
-              <li>{{ c }}</li>
+              <li><ucam-t [t]="c" /></li>
             }
           </ul>
         </section>

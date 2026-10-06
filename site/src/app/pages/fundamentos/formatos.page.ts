@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Formatos.
@@ -20,7 +21,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-formatos',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -50,7 +51,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <p class="small">{{ f.fronteira.tela }}</p>
           </div>
         </div>
-        <p>{{ f.fronteira.regra }}</p>
+        <p><ucam-t [t]="f.fronteira.regra" /></p>
         <p class="small muted">{{ f.meta['escopo'] }}</p>
       </section>
 
@@ -75,7 +76,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   </td>
                   <td><code class="num">{{ x.exemplo }}</code></td>
                   <td><code class="num muted">{{ x.modelo }}</code></td>
-                  <td class="small">{{ x.onde }}</td>
+                  <td class="small"><ucam-t [t]="x.onde" /></td>
                 </tr>
               }
             </tbody>
@@ -92,7 +93,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 {{ x.nome }}
                 <code class="num">{{ x.exemplo }}</code>
               </dt>
-              <dd class="small">{{ x.regra }}</dd>
+              <dd class="small"><ucam-t [t]="x.regra" /></dd>
             </div>
           }
         </dl>
@@ -104,7 +105,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           @for (r of f.regras; track r.id) {
             <div class="geral">
               <h3>{{ r.regra }}</h3>
-              <p class="small muted">{{ r.porque }}</p>
+              <p class="small muted"><ucam-t [t]="r.porque" /></p>
             </div>
           }
         </div>
@@ -134,8 +135,8 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                   <td>
                     <a [routerLink]="['/catalogo', e.componente]">{{ e.componenteNome }}</a>
                   </td>
-                  <td class="small">{{ e.o_que_faz }}</td>
-                  <td class="small muted">{{ e.limite }}</td>
+                  <td class="small"><ucam-t [t]="e.o_que_faz" /></td>
+                  <td class="small muted"><ucam-t [t]="e.limite" /></td>
                 </tr>
               }
             </tbody>
@@ -172,7 +173,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <tr>
                   <td class="small">{{ o.tela }}</td>
                   <td class="small">{{ o.campo }}</td>
-                  <td class="small muted">{{ o.problema }}</td>
+                  <td class="small muted"><ucam-t [t]="o.problema" /></td>
                 </tr>
               }
             </tbody>

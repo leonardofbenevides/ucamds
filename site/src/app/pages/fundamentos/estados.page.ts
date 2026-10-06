@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * O modelo de estados.
@@ -20,7 +21,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-estados',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -36,7 +37,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <div class="prose largo">
       <section id="precedencia">
         <h2>Precedência</h2>
-        <p>{{ e.precedencia.regra }}</p>
+        <p><ucam-t [t]="e.precedencia.regra" /></p>
 
         <!-- A ordem DESENHADA, não só listada: precedência é uma fila, e uma
              tabela ordenada por outra coisa qualquer esconde justamente o que
@@ -44,18 +45,18 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         <ol class="fila">
           @for (s of e.lista; track s.id) {
             <li>
-              <span class="posto num">{{ s.precedencia }}</span>
+              <span class="posto num"><ucam-t [t]="s.precedencia" /></span>
               <div>
                 <p class="nome"><code>{{ s.id }}</code></p>
-                <p class="small muted"><strong>Gatilho:</strong> {{ s.gatilho }}</p>
-                <p class="small muted">{{ s.aparencia }}</p>
+                <p class="small muted"><strong>Gatilho:</strong>&ngsp;<ucam-t [t]="s.gatilho" /></p>
+                <p class="small muted"><ucam-t [t]="s.aparencia" /></p>
               </div>
             </li>
           }
         </ol>
 
         <div class="callout callout-warn">
-          <p><strong>A única exceção.</strong> {{ e.precedencia.excecao }}</p>
+          <p><strong>A única exceção.</strong>&ngsp;<ucam-t [t]="e.precedencia.excecao" /></p>
         </div>
       </section>
 
@@ -96,28 +97,28 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
               <svg class="ic"><use href="#i-layoutGrid" /></svg>
             </span>
             <h3>Um chão só</h3>
-            <p>{{ e.disabled.chao_unico.regra }}</p>
-            <p class="porque">{{ e.disabled.chao_unico.motivo }}</p>
+            <p><ucam-t [t]="e.disabled.chao_unico.regra" /></p>
+            <p class="porque"><ucam-t [t]="e.disabled.chao_unico.motivo" /></p>
           </div>
           <div class="ponto" data-tom="marca">
             <span class="ucam-icon-tile" aria-hidden="true">
               <svg class="ic"><use href="#i-listChecks" /></svg>
             </span>
             <h3>Dois sinais, nunca um</h3>
-            <p>{{ e.disabled.dois_sinais.regra }}</p>
-            <p class="porque">{{ e.disabled.dois_sinais.motivo }}</p>
+            <p><ucam-t [t]="e.disabled.dois_sinais.regra" /></p>
+            <p class="porque"><ucam-t [t]="e.disabled.dois_sinais.motivo" /></p>
           </div>
           <div class="ponto ponto--largo" data-tom="atencao">
             <span class="ucam-icon-tile" aria-hidden="true">
               <svg class="ic"><use href="#i-eye" /></svg>
             </span>
             <h3>Não confundir com somente leitura</h3>
-            <p>{{ e.disabled.dois_sinais.nao_confundir }}</p>
+            <p><ucam-t [t]="e.disabled.dois_sinais.nao_confundir" /></p>
           </div>
         </div>
 
         <p class="divisor">Por que não opacidade</p>
-        <p>{{ e.disabled.motivo }}</p>
+        <p><ucam-t [t]="e.disabled.motivo" /></p>
 
         <p class="divisor">Acessibilidade</p>
         <div class="pontos">
@@ -132,7 +133,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         </div>
 
         <p class="small muted">
-          A divergência que produziu esta regra: {{ e.divergencia }}
+          A divergência que produziu esta regra: <ucam-t [t]="e.divergencia" />
         </p>
       </section>
 
@@ -141,7 +142,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
         <div class="callout">
           <p><strong>{{ e.loading.regra }}</strong></p>
         </div>
-        <p>{{ e.loading.motivo }}</p>
+        <p><ucam-t [t]="e.loading.motivo" /></p>
 
         <h3>Onde vai o indicador</h3>
         <div class="scroller">
@@ -166,7 +167,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="movimento">
         <h2>Movimento de estado</h2>
-        <p>{{ e.movimento.regra }}</p>
+        <p><ucam-t [t]="e.movimento.regra" /></p>
         <p class="small muted">
           A curva e a duração de cada papel vivem em
           <a routerLink="/fundamentos/movimento">Movimento</a>.

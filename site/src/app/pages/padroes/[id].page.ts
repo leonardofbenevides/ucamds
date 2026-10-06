@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { padraoPorId, componentes } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-padrao',
-  imports: [RouterLink, PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -27,7 +28,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
       <div class="prose">
         <div class="callout callout-limit">
           <p class="eyebrow">O problema hoje</p>
-          <p>{{ p.problema }}</p>
+          <p><ucam-t [t]="p.problema" /></p>
         </div>
 
         @if (p.estrutura?.length) {
@@ -35,7 +36,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
             <h2>Estrutura</h2>
             <ol class="steps">
               @for (e of p.estrutura; track e) {
-                <li>{{ e }}</li>
+                <li><ucam-t [t]="e" /></li>
               }
             </ol>
           </section>
@@ -45,7 +46,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
           <h2>Regras</h2>
           <ul class="list">
             @for (r of p.regras; track r) {
-              <li>{{ r }}</li>
+              <li><ucam-t [t]="r" /></li>
             }
           </ul>
         </section>
@@ -65,7 +66,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
         <section id="evidencia">
           <h2>Evidência</h2>
-          <p class="small muted">{{ p.evidencia }}</p>
+          <p class="small muted"><ucam-t [t]="p.evidencia" /></p>
         </section>
       </div>
     }

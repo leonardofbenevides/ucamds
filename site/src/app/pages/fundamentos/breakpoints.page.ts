@@ -3,6 +3,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Breakpoints.
@@ -16,7 +17,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-breakpoints',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -31,7 +32,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <div class="prose largo">
       <section id="papeis">
         <h2>Papéis</h2>
-        <p>{{ b.papeisDescricao }}</p>
+        <p><ucam-t [t]="b.papeisDescricao" /></p>
 
         <div class="regua">
           @for (p of b.papeis; track p.token) {
@@ -43,7 +44,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <code>viewport.{{ p.token }}</code>
                 <span class="muted num">{{ p.valor }} · {{ p.px }}px</span>
               </p>
-              <p class="small muted">{{ p.descricao }}</p>
+              <p class="small muted"><ucam-t [t]="p.descricao" /></p>
             </div>
           }
         </div>
@@ -51,7 +52,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="contentores">
         <h2>Papéis de contêiner</h2>
-        <p>{{ b.contentoresDescricao }}</p>
+        <p><ucam-t [t]="b.contentoresDescricao" /></p>
         <div class="regua">
           @for (p of b.contentores; track p.token) {
             <div class="marca">
@@ -62,7 +63,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <code>container.{{ p.token }}</code>
                 <span class="muted num">{{ p.valor }} · {{ p.px }}px</span>
               </p>
-              <p class="small muted">{{ p.descricao }}</p>
+              <p class="small muted"><ucam-t [t]="p.descricao" /></p>
             </div>
           }
         </div>
@@ -132,7 +133,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 
       <section id="escala">
         <h2>Escala primitiva</h2>
-        <p>{{ b.descricao }}</p>
+        <p><ucam-t [t]="b.descricao" /></p>
         <div class="scroller">
           <table>
             <thead>

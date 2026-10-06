@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { recursos } from '../../spec/spec';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * A porta de entrada: título e uma grade de caminhos em cartões.
@@ -13,13 +14,13 @@ import { recursos } from '../../spec/spec';
  */
 @Component({
   selector: 'ucam-comecar',
-  imports: [RouterLink],
+  imports: [TextoComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="hero">
       <p class="eyebrow eyebrow-marca">Começar</p>
       <h1 class="display">Começar</h1>
-      <p class="lede">{{ r.instalacao.$description }}</p>
+      <p class="lede"><ucam-t [t]="r.instalacao.$description" /></p>
     </header>
 
     <section class="secao">
