@@ -273,8 +273,8 @@
         "$description": "Slot 1 — azul. A primeira série NÃO é a marca: o vinho é a cor da ação e fica a ΔE 9 do vermelho de perigo (o portão da marca já avisava), e a barra \"Em caixa\" lia Dinheiro como botão ou alerta (28/09/2026)."
       },
       "series-2": {
-        "$value": "{orange.700}",
-        "$description": "Slot 2 — laranja queimado. Azul, laranja e turquesa são o único trio que passa em TODOS os pares nas duas visões: pizza, dispersão e barra de três partes cabem nele."
+        "$value": "{orange.600}",
+        "$description": "Slot 2 — laranja. O degrau 700 (#964101) saiu em 06/10/2026: na barra fina ele lia marrom, não laranja. O 600 é o mesmo do tema escuro, 4,94:1 contra branco. Azul, laranja e turquesa são o único trio que passa em TODOS os pares nas duas visões: pizza, dispersão e barra de três partes cabem nele."
       },
       "series-3": {
         "$value": "{teal.500}",

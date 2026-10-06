@@ -1,0 +1,155 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "relogio",
+  "name": "Relogio",
+  "selector": "ucam-relogio",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.4",
+  "category": "feedback",
+  "description": "Quanto tempo falta para um prazo que corre na tela, em palavra e em dígitos. O tom muda quando o tempo aperta e a mudança é anunciada uma vez, não a cada segundo.",
+  "quando_usar": [
+    "Uma prova, uma sessão ou uma reserva tem tempo máximo e a pessoa precisa vê-lo enquanto trabalha.",
+    "O fim do tempo dispara algo sozinho (entrega, saída), e isso tem de estar avisado antes."
+  ],
+  "evidencia": {
+    "origem": "vestibular-online (reescrita em Angular 21 sobre @ucam/ui 0.1.2)",
+    "ocorrencias": [
+      {
+        "tela": "layout/relogio-faixa.ts e core/tempo/relogio-prova.ts",
+        "problema": "o relógio foi montado com um ícone e um badge cujo tom segue o tempo, e um serviço à parte para o texto e os anúncios; não havia peça de contagem regressiva"
+      },
+      {
+        "tela": "portal-login-v2, aviso de sessão",
+        "problema": "a sessão expira em 20 minutos e a tela só diz isso quando já expirou"
+      }
+    ],
+    "conclusao": "Prazo que corre na tela pede uma peça só, que saiba dizer o tempo em palavra, mudar de tom nos limiares e avisar quem não vê a tela sem falar a cada segundo."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "A pastilha do relógio. O tom vem em data-tom: sem valor (neutro), warning ou danger.",
+      "classe": "ucam-relogio"
+    },
+    {
+      "parte": "texto",
+      "obrigatorio": true,
+      "descricao": "O tempo em palavra, arredondado para o que importa: \"Faltam 42 min\", \"Falta 1 h 5 min\", \"Faltam 50 s\", \"Tempo esgotado\"."
+    },
+    {
+      "parte": "digitos",
+      "descricao": "O relógio hh:mm:ss ao lado, em dígitos tabulares. Opcional em faixa estreita.",
+      "classe": "ucam-relogio__digitos"
+    }
+  ],
+  "props": [
+    {
+      "nome": "fim",
+      "tipo": "Date",
+      "obrigatorio": true,
+      "descricao": "O instante em que o tempo acaba, calculado do horário do servidor. O relógio nunca decrementa um contador: recalcula o que falta a cada segundo."
+    },
+    {
+      "nome": "total",
+      "tipo": "number",
+      "descricao": "A duração total em milissegundos, para o limiar de atenção (último terço)."
+    },
+    {
+      "nome": "perigoMs",
+      "tipo": "number",
+      "default": "600000",
+      "descricao": "A partir de quanto tempo restante o tom vira perigo. Dez minutos por padrão."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "esgotou",
+      "payload": "void",
+      "descricao": "O tempo chegou a zero. Emitido uma vez."
+    }
+  ],
+  "estados": [
+    "default",
+    "warning",
+    "danger"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar para prazo de dias (isso é o prazo, em palavra, sem relógio).",
+      "Não piscar nem animar a pastilha: o tom e a frase bastam.",
+      "Não é cronômetro: conta para baixo até um fim conhecido.",
+      "Um relógio por tela."
+    ]
+  },
+  "acessibilidade": {
+    "papel": "timer",
+    "requisitos": [
+      "A região do relógio não é aria-live: leria a tela a cada segundo. Os anúncios saem de uma região status separada, só na troca de tom e uma vez no último minuto.",
+      "O anúncio do último minuto diz o que vai acontecer: \"Falta 1 minuto. A prova será entregue automaticamente no fim do tempo.\"",
+      "O tom nunca anda sozinho: a frase muda junto (WCAG 1.4.1).",
+      "Tempo que encerra uma tarefa tem de estar avisado antes de começar a contar (WCAG 2.2.1); a tela de instruções faz isso."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "2.2.1",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Em palavra, com a unidade que importa: minutos acima de 1 minuto, segundos abaixo.",
+      "Singular e plural certos: \"Falta 1 h\", \"Faltam 42 min\".",
+      "No fim: \"Tempo esgotado\"."
+    ],
+    "exemplos": {
+      "bom": [
+        "Faltam 42 min",
+        "Falta 1 h 5 min",
+        "Tempo esgotado"
+      ],
+      "ruim": [
+        "00:42:10 restantes",
+        "ATENÇÃO!!!"
+      ]
+    }
+  },
+  "migracao": {
+    "de": "Peça escrita à mão na reescrita do vestibular",
+    "mapa": [
+      {
+        "legado": "ucam-icon + ucam-badge com tom calculado (layout/relogio-faixa.ts)",
+        "novo": "span.ucam-relogio com data-tom",
+        "nota": "O cálculo do tom (dez minutos, último terço) e os textos vêm de core/tempo/relogio-prova.ts."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Relógio no último terço da prova",
+      "codigo": "<span class=\"ucam-relogio\" data-tom=\"warning\" role=\"timer\">\n  <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-clock\"/></svg>\n  Faltam 38 min <span class=\"ucam-relogio__digitos\">00:38:12</span>\n</span>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Calcule o que falta a partir do horário do servidor.",
+      "evite": "Anunciar o tempo a cada minuto para o leitor de tela."
+    },
+    {
+      "faca": "Deixe o relógio sempre no mesmo lugar da tela.",
+      "evite": "Esconder o relógio para \"não pressionar\": o tempo corre do mesmo jeito."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "relogio.json",
+      "raiz": ".ucam-relogio",
+      "estado": "data-tom=\"warning\" ou \"danger\" no elemento raiz.",
+      "variaveis": []
+    },
+    "trilho_b": "A escrever. A reescrita do vestibular tem a peça feita à mão e serve de ponto de partida; o wrapper entra em ui/projects/ui/src/lib/ucam quando a tela de prova for portada."
+  }
+}
