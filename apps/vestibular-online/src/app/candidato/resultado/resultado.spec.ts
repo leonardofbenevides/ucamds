@@ -11,7 +11,7 @@ import { Navegador } from '../../core/navegador';
 import { candidatoFake } from '../../core/store/candidato.fake';
 
 describe('ResultadoPage', () => {
-  const prova = { tiposProva: vi.fn(), corrigirObjetiva: vi.fn() };
+  const prova = { tiposProva: vi.fn(), corrigirObjetiva: vi.fn(), desempenho: vi.fn() };
   const cand = {
     dados: vi.fn(() => of({ horarioinicio: '2026-10-01T10:00:00Z', horariofim: '2026-10-01T11:15:30Z' })),
     buscar: vi.fn(),
@@ -29,10 +29,12 @@ describe('ResultadoPage', () => {
     correcao = 'REPROVADO',
     tentativas = { tentativaAtual: 1, totalTentativasPossiveis: 3 },
     candidato = candidatoFake({ situacao: 'PROVA_FINALIZADA' }),
+    desempenho: unknown = null,
   ) {
     TestBed.resetTestingModule();
     prova.tiposProva.mockReset().mockReturnValue(of(tipos));
     prova.corrigirObjetiva.mockReset().mockReturnValue(of(correcao));
+    prova.desempenho.mockReset().mockReturnValue(of(desempenho));
     cand.buscar.mockReset().mockReturnValue(of(candidato));
     await TestBed.configureTestingModule({
       imports: [ResultadoPage],
@@ -92,6 +94,53 @@ describe('ResultadoPage', () => {
     const el = await montar(['PORTUGUES'], 'APROVADO');
     expect(el.querySelector('ucam-badge')?.textContent).toContain('Aprovado');
     expect(el.textContent).toContain('Concluir matrícula');
+  });
+
+  it('aprovado: a notícia vem primeiro, numa celebração com o nome, o curso e o próximo passo', async () => {
+    const el = await montar(['PORTUGUES'], 'APROVADO');
+    const festa = el.querySelector('.ucam-celebracao');
+    expect(festa).toBeTruthy();
+    expect(festa!.textContent).toContain('Parabéns, Ana');
+    expect(festa!.textContent).toContain('Você passou no vestibular');
+    expect(festa!.textContent).toContain('Engenharia de software');
+    // O confete é enfeite: fora da árvore de acessibilidade.
+    expect(festa!.querySelector('.ucam-celebracao__confete')?.getAttribute('aria-hidden')).toBe('true');
+    await clicar(el, 'Concluir matrícula');
+    expect(navegador.irParaExterno).toHaveBeenCalled();
+  });
+
+  it('aprovado: o comprovante se imprime da própria tela', async () => {
+    const imprimir = vi.spyOn(window, 'print').mockImplementation(() => undefined);
+    const el = await montar(['PORTUGUES'], 'APROVADO');
+    await clicar(el, 'Imprimir comprovante');
+    expect(imprimir).toHaveBeenCalled();
+    imprimir.mockRestore();
+  });
+
+  it('com o desempenho que o servidor entrega, mostra os acertos, o aproveitamento, cada caderno e a nota da redação', async () => {
+    const el = await montar(['PORTUGUES', 'MATEMATICA', 'REDACAO'], 'APROVADO', undefined, corrigido('APROVADO'), {
+      cadernos: [
+        { tipoprova: 'PORTUGUES', acertos: 3, total: 3 },
+        { tipoprova: 'MATEMATICA', acertos: 1, total: 2 },
+      ],
+      notaRedacao: 8,
+    });
+    const texto = el.textContent!.replace(/\s+/g, ' ');
+    expect(texto).toContain('Acertos na objetiva');
+    expect(texto).toContain('4 de 5');
+    expect(texto).toContain('80% de aproveitamento');
+    const cadernos = el.querySelector('[data-por-caderno]')!.textContent!.replace(/\s+/g, ' ');
+    expect(cadernos).toContain('Português');
+    expect(cadernos).toContain('3 de 3');
+    expect(cadernos).toContain('Matemática');
+    expect(cadernos).toContain('1 de 2');
+    expect(texto).toContain('8,0');
+  });
+
+  it('sem o desempenho (o backend de hoje só diz aprovado ou reprovado), não inventa número', async () => {
+    const el = await montar(['PORTUGUES'], 'APROVADO');
+    expect(el.textContent).not.toContain('Acertos na objetiva');
+    expect(el.querySelector('[data-por-caderno]')).toBeNull();
   });
 
   it('reprovado com tentativa oferece tentar de novo, em tom neutro', async () => {

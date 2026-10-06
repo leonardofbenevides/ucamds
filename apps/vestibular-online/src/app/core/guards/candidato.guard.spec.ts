@@ -59,13 +59,24 @@ describe('candidatoGuard', () => {
     expect(TestBed.inject(Router).serializeUrl(r as UrlTree)).toBe('/candidato/fip-1/prova');
   });
 
-  it('manda o aprovado para a área do inscrito', async () => {
+  it('manda quem já se matriculou para a área do inscrito', async () => {
     const c = candidatoFake({ situacao: 'PROVA_CORRIGIDA' });
-    c.formaingressopessoa.situacao = 'APROVADO';
+    c.formaingressopessoa.situacao = 'MATRICULADO';
     api.criar.mockReturnValue(throwError(() => new Error('x')));
     api.buscar.mockReturnValue(of(c));
     expect(await run('entrada')).toBe(false);
     expect(navegador.irParaExterno).toHaveBeenCalledWith(expect.stringContaining('12345678901'));
+  });
+
+  it('o aprovado que volta pelo link cai na página de resultado, não fora do app', async () => {
+    const c = candidatoFake({ situacao: 'PROVA_CORRIGIDA' });
+    c.formaingressopessoa.situacao = 'APROVADO';
+    api.criar.mockReturnValue(throwError(() => new Error('x')));
+    api.buscar.mockReturnValue(of(c));
+    const r = await run('entrada');
+    expect(TestBed.inject(Router).serializeUrl(r as UrlTree)).toBe('/candidato/fip-1/resultado');
+    expect(navegador.irParaExterno).not.toHaveBeenCalled();
+    expect(await run('resultado')).toBe(true);
   });
 
   it('vai para a tela de erro quando o backend falha', async () => {

@@ -24,4 +24,5 @@ export const environment = {
   isencaoDeTeste: null as { oid: string; nome: string; apoio: string } | null,
   /** Não existe fora do protótipo. */
   mockNovaProva: null as string | null,
+  desempenhoProva: null as string | null,
 };

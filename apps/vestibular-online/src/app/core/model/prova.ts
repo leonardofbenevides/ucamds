@@ -17,6 +17,21 @@ export interface RespostaCandidato {
   oidAlternativa: string | null;
   respostaTextual: string | null;
 }
+/** Quantas questões de um caderno objetivo a pessoa acertou. */
+export interface DesempenhoCaderno {
+  tipoprova: string;
+  acertos: number;
+  total: number;
+}
+/**
+ * O desempenho na prova corrigida. O backend do legado NÃO entrega isto ao
+ * candidato — só diz APROVADO ou REPROVADO —; existe aqui para o dia em que
+ * entregar, e hoje vem só do backend de mentira (environment.desempenhoProva).
+ */
+export interface Desempenho {
+  cadernos: DesempenhoCaderno[];
+  notaRedacao: number | null;
+}
 /** `tempomaximo` vem como 'HH:MM:SS'. */
 export interface TempoMaximo {
   tempomaximo: string;

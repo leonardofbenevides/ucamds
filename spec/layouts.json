@@ -414,6 +414,41 @@
       "variaveis": [],
       "exemplo": "<div class=\"ucam-stats ucam-stats--cartoes\">\n  <ucam-stat label=\"Requerimentos abertos\" [value]=\"86\" meta=\"em 6 setores\" />\n  <ucam-stat label=\"Atrasados\" [value]=\"19\" meta=\"22% da fila\" />\n</div>",
       "composicao": "Números que se somam sob um título: dentro de .ucam-card com .ucam-card__cabecalho, a grade contínua vira faixa entre dois fios e os ladrilhos perdem o anel — quem emoldura é o cartão (ADR-046). Leituras independentes ficam em --cartoes, sem cabeçalho."
+    },
+    {
+      "id": "celebracao",
+      "nome": "Celebração",
+      "classe": "ucam-celebracao",
+      "papel": "O desfecho bom de uma tarefa da pessoa, dito no alto da tela, com a superfície de marca do sistema.",
+      "quando": "Uma vez por tela, e só para o desfecho que a pessoa esperava: a aprovação no vestibular, a matrícula concluída. Sucesso de operação (registro salvo, arquivo enviado) continua sendo toast ou alerta de sucesso — este bloco comemora, e comemoração repetida deixa de ser.",
+      "decisao": "Nasceu no Vestibular Online em 07/10/2026 (\"uma página de sucesso que já mostra o resultado da prova, que seja mais festiva\"). A festa é feita do que o sistema já tem: a superfície de marca, o texto que ela carrega e confete em três tintas existentes (realce, aviso e texto de marca). O confete cai uma vez e assenta, sem laço (WCAG 2.2.2), e com prefers-reduced-motion já nasce assentado. A ação sobre a superfície de marca é o botão de superfície clara, porque o primário do sistema é escuro e sumiria ali.",
+      "partes": [
+        {
+          "classe": "ucam-celebracao__confete",
+          "descricao": "Doze <i> vazios, com aria-hidden no contêiner. Decorativo, fora do caminho do ponteiro."
+        },
+        {
+          "classe": "ucam-celebracao__figura",
+          "descricao": "Um ícone do conjunto curado num círculo translúcido. Decorativo."
+        },
+        {
+          "classe": "ucam-celebracao__texto",
+          "descricao": "Título e apoio empilhados."
+        },
+        {
+          "classe": "ucam-celebracao__titulo",
+          "descricao": "A notícia, em frase. É o único título do sistema acima do título de página; o nível do heading vem da estrutura (um <h2> ou <h3>)."
+        },
+        {
+          "classe": "ucam-celebracao__apoio",
+          "descricao": "Uma linha dizendo a que a notícia se refere: curso, turno, campus."
+        },
+        {
+          "classe": "ucam-celebracao__acoes",
+          "descricao": "Uma ação primária (o próximo passo) e, no máximo, uma secundária."
+        }
+      ],
+      "exemplo": "<section class=\"ucam-celebracao\" aria-labelledby=\"t\"><span class=\"ucam-celebracao__confete\" aria-hidden=\"true\"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class=\"ucam-celebracao__figura\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-graduationCap\"/></svg></span><div class=\"ucam-celebracao__texto\"><h2 class=\"ucam-celebracao__titulo\" id=\"t\">Você passou no vestibular</h2><p class=\"ucam-celebracao__apoio\">Engenharia de software · Noturno</p></div><div class=\"ucam-celebracao__acoes\"><a class=\"ucam-btn ucam-btn--primary ucam-btn--lg\" href=\"#\">Concluir matrícula</a></div></section>"
     }
   ],
   "boas_praticas": [

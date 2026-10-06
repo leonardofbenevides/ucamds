@@ -84,6 +84,14 @@ Decisões de 07/10/2026 (tamanho, cor, largura e o cartão do candidato), todas 
 - **Faixa.** O campus só entra na faixa a partir de 64rem e a fileira de ações não embrulha: em 768px, relógio, campus e ajuda quebravam a faixa em duas linhas.
 - **Responsividade é critério de aceite.** Conferida de 320 a 3440px em dez rotas (entrada, dados, instruções, questão, redação, redações, provas, fila e acompanhamento da isenção): nada rola na horizontal nem vaza da caixa. Na fila de isenção, o seletor segmentado de situação (quatro rótulos de duas palavras) rolava de lado no celular e escondia opções: abaixo de 48rem ele dá lugar a uma seleção com as mesmas opções (`banca/isencao/fila.html`).
 
+Decisões de 07/10/2026, à noite (a experiência da prova e a página de aprovação), com a contraparte no DS 0.1.5:
+
+- **Aprovação** (`candidato/resultado`): a notícia vem primeiro, no bloco de celebração do DS (`.ucam-celebracao`): "Parabéns, Ana! Você passou no vestibular.", a vaga (curso, turno, campus) e as duas ações — Concluir matrícula e Imprimir comprovante (a própria tela, impressa). O confete cai uma vez e assenta; com `prefers-reduced-motion` já nasce assentado. Abaixo, "Seu desempenho", "Por caderno" e "O que vem agora". Reprovado não tem celebração.
+- **Desempenho** (`ProvaApi.desempenho`, `environment.desempenhoProva`): acertos por caderno e nota da redação. **O backend do legado não entrega isso ao candidato** — só diz aprovado ou reprovado. Hoje vem do backend de mentira (`GET /mock/desempenho/<oid>`); em produção a chave é nula e a tela mostra o que sabe (entrega, tempo usado, questões respondidas, cadernos), sem inventar número. É pedido ao backend e decisão da banca.
+- **O aprovado fica no app** (`core/guards/destino-por-situacao.ts`): **muda em relação ao legado.** Lá, e aqui até 06/10/2026, o aprovado era mandado direto para a área do inscrito; quem fazia redação e voltava pelo link depois da correção nunca via o resultado da prova. Agora o aprovado cai na página de resultado, de qualquer tela, e sai pelo botão Concluir matrícula. Quem já está matriculado continua indo direto para a área do inscrito.
+- **Setas do teclado** (`questao.ts`): esquerda e direita trocam de questão, fora de campo de texto e de alternativa (onde a seta é do grupo de radio) e nunca com diálogo aberto. A seta só navega: na última questão não entrega a prova nem abre a redação.
+- **Anterior e Próxima grudam no pé** (bloco de ações fixas do DS) na questão e na redação: numa questão longa, ou no celular, não é preciso rolar até o fim.
+
 ## Backend de mentira (desenvolvimento)
 
 `npm run mock` sobe em `http://localhost:8030/` um servidor que imita os endpoints do legado com dados fictícios em memória (`tools/mock-backend.mjs`). Com ele e o `npm start`:

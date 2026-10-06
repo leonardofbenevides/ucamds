@@ -47,6 +47,8 @@ import {
   navScript,
   contadorScript,
 } from './lib/shell.mjs';
+// A prova de mentira do Vestibular: fixture, fora de shell.mjs e do ucam-comportamento.js (ADR-057).
+import { provaScript } from './lib/prova-referencia.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // Dois destinos, um gerador. docs/t/ é o "abrir em nova aba" do site
@@ -333,6 +335,7 @@ ${sprite}
 <script>${gavetaScript}</script>
 <script>${inboxScript}</script>
 <script>${tabelaScript}</script>
+${proj.id === 'vestibular' ? `<script>${provaScript}</script>` : ''}
 <script>${roloScript}</script>
 <script>${copiarScript}</script>
 <script>${motivoScript}</script>

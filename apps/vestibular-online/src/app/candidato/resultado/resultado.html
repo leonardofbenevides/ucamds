@@ -16,18 +16,11 @@
       <ucam-alert tone="danger" live="assertive">{{ erro() }}</ucam-alert>
       <ucam-button variant="primary" (click)="recarregar()">Tentar de novo</ucam-button>
     } @else {
-      <section class="ucam-stack" aria-labelledby="t-sua-prova">
-        <h2 class="ucam-section__title" id="t-sua-prova">Sua prova</h2>
-        <div class="ucam-stats">
-          <ucam-stat label="Entregue em" [value]="entregueDia() ?? '—'" [meta]="entregueHora()" icon="calendar" [state]="carregando() ? 'loading' : 'idle'" />
-          <ucam-stat label="Tempo usado" [value]="tempoUsado() ?? '—'" meta="Do início à entrega" icon="clock" [state]="carregando() ? 'loading' : 'idle'" />
-          @if (respondidas(); as r) {
-            <ucam-stat label="Questões respondidas" [value]="r" meta="Na prova objetiva" icon="clipboardCheck" />
-          }
-          <ucam-stat label="Cadernos" [value]="tipos().length" [meta]="cadernosTexto()" icon="listChecks" [state]="carregando() ? 'loading' : 'idle'" />
-        </div>
-      </section>
 
+      <!-- A APROVAÇÃO é a notícia, e vem primeiro: o bloco de celebração do DS,
+           com o nome de quem passou, a vaga e o próximo passo. O confete é
+           enfeite (aria-hidden) e cai uma vez só. Até 06/10/2026 a aprovação
+           era um cartão igual ao de "aguardando a banca", com um selo verde. -->
       <!-- O desfecho manda: prova corrigida mostra o resultado, com ou sem
            redação. A espera pela banca só aparece enquanto não há desfecho. -->
       @if (carregando()) {
@@ -49,14 +42,27 @@
           </div>
         </ucam-card>
       } @else if (situacao() === 'APROVADO') {
-        <ucam-card as="section" iconeTom="pessoas" titulo="Você foi aprovado" apoio="Parabéns! O próximo passo é concluir a matrícula na área do inscrito." icone="circleCheck">
-          <div class="ucam-stack">
-            <ucam-badge tone="success" variant="dot" label="Aprovado" />
-            <div class="ucam-cluster ucam-cluster--fim">
-              <ucam-button variant="primary" size="lg" iconEnd="externalLink" (click)="concluirMatricula()">Concluir matrícula</ucam-button>
-            </div>
+        <section class="ucam-celebracao" aria-labelledby="t-aprovado">
+          <span class="ucam-celebracao__confete" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="ucam-celebracao__figura" aria-hidden="true"><ucam-icon name="graduationCap" size="lg" /></span>
+          <div class="ucam-celebracao__texto">
+            <h2 class="ucam-celebracao__titulo" id="t-aprovado">{{ primeiroNome() ? 'Parabéns, ' + primeiroNome() + '!' : 'Parabéns!' }} Você passou no vestibular.</h2>
+            @if (vaga()) {
+              <p class="ucam-celebracao__apoio">{{ vaga() }}</p>
+            }
           </div>
-        </ucam-card>
+          <!-- Botões nativos com as classes do DS: sobre a superfície de marca
+               quem pinta a ação é o bloco (.ucam-celebracao .ucam-btn--primary),
+               e a regra não alcança o botão de dentro do <ucam-button>. -->
+          <div class="ucam-celebracao__acoes">
+            <button type="button" class="ucam-btn ucam-btn--primary ucam-btn--lg" (click)="concluirMatricula()">
+              Concluir matrícula <ucam-icon name="externalLink" size="sm" aria-hidden="true" />
+            </button>
+            <button type="button" class="ucam-btn ucam-btn--secondary ucam-btn--lg" (click)="imprimir()">
+              <ucam-icon name="printer" size="sm" aria-hidden="true" /> Imprimir comprovante
+            </button>
+          </div>
+        </section>
       } @else if (store.podeTentarDeNovo()) {
         <ucam-card as="section" iconeTom="pessoas" titulo="Nota mínima não atingida" apoio="Ainda há tentativa disponível nesta inscrição. A prova nova começa do zero." icone="refreshCw">
           <div class="ucam-stack">
@@ -75,6 +81,50 @@
             <div class="ucam-cluster ucam-cluster--fim">
               <ucam-button variant="primary" iconEnd="externalLink" (click)="irParaSite()">Ir para o site</ucam-button>
             </div>
+          </div>
+        </ucam-card>
+      }
+
+      <section class="ucam-stack" aria-labelledby="t-sua-prova">
+        <h2 class="ucam-section__title" id="t-sua-prova">{{ situacao() === null ? 'Sua prova' : 'Seu desempenho' }}</h2>
+        <div class="ucam-stats">
+          @if (acertos(); as a) {
+            <ucam-stat label="Acertos na objetiva" [value]="a.texto" [meta]="a.aproveitamento" icon="listChecks" />
+          }
+          @if (notaRedacao(); as nota) {
+            <ucam-stat label="Redação" [value]="nota" meta="Nota da banca, de 0 a 10" icon="pencil" />
+          }
+          <ucam-stat label="Entregue em" [value]="entregueDia() ?? '—'" [meta]="entregueHora()" icon="calendar" [state]="carregando() ? 'loading' : 'idle'" />
+          <ucam-stat label="Tempo usado" [value]="tempoUsado() ?? '—'" meta="Do início à entrega" icon="clock" [state]="carregando() ? 'loading' : 'idle'" />
+          @if (respondidas(); as r) {
+            <ucam-stat label="Questões respondidas" [value]="r" meta="Na prova objetiva" icon="clipboardCheck" />
+          }
+          <!-- Com o acerto por caderno logo abaixo, contar os cadernos aqui seria dizer duas vezes. -->
+          @if (!porCaderno().length) {
+            <ucam-stat label="Cadernos" [value]="tipos().length" [meta]="cadernosTexto()" icon="listChecks" [state]="carregando() ? 'loading' : 'idle'" />
+          }
+        </div>
+      </section>
+
+      @if (!carregando() && situacao() !== null && porCaderno().length) {
+        <ucam-card as="section" iconeTom="pessoas" titulo="Por caderno" apoio="Quanto você acertou em cada parte da prova." icone="chartColumn">
+          <div class="ucam-stack" data-por-caderno>
+            @for (c of porCaderno(); track c.rotulo) {
+              <ucam-progress [label]="c.rotulo" [value]="c.acertos" [max]="c.total" tone="success" [valueText]="c.texto + ' acertos'" [legendStart]="c.rotulo" [legendEnd]="c.texto" />
+            }
+            @if (notaRedacao(); as nota) {
+              <ucam-progress label="Redação" [value]="notaRedacaoNumero()" [max]="10" tone="success" [valueText]="nota + ' de 10'" legendStart="Redação" [legendEnd]="nota + ' de 10'" />
+            }
+          </div>
+        </ucam-card>
+      }
+
+      @if (!carregando() && situacao() === 'APROVADO') {
+        <ucam-card as="section" iconeTom="pessoas" titulo="O que vem agora" apoio="A vaga é sua quando a matrícula estiver concluída." icone="clipboardCheck">
+          <div class="ucam-stack">
+            <ucam-badge tone="success" variant="dot" label="Aprovado" />
+            <ucam-stepper label="Próximos passos" [current]="1" [steps]="passos" />
+            <p class="ucam-field__hint">Este resultado continua neste mesmo link. Dúvidas, fale com a secretaria: {{ contato }}.</p>
           </div>
         </ucam-card>
       }

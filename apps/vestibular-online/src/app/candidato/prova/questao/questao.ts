@@ -25,6 +25,9 @@ const LETRAS = 'ABCDEFG';
   selector: 'app-questao',
   imports: [UcamBadge, UcamButton, UcamCitacao, UcamIconTile, UcamSectionBar, UcamTooltip, ProvaProtegida],
   templateUrl: './questao.html',
+  // As setas andam entre as questões em qualquer ponto da página; quem decide
+  // se a tecla é da navegação ou do controle em foco é o método.
+  host: { '(document:keydown)': 'tecla($event)' },
   styles: `
     /* A ESCOLHIDA NÃO LEVA CHECK. Numa prova, check ao lado da alternativa lê
        como "certa", e a tela não sabe se está certa — só que foi a escolhida.
@@ -135,6 +138,24 @@ export class QuestaoPage {
 
   private base(): unknown[] {
     return ['/candidato', this.candidato.oidFip(), 'prova'];
+  }
+
+  /**
+   * Seta para a esquerda e para a direita trocam de questão — fora de campo de
+   * texto e de alternativa, onde a seta já tem dono (o grupo de radio anda com
+   * ela), e nunca com um diálogo aberto. A seta só NAVEGA: na última questão
+   * ela não entrega a prova nem abre a redação, que são decisões com botão.
+   */
+  tecla(e: KeyboardEvent): void {
+    if (e.altKey || e.ctrlKey || e.metaKey || e.defaultPrevented) return;
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const alvo = e.target as HTMLElement | null;
+    if (alvo?.closest?.('input, textarea, select, [contenteditable], dialog, [role="dialog"]')) return;
+    if (document.querySelector('dialog[open]')) return;
+    const p = e.key === 'ArrowLeft' ? this.store.anterior() : this.store.proxima();
+    if (!p || p === 'fim' || p === 'redacao') return;
+    e.preventDefault();
+    this.router.navigate([...this.base(), p.slug, p.n]);
   }
 
   anterior(): void {

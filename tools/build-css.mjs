@@ -1062,6 +1062,8 @@ ${contentorAcima('duas-colunas')} {
 .ucam-field__error {
   font-size: var(--ucam-typography-caption-font-size);
   line-height: var(--ucam-typography-caption-line-height);
+  /* Apoio com e-mail ou link não tem onde quebrar e vazava a 320px. */
+  overflow-wrap: anywhere;
 }
 .ucam-field__hint  { color: var(--ucam-color-text-secondary); }
 .ucam-field__error { color: var(--ucam-color-feedback-danger-foreground); }
@@ -4211,6 +4213,9 @@ ${SISTEMAS.map((s) => '.ucam-icon-tile--' + s + ' { --ucam-tile-cor: var(--ucam-
 .ucam-alert__corpo {
   flex: 1;
   min-inline-size: 0;
+  /* Um e-mail ou um link longo não tem onde quebrar: a 320px o endereço da
+   * secretaria vazava do alerta (07/10/2026). Quebra onde der. */
+  overflow-wrap: anywhere;
 }
 
 .ucam-alert__corpo > :first-child { margin-block-start: 0; }
@@ -8996,6 +9001,11 @@ dialog.ucam-dialog:not([open]) { display: none; }
  * 2 + 1 numa largura em que cabiam. O :has conta os filhos. */
 ${contentorAbaixo('indicadores-em-fileira', 'indicadores')} {
   .ucam-stats:has(> :nth-child(4)) > .ucam-stat { flex-basis: calc(50% - var(--ucam-stats-gap)); }
+  /* Com a FIGURA ao lado, meia fileira não comporta o valor: a 390px sobravam
+   * 92px para "06/10/2026" e para "60% de aproveitamento", que vazavam da
+   * caixa (medido em 07/10/2026, na página de aprovação do Vestibular). O
+   * indicador com figura pula direto para um por fileira. */
+  .ucam-stats:has(> :nth-child(4)) > .ucam-stat--figura { flex-basis: 100%; }
 }
 
 /* E abaixo de indicadores-empilhados, UM por fileira: 2 + 2 num grupo de
@@ -9948,6 +9958,22 @@ ${abaixo('controle-deitado')} {
   margin-inline: calc(var(--ucam-space-inset-lg) * -1);
   padding-inline: var(--ucam-space-inset-lg);
   padding-block-end: var(--ucam-space-inset-md);
+}
+/* A BARRA DE PASSOS — .ucam-form-actions--passos (07/10/2026).
+ *
+ * Anterior de um lado, Próxima do outro, grudados no pé: a navegação de uma
+ * tarefa em passos (a questão da prova, a redação), que no celular e numa
+ * questão longa não pode ficar no fim da rolagem. Usa-se JUNTO de --sticky.
+ *
+ * Difere da barra de formulário em duas coisas. As ações vão às pontas, e não
+ * à direita: voltar e avançar são direções. E ela NÃO sangra: a barra de
+ * formulário avança o recuo do conteúdo para encostar nas bordas do cartão;
+ * aqui o pai é a coluna da questão dentro de um split, e a margem negativa
+ * fazia a barra vazar 25px para fora do artigo, sobre o mapa ao lado. */
+.ucam-form-actions--passos {
+  justify-content: space-between;
+  margin-inline: 0;
+  padding-inline: 0;
 }
 
 /* ------------------------------------------------------- lista de itens --- */
@@ -11713,6 +11739,136 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-choice-card--letra:has(input:checked) .ucam-choice-card__figura {
   background: var(--ucam-color-action-primary-default);
   color: var(--ucam-color-text-on-action);
+}
+
+/* ------------------------------------------------------------ celebração --- */
+/* O DESFECHO BOM DE UMA TAREFA — .ucam-celebracao (07/10/2026).
+ *
+ * Pedido sobre o Vestibular Online: "crie uma página de sucesso que já mostra
+ * o resultado da prova, que seja mais festiva". Até então a aprovação era um
+ * cartão igual aos outros, com um selo verde: a melhor notícia do fluxo tinha
+ * o mesmo peso de "aguardando a correção".
+ *
+ * É o único bloco do sistema que comemora, e por isso é raro de propósito: um
+ * por tela, e só para o desfecho que a PESSOA esperava (aprovação, matrícula
+ * concluída). Sucesso de operação — "registro salvo" — continua sendo toast.
+ *
+ * A festa é feita do que o sistema já tem: a superfície de marca do sistema
+ * (o par da faixa), o texto que ela carrega, e confete em três tintas que já
+ * existem — o realce, o aviso e o próprio texto de marca. Nenhuma cor nova.
+ *
+ * O confete CAI UMA VEZ e assenta. Não repete: movimento em laço ao lado de um
+ * resultado é ruído para quem lê e gatilho para quem tem sensibilidade a
+ * movimento (WCAG 2.2.2). Com prefers-reduced-motion ele já nasce assentado —
+ * a regra global da folha zera a duração, e o estado final é o desenho. */
+.ucam-celebracao {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ucam-space-inset-md) var(--ucam-space-inset-lg);
+  padding: var(--ucam-space-inset-lg);
+  border-radius: var(--ucam-radius-surface);
+  background: var(--ucam-color-surface-brand);
+  color: var(--ucam-color-text-on-brand);
+}
+.ucam-celebracao > * { position: relative; }
+.ucam-celebracao__figura {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: 4rem;
+  block-size: 4rem;
+  border-radius: var(--ucam-radius-pill);
+  background: color-mix(in srgb, var(--ucam-color-text-on-brand) 16%, transparent);
+}
+.ucam-celebracao__figura .ic { inline-size: 2rem; block-size: 2rem; }
+.ucam-celebracao__texto {
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+/* O único título do sistema acima do título de página: é a notícia, e a tela
+ * existe para dá-la. Sem caixa alta e sem peso extra (ADR-003). */
+.ucam-celebracao__titulo {
+  margin: 0;
+  font-size: calc(var(--ucam-typography-page-title-font-size) * 1.45);
+  font-weight: var(--ucam-typography-page-title-font-weight);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.ucam-celebracao__apoio {
+  margin: 0;
+  font-size: var(--ucam-typography-body-font-size);
+  line-height: var(--ucam-typography-body-line-height);
+  color: color-mix(in srgb, var(--ucam-color-text-on-brand) 88%, transparent);
+}
+.ucam-celebracao__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-inline-sm);
+}
+/* A ação sobre a superfície de marca é o botão de superfície clara: o primário
+ * do sistema é escuro e sumiria aqui. É o mesmo par, invertido. */
+.ucam-celebracao .ucam-btn--primary {
+  background: var(--ucam-color-surface-default);
+  color: var(--ucam-color-text-primary);
+  border-color: transparent;
+}
+.ucam-celebracao .ucam-btn--primary:hover:not(:disabled) {
+  background: var(--ucam-color-surface-subtle);
+}
+.ucam-celebracao .ucam-btn--secondary,
+.ucam-celebracao .ucam-btn--ghost {
+  background: transparent;
+  color: var(--ucam-color-text-on-brand);
+  border-color: color-mix(in srgb, var(--ucam-color-text-on-brand) 45%, transparent);
+}
+.ucam-celebracao .ucam-btn--secondary:hover:not(:disabled),
+.ucam-celebracao .ucam-btn--ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ucam-color-text-on-brand) 12%, transparent);
+}
+/* Decorativo: aria-hidden na marcação, e fora do caminho do ponteiro. */
+.ucam-celebracao__confete {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ucam-celebracao__confete > i {
+  position: absolute;
+  inset-block-start: var(--y);
+  inset-inline-start: var(--x);
+  inline-size: 0.5rem;
+  block-size: 0.875rem;
+  border-radius: 0.125rem;
+  background: var(--ucam-color-realce-background);
+  opacity: 0.9;
+  rotate: var(--giro);
+  animation: ucam-confete 1400ms var(--ucam-motion-easing-entrance) both;
+  animation-delay: var(--atraso, 0ms);
+}
+.ucam-celebracao__confete > i:nth-child(3n) { background: var(--ucam-color-feedback-warning-graphic); }
+.ucam-celebracao__confete > i:nth-child(3n + 1) { background: var(--ucam-color-text-on-brand); opacity: 0.55; }
+.ucam-celebracao__confete > i:nth-child(even) { inline-size: 0.5rem; block-size: 0.5rem; border-radius: var(--ucam-radius-pill); }
+.ucam-celebracao__confete > i:nth-child(1)  { --x: 4%;  --y: 14%; --giro: 18deg;  --atraso: 0ms; }
+.ucam-celebracao__confete > i:nth-child(2)  { --x: 13%; --y: 72%; --giro: -24deg; --atraso: 90ms; }
+.ucam-celebracao__confete > i:nth-child(3)  { --x: 24%; --y: 8%;  --giro: 40deg;  --atraso: 160ms; }
+.ucam-celebracao__confete > i:nth-child(4)  { --x: 38%; --y: 84%; --giro: 12deg;  --atraso: 40ms; }
+.ucam-celebracao__confete > i:nth-child(5)  { --x: 47%; --y: 10%; --giro: -36deg; --atraso: 220ms; }
+.ucam-celebracao__confete > i:nth-child(6)  { --x: 58%; --y: 78%; --giro: 28deg;  --atraso: 120ms; }
+.ucam-celebracao__confete > i:nth-child(7)  { --x: 66%; --y: 16%; --giro: -14deg; --atraso: 300ms; }
+.ucam-celebracao__confete > i:nth-child(8)  { --x: 74%; --y: 62%; --giro: 52deg;  --atraso: 60ms; }
+.ucam-celebracao__confete > i:nth-child(9)  { --x: 82%; --y: 12%; --giro: -44deg; --atraso: 180ms; }
+.ucam-celebracao__confete > i:nth-child(10) { --x: 89%; --y: 80%; --giro: 22deg;  --atraso: 260ms; }
+.ucam-celebracao__confete > i:nth-child(11) { --x: 94%; --y: 34%; --giro: -8deg;  --atraso: 20ms; }
+.ucam-celebracao__confete > i:nth-child(12) { --x: 31%; --y: 46%; --giro: 64deg;  --atraso: 340ms; }
+@keyframes ucam-confete {
+  from { opacity: 0; translate: 0 -3rem; rotate: calc(var(--giro) - 140deg); }
 }
 
 /* --------------------------------------------------------------- gráfico --- */

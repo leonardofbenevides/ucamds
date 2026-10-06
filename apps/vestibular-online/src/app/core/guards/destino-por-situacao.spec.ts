@@ -21,10 +21,18 @@ describe('destinoPorSituacao', () => {
     expect(destinoPorSituacao(c, 'entrada')).toBe('ok');
     expect(destinoPorSituacao(c, 'prova')).toBe('resultado');
   });
-  it('PROVA_CORRIGIDA aprovado vai para fora; reprovado vê o resultado', () => {
+  it('PROVA_CORRIGIDA aprovado vê a página de resultado, de qualquer tela; matriculado vai para fora; reprovado vê o resultado', () => {
     const ap = candidatoFake({ situacao: 'PROVA_CORRIGIDA' });
     ap.formaingressopessoa.situacao = 'APROVADO';
-    expect(destinoPorSituacao(ap, 'entrada')).toBe('externo');
+    // Quem passou e ainda não se matriculou cai na página de sucesso, que é
+    // onde está o resultado e o botão da matrícula — venha de onde vier.
+    expect(destinoPorSituacao(ap, 'resultado')).toBe('ok');
+    expect(destinoPorSituacao(ap, 'entrada')).toBe('resultado');
+    expect(destinoPorSituacao(ap, 'prova')).toBe('resultado');
+    const mat = candidatoFake({ situacao: 'PROVA_CORRIGIDA' });
+    mat.formaingressopessoa.situacao = 'MATRICULADO';
+    expect(destinoPorSituacao(mat, 'entrada')).toBe('externo');
+    expect(destinoPorSituacao(mat, 'resultado')).toBe('externo');
     const rep = candidatoFake({ situacao: 'PROVA_CORRIGIDA' });
     rep.formaingressopessoa.situacao = 'REPROVADO';
     expect(destinoPorSituacao(rep, 'entrada')).toBe('ok');

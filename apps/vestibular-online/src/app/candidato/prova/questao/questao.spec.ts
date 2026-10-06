@@ -138,6 +138,28 @@ describe('QuestaoPage', () => {
     expect(el.querySelector('[role="status"]')?.textContent).toContain('retirada');
   });
 
+  it('as setas do teclado andam entre as questões, mas não quando o foco está numa alternativa', async () => {
+    const f = await montar('portugues', 1);
+    const router = TestBed.inject(Router);
+    const navegar = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(navegar).toHaveBeenCalledWith(['/candidato', 'fip-1', 'prova', 'portugues', 2]);
+    navegar.mockClear();
+    // Na primeira questão não há para onde voltar.
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+    expect(navegar).not.toHaveBeenCalled();
+    // Dentro do grupo de alternativas a seta é do radio: troca a alternativa, não a questão.
+    const radio = (f.nativeElement as HTMLElement).querySelector('input[type=radio]')!;
+    radio.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(navegar).not.toHaveBeenCalled();
+  });
+
+  it('a seta para a direita não entrega a prova: na última questão ela não faz nada', async () => {
+    await montar('portugues', 2);
+    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(pedirEntrega()).toBeNull();
+  });
+
   it('na última questão a ação vira Entregar prova', async () => {
     const f = await montar('portugues', 2);
     expect(f.nativeElement.textContent).toContain('Entregar prova');

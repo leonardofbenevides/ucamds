@@ -330,6 +330,16 @@ function corrigir(i) {
   return certas * 2 >= objetivas.length ? 'APROVADO' : 'REPROVADO';
 }
 
+/** Só do protótipo: o desempenho que o backend de verdade ainda não entrega ao candidato. */
+function desempenho(i) {
+  const cadernos = [CADERNOS.PORTUGUES, CADERNOS.MATEMATICA].map((c) => ({
+    tipoprova: c.tipoprova,
+    acertos: c.questoes.filter((qq) => i.respostas[qq.oid]?.oidAlternativa === qq.certa).length,
+    total: c.questoes.length,
+  }));
+  return { cadernos, notaRedacao: i.notaRedacao ?? null };
+}
+
 function responder(res, status, corpo, tipo = 'application/json') {
   res.writeHead(status, {
     'Content-Type': tipo + '; charset=utf-8',
@@ -359,6 +369,10 @@ const servidor = createServer(async (req, res) => {
   // zero, para dar para fazer a prova de novo sem reiniciar o servidor. Prova
   // em andamento fica como está: fechar a aba e voltar não pode custar as
   // respostas.
+  if ((x = /^\/mock\/desempenho\/([^/]+)$/.exec(p)) && m === 'GET') {
+    const i = [...inscricoes.values()].find((ins) => ins.candidato?.oid === x[1]);
+    return i ? responder(res, 200, desempenho(i)) : responder(res, 404, { erro: 'candidatoprova não encontrado' });
+  }
   if ((x = /^\/mock\/nova-prova\/([^/]+)$/.exec(p)) && m === 'POST') {
     const situacao = inscricoes.get(x[1])?.candidato?.situacao;
     const reiniciada = situacao === 'PROVA_FINALIZADA' || situacao === 'PROVA_CORRIGIDA';

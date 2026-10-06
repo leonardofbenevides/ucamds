@@ -144,6 +144,9 @@ const TOM: Record<UcamStatTone, string> = {
       flex-direction: row;
       align-items: flex-start;
       gap: var(--ucam-space-inline-sm);
+      /* A mesma base da folha: com a figura ao lado, 11rem deixam ~7rem para
+         o número e "06/10/2026" vazava em três colunas apertadas. */
+      flex-basis: 14rem;
     }
     ucam-stat .ucam-stat__figura {
       display: inline-flex;

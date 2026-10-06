@@ -38,4 +38,11 @@ export const environment = {
   isencaoDeTeste: { oid: 'joao', nome: 'João Cutrim', apoio: 'Acompanha a isenção de disciplinas' } as { oid: string; nome: string; apoio: string } | null,
   /** Rota do backend de mentira que devolve o candidato de teste ao zero quando a prova dele já foi entregue; recebe o oid no fim. */
   mockNovaProva: 'http://localhost:8030/mock/nova-prova/' as string | null,
+  /**
+   * De onde vem o desempenho da prova corrigida (acertos por caderno e nota da
+   * redação); recebe o oid do candidatoprova no fim. O backend do legado não
+   * tem esse endpoint: é pedido a ele, e enquanto não existir fica nulo em
+   * produção e a tela de resultado mostra só o que sabe.
+   */
+  desempenhoProva: 'http://localhost:8030/mock/desempenho/' as string | null,
 };

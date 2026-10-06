@@ -45,7 +45,10 @@
         }
       </fieldset>
 
-      <footer class="ucam-cluster ucam-cluster--entre">
+      <!-- A barra gruda no pé da janela (o bloco de ações fixas do DS): numa
+           questão longa, ou no celular, Anterior e Próxima ficam ao alcance
+           sem rolar até o fim. -->
+      <footer class="ucam-form-actions ucam-form-actions--sticky ucam-form-actions--passos">
         <span [ucamTooltip]="'Esta é a primeira questão'" [tooltipDisabled]="!ehPrimeira()">
           <ucam-button variant="secondary" size="lg" iconStart="chevronLeft" [disabled]="ehPrimeira()" (click)="anterior()">Anterior</ucam-button>
         </span>
