@@ -17,6 +17,7 @@ import { iconCss } from './lib/icon-css.mjs';
 // listbox estilizado — ver o cabeçalho de lib/select-listbox.mjs.
 import { listboxSelects, listboxScript } from './lib/select-listbox.mjs';
 import { fontFaceCss } from './lib/fonts-css.mjs';
+import { corDosAvatares } from './lib/avatar-cor.mjs';
 // O shell vem de um lugar só. Ver o cabeçalho de lib/shell.mjs para o porquê.
 import {
   renderShell,
@@ -46,6 +47,7 @@ import {
   criadoScript,
   navScript,
   contadorScript,
+  avatarScript,
 } from './lib/shell.mjs';
 // A prova de mentira do Vestibular: fixture, fora de shell.mjs e do ucam-comportamento.js (ADR-057).
 import { provaScript } from './lib/prova-referencia.mjs';
@@ -177,7 +179,9 @@ for (const { dir } of DESTINOS) if (!existsSync(dir)) mkdirSync(dir, { recursive
 // horizontal não cabe em 72px), e a moldura com faixa usa o lockup. Uma tela
 // que declarasse o rail sem o símbolo copiado ganharia uma máscara apontando
 // para 404 — que não dá erro nenhum, só não pinta.
-const MARCAS = ['ucam-logo-horizontal.svg', 'ucamds-simbolo-inverso.svg'];
+// E os RETRATOS de exemplo (06/10/2026): ilustrações, não fotos de ninguém — a
+// ficha do aluno na isenção mostra onde a foto do cadastro entra.
+const MARCAS = ['ucam-logo-horizontal.svg', 'ucamds-simbolo-inverso.svg', 'retrato-1.svg', 'retrato-2.svg', 'retrato-3.svg'];
 for (const d of DESTINOS.map((x) => join(x.dir, '..', 'marca'))) {
   if (!existsSync(d)) mkdirSync(d, { recursive: true });
   for (const m of MARCAS) copyFileSync(join(ROOT, 'site/src/assets/marca', m), join(d, m));
@@ -306,7 +310,7 @@ var pal=p.get('paleta');if(pal==='comum'||pal==='moldura')document.documentEleme
 </head>
 <body>
 ${sprite}
-<div class="ucam">${listboxSelects(renderShell(shellDaTela(proj, t, destinosDe(proj)), promoveTitulo(religaPreview(t.preview))))}</div>
+<div class="ucam">${listboxSelects(renderShell(shellDaTela(proj, t, destinosDe(proj)), promoveTitulo(corDosAvatares(religaPreview(t.preview)))))}</div>
 <div class="ucamds-bar">
   <strong>UCAMDS</strong><span class="sep">·</span>
   <span>${esc(proj.nome)}</span><span class="sep">/</span>
@@ -335,6 +339,7 @@ ${sprite}
 <script>${gavetaScript}</script>
 <script>${inboxScript}</script>
 <script>${tabelaScript}</script>
+<script>${avatarScript}</script>
 ${proj.id === 'vestibular' ? `<script>${provaScript}</script>` : ''}
 <script>${roloScript}</script>
 <script>${copiarScript}</script>
@@ -363,7 +368,7 @@ ${proj.id === 'vestibular' ? `<script>${provaScript}</script>` : ''}
      * protótipo e não saem em pacote nenhum — a página da tela diz isso ao
      * lado do botão de copiar, para que a cópia não pareça mais pronta do
      * que é. */
-    const marcacao = listboxSelects(promoveTitulo(religaPreview(t.preview)));
+    const marcacao = listboxSelects(promoveTitulo(corDosAvatares(religaPreview(t.preview))));
 
     for (const d of DESTINOS) {
       writeFileSync(

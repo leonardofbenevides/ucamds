@@ -53,7 +53,7 @@
     {
       "parte": "series",
       "obrigatorio": false,
-      "descricao": "A legenda da barra segmentada: uma lista em colunas com ponto, nome (.ucam-progress__nome), valor (<b>, o número exato) e a parte do todo (.ucam-progress__parte, em %). Obrigatória quando há segmentos — a barra sozinha não diz de quanto é a parte, e é aqui que o número exato mora (dataviz.json). A cor de cada parte é o token de série na ordem fixa (color.chart.series-N): a primeira série é azul, não a marca.",
+      "descricao": "A legenda da barra segmentada: uma lista em colunas com ponto, nome (.ucam-progress__nome), valor (<b>, o número exato) e a parte do todo (.ucam-progress__parte, em %). Obrigatória quando há segmentos — a barra sozinha não diz de quanto é a parte, e é aqui que o número exato mora (dataviz.json). A cor de cada parte é o token de série na ordem fixa (color.chart.series-N): a primeira série é azul, não a marca. Com a barra na largura inteira da página, .ucam-progress__series--fileira (06/10/2026) põe cada série como ponto, nome e número juntos, uma ao lado da outra: na tabelinha o nome ficava numa ponta e o número na outra. A parte sem julgamento (\"sem decisão\") é segmento desenhado em .ucam-progress__fill--neutral, na tinta do ponto neutro da legenda.",
       "classe": "ucam-progress__series"
     },
     {

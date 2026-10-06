@@ -28,15 +28,10 @@ export type UcamBadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger
  * dois é só o indicador — ícone no soft, ponto no dot. outline é a pílula
  * branca com filete, preservada para coluna longa.
  */
-export type UcamBadgeVariant = 'soft' | 'dot' | 'outline' | 'plain';
+export type UcamBadgeVariant = 'soft' | 'dot' | 'outline';
 
-/**
- * PLANO: o estado da MAIORIA, sem tinta (ADR-050). Espelha .ucam-badge--plain.
- * A caixa fica inteira (borda transparente de 1px, mesmo recuo) para a palavra
- * cair na vertical das pastilhas tintas vizinhas; sai fundo, filete, indicador
- * e peso. O tom é ignorado de propósito: plano é justamente "sem cor".
- */
-const PLAIN_CLASSES = 'bg-transparent border-transparent text-[var(--ucam-color-text-secondary)]';
+/* O valor 'plain' (o estado da maioria sem tinta, ADR-050) saiu em 06/10/2026
+ * (ADR-062): todo selo veste o tom que declara. */
 
 /**
  * PREENCHIMENTO pastel com o rótulo na tinta do próprio tom — espelha o
@@ -135,8 +130,7 @@ const DOT_CLASS = 'bg-current';
          display — texto com fundo colado. Passou despercebido enquanto só o
          preview do Trilho A aparecia no site. -->
     <z-badge zType="outline" [class]="classes()">
-      @if (variant() === 'plain') {
-      } @else if (variant() === 'dot') {
+      @if (variant() === 'dot') {
         <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0" [class]="dotClass" aria-hidden="true"></span>
       } @else if (iconeEfetivo(); as ic) {
         <!-- 12, o degrau da pastilha: a caixa tem 22px de altura e o rótulo
@@ -170,7 +164,6 @@ export class UcamBadge {
   readonly icon = input<UcamIconName | null>(null);
 
   protected readonly classes = computed(() => {
-    if (this.variant() === 'plain') return `${PLAIN_CLASSES} gap-1 font-normal`;
     const tinta = this.variant() === 'outline' ? OUTLINE_CLASSES : TONE_CLASSES;
     return `${tinta[this.tone()]} gap-1 font-medium`;
   });

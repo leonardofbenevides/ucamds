@@ -1102,8 +1102,10 @@ export function renderShell(cfg = {}, conteudo = '') {
             ? 'ucam-content ucam-content--pleno'
             : 'ucam-content';
 
+  // A marca no rodapé só onde a faixa NÃO a leva — uma vez por tela (ADR-033).
+  // Desde a ADR-060 toda faixa leva a logo; sobram os arranjos sem faixa.
   const blocoRodape = rodape
-    ? `<footer class="ucam-shell__footer">${logo ? '' : '<span class="ucam-shell__footer-marca" role="img" aria-label="Universidade Candido Mendes"></span>'}${rodape}</footer>`
+    ? `<footer class="ucam-shell__footer">${logo || !(topo || railColuna || lateral || semFaixa) ? '' : '<span class="ucam-shell__footer-marca" role="img" aria-label="Universidade Candido Mendes"></span>'}${rodape}</footer>`
     : '';
 
   // Com rail, a FAIXA NÃO EXISTE. Não é a faixa escondida por CSS: ela não é
@@ -1134,9 +1136,15 @@ export function renderShell(cfg = {}, conteudo = '') {
         // sistema e era ele que a estourava a 320 e a 480px. O ladrilho do
         // módulo diz em que sistema se está com a mesma cor da grade do Portal;
         // a universidade fica onde ela é o assunto.
-        (logo
-          ? `<span class="ucam-appbar__logo" aria-hidden="true"></span><span class="ucam-appbar__divider"></span>`
-          : moduloIcone
+        //
+        // A LOGO VOLTA A TODA FAIXA (ADR-060, 06/10/2026): "podemos adicionar
+        // a logo da UCAM em todas as aplicações?". Ela abre a faixa, o filete
+        // a separa, e a marquinha continua dizendo QUAL sistema. O que a
+        // ADR-033 resolveu segue resolvido: abaixo de nav-fixa a logo que tem
+        // marquinha ao lado some (build-css.mjs), e a faixa estreita abre só
+        // com o ladrilho e o nome. O Portal não tem marquinha e fica como era.
+        `<span class="ucam-appbar__logo" aria-hidden="true"></span><span class="ucam-appbar__divider"></span>` +
+          (!logo && moduloIcone
             ? `<span class="ucam-icon-tile ucam-appbar__marca${moduloCategoria ? ` ucam-icon-tile--${esc(moduloCategoria)}` : ''}" aria-hidden="true">${ic(moduloIcone)}</span>`
             : '') + `<span class="ucam-appbar__system">${esc(sistema)}</span>`,
       ) +
@@ -2521,6 +2529,10 @@ ${FN_ANUNCIA}
     campo.focus();
   }
 
+  // Os outros scripts da tela não enxergam esta função (cada um é uma
+  // clausura): o diálogo de escolha precisa dela para recusar antes de abrir.
+  window.ucamErroDeCampo = erroDeCampo;
+
   /** Tira o erro que ESTE script pôs — nunca um que a tela declarou. */
   function semErroDeCampo(campo) {
     var id = campo.id + '-erro';
@@ -2557,6 +2569,47 @@ ${FN_ANUNCIA}
     if (nos.length) nos[nos.length - 1].textContent = ' ' + texto;
     else botao.appendChild(document.createTextNode(texto));
   }
+
+  /* A PROVA (06/10/2026). Responder é um radio, e radio não passa por agir():
+   * o despacho de ações cancela o padrão do clique, e a alternativa não ficaria
+   * marcada. Por isso a resposta é ouvida no change. O que a tela mostra é a
+   * regra do vestibular: a resposta grava na hora, a bolha da questão atual
+   * fica cheia, a contagem anda e o aviso de salvamento diz "Salvo". */
+  function provaSalvou(raiz, quando) {
+    var s = raiz.querySelector('.ucam-salvamento');
+    if (!s) return;
+    s.setAttribute('data-estado', 'salvo');
+    var t = s.querySelector('[data-salvamento-texto]');
+    if (t) t.textContent = 'Salvo' + (quando ? ' ' + quando : '');
+  }
+  document.addEventListener('change', function (e) {
+    var radio = e.target.closest && e.target.closest('[data-prova] .ucam-choice-card input[type="radio"]');
+    if (!radio) return;
+    var prova = radio.closest('[data-prova]');
+    var atual = prova.querySelector('.ucam-mapa__item[aria-current="true"]');
+    if (atual && atual.getAttribute('data-estado') !== 'respondida') {
+      atual.setAttribute('data-estado', 'respondida');
+      atual.setAttribute('aria-label', (atual.getAttribute('aria-label') || '').replace('em branco', 'respondida'));
+      var conta = prova.querySelector('[data-campo="respondidas"]');
+      if (conta) conta.textContent = String(prova.querySelectorAll('button.ucam-mapa__item[data-estado="respondida"]').length);
+    }
+    provaSalvou(prova, 'agora');
+  });
+  document.addEventListener('input', function (e) {
+    var area = e.target.closest && e.target.closest('[data-redacao]');
+    if (!area) return;
+    var raiz = area.closest('[data-prova]') || document;
+    var n = (area.value.match(/\\S/g) || []).length;
+    var min = Number(area.getAttribute('data-minimo') || 300);
+    var contador = raiz.querySelector('[data-campo="caracteres"]');
+    if (contador) contador.textContent = n.toLocaleString('pt-BR');
+    var falta = raiz.querySelector('[data-campo="falta"]');
+    if (falta) falta.textContent = n >= min ? 'Mínimo atingido. Você pode continuar escrevendo.' : 'Faltam ' + (min - n) + ' caracteres para o mínimo.';
+    var entregar = raiz.querySelector('[data-exige-minimo]');
+    if (entregar) { if (n >= min) entregar.removeAttribute('aria-disabled'); else entregar.setAttribute('aria-disabled', 'true'); }
+    var bolha = raiz.querySelector('.ucam-mapa__item--largo');
+    if (bolha) { if (n >= min) bolha.setAttribute('data-estado', 'respondida'); else bolha.removeAttribute('data-estado'); }
+  });
 
   function rotuloTemporario(botao, texto) {
     if (botao.hasAttribute('data-rotulo-original')) return;
@@ -2921,6 +2974,18 @@ ${FN_ANUNCIA}
     // O resumo do rodapé da tabela e o eco dele no fecho do telefone
     // (.ucam-viewbar__resumo, aria-hidden: quem ouve já tem o de cima).
     Array.prototype.forEach.call(document.querySelectorAll('[data-totais], [data-totais-eco]'), function (alvo) { alvo.textContent = linhaTot; });
+    // A BARRA das decisões, acima da tabela (06/10/2026): cada segmento e cada
+    // número da legenda seguem a mesma conta do rodapé.
+    var barraTot = document.querySelector('[data-totais-barra]');
+    if (barraTot && t.total) {
+      [['isentas', t.isentas], ['nao', t.nao], ['documento', t.documento], ['pendentes', t.pendentes]].forEach(function (par) {
+        var seg = barraTot.querySelector('[data-parte="' + par[0] + '"]');
+        if (seg) seg.style.setProperty('--ucam-progress-valor', (par[1] / t.total * 100).toFixed(1) + '%');
+        var num = document.querySelector('[data-parte-n="' + par[0] + '"]');
+        if (num) num.textContent = String(par[1]);
+      });
+      barraTot.setAttribute('aria-label', 'Decisões: ' + linhaTot.replace(/ · /g, ', '));
+    }
     var fim = document.querySelector('[data-acao="finalizar-analise"]');
     if (fim) {
       fim.setAttribute('data-pendentes', String(t.pendentes));
@@ -3225,12 +3290,47 @@ ${FN_ANUNCIA}
       // para o setor onde ele já estava (revisão de 28/09/2026).
       var destino = botao.getAttribute('data-escolha');
       var paraOnde = destino ? ' a ' + destino : ' ao setor responsável';
-      mudarSelo(seloSituacao(botao), concluindo ? 'Concluído' : 'Encaminhado', concluindo ? 'success' : 'info');
-      evento(concluindo ? 'Concluiu o requerimento' : 'Encaminhou o requerimento' + paraOnde, concluindo ? 'check' : 'send');
-      tiraDaFila(botao, concluindo ? 'concluidos' : 'encaminhados', concluindo ? 'Concluído' : 'Encaminhado', concluindo ? 'success' : 'info');
-      anuncia(concluindo ? 'Requerimento concluído. Ele saiu de Aguardam você e está em Concluídos.' : 'Requerimento encaminhado' + paraOnde + '. Ele saiu de Aguardam você e está em Encaminhados.', botao);
-      if (concluindo) { botao.setAttribute('aria-disabled', 'true'); botao.setAttribute('title', 'O requerimento já está concluído'); return; }
+      /* CONCLUIR É DEFERIR OU INDEFERIR (06/10/2026). No Protocolo real o
+       * requerimento não fecha como "Concluído": fecha com um parecer, e o
+       * texto do parecer é obrigatório. O resultado vem do diálogo (o mesmo
+       * data-escolha do encaminhar) e o texto é o da resposta ao requerente,
+       * que o diálogo já exigiu antes de abrir (data-exige-texto). */
+      var parecer = concluindo ? (destino === 'Indeferido' ? 'Indeferido' : 'Deferido') : '';
+      var tomParecer = parecer === 'Indeferido' ? 'danger' : 'success';
+      var campoParecer = concluindo && document.querySelector(botao.getAttribute('data-exige-texto') || '#__nenhum');
+      var textoParecer = campoParecer ? campoParecer.value.trim() : '';
+      if (campoParecer) campoParecer.value = '';
+      mudarSelo(seloSituacao(botao), concluindo ? parecer : 'Encaminhado', concluindo ? tomParecer : 'info');
+      evento(concluindo ? 'Concluiu o requerimento como ' + parecer.toLowerCase() + (textoParecer ? ': ' + textoParecer : '') : 'Encaminhou o requerimento' + paraOnde, concluindo ? 'check' : 'send');
+      tiraDaFila(botao, concluindo ? 'concluidos' : 'encaminhados', concluindo ? parecer : 'Encaminhado', concluindo ? tomParecer : 'info');
+      anuncia(concluindo ? 'Requerimento ' + parecer.toLowerCase() + '. Ele saiu de Aguardam você e está em Concluídos.' : 'Requerimento encaminhado' + paraOnde + '. Ele saiu de Aguardam você e está em Encaminhados.', botao);
+      if (concluindo) {
+        // CONCLUÍDO PODE SER REABERTO (06/10/2026). No Protocolo real quem vê
+        // o requerimento em Concluídos pode reabri-lo, com confirmação. O
+        // botão não morre: vira o verbo do próximo clique, como a estrela.
+        botao.setAttribute('data-dialogo-concluir', botao.getAttribute('data-abre-dialogo') || '');
+        botao.removeAttribute('data-abre-dialogo');
+        botao.removeAttribute('data-escolha');
+        botao.setAttribute('data-acao', 'reabrir-requerimento');
+        botao.setAttribute('data-confirmar', '');
+        botao.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-refreshCw"/></svg> Reabrir';
+        return;
+      }
       return rotuloTemporario(botao, 'Encaminhado');
+    }
+
+    if (qual === 'reabrir-requerimento') {
+      mudarSelo(seloSituacao(botao), 'Em análise', 'info');
+      evento('Reabriu o requerimento', 'refreshCw');
+      tiraDaFila(botao, 'aguardam', 'Em análise', 'info');
+      var dialogoConcluir = botao.getAttribute('data-dialogo-concluir');
+      if (dialogoConcluir) botao.setAttribute('data-abre-dialogo', dialogoConcluir);
+      botao.removeAttribute('data-dialogo-concluir');
+      botao.removeAttribute('data-confirmar');
+      botao.setAttribute('data-acao', 'concluir');
+      botao.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Concluir';
+      anuncia('Requerimento reaberto. Ele voltou para Aguardam você, em análise.', botao);
+      return;
     }
 
     if (qual === 'responder') {
@@ -3297,6 +3397,9 @@ ${FN_ANUNCIA}
       var tabelaGrupo = linhaGrupo.closest('table');
       var grupo = (botao.getAttribute('aria-label') || '').replace(/^.*\\bdo grupo\\s*/, '');
       linhaGrupo.remove();
+      // Em Grupo × Usuários a contagem de integrantes do cabeçalho anda junto.
+      var contaGrupo = tabelaGrupo && tabelaGrupo.hasAttribute('data-integrantes') && document.querySelector('[data-campo="integrantes"]');
+      if (contaGrupo) contaGrupo.textContent = String(Math.max(0, parseInt(contaGrupo.textContent, 10) - 1));
       var resumo = tabelaGrupo && tabelaGrupo.closest('section') && tabelaGrupo.closest('section').querySelector('.ucam-section__hint');
       if (resumo) resumo.textContent = 'Saiu de ' + grupo + ' agora. Os menus que vinham só desse grupo deixam de valer no próximo acesso.';
       evento('Tirou do grupo ' + grupo, 'users');
@@ -3330,6 +3433,132 @@ ${FN_ANUNCIA}
       tabelaGrupos.tBodies[0].appendChild(tr2);
       evento('Adicionou ao grupo ' + grupoNovo, 'users');
       return eco(tr2);
+    }
+
+    // ADICIONAR INTEGRANTE a um grupo (06/10/2026, Grupo × Usuários). É o
+    // adicionar-grupo visto do outro lado: a pessoa vem do diálogo de escolha
+    // (data-escolha) e a linha nasce no topo, igual às que já estão lá, com o
+    // botão de tirar, que é o desfazer. A contagem do cabeçalho anda junto.
+    // ADICIONAR LINHA A PARTIR DE UM DIÁLOGO (06/10/2026). No Protocolo real
+    // a natureza não tem prazo nem nível: quem tem é o TIPO de natureza, uma
+    // lista dentro do cadastro dela. Cada campo do diálogo diz em que parte
+    // da linha entra (data-para → data-c), e o que mostrar quando vem vazio.
+    if (qual === 'adicionar-linha') {
+      var tabLinha = document.querySelector(botao.getAttribute('data-tabela') || '#__nenhum');
+      var dlgLinha = document.getElementById(botao.getAttribute('data-abre-dialogo') || '');
+      if (!tabLinha || !dlgLinha || !tabLinha.tBodies[0].rows.length) return;
+      var trLinha = tabLinha.tBodies[0].rows[0].cloneNode(true);
+      trLinha.removeAttribute('data-eco');
+      var nomeLinha = '';
+      Array.prototype.forEach.call(dlgLinha.querySelectorAll('[data-para]'), function (campo) {
+        var alvoLinha = trLinha.querySelector('[data-c="' + campo.getAttribute('data-para') + '"]');
+        if (!alvoLinha) return;
+        var caixas = campo.querySelectorAll('input[type="checkbox"]');
+        var selLinha = campo.querySelector('select');
+        var gatLinha = campo.querySelector('[data-listbox]');
+        var txtLinha = campo.querySelector('input:not([type="checkbox"]), textarea');
+        var v = '';
+        if (caixas.length) {
+          v = Array.prototype.filter.call(caixas, function (c) { return c.checked; }).map(function (c) {
+            return c.closest('label').textContent.trim();
+          }).join(', ');
+        } else if (selLinha) v = selLinha.options[selLinha.selectedIndex].text;
+        else if (gatLinha) v = gatLinha.textContent.trim();
+        else if (txtLinha) { v = txtLinha.value.trim(); if (txtLinha.type !== 'number') txtLinha.value = ''; }
+        if (campo.getAttribute('data-para') === 'nome') nomeLinha = v;
+        if (!v) v = campo.getAttribute('data-vazio') || '—';
+        else v = (campo.getAttribute('data-prefixo') || '') + v + (v === '1' && campo.hasAttribute('data-sufixo-um') ? campo.getAttribute('data-sufixo-um') : campo.getAttribute('data-sufixo') || '');
+        alvoLinha.textContent = v;
+      });
+      if (!nomeLinha) return rotuloTemporario(botao, 'Faltou o nome');
+      var repetida = Array.prototype.some.call(tabLinha.tBodies[0].rows, function (tr) {
+        var n = tr.querySelector('[data-c="nome"]');
+        return n && n.textContent.trim() === nomeLinha;
+      });
+      if (repetida && botao.hasAttribute('data-linha-unica')) return rotuloTemporario(botao, botao.getAttribute('data-linha-unica'));
+      Array.prototype.forEach.call(trLinha.querySelectorAll('[data-rotulo-linha]'), function (b) {
+        b.setAttribute('aria-label', b.getAttribute('data-rotulo-linha').replace('{nome}', nomeLinha));
+      });
+      tabLinha.tBodies[0].appendChild(trLinha);
+      var contaLinha = document.querySelector('[data-campo="linhas"]');
+      if (contaLinha) contaLinha.textContent = String(tabLinha.tBodies[0].rows.length);
+      anuncia((botao.getAttribute('data-linha-msg') || '{nome} entrou na lista.').replace('{nome}', nomeLinha), botao);
+      return eco(trLinha);
+    }
+
+    // REVOGAR UM MENU DIRETO (06/10/2026): a linha sai, a contagem anda e a
+    // dica da seção diz o que aconteceu. O desfazer é conceder de novo.
+    // IR PARA UMA QUESTÃO pelo mapa: o anel muda de bolha, o cabeçalho diz o
+    // número e a contagem "questão N de T" acompanha.
+    if (qual === 'ir-questao') {
+      var provaQ = botao.closest('[data-prova]') || document;
+      Array.prototype.forEach.call(provaQ.querySelectorAll('.ucam-mapa__item[aria-current]'), function (b) { b.removeAttribute('aria-current'); });
+      botao.setAttribute('aria-current', 'true');
+      var numQ = botao.getAttribute('data-numero') || botao.textContent.trim();
+      Array.prototype.forEach.call(provaQ.querySelectorAll('[data-campo="questao"]'), function (c) { c.textContent = numQ; });
+      var revQ = provaQ.querySelector('[data-acao="alternar"][data-alvo-atual]');
+      if (revQ) {
+        var marcadaQ = botao.hasAttribute('data-revisar');
+        revQ.setAttribute('aria-pressed', String(marcadaQ));
+        revQ.lastChild.textContent = ' ' + revQ.getAttribute(marcadaQ ? 'data-rotulo-ligado' : 'data-rotulo-desligado');
+      }
+      return anuncia('Questão ' + numQ + '.', botao);
+    }
+    // BOTÃO DE ALTERNÂNCIA: liga e desliga, e o rótulo diz o estado. Com
+    // data-alvo-atual, a marca vai para a bolha da questão atual do mapa.
+    if (qual === 'alternar') {
+      var ligado = botao.getAttribute('aria-pressed') !== 'true';
+      botao.setAttribute('aria-pressed', String(ligado));
+      botao.lastChild.textContent = ' ' + botao.getAttribute(ligado ? 'data-rotulo-ligado' : 'data-rotulo-desligado');
+      var provaA = botao.closest('[data-prova]');
+      var bolhaA = provaA && botao.hasAttribute('data-alvo-atual') && provaA.querySelector('.ucam-mapa__item[aria-current="true"]');
+      if (bolhaA) { if (ligado) bolhaA.setAttribute('data-revisar', ''); else bolhaA.removeAttribute('data-revisar'); }
+      return anuncia(botao.getAttribute(ligado ? 'data-aviso-ligado' : 'data-aviso-desligado') || '', botao);
+    }
+
+    if (qual === 'revogar-menu') {
+      var trRev = botao.closest('tr');
+      var tabRev = trRev && trRev.closest('table');
+      if (!tabRev) return;
+      var nomeRev = ((trRev.querySelector('[data-c="nome"]') || {}).textContent || 'O menu').trim();
+      trRev.remove();
+      var contaRev = document.querySelector('[data-campo="linhas"]');
+      if (contaRev) contaRev.textContent = String(tabRev.tBodies[0].rows.length);
+      var dicaRev = tabRev.closest('section') && tabRev.closest('section').querySelector('.ucam-section__hint');
+      if (dicaRev) dicaRev.textContent = nomeRev + ' foi revogado agora. Se o menu também vier de um grupo, a pessoa continua com ele.';
+      evento('Revogou o acesso direto a ' + nomeRev, 'lock');
+      anuncia('Acesso direto a ' + nomeRev + ' revogado.', tabRev);
+      return eco(tabRev);
+    }
+
+    if (qual === 'adicionar-integrante') {
+      var pessoaNova = botao.getAttribute('data-escolha');
+      var tabelaInt = document.querySelector('[data-integrantes]');
+      if (!pessoaNova || !tabelaInt || !tabelaInt.tBodies[0].rows.length) return;
+      var corpoInt = tabelaInt.tBodies[0];
+      var jaEsta = Array.prototype.some.call(corpoInt.rows, function (tr) {
+        var n = tr.querySelector('.td--pessoa__nome');
+        return n && n.textContent.trim() === pessoaNova;
+      });
+      if (jaEsta) return rotuloTemporario(botao, 'Já está no grupo');
+      var grupoInt = ((document.querySelector('.ucam-viewbar__titulo') || {}).textContent || 'o grupo').trim();
+      var trInt = corpoInt.rows[0].cloneNode(true);
+      trInt.removeAttribute('data-eco');
+      var partesInt = pessoaNova.split(' ');
+      trInt.querySelector('.td--pessoa__nome').textContent = pessoaNova;
+      var avInt = trInt.querySelector('.ucam-avatar');
+      if (avInt) avInt.textContent = (partesInt[0][0] + partesInt[partesInt.length - 1][0]).toUpperCase();
+      var apoioInt = trInt.querySelector('.td--apoio');
+      if (apoioInt) apoioInt.textContent = 'adicionado agora · os menus valem no próximo acesso';
+      if (trInt.cells[1]) trInt.cells[1].textContent = '—';
+      if (trInt.cells[2]) trInt.cells[2].textContent = 'hoje';
+      var tirarInt = trInt.querySelector('[data-acao="sair-grupo"]');
+      if (tirarInt) tirarInt.setAttribute('aria-label', 'Tirar ' + pessoaNova + ' do grupo ' + grupoInt);
+      corpoInt.insertBefore(trInt, corpoInt.firstChild);
+      var contaInt = document.querySelector('[data-campo="integrantes"]');
+      if (contaInt) contaInt.textContent = String(parseInt(contaInt.textContent, 10) + 1);
+      anuncia(pessoaNova + ' entrou em ' + grupoInt + '. Os menus do grupo valem no próximo acesso.', botao);
+      return eco(trInt);
     }
 
     // COPIAR PERMISSÕES de outro grupo. No protótipo, copiar é marcar o que
@@ -3395,6 +3624,92 @@ ${FN_ANUNCIA}
     /* Cada ação em lote diz qual BOTÃO DA LINHA ela dispara. Nada de efeito
      * repetido aqui: se a regra de bloquear mudar, muda no lugar em que ela
      * mora, e o lote continua certo. */
+    /* LOTE QUE MUDA A SITUAÇÃO (06/10/2026). Baixar, enviar, matricular,
+     * sincronizar: o financeiro novo e a secretaria virtual são feitos de
+     * "marcar linhas e mandar". O que muda de uma tela para a outra é a
+     * palavra, e ela vem da marcação: o selo novo, o tom, a frase do aviso e,
+     * quando há pré-requisito, qual situação a linha precisa ter
+     * (data-lote-so). Linha marcada que não cumpre fica como está e é contada
+     * no aviso, para ninguém achar que foi. */
+    if (qual === 'lote-marcar') {
+      var barraM = botao.closest('.ucam-lote');
+      var tabM = (barraM && barraM.parentElement.querySelector('table')) || document.querySelector('table[data-lote-alvo]') || document.querySelector('table');
+      if (!tabM) return;
+      var marcM = Array.prototype.filter.call(
+        tabM.querySelectorAll('tbody .td--selecao input'),
+        function (c) { return c.checked && !c.closest('[hidden]'); },
+      );
+      if (!marcM.length) return rotuloTemporario(botao, 'Marque ao menos uma linha');
+      var soM = botao.getAttribute('data-lote-so');
+      var feitasM = 0, foraM = 0;
+      marcM.forEach(function (c) {
+        var trM = c.closest('tr');
+        var tokM = (trM.getAttribute('data-situacao') || '').split(' ');
+        if (soM && !soM.split(' ').some(function (x) { return tokM.indexOf(x) >= 0; })) { foraM++; return; }
+        mudarSelo(trM.querySelector('[data-selo]'), botao.getAttribute('data-lote-selo'), botao.getAttribute('data-lote-tom') || 'success');
+        if (botao.hasAttribute('data-lote-situacao')) trM.setAttribute('data-situacao', botao.getAttribute('data-lote-situacao'));
+        feitasM++;
+      });
+      marcM.forEach(function (c) { c.checked = false; });
+      marcM[0].dispatchEvent(new Event('change', { bubbles: true }));
+      var fraseM = feitasM + ' ' + (feitasM === 1 ? botao.getAttribute('data-lote-um') : botao.getAttribute('data-lote-varios'));
+      if (foraM) fraseM += ' ' + foraM + (foraM === 1 ? ' ficou de fora: ' : ' ficaram de fora: ') + (botao.getAttribute('data-lote-fora') || 'não cumprem a condição.');
+      return anuncia(fraseM, botao);
+    }
+
+    /* EDIÇÃO EM LOTE (06/10/2026): um valor aplicado a todas as linhas
+     * marcadas. Cada campo do bloco diz em que parte da linha entra
+     * (data-lote-campo → data-c). Campo vazio é erro do campo, não do lote. */
+    if (qual === 'lote-preencher') {
+      var blocoP = botao.closest('[data-lote-edicao]');
+      var tabP = document.querySelector(botao.getAttribute('data-tabela') || 'table');
+      if (!blocoP || !tabP) return;
+      var camposP = Array.prototype.slice.call(blocoP.querySelectorAll('[data-lote-campo]'));
+      var vazioP = camposP.filter(function (c) { return !c.value.trim(); })[0];
+      if (vazioP) { erroDeCampo(vazioP, 'Preencha a data para aplicar às linhas marcadas.'); return; }
+      var marcP = Array.prototype.filter.call(tabP.querySelectorAll('tbody .td--selecao input'), function (c) { return c.checked && !c.closest('[hidden]'); });
+      if (!marcP.length) return rotuloTemporario(botao, 'Marque ao menos uma linha');
+      marcP.forEach(function (c) {
+        var trP = c.closest('tr');
+        camposP.forEach(function (campoP) {
+          var alvoP = trP.querySelector('[data-c="' + campoP.getAttribute('data-lote-campo') + '"]');
+          if (alvoP) alvoP.textContent = campoP.value.trim();
+        });
+        mudarSelo(trP.querySelector('[data-selo]'), botao.getAttribute('data-lote-selo') || 'Alterado agora', 'info');
+        trP.setAttribute('data-situacao', 'alterado');
+      });
+      marcP.forEach(function (c) { c.checked = false; });
+      marcP[0].dispatchEvent(new Event('change', { bubbles: true }));
+      return anuncia(marcP.length + (marcP.length === 1 ? ' ' + botao.getAttribute('data-lote-um') : ' ' + botao.getAttribute('data-lote-varios')), botao);
+    }
+
+    /* ATRIBUIÇÃO EM LOTE (06/10/2026): N de uma lista em M da outra, com
+     * capacidade. A alocação de alunos da secretaria virtual não dizia se deu
+     * certo; aqui o aluno alocado sai da lista, as vagas baixam e o aviso
+     * conta. Disciplina sem vaga para todos os marcados recusa e diz qual. */
+    if (qual === 'alocar') {
+      var blocoA = botao.closest('[data-alocacao]') || document;
+      var deA = Array.prototype.filter.call(blocoA.querySelectorAll('[data-alocar="de"] input'), function (c) { return c.checked; });
+      var paraA = Array.prototype.filter.call(blocoA.querySelectorAll('[data-alocar="para"] input'), function (c) { return c.checked; });
+      if (!deA.length || !paraA.length) return rotuloTemporario(botao, !deA.length ? 'Marque ao menos um aluno' : 'Marque ao menos uma disciplina');
+      var semVaga = paraA.filter(function (c) { return Number(c.getAttribute('data-vagas')) < deA.length; })[0];
+      if (semVaga) {
+        anuncia(semVaga.getAttribute('data-nome') + ' tem ' + semVaga.getAttribute('data-vagas') + ' vagas e você marcou ' + deA.length + ' alunos. Desmarque alunos ou a disciplina.', botao, 'danger');
+        return rotuloTemporario(botao, 'Faltam vagas');
+      }
+      paraA.forEach(function (c) {
+        var restam = Number(c.getAttribute('data-vagas')) - deA.length;
+        c.setAttribute('data-vagas', String(restam));
+        var v = c.closest('label').querySelector('[data-vagas-texto]');
+        if (v) v.textContent = restam;
+        c.checked = false;
+      });
+      deA.forEach(function (c) { c.closest('li').remove(); });
+      var contaA = blocoA.querySelector('[data-campo="sem-disciplina"]');
+      if (contaA) contaA.textContent = String(blocoA.querySelectorAll('[data-alocar="de"] li').length);
+      return anuncia(deA.length + (deA.length === 1 ? ' aluno alocado em ' : ' alunos alocados em ') + paraA.length + (paraA.length === 1 ? ' disciplina.' : ' disciplinas.'), botao);
+    }
+
     var LOTE = {
       'arquivar-lote': { verbo: 'arquivar', um: 'registro arquivado.', varios: 'registros arquivados.' },
       'bloquear-lote': { verbo: 'bloquear', um: 'conta bloqueada.', varios: 'contas bloqueadas.' },
@@ -3453,6 +3768,36 @@ ${FN_ANUNCIA}
       return eco(tr);
     }
 
+    /*
+     * INATIVAR E REATIVAR um registro de cadastro (06/10/2026, Gerencial v3).
+     *
+     * No sistema o verbo é "Excluir", e o que o servidor faz é inativar: o
+     * registro continua lá e pode voltar. A tela diz o que acontece (ADR-029).
+     * A linha troca de situação — é o data-situacao que o filtro lê —, o selo
+     * e o botão trocam juntos. O rótulo do selo vem do botão, porque o gênero
+     * é do cadastro (unidade Ativa, grupo Ativo).
+     */
+    if (qual === 'inativar' || qual === 'reativar-registro') {
+      var linhaReg = botao.closest('tr');
+      if (!linhaReg) return;
+      var inativa = qual === 'inativar';
+      var seloReg = linhaReg.querySelector('.ucam-badge');
+      var rotuloReg = botao.getAttribute(inativa ? 'data-rotulo-inativo' : 'data-rotulo-ativo') || (inativa ? 'Inativo' : 'Ativo');
+      if (seloReg) {
+        seloReg.className = 'ucam-badge ucam-badge--' + (inativa ? 'neutral' : 'success');
+        seloReg.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>' + rotuloReg;
+      }
+      linhaReg.setAttribute('data-situacao', inativa ? 'inativo' : 'ativo');
+      botao.setAttribute('data-acao', inativa ? 'reativar-registro' : 'inativar');
+      if (inativa) botao.removeAttribute('data-confirmar'); else botao.setAttribute('data-confirmar', '');
+      var nomeReg = (botao.getAttribute('aria-label') || '').replace(/^(Inativar|Reativar) /, '');
+      botao.setAttribute('aria-label', (inativa ? 'Reativar ' : 'Inativar ') + nomeReg);
+      var usoReg = botao.querySelector('use');
+      if (usoReg) usoReg.setAttribute('href', inativa ? '#i-refreshCw' : '#i-archive');
+      anuncia((inativa ? 'Inativou ' : 'Reativou ') + nomeReg + '.', botao);
+      return eco(linhaReg);
+    }
+
     if (qual === 'etapa-inicio') return andarEtapa(botao, 'inicio');
     if (qual === 'etapa-voltar') return andarEtapa(botao, 'voltar');
     if (qual === 'etapa-continuar') return andarEtapa(botao, 'continuar');
@@ -3501,6 +3846,51 @@ ${FN_ANUNCIA}
       return;
     }
 
+    /*
+     * RECUPERAR A SENHA, em três telas (06/10/2026): CPF, código, senha nova.
+     *
+     * Cada passo só anda com o campo dele preenchido, e a recusa é erro DO
+     * CAMPO. O CPF que não existe não é dito aqui: o passo seguinte abre do
+     * mesmo jeito, pela mesma razão do 'entrar' — responder "CPF não
+     * encontrado" ensinaria a enumerar cadastro.
+     */
+    if (qual === 'recuperar-continuar' || qual === 'confirmar-codigo') {
+      var formPasso = botao.closest('form');
+      var campoPasso = formPasso && formPasso.querySelector('input');
+      if (!campoPasso) return;
+      var digitos = campoPasso.value.replace(/[^0-9]/g, '');
+      if (qual === 'recuperar-continuar' && !digitos) return erroDeCampo(campoPasso, 'Digite seu CPF para continuar.');
+      if (qual === 'confirmar-codigo' && digitos.length !== 6) return erroDeCampo(campoPasso, 'Digite os 6 dígitos do código que chegou no e-mail.');
+      var destinoPasso = botao.getAttribute('data-destino') || formPasso.getAttribute('action');
+      if (destinoPasso) location.href = destinoPasso + location.search;
+      return;
+    }
+
+    if (qual === 'reenviar-codigo') {
+      // O reenvio tem espera: o botão fica indisponível e diz por quê, em vez
+      // de aceitar o clique e recusar depois.
+      botao.setAttribute('aria-disabled', 'true');
+      botao.setAttribute('data-motivo', 'Um código acabou de ser enviado. Você pode pedir outro em 1 minuto.');
+      anuncia('Código reenviado para o e-mail do seu cadastro. Ele vale por 20 minutos.', botao);
+      return rotuloTemporario(botao, 'Código reenviado');
+    }
+
+    if (qual === 'definir-senha') {
+      var formSenha = botao.closest('form');
+      if (!formSenha) return;
+      var senhas = formSenha.querySelectorAll('input[autocomplete="new-password"]');
+      if (senhas.length < 2) return;
+      if (!senhas[0].value) return erroDeCampo(senhas[0], 'Digite a nova senha.');
+      if (senhas[1].value !== senhas[0].value) return erroDeCampo(senhas[1], 'As duas senhas precisam ser iguais.');
+      var salva = document.querySelector('[data-senha-salva]');
+      if (!salva) return;
+      formSenha.hidden = true;
+      salva.hidden = false;
+      salva.focus();
+      anuncia('Senha atualizada. Você já pode entrar com a senha nova.', botao);
+      return;
+    }
+
     if (qual === 'limpar-busca') {
       // O botão mora DENTRO do estado vazio, e o estado vazio sabe de quem é:
       // é o campo cujo aria-controls aponta para ele. Antes daqui a busca era
@@ -3540,7 +3930,11 @@ ${FN_ANUNCIA}
         var h = s.querySelector('.ucam-section__title');
         return h && h.textContent.trim() === 'Resultado';
       })[0];
-      if (!resultado) return;
+      // No cálculo em lote não há seção de resultado: a tabela é o resultado.
+      if (!resultado) {
+        anuncia('Cálculo refeito com os filtros escolhidos. A tabela mostra o resultado.', botao);
+        return rotuloTemporario(botao, 'Calculado agora');
+      }
       resultado.scrollIntoView({ block: 'start', behavior: 'smooth' });
       // A rolagem é o eco de quem vê. Para quem não vê, o resultado só existe
       // se alguém disser que ele chegou — e o foco vai junto, porque foi ele
@@ -3701,6 +4095,13 @@ ${FN_ANUNCIA}
         valor === 'isentar' ? 'success' : valor === 'nao' ? 'danger' : valor === 'documento' ? 'warning' : 'neutral',
         valor === 'isentar' ? 'Isenta' : valor === 'nao' ? 'Não isenta' : valor === 'documento' ? 'Aguardando documento' : 'Sem decisão');
       linhaD.setAttribute('data-decidida', valor);
+      // OS CAMPOS DA DECISÃO (06/10/2026). Isentar pede a disciplina de
+      // origem, a instituição e a carga cursada; pedir documento pede o texto
+      // do pedido. Só aparece o bloco da decisão marcada — o da outra some
+      // com o que tinha, porque decisão desfeita não deixa dado para trás.
+      Array.prototype.forEach.call(linhaD.querySelectorAll('[data-campos]'), function (bloco) {
+        bloco.hidden = bloco.getAttribute('data-campos') !== valor;
+      });
       if (!window.ucamEmLote) linhaD.removeAttribute('data-pela-sugestao');
       notaDecisao(linhaD);
       if (valor) limpaFalta(linhaD);
@@ -3987,6 +4388,14 @@ ${FN_ANUNCIA}
         td.removeAttribute('data-aguarda-documento');
       });
       trocaDicas('enviado');
+      // A barra de andamento do candidato acompanha: o que aguardava
+      // documento volta a "em análise".
+      Array.prototype.forEach.call(document.querySelectorAll('[data-valor-enviado]'), function (seg) {
+        seg.style.setProperty('--ucam-progress-valor', seg.getAttribute('data-valor-enviado'));
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-rotulo-enviado]'), function (b) {
+        b.setAttribute('aria-label', b.getAttribute('data-rotulo-enviado'));
+      });
       var alertaE = botao.closest('.ucam-alert');
       var textoE = 'Documento enviado em ' + diaE + ' às ' + hora() + '. A coordenação volta a analisar sua solicitação.';
       if (alertaE) {
@@ -4232,6 +4641,25 @@ ${FN_ANUNCIA}
       var usoOlho = olho.querySelector('use');
       if (usoOlho) usoOlho.setAttribute('href', mostrar ? '#i-eyeOff' : '#i-eye');
       if (campoSenha) campoSenha.type = mostrar ? 'text' : 'password';
+      return;
+    }
+
+    // LINHA QUE ABRE UMA SUBTABELA (06/10/2026). O botão da primeira célula
+    // mostra e esconde a linha de detalhe que ele controla; o chevron gira
+    // pela folha (aria-expanded) e o verbo do nome acessível troca junto. A
+    // linha mãe leva data-aberta, que é por onde a folha e uma eventual
+    // impressão sabem o que está aberto.
+    var expansor = t.closest('.ucam-table__expansor[aria-controls]');
+    if (expansor) {
+      var detalhe = document.getElementById(expansor.getAttribute('aria-controls'));
+      if (!detalhe) return;
+      var abrir = expansor.getAttribute('aria-expanded') !== 'true';
+      expansor.setAttribute('aria-expanded', String(abrir));
+      detalhe.hidden = !abrir;
+      var nomeExp = expansor.getAttribute('aria-label') || '';
+      if (nomeExp) expansor.setAttribute('aria-label', nomeExp.replace(/^(Mostrar|Ocultar) /, abrir ? 'Ocultar ' : 'Mostrar '));
+      var maeExp = expansor.closest('tr');
+      if (maeExp) { if (abrir) maeExp.setAttribute('data-aberta', ''); else maeExp.removeAttribute('data-aberta'); }
       return;
     }
 
@@ -5521,6 +5949,11 @@ export const confirmaScript = `
       rotulo: 'Bloquear acesso',
       tom: 'danger',
     },
+    'inativar': {
+      corpo: 'O registro sai das listas de escolha e continua no cadastro, com o histórico. Dá para reativar depois.',
+      rotulo: 'Inativar',
+      tom: 'danger',
+    },
     'desbloquear': {
       corpo: 'A pessoa volta a entrar com a senha que já tinha. Se o bloqueio foi por tentativas de senha, a contagem zera.',
       rotulo: 'Desbloquear',
@@ -5529,6 +5962,11 @@ export const confirmaScript = `
     'bloquear-lote': {
       corpo: 'As contas marcadas perdem o acesso ao SIGU no próximo clique de cada pessoa. Os grupos e o histórico continuam como estão, e o acesso pode ser devolvido depois. Quem já está bloqueado fica de fora.',
       rotulo: 'Bloquear acesso',
+      tom: 'danger',
+    },
+    'revogar-menu': {
+      corpo: 'A pessoa deixa de ver este menu no próximo acesso, a não ser que ele também venha de um grupo. O acesso por grupo não muda.',
+      rotulo: 'Revogar',
       tom: 'danger',
     },
     'sair-grupo': {
@@ -5554,6 +5992,12 @@ export const confirmaScript = `
     'finalizar-analise': {
       corpo: 'A análise fecha com as decisões como estão e o candidato recebe o resultado. Depois de concluída, só reabrindo dá para mudar.',
       rotulo: 'Finalizar análise',
+      tom: 'primary',
+    },
+    'reabrir-requerimento': {
+      titulo: 'Reabrir o requerimento?',
+      corpo: 'O requerimento volta para Aguardam você, em análise, e o requerente vê a mudança no portal. O parecer anterior continua na linha do tempo.',
+      rotulo: 'Reabrir',
       tom: 'primary',
     },
     'reabrir-analise': {
@@ -5651,8 +6095,34 @@ export const confirmaScript = `
     e.stopPropagation();
 
     var acao = botao.getAttribute('data-acao');
-    var texto = TEXTOS[acao];
+    // O texto mora aqui, por ação. A ação em lote genérica (lote-marcar) traz
+    // o seu na marcação, porque o que ela faz muda de tela para tela.
+    var texto = TEXTOS[acao] || (botao.hasAttribute('data-confirmar-corpo') ? {
+      corpo: botao.getAttribute('data-confirmar-corpo'),
+      rotulo: botao.getAttribute('data-confirmar-rotulo') || 'Confirmar',
+      tom: botao.getAttribute('data-confirmar-tom') || 'primary',
+    } : null);
     if (!texto) return;
+
+    // OS CAMPOS DA DECISÃO SÃO COBRADOS AO FECHAR (isenção, 06/10/2026).
+    // Isentar sem a disciplina de origem, ou pedir documento sem dizer qual,
+    // não fecha: o erro vai para o primeiro campo vazio, com o nome da
+    // disciplina, e nenhum diálogo abre. Salvar rascunho não passa por aqui.
+    if (acao === 'finalizar-analise' && window.ucamErroDeCampo) {
+      var faltaCampo = Array.prototype.filter.call(
+        document.querySelectorAll('[data-decisoes] [data-campos]:not([hidden]) [aria-required="true"]'),
+        function (c) { return !c.value.trim(); },
+      )[0];
+      if (faltaCampo) {
+        var linhaFalta = faltaCampo.closest('tr');
+        var discFalta = linhaFalta ? linhaFalta.getAttribute('data-disciplina') : '';
+        window.ucamErroDeCampo(faltaCampo, faltaCampo.tagName === 'TEXTAREA'
+          ? 'Diga o que o candidato deve enviar' + (discFalta ? ' para ' + discFalta : '') + '.'
+          : 'Preencha este campo' + (discFalta ? ' de ' + discFalta : '') + ' para fechar a análise: ele vai para o histórico do aluno.');
+        faltaCampo.scrollIntoView({ block: 'center' });
+        return;
+      }
+    }
 
     // ITEM DE MENU: esta captura para a propagação, então o menu não fecharia
     // sozinho e ficaria aberto atrás do diálogo. Ele fecha aqui, e o foco de
@@ -5785,6 +6255,17 @@ export const dialogoScript = `
     if (!d) return;
     e.preventDefault();
     e.stopPropagation();
+
+    // O TEXTO VEM ANTES DA ESCOLHA (06/10/2026): quando a ação exige um
+    // campo da página preenchido (o parecer, ao concluir), a recusa é erro
+    // desse campo e o diálogo nem abre. Abrir, escolher e só então ouvir
+    // "falta o texto" faria a pessoa refazer a escolha.
+    var exige = botao.getAttribute('data-exige-texto');
+    var campoExigido = exige && document.querySelector(exige);
+    if (campoExigido && !campoExigido.value.trim() && window.ucamErroDeCampo) {
+      window.ucamErroDeCampo(campoExigido, botao.getAttribute('data-exige-msg') || 'Preencha este campo antes de continuar.');
+      return;
+    }
 
     d.returnValue = '';
     d.onclose = function () {
@@ -7229,6 +7710,42 @@ export const menuContaScript = `
   });
 })();
 `.trim();
+
+/**
+ * A COR DO AVATAR em tempo de execução (ADR-062). A conta é a de
+ * lib/avatar-cor.mjs — a mistura dos códigos das iniciais, de 1 a 8 —, e
+ * existe aqui porque as linhas de tabela e de lista são montadas por script:
+ * o avatar que nasce depois do carregamento não passou pelo gerador. Fica de
+ * fora o que já tem cor por outro motivo: o --marca, o de foto e o da conta,
+ * sobre a faixa.
+ */
+export const avatarScript = `
+(function () {
+  function pinta(el) {
+    if (el.hasAttribute('data-cor') || el.classList.contains('ucam-avatar--marca')) return;
+    if (el.querySelector('img') || el.closest('.ucam-appbar, .ucam-mobilebar, .ucam-nav__conta')) return;
+    var t = (el.textContent || '').trim().toUpperCase();
+    if (!t || t.length > 4) return;
+    var h = 0;
+    for (var i = 0; i < t.length; i++) h = Math.imul(h ^ t.charCodeAt(i), 2654435761) >>> 0;
+    el.setAttribute('data-cor', String(((h >>> 16) % 8) + 1));
+  }
+  function todos(raiz) {
+    Array.prototype.forEach.call(raiz.querySelectorAll('.ucam-avatar'), pinta);
+  }
+  todos(document);
+  if (!('MutationObserver' in window)) return;
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      Array.prototype.forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType !== 1) return;
+        if (n.classList.contains('ucam-avatar')) pinta(n);
+        todos(n);
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+`;
 
 /**
  * O CONTADOR do textarea (contrato textarea, parte contador): 'n de m

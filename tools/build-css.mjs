@@ -140,7 +140,9 @@ const ITEM_DE_GRADE = ':not(.ucam-empty, .ucam-sr-only, [hidden], template, scri
  * pode ter medida própria — ver "A TABELA CURTA TEM TETO". Um :has() só,
  * porque :has() não aninha: a última coluna de dado é a N-ésima ou antes. */
 const TABELA_ATE = (n) => `.ucam-table > thead > tr > th:nth-last-child(1 of :not(.th--selecao, [hidden])):nth-child(-n+${n} of :not(.th--selecao, [hidden]))`;
-const TABELA_SOLTA = ':not(.ucam-split:not(.ucam-split--apoio-inicio) *):not(:has(~ :is(.ucam-card, .ucam-stats, .ucam-grid))):not(:is(.ucam-card, .ucam-stats, .ucam-grid) ~ *)';
+/* E não é solta a tabela de uma PILHA de blocos (06/10/2026): na isenção em rolagem única os
+ * cartões de cima e de baixo vão na largura do corpo, e a tabela de três colunas parava antes deles. */
+const TABELA_SOLTA = ':not(.ucam-corpo > .ucam-stack > .ucam-section *):not(.ucam-split:not(.ucam-split--apoio-inicio) *):not(:has(~ :is(.ucam-card, .ucam-stats, .ucam-grid))):not(:is(.ucam-card, .ucam-stats, .ucam-grid) ~ *)';
 
 const contentorAbaixo = (papel, nome = 'corpo') => {
   const r = (remDoContentor(papel) - 0.001).toFixed(3);
@@ -1564,6 +1566,78 @@ button.ucam-anexo__nome {
   white-space: normal;
 }
 
+/* FILEIRA (06/10/2026): os anexos como no pé de um email. Na grade cada tile
+ * ocupa a trilha inteira, e no painel lateral da isenção dois PDFs viravam
+ * dois blocos de 80px com o nome cortado em "historico-joao-cutri…" — a peça
+ * mais alta da coluna para o dado menos lido. Na fileira o tile tem a largura
+ * do NOME, corre na linha e quebra para a de baixo; o teto de 18rem é o que
+ * segura um nome longo, que aí trunca como na grade.
+ *
+ * A figura é CHEIA na tinta da ação, com o desenho em text.on-action: o
+ * quadrado colorido do formato que o cliente de email põe antes do nome. O
+ * poço cinza de 32px sumia contra o filete, e a receita a 12% lia cinza do
+ * mesmo jeito. A recusa e o erro continuam em tom de erro. */
+.ucam-anexos--fileira {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-inline-sm);
+}
+
+.ucam-anexos--fileira .ucam-anexo {
+  flex: 0 1 auto;
+  max-inline-size: min(100%, 18rem);
+  padding: var(--ucam-space-inline-xs);
+  padding-inline-end: var(--ucam-space-inline-sm);
+}
+
+.ucam-anexos--fileira .ucam-anexo__figura {
+  inline-size: 2rem;
+  block-size: 2rem;
+}
+
+.ucam-anexos--fileira .ucam-anexo:not(.ucam-anexo--recusado, .ucam-anexo--erro) .ucam-anexo__figura {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+}
+
+.ucam-anexos--fileira .ucam-anexo__figura .ic,
+.ucam-anexos--fileira .ucam-anexo__indicio {
+  inline-size: var(--ucam-size-icon-sm);
+  block-size: var(--ucam-size-icon-sm);
+}
+
+/* Uma linha de apoio: o tile da fileira tem duas linhas e a mesma altura em
+ * todos, senão a fileira serrilha. */
+.ucam-anexos--fileira .ucam-anexo__apoio {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+/* O CABEÇALHO da lista: clipe, contagem e de quando são. É a linha que o
+ * email põe acima dos anexos. O clipe fica na PRIMEIRA linha: no telefone o
+ * título quebra em três, e centrado ele descia para o meio do parágrafo. */
+.ucam-anexos__titulo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ucam-space-inline-xs);
+  margin: 0 0 var(--ucam-space-inline-sm);
+  font-size: var(--ucam-typography-caption-font-size);
+  line-height: var(--ucam-typography-caption-line-height);
+  color: var(--ucam-color-text-secondary);
+}
+
+.ucam-anexos__titulo .ic {
+  flex: none;
+  inline-size: var(--ucam-size-icon-sm);
+  block-size: var(--ucam-size-icon-sm);
+  margin-block-start: 0.0625rem;
+}
+
+.ucam-anexos__titulo b {
+  font-weight: var(--ucam-typography-label-font-weight);
+  color: var(--ucam-color-text-primary);
+}
+
 /* --------------------------------------------------------- file-field --- */
 /* Contrato: file-field.json.
  *
@@ -2426,7 +2500,15 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 }
 
 .ucam-table thead th {
-  background: var(--ucam-color-surface-default);
+  /* FAIXA CINZA, e em toda tabela (ADR-061, 06/10/2026): "podemos tornar
+   * padrão colocar um fundo cinza em todos os headers de tabela". A ADR-051
+   * tinha deixado o cabeçalho na superfície do papel; o fio, a tinta
+   * secundária e o ícone de coluna continuam, e a faixa passa a separar
+   * rótulo de dado antes de qualquer leitura. É o único cinza de fundo dentro
+   * de superfície no tema claro, e é de propósito. surface.sunken, e não
+   * surface.subtle: o subtle (#F8FAFC) sobre o branco dá 1,04:1 e a faixa não
+   * se via na captura; o sunken é o primeiro degrau que lê como faixa. */
+  background: var(--ucam-color-surface-sunken);
   color: var(--ucam-color-text-secondary);
   font-size: var(--ucam-typography-table-header-font-size);
   font-weight: var(--ucam-typography-table-header-font-weight);
@@ -2602,6 +2684,80 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table tbody tr:last-child td,
 .ucam-table tbody tr:last-child th { border-block-end: 0; }
 
+/* TRÊS PEÇAS DA TABELA DE RELATÓRIO (06/10/2026).
+ *
+ * O inventário dos quinze front-ends da universidade achou as mesmas três
+ * faltas em quase todos: a linha de totais (polos, metas, contabilidade), o
+ * cabeçalho em dois andares (arrecadação por caixa, receita diária, captação
+ * por turno) e a linha que abre uma subtabela (unidade e cursos, curso e
+ * alunos, aluno e parcelas — seis vezes só nos painéis). Cada sistema fez as
+ * três à mão sobre o mat-table, de um jeito diferente. Entram aqui como
+ * partes da MESMA tabela, não como componente novo: é a mesma grade, o mesmo
+ * fio e a mesma tinta.
+ *
+ * 1. TOTAIS. O <tfoot> é a linha de totais. Peso de rótulo e um fio do
+ * degrau de cima (border.default) separando a soma das parcelas: a soma é
+ * outra coisa que não um registro, e o fio é o que diz isso — não um fundo
+ * cinza, que este sistema não usa no claro (ADR-040). */
+.ucam-table tfoot :where(th, td) {
+  color: var(--ucam-color-text-primary);
+  font-weight: var(--ucam-typography-label-font-weight);
+  border-block-start: 1px solid var(--ucam-color-border-default);
+  border-block-end: 0;
+}
+.ucam-table tfoot tr > :where(th, td) + :where(th, td) {
+  border-inline-start: 1px solid var(--ucam-color-border-subtle);
+}
+
+/* 2. CABEÇALHO EM DOIS ANDARES. A fileira de cima (.ucam-table__grupos) só
+ * nomeia grupos de colunas; quem rotula o dado continua sendo a de baixo, e é
+ * por ela que o leitor de tela anuncia a célula (headers/id na marcação).
+ * O rótulo do grupo fica centrado sobre as colunas que cobre e não ordena
+ * nada — não é botão.
+ *
+ * As duas fileiras grudam. A de cima tem altura fixa justamente para a de
+ * baixo saber onde parar: sem isso as duas grudariam no mesmo topo, uma por
+ * cima da outra. Célula com rowspan=2 (a coluna que não pertence a grupo
+ * nenhum) fica na fileira de cima e cobre as duas. */
+.ucam-table thead tr.ucam-table__grupos > th {
+  block-size: 2rem;
+  padding-block: 0;
+  text-align: center;
+}
+.ucam-table thead tr.ucam-table__grupos > th[rowspan] { text-align: start; }
+.ucam-table thead tr.ucam-table__grupos + tr > th {
+  inset-block-start: calc(var(--ucam-tabela-topo, 0px) + 2rem);
+}
+/* Dentro do invólucro que rola o topo é o do próprio invólucro (zero), e a
+ * regra que diz isso é mais específica que a de cima: sem repetir o degrau
+ * aqui, as duas fileiras grudariam no mesmo topo, uma sobre a outra. */
+.ucam-table-wrap:not([data-rola="nao"]) .ucam-table thead tr.ucam-table__grupos + tr > th {
+  inset-block-start: 2rem;
+}
+
+/* 3. LINHA QUE ABRE UMA SUBTABELA. O botão (.ucam-table__expansor) mora na
+ * primeira célula, diz o que abre (aria-expanded, aria-controls) e gira o
+ * chevron; a linha seguinte (.ucam-table__detalhe) é uma célula só, com a
+ * tabela filha dentro. A filha é compacta, não gruda cabeçalho e entra
+ * recuada até o início do texto da linha mãe — o recuo é o que diz de quem
+ * ela é. Sem fundo: a hierarquia se lê pelo recuo e pelo fio. */
+.ucam-table :is(.th--expansor, .td--expansor) {
+  inline-size: 1%;
+  padding-inline-end: 0;
+}
+.ucam-table__expansor .ic { transition: transform var(--ucam-motion-duration-state) var(--ucam-motion-easing-entrance); }
+.ucam-table__expansor[aria-expanded="true"] .ic { transform: rotate(90deg); }
+.ucam-table tbody tr.ucam-table__detalhe,
+.ucam-table tbody tr.ucam-table__detalhe:hover { background: transparent; }
+.ucam-table tbody tr.ucam-table__detalhe > td {
+  padding: 0 0 var(--ucam-space-inset-sm) calc(var(--ucam-size-control-sm) + var(--ucam-space-inset-sm) * 2);
+}
+.ucam-table__detalhe .ucam-table { min-inline-size: 0; }
+.ucam-table__detalhe .ucam-table thead th { position: static; }
+@media (prefers-reduced-motion: reduce) {
+  .ucam-table__expansor .ic { transition: none; }
+}
+
 /* FIO VERTICAL ENTRE COLUNAS (ADR-051, 25/09/2026). A grade de planilha da
  * referência: cada coluna é uma faixa própria, e o olho que desce "Situação"
  * não escorrega para "Último acesso". Revoga a nota "filete só horizontal"
@@ -2662,7 +2818,7 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * texto cinza. A pastilha tinta volta, com o tom no fundo e no texto, e o
  * ponto saturado fica dentro dela. Continua UM portador de cor por célula
  * (ADR-022), e o selo plano da ADR-050 segue plano para o estado da maioria. */
-.ucam-table .ucam-badge:not(.ucam-badge--plain) {
+.ucam-table .ucam-badge {
   font-weight: var(--ucam-typography-body-font-weight);
   gap: var(--ucam-space-inline-xs);
 }
@@ -3075,7 +3231,7 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table thead .ucam-col--fixa-inicio,
 .ucam-table thead .ucam-col--fixa-fim {
   z-index: 3;
-  background-color: var(--ucam-color-surface-default);
+  background-color: var(--ucam-color-surface-sunken);
 }
 
 .ucam-table--zebra tbody tr:nth-child(even) > .ucam-col--fixa-inicio,
@@ -3247,6 +3403,68 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   color: var(--ucam-color-text-secondary);
 }
 
+/* O PASSO (06/10/2026): o número que diz em que ordem a tela se usa. Retorno
+ * de quem usou a análise da isenção: "não entendi por onde começar". Com a
+ * tela em rolagem única, cada seção que pede um gesto abre com o número —
+ * 1 confira, 2 decida, 3 escreva, 4 finalize — num disco na tinta da ação.
+ * Só em seção que é tarefa: seção de leitura (atividade, critérios) não leva
+ * número, e é a ausência dele que a diz opcional. Decorativo para o leitor
+ * de tela não é: o número vai no texto do título ("Passo 1:" em .ucam-sr-only). */
+.ucam-section__passo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-inline-end: var(--ucam-space-inline-sm);
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+  font-size: var(--ucam-typography-caption-font-size);
+  font-weight: var(--ucam-typography-action-font-weight);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  vertical-align: 0.125em;
+}
+
+/* A FICHA: a pessoa de quem a tela é, no alto do cartão de dados — foto,
+ * nome e a linha de identificação. É o cabeçalho do registro quando ele é
+ * uma pessoa; os pares vêm abaixo, em faixa. */
+.ucam-ficha {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-md);
+  min-inline-size: 0;
+}
+.ucam-ficha__texto { min-inline-size: 0; }
+.ucam-ficha__nome {
+  margin: 0;
+  font-size: var(--ucam-typography-section-title-font-size);
+  font-weight: var(--ucam-typography-section-title-font-weight);
+  line-height: var(--ucam-typography-section-title-line-height);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-ficha__apoio {
+  margin: 0;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  line-height: var(--ucam-typography-body-sm-line-height);
+  color: var(--ucam-color-text-secondary);
+}
+
+/* A CÉLULA COM FIGURA: o ladrilho do ícone antes do nome da linha — a
+ * disciplina na tabela da isenção. A figura dá ao olho onde cada linha
+ * começa numa tabela em que a primeira coluna é texto e as outras são
+ * controle; o ícone é decorativo, o nome é o dado. */
+.ucam-table .td--figura {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-sm);
+  min-inline-size: 0;
+}
+.ucam-table .td--figura > .ucam-icon-tile { flex: none; }
+.ucam-table .td--figura__texto { min-inline-size: 0; }
+
 /* ------------------------------------------------------ selo: ponto --- */
 /* O PONTO substitui o ícone em densidade alta. Contrato: badge.json.
  *
@@ -3311,14 +3529,10 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * fundo, filete, indicador e peso. Diferente do outline, que muda o
  * tratamento da coluna toda: aqui a distinção existe no dado (regra e
  * exceção), e é ela que a coluna mostra. */
-.ucam-badge.ucam-badge--plain {
-  background: transparent;
-  border-color: transparent;
-  color: var(--ucam-color-text-secondary);
-  font-weight: var(--ucam-typography-body-font-weight);
-}
-.ucam-badge--plain .ic,
-.ucam-badge--plain .ucam-badge__ponto { display: none; }
+/* REVOGADO em 06/10/2026 (ADR-062): "use melhor as cores semânticas de badges
+ * e tenha mais cores nisso tudo". O plano tirava fundo, filete, indicador e
+ * peso do estado da maioria; a coluna voltava a ler como texto cinza. A classe
+ * saiu da folha, do contrato e das telas: o selo veste o tom que declara. */
 
 /* -------------------------------------------------------------- prazo --- */
 /* O prazo NAO redesenha a pastilha: ele entra nos seletores do badge, acima.
@@ -3378,6 +3592,23 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   background: var(--ucam-color-surface-brand);
   color: var(--ucam-color-text-on-brand);
 }
+/* COR POR PESSOA — [data-cor="1".."8"] (ADR-062, 06/10/2026: "vamos colorir
+ * os avatares também").
+ *
+ * Oito tintas, as das categorias de sistema, escolhidas pelo NOME: a mesma
+ * pessoa sai sempre da mesma cor, em qualquer tela (tools/lib/avatar-cor.mjs
+ * no Trilho A, a mesma conta no UcamAvatar). Fundo a 16% e iniciais na tinta
+ * puxada a 35% para o texto: o menor contraste das oito é 5,6:1 no claro e
+ * 4,9:1 no escuro. A cor NÃO carrega significado — não é estado nem setor —,
+ * e por isso o disco nunca substitui o nome ao lado.
+ *
+ * Fica de fora quem já tem cor por outro motivo: o avatar --marca e o da
+ * conta, na faixa, que não recebem o atributo. */
+${[1, 2, 3, 4, 5, 6, 7, 8].map((n) => '.ucam-avatar[data-cor="' + n + '"]').join(',\n')} {
+  background: color-mix(in srgb, var(--ucam-avatar-cor) 16%, transparent);
+  color: color-mix(in oklab, var(--ucam-avatar-cor) 65%, var(--ucam-color-text-primary));
+}
+${SISTEMAS.map((s, i) => '.ucam-avatar[data-cor="' + (i + 1) + '"] { --ucam-avatar-cor: var(--ucam-color-categoria-' + s + '); }').join('\n')}
 .ucam-avatar img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 
 /* OS QUATRO AVATARES TINTOS SAÍRAM (ADR-022). Eram --1 a --4, reaproveitando
@@ -3809,6 +4040,22 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   background: var(--ucam-color-surface-sunken);
   color: var(--ucam-color-text-secondary);
   flex: none;
+}
+
+/* DENTRO DO SHELL o ladrilho veste a COR DO SISTEMA (ADR-062, 06/10/2026:
+ * "podemos ter mais cores, mais uso das cores de cada aplicação?"). A família
+ * da ação já troca por sistema (ADR-037); o ladrilho passa a lê-la, a 12% no
+ * fundo e cheia no traço — a mesma receita do --marca e da categoria. O
+ * :where() mantém a especificidade de uma classe: categoria, tom do indicador
+ * e a marquinha da faixa continuam vencendo. Fora do shell (o site, um cartão
+ * solto) o ladrilho segue neutro. */
+/* A tinta é a da CATEGORIA do sistema (--ucam-sistema-cor), não a da ação: a
+ * ação é o degrau escuro que aguenta texto branco (o roxo do Gerencial é
+ * #402B6B), e a 10% sobre branco ele lia cinza na captura. A categoria é a cor
+ * cheia do sistema. O Portal não declara sistema e cai no bordô da ação. */
+:where(.ucam-shell) .ucam-icon-tile {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
 }
 
 .ucam-icon-tile--marca {
@@ -4967,6 +5214,17 @@ ${cssDaCorDeFaixa()}
  * texto da faixa, e o ladrilho de 28px ao lado dele lia como ícone de menu. */
 .ucam-appbar__marca { flex: none; }
 
+/* LOGO + MARQUINHA (ADR-060). Onde as duas vêm juntas, a logo só existe com a
+ * navegação fixa: abaixo disso a faixa ganha o botão de menu e perde largura,
+ * e era o lockup de 110px que a estourava a 320 e a 480px (ADR-033). Some a
+ * logo e o filete dela; a marquinha e o nome seguem dizendo o sistema. A
+ * faixa sem marquinha (o Portal) não entra nesta regra e encolhe a logo como
+ * sempre fez. */
+${abaixo('nav-fixa')} {
+  .ucam-appbar__brand:has(> .ucam-appbar__marca) > .ucam-appbar__logo,
+  .ucam-appbar__brand:has(> .ucam-appbar__marca) > .ucam-appbar__divider { display: none; }
+}
+
 .ucam-appbar__spacer { margin-inline-start: auto; }
 
 /* ---------------------------------------------- busca global da faixa --- */
@@ -5116,6 +5374,171 @@ ${abaixo('nav-fixa')} {
 }
 
 /* ------------------------------------------------------ tecla (kbd) --- */
+/* AS TRÊS PEÇAS DA PROVA (06/10/2026). A reescrita do vestibular montou a
+ * tela de prova com @ucam/ui e teve de escrever à mão o cartão-resposta em
+ * miniatura, o relógio e o aviso de salvamento. Contratos: mapa-questoes.json,
+ * relogio.json e salvamento.json.
+ *
+ * MAPA DE QUESTÕES. Uma bolha por questão, em grade de colunas fixas: a
+ * posição é a informação (a 14 está sempre no mesmo lugar). Três sinais, um
+ * por fato, e nenhum deles é só cor: respondida = bolha cheia; atual = anel
+ * (aria-current); marcada para revisar = ponto no canto, com texto para quem
+ * ouve. */
+.ucam-mapa {
+  --ucam-mapa-colunas: 5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ucam-space-stack-sm);
+}
+.ucam-mapa__grupo {
+  margin: 0;
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-mapa__grade {
+  display: grid;
+  grid-template-columns: repeat(var(--ucam-mapa-colunas), 2.25rem);
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-mapa__item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--ucam-color-border-default);
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-surface-default);
+  color: var(--ucam-color-text-primary);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.ucam-mapa__item:hover { background: var(--ucam-color-interaction-hover); }
+.ucam-mapa__item:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: var(--ucam-focus-ring-offset);
+}
+.ucam-mapa__item[data-estado="respondida"] {
+  border-color: var(--ucam-color-action-primary-default);
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-brand);
+}
+.ucam-mapa__item[aria-current="true"] {
+  box-shadow: 0 0 0 2px var(--ucam-color-surface-default), 0 0 0 4px var(--ucam-color-text-primary);
+}
+.ucam-mapa__item[data-revisar]::after {
+  content: "";
+  position: absolute;
+  inset-block-start: -2px;
+  inset-inline-end: -2px;
+  inline-size: 0.625rem;
+  block-size: 0.625rem;
+  border: 2px solid var(--ucam-color-surface-default);
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-feedback-warning-border);
+}
+/* A redação não é questão numerada: é um item largo, na linha de baixo. */
+.ucam-mapa__item--largo {
+  grid-column: 1 / -1;
+  inline-size: auto;
+  padding-inline: var(--ucam-space-inline-sm);
+  justify-content: flex-start;
+  gap: var(--ucam-space-inline-xs);
+}
+.ucam-mapa__legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-inline-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-mapa__legenda li { display: inline-flex; align-items: center; gap: 0.375rem; }
+.ucam-mapa__legenda .ucam-mapa__item {
+  inline-size: 0.875rem;
+  block-size: 0.875rem;
+  cursor: default;
+  pointer-events: none;
+}
+.ucam-mapa__legenda .ucam-mapa__item[data-revisar]::after {
+  inset-block-start: -3px;
+  inset-inline-end: -3px;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-width: 1px;
+}
+
+/* RELÓGIO. Quanto falta, em palavra e em dígitos. O tom acompanha o tempo
+ * (neutro, atenção no último terço, perigo nos últimos dez minutos) e nunca
+ * anda sozinho: a frase muda junto, e a troca de tom é anunciada uma vez. Os
+ * dígitos são tabulares, senão a pastilha treme a cada segundo. */
+.ucam-relogio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-block-size: 1.75rem;
+  padding-inline: var(--ucam-space-inline-sm);
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-surface-default);
+  color: var(--ucam-color-text-primary);
+  font-size: var(--ucam-typography-caption-font-size);
+  white-space: nowrap;
+}
+.ucam-relogio .ic { flex: none; inline-size: 0.875rem; block-size: 0.875rem; }
+.ucam-relogio__digitos {
+  font-variant-numeric: tabular-nums;
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-relogio[data-tom="warning"] {
+  border-color: transparent;
+  background: var(--ucam-color-feedback-warning-background);
+  color: var(--ucam-color-feedback-warning-foreground);
+}
+.ucam-relogio[data-tom="danger"] {
+  border-color: transparent;
+  background: var(--ucam-color-feedback-danger-background);
+  color: var(--ucam-color-feedback-danger-foreground);
+}
+.ucam-relogio[data-tom="warning"] .ucam-relogio__digitos,
+.ucam-relogio[data-tom="danger"] .ucam-relogio__digitos { color: inherit; }
+
+/* SALVAMENTO. Uma frase curta que diz se o que a pessoa fez já está guardado.
+ * Quatro estados em ordem de prioridade: salvando, sem conexão, erro, salvo.
+ * É texto com ícone, sem caixa: o estado normal (Salvo) tem de ser o elemento
+ * mais quieto da barra, e só o problema ganha cor. */
+.ucam-salvamento {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0;
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-salvamento .ic { flex: none; inline-size: 0.875rem; block-size: 0.875rem; }
+.ucam-salvamento[data-estado="pendente"] { color: var(--ucam-color-feedback-warning-foreground); }
+.ucam-salvamento[data-estado="erro"] { color: var(--ucam-color-feedback-danger-foreground); }
+.ucam-salvamento[data-estado="salvando"] .ic { animation: ucam-girar 1s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .ucam-salvamento[data-estado="salvando"] .ic { animation: none; }
+}
+
+/* BOTÃO DE ALTERNÂNCIA com texto (button.json, "pressed"). O de ícone já
+ * tinha desenho; o de texto não, e a prova precisou de "Marcar para revisar".
+ * Um sinal só, como no resto do sistema (ADR-046): o fundo. O rótulo muda
+ * junto ("Marcada para revisar"), então a cor nunca é o único portador. */
+.ucam-btn--ghost[aria-pressed="true"]:not(.ucam-btn--icon) {
+  background: var(--ucam-color-action-primary-subtle);
+}
+
 /* Atalho desenhado como tecla. aria-hidden na marcação: para quem ouve, o
  * atalho é anunciado por aria-keyshortcuts no campo, e uma sigla solta no
  * meio da leitura só atrapalharia. */
@@ -6174,6 +6597,23 @@ ${abaixo('respiro-completo')} {
 .ucam-nav__item[aria-current="page"] .ucam-nav__count {
   background: var(--ucam-color-surface-default);
   color: var(--ucam-color-text-primary);
+}
+
+/* O ITEM ABERTO NA COR DO SISTEMA (ADR-062). O fundo era a tinta neutra de
+ * seleção, e o menu inteiro lia cinza: a única cor do sistema na tela era a
+ * faixa. Agora o item em que se está veste a família da ação — fundo a 10%,
+ * ícone e rótulo na tinta, contador cheio. Um item por menu, então a cor
+ * continua dizendo uma coisa só: "você está aqui". O .ucam-shell na frente é
+ * para vencer as regras de arranjo que repintam o item mais abaixo. */
+.ucam-shell .ucam-nav__item[aria-current="page"],
+.ucam-shell .ucam-nav__item[aria-current="page"]:hover {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-color-action-primary-default);
+}
+.ucam-shell .ucam-nav__item[aria-current="page"] .ic { color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)); }
+.ucam-shell .ucam-nav__item[aria-current="page"] .ucam-nav__count {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
 }
 
 /* ------------------------------------------------- ramo e subitens --- */
@@ -8934,6 +9374,13 @@ dialog.ucam-dialog:not([open]) { display: none; }
   background: var(--ucam-color-surface-sunken);
   color: var(--ucam-color-text-secondary);
 }
+/* A figura do indicador veste a cor do sistema, como o ladrilho (ADR-062).
+ * É o ÍCONE que ganha cor: o fundo do indicador segue branco e o número segue
+ * na tinta do texto (ADR-034). */
+:where(.ucam-shell) .ucam-stat__figura {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
+}
 .ucam-stat__figura .ic {
   inline-size: var(--ucam-size-icon-sm);
   block-size: var(--ucam-size-icon-sm);
@@ -10218,6 +10665,12 @@ a.ucam-list-item:active,
  * marcação sem efeito seria mentir por atributo. */
 
 .ucam-list-item__figura { flex: none; }
+/* O ladrilho da linha de lista também é do sistema (ADR-062). Regra própria
+ * porque a figura da lista repinta o ladrilho mais abaixo na folha. */
+.ucam-shell .ucam-list-item__figura.ucam-icon-tile:not([class*="ucam-icon-tile--a"], [class*="ucam-icon-tile--f"], [class*="ucam-icon-tile--g"], [class*="ucam-icon-tile--p"], [class*="ucam-icon-tile--c"], [class*="ucam-icon-tile--m"]) {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
+}
 
 /* O ITEM QUE ESCOLHE — lista que governa o painel ao lado (Grupo × Menu).
  *
@@ -10490,6 +10943,29 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 }
 
 .ucam-descricao--inline .ucam-descricao__rotulo { margin: 0; }
+
+/* FAIXA (06/10/2026): os dados do registro numa fileira ACIMA do conteúdo, e
+ * não numa coluna ao lado dele. Na isenção o painel da direita levava 18rem
+ * de uma tabela que tem um seletor de três posições por linha, para mostrar
+ * sete pares que se leem uma vez. Cada par tem a largura do próprio valor e
+ * a fileira quebra: sem trilha de 12rem, "Curso: Direito" não ocupa o mesmo
+ * que "Instituição: Universidade Estácio de Sá". O ícone no rótulo é o do
+ * painel, decorativo. */
+.ucam-descricao--faixa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-stack-md) var(--ucam-space-inset-xl);
+}
+
+.ucam-descricao--faixa .ucam-descricao__par { flex: 0 1 auto; max-inline-size: 100%; }
+
+.ucam-descricao--faixa .ucam-descricao__rotulo {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-xs);
+}
+.ucam-descricao--faixa .ucam-descricao__rotulo > .ic { flex: none; }
+.ucam-descricao--faixa .ucam-descricao__valor { overflow-wrap: anywhere; }
 
 /* O BALÃO DO MOTIVO (motivoScript, 28/09/2026): o .ucam-tooltip de sempre,
  * aberto pelo clique num controle bloqueado e posto pelo script ao lado dele.
@@ -11257,6 +11733,11 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__fill--success { background: var(--ucam-color-feedback-success-graphic); }
 .ucam-progress__fill--warning { background: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__fill--danger  { background: var(--ucam-color-feedback-danger-graphic); }
+/* O NEUTRO declarado (06/10/2026): na segmentada, a parte que ainda não tem
+ * julgamento — "sem decisão" na isenção — é segmento desenhado, na mesma
+ * tinta do ponto da legenda (.ucam-progress__ponto--neutral). Era o valor de
+ * base, sem nome: o Trilho B já emitia a classe e aqui ela não existia. */
+.ucam-progress__fill--neutral { background: var(--ucam-color-text-secondary); }
 /* marca (07/10/2026): o andamento que é DA PESSOA numa tela de tarefa única —
  * o tempo da prova, as questões respondidas. Não julga, como o neutro, mas é a
  * peça principal da barra da tela, e em cinza ela lia como barra apagada. Veste
@@ -11372,6 +11853,22 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__ponto--warning { color: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__ponto--danger  { color: var(--ucam-color-feedback-danger-graphic); }
 .ucam-progress__ponto--neutral { color: var(--ucam-color-text-secondary); }
+
+/* LEGENDA EM FILEIRA (06/10/2026): a barra na largura inteira da página. A
+ * tabelinha põe o nome à esquerda e o número à direita, e com a barra em
+ * 1100px os dois ficavam a um metro um do outro. Aqui cada série é ponto,
+ * nome e número juntos, uma ao lado da outra, quebrando quando aperta. */
+.ucam-progress__series--fileira {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ucam-space-inline-xs) var(--ucam-space-inset-lg);
+}
+.ucam-progress__series--fileira > li {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-xs);
+}
+.ucam-progress__series--fileira .ucam-progress__parte { min-inline-size: 0; }
 
 @media (prefers-reduced-motion: reduce) {
   .ucam-progress__fill { transition: none; }

@@ -86,7 +86,7 @@
     {
       "parte": "header-cell",
       "obrigatorio": true,
-      "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th. Na superfície do papel, sem faixa cinza (ADR-051): o que diz que a fileira é rótulo é a tinta secundária, o ícone de coluna e o fio border.default embaixo. Entre colunas, fio border.subtle — no cabeçalho como sombra interna, porque a borda colapsada não acompanha a célula grudada."
+      "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th. Sobre faixa cinza (surface.sunken, ADR-061), com tinta secundária, ícone de coluna e o fio border.default embaixo. Entre colunas, fio border.subtle — no cabeçalho como sombra interna, porque a borda colapsada não acompanha a célula grudada."
     },
     {
       "parte": "column-icon",
@@ -117,7 +117,7 @@
     {
       "parte": "cell-person",
       "obrigatorio": false,
-      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro; <button> quando a linha abre uma gaveta na própria tela, sem endereço) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047)."
+      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro; <button> quando a linha abre uma gaveta na própria tela, sem endereço) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047). CÉLULA COM FIGURA (.td--figura, 06/10/2026): um ladrilho de ícone (.ucam-icon-tile--sm, aria-hidden) antes do nome da linha, com o texto em .td--figura__texto — a disciplina na tabela da isenção. Dá ao olho onde cada linha começa numa tabela em que a primeira coluna é texto e as outras são controle; o ícone é decorativo, o nome é o dado, e a coluna continua ordenando pelo texto."
     },
     {
       "parte": "cell-support",
@@ -165,6 +165,23 @@
       "obrigatorio": false,
       "descricao": "Faixa no topo da tabela, dentro do cartão e antes do cabeçalho de colunas (.ucam-table-faixa): o que vale para a tabela inteira e não é filtro nem ação em lote. Ladrilho, título e apoio (.ucam-card__cabecalho) à esquerda, uma ação à direita. Caso de referência: a sugestão automatizada da análise da isenção — quando foi feita, o que sugeriu, a legenda da marca da opção sugerida e Aplicar N sugestões. No Trilho B, <div ucamTableFaixa titulo icon tone [apoio]> projetado dentro de <ucam-data-table>, com a ação como conteúdo (e apoio com marcação em [ucamFaixaApoio]); a tabela a põe dentro da própria borda e fora do contêiner de rolagem.",
       "classe": "ucam-table-faixa"
+    },
+    {
+      "parte": "totals",
+      "obrigatorio": false,
+      "descricao": "Linha de totais: o <tfoot> da tabela. Peso de rótulo e um fio border.default separando a soma dos registros; sem fundo (ADR-040). A primeira célula é th scope=row com o nome do total (\"Total\", \"Total da página\"), e cada célula de número fica sob a coluna que soma, com o mesmo alinhamento dela. Diz o que soma: se a tabela é paginada ou filtrada, o total nomeia o recorte (\"Total das 12 unidades\"), porque soma de página lida como soma geral é erro de relatório. Entrou em 06/10/2026 pelo inventário dos sistemas (polos, metas, contabilidade)."
+    },
+    {
+      "parte": "column-group",
+      "obrigatorio": false,
+      "descricao": "Cabeçalho em dois andares: uma fileira acima da de colunas (.ucam-table__grupos) em que cada th com colspan nomeia um grupo (\"Presencial\", \"EAD\"; \"Dinheiro\", \"Cartão\", \"PIX\"). O rótulo do grupo fica centrado sobre as colunas que cobre e não ordena nada. A coluna que não pertence a grupo entra na fileira de cima com rowspan=2. Cada th de grupo leva id, e cada th de coluna leva headers apontando para o grupo: é assim que o leitor de tela anuncia \"EAD, Matrículas\" na célula. As duas fileiras grudam; a de cima tem altura fixa para a de baixo saber onde parar. Até dois andares: três é tabela cruzada, que pede outro desenho.",
+      "classe": "ucam-table__grupos"
+    },
+    {
+      "parte": "row-detail",
+      "obrigatorio": false,
+      "descricao": "Linha que abre uma subtabela. O botão .ucam-table__expansor mora na primeira célula (.td--expansor), com aria-expanded, aria-controls e nome que diz o que abre (\"Mostrar os cursos de Campos\"); o chevron gira. A linha seguinte (.ucam-table__detalhe) é uma célula com colspan de todas as colunas e a tabela filha dentro, compacta, com caption própria e recuada até o texto da linha mãe. Um nível só: filha que abre neta vira navegação, não tabela. A linha mãe mostra o resumo do que a filha detalha (a soma, a contagem), para ninguém precisar abrir para comparar. No Trilho A quem abre e fecha é o comportamento das telas (tools/lib/shell.mjs). Entrou em 06/10/2026: é a forma mais repetida do parque (unidade e cursos, curso e alunos, aluno e parcelas).",
+      "classe": "ucam-table__detalhe"
     }
   ],
   "props": [
@@ -477,6 +494,18 @@
     {
       "titulo": "Definição de colunas",
       "codigo": "colunas: ColumnDef[] = [\n  { key: 'numero',   header: 'Requerimento', width: 'min', priority: 10, sortable: true },\n  { key: 'natureza', header: 'Natureza',     priority: 5 },\n  { key: 'requerente', header: 'Requerente', priority: 8 },\n  { key: 'data',     header: 'Data',   type: 'date',   width: 'min', priority: 6, sortable: true },\n  { key: 'situacao', header: 'Situação', type: 'status', width: 'min', priority: 9 }\n];"
+    },
+    {
+      "titulo": "Linha de totais",
+      "codigo": "<table class=\"ucam-table\">\n  <thead>…</thead>\n  <tbody>…</tbody>\n  <tfoot>\n    <tr><th scope=\"row\">Total das 4 unidades</th><td class=\"td--num\">1.284</td><td class=\"td--num\">R$ 912.440,00</td></tr>\n  </tfoot>\n</table>"
+    },
+    {
+      "titulo": "Cabeçalho em dois andares",
+      "codigo": "<thead>\n  <tr class=\"ucam-table__grupos\">\n    <th scope=\"col\" rowspan=\"2\">Curso</th>\n    <th scope=\"colgroup\" colspan=\"2\" id=\"g-pres\">Presencial</th>\n    <th scope=\"colgroup\" colspan=\"2\" id=\"g-ead\">EAD</th>\n  </tr>\n  <tr>\n    <th scope=\"col\" headers=\"g-pres\">Inscritos</th><th scope=\"col\" headers=\"g-pres\">Matrículas</th>\n    <th scope=\"col\" headers=\"g-ead\">Inscritos</th><th scope=\"col\" headers=\"g-ead\">Matrículas</th>\n  </tr>\n</thead>"
+    },
+    {
+      "titulo": "Linha que abre subtabela",
+      "codigo": "<tr>\n  <td class=\"td--expansor\"><button class=\"ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor\" type=\"button\"\n    aria-expanded=\"false\" aria-controls=\"det-campos\" aria-label=\"Mostrar os cursos de Campos\">…chevronRight…</button></td>\n  <th scope=\"row\">Campos</th><td class=\"td--num\">312</td>\n</tr>\n<tr class=\"ucam-table__detalhe\" id=\"det-campos\" hidden>\n  <td colspan=\"3\"><table class=\"ucam-table ucam-table--compact\"><caption class=\"ucam-sr-only\">Cursos de Campos</caption>…</table></td>\n</tr>"
     }
   ],
   "boas_praticas": [
@@ -531,7 +560,7 @@
       "porque": "É o inverso do lote comum, e resolve com checkbox nativo: o formulário só envia o que continuou marcado. Quem recebe revalida a lista contra a fonte, porque nada garante que os ids não foram alterados. Evidência: a lista de presença do vestibular no Relatórios Acadêmicos."
     },
     {
-      "faca": "Uma coluna de estado com cor por linha. Se a linha tem dois estados, o que decide leva a pastilha tinta e o outro vai em plain ou em texto de apoio.",
+      "faca": "Uma coluna de estado com cor por linha. Se a linha tem dois estados, o que decide leva a pastilha tinta e o outro vai em texto de apoio.",
       "evite": "Sugestão e decisão lado a lado, cada uma com a sua pastilha verde, âmbar ou vermelha.",
       "porque": "Duas faixas de cor paralelas não dizem qual ler, e escondem justamente onde as duas divergem. É a ADR-027 aplicada a colunas, e não só à barra da borda (ADR-050)."
     }
@@ -607,8 +636,10 @@
       "Não usar para lista vertical de um dado só: uma coluna não é tabela, é lista (ul/ol).",
       "Não usar quando cada linha é um assunto próprio, com ações próprias e textos de tamanhos muito diferentes — isso é cartão.",
       "Não usar para hierarquia (setor, subsetor, natureza). Tabela é grade plana; árvore é outro componente, ainda não catalogado.",
-      "Agrupar por curso, ou por grupo e subgrupo com subtotal, também não é esta tabela — e ainda não tem contrato. Enquanto não tiver, cada grupo é uma seção com título e tabela própria; ver aindaNaoExiste no guia de migração.",
-      "Acima de 20 linhas por página, paginação é obrigatória — 40 quando density=compact, que cabe mais linha no mesmo espaço."
+      "Agrupar com subtotal tem dois caminhos, e os dois são desta tabela desde 06/10/2026: quando o grupo é um registro com números próprios (a unidade e os cursos dela), é a linha que abre subtabela (row-detail); quando o grupo é só um rótulo sobre colunas, é o cabeçalho em dois andares (column-group). Grupo e subgrupo aninhados em mais de um nível continuam fora: cada grupo vira uma seção com título e tabela própria.",
+      "Acima de 20 linhas por página, paginação é obrigatória — 40 quando density=compact, que cabe mais linha no mesmo espaço.",
+      "Tabela com linha que abre subtabela não ordena, não pagina e não filtra as linhas no navegador: a linha de detalhe é irmã da linha mãe, e reordenar separaria uma da outra. Ordenação, página e filtro vêm prontos do servidor.",
+      "A linha de totais nunca é a última linha do tbody com negrito: é tfoot. Leitor de tela e exportação distinguem rodapé de registro; negrito não."
     ],
     "motivo": "O limiar de 20/40 vem do Pajamas (GitLab), que opera tabelas de crescimento aberto há anos. Sem limiar, a rolagem substitui a navegação em silêncio e o resumo de resultados perde a função."
   },

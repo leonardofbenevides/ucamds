@@ -3,10 +3,11 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-espacamento',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -48,7 +49,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <tr>
                   <td><code>space.{{ e.token }}</code></td>
                   <td><code>{{ e.valor }}</code></td>
-                  <td class="small">{{ e.descricao }}</td>
+                  <td class="small"><ucam-t [t]="e.descricao" /></td>
                 </tr>
               }
             </tbody>
@@ -75,7 +76,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
                 <tr>
                   <td><code>size.{{ s.token }}</code></td>
                   <td><code>{{ s.valor }}</code></td>
-                  <td class="small">{{ s.descricao }}</td>
+                  <td class="small"><ucam-t [t]="s.descricao" /></td>
                 </tr>
               }
             </tbody>

@@ -39,6 +39,18 @@
       "classe": "ucam-anexos"
     },
     {
+      "parte": "fileira",
+      "obrigatorio": false,
+      "descricao": "Modificador da grade para os anexos como no pé de um email (06/10/2026): o tile tem a largura do nome, com teto de 18rem, corre na linha e quebra para a de baixo. A figura cai para 32px e fica CHEIA na tinta da ação, com o desenho em text.on-action — o quadrado colorido do formato que o cliente de email põe antes do nome —, e o apoio ocupa uma linha só, para todos os tiles terem a mesma altura. Recusa e erro seguem em tom de erro. Nasceu na isenção: na coluna lateral, dois PDFs eram dois blocos de 80px com o nome cortado.",
+      "classe": "ucam-anexos--fileira"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": false,
+      "descricao": "A linha acima da lista: o clipe (aria-hidden), a contagem em peso de rótulo e de quando são os arquivos — '2 documentos · enviados pelo candidato em 12/09/2026'. É o cabeçalho que o email põe acima dos anexos, em legenda.",
+      "classe": "ucam-anexos__titulo"
+    },
+    {
       "parte": "root",
       "obrigatorio": true,
       "descricao": "O li do arquivo. Contorno de border.subtle sobre surface.default, sem fundo cinza: cinco blocos cinza lado a lado viram uma mancha em que nenhum nome se lê.",
@@ -126,7 +138,8 @@
       "Sem pré-visualização embutida. Abrir o arquivo é o navegador que faz, pelo link; um visualizador de PDF dentro do design system traria uma dependência de outro tamanho.",
       "Sem fundo cinza no tile e sem sombra no hover. O hover sobe o filete um degrau e só.",
       "Não é cartão. Não leva título, texto corrido nem mais de uma ação.",
-      "Não é chip. Chip é filtro ou valor escolhido; arquivo tem nome longo, tamanho e estado, e não cabe em pílula."
+      "Não é chip. Chip é filtro ou valor escolhido; arquivo tem nome longo, tamanho e estado, e não cabe em pílula. A fileira não muda isso: o tile encolhe para a largura do nome, mas continua com figura, duas linhas e contorno de controle.",
+      "A fileira é para LEITURA de poucos arquivos acima ou abaixo de outro conteúdo. No File Field e em lista de mais de seis arquivos, a grade: com tiles de largura diferente a fileira longa serrilha e o olho perde a coluna."
     ]
   },
   "acessibilidade": {
@@ -197,6 +210,10 @@
       "codigo": "<ul class=\"ucam-anexos\">\n  @for (a of requerimento().anexos; track a.id) {\n    <li><ucam-anexo [file]=\"a\" /></li>\n  }\n</ul>"
     },
     {
+      "titulo": "Fileira: os documentos de um registro, como anexos de email",
+      "codigo": "<p class=\"ucam-anexos__titulo\"><ucam-icon name=\"paperclip\" size=\"sm\" aria-hidden=\"true\" /><span><b>{{ documentos().length }} documentos</b> · enviados em {{ enviadosEm() }}</span></p>\n<ul class=\"ucam-anexos ucam-anexos--fileira\" aria-label=\"Documentos da solicitação\">\n  @for (a of documentos(); track a.id) {\n    <li><ucam-anexo [file]=\"a\" /></li>\n  }\n</ul>"
+    },
+    {
       "titulo": "Envio: o que o File Field monta para cada arquivo",
       "codigo": "<ucam-anexo [file]=\"arquivo\" removable (remove)=\"tirar($event)\" />"
     }
@@ -236,7 +253,10 @@
         "--ucam-color-feedback-danger-border",
         "--ucam-space-inset-sm",
         "--ucam-space-stack-sm",
-        "--ucam-space-inline-sm"
+        "--ucam-space-inline-sm",
+        "--ucam-space-inline-xs",
+        "--ucam-color-action-primary-default",
+        "--ucam-color-text-on-action"
       ]
     },
     "trilho_b": "ui/projects/ui/src/lib/ucam/anexo/ucam-anexo.ts"

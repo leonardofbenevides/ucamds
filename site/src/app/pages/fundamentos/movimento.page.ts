@@ -3,6 +3,7 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { fundamentos } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Movimento.
@@ -18,7 +19,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
  */
 @Component({
   selector: 'ucam-movimento',
-  imports: [PageHeaderComponent, NestaPaginaComponent],
+  imports: [TextoComponent, PageHeaderComponent, NestaPaginaComponent],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -33,7 +34,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
     <div class="prose largo">
       <section id="porque">
         <h2>Por que o contrato existe</h2>
-        <p>{{ m.descricao }}</p>
+        <p><ucam-t [t]="m.descricao" /></p>
       </section>
 
       <section id="curvas">
@@ -61,7 +62,7 @@ As três correm juntas, no mesmo percurso e na mesma duração — é a única
                   [style.transition-timing-function]="c.valor"
                 ></span>
               </div>
-              <p class="small muted">{{ c.descricao }}</p>
+              <p class="small muted"><ucam-t [t]="c.descricao" /></p>
             </div>
           }
         </div>
@@ -83,7 +84,7 @@ As três correm juntas, no mesmo percurso e na mesma duração — é a única
                 <tr>
                   <td><code>motion.duration.{{ d.token }}</code></td>
                   <td><code class="num">{{ d.valor }}</code></td>
-                  <td class="small">{{ d.descricao }}</td>
+                  <td class="small"><ucam-t [t]="d.descricao" /></td>
                 </tr>
               }
             </tbody>

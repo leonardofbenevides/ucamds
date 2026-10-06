@@ -12,6 +12,7 @@ import {
 import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 
 import type { Anatomia } from '../spec/spec.types';
+import { TextoComponent } from './texto.component';
 
 /** Uma parte que foi ACHADA no preview, com a caixa que ela ocupa. */
 interface Marca {
@@ -51,6 +52,7 @@ interface Marca {
  */
 @Component({
   selector: 'ucam-anatomia-diagrama',
+  imports: [TextoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (preview()) {
@@ -82,7 +84,6 @@ interface Marca {
         @if (marcas().length) {
           <figcaption class="small muted">
             {{ marcas().length }} de {{ partes().length }} partes localizadas no desenho.
-            As demais não declaram classe do Trilho A no contrato.
           </figcaption>
         }
       </figure>
@@ -99,6 +100,7 @@ interface Marca {
     <ol class="anatomia-legenda">
       @for (p of partes(); track p.parte) {
         <li
+          [class.resto]="$index >= CORTE"
           [class.ativa]="emFoco() === p.parte"
           (mouseenter)="emFoco.set(p.parte)"
           (mouseleave)="emFoco.set(null)"
@@ -116,9 +118,12 @@ interface Marca {
                 <span class="anatomia-opcional">opcional</span>
               }
             </span>
-            <span class="anatomia-descricao">{{ p.descricao }}</span>
+            <span class="anatomia-descricao"><ucam-t [t]="p.descricao" /></span>
           </span>
         </li>
+      }
+      @if (partes().length > CORTE) {
+        <li class="so-resumo mais">Mais {{ partes().length - CORTE }} no texto completo.</li>
       }
     </ol>
   `,
@@ -254,6 +259,9 @@ interface Marca {
   `,
 })
 export class AnatomiaDiagramaComponent {
+  /** Partes que a legenda lista no resumo; as demais abrem no texto completo. */
+  protected readonly CORTE = 8;
+
   private readonly sanitizer = inject(DomSanitizer);
 
   readonly partes = input<Anatomia[]>([]);

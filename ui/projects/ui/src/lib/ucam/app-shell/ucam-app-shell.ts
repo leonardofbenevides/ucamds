@@ -369,6 +369,28 @@ export type UcamSystemCategory =
           [href]="homeHref()"
           class="inline-flex items-center gap-[var(--ucam-space-inline-sm)] rounded-[var(--ucam-radius-control-sm)] text-inherit no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[currentColor]"
         >
+          <!--
+            A LOGO DA UNIVERSIDADE (ADR-060): abre a faixa, antes da marquinha,
+            quando a aplicação diz onde o arquivo está. Máscara, e não <img>,
+            pelo mesmo motivo da folha do Trilho A: a marca é monocromática e
+            toma a tinta da faixa. Só a partir de 64rem — abaixo disso a faixa
+            abre com a marquinha e o nome, como antes.
+          -->
+          @if (logoUrl()) {
+            <span
+              class="ucam-shell-logo hidden shrink-0 bg-current min-[64rem]:block"
+              [style.inline-size]="'var(--ucam-appbar-logo-width, 6.85rem)'"
+              [style.block-size]="'var(--ucam-appbar-logo-height, 1.25rem)'"
+              [style.mask]="mascaraLogo()"
+              [style.-webkit-mask]="mascaraLogo()"
+              aria-hidden="true"
+            ></span>
+            <span
+              class="ucam-shell-logo-fio hidden w-px shrink-0 bg-current opacity-30 min-[64rem]:block"
+              [style.block-size]="'var(--ucam-appbar-logo-height, 1.25rem)'"
+              aria-hidden="true"
+            ></span>
+          }
           @if (systemIcon()) {
             <span
               class="ucam-shell-marca inline-flex size-[var(--ucam-size-control-lg)] shrink-0 items-center justify-center rounded-[var(--ucam-radius-control)]"
@@ -866,6 +888,13 @@ export class UcamAppShell {
   readonly systemName = input.required<string>();
   readonly systemIcon = input<UcamIconName | null>(null);
   readonly systemCategory = input<UcamSystemCategory | null>(null);
+  /** Endereço da logo horizontal da universidade (SVG monocromático). Com ele
+   *  a faixa abre com a logo, um filete e só então a marquinha do sistema
+   *  (ADR-060). Sem ele, a faixa abre com a marquinha, como sempre. */
+  readonly logoUrl = input<string | null>(null);
+  protected readonly mascaraLogo = computed(() =>
+    this.logoUrl() ? `url("${this.logoUrl()}") no-repeat left center / contain` : null,
+  );
   /** 'brand' é o default do CONTRATO e, desde 25/09/2026, o que o Trilho A faz
    *  em toda faixa: fundo na superfície de marca do sistema (a subpaleta troca
    *  --ucam-color-surface-brand por data-sistema quando a folha do Trilho A está

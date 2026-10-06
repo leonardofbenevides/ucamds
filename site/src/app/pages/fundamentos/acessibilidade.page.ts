@@ -5,6 +5,7 @@ import { UcamSectionBar } from '@ucam/ui';
 
 import { componentes, meta } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 /** Nome legível dos critérios que os contratos citam. */
 const NOMES: Record<string, string> = {
@@ -32,7 +33,7 @@ const NOMES: Record<string, string> = {
 
 @Component({
   selector: 'ucam-acessibilidade',
-  imports: [RouterLink, PageHeaderComponent, UcamSectionBar],
+  imports: [TextoComponent, RouterLink, PageHeaderComponent, UcamSectionBar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -96,7 +97,7 @@ const NOMES: Record<string, string> = {
             <div ucamSecao>
               <ul class="list">
                 @for (r of c.requisitos; track r) {
-                  <li>{{ r }}</li>
+                  <li><ucam-t [t]="r" /></li>
                 }
               </ul>
               <p class="small">

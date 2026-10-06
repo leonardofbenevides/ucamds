@@ -35,7 +35,7 @@
     {
       "parte": "root",
       "obrigatorio": true,
-      "descricao": "Container circular."
+      "descricao": "Container circular. O disco de iniciais leva COR POR PESSOA (ADR-062): data-cor de 1 a 8, escolhido pelo nome, com fundo a 16% e as iniciais na tinta. No Trilho A quem escreve o atributo é quem gera a marcação (tools/lib/avatar-cor.mjs faz a conta); no Trilho B o componente o deriva do name. Sem o atributo, o disco é neutro."
     },
     {
       "parte": "image",
@@ -78,7 +78,7 @@
           "classe": ".ucam-avatar--sm"
         },
         "lg": {
-          "uso": "Cabeçalho de registro de pessoa, onde o rosto é o assunto da tela.",
+          "uso": "Cabeçalho de registro de pessoa, onde o rosto é o assunto da tela. Com o nome ao lado, vai dentro de .ucam-ficha (06/10/2026): a foto, o nome em .ucam-ficha__nome e a linha de identificação em .ucam-ficha__apoio, no alto do cartão de dados do registro — o candidato na análise da isenção. A foto é <img> dentro do avatar, com alt vazio quando o nome está escrito ao lado.",
           "limite": "Um por tela: dois avatares grandes disputam a mesma função de âncora.",
           "classe": ".ucam-avatar--lg"
         }

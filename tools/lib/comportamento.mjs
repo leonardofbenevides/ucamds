@@ -46,6 +46,7 @@ export const COMPONENTE = [
   'gavetaScript',
   'inboxScript',
   'tabelaScript',
+  'avatarScript',
   'roloScript',
   'copiarScript',
   'motivoScript',

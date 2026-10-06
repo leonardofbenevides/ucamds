@@ -2,10 +2,11 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { recursos, meta } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
+import { TextoComponent } from '../../docs/texto.component';
 
 @Component({
   selector: 'ucam-skills',
-  imports: [PageHeaderComponent],
+  imports: [TextoComponent, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -31,8 +32,8 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
               @for (s of r.skills.itens; track s.nome) {
                 <tr>
                   <td><code>{{ s.nome }}</code></td>
-                  <td class="small">{{ s.faz }}</td>
-                  <td class="small">{{ s.onde }}</td>
+                  <td class="small"><ucam-t [t]="s.faz" /></td>
+                  <td class="small"><ucam-t [t]="s.onde" /></td>
                 </tr>
               }
             </tbody>
@@ -42,7 +43,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
 
       <section>
         <h2>Pacotes</h2>
-        <p>{{ r.pacotes.$description }}</p>
+        <p><ucam-t [t]="r.pacotes.$description" /></p>
         <div class="scroller">
           <table>
             <thead>
@@ -68,7 +69,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
                   <td class="small">
                     {{ p.conteudo }}
                     @if (p.nota) {
-                      <br /><span class="muted">{{ p.nota }}</span>
+                      <br /><span class="muted"><ucam-t [t]="p.nota" /></span>
                     }
                   </td>
                   <td class="small">{{ p.consumidores }}</td>

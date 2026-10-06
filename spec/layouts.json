@@ -327,7 +327,7 @@
       "partes": [
         {
           "classe": "ucam-section__title",
-          "descricao": "Título da seção. Um <h2> ou <h3> real: o nível vem da estrutura do documento, não da aparência."
+          "descricao": "Título da seção. Um <h2> ou <h3> real: o nível vem da estrutura do documento, não da aparência. Quando a seção é um PASSO de uma tarefa em rolagem única, o título abre com .ucam-section__passo (06/10/2026, ADR-063): o número num disco na tinta da ação, aria-hidden, seguido de \"Passo N: \" em .ucam-sr-only. Só em seção que pede um gesto; seção de leitura não leva número."
         },
         {
           "classe": "ucam-section__hint",

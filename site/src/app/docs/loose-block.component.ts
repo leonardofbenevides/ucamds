@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
 
 import type { Bloco } from '../spec/spec.types';
+import { TextoComponent } from './texto.component';
 
 type Entrada =
   | { tipo: 'texto'; rotulo: string; valor: string; mudo?: boolean }
@@ -18,15 +19,16 @@ type Entrada =
  */
 @Component({
   selector: 'ucam-loose-block',
+  imports: [TextoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @for (e of entradas(); track e.rotulo) {
       @switch (e.tipo) {
         @case ('texto') {
           @if ($any(e).mudo) {
-            <p>{{ $any(e).valor }}</p>
+            <p><ucam-t [t]="$any(e).valor" /></p>
           } @else {
-            <p><strong class="k">{{ e.rotulo }}.</strong> {{ $any(e).valor }}</p>
+            <p><strong class="k">{{ e.rotulo }}.</strong>&ngsp;<ucam-t [t]="$any(e).valor" /></p>
           }
         }
         @case ('lista') {
@@ -35,7 +37,10 @@ type Entrada =
           }
           <ul class="list">
             @for (i of $any(e).itens; track i) {
-              <li>{{ i }}</li>
+              <li [class.resto]="$index >= CORTE"><ucam-t [t]="i" /></li>
+            }
+            @if ($any(e).itens.length > CORTE) {
+              <li class="so-resumo mais">Mais {{ $any(e).itens.length - CORTE }} no texto completo.</li>
             }
           </ul>
         }
@@ -50,10 +55,10 @@ type Entrada =
                     <td>
                       @if (l.pares.length) {
                         @for (p of l.pares; track p.k) {
-                          <div><strong class="k">{{ p.k }}:</strong> {{ p.v }}</div>
+                          <div><strong class="k">{{ p.k }}:</strong>&ngsp;<ucam-t [t]="p.v" /></div>
                         }
                       } @else {
-                        {{ l.texto }}
+                        <ucam-t [t]="l.texto" />
                       }
                     </td>
                   </tr>
@@ -67,6 +72,9 @@ type Entrada =
   `,
 })
 export class LooseBlockComponent {
+  /** Itens de lista mostrados no resumo; os demais abrem no texto completo. */
+  protected readonly CORTE = 5;
+
   // Sem input.required() — ver a nota em page-header.component.ts.
   readonly bloco = input<Bloco | undefined>(undefined);
 
