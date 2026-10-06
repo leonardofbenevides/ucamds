@@ -21,6 +21,7 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 
 import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
+import { UcamSelect, type UcamOption } from '../select/ucam-select';
 import { UcamBadge, type UcamBadgeTone } from '../badge/ucam-badge';
 import { UcamAvatar } from '../avatar/ucam-avatar';
 import { UcamMenu, UcamMenuTrigger, type UcamMenuItem } from '../menu/ucam-menu';
@@ -132,7 +133,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
 @Component({
   selector: 'ucam-data-table',
   exportAs: 'ucamDataTable',
-  imports: [NgTemplateOutlet, UcamIcon, UcamBadge, UcamMenu, UcamMenuTrigger, UcamAvatar],
+  imports: [NgTemplateOutlet, UcamIcon, UcamBadge, UcamMenu, UcamMenuTrigger, UcamAvatar, UcamSelect],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { class: 'ucam-data-table-host' },
@@ -167,6 +168,26 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       [attr.aria-label]="responsive() === 'scroll' ? caption() : null"
       [attr.aria-busy]="state() === 'loading' ? 'true' : null"
     >
+      @if (opcoesOrdem().length > 1) {
+        <!--
+          ORDENAR POR. Empilhada, a tabela perde o cabeçalho — e com ele o
+          único lugar onde se ordenava. A fileira nasce com toda tabela
+          ordenável e só é pintada quando ela empilha (contrato data-table,
+          responsividade.ordenacao). O rótulo visível é decorativo: o nome
+          acessível é o do próprio select.
+        -->
+        <div class="ucam-table__ordenar">
+          <span class="ucam-table__ordenar-rotulo" aria-hidden="true">Ordenar por</span>
+          <ucam-select
+            label="Ordenar por"
+            labelHidden
+            width="full"
+            [options]="opcoesOrdem()"
+            [value]="valorOrdem()"
+            (valueChange)="ordenarPeloSeletor($event)"
+          />
+        </div>
+      }
       <table [class]="classesTabela()" [attr.data-apertada]="apertada() ? '' : null">
         <caption class="ucam-sr-only">
           {{ caption() }}
@@ -174,7 +195,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
         <thead>
           <tr>
             @if (selectable() === 'multiple') {
-              <th scope="col" class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')">
+              <th scope="col" class="ucam-table__sel th--selecao" [class.ucam-col--fixa-inicio]="temFixa('start')">
                 <label class="ucam-table__check">
                   <input
                     type="checkbox"
@@ -186,7 +207,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 </label>
               </th>
             } @else if (selectable() === 'single') {
-              <th scope="col" class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')"><span class="ucam-sr-only">Seleção</span></th>
+              <th scope="col" class="ucam-table__sel th--selecao" [class.ucam-col--fixa-inicio]="temFixa('start')"><span class="ucam-sr-only">Seleção</span></th>
             }
 
             @for (col of colunasVisiveis(); track col.key) {
@@ -196,6 +217,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 [attr.aria-sort]="ariaSort(col)"
                 [class.ucam-table__col-min]="col.width === 'min'"
                 [class.ucam-table__acoes]="col.type === 'actions'"
+                [class.th--acoes]="col.type === 'actions'"
                 [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
                 [class.ucam-col--fixa-fim]="ladoFixo(col) === 'end'"
                 [style.--ucam-col-x]="deslocamento(col)"
@@ -218,7 +240,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                   </button>
                   <ucam-menu #menuCol [items]="itensColuna(col)" align="start" (escolher)="agirColuna(col, $event)" />
                 } @else if (col.sortable) {
-                  <button type="button" class="ucam-table__ordenar" [attr.aria-label]="rotuloOrdenar(col)" (click)="ordenarPor(col)">
+                  <button type="button" class="ucam-table__ordem" [attr.aria-label]="rotuloOrdenar(col)" (click)="ordenarPor(col)">
                     @if (col.icon) {
                       <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
                     }
@@ -246,12 +268,13 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 (click)="aoClicarLinha(linha, $event)"
               >
                 @if (selectable() !== 'none') {
-                  <td class="ucam-table__sel" [class.ucam-col--fixa-inicio]="temFixa('start')">
+                  <td class="ucam-table__sel td--selecao" [class.ucam-col--fixa-inicio]="temFixa('start')">
                     <label class="ucam-table__check">
                       <input
                         [type]="selectable() === 'single' ? 'radio' : 'checkbox'"
                         [attr.name]="selectable() === 'single' ? nomeGrupo : null"
                         [checked]="marcadas().has(linha)"
+                        [disabled]="!selecionavel(linha)"
                         [attr.aria-label]="'Selecionar ' + identificador(linha)"
                         (change)="alternarLinha(linha)"
                       />
@@ -264,7 +287,9 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                     [style.text-align]="alinhamento(col)"
                     [attr.data-label]="col.header"
                     [class.ucam-table__acoes]="col.type === 'actions'"
+                    [class.td--acoes]="col.type === 'actions'"
                     [class.ucam-table__num]="col.type === 'number' || col.type === 'currency'"
+                    [class.td--num]="col.type === 'number' || col.type === 'currency'"
                     [class.td--pessoa]="col.type === 'person'"
                     [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
                     [class.ucam-col--fixa-fim]="ladoFixo(col) === 'end'"
@@ -506,14 +531,16 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        fundo sozinho dá 1,08:1, saiu junto com a do Trilho A: a medida pedia um
        segundo sinal, não uma tarja. */
     /* 25/09/2026: o fundo tinto saiu também daqui. Fundo branco e um shape
-       sólido de 4px na borda DIREITA, de ponta a ponta, na última célula —
-       o que a folha do Trilho A e a ADR-046 já diziam. */
-    .ucam-table__linha--marcada > td:last-child { position: relative; }
-    .ucam-table__linha--marcada > td:last-child::after {
+       sólido de 4px, de ponta a ponta. 05/10/2026: o shape passa à borda
+       ESQUERDA, na primeira célula — a folha do Trilho A mudou de lado em
+       28/09 e este bloco ficou na direita; com as duas folhas carregadas a
+       linha marcada saía com DUAS barras (prova de paridade). */
+    .ucam-table__linha--marcada > td:first-child:not(.ucam-col--fixa-inicio):not(.ucam-col--fixa-fim) { position: relative; }
+    .ucam-table__linha--marcada > td:first-child::after {
       content: '';
       position: absolute;
       inset-block: 0;
-      inset-inline-end: 0;
+      inset-inline-start: 0;
       inline-size: 0.25rem;
       background: var(--ucam-color-action-primary-default);
       pointer-events: none;
@@ -561,6 +588,14 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       display: block;
     }
     .ucam-table__check input[type='radio'] { border-radius: 50%; }
+    /* Linha que não aceita seleção (rowSelectable): o chão do desabilitado
+       da ADR-042, como .ucam-check input:disabled. */
+    .ucam-table__check input:disabled {
+      background: var(--ucam-color-action-disabled-background);
+      border-color: var(--ucam-color-border-subtle);
+      cursor: not-allowed;
+    }
+    .ucam-table__check:has(input:disabled) { cursor: not-allowed; }
     .ucam-table__check input::after {
       position: absolute;
       inset-block-start: 50%;
@@ -593,7 +628,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       block-size: 2px;
       background: var(--ucam-color-text-on-action);
     }
-    .ucam-table__check:hover input:not(:checked):not(:indeterminate) { border-color: var(--ucam-color-border-strong); }
+    .ucam-table__check:hover input:not(:checked):not(:indeterminate):not(:disabled) { border-color: var(--ucam-color-border-strong); }
     .ucam-table__check input:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: var(--ucam-focus-ring-offset);
@@ -619,11 +654,13 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        (prova de paridade, 03/10/2026). Fora do fluxo, ele não mede nada;
        o th é sticky, logo posicionado, e segura o absoluto. */
     .ucam-table th > ucam-menu { position: absolute; inline-size: 0; block-size: 0; overflow: hidden; }
-    .ucam-table__coluna ucam-icon { color: var(--ucam-color-text-placeholder); }
+    /* Só o ícone da COLUNA é apagado; a seta do gatilho herda a tinta do
+       rótulo, como na folha do Trilho A (prova de paridade, 05/10/2026). */
+    .ucam-table__coluna ucam-icon.ucam-table__icone { color: var(--ucam-color-text-placeholder); }
     .ucam-table__coluna:hover,
     .ucam-table__coluna[aria-expanded='true'] { color: var(--ucam-color-text-primary); }
-    th[aria-sort='ascending'] .ucam-table__coluna ucam-icon,
-    th[aria-sort='descending'] .ucam-table__coluna ucam-icon { color: var(--ucam-color-action-primary-default); }
+    th[aria-sort='ascending'] .ucam-table__coluna ucam-icon:not(.ucam-table__icone),
+    th[aria-sort='descending'] .ucam-table__coluna ucam-icon:not(.ucam-table__icone) { color: var(--ucam-color-action-primary-default); }
     .ucam-table__coluna:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: 2px;
@@ -692,7 +729,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       outline-offset: 2px;
     }
 
-    .ucam-table__ordenar {
+    .ucam-table__ordem {
       display: inline-flex;
       align-items: center;
       gap: 0.25rem;
@@ -714,7 +751,25 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        A marcação continua sendo uma <table> para o DOM e para o leitor de
        tela; só a PINTURA muda. Remontar a lista em divs custaria a semântica
        de tabela — que é justamente o que quem ouve a tela usa para navegar. */
+    /* :where() zera a especificidade: com a folha do Trilho A carregada, é
+       a regra DELA que decide quando a fileira aparece (a tabela empilha
+       por contêiner, em qualquer modo), e um display: none daqui, vindo
+       depois, a escondia de novo. */
+    :where(.ucam-table__ordenar) { display: none; }
+    .ucam-table__ordenar ucam-select { flex: 1 1 auto; min-inline-size: 0; }
     @container ucam-tabela (max-width: 40rem) {
+      .ucam-table-wrap:has(> .ucam-table--stack) > .ucam-table__ordenar {
+        display: flex;
+        align-items: center;
+        gap: var(--ucam-space-inline-sm);
+        padding-block-end: var(--ucam-space-inset-sm);
+        border-block-end: 1px solid var(--ucam-color-border-subtle);
+      }
+      .ucam-table__ordenar-rotulo {
+        flex: none;
+        font-size: var(--ucam-typography-caption-font-size);
+        color: var(--ucam-color-text-secondary);
+      }
       .ucam-table--stack thead { display: none; }
       .ucam-table--stack tbody tr {
         display: block;
@@ -837,6 +892,12 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
    * continua passando por selecao, sem voltar por aqui.
    */
   readonly selected = input<readonly T[]>([]);
+  /**
+   * Quais linhas aceitam seleção. A que não aceita mantém a caixa, desabilitada
+   * — registro arquivado numa lista com ação em lote, por exemplo —, e fica
+   * fora do "selecionar todas": a coluna não muda de forma por causa dela.
+   */
+  readonly rowSelectable = input<((linha: T) => boolean) | null>(null);
   private readonly selecaoDeFora = effect(() => {
     this.selecao.set(new Set(this.selected()));
   });
@@ -1043,8 +1104,14 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
     return p.join(' ');
   });
 
+  protected selecionavel(linha: T): boolean {
+    return this.rowSelectable()?.(linha) ?? true;
+  }
+
+  private readonly selecionaveis = computed(() => this.rows().filter((l) => this.selecionavel(l)));
+
   protected readonly todasMarcadas = computed(
-    () => this.rows().length > 0 && this.rows().every((l) => this.selecao().has(l)),
+    () => this.selecionaveis().length > 0 && this.selecionaveis().every((l) => this.selecao().has(l)),
   );
   protected readonly parcialmenteMarcadas = computed(
     () => this.selecao().size > 0 && !this.todasMarcadas(),
@@ -1095,6 +1162,28 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
       : `Remover ordenação de ${col.header}`;
   }
 
+  /** As escolhas do "Ordenar por": cada coluna ordenável nos dois sentidos. */
+  protected readonly opcoesOrdem = computed<UcamOption[]>(() => [
+    { value: '', label: 'Ordem original' },
+    ...this.columns()
+      .filter((c) => c.sortable)
+      .flatMap((c) => [
+        { value: c.key + '|asc', label: c.header + ', crescente' },
+        { value: c.key + '|desc', label: c.header + ', decrescente' },
+      ]),
+  ]);
+
+  protected readonly valorOrdem = computed(() => {
+    const s = this.sort();
+    return s ? s.column + '|' + s.direction : '';
+  });
+
+  protected ordenarPeloSeletor(valor: string): void {
+    if (valor === this.valorOrdem()) return;
+    const [column, direction] = valor.split('|');
+    this.sort.set(column ? { column, direction: direction === 'desc' ? 'desc' : 'asc' } : null);
+  }
+
   protected ordenarPor(col: UcamColumnDef): void {
     const s = this.sort();
     let novo: UcamSort | null;
@@ -1121,7 +1210,7 @@ export class UcamDataTable<T extends Record<string, unknown> = Record<string, un
 
   protected alternarTodas(evento: Event): void {
     const marcar = (evento.target as HTMLInputElement).checked;
-    const atual = marcar ? new Set(this.rows()) : new Set<T>();
+    const atual = marcar ? new Set(this.selecionaveis()) : new Set<T>();
     this.selecao.set(atual);
     this.selectionChange.emit([...atual]);
   }

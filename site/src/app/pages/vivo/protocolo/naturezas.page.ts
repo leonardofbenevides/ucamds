@@ -13,6 +13,7 @@ import {
   type UcamColumnDef,
   type UcamCrumb,
   type UcamNavGroup,
+  type UcamNavItem,
   type UcamSegmentItem,
 } from '@ucam/ui';
 
@@ -94,14 +95,24 @@ const NATUREZAS: Natureza[] = [
       [context]="'campos'"
       contextLabel="Campus"
       [announcement]="anuncio()"
+      searchable
+      searchLabel="Buscar requerimento, setor ou pessoa"
+      searchShortcut="/"
+      [notifications]="7"
+      [navAction]="{ label: 'Novo requerimento', icon: 'plus', href: '#' }"
+      [favorites]="favoritos()"
+      (unpin)="desfixar($event)"
+      (openNotifications)="agir('notificacoes')"
+      (signOut)="agir('sair')"
     >
       <ng-container ucamShellAcoes>
-        <ucam-icon-button icon="bell" variant="ghost" label="Notificações, 7 não lidas" />
-        <ucam-icon-button icon="layoutGrid" variant="ghost" label="Meus sistemas" />
+        <ucam-icon-button icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
       </ng-container>
       <ng-container ucamShellNavRodape>
-        <a href="#" class="ucam-nav__item"><svg class="ic" aria-hidden="true"><use href="#i-settings" /></svg><span>Configurações</span></a>
-        <a href="#" class="ucam-nav__item"><svg class="ic" aria-hidden="true"><use href="#i-info" /></svg><span>Central de ajuda</span></a>
+        <!-- Sem tela de referência desenhada, como na referência: link
+             desabilitado, e não destino que não leva a lugar nenhum. -->
+        <span class="ucam-nav__item" role="link" aria-disabled="true" data-sem-tela><svg class="ic" aria-hidden="true"><use href="#i-settings" /></svg><span>Configurações</span></span>
+        <span class="ucam-nav__item" role="link" aria-disabled="true" data-sem-tela><svg class="ic" aria-hidden="true"><use href="#i-info" /></svg><span>Central de ajuda</span></span>
       </ng-container>
 
       <ucam-page-header variante="barra" title="Naturezas do requerimento" [breadcrumb]="trilha">
@@ -117,7 +128,7 @@ const NATUREZAS: Natureza[] = [
 
         <div class="ucam-toolbar ucam-toolbar--compacta">
           <ucam-text-field
-            class="ucam-field--grow"
+            class="ucam-field ucam-field--grow"
             label="Pesquisar natureza"
             labelHidden
             type="search"
@@ -138,6 +149,8 @@ const NATUREZAS: Natureza[] = [
             itemLabel="naturezas"
             identifierKey="nome"
             [selected]="marcadas()"
+            [rowSelectable]="ativa"
+            [sort]="{ column: 'requerimentos', direction: 'desc' }"
             [state]="linhas().length ? 'idle' : 'empty'"
             emptyReason="no-results"
             (selectionChange)="marcadas.set($event)"
@@ -207,15 +220,14 @@ export default class VivoProtocoloNaturezasPage {
   ];
   protected readonly trilha: UcamCrumb[] = [{ label: 'Meus sistemas', link: '#' }, { label: 'Naturezas' }];
 
+  /** O que a pessoa fixou. Quem persiste é a aplicação; aqui, a memória. */
+  protected readonly favoritos = signal<UcamNavItem[]>([
+    { label: 'Urgentes sem resposta', icon: 'triangleAlert', href: '#' },
+    { label: 'Secretaria Acadêmica', icon: 'building2', href: '#' },
+    { label: 'Parâmetros dos setores', icon: 'settings', href: '#' },
+  ]);
+
   protected readonly nav: UcamNavGroup[] = [
-    {
-      label: 'Favoritos',
-      items: [
-        { label: 'Urgentes sem resposta', icon: 'triangleAlert', href: '#' },
-        { label: 'Secretaria Acadêmica', icon: 'building2', href: '#' },
-        { label: 'Parâmetros dos setores', icon: 'settings', href: '#' },
-      ],
-    },
     {
       label: 'Trabalho',
       items: [
@@ -229,7 +241,7 @@ export default class VivoProtocoloNaturezasPage {
       items: [
         { label: 'Setores', icon: 'building2', href: '#' },
         { label: 'Naturezas', icon: 'listFilter', href: '#', current: true },
-        { label: 'Funcionários', icon: 'users', href: '#' },
+        { label: 'Funcionários', icon: 'users', disabled: true },
       ],
     },
   ];
@@ -244,13 +256,15 @@ export default class VivoProtocoloNaturezasPage {
   /** As três linhas marcadas da referência, para a foto comparar o mesmo estado. */
   protected readonly marcadas = signal<readonly Natureza[]>(NATUREZAS.slice(7, 10));
   protected readonly anuncio = signal('');
+  /** Natureza arquivada não entra em ação de lote: a caixa fica, desabilitada. */
+  protected readonly ativa = (n: Natureza) => !n.selo;
 
   protected readonly colunas: UcamColumnDef[] = [
-    { key: 'nome', header: 'Natureza', icon: 'text', type: 'text', sortable: true },
-    { key: 'setor', header: 'Setor responsável', icon: 'building2', type: 'text', width: 'min', sortable: true },
+    { key: 'nome', header: 'Natureza', icon: 'text', type: 'text' },
+    { key: 'setor', header: 'Setor responsável', icon: 'building2', type: 'text', width: 'min' },
     // 'min' no cabeçalho e não na célula: a coluna mede o rótulo e o texto
     // longo das unidades quebra, como o th--min da referência.
-    { key: 'unidades', header: 'Unidades atendidas', icon: 'mapPin', type: 'text', width: 'min', sortable: true },
+    { key: 'unidades', header: 'Unidades atendidas', icon: 'mapPin', type: 'text', width: 'min' },
     { key: 'requerimentos', header: 'Requerimentos', icon: 'hash', type: 'number', width: 'min', sortable: true },
     { key: 'acoes', header: 'Ações', type: 'actions' },
   ];
@@ -260,6 +274,11 @@ export default class VivoProtocoloNaturezasPage {
     const b = this.busca().trim().toLowerCase();
     return NATUREZAS.filter((n) => (!m || n.modalidade.split(' ').includes(m)) && (!b || n.nome.toLowerCase().includes(b)));
   });
+
+  protected desfixar(item: UcamNavItem): void {
+    this.favoritos.update((lista) => lista.filter((f) => f !== item));
+    this.anuncio.set(`${item.label} removido dos favoritos.`);
+  }
 
   /** Ação de sistema: a aplicação chamaria o serviço; a tela viva só anuncia. */
   protected agir(acao: string): void {

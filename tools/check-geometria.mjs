@@ -62,6 +62,21 @@ function classeRaio(papel) {
 const RAIO_CONTROLE = classeRaio('control');
 
 /**
+ * Um papel de espaço ({space.N}) → utilitária do Tailwind. O degrau primitivo
+ * JÁ é o passo do Tailwind (space.4 = 1rem = px-4), então não há conta.
+ */
+function classeEspaco(prefixo, papel) {
+  const ref = semantic.space?.[papel]?.$value;
+  const m = /^\{space\.(\d+)\}$/.exec(ref ?? '');
+  if (!m) throw new Error(`spec/tokens/semantic.json: space.${papel} não referencia um degrau primitivo ({space.N})`);
+  return `${prefixo}-${m[1]}`;
+}
+const RECUO_SM = classeEspaco('px', 'inset-sm');
+const RECUO_MD = classeEspaco('px', 'inset-md');
+const RECUO_LG = classeEspaco('px', 'inset-lg');
+const VAO = classeEspaco('gap', 'inline-xs');
+
+/**
  * Onde a base declara geometria de controle, e o que a spec manda ali.
  *
  * A lista é explícita, e não uma varredura por `h-\d+`, porque nem toda altura
@@ -71,9 +86,28 @@ const RAIO_CONTROLE = classeRaio('control');
  */
 const EXIGENCIAS = [
   // --- alturas de controle
-  ['button/button.variants.ts', 'zSize.default', CONTROL_MD, /default: '(h-\d+) gap-1\.5 px-2\.5 has-data/],
+  ['button/button.variants.ts', 'zSize.default', CONTROL_MD, /default: '(h-\d+) gap-[\d.]+ px-[\d.]+ has-data/],
   ['button/button.variants.ts', 'zSize.sm', CONTROL_SM, /sm: "(h-\d+) gap-1 rounded-\[min/],
-  ['button/button.variants.ts', 'zSize.lg', CONTROL_LG, /lg: '(h-\d+) gap-1\.5 px-2\.5 has-data/],
+  ['button/button.variants.ts', 'zSize.lg', CONTROL_LG, /lg: '(h-\d+) gap-[\d.]+ px-[\d.]+ has-data/],
+
+  // --- recuo e vão do botão e do campo
+  // O mesmo defeito do raio, um eixo ao lado (04/10/2026): a base trazia
+  // px-2.5 (10px) e gap-1.5 (6px) do shadcn; a folha do Trilho A usa
+  // space.inset-md (16px) no botão, inset-sm (12px) no pequeno e no campo,
+  // inset-lg no grande, e space.inline-xs (4px) de vão. Medido pela prova de
+  // paridade (ADR-058): botão de texto 12px mais estreito no Trilho B.
+  //
+  // Com ícone, o recuo cai para 8px DOS DOIS LADOS (has-data-[icon]:px-2).
+  // É o que a folha RENDERIZA: a regra dela diz "o lado do ícone respira
+  // menos", mas :has(> .ic:last-child) casa também o ícone seguido de texto
+  // (nó de texto não é filho-elemento), e todo botão com um ícone sai 8/8
+  // nas 31 telas de referência. A base acompanha o que a referência mostra;
+  // se a folha um dia separar os lados, este ponto muda junto.
+  ['button/button.variants.ts', 'zSize.default recuo', RECUO_MD, /default: 'h-\d+ gap-[\d.]+ (px-[\d.]+) has-data/],
+  ['button/button.variants.ts', 'zSize.lg recuo', RECUO_LG, /lg: 'h-\d+ gap-[\d.]+ (px-[\d.]+) has-data/],
+  ['button/button.variants.ts', 'zSize.sm recuo', RECUO_SM, /sm: "h-\d+ gap-1 rounded-\[[^\]]+\] (px-[\d.]+) text-xs/],
+  ['button/button.variants.ts', 'zSize.default vão', VAO, /default: 'h-\d+ (gap-[\d.]+) px-/],
+  ['input/input.variants.ts', 'inputVariants recuo', RECUO_SM, /bg-transparent (px-[\d.]+) py-1 text-base/],
   ['input/input.variants.ts', 'inputVariants', CONTROL_MD, /cva\(\s*'(h-\d+) w-full min-w-0/],
   ['select/select.variants.ts', 'selectTriggerVariants', CONTROL_MD, /'flex (h-\d+) px-3 py-2 w-full/],
   ['input-group/input-group.variants.ts', 'inputGroupVariants', CONTROL_MD, /relative flex (h-\d+) w-full min-w-0/],

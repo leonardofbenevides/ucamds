@@ -113,3 +113,142 @@ describe('UcamAppShell — a subpaleta chega ao que a base monta fora do shell',
     expect(container.getAttribute('data-sistema')).toBe('pessoas');
   });
 });
+
+/**
+ * O que entrou em 05/10/2026, pela prova de paridade de tela (ADR-058): busca
+ * global, sino, menu da conta, recolher, ação do módulo e Favoritos.
+ */
+@Component({
+  imports: [UcamAppShell],
+  template: `
+    <ucam-app-shell
+      systemName="Protocolo"
+      [user]="{ name: 'Leonardo F. Benevides' }"
+      [searchable]="busca()"
+      searchLabel="Buscar requerimento"
+      searchShortcut="/"
+      [(searchQuery)]="texto"
+      [notifications]="naoLidas()"
+      [navAction]="{ label: 'Novo requerimento' }"
+      [favorites]="favoritos()"
+      [navGroups]="[{ label: 'Trabalho', items: [{ label: 'Caixa de entrada', count: 9, href: '#' }] }]"
+      (unpin)="desfixado.set($event.label)"
+      (signOut)="saiu.set(true)"
+      (navActionClick)="acionou.set(true)"
+    />
+  `,
+})
+class Completo {
+  readonly busca = signal(true);
+  readonly texto = signal('');
+  readonly naoLidas = signal<number | null>(7);
+  readonly favoritos = signal([{ label: 'Urgentes', href: '#' }]);
+  readonly desfixado = signal('');
+  readonly saiu = signal(false);
+  readonly acionou = signal(false);
+}
+
+describe('UcamAppShell — busca, sino, conta, recolher, ação e favoritos', () => {
+  async function monta() {
+    localStorage.removeItem('ucam-nav-recolhida');
+    await TestBed.configureTestingModule({ imports: [Completo] }).compileComponents();
+    const fx = TestBed.createComponent(Completo);
+    fx.detectChanges();
+    await fx.whenStable();
+    return { fx, el: fx.nativeElement as HTMLElement, c: fx.componentInstance };
+  }
+  const botao = (el: ParentNode, nome: string) =>
+    [...el.querySelectorAll<HTMLElement>('button')].find((b) =>
+      ((b.getAttribute('aria-label') ?? '') + b.textContent).includes(nome),
+    )!;
+
+  it('a busca só existe quando a aplicação declara que há o que buscar', async () => {
+    const { fx, el, c } = await monta();
+    expect(el.querySelector('header input[type=search]')).toBeTruthy();
+    c.busca.set(false);
+    fx.detectChanges();
+    expect(el.querySelector('header input[type=search]')).toBeNull();
+  });
+
+  it('o campo tem nome, anuncia o atalho e devolve o texto a cada tecla', async () => {
+    const { fx, el, c } = await monta();
+    const campo = el.querySelector<HTMLInputElement>('header input[type=search]')!;
+    expect(el.querySelector(`label[for="${campo.id}"]`)?.textContent).toContain('Buscar requerimento');
+    expect(campo.getAttribute('aria-keyshortcuts')).toBe('/');
+    campo.value = 'boleto';
+    campo.dispatchEvent(new Event('input'));
+    fx.detectChanges();
+    expect(c.texto()).toBe('boleto');
+  });
+
+  it('a tecla do atalho leva o foco ao campo, e não rouba a barra de quem está digitando', async () => {
+    const { fx, el } = await monta();
+    document.body.appendChild(el);
+    const campo = el.querySelector<HTMLInputElement>('header input[type=search]')!;
+    const dentro = new KeyboardEvent('keydown', { key: '/', bubbles: true, cancelable: true });
+    campo.dispatchEvent(dentro);
+    expect(dentro.defaultPrevented).toBe(false);
+    const fora = new KeyboardEvent('keydown', { key: '/', bubbles: true, cancelable: true });
+    document.body.dispatchEvent(fora);
+    expect(fora.defaultPrevented).toBe(true);
+    await new Promise((r) => setTimeout(r));
+    fx.detectChanges();
+    expect(document.activeElement).toBe(campo);
+    el.remove();
+  });
+
+  it('o sino diz a contagem no nome; com zero fica sem selo e com null não existe', async () => {
+    const { fx, el, c } = await monta();
+    expect(botao(el, 'Notificações').textContent).toContain('7 não lidas');
+    c.naoLidas.set(0);
+    fx.detectChanges();
+    expect(botao(el, 'Notificações').textContent).not.toContain('não lidas');
+    c.naoLidas.set(null);
+    fx.detectChanges();
+    expect(botao(el, 'Notificações')).toBeUndefined();
+  });
+
+  it('o menu da conta guarda o nome por extenso e o Sair, que emite signOut', async () => {
+    const { fx, el, c } = await monta();
+    botao(el, 'Conta de Leonardo F. Benevides').click();
+    fx.detectChanges();
+    const menu = TestBed.inject(OverlayContainer).getContainerElement().querySelector('[role=menu]')!;
+    expect(menu.textContent).toContain('Leonardo F. Benevides');
+    [...menu.querySelectorAll<HTMLElement>('[role=menuitem]')].find((i) => i.textContent?.includes('Sair'))!.click();
+    expect(c.saiu()).toBe(true);
+  });
+
+  it('recolher troca aria-expanded e tira o rótulo da vista, não do nome', async () => {
+    const { fx, el } = await monta();
+    const nav = el.querySelector('nav')!;
+    const recolher = botao(nav, 'Recolher navegação');
+    expect(recolher.getAttribute('aria-expanded')).toBe('true');
+    recolher.click();
+    fx.detectChanges();
+    expect(recolher.getAttribute('aria-expanded')).toBe('false');
+    expect(recolher.getAttribute('aria-label')).toBe('Expandir navegação');
+    expect(nav.hasAttribute('data-recolhida')).toBe(true);
+    const item = [...nav.querySelectorAll('a')].find((a) => a.textContent?.includes('Caixa de entrada'))!;
+    expect(item.querySelector('span')!.className).toContain('sr-only');
+    expect(item.textContent).toContain('9');
+    localStorage.removeItem('ucam-nav-recolhida');
+  });
+
+  it('a ação do módulo sem destino é botão e emite', async () => {
+    const { el, c } = await monta();
+    botao(el.querySelector('nav')!, 'Novo requerimento').click();
+    expect(c.acionou()).toBe(true);
+  });
+
+  it('favoritos: o desfixar fica ao lado do link, nunca dentro, e emite o item', async () => {
+    const { fx, el, c } = await monta();
+    const nav = el.querySelector('nav')!;
+    const desfixar = botao(nav, 'Remover Urgentes dos favoritos');
+    expect(desfixar.closest('a')).toBeNull();
+    desfixar.click();
+    expect(c.desfixado()).toBe('Urgentes');
+    c.favoritos.set([]);
+    fx.detectChanges();
+    expect(botao(nav, 'Favoritos')).toBeUndefined();
+  });
+});

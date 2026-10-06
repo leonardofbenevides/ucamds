@@ -63,6 +63,17 @@ const SIZE_MAP: Record<'sm' | 'md', ZardButtonSizeVariants> = {
   md: 'icon',
 };
 
+/**
+ * O tom neutro por variante, como a folha do Trilho A o desenha (medido pela
+ * prova de paridade, 05/10/2026): o fantasma em tinta secundária — é ação de
+ * apoio, não pode pesar o que pesa o dado ao lado — e o secundário com o fio
+ * próprio do botão, mais leve que o fio de campo que a base usa.
+ */
+const NEUTRO: Record<UcamIconButtonVariant, string> = {
+  ghost: 'text-[var(--ucam-color-text-secondary)]',
+  secondary: 'border-[var(--ucam-color-action-secondary-border)] dark:border-[var(--ucam-color-action-secondary-border)]',
+};
+
 @Component({
   selector: 'ucam-icon-button',
   exportAs: 'ucamIconButton',
@@ -85,7 +96,7 @@ const SIZE_MAP: Record<'sm' | 'md', ZardButtonSizeVariants> = {
       [attr.aria-busy]="loading() ? 'true' : null"
       (click)="onClick($event)"
     >
-      <ucam-icon [name]="loading() ? 'loaderCircle' : icon()" [size]="size() === 'sm' ? 'sm' : 'md'" [class]="loading() ? 'animate-spin' : ''" />
+      <ucam-icon [name]="loading() ? 'loaderCircle' : icon()" size="sm" [class]="loading() ? 'animate-spin' : ''" />
     </button>
   `,
   styles: `
@@ -213,7 +224,7 @@ export class UcamIconButton {
   protected readonly zSize = computed(() => SIZE_MAP[this.size()]);
 
   protected readonly extraClasses = computed(() =>
-    this.tone() === 'danger' ? TONE_CLASSES[this.variant()] : '',
+    this.tone() === 'danger' ? TONE_CLASSES[this.variant()] : NEUTRO[this.variant()],
   );
 
   private readonly botao = viewChild.required('botao', { read: ElementRef<HTMLButtonElement> });

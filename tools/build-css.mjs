@@ -2233,6 +2233,12 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
     font-size: var(--ucam-typography-caption-font-size);
     line-height: var(--ucam-typography-caption-line-height);
     color: var(--ucam-color-text-secondary);
+    /* O rótulo QUEBRA, mesmo quando a célula não quebra. A célula com
+     * white-space: nowrap (escrito para a tabela em colunas) passava o
+     * nowrap ao rótulo por herança: "Setor responsável" mede 115,6px numa
+     * coluna de 104 e invadia o valor em 3,6px (naturezas a 390px, achado
+     * pela prova de paridade em 05/10/2026). */
+    white-space: normal;
   }
   /* O que a célula carrega vai inteiro para a coluna do valor. */
   .ucam-table tbody tr > :is(th, td):not(.td--selecao):not(.td--acoes):not(:nth-child(1 of :not(.td--selecao))) > * { grid-column: 2; justify-self: start; }

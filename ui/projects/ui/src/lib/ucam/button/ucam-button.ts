@@ -201,8 +201,22 @@ export class UcamButton {
    * três. Ver TONE_CLASSES. Sem tom, nada é acrescentado: o botão neutro
    * continua sendo exatamente o que a base desenha.
    */
-  protected readonly extraClasses = computed(() =>
-    this.tone() === 'danger' ? TONE_CLASSES[this.variant()] : '',
+  protected readonly extraClasses = computed(
+    () =>
+      // Entrelinha 1, como .ucam-btn: com a de 20px da base o rótulo caía meio
+      // pixel acima do da referência dentro da mesma caixa de 36px.
+      'leading-none ' + this.tomOuFio(),
+  );
+
+  private readonly tomOuFio = computed(() =>
+    this.tone() === 'danger'
+      ? TONE_CLASSES[this.variant()]
+      : this.variant() === 'secondary'
+        ? // O fio do botão secundário é o DELE (action.secondary.border), e não
+          // o de campo que o outline da base traz: é o que a folha do Trilho A
+          // desenha, um degrau mais leve (prova de paridade, 05/10/2026).
+          'border-[var(--ucam-color-action-secondary-border)] dark:border-[var(--ucam-color-action-secondary-border)]'
+        : '',
   );
 
   // `read: ElementRef` é obrigatório: o <button z-button> é um componente da

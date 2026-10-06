@@ -221,6 +221,12 @@
       }
     },
     {
+      "nome": "rowSelectable",
+      "tipo": "((row: T) => boolean) | null",
+      "default": "null",
+      "descricao": "Quais linhas aceitam seleção. A linha que não aceita mantém a caixa, desabilitada (o chão da ADR-042), e fica fora do \"selecionar todas\" — registro arquivado numa lista com ação em lote, por exemplo. A caixa não some: a coluna não muda de forma por causa de uma linha. No Trilho A é o atributo disabled no input da linha."
+    },
+    {
       "nome": "selected",
       "tipo": "readonly T[]",
       "default": "[]",
