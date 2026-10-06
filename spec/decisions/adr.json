@@ -1171,6 +1171,51 @@
         "Uma tela viva por vez: a prova é cara (build do site e navegador). A primeira é protocolo/naturezas; as próximas seguem o mesmo molde."
       ],
       "afeta": ["*", "data-table", "app-shell", "page-header", "badge"]
+    },
+    {
+      "id": "ADR-060",
+      "titulo": "A logo da universidade abre a faixa de todo sistema, antes da marquinha",
+      "status": "aceita",
+      "data": "2026-10-06",
+      "contexto": "A ADR-033 tirou o lockup da universidade da faixa dos sistemas e pôs no lugar a marquinha do módulo: o lockup de 110px estourava a faixa a 320 e a 480px, e repetia a universidade onde o assunto era o sistema. Ficou só no Portal. Em 06/10/2026 o pedido foi \"podemos adicionar a logo da UCAM em todas as aplicações?\": com a faixa na cor de cada sistema (ADR-037), um sistema aberto sozinho numa aba não diz de que instituição é.",
+      "decisao": "A faixa de todo sistema abre com a logo da universidade, um filete e só então a marquinha e o nome do sistema. A cor da faixa continua sendo a do sistema. Abaixo de nav-fixa a logo e o filete dela saem, e a faixa abre com a marquinha e o nome, como a ADR-033 deixou. O Portal não tem marquinha e segue como era. No Trilho B a logo entra pela prop logoUrl do app-shell; sem ela, a faixa abre com a marquinha.",
+      "consequencias": [
+        "Revê a ADR-033 num ponto só: o lugar do lockup. A marquinha, o campus como select e a regra dos fluxos seguem de pé.",
+        "A marca aparece uma vez por tela: o rodapé do shell só a leva nos arranjos sem faixa.",
+        "A página hospedeira continua tendo de apontar o arquivo em --ucam-appbar-logo (Trilho A) ou em logoUrl (Trilho B). Sem isso, no Trilho A a caixa da logo fica reservada e vazia.",
+        "A faixa com navegação fixa fica 6.85rem mais estreita para a busca; a busca é quem cede, entre os dois espaçadores."
+      ],
+      "afeta": ["app-shell"]
+    },
+    {
+      "id": "ADR-061",
+      "titulo": "Cabeçalho de tabela tem faixa cinza, em toda tabela",
+      "status": "aceita",
+      "data": "2026-10-06",
+      "contexto": "A ADR-051 deixou o cabeçalho da tabela na superfície do papel, sem faixa: o que dizia que a fileira era rótulo era a tinta secundária, o ícone de coluna e o fio embaixo. Em 06/10/2026 o pedido foi \"podemos tornar padrão colocar um fundo cinza em todos os headers de tabela\".",
+      "decisao": "Todo cabeçalho de coluna assenta em surface.sunken — o primeiro degrau de cinza que lê como faixa sobre o branco; surface.subtle dava 1,04:1 e não se via —, nos dois trilhos e nos dois temas. O fio embaixo, o fio entre colunas, a tinta secundária e o ícone de coluna continuam. Vale para a coluna fixa e para a fileira de grupos; o th de linha, no corpo, segue na superfície do papel.",
+      "consequencias": [
+        "Revê a ADR-051 só no fundo do cabeçalho; o resto dela (fio vertical, ícone de coluna, situação em ponto e palavra) segue de pé.",
+        "É o único cinza de fundo dentro de superfície no tema claro. Não é precedente para cartão, selo ou filtro: a ADR-040 e a regra do realce sem contorno continuam valendo fora do cabeçalho de tabela.",
+        "Em tabela com zebra o cabeçalho fica um degrau acima do cinza das linhas pares, e o fio border.default embaixo dele segue separando os dois."
+      ],
+      "afeta": ["data-table"]
+    },
+    {
+      "id": "ADR-062",
+      "titulo": "Mais cor: o sistema no menu e nos ladrilhos, avatar por pessoa e selo sempre no seu tom",
+      "status": "aceita",
+      "data": "2026-10-06",
+      "contexto": "Três rodadas tinham tirado cor das telas: a ADR-022 e a 027 deixaram um portador de cor por linha e o avatar neutro, a ADR-050 tirou a tinta do selo do estado da maioria, e a cor de cada sistema (ADR-037) ficou na faixa e no botão primário. O resultado medido em 29/09/2026 já era \"as telas estão muito cinzas\". Em 06/10/2026 o pedido foi direto: \"podemos ter mais cores, mais uso das cores de cada aplicação?\" e \"em todas as telas, use melhor as cores semânticas de badges e tenha mais cores nisso tudo, vamos colorir os avatares também, destaque melhor\".",
+      "decisao": "Quatro mudanças, todas na folha, sem editar tela por tela. (1) O item aberto do menu veste a família da ação do sistema: fundo a 10%, ícone e rótulo na tinta, contador cheio. (2) Dentro do shell, todo ladrilho de ícone sem categoria nem tom veste a mesma cor, a 12% no fundo e cheia no traço. (3) O avatar de iniciais leva cor por pessoa: oito tintas, as das categorias, escolhidas pelo nome por uma conta só nos dois trilhos (data-cor). (4) O selo plano deixa de existir: a classe e o valor plain saem da folha, do contrato e das telas, e todo selo veste o tom que declara.",
+      "consequencias": [
+        "Revoga a parte da ADR-050 que tirava a tinta do estado da maioria, e a parte das ADR-022 e 027 que deixava o avatar neutro. A linha de tabela passa a poder ter dois portadores de cor: o avatar, que não significa nada, e o selo, que significa.",
+        "A cor do avatar NÃO carrega significado (WCAG 1.4.1): o nome fica sempre ao lado. Menor contraste das oito tintas: 5,6:1 no claro e 4,9:1 no escuro.",
+        "Fica como estava: o fundo dos indicadores (ADR-034, \"cuidado com as cores de fundo nos KPIs\"), o chão branco (ADR-040), o link azul e as cores de feedback, que são as mesmas em todo sistema.",
+        "Avatar criado por script na própria tela (linha nova numa lista) não recebe data-cor e sai neutro até que o script faça a conta; fica aberto.",
+        "Selo neutro continua neutro: o que é Rascunho ou Arquivado não ganha tom por esta decisão. Trocar o tom de um estado é revisão de tela, não de folha."
+      ],
+      "afeta": ["*", "badge", "avatar", "icon-tile", "app-shell", "data-table"]
     }
   ]
 }

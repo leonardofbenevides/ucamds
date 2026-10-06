@@ -35,7 +35,7 @@
     {
       "parte": "root",
       "obrigatorio": true,
-      "descricao": "Container circular."
+      "descricao": "Container circular. O disco de iniciais leva COR POR PESSOA (ADR-062): data-cor de 1 a 8, escolhido pelo nome, com fundo a 16% e as iniciais na tinta. No Trilho A quem escreve o atributo é quem gera a marcação (tools/lib/avatar-cor.mjs faz a conta); no Trilho B o componente o deriva do name. Sem o atributo, o disco é neutro."
     },
     {
       "parte": "image",

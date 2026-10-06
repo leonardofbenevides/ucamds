@@ -2424,7 +2424,15 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 }
 
 .ucam-table thead th {
-  background: var(--ucam-color-surface-default);
+  /* FAIXA CINZA, e em toda tabela (ADR-061, 06/10/2026): "podemos tornar
+   * padrão colocar um fundo cinza em todos os headers de tabela". A ADR-051
+   * tinha deixado o cabeçalho na superfície do papel; o fio, a tinta
+   * secundária e o ícone de coluna continuam, e a faixa passa a separar
+   * rótulo de dado antes de qualquer leitura. É o único cinza de fundo dentro
+   * de superfície no tema claro, e é de propósito. surface.sunken, e não
+   * surface.subtle: o subtle (#F8FAFC) sobre o branco dá 1,04:1 e a faixa não
+   * se via na captura; o sunken é o primeiro degrau que lê como faixa. */
+  background: var(--ucam-color-surface-sunken);
   color: var(--ucam-color-text-secondary);
   font-size: var(--ucam-typography-table-header-font-size);
   font-weight: var(--ucam-typography-table-header-font-weight);
@@ -2734,7 +2742,7 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * texto cinza. A pastilha tinta volta, com o tom no fundo e no texto, e o
  * ponto saturado fica dentro dela. Continua UM portador de cor por célula
  * (ADR-022), e o selo plano da ADR-050 segue plano para o estado da maioria. */
-.ucam-table .ucam-badge:not(.ucam-badge--plain) {
+.ucam-table .ucam-badge {
   font-weight: var(--ucam-typography-body-font-weight);
   gap: var(--ucam-space-inline-xs);
 }
@@ -3147,7 +3155,7 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table thead .ucam-col--fixa-inicio,
 .ucam-table thead .ucam-col--fixa-fim {
   z-index: 3;
-  background-color: var(--ucam-color-surface-default);
+  background-color: var(--ucam-color-surface-sunken);
 }
 
 .ucam-table--zebra tbody tr:nth-child(even) > .ucam-col--fixa-inicio,
@@ -3383,14 +3391,10 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * fundo, filete, indicador e peso. Diferente do outline, que muda o
  * tratamento da coluna toda: aqui a distinção existe no dado (regra e
  * exceção), e é ela que a coluna mostra. */
-.ucam-badge.ucam-badge--plain {
-  background: transparent;
-  border-color: transparent;
-  color: var(--ucam-color-text-secondary);
-  font-weight: var(--ucam-typography-body-font-weight);
-}
-.ucam-badge--plain .ic,
-.ucam-badge--plain .ucam-badge__ponto { display: none; }
+/* REVOGADO em 06/10/2026 (ADR-062): "use melhor as cores semânticas de badges
+ * e tenha mais cores nisso tudo". O plano tirava fundo, filete, indicador e
+ * peso do estado da maioria; a coluna voltava a ler como texto cinza. A classe
+ * saiu da folha, do contrato e das telas: o selo veste o tom que declara. */
 
 /* -------------------------------------------------------------- prazo --- */
 /* O prazo NAO redesenha a pastilha: ele entra nos seletores do badge, acima.
@@ -3450,6 +3454,23 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   background: var(--ucam-color-surface-brand);
   color: var(--ucam-color-text-on-brand);
 }
+/* COR POR PESSOA — [data-cor="1".."8"] (ADR-062, 06/10/2026: "vamos colorir
+ * os avatares também").
+ *
+ * Oito tintas, as das categorias de sistema, escolhidas pelo NOME: a mesma
+ * pessoa sai sempre da mesma cor, em qualquer tela (tools/lib/avatar-cor.mjs
+ * no Trilho A, a mesma conta no UcamAvatar). Fundo a 16% e iniciais na tinta
+ * puxada a 35% para o texto: o menor contraste das oito é 5,6:1 no claro e
+ * 4,9:1 no escuro. A cor NÃO carrega significado — não é estado nem setor —,
+ * e por isso o disco nunca substitui o nome ao lado.
+ *
+ * Fica de fora quem já tem cor por outro motivo: o avatar --marca e o da
+ * conta, na faixa, que não recebem o atributo. */
+${[1, 2, 3, 4, 5, 6, 7, 8].map((n) => '.ucam-avatar[data-cor="' + n + '"]').join(',\n')} {
+  background: color-mix(in srgb, var(--ucam-avatar-cor) 16%, transparent);
+  color: color-mix(in oklab, var(--ucam-avatar-cor) 65%, var(--ucam-color-text-primary));
+}
+${SISTEMAS.map((s, i) => '.ucam-avatar[data-cor="' + (i + 1) + '"] { --ucam-avatar-cor: var(--ucam-color-categoria-' + s + '); }').join('\n')}
 .ucam-avatar img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 
 /* OS QUATRO AVATARES TINTOS SAÍRAM (ADR-022). Eram --1 a --4, reaproveitando
@@ -3881,6 +3902,22 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   background: var(--ucam-color-surface-sunken);
   color: var(--ucam-color-text-secondary);
   flex: none;
+}
+
+/* DENTRO DO SHELL o ladrilho veste a COR DO SISTEMA (ADR-062, 06/10/2026:
+ * "podemos ter mais cores, mais uso das cores de cada aplicação?"). A família
+ * da ação já troca por sistema (ADR-037); o ladrilho passa a lê-la, a 12% no
+ * fundo e cheia no traço — a mesma receita do --marca e da categoria. O
+ * :where() mantém a especificidade de uma classe: categoria, tom do indicador
+ * e a marquinha da faixa continuam vencendo. Fora do shell (o site, um cartão
+ * solto) o ladrilho segue neutro. */
+/* A tinta é a da CATEGORIA do sistema (--ucam-sistema-cor), não a da ação: a
+ * ação é o degrau escuro que aguenta texto branco (o roxo do Gerencial é
+ * #402B6B), e a 10% sobre branco ele lia cinza na captura. A categoria é a cor
+ * cheia do sistema. O Portal não declara sistema e cai no bordô da ação. */
+:where(.ucam-shell) .ucam-icon-tile {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
 }
 
 .ucam-icon-tile--marca {
@@ -5035,6 +5072,17 @@ ${cssDaCorDeFaixa()}
 /* A marquinha no degrau do ladrilho do Portal: o nome do sistema é o maior
  * texto da faixa, e o ladrilho de 28px ao lado dele lia como ícone de menu. */
 .ucam-appbar__marca { flex: none; }
+
+/* LOGO + MARQUINHA (ADR-060). Onde as duas vêm juntas, a logo só existe com a
+ * navegação fixa: abaixo disso a faixa ganha o botão de menu e perde largura,
+ * e era o lockup de 110px que a estourava a 320 e a 480px (ADR-033). Some a
+ * logo e o filete dela; a marquinha e o nome seguem dizendo o sistema. A
+ * faixa sem marquinha (o Portal) não entra nesta regra e encolhe a logo como
+ * sempre fez. */
+${abaixo('nav-fixa')} {
+  .ucam-appbar__brand:has(> .ucam-appbar__marca) > .ucam-appbar__logo,
+  .ucam-appbar__brand:has(> .ucam-appbar__marca) > .ucam-appbar__divider { display: none; }
+}
 
 .ucam-appbar__spacer { margin-inline-start: auto; }
 
@@ -6408,6 +6456,23 @@ ${abaixo('respiro-completo')} {
 .ucam-nav__item[aria-current="page"] .ucam-nav__count {
   background: var(--ucam-color-surface-default);
   color: var(--ucam-color-text-primary);
+}
+
+/* O ITEM ABERTO NA COR DO SISTEMA (ADR-062). O fundo era a tinta neutra de
+ * seleção, e o menu inteiro lia cinza: a única cor do sistema na tela era a
+ * faixa. Agora o item em que se está veste a família da ação — fundo a 10%,
+ * ícone e rótulo na tinta, contador cheio. Um item por menu, então a cor
+ * continua dizendo uma coisa só: "você está aqui". O .ucam-shell na frente é
+ * para vencer as regras de arranjo que repintam o item mais abaixo. */
+.ucam-shell .ucam-nav__item[aria-current="page"],
+.ucam-shell .ucam-nav__item[aria-current="page"]:hover {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-color-action-primary-default);
+}
+.ucam-shell .ucam-nav__item[aria-current="page"] .ic { color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)); }
+.ucam-shell .ucam-nav__item[aria-current="page"] .ucam-nav__count {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
 }
 
 /* ------------------------------------------------- ramo e subitens --- */
@@ -9168,6 +9233,13 @@ dialog.ucam-dialog:not([open]) { display: none; }
   background: var(--ucam-color-surface-sunken);
   color: var(--ucam-color-text-secondary);
 }
+/* A figura do indicador veste a cor do sistema, como o ladrilho (ADR-062).
+ * É o ÍCONE que ganha cor: o fundo do indicador segue branco e o número segue
+ * na tinta do texto (ADR-034). */
+:where(.ucam-shell) .ucam-stat__figura {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
+}
 .ucam-stat__figura .ic {
   inline-size: var(--ucam-size-icon-sm);
   block-size: var(--ucam-size-icon-sm);
@@ -10431,6 +10503,12 @@ a.ucam-list-item:active,
  * marcação sem efeito seria mentir por atributo. */
 
 .ucam-list-item__figura { flex: none; }
+/* O ladrilho da linha de lista também é do sistema (ADR-062). Regra própria
+ * porque a figura da lista repinta o ladrilho mais abaixo na folha. */
+.ucam-shell .ucam-list-item__figura.ucam-icon-tile:not([class*="ucam-icon-tile--a"], [class*="ucam-icon-tile--f"], [class*="ucam-icon-tile--g"], [class*="ucam-icon-tile--p"], [class*="ucam-icon-tile--c"], [class*="ucam-icon-tile--m"]) {
+  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
+  color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
+}
 
 /* O ITEM QUE ESCOLHE — lista que governa o painel ao lado (Grupo × Menu).
  *

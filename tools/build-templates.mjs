@@ -17,6 +17,7 @@ import { iconCss } from './lib/icon-css.mjs';
 // listbox estilizado — ver o cabeçalho de lib/select-listbox.mjs.
 import { listboxSelects, listboxScript } from './lib/select-listbox.mjs';
 import { fontFaceCss } from './lib/fonts-css.mjs';
+import { corDosAvatares } from './lib/avatar-cor.mjs';
 // O shell vem de um lugar só. Ver o cabeçalho de lib/shell.mjs para o porquê.
 import {
   renderShell,
@@ -46,6 +47,7 @@ import {
   criadoScript,
   navScript,
   contadorScript,
+  avatarScript,
 } from './lib/shell.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -304,7 +306,7 @@ var pal=p.get('paleta');if(pal==='comum'||pal==='moldura')document.documentEleme
 </head>
 <body>
 ${sprite}
-<div class="ucam">${listboxSelects(renderShell(shellDaTela(proj, t, destinosDe(proj)), promoveTitulo(religaPreview(t.preview))))}</div>
+<div class="ucam">${listboxSelects(renderShell(shellDaTela(proj, t, destinosDe(proj)), promoveTitulo(corDosAvatares(religaPreview(t.preview)))))}</div>
 <div class="ucamds-bar">
   <strong>UCAMDS</strong><span class="sep">·</span>
   <span>${esc(proj.nome)}</span><span class="sep">/</span>
@@ -333,6 +335,7 @@ ${sprite}
 <script>${gavetaScript}</script>
 <script>${inboxScript}</script>
 <script>${tabelaScript}</script>
+<script>${avatarScript}</script>
 <script>${roloScript}</script>
 <script>${copiarScript}</script>
 <script>${motivoScript}</script>
@@ -360,7 +363,7 @@ ${sprite}
      * protótipo e não saem em pacote nenhum — a página da tela diz isso ao
      * lado do botão de copiar, para que a cópia não pareça mais pronta do
      * que é. */
-    const marcacao = listboxSelects(promoveTitulo(religaPreview(t.preview)));
+    const marcacao = listboxSelects(promoveTitulo(corDosAvatares(religaPreview(t.preview))));
 
     for (const d of DESTINOS) {
       writeFileSync(

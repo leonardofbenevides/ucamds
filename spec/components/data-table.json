@@ -86,7 +86,7 @@
     {
       "parte": "header-cell",
       "obrigatorio": true,
-      "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th. Na superfície do papel, sem faixa cinza (ADR-051): o que diz que a fileira é rótulo é a tinta secundária, o ícone de coluna e o fio border.default embaixo. Entre colunas, fio border.subtle — no cabeçalho como sombra interna, porque a borda colapsada não acompanha a célula grudada."
+      "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th. Sobre faixa cinza (surface.sunken, ADR-061), com tinta secundária, ícone de coluna e o fio border.default embaixo. Entre colunas, fio border.subtle — no cabeçalho como sombra interna, porque a borda colapsada não acompanha a célula grudada."
     },
     {
       "parte": "column-icon",
@@ -560,7 +560,7 @@
       "porque": "É o inverso do lote comum, e resolve com checkbox nativo: o formulário só envia o que continuou marcado. Quem recebe revalida a lista contra a fonte, porque nada garante que os ids não foram alterados. Evidência: a lista de presença do vestibular no Relatórios Acadêmicos."
     },
     {
-      "faca": "Uma coluna de estado com cor por linha. Se a linha tem dois estados, o que decide leva a pastilha tinta e o outro vai em plain ou em texto de apoio.",
+      "faca": "Uma coluna de estado com cor por linha. Se a linha tem dois estados, o que decide leva a pastilha tinta e o outro vai em texto de apoio.",
       "evite": "Sugestão e decisão lado a lado, cada uma com a sua pastilha verde, âmbar ou vermelha.",
       "porque": "Duas faixas de cor paralelas não dizem qual ler, e escondem justamente onde as duas divergem. É a ADR-027 aplicada a colunas, e não só à barra da borda (ADR-050)."
     }

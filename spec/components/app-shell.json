@@ -102,7 +102,7 @@
     {
       "parte": "brand",
       "obrigatorio": true,
-      "descricao": "Logo e nome do sistema. Link para a raiz do sistema.",
+      "descricao": "Logo da universidade, filete, marquinha e nome do sistema, nesta ordem (ADR-060). Link para a raiz do sistema. Abaixo de nav-fixa a logo e o filete saem.",
       "classe": "ucam-appbar__brand"
     },
     {
@@ -367,6 +367,12 @@
       "tipo": "UcamIconName | null",
       "default": "null",
       "descricao": "O ícone da marquinha do sistema na faixa (ADR-033): o mesmo ladrilho que a pessoa clicou no Portal para entrar. Decorativo — o nome do sistema, dentro do mesmo link, é o nome acessível. Sem ele a faixa abre só com o nome."
+    },
+    {
+      "nome": "logoUrl",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Endereço da logo horizontal da universidade, em SVG monocromático. Com ele a faixa abre com a logo, um filete e a marquinha (ADR-060); sem ele, abre com a marquinha. Decorativa: o nome do sistema, no mesmo link, é o nome acessível. No Trilho A quem aponta o arquivo é a variável --ucam-appbar-logo."
     },
     {
       "nome": "homeHref",

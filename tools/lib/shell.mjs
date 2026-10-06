@@ -1102,8 +1102,10 @@ export function renderShell(cfg = {}, conteudo = '') {
             ? 'ucam-content ucam-content--pleno'
             : 'ucam-content';
 
+  // A marca no rodapé só onde a faixa NÃO a leva — uma vez por tela (ADR-033).
+  // Desde a ADR-060 toda faixa leva a logo; sobram os arranjos sem faixa.
   const blocoRodape = rodape
-    ? `<footer class="ucam-shell__footer">${logo ? '' : '<span class="ucam-shell__footer-marca" role="img" aria-label="Universidade Candido Mendes"></span>'}${rodape}</footer>`
+    ? `<footer class="ucam-shell__footer">${logo || !(topo || railColuna || lateral || semFaixa) ? '' : '<span class="ucam-shell__footer-marca" role="img" aria-label="Universidade Candido Mendes"></span>'}${rodape}</footer>`
     : '';
 
   // Com rail, a FAIXA NÃO EXISTE. Não é a faixa escondida por CSS: ela não é
@@ -1134,9 +1136,15 @@ export function renderShell(cfg = {}, conteudo = '') {
         // sistema e era ele que a estourava a 320 e a 480px. O ladrilho do
         // módulo diz em que sistema se está com a mesma cor da grade do Portal;
         // a universidade fica onde ela é o assunto.
-        (logo
-          ? `<span class="ucam-appbar__logo" aria-hidden="true"></span><span class="ucam-appbar__divider"></span>`
-          : moduloIcone
+        //
+        // A LOGO VOLTA A TODA FAIXA (ADR-060, 06/10/2026): "podemos adicionar
+        // a logo da UCAM em todas as aplicações?". Ela abre a faixa, o filete
+        // a separa, e a marquinha continua dizendo QUAL sistema. O que a
+        // ADR-033 resolveu segue resolvido: abaixo de nav-fixa a logo que tem
+        // marquinha ao lado some (build-css.mjs), e a faixa estreita abre só
+        // com o ladrilho e o nome. O Portal não tem marquinha e fica como era.
+        `<span class="ucam-appbar__logo" aria-hidden="true"></span><span class="ucam-appbar__divider"></span>` +
+          (!logo && moduloIcone
             ? `<span class="ucam-icon-tile ucam-appbar__marca${moduloCategoria ? ` ucam-icon-tile--${esc(moduloCategoria)}` : ''}" aria-hidden="true">${ic(moduloIcone)}</span>`
             : '') + `<span class="ucam-appbar__system">${esc(sistema)}</span>`,
       ) +
@@ -7682,6 +7690,42 @@ export const menuContaScript = `
   });
 })();
 `.trim();
+
+/**
+ * A COR DO AVATAR em tempo de execução (ADR-062). A conta é a de
+ * lib/avatar-cor.mjs — a mistura dos códigos das iniciais, de 1 a 8 —, e
+ * existe aqui porque as linhas de tabela e de lista são montadas por script:
+ * o avatar que nasce depois do carregamento não passou pelo gerador. Fica de
+ * fora o que já tem cor por outro motivo: o --marca, o de foto e o da conta,
+ * sobre a faixa.
+ */
+export const avatarScript = `
+(function () {
+  function pinta(el) {
+    if (el.hasAttribute('data-cor') || el.classList.contains('ucam-avatar--marca')) return;
+    if (el.querySelector('img') || el.closest('.ucam-appbar, .ucam-mobilebar, .ucam-nav__conta')) return;
+    var t = (el.textContent || '').trim().toUpperCase();
+    if (!t || t.length > 4) return;
+    var h = 0;
+    for (var i = 0; i < t.length; i++) h = Math.imul(h ^ t.charCodeAt(i), 2654435761) >>> 0;
+    el.setAttribute('data-cor', String(((h >>> 16) % 8) + 1));
+  }
+  function todos(raiz) {
+    Array.prototype.forEach.call(raiz.querySelectorAll('.ucam-avatar'), pinta);
+  }
+  todos(document);
+  if (!('MutationObserver' in window)) return;
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      Array.prototype.forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType !== 1) return;
+        if (n.classList.contains('ucam-avatar')) pinta(n);
+        todos(n);
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+})();
+`;
 
 /**
  * O CONTADOR do textarea (contrato textarea, parte contador): 'n de m

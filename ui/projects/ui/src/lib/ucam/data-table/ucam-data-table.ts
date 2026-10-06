@@ -417,8 +417,6 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       /* Caixa NATURAL no cabeçalho — ADR-003. */
       font-weight: var(--ucam-typography-label-font-weight);
       color: var(--ucam-color-text-secondary);
-      /* Branco, sem faixa (ADR-051): o fio default embaixo, a tinta
-         secundária e o ícone de coluna dizem que a fileira é rótulo. */
       background: var(--ucam-color-surface-default);
       border-block-end: 1px solid var(--ucam-color-border-default);
       /* OS MESMOS RECUOS DA FOLHA DO TRILHO A (03/10/2026). A prova de
@@ -458,7 +456,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     }
     /* Situação em pastilha tinta com ponto (ADR-051, revista em 25/09:
        "coloque mais cor de estado"), espelho da folha do Trilho A. */
-    .ucam-table ucam-badge:not([data-variant='plain']) > z-badge {
+    .ucam-table ucam-badge > z-badge {
       font-weight: var(--ucam-typography-body-font-weight);
       gap: var(--ucam-space-inline-xs);
     }
@@ -690,8 +688,12 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table thead .ucam-col--fixa-inicio,
     .ucam-table thead .ucam-col--fixa-fim {
       z-index: 2;
-      background-color: var(--ucam-color-surface-default);
+      background-color: var(--ucam-color-surface-sunken);
     }
+    /* FAIXA CINZA no cabeçalho de toda tabela (ADR-061, 06/10/2026), como a
+       folha do Trilho A: surface.sunken, o primeiro degrau que lê como faixa. Só o thead —
+       o th de linha, no corpo, segue na superfície do papel. */
+    .ucam-table thead th { background-color: var(--ucam-color-surface-sunken); }
     .ucam-table tbody tr:hover td.ucam-col--fixa-inicio,
     .ucam-table tbody tr:hover td.ucam-col--fixa-fim {
       background-color: var(--ucam-color-surface-default);

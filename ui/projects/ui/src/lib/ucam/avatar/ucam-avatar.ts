@@ -19,6 +19,11 @@ export function iniciaisDe(nome: string): string {
   return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase();
 }
 
+/** A ordem é a de SISTEMAS, em tools/lib/subpaleta.mjs: data-cor 1 a 8. */
+const CATEGORIAS = [
+  'academico', 'financeiro', 'atendimento', 'gestao', 'pessoas', 'acervo', 'pesquisa', 'comunicacao',
+] as const;
+
 @Component({
   selector: 'ucam-avatar',
   exportAs: 'ucamAvatar',
@@ -26,6 +31,9 @@ export function iniciaisDe(nome: string): string {
   encapsulation: ViewEncapsulation.None,
   host: {
     '[class]': 'classes()',
+    '[attr.data-cor]': 'cor()',
+    '[style.background]': 'cor() ? fundoDaCor() : null',
+    '[style.color]': 'cor() ? tintaDaCor() : null',
     '[attr.role]': 'decorative() ? null : "img"',
     '[attr.aria-label]': 'decorative() ? null : name()',
     '[attr.aria-hidden]': 'decorative() ? "true" : null',
@@ -52,6 +60,25 @@ export class UcamAvatar {
 
   protected readonly falhou = signal(false);
   protected readonly iniciais = computed(() => iniciaisDe(this.name()));
+
+  /**
+   * COR POR PESSOA (ADR-062). A mesma conta de tools/lib/avatar-cor.mjs: a
+   * mistura dos códigos das iniciais, de 1 a 8 — a mesma pessoa sai da mesma
+   * cor nos dois trilhos. A cor não carrega significado. Fica de fora o
+   * avatar de marca e o de foto.
+   */
+  protected readonly cor = computed(() => {
+    if (this.tone() === 'marca' || (this.photoUrl() && !this.falhou())) return null;
+    const t = this.iniciais().trim().toUpperCase();
+    let h = 0;
+    for (let i = 0; i < t.length; i++) h = Math.imul(h ^ t.charCodeAt(i), 2654435761) >>> 0;
+    return ((h >>> 16) % 8) + 1;
+  });
+  private readonly categoria = computed(() => `var(--ucam-color-categoria-${CATEGORIAS[(this.cor() ?? 1) - 1]})`);
+  protected readonly fundoDaCor = computed(() => `color-mix(in srgb, ${this.categoria()} 16%, transparent)`);
+  protected readonly tintaDaCor = computed(
+    () => `color-mix(in oklab, ${this.categoria()} 65%, var(--ucam-color-text-primary))`,
+  );
   protected readonly classes = computed(() =>
     `inline-flex shrink-0 items-center justify-center rounded-full overflow-hidden font-semibold ${this.tone() === 'marca' ? 'bg-[var(--ucam-color-surface-brand)] text-[var(--ucam-color-text-on-brand)]' : 'bg-accent text-accent-foreground'} ${TAM[this.size()]}`,
   );
