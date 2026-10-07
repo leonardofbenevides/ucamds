@@ -604,21 +604,20 @@ export function renderShell(cfg = {}, conteudo = '') {
     itemMenu({ rotulo: 'Meus dados', href: perfil }, ic('user')) +
     '<div class="ucam-menu__sep" role="separator"></div>' +
     // O TEMA mora na conta porque é preferência de quem usa, não da tela. Três
-    // escolhas, e não um interruptor: "como o dispositivo" é o padrão e
-    // precisa poder ser escolhido de volta depois de alguém fixar claro ou
-    // escuro — um interruptor de dois estados não tem como voltar a ele. O
-    // aria-checked real sai do temaScript no carregamento; aqui nasce o
-    // padrão.
+    // escolhas, e não um interruptor: quem quer que a tela acompanhe o
+    // dispositivo precisa poder dizer isso, e um interruptor de dois estados
+    // não tem onde. O PADRÃO É O CLARO (ADR-065, 06/10/2026). O aria-checked
+    // real sai do temaScript no carregamento; aqui nasce o padrão.
     `<div role="group" aria-labelledby="${esc(idContaMenu)}-tema">` +
     `<p class="ucam-menu__titulo" id="${esc(idContaMenu)}-tema">Tema</p>` +
     [
       ['light', 'sun', 'Claro'],
       ['dark', 'moon', 'Escuro'],
-      ['auto', 'monitor', 'Como o dispositivo'],
+      ['system', 'monitor', 'Como o dispositivo'],
     ]
       .map(
         ([v, i, r]) =>
-          `<button class="ucam-menu__item" role="menuitemradio" aria-checked="${v === 'auto'}" tabindex="-1" type="button" data-tema="${v}">${ic(i)}<span>${r}</span></button>`,
+          `<button class="ucam-menu__item" role="menuitemradio" aria-checked="${v === 'light'}" tabindex="-1" type="button" data-tema="${v}">${ic(i)}<span>${r}</span></button>`,
       )
       .join('') +
     '</div>' +
@@ -7656,20 +7655,17 @@ export const menuContaScript = `
       try { localStorage.setItem('ucam-nav-recolhida', vaiRecolher ? '1' : '0'); } catch (err) {}
     }
 
-    // O TEMA. auto REMOVE o data-theme em vez de gravar "auto" nele: sem o
-    // atributo, a folha de tokens obedece ao prefers-color-scheme, e e isso
-    // que faz o tema acompanhar o sistema operacional quando ele troca a
-    // noite. O menu fica aberto — quem escolhe ve a tela mudar atras dele e
-    // pode voltar atras sem reabrir.
+    // O TEMA. As tres escolhas GRAVAM o data-theme: light, dark ou system.
+    // Sem o atributo a tela e clara (ADR-065) — o claro e o padrao, e "como o
+    // dispositivo" e uma escolha como as outras, que a folha de tokens le em
+    // :root[data-theme="system"] dentro do prefers-color-scheme. O menu fica
+    // aberto — quem escolhe ve a tela mudar atras dele e pode voltar atras
+    // sem reabrir.
     var tema = e.target.closest && e.target.closest('[data-tema]');
     if (tema) {
       var v = tema.getAttribute('data-tema');
-      if (v === 'auto') document.documentElement.removeAttribute('data-theme');
-      else document.documentElement.setAttribute('data-theme', v);
-      try {
-        if (v === 'auto') localStorage.removeItem('ucam-theme');
-        else localStorage.setItem('ucam-theme', v);
-      } catch (err) {}
+      document.documentElement.setAttribute('data-theme', v);
+      try { localStorage.setItem('ucam-theme', v); } catch (err) {}
       marcarTema(v);
     }
   });
@@ -7680,7 +7676,7 @@ export const menuContaScript = `
     });
   }
   // O que o head aplicou antes da pintura vira a marca do menu.
-  marcarTema(document.documentElement.getAttribute('data-theme') || 'auto');
+  marcarTema(document.documentElement.getAttribute('data-theme') || 'light');
 
   // Restaura a preferencia antes da primeira pintura que o usuario percebe.
   // Se falhar, a navegacao abre — o padrao aberto e o que ensina onde estao os

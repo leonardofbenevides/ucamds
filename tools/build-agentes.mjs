@@ -111,7 +111,7 @@ const REGRAS_DE_OURO = [
   'Antes de concluir, rode `ucam_check_usage` (ou `npx ucam-ds checar <arquivo>`) e corrija todo erro.',
 ];
 
-const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042', 'ADR-044', 'ADR-054', 'ADR-055', 'ADR-056', 'ADR-060', 'ADR-061', 'ADR-062', 'ADR-063', 'ADR-064']);
+const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042', 'ADR-044', 'ADR-054', 'ADR-055', 'ADR-056', 'ADR-060', 'ADR-061', 'ADR-062', 'ADR-063', 'ADR-064', 'ADR-065']);
 
 
 const secaoEstados = () => {

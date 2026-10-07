@@ -7,10 +7,10 @@ describe('Tema', () => {
     document.documentElement.removeAttribute('data-theme');
   });
 
-  it('começa seguindo o sistema e alterna para claro e escuro', () => {
+  it('começa no claro e alterna para escuro', () => {
     const tema = TestBed.inject(Tema);
-    expect(tema.atual()).toBe('sistema');
-    expect(document.documentElement.getAttribute('data-theme')).toBeNull();
+    expect(tema.atual()).toBe('light');
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light');
     tema.definir('dark');
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     expect(localStorage.getItem('tema')).toBe('dark');

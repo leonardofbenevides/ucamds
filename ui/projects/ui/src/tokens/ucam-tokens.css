@@ -317,11 +317,15 @@
 }
 
 /* camada 3 — tema escuro.
-   Três estados: escolha explícita (data-theme), preferência do sistema
-   (sem marcação no elemento raiz) e escolha explícita de tema claro, que
-   precisa vencer um sistema em escuro. */
+   O CLARO É O PADRÃO (ADR-065, 06/10/2026: "vamos deixar sempre como default
+   o modo claro"). Sem marcação no elemento raiz, a página é clara, qualquer
+   que seja o dispositivo. O escuro entra por escolha: data-theme="dark", ou
+   data-theme="system" para quem pediu "como o dispositivo" — e só aí a
+   preferência do sistema operacional é consultada. Até esta data a ausência
+   de marcação seguia o dispositivo, e quem abria um sistema à noite recebia
+   um tema que não tinha escolhido. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root[data-theme="system"] {
     color-scheme: dark;
     --ucam-color-surface-canvas: #0E162A;
     --ucam-color-surface-default: #1B263A;

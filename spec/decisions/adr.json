@@ -1256,6 +1256,21 @@
         "Não mexe em texto: a tinta secundária já está a 10,43:1 e o placeholder a 4,71:1."
       ],
       "afeta": ["*", "text-field", "select", "button", "segmented", "badge", "data-table", "card"]
+    },
+    {
+      "id": "ADR-065",
+      "titulo": "O tema claro é o padrão; seguir o dispositivo é escolha",
+      "status": "aceita",
+      "data": "2026-10-06",
+      "contexto": "Desde 19/09/2026 a ausência de data-theme no elemento raiz fazia a folha de tokens seguir o prefers-color-scheme: \"como o dispositivo\" era o padrão das telas, do site e de todo sistema que carregasse os tokens. Quem tinha o computador em modo escuro recebia o sistema escuro sem ter escolhido, e duas pessoas olhando a mesma tela viam temas diferentes. Em 06/10/2026 o pedido foi \"vamos deixar sempre como default o modo claro\".",
+      "decisao": "Sem data-theme no elemento raiz, a página é CLARA, qualquer que seja o dispositivo. O escuro entra por escolha: data-theme=\"dark\". \"Como o dispositivo\" continua existindo e passa a ser uma escolha gravada como as outras, data-theme=\"system\", que é o único caso em que a folha consulta o prefers-color-scheme. Vale para a folha de tokens, a subpaleta de sistema, as telas de referência, o menu da conta do app-shell, o site e o app do Vestibular.",
+      "consequencias": [
+        "Quem não tinha escolha guardada e usa o dispositivo em modo escuro passa a ver tudo claro na próxima visita. Quem tinha escolhido claro ou escuro não percebe diferença.",
+        "A chave ucam-theme do navegador ganha um terceiro valor, system. Antes, \"como o dispositivo\" era a ausência da chave.",
+        "Aplicação do parque que dependia de não marcar nada para seguir o dispositivo precisa escrever data-theme=\"system\" no elemento raiz.",
+        "O menu da conta continua com três opções; a marcada de fábrica passa a ser Claro."
+      ],
+      "afeta": ["*", "app-shell"]
     }
   ]
 }

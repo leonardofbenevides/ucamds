@@ -295,15 +295,16 @@ ${ucamCss}
                          vale a cheia; 'moldura' tinge só faixa e menu e
                          mantém a ação em bordô; 'comum' desliga tudo.
    Sem ?tema, vale o que a pessoa escolheu no menu da conta (localStorage
-   ucam-theme, a mesma chave do site de documentação). Sem escolha, o <html>
-   fica SEM data-theme e a folha de tokens segue o prefers-color-scheme —
-   "como o dispositivo" é o padrão desde 19/09/2026; até ali toda tela nascia
-   com data-theme=light cravado.
+   ucam-theme, a mesma chave do site de documentação): light, dark ou system.
+   Sem escolha, o <html> fica SEM data-theme e a tela é CLARA — o claro é o
+   padrão desde 06/10/2026 (ADR-065). Entre 19/09 e essa data o padrão era
+   "como o dispositivo"; agora ele é a escolha "system", gravada e aplicada
+   como as outras duas.
    Fica no <head> de propósito: aplicado depois do <body> haveria um quadro
    pintado no tema errado. */
 (function(){var p=new URLSearchParams(location.search),t=p.get('tema');
-if(t!=='dark'&&t!=='light'){try{t=localStorage.getItem('ucam-theme');}catch(e){t=null;}}
-if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);
+if(t!=='dark'&&t!=='light'&&t!=='system'){try{t=localStorage.getItem('ucam-theme');}catch(e){t=null;}}
+if(t==='dark'||t==='light'||t==='system')document.documentElement.setAttribute('data-theme',t);
 if(p.has('embed'))document.documentElement.classList.add('embed');
 var pal=p.get('paleta');if(pal==='comum'||pal==='moldura')document.documentElement.setAttribute('data-paleta',pal);})();
 </script>

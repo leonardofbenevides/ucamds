@@ -353,7 +353,8 @@ export function cssDaSubpaleta(tokensCss) {
    * vence a preferência do sistema, e por isso o @media traz o :not. */
   const condicoes = [
     ['claro', (sel) => sel, false],
-    ['escuro', (sel) => sel.replace(':root', ':root:not([data-theme="light"])'), true],
+    // Só com data-theme="system": sem marcação a página é clara (ADR-065).
+    ['escuro', (sel) => sel.replace(':root', ':root[data-theme="system"]'), true],
     ['escuro', (sel) => sel.replace(':root', ':root[data-theme="dark"]'), false],
   ];
 

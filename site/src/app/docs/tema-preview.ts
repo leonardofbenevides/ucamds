@@ -23,16 +23,17 @@
  * acompanha o sistema pelo mesmo caminho que o site.
  */
 
-type Tema = 'dark' | 'light' | null;
+type Tema = 'dark' | 'light' | 'system' | null;
 
-/** O tema explícito do site, ou null quando ele está seguindo o sistema. */
+/** O tema escolhido no site, ou null quando não há escolha (e vale o claro). */
 export function temaDoSite(): Tema {
   if (typeof document === 'undefined') return null;
+  const vale = (v: string | null): v is 'dark' | 'light' | 'system' => v === 'dark' || v === 'light' || v === 'system';
   const atributo = document.documentElement.getAttribute('data-theme');
-  if (atributo === 'dark' || atributo === 'light') return atributo;
+  if (vale(atributo)) return atributo;
   try {
     const salvo = localStorage.getItem('ucam-theme');
-    return salvo === 'dark' || salvo === 'light' ? salvo : null;
+    return vale(salvo) ? salvo : null;
   } catch {
     return null;
   }

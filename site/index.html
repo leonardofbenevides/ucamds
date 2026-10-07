@@ -24,7 +24,8 @@
       (function () {
         try {
           var t = localStorage.getItem('ucam-theme');
-          if (t === 'dark' || t === 'light') {
+          // Sem escolha guardada o site é claro (ADR-065); "system" é escolha.
+          if (t === 'dark' || t === 'light' || t === 'system') {
             document.documentElement.setAttribute('data-theme', t);
           }
           if (localStorage.getItem('ucam-leitura') === 'completo') {

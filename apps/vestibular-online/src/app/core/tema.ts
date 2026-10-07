@@ -3,12 +3,14 @@ import { Injectable, computed, signal } from '@angular/core';
 export type EscolhaTema = 'light' | 'dark' | 'sistema';
 
 /**
- * Tema claro/escuro. Os tokens do DS seguem o sistema por padrão e obedecem a
- * `data-theme` no <html> quando a pessoa escolhe; a escolha fica no navegador.
+ * Tema claro/escuro. O CLARO é o padrão (ADR-065 do DS, 06/10/2026): sem
+ * escolha guardada o app abre claro. As três escolhas gravam `data-theme` no
+ * <html> — light, dark ou system, que é "como o dispositivo" — e ficam no
+ * navegador.
  */
 @Injectable({ providedIn: 'root' })
 export class Tema {
-  readonly atual = signal<EscolhaTema>('sistema');
+  readonly atual = signal<EscolhaTema>('light');
 
   /** O tema que está de fato na tela, resolvendo "sistema". */
   readonly efetivo = computed<'light' | 'dark'>(() => {
@@ -24,18 +26,16 @@ export class Tema {
     } catch {
       /* sem storage */
     }
-    this.definir(guardado === 'light' || guardado === 'dark' ? guardado : 'sistema', false);
+    this.definir(guardado === 'dark' || guardado === 'sistema' ? guardado : 'light', false);
   }
 
   definir(escolha: EscolhaTema, lembrar = true): void {
     this.atual.set(escolha);
     const raiz = document.documentElement;
-    if (escolha === 'sistema') raiz.removeAttribute('data-theme');
-    else raiz.setAttribute('data-theme', escolha);
+    raiz.setAttribute('data-theme', escolha === 'sistema' ? 'system' : escolha);
     if (!lembrar) return;
     try {
-      if (escolha === 'sistema') localStorage.removeItem('tema');
-      else localStorage.setItem('tema', escolha);
+      localStorage.setItem('tema', escolha);
     } catch {
       /* sem storage */
     }

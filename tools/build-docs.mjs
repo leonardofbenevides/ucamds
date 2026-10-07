@@ -387,7 +387,7 @@ ${recursos.instalacao.trilhos.map(trilho).join('\n')}
 
   <section class="sec">
     <h2>Tema escuro</h2>
-    <p>O tema tem três estados. Sem marcação no elemento raiz, vale a preferência do sistema; <code>data-theme</code> sobrescreve nos dois sentidos.</p>
+    <p>O claro é o padrão: sem marcação no elemento raiz, a página é clara. O escuro entra por <code>data-theme="dark"</code>, e <code>data-theme="system"</code> segue o dispositivo.</p>
     <div class="panel"><div class="panel-body code"><pre><code>&lt;html&gt;                        &lt;!-- segue o sistema --&gt;
 &lt;html data-theme="dark"&gt;       &lt;!-- força escuro --&gt;
 &lt;html data-theme="light"&gt;      &lt;!-- força claro, mesmo com sistema escuro --&gt;</code></pre></div></div>
@@ -1017,7 +1017,7 @@ ${fontFaceCss('fonts')}
 --fb:"Geist Variable",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 --fm:"Geist Mono Variable",ui-monospace,"Cascadia Mono",Consolas,monospace;
 --rad:10px}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C0C0C;--pn:#131313;--pn2:#181818;--pn3:#1F1F1F;--tx:#EDEDED;--tx2:#A1A1A1;--tx3:#757575;--rl:#262626;--rl2:#383838;--br:#DF97A4;--br2:#EFC2CA;--brs:#231416;--brb:#3D1D22;--gd:#7FC3A0;--gds:#132119;--wn:#DBA45A;--wns:#241B0C;--bd:#E89189;--bds:#251311;--inf:#84B4DF;--infs:#0F1C28}}
+@media(prefers-color-scheme:dark){:root[data-theme="system"]{--bg:#0C0C0C;--pn:#131313;--pn2:#181818;--pn3:#1F1F1F;--tx:#EDEDED;--tx2:#A1A1A1;--tx3:#757575;--rl:#262626;--rl2:#383838;--br:#DF97A4;--br2:#EFC2CA;--brs:#231416;--brb:#3D1D22;--gd:#7FC3A0;--gds:#132119;--wn:#DBA45A;--wns:#241B0C;--bd:#E89189;--bds:#251311;--inf:#84B4DF;--infs:#0F1C28}}
 :root[data-theme="dark"]{--bg:#0C0C0C;--pn:#131313;--pn2:#181818;--pn3:#1F1F1F;--tx:#EDEDED;--tx2:#A1A1A1;--tx3:#757575;--rl:#262626;--rl2:#383838;--br:#DF97A4;--br2:#EFC2CA;--brs:#231416;--brb:#3D1D22;--gd:#7FC3A0;--gds:#132119;--wn:#DBA45A;--wns:#241B0C;--bd:#E89189;--bds:#251311;--inf:#84B4DF;--infs:#0F1C28}
 
 body{background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;letter-spacing:-.006em}

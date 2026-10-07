@@ -182,7 +182,7 @@ const html = `<!doctype html>
    a separação é por luz e a página é mesmo o degrau mais baixo. */
 :root{--fundo:#FFF;--pg:#F2F0F0;--pn:#FFF;--tx:#1A1717;--tx2:#5C5757;--tx3:#767171;--rl:#E4E1E1;--br:#6C1E2B;--brs:#FBF2F4;--gd:#24633F;--gds:#DDEFE5;
 --fd:Georgia,"Iowan Old Style","Times New Roman",serif;--fb:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--fm:ui-monospace,"Cascadia Mono",Consolas,monospace}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--fundo:#151212;--pg:#151212;--pn:#1D1919;--tx:#EFEBEB;--tx2:#B3ADAD;--tx3:#847E7E;--rl:#332C2C;--br:#D68E9B;--brs:#2B1418;--gd:#7FBF9C;--gds:#16281E}}
+@media(prefers-color-scheme:dark){:root[data-theme="system"]{--fundo:#151212;--pg:#151212;--pn:#1D1919;--tx:#EFEBEB;--tx2:#B3ADAD;--tx3:#847E7E;--rl:#332C2C;--br:#D68E9B;--brs:#2B1418;--gd:#7FBF9C;--gds:#16281E}}
 :root[data-theme="dark"]{--fundo:#151212;--pg:#151212;--pn:#1D1919;--tx:#EFEBEB;--tx2:#B3ADAD;--tx3:#847E7E;--rl:#332C2C;--br:#D68E9B;--brs:#2B1418;--gd:#7FBF9C;--gds:#16281E}
 body{background:var(--fundo);color:var(--tx);font-family:var(--fb);font-size:15px;line-height:1.6}
 .wrap{max-width:80rem;margin:0 auto;padding:2.5rem 1.25rem 5rem;display:flex;flex-direction:column;gap:2.5rem}

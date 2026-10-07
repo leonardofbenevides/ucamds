@@ -83,31 +83,29 @@ type Tema = 'claro' | 'escuro' | 'sistema';
   `,
 })
 export class ThemeToggleComponent {
-  protected readonly tema = signal<Tema>('sistema');
+  // O CLARO é o padrão (ADR-065, 06/10/2026): sem escolha guardada o site
+  // abre claro, qualquer que seja o dispositivo. "Sistema" continua na roda,
+  // como escolha que se grava.
+  protected readonly tema = signal<Tema>('claro');
 
   constructor() {
     if (typeof localStorage !== 'undefined') {
       const salvo = localStorage.getItem('ucam-theme');
-      this.tema.set(salvo === 'dark' ? 'escuro' : salvo === 'light' ? 'claro' : 'sistema');
+      this.tema.set(salvo === 'dark' ? 'escuro' : salvo === 'system' ? 'sistema' : 'claro');
     }
 
     effect(() => {
       const t = this.tema();
       if (typeof document === 'undefined') return;
       const raiz = document.documentElement;
-      if (t === 'sistema') {
-        raiz.removeAttribute('data-theme');
-        localStorage.removeItem('ucam-theme');
-      } else {
-        const valor = t === 'escuro' ? 'dark' : 'light';
-        raiz.setAttribute('data-theme', valor);
-        localStorage.setItem('ucam-theme', valor);
-      }
+      const valor = t === 'escuro' ? 'dark' : t === 'sistema' ? 'system' : 'light';
+      raiz.setAttribute('data-theme', valor);
+      localStorage.setItem('ucam-theme', valor);
     });
   }
 
   protected proximo(): void {
-    const ordem: Tema[] = ['sistema', 'claro', 'escuro'];
+    const ordem: Tema[] = ['claro', 'escuro', 'sistema'];
     const i = ordem.indexOf(this.tema());
     this.tema.set(ordem[(i + 1) % ordem.length]);
   }
