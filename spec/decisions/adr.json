@@ -1253,7 +1253,8 @@
         "O contorno de campo passa a ser a linha mais forte da tela depois do texto. Selo neutro, chip e segmentado, que leem color.border.default, sobem junto; é o preço de não abrir um terceiro papel de borda.",
         "O botão primário do sistema de categoria pessoas (Vestibular) fica a ΔL 2,7 do numeral de sucesso. O que separa ação de \"deu certo\" ali é a forma — botão com rótulo, selo com ícone e palavra — e não a cor; vale conferir de novo se o sistema ganhar painel com indicador de sucesso ao lado de botão.",
         "A opção sugerida continua sem cor própria de IA (ADR-049): é a cor do sistema. Decidida a linha, quem pinta é o tom da decisão.",
-        "Não mexe em texto: a tinta secundária já está a 10,43:1 e o placeholder a 4,71:1."
+        "Não mexe em texto: a tinta secundária já está a 10,43:1 e o placeholder a 4,71:1.",
+        "No tema escuro, o fundo dos quatro tons de feedback sobe do degrau 900 para o 700 (800 no erro), em 07/10/2026: a 900 ele ficava entre 1,04:1 e 1,12:1 da superfície e o selo lia como texto com um ponto. Fica entre 1,46:1 e 1,79:1, com o rótulo a 7,5:1 ou mais. Alerta e nó de linha do tempo, que leem o mesmo token, sobem junto."
       ],
       "afeta": ["*", "text-field", "select", "button", "segmented", "badge", "data-table", "card"]
     },

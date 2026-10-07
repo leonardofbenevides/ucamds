@@ -155,7 +155,7 @@
       "$description": "No escuro o fundo é uma TINTA da matiz (degrau 900), não a cor cheia: com o tom 700 saturado, cinco badges viram uma fileira de blocos berrantes, cada um disputando atenção com o conteúdo. O foreground fica no 100, e o par se mantém acima de 12:1.",
       "success": {
         "background": {
-          "$value": "{green.900}"
+          "$value": "{green.700}"
         },
         "foreground": {
           "$value": "{green.100}"
@@ -170,7 +170,7 @@
       },
       "warning": {
         "background": {
-          "$value": "{amber.900}"
+          "$value": "{amber.700}"
         },
         "foreground": {
           "$value": "{amber.100}"
@@ -185,7 +185,7 @@
       },
       "danger": {
         "background": {
-          "$value": "{red.900}"
+          "$value": "{red.800}"
         },
         "foreground": {
           "$value": "{red.100}"
@@ -205,7 +205,7 @@
       },
       "info": {
         "background": {
-          "$value": "{blue.900}"
+          "$value": "{blue.700}"
         },
         "foreground": {
           "$value": "{blue.100}"
