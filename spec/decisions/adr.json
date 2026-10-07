@@ -1240,6 +1240,22 @@
         "description-list",
         "progress"
       ]
+    },
+    {
+      "id": "ADR-064",
+      "titulo": "Mais contraste: o contorno de controle chega a 3:1, o fio sobe um degrau e a opção sugerida se vê",
+      "status": "aceita",
+      "data": "2026-10-06",
+      "contexto": "A ADR-009 deixou o contorno de campo e de botão secundário em repouso visual (1,53:1 e 1,27:1 sobre o branco), com o hover e o anel de foco carregando os 3:1 da WCAG 1.4.11; o portão registrava os dois como desvio consciente. O fio de cartão e de linha de tabela estava a 1,40:1. Em 06/10/2026 o pedido foi \"vamos dar mais contraste em todas as telas? revise isso\", e no mesmo dia vieram quatro queixas do mesmo gênero: os selos da sugestão na Isenção \"estão todos iguais\", as opções indicadas por IA mal se viam, o botão do Vestibular estava \"muito escuro\" e a barra de passos tinha uma sombra \"sem querer\".",
+      "decisao": "color.border.default e action.secondary.border sobem para neutral.400 no claro (3,47:1) e para neutral.500 no escuro: campo, select e botão secundário passam a cumprir a 1.4.11 em repouso. color.border.subtle sobe para neutral.300 no claro. No seletor segmentado, a posição sugerida veste a família da ação do sistema enquanto a linha não foi decidida (fundo sutil, contorno e tinta). Na Isenção, o selo da sugestão deixa o contorno e passa a preenchido, cada um no seu tom. No sistema de categoria pessoas, a ação tem altura própria (L 44, croma inteiro), fora da janela do portão da subpaleta, que passa a relatar a quebra como desvio assumido. A barra de ações grudada perde a elevação e fica só com o fio.",
+      "consequencias": [
+        "Revoga a parte da ADR-009 que aceitava contorno de controle abaixo de 3:1: os dois desvios conscientes saem do relato do portão de tokens.",
+        "O contorno de campo passa a ser a linha mais forte da tela depois do texto. Selo neutro, chip e segmentado, que leem color.border.default, sobem junto; é o preço de não abrir um terceiro papel de borda.",
+        "O botão primário do sistema de categoria pessoas (Vestibular) fica a ΔL 2,7 do numeral de sucesso. O que separa ação de \"deu certo\" ali é a forma — botão com rótulo, selo com ícone e palavra — e não a cor; vale conferir de novo se o sistema ganhar painel com indicador de sucesso ao lado de botão.",
+        "A opção sugerida continua sem cor própria de IA (ADR-049): é a cor do sistema. Decidida a linha, quem pinta é o tom da decisão.",
+        "Não mexe em texto: a tinta secundária já está a 10,43:1 e o placeholder a 4,71:1."
+      ],
+      "afeta": ["*", "text-field", "select", "button", "segmented", "badge", "data-table", "card"]
     }
   ]
 }

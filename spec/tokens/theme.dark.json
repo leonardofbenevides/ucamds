@@ -98,7 +98,7 @@
           "$value": "{neutral.600}"
         },
         "border": {
-          "$value": "{neutral.700}"
+          "$value": "{neutral.500}"
         }
       },
       "danger": {
@@ -221,14 +221,14 @@
         "$description": "FIO translúcido, não valor sólido. Era {neutral.800} — exatamente o valor de surface.default —, e o resultado era um fio invisível: o painel de conteúdo do app-shell É surface.default, então todo cartão dentro dele ficava sem nenhuma aresta. Medido no navegador na grade de 58 módulos: cartão, borda e painel os três em #1B263A, 1,00:1 entre quaisquer dois. A grade inteira desaparecia no escuro.\n\nO papel a 6% dá 1,19:1 contra o painel — o MESMO degrau que o fio do tema claro (#E6ECF3 sobre branco, 1,19:1). Translúcido pelo motivo da ADR-013: o fio divide linha de tabela, borda de cartão e separador de grupo, e essas três superfícies não são a mesma cor. Valor sólido só acerta a superfície para a qual foi calculado; sobre o canvas mais escuro a mesma tinta sobe sozinha para 1,42:1, que é o que se quer."
       },
       "default": {
-        "$value": "{neutral.700}"
+        "$value": "{neutral.500}"
       },
       "strong": {
         "$value": "{neutral.500}"
       },
       "focus": {
         "$value": "{neutral.300}",
-        "$description": "Cinza que CLAREIA no escuro (ADR-048). {neutral.300} e não {neutral.400}: o 400 dá 4,37:1 sobre o card mas cai para 2,99:1 sobre o diálogo ({neutral.700}), abaixo dos 3:1 da 1.4.11. O 300 dá 9,89:1 no card e 6,77:1 no diálogo."
+        "$description": "Subiu para {neutral.500} em 06/10/2026 (\"vamos dar mais contraste em todas as telas?\"), junto com o claro. Cinza que CLAREIA no escuro (ADR-048). {neutral.300} e não {neutral.400}: o 400 dá 4,37:1 sobre o card mas cai para 2,99:1 sobre o diálogo ({neutral.700}), abaixo dos 3:1 da 1.4.11. O 300 dá 9,89:1 no card e 6,77:1 no diálogo."
       }
     },
     "chart": {

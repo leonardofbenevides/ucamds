@@ -9683,12 +9683,28 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * tamanho — a 11px ele fica abaixo de 1px — e a intensidade. A marca
  * acompanha o rótulo em vez de disputar com ele. */
 .ucam-segmented__sugerido {
-  inline-size: 0.6875rem;
-  block-size: 0.6875rem;
-  opacity: 0.7;
-  margin-inline-start: 0.1875rem;
+  inline-size: 0.8125rem;
+  block-size: 0.8125rem;
+  margin-inline-start: 0.25rem;
   flex: none;
   vertical-align: -0.125em;
+}
+
+/* A OPÇÃO SUGERIDA SE VÊ (06/10/2026: "deixe melhor destacadas as opções de
+ * decisão que são indicadas por IA"). O brilho de 11px a 70% ao lado do
+ * rótulo era a única marca, e numa tabela de nove linhas ninguém achava qual
+ * das três posições a máquina tinha indicado. Enquanto a decisão não foi
+ * tomada, a posição sugerida veste a família da ação do sistema: fundo sutil,
+ * contorno, rótulo e brilho na tinta. Continua sem cor própria de IA
+ * (ADR-049) — é a cor do sistema dizendo "comece por aqui".
+ *
+ * Só em repouso. Decidida a linha, quem fala é o tom da decisão: a posição
+ * pressionada pinta como sempre pintou, sugerida ou não, e o brilho fica. */
+.ucam-segmented button:has(> .ucam-segmented__sugerido):not([aria-pressed="true"]) {
+  background: var(--ucam-color-action-primary-subtle);
+  color: var(--ucam-color-action-primary-default);
+  font-weight: var(--ucam-typography-action-font-weight);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ucam-color-action-primary-default) 45%, transparent);
 }
 
 /* A NOTA DA IA (29/09/2026, ações de IA): o que a máquina escreveu ou
@@ -10400,8 +10416,13 @@ ${abaixo('controle-deitado')} {
    * continua por cima quando a barra de ações passa por ela ao rolar. */
   z-index: 4;
   background: var(--ucam-color-surface-default);
-  /* Mantém o fio de cima ao somar a elevação. */
-  box-shadow: inset 0 1px 0 var(--ucam-color-border-subtle), var(--ucam-elevation-sticky);
+  /* SÓ O FIO, sem elevação (06/10/2026: "tem esse box-shadow aleatório aqui
+   * sem querer", com a captura da prova do Vestibular). A barra somava
+   * elevation.sticky, e parada no fim da coluna — onde não cobre nada — a
+   * sombra aparecia solta embaixo dos botões. O fio de cima já diz que a
+   * barra é uma fileira à parte; a superfície opaca é o que a separa do
+   * conteúdo que passa por baixo quando ela gruda. */
+  box-shadow: inset 0 1px 0 var(--ucam-color-border-subtle);
   margin-inline: calc(var(--ucam-space-inset-lg) * -1);
   padding-inline: var(--ucam-space-inset-lg);
   padding-block-end: var(--ucam-space-inset-md);
@@ -10421,6 +10442,11 @@ ${abaixo('controle-deitado')} {
   justify-content: space-between;
   margin-inline: 0;
   padding-inline: 0;
+  /* Respiro igual em cima e embaixo, e mais largo que o da barra de
+   * formulário: os botões aqui são --lg, e com 16px em cima eles liam
+   * pendurados no fio ("melhore os espaçamentos", 06/10/2026). */
+  margin-block-start: var(--ucam-space-stack-lg);
+  padding-block: var(--ucam-space-inset-lg);
 }
 
 /* ------------------------------------------------------- lista de itens --- */

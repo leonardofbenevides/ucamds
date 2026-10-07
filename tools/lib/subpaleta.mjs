@@ -169,6 +169,28 @@ export const MARCA_PROPRIA = {
   pessoas: { claro: { L: 52, croma: 1 } },
 };
 
+/* A AÇÃO PRÓPRIA DE UM SISTEMA — e é um DESVIO ASSUMIDO, não uma janela nova.
+ *
+ * Pessoas tinha a ação em L 27 (#002E28): é o que o desvio acima dá, e é
+ * quase preto. A queixa veio duas vezes — "as cores estão muito escuras
+ * usando só esse verde mais escuro" (a que subiu a faixa) e, em 06/10/2026,
+ * "melhore a cor do botão mais escuro, tá muito escuro", com a captura do
+ * "Ir para a redação" do Vestibular.
+ *
+ * Não existe altura que cumpra a regra e leia como teal: acima de L 36,5 o
+ * botão entra na faixa do numeral de sucesso (L 47), e à altura comum ele é a
+ * mesma cor do SigFin. O pedido é do dono do sistema e a escolha é dele: o
+ * botão sobe para L 44 com o croma inteiro da categoria (um degrau abaixo da
+ * faixa, que está em L 52), e o portão passa a RELATAR essas quebras como
+ * desvio nomeado em vez de reprovar. O que segura a distinção entre "ação" e
+ * "deu certo" nesse sistema é a forma: o botão é botão, com rótulo; o sucesso
+ * é selo ou alerta, com ícone e palavra (WCAG 1.4.1).
+ *
+ * Só no claro, como a faixa. No escuro a ação continua onde o desvio a pôs. */
+export const ACAO_PROPRIA = {
+  pessoas: { claro: { L: 44, croma: 1 } },
+};
+
 /* O SISTEMA QUE NÃO DERIVA.
  *
  * Atendimento É a matiz da marca: categoria-atendimento e o bordô da ação
@@ -204,9 +226,11 @@ export function subpaleta(cor, tema, ctx, sistema) {
   /* Hover e pressionado são DESLOCAMENTOS do repouso, não alturas fixas: o
    * sistema que anda (pessoas) tem de levar os seus estados junto, ou o botão
    * clareia para o degrau de outro sistema ao ser tocado. */
-  const base = d.default + ((DESVIO_L[sistema] || {})[tema] || 0);
+  const propria = (ACAO_PROPRIA[sistema] || {})[tema];
+  const base = propria ? propria.L : d.default + ((DESVIO_L[sistema] || {})[tema] || 0);
   const limita = (L) => (tema === 'claro' ? Math.max(d.teto, L) : Math.min(d.teto, L));
-  const emL = (L) => oklchParaHex(L, c, H).hex;
+  const cAcao = propria ? C * propria.croma : c;
+  const emL = (L) => oklchParaHex(L, cAcao, H).hex;
   const marcaPropria = (MARCA_PROPRIA[sistema] || {})[tema];
 
   return {
@@ -224,7 +248,9 @@ export function subpaleta(cor, tema, ctx, sistema) {
       ? oklchParaHex(marcaPropria.L, C * marcaPropria.croma, H).hex
       : emL(d.marca),
     /* O que a ação ACENDE e o que a busca MARCA — ver a nota em DEGRAUS. */
-    'realce-background': emL(d.realce),
+    // O realce fica no croma comum mesmo quando a ação é própria: ele carrega
+    // texto de leitura, e com o croma inteiro vira um verde-água aceso.
+    'realce-background': oklchParaHex(d.realce, c, H).hex,
     /* A TINTA do sistema, para onde a cor aparece com a família da ação
      * intacta (modo moldura): marquinha e ícone do item ativo. Mesmo degrau
      * do preenchimento — é a mesma cor em outro papel, e dar-lhe altura

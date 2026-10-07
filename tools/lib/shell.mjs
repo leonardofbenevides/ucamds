@@ -4436,7 +4436,7 @@ ${FN_ANUNCIA}
       seloT.focus({ preventScroll: true });
       eco(seloT);
       setTimeout(function () {
-        seloT.className = 'ucam-badge ucam-badge--info';
+        seloT.className = 'ucam-badge ucam-badge--success';
         seloT.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-circleCheck"/></svg>Disponível';
         if (celulaT) celulaT.removeAttribute('aria-busy');
         var prontaT = 'Sugestão disponível' + (nomeT ? ' para ' + nomeT : '') + '.';

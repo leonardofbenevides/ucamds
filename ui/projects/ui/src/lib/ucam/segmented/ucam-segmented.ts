@@ -73,8 +73,15 @@ export interface UcamSegmentItem {
     </div>
   `,
   styles: `
-    /* A marca da opção sugerida, discreta como no Trilho A (29/09/2026). */
-    ucam-segmented .ucam-segmented__sugerido { opacity: 0.7; margin-inline-start: 0.1875rem; }
+    /* A opção sugerida se vê, como no Trilho A (06/10/2026): enquanto não há
+       decisão, veste a família da ação — fundo sutil, contorno e tinta. */
+    ucam-segmented .ucam-segmented__sugerido { margin-inline-start: 0.25rem; }
+    ucam-segmented button:has(.ucam-segmented__sugerido):not([aria-pressed='true']) {
+      background: var(--ucam-color-action-primary-subtle);
+      color: var(--ucam-color-action-primary-default);
+      font-weight: var(--ucam-typography-action-font-weight);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ucam-color-action-primary-default) 45%, transparent);
+    }
     ucam-segmented .ucam-segmented__rotulo {
       display: block;
       margin-block-end: var(--ucam-space-1);

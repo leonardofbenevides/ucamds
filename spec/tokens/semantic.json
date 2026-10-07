@@ -105,8 +105,8 @@
           "$value": "{neutral.200}"
         },
         "border": {
-          "$value": "{neutral.200}",
-          "$description": "Limite do botão secundário em repouso. Acompanha color.border.default — o botão de apoio e o campo aparecem lado a lado em toda barra de ferramentas e não podem ter contornos de forças diferentes. A sombra de 1px do botão compensa o contorno claro (ADR-009)."
+          "$value": "{neutral.400}",
+          "$description": "Subiu para {neutral.400} em 06/10/2026 (\"vamos dar mais contraste em todas as telas?\"), junto com color.border.default: 3,47:1, e o desvio da ADR-009 deixa de existir. Limite do botão secundário em repouso. Acompanha color.border.default — o botão de apoio e o campo aparecem lado a lado em toda barra de ferramentas e não podem ter contornos de forças diferentes. A sombra de 1px do botão compensa o contorno claro (ADR-009)."
         }
       },
       "danger": {
@@ -247,12 +247,12 @@
     },
     "border": {
       "subtle": {
-        "$value": "{neutral.250}",
-        "$description": "FIO: divisor de linha de tabela, borda de card, separador de grupo, filete de faixa. Subiu de neutral.150 para neutral.200 em 14/09/2026 (ADR-034): com o conteúdo assentado no chão cinza, o 150 dava 1,09:1 contra o chão e o cartão branco perdia o limite. Quem contorna CONTROLE continua sendo border.default. Subiu de neutral.200 para neutral.250 em 29/09/2026 (\"telas muito cinzas\"): o limite do cartão sobre o branco lia lavado; o 250 fica meio degrau abaixo do 300 de controle, para cartão e campo não se confundirem."
+        "$value": "{neutral.300}",
+        "$description": "Subiu para {neutral.300} em 06/10/2026 (\"vamos dar mais contraste em todas as telas?\"): o fio de cartão e de linha de tabela estava a 1,40:1 do branco e a tela lia lavada. FIO: divisor de linha de tabela, borda de card, separador de grupo, filete de faixa. Subiu de neutral.150 para neutral.200 em 14/09/2026 (ADR-034): com o conteúdo assentado no chão cinza, o 150 dava 1,09:1 contra o chão e o cartão branco perdia o limite. Quem contorna CONTROLE continua sendo border.default. Subiu de neutral.200 para neutral.250 em 29/09/2026 (\"telas muito cinzas\"): o limite do cartão sobre o branco lia lavado; o 250 fica meio degrau abaixo do 300 de controle, para cartão e campo não se confundirem."
       },
       "default": {
-        "$value": "{neutral.300}",
-        "$description": "CONTORNO de controle em repouso: campo, botão secundário, gatilho de select. {neutral.300} desde 14/09/2026 (ADR-034), um degrau acima do fio, que subiu para {neutral.200} no mesmo dia: fio divide, contorno delimita, e os dois não podem empatar. Até ali o contorno era o 200, e a ADR-009 recusava o 300 por ser \"a linha mais forte da interface\" numa tela de formulário. O argumento foi pesado de novo com o pedido de mais contraste e com o chão cinza: sobre neutral.100 o 200 dava 1,17:1 e o campo branco perdia a borda, enquanto o 300 dá 1,41:1 no chão e 1,53:1 no branco. Continua DESVIO CONSCIENTE da 1.4.11: a identificação em 3:1 fica com hover, foco e a sombra de 1px do controle."
+        "$value": "{neutral.400}",
+        "$description": "Subiu para {neutral.400} em 06/10/2026 (\"vamos dar mais contraste em todas as telas?\"). A 3,47:1 o contorno de campo e de botão secundário passa a cumprir a WCAG 1.4.11 em repouso, e o desvio consciente da ADR-009 deixa de existir para ele. CONTORNO de controle em repouso: campo, botão secundário, gatilho de select. {neutral.300} desde 14/09/2026 (ADR-034), um degrau acima do fio, que subiu para {neutral.200} no mesmo dia: fio divide, contorno delimita, e os dois não podem empatar. Até ali o contorno era o 200, e a ADR-009 recusava o 300 por ser \"a linha mais forte da interface\" numa tela de formulário. O argumento foi pesado de novo com o pedido de mais contraste e com o chão cinza: sobre neutral.100 o 200 dava 1,17:1 e o campo branco perdia a borda, enquanto o 300 dá 1,41:1 no chão e 1,53:1 no branco. Continua DESVIO CONSCIENTE da 1.4.11: a identificação em 3:1 fica com hover, foco e a sombra de 1px do controle."
       },
       "strong": {
         "$value": "{neutral.500}"

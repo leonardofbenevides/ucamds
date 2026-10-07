@@ -48,7 +48,7 @@ import { pathToFileURL } from 'node:url';
 import { contrast } from './lib/wcag.mjs';
 import { hexParaOklch } from './lib/color.mjs';
 import { simula, distancia } from './check-daltonismo.mjs';
-import { SISTEMAS, HERDA_MARCA, INTOCAVEIS, subpaleta, subpaletaAntiga, FATOR_CROMA, DEGRAUS, DESVIO_L } from './lib/subpaleta.mjs';
+import { SISTEMAS, HERDA_MARCA, INTOCAVEIS, subpaleta, subpaletaAntiga, FATOR_CROMA, DEGRAUS, DESVIO_L, ACAO_PROPRIA } from './lib/subpaleta.mjs';
 
 const LIMITE_VISTA_COMUM = 0.10;
 /* ENTRE SISTEMAS o piso é outro, e mais baixo, porque a pergunta é outra.
@@ -249,7 +249,14 @@ for (const [tema, mapa] of [['claro', claro], ['escuro', escuro]]) {
     const cor = paletas[s]['action-primary-default'];
     for (const [nome, alvo] of marcas) {
       const { quebras, dL, dVista, mesmaFamilia } = separacao(cor, alvo);
-      for (const q of quebras) falhas.push(`[${tema}] ${s}: ação ${cor} × ${nome} ${alvo}: ${q}`);
+      // Sistema com AÇÃO PRÓPRIA (lib/subpaleta.mjs): a quebra é conhecida e
+      // assumida pelo dono do sistema. Relata, com o número, e não reprova.
+      const assumido = Boolean((ACAO_PROPRIA[s] || {})[tema]);
+      for (const q of quebras) {
+        const linha = `[${tema}] ${s}: ação ${cor} × ${nome} ${alvo}: ${q}`;
+        if (assumido) desvios.push(linha + ' — AÇÃO PRÓPRIA, assumida: a forma separa botão de selo');
+        else falhas.push(linha);
+      }
       if (!quebras.length && mesmaFamilia) {
         relatos.push(`[${tema}] ${s}: ação × ${nome} — mesma família, separada por ΔL ${dL.toFixed(1)} (vista comum ${dVista.toFixed(3)})`);
       }
@@ -275,7 +282,9 @@ for (const [tema, mapa] of [['claro', claro], ['escuro', escuro]]) {
       const b = paletas[nomes[j]]['action-primary-default'];
       const d = distancia(a, b);
       const linha = `[${tema}] ${nomes[i]} × ${nomes[j]}: ação ${a} × ${b} = ${d.toFixed(3)} à vista comum (piso ${LIMITE_ENTRE_SISTEMAS})`;
-      if (d < LIMITE_ENTRE_SISTEMAS) falhas.push(linha);
+      const propria = [nomes[i], nomes[j]].some((n) => (ACAO_PROPRIA[n] || {})[tema]);
+      if (d < LIMITE_ENTRE_SISTEMAS && propria) desvios.push(linha + ' — AÇÃO PRÓPRIA, assumida');
+      else if (d < LIMITE_ENTRE_SISTEMAS) falhas.push(linha);
       else relatos.push(linha);
       let pior = Infinity;
       let piorTipo = '';

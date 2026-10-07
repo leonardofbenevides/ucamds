@@ -169,7 +169,7 @@
   --ucam-color-action-secondary-default: #FFFFFF;
   --ucam-color-action-secondary-hover: #F2F6F9;
   --ucam-color-action-secondary-active: #DEE5EE;
-  --ucam-color-action-secondary-border: #DEE5EE;
+  --ucam-color-action-secondary-border: #7A8BA4;
   --ucam-color-action-danger-default: #B44334;
   --ucam-color-action-danger-hover: #9F2F23;
   --ucam-color-action-danger-active: #7F2A1F;
@@ -202,8 +202,8 @@
   --ucam-color-feedback-info-foreground: #0E4174;
   --ucam-color-feedback-info-border: #1A6FC4;
   --ucam-color-feedback-info-graphic: #1A6FC4;
-  --ucam-color-border-subtle: #D2DBE7;
-  --ucam-color-border-default: #C6D2E0;
+  --ucam-color-border-subtle: #C6D2E0;
+  --ucam-color-border-default: #7A8BA4;
   --ucam-color-border-strong: #62758F;
   --ucam-color-border-focus: #62758F;
   --ucam-color-border-on-brand: #F1A1A7;
@@ -346,7 +346,7 @@
     --ucam-color-action-secondary-default: #1B263A;
     --ucam-color-action-secondary-hover: #314157;
     --ucam-color-action-secondary-active: #485870;
-    --ucam-color-action-secondary-border: #314157;
+    --ucam-color-action-secondary-border: #62758F;
     --ucam-color-action-danger-default: #FFA191;
     --ucam-color-action-danger-hover: #D86F5F;
     --ucam-color-action-danger-active: #DF5240;
@@ -375,7 +375,7 @@
     --ucam-color-feedback-info-foreground: #DDEBFA;
     --ucam-color-feedback-info-border: #1A6FC4;
     --ucam-color-border-subtle: rgb(248 250 252 / 0.06);
-    --ucam-color-border-default: #314157;
+    --ucam-color-border-default: #62758F;
     --ucam-color-border-strong: #62758F;
     --ucam-color-border-focus: #C6D2E0;
     --ucam-color-chart-series-1: #2275CB;
@@ -422,7 +422,7 @@
   --ucam-color-action-secondary-default: #1B263A;
   --ucam-color-action-secondary-hover: #314157;
   --ucam-color-action-secondary-active: #485870;
-  --ucam-color-action-secondary-border: #314157;
+  --ucam-color-action-secondary-border: #62758F;
   --ucam-color-action-danger-default: #FFA191;
   --ucam-color-action-danger-hover: #D86F5F;
   --ucam-color-action-danger-active: #DF5240;
@@ -451,7 +451,7 @@
   --ucam-color-feedback-info-foreground: #DDEBFA;
   --ucam-color-feedback-info-border: #1A6FC4;
   --ucam-color-border-subtle: rgb(248 250 252 / 0.06);
-  --ucam-color-border-default: #314157;
+  --ucam-color-border-default: #62758F;
   --ucam-color-border-strong: #62758F;
   --ucam-color-border-focus: #C6D2E0;
   --ucam-color-chart-series-1: #2275CB;

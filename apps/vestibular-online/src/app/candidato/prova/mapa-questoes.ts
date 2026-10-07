@@ -32,38 +32,32 @@ interface GrupoMapa {
   imports: [UcamIcon, UcamProgress],
   template: `
     <nav class="ucam-stack" aria-label="Questões da prova">
+      <!-- O CARTÃO ABRE DIZENDO O QUE É (06/10/2026: "esse card tá ruim,
+           melhore"). Ele começava por uma barra sem nome, com a contagem
+           embaixo e um botão largo antes das questões: três peças antes do
+           assunto. Agora: título e contagem numa linha, a barra como régua
+           dessa linha, as questões, a legenda, e a ação no pé — onde o olho
+           chega depois de ler o mapa. -->
       <div class="ucam-stack ucam-stack--sm">
+        <header data-cabeca>
+          <h2 data-titulo>Questões</h2>
+          <span data-contagem>{{ store.respondidas() }} de {{ store.totalObjetivas() }} respondidas</span>
+        </header>
         <ucam-progress
           label="Questões respondidas"
+          size="sm"
           [value]="store.respondidas()"
           [max]="store.totalObjetivas()"
           [tone]="store.respondidas() === store.totalObjetivas() ? 'success' : 'marca'"
           [valueText]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
-          [legendStart]="store.respondidas() + ' de ' + store.totalObjetivas() + ' respondidas'"
         />
-        <!-- Botão nativo com as classes do DS, como as bolhas: o host do
-             <ucam-button> é inline e não estica na coluna; o estilo deste
-             componente não alcança o botão lá dentro. -->
-        @if (store.respondidas() < store.totalObjetivas()) {
-          <div data-proxima-em-branco data-atalho>
-            <button type="button" class="ucam-btn ucam-btn--secondary ucam-btn--sm" (click)="irParaEmBranco()">
-              Próxima em branco <ucam-icon name="arrowRight" size="sm" aria-hidden="true" />
-            </button>
-          </div>
-        } @else if (store.marcadas() > 0) {
-          <div data-proxima-marcada data-atalho>
-            <button type="button" class="ucam-btn ucam-btn--secondary ucam-btn--sm" (click)="irParaMarcada()">
-              Próxima marcada <ucam-icon name="arrowRight" size="sm" aria-hidden="true" />
-            </button>
-          </div>
-        }
       </div>
       @for (g of grupos(); track g.slug) {
         <section class="ucam-stack ucam-stack--sm" [attr.aria-labelledby]="'mapa-' + g.slug">
-          <h2 data-grupo [id]="'mapa-' + g.slug">
+          <h3 data-grupo [id]="'mapa-' + g.slug">
             <span>{{ g.rotulo }}</span>
             <span data-contagem>{{ g.respondidas }} de {{ g.itens.length }}</span>
-          </h2>
+          </h3>
           <ol data-mapa>
             @for (i of g.itens; track i.n) {
               <li>
@@ -106,6 +100,22 @@ interface GrupoMapa {
         <span class="ucam-cluster"><span data-amostra="em-branco"></span>em branco</span>
         <span class="ucam-cluster"><span data-amostra="em-branco"><span data-marca></span></span>para revisar</span>
       </p>
+      <!-- Botão nativo com as classes do DS, como as bolhas: o host do
+           <ucam-button> é inline e não estica na coluna; o estilo deste
+           componente não alcança o botão lá dentro. -->
+      @if (store.respondidas() < store.totalObjetivas()) {
+        <div data-proxima-em-branco data-atalho>
+          <button type="button" class="ucam-btn ucam-btn--secondary" (click)="irParaEmBranco()">
+            Próxima em branco <ucam-icon name="arrowRight" size="sm" aria-hidden="true" />
+          </button>
+        </div>
+      } @else if (store.marcadas() > 0) {
+        <div data-proxima-marcada data-atalho>
+          <button type="button" class="ucam-btn ucam-btn--secondary" (click)="irParaMarcada()">
+            Próxima marcada <ucam-icon name="arrowRight" size="sm" aria-hidden="true" />
+          </button>
+        </div>
+      }
     </nav>
   `,
   styles: `
@@ -113,6 +123,21 @@ interface GrupoMapa {
        ação do cartão, não como um link solto. */
     [data-atalho] .ucam-btn {
       inline-size: 100%;
+    }
+    /* Título e contagem na mesma linha de base; a barra, logo abaixo, é a
+       régua dessa linha. */
+    [data-cabeca] {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--ucam-space-inline-sm);
+    }
+    [data-titulo] {
+      margin: 0;
+      font-size: var(--ucam-typography-heading-sm-font-size, var(--ucam-typography-label-font-size));
+      font-weight: var(--ucam-typography-action-font-weight);
+      line-height: var(--ucam-typography-label-line-height);
+      color: var(--ucam-color-text-primary);
     }
     /* O cabeçalho do grupo é leve de propósito: numa coluna de 18rem, um
        título de seção com filete pesava mais que as bolhas que ele agrupa.
@@ -186,10 +211,14 @@ interface GrupoMapa {
     .ucam-btn[aria-current='page'] {
       font-weight: var(--ucam-typography-action-font-weight);
     }
+    /* A atual em branco veste a tinta da ação, e não o preto do texto: é a
+       mesma cor da alternativa que a pessoa está prestes a marcar, e sobre o
+       fundo sutil ela lê como "você está aqui" sem parecer respondida. */
     .ucam-btn[data-estado='em-branco'][aria-current='page'] {
-      color: var(--ucam-color-text-primary);
-      border-color: var(--ucam-color-text-primary);
-      box-shadow: inset 0 0 0 1px var(--ucam-color-text-primary);
+      color: var(--ucam-color-action-primary-default);
+      border-color: var(--ucam-color-action-primary-default);
+      background: var(--ucam-color-action-primary-subtle);
+      box-shadow: inset 0 0 0 1px var(--ucam-color-action-primary-default);
     }
     .ucam-btn[data-estado='respondida'][aria-current='page'] {
       box-shadow: inset 0 0 0 2px var(--ucam-color-text-on-action);
@@ -209,10 +238,14 @@ interface GrupoMapa {
        colunas, não em fileira: na coluna de 18rem as três não cabem numa
        linha, e a quebra do cluster deixava a terceira solta. */
     [data-legenda] {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
-      gap: var(--ucam-space-inline-xs) var(--ucam-space-inline-sm);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--ucam-space-inline-xs) var(--ucam-space-inline-md);
       margin: 0;
+      /* Um fio separa o mapa da sua explicação: sem ele a legenda lia como
+         mais uma fileira de bolhas. */
+      padding-block-start: var(--ucam-space-stack-sm);
+      border-block-start: 1px solid var(--ucam-color-border-subtle);
       font-size: var(--ucam-typography-caption-font-size);
       line-height: var(--ucam-typography-caption-line-height);
       color: var(--ucam-color-text-secondary);
