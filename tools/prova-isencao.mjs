@@ -93,15 +93,16 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
 {
   const p = await abre('fila');
   const r = await p.js(`${AJUDA} const vis = () => qa('tr[data-situacao]').filter((t) => t.offsetParent);
-    const passos = qa('td[data-proximo] a').map((a) => a.textContent.trim() + '→' + a.getAttribute('href').split('/').pop().replace(/^isencao-/, '').replace(/.html$/, ''));
+    const passos = qa('[data-proximo] a').map((a) => a.textContent.trim() + '→' + a.getAttribute('href').split('/').pop().replace(/^isencao-/, '').replace(/.html$/, ''));
     const cont = {}; passos.forEach((x) => (cont[x] = (cont[x] || 0) + 1));
     const todas = vis().length; q('.ucam-segmented [data-valor="analise"]').click(); await w(250); const soAnalise = vis().map((t) => t.getAttribute('data-situacao'));
     q('.ucam-segmented [data-valor=""]').click(); await w(200); q('#is-aba-concluidas').click(); await w(300); const concl = vis().map((t) => t.getAttribute('data-situacao'));
-    return { cont, todas, soAnalise, concl };`);
+    return { cont, todas, soAnalise, concl, colunas: q('table thead tr').children.length };`);
   prova('fila: cada linha diz o próximo passo e leva à tela certa', r.cont['Analisar→analise'] === 4 && r.cont['Cobrar documentos→sem-documentos'] === 3 && r.cont['Ver o pedido→analise'] === 1 && r.cont['Ver o parecer→consulta'] === 5 && Object.keys(r.cont).length === 4, r.cont);
   prova('fila: abre com as 8 em análise', r.todas === 8, String(r.todas));
   prova('fila: o filtro de situação recorta', r.soAnalise.length === 4 && r.soAnalise.every((s) => s === 'analise'), r.soAnalise);
   prova('fila: a aba Concluídas mostra as 5', r.concl.length === 5 && r.concl.every((s) => s === 'concluida'), r.concl);
+  prova('fila: o passo mora na célula da situação, sem coluna própria', r.colunas === 5, String(r.colunas));
   prova('fila: nenhum erro de script', p.erros.length === 0, p.erros.join(' | '));
   await p.fecha();
 }
