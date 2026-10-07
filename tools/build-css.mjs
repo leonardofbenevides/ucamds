@@ -3804,6 +3804,20 @@ ${SISTEMAS.map((s, i) => '.ucam-avatar[data-cor="' + (i + 1) + '"] { --ucam-avat
 .ucam-card--raised  { box-shadow: var(--ucam-elevation-raised); }
 .ucam-card--elevado { box-shadow: var(--ucam-elevation-sticky); }
 
+/* TINTA (06/10/2026): o cartão PREENCHIDO na cor do sistema, para o bloco que
+ * diz de quem a tela é — o aluno, no acompanhamento da isenção. Um por tela:
+ * é o que abre a página, e dois cartões tintos disputam o mesmo lugar. A
+ * tinta é a da CATEGORIA do sistema (--ucam-sistema-cor, como o ladrilho da
+ * ADR-062; a da ação lia cinza) a 12% sobre a superfície, com o filete a
+ * 32%: lê como cor sem tirar contraste do texto, que continua em text.primary. Não é o
+ * fundo de indicador que a ADR-034 tirou: aquele pintava o número de um
+ * julgamento; este identifica. */
+.ucam-card--tinta {
+  --ucam-card-tinta: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
+  background: color-mix(in srgb, var(--ucam-card-tinta) 12%, var(--ucam-color-surface-default));
+  border-color: color-mix(in srgb, var(--ucam-card-tinta) 32%, transparent);
+}
+
 /* CARTÃO ACIONÁVEL — o cartão que leva a algum lugar E carrega um controle
  * próprio. É a grade de módulos com a estrela de acessos frequentes.
  *

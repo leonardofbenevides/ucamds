@@ -4388,6 +4388,16 @@ ${FN_ANUNCIA}
         td.removeAttribute('data-aguarda-documento');
       });
       trocaDicas('enviado');
+      // As ETAPAS do cartão do aluno andam: Documentos fecha, a Análise vira a atual.
+      Array.prototype.forEach.call(document.querySelectorAll('[data-etapa-enviado]'), function (li) {
+        var est = li.getAttribute('data-etapa-enviado');
+        li.className = 'ucam-stepper__passo ucam-stepper__passo--' + est;
+        if (est === 'current') li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current');
+        var marc = li.querySelector('.ucam-stepper__marcador');
+        if (marc && est === 'done') marc.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>';
+        var sr = li.querySelector('.ucam-sr-only');
+        if (sr) sr.textContent = sr.textContent.replace(/, (atual|pendente)$/, est === 'done' ? ', concluída' : ', atual');
+      });
       // A barra de andamento do candidato acompanha: o que aguardava
       // documento volta a "em análise".
       Array.prototype.forEach.call(document.querySelectorAll('[data-valor-enviado]'), function (seg) {

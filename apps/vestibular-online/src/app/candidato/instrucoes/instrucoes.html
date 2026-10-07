@@ -13,21 +13,9 @@
       </div>
     </div>
 
-    <section class="ucam-stack" aria-labelledby="t-sua-prova">
-      <h2 class="ucam-section__title" id="t-sua-prova">Sua prova</h2>
-      <div class="ucam-stats">
-        <ucam-stat label="Tempo de prova" [value]="tempoTexto()" meta="Começa a contar ao iniciar" icon="clock" [state]="carregando() ? 'loading' : 'idle'" />
-        <ucam-stat label="Questões objetivas" [value]="totalQuestoes()" [meta]="cadernosTexto()" icon="listChecks" [state]="carregando() ? 'loading' : 'idle'" />
-        <ucam-stat label="Redação" [value]="temRedacao() ? 'Sim' : 'Não'" [meta]="temRedacao() ? 'Mínimo de ' + redacaoMin + ' caracteres' : 'Esta prova não tem redação'" icon="pencil" [state]="carregando() ? 'loading' : 'idle'" />
-      </div>
-    </section>
-
-    <section class="ucam-stack" aria-labelledby="t-como-funciona">
-      <h2 class="ucam-section__title" id="t-como-funciona">Como a prova funciona</h2>
-      <app-instrucoes-lista [cartoes]="true" />
-    </section>
-
-    <ucam-card as="section" iconeTom="pessoas" titulo="Pronto para começar?" apoio="Confirme que leu as orientações." icone="clipboardCheck">
+    <!-- O cartão de iniciar abre a tela (06/10/2026): quem volta a esta página já
+         leu as orientações, e o botão ficava depois de duas seções de leitura. -->
+    <ucam-card as="section" iconeTom="pessoas" titulo="Pronto para começar?" apoio="As orientações estão logo abaixo. Confirme que leu e comece." icone="clipboardCheck">
       <div class="ucam-stack">
         <ucam-checkbox
           label="Li as orientações e estou pronto para começar"
@@ -46,5 +34,19 @@
         </div>
       </div>
     </ucam-card>
+
+    <section class="ucam-stack" aria-labelledby="t-sua-prova">
+      <h2 class="ucam-section__title" id="t-sua-prova">Sua prova</h2>
+      <div class="ucam-stats">
+        <ucam-stat label="Tempo de prova" [value]="tempoTexto()" meta="Começa a contar ao iniciar" icon="clock" [state]="carregando() ? 'loading' : 'idle'" />
+        <ucam-stat label="Questões objetivas" [value]="totalQuestoes()" [meta]="cadernosTexto()" icon="listChecks" [state]="carregando() ? 'loading' : 'idle'" />
+        <ucam-stat label="Redação" [value]="temRedacao() ? 'Sim' : 'Não'" [meta]="temRedacao() ? 'Mínimo de ' + redacaoMin + ' caracteres' : 'Esta prova não tem redação'" icon="pencil" [state]="carregando() ? 'loading' : 'idle'" />
+      </div>
+    </section>
+
+    <section class="ucam-stack" aria-labelledby="t-como-funciona">
+      <h2 class="ucam-section__title" id="t-como-funciona">Como a prova funciona</h2>
+      <app-instrucoes-lista [cartoes]="true" />
+    </section>
   </div>
 </app-moldura>

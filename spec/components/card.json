@@ -95,7 +95,7 @@
       "nome": "elevation",
       "tipo": "'flat' | 'raised' | 'sticky'",
       "default": "'flat'",
-      "descricao": "Altura da superfície. flat é o repouso desde a ADR-019: o cartão está NO plano do conteúdo e quem o separa do painel é o fio de 1px, não a sombra. raised existe para o cartão que precisa se descolar de um fundo sem fio — sobre uma superfície tinta, dentro de outro cartão. sticky é para o cartão que acompanha a rolagem ou paira sobre outro conteúdo.",
+      "descricao": "Altura da superfície. flat é o repouso desde a ADR-019: o cartão está NO plano do conteúdo e quem o separa do painel é o fio de 1px, não a sombra. raised existe para o cartão que precisa se descolar de um fundo sem fio — sobre uma superfície tinta, dentro de outro cartão. sticky é para o cartão que acompanha a rolagem ou paira sobre outro conteúdo. À parte da elevação, .ucam-card--tinta (06/10/2026) preenche o cartão na tinta do sistema, na cor da categoria a 12%, com o filete a 32%: é o cartão que diz de quem a tela é — o aluno no acompanhamento da isenção. Um por tela.",
       "valores": {
         "flat": {
           "uso": "Todo cartão em fluxo normal. Numa tela com oito cartões, oito sombras iguais não hierarquizam nada — só somam ruído sobre o painel, que já flutua.",
