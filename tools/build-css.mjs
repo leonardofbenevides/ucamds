@@ -11038,6 +11038,10 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
  * e aqui o fim da frase é a legenda da marca — cortada, a marca fica sem
  * explicação. */
 .ucam-table-faixa .ucam-card__apoio { white-space: normal; overflow: visible; text-overflow: clip; }
+/* E SEM O CORTE de duas linhas do cabeçalho de cartão (07/10/2026): com o
+ * overflow à mostra o corte só desenhava as reticências no meio da frase —
+ * "2 para… você revisar", a 390px — e o resto seguia embaixo. */
+.ucam-table-faixa .ucam-card__cabecalho-texto > .ucam-card__apoio { display: block; -webkit-line-clamp: unset; line-clamp: unset; }
 .ucam-table-faixa .ucam-card__apoio .ic { inline-size: 0.8125rem; block-size: 0.8125rem; vertical-align: -0.125em; }
 
 /* FIO ENTRE PARES (28/09/2026). Lista longa de pares deitados — as
