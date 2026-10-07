@@ -30,13 +30,15 @@
 //   [data-prova-resumo]              o corpo do diálogo de entrega
 //   [data-prova-resultado="…"]       números da prova feita, na tela de resultado
 //   [data-prova-zera]                recomeça a prova (o link de volta ao início)
+//   [data-prova-consulta]            "Ver se já saiu": aprovado segue o link; reprovado
+//                                    troca [data-prova-espera] por [data-prova-reprovado]
 
 function prova() {
   var CHAVE = 'ucam-vestibular-prova-v1';
   var doc = document;
   var q = function (sel, raiz) { return (raiz || doc).querySelector(sel); };
   var qa = function (sel, raiz) { return Array.prototype.slice.call((raiz || doc).querySelectorAll(sel)); };
-  if (!q('[data-prova-questao], [data-prova-bolha], [data-prova-texto], [data-prova-resultado], [data-prova-zera]')) return;
+  if (!q('[data-prova-questao], [data-prova-bolha], [data-prova-texto], [data-prova-resultado], [data-prova-zera], [data-prova-consulta]')) return;
 
   // A prova de mentira: a ordem das questões e o nome de cada caderno. É a
   // mesma dos candidatos de teste do app (tools/mock-backend.mjs).
@@ -311,8 +313,28 @@ function prova() {
   });
 
   doc.addEventListener('click', function (ev) {
-    var alvo = ev.target.closest && ev.target.closest('[data-prova-ir], [data-prova-revisar], [data-prova-bolha], [data-prova-zera]');
+    var alvo = ev.target.closest && ev.target.closest('[data-prova-ir], [data-prova-revisar], [data-prova-bolha], [data-prova-zera], [data-prova-consulta]');
     if (!alvo) return;
+
+    // A consulta à banca. A regra é a do backend de teste (e é proposta, não a
+    // da universidade): passa quem acerta pelo menos a metade da objetiva.
+    // Aprovado, o link segue para a página de sucesso; reprovado, a própria
+    // tela troca a espera pelo desfecho — no app as duas são a mesma rota.
+    if (alvo.hasAttribute('data-prova-consulta')) {
+      var certas = ORDEM.filter(function (id) { return estado.respostas[id] === GABARITO[id]; }).length;
+      if (certas * 2 >= ORDEM.length) return;
+      ev.preventDefault();
+      var espera = q('[data-prova-espera]'), rep = q('[data-prova-reprovado]');
+      if (espera) espera.hidden = true;
+      if (rep) {
+        rep.hidden = false;
+        var t = q('[tabindex="-1"]', rep);
+        if (t) t.focus();
+      }
+      qa('[data-prova-titulo-tela]').forEach(function (el) { el.textContent = 'Resultado'; });
+      anunciar('Resultado: nota mínima não atingida. Ainda há tentativa disponível.');
+      return;
+    }
     var naQuestao = !!q('[data-prova-questao]');
 
     if (alvo.hasAttribute('data-prova-zera')) {
