@@ -100,7 +100,7 @@ test('adaptador: destino inexistente é falha; nome do kit fora do mapa é falha
   }));
   const scss = join(raiz, '_tokens.scss');
   writeFileSync(scss, '$color-brand: #b4365b;\n$color-x: #000;\n$space-4: 4px;\n');
-  const r = construir({ raiz, kitScss: scss });
+  const r = construir({ raiz, kits: { kit: scss } });
   assert.ok(r.falhas.some((f) => /\$color-x.*color\.nao\.existe/.test(f)), r.falhas.join('\n'));
   assert.ok(r.falhas.some((f) => /\$space-4.*sem destino no adaptador kit/.test(f)), r.falhas.join('\n'));
 });
@@ -112,7 +112,7 @@ test('adaptador: sem o scss no disco, a cobertura vira aviso', () => {
     id: 'kit', name: 'kit', alvo: { repositorio: 'x', arquivo: '_tokens.scss' },
     mapa: { '$color-brand': { destino: 'color.action.primary.default' } },
   }));
-  const r = construir({ raiz, kitScss: join(raiz, 'nao-existe.scss') });
+  const r = construir({ raiz, kits: { kit: join(raiz, 'nao-existe.scss') } });
   assert.deepEqual(r.falhas, []);
   assert.ok(r.desvios.some((d) => /kit.*não está no disco/.test(d)));
 });
@@ -120,4 +120,40 @@ test('adaptador: sem o scss no disco, a cobertura vira aviso', () => {
 test('o adaptador real do CENPRE cobre o _tokens.scss do kit, se ele estiver no disco', () => {
   const r = construir({ raiz: ROOT });
   assert.deepEqual(r.falhas, []);
+});
+
+test('submarca com id fora de [a-z0-9-] é falha, não silêncio', () => {
+  const marca = { color: { action: { primary: { default: { $value: '{magenta.800}' } } } } };
+  const r = construir({ raiz: repoMinimo({ marcas: { Campos_UCAM: marca } }) });
+  assert.ok(r.falhas.some((f) => /id de submarca inválido.*Campos_UCAM/.test(f)), r.falhas.join('\n'));
+  assert.deepEqual(r.marcas, []);
+});
+
+test('a spec real mede os pares decisivos na base e no CENPRE, sem par pulado', () => {
+  const r = construir({ raiz: ROOT });
+  assert.ok(r.relatos.some((l) => /\[base\] preenchimento em repouso/.test(l)));
+  assert.ok(r.relatos.some((l) => /\[cenpre\] preenchimento em repouso/.test(l)));
+  assert.ok(!r.desvios.some((d) => /não medido/.test(d)), r.desvios.join('\n'));
+});
+
+test('par cujo token sumiu vira desvio nomeado, não silêncio', () => {
+  const s = structuredClone(SEMANTICA);
+  delete s.color.text.link;
+  delete s.color.action.danger;
+  const r = construir({ raiz: repoMinimo({ semantic: s }) });
+  assert.ok(r.desvios.some((d) => /par não medido.*link sobre a página.*color-text-link/.test(d)), r.desvios.join('\n'));
+  assert.ok(r.desvios.some((d) => /marca × destrutivo não medido/.test(d)), r.desvios.join('\n'));
+});
+
+test('adaptador: cada adaptador confere o próprio kit, e a linha de sucesso só sai sem falta', () => {
+  const raiz = repoMinimo();
+  mkdirSync(join(raiz, 'sites/spec/adapters'), { recursive: true });
+  writeFileSync(join(raiz, 'sites/spec/adapters/a.json'), JSON.stringify({ id: 'a', name: 'a', alvo: { repositorio: 'x', arquivo: 'a.scss' }, mapa: { '$a': { destino: 'color.text.primary' } } }));
+  writeFileSync(join(raiz, 'sites/spec/adapters/b.json'), JSON.stringify({ id: 'b', name: 'b', alvo: { repositorio: 'y', arquivo: 'b.scss' }, mapa: { '$b': { destino: 'color.text.primary' } } }));
+  writeFileSync(join(raiz, 'a.scss'), '$a: 1;\n');
+  writeFileSync(join(raiz, 'b.scss'), '$b: 1;\n$b2: 2;\n');
+  const r = construir({ raiz, kits: { a: join(raiz, 'a.scss'), b: join(raiz, 'b.scss') } });
+  assert.deepEqual(r.falhas, ['$b2 do kit sem destino no adaptador b']);
+  assert.ok(r.relatos.some((l) => /✓ adaptador a: 1 nomes do kit, todos com destino/.test(l)), r.relatos.join('\n'));
+  assert.ok(!r.relatos.some((l) => /adaptador b.*todos com destino/.test(l)), r.relatos.join('\n'));
 });

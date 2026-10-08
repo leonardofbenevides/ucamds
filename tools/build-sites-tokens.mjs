@@ -72,9 +72,15 @@ const banner = (fmt) => `/* @ucam/site-css — gerado de sites/spec/tokens/ por 
  * Formato: ${fmt}
  */\n`;
 
-const KIT_PADRAO = 'C:/Users/Leonardo/Documents/CENPRE/cenpre-ui-angular-scss/projects/cenpre-ui-kit/styles/_tokens.scss';
+/* Onde está o scss de cada kit, por id de adaptador. Cada kit mora em OUTRO
+ * repositório, então o caminho é da máquina: variável de ambiente, senão o
+ * clone padrão do autor. Adaptador sem entrada aqui não tem cobertura
+ * conferida — e diz isso, em vez de ser medido contra o kit errado. */
+const KITS_PADRAO = {
+  'cenpre-ui-kit': process.env.CENPRE_KIT ?? 'C:/Users/Leonardo/Documents/CENPRE/cenpre-ui-angular-scss/projects/cenpre-ui-kit/styles/_tokens.scss',
+};
 
-export function construir({ raiz = ROOT, kitScss = process.env.CENPRE_KIT ?? KIT_PADRAO } = {}) {
+export function construir({ raiz = ROOT, kits = KITS_PADRAO } = {}) {
   const lerJson = (p) => JSON.parse(readFileSync(join(raiz, p), 'utf8'));
   const falhas = [];
   const desvios = [];
@@ -93,10 +99,18 @@ export function construir({ raiz = ROOT, kitScss = process.env.CENPRE_KIT ?? KIT
 
   const dirTokens = join(raiz, 'sites/spec/tokens');
   const nomesSem = new Set(semFlat.map((t) => t.name));
-  const marcas = readdirSync(dirTokens)
-    .filter((f) => /^marca\.[a-z0-9-]+\.json$/.test(f))
-    .sort()
-    .map((f) => ({ id: f.slice('marca.'.length, -'.json'.length), flat: flatten(lerJson(join('sites/spec/tokens', f)), resolve) }));
+  // Todo marca.*.json é lido. Id fora de [a-z0-9-] não vira seletor CSS, e
+  // ignorar o arquivo em silêncio seria a classe de buraco que estes portões
+  // existem para fechar: é falha nomeada.
+  const marcas = [];
+  for (const f of readdirSync(dirTokens).filter((x) => /^marca\..+\.json$/.test(x)).sort()) {
+    const id = f.slice('marca.'.length, -'.json'.length);
+    if (!/^[a-z0-9-]+$/.test(id)) {
+      falhas.push(`id de submarca inválido para seletor CSS: "${id}" (${f}) — use só [a-z0-9-]`);
+      continue;
+    }
+    marcas.push({ id, flat: flatten(lerJson(join('sites/spec/tokens', f)), resolve) });
+  }
   for (const m of marcas) {
     for (const t of m.flat) {
       if (!nomesSem.has(t.name)) falhas.push(`marca ${m.id} cria token ${t.name} — camada 3 só sobrescreve semânticos`);
@@ -108,17 +122,26 @@ export function construir({ raiz = ROOT, kitScss = process.env.CENPRE_KIT ?? KIT
   const variantes = [['base', semFlat], ...marcas.map((m) => [m.id, aplicarCamada(semFlat, m.flat)])];
   for (const [nome, tokens] of variantes) {
     const get = (n) => tokens.find((t) => t.name === n)?.value;
+    // Par cujo token não existe não é medido — e isso fica ESCRITO, como
+    // desvio nomeado. Renomear um token e ver o portão continuar verde seria
+    // o silêncio que ele existe para impedir.
     for (const [fg, bg, desc, min] of PARES) {
       const f = get(fg);
       const b = get(bg);
-      if (!f || !b) continue;
+      if (!f || !b) {
+        desvios.push(`[${nome}] par não medido: ${desc} — falta ${!f ? fg : bg}`);
+        continue;
+      }
       const r = ratio(f, b);
       if (r < min) falhas.push(`[${nome}] ${desc}: ${fg} ${f} sobre ${bg} ${b} dá ${r.toFixed(2)}:1, mínimo ${min}`);
     }
     for (const tom of ['success', 'warning', 'danger', 'info']) {
       const f = get(`color-feedback-${tom}-foreground`);
       const b = get(`color-feedback-${tom}-background`);
-      if (!f || !b) continue;
+      if (!f || !b) {
+        desvios.push(`[${nome}] par não medido: feedback ${tom} — falta ${!f ? `color-feedback-${tom}-foreground` : `color-feedback-${tom}-background`}`);
+        continue;
+      }
       const r = ratio(f, b);
       if (r < 4.5) falhas.push(`[${nome}] feedback ${tom}: ${f} sobre ${b} dá ${r.toFixed(2)}:1`);
     }
@@ -126,8 +149,10 @@ export function construir({ raiz = ROOT, kitScss = process.env.CENPRE_KIT ?? KIT
       const v = get(`color-${n}`);
       return typeof v === 'string' && /^#[0-9A-Fa-f]{6}$/.test(v) ? v.toUpperCase() : null;
     };
-    const temDecisivos = DECISIVOS.every(([, a, b]) => cor(a) && cor(b));
-    if (temDecisivos) {
+    const faltaDecisivo = DECISIVOS.flatMap(([, a, b]) => [a, b]).find((n) => !cor(n));
+    if (faltaDecisivo) {
+      desvios.push(`[${nome}] marca × destrutivo não medido — falta color-${faltaDecisivo}`);
+    } else {
       const r = conferirMarcaVsDestrutivo({ tema: nome, cor, coexistem: COEXISTEM_SITES.filter(([, a, b]) => cor(a) && cor(b)) });
       falhas.push(...r.falhas);
       desvios.push(...r.desvios);
@@ -148,14 +173,14 @@ export function construir({ raiz = ROOT, kitScss = process.env.CENPRE_KIT ?? KIT
       for (const [nome, { destino }] of Object.entries(a.mapa)) {
         if (destino !== null && !semPaths.has(destino)) falhas.push(`adaptador ${a.id}: ${nome} aponta para ${destino}, que não existe na semântica dos sites`);
       }
-      if (existsSync(kitScss)) {
-        const declarados = [...readFileSync(kitScss, 'utf8').matchAll(/^[ \t]*(\$[a-z0-9-]+)[ \t]*:/gm)].map((m) => m[1]);
-        for (const n of new Set(declarados)) {
-          if (!(n in a.mapa)) falhas.push(`${n} do kit sem destino no adaptador ${a.id}`);
-        }
-        relatos.push(`  ✓ adaptador ${a.id}: ${new Set(declarados).size} nomes do kit, todos com destino`);
+      const kitScss = kits[a.id];
+      if (kitScss && existsSync(kitScss)) {
+        const declarados = new Set([...readFileSync(kitScss, 'utf8').matchAll(/^[ \t]*(\$[a-z0-9-]+)[ \t]*:/gm)].map((m) => m[1]));
+        const semDestino = [...declarados].filter((n) => !(n in a.mapa));
+        for (const n of semDestino) falhas.push(`${n} do kit sem destino no adaptador ${a.id}`);
+        if (!semDestino.length) relatos.push(`  ✓ adaptador ${a.id}: ${declarados.size} nomes do kit, todos com destino`);
       } else {
-        desvios.push(`adaptador ${a.id}: o scss do kit não está no disco (${kitScss}); cobertura não conferida`);
+        desvios.push(`adaptador ${a.id}: o scss do kit não está no disco (${kitScss ?? 'sem caminho: informe kits[id] ou a variável de ambiente'}); cobertura não conferida`);
       }
     }
   }
