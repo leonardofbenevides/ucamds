@@ -7370,7 +7370,10 @@ export const tabelaScript = `
   // À parte, Itaú…" e a terceira célula de dado recebia o nome do grupo.
   // A coluna sob um grupo leva o nome dele antes do seu: "Recebido (R$) · Itaú".
   function colunas(tabela) {
-    var linhas = tabela.querySelectorAll('thead tr');
+    // tHead.rows, e não querySelectorAll: a linha que abre subtabela
+    // (.ucam-table__detalhe) traz um thead próprio, e a busca descendente
+    // faria da última fileira DELE a fileira de colunas desta tabela.
+    var linhas = tabela.tHead ? tabela.tHead.rows : [];
     var ocupa = [];
     Array.prototype.forEach.call(linhas, function (tr, r) {
       ocupa[r] = ocupa[r] || [];
@@ -7396,11 +7399,13 @@ export const tabelaScript = `
 
   function rotula(tabela) {
     var nomes = colunas(tabela);
-    Array.prototype.forEach.call(tabela.querySelectorAll('tbody tr'), function (tr) {
+    // tBodies, não querySelectorAll: a subtabela da linha de detalhe rotula
+    // as próprias células, com os próprios nomes.
+    Array.prototype.forEach.call(tabela.tBodies, function (tb) { Array.prototype.forEach.call(tb.rows, function (tr) {
       Array.prototype.forEach.call(tr.children, function (td, i) {
         if (nomes[i] && !td.hasAttribute('data-label')) td.setAttribute('data-label', nomes[i]);
       });
-    });
+    }); });
   }
 
   // O contêiner de rolagem mais próximo — é contra ele que o sticky mede.
@@ -7428,7 +7433,9 @@ export const tabelaScript = `
   }
 
   function fixa(tabela, liga) {
-    var linhas = tabela.querySelectorAll('tr');
+    // rows, não querySelectorAll('tr'): só as fileiras DESTA tabela — a
+    // subtabela da linha de detalhe não fixa coluna nenhuma.
+    var linhas = tabela.rows;
     // Fileiras em que a primeira coluna já está ocupada por uma célula de
     // rowspan da fileira de cima: no cabeçalho em dois andares "Dia" cobre as
     // duas, e "Itaú" — primeira célula da segunda fileira — NÃO é a primeira

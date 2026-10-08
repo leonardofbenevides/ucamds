@@ -139,7 +139,9 @@ const ITEM_DE_GRADE = ':not(.ucam-empty, .ucam-sr-only, [hidden], template, scri
 /* Tabela de até N colunas de DADO (a de seleção não conta) e o cartão que
  * pode ter medida própria — ver "A TABELA CURTA TEM TETO". Um :has() só,
  * porque :has() não aninha: a última coluna de dado é a N-ésima ou antes. */
-const TABELA_ATE = (n) => `.ucam-table > thead > tr > th:nth-last-child(1 of :not(.th--selecao, [hidden])):nth-child(-n+${n} of :not(.th--selecao, [hidden]))`;
+/* tr:last-child: no cabeçalho em dois andares a fileira de grupos tem poucos
+ * th (três em Recebimentos, com oito colunas) e casaria como tabela curta. */
+const TABELA_ATE = (n) => `.ucam-table > thead > tr:last-child > th:nth-last-child(1 of :not(.th--selecao, [hidden])):nth-child(-n+${n} of :not(.th--selecao, [hidden]))`;
 /* E não é solta a tabela de uma PILHA de blocos (06/10/2026): na isenção em rolagem única os
  * cartões de cima e de baixo vão na largura do corpo, e a tabela de três colunas parava antes deles. */
 const TABELA_SOLTA = ':not(.ucam-corpo > .ucam-stack > .ucam-section *):not(.ucam-split:not(.ucam-split--apoio-inicio) *):not(:has(~ :is(.ucam-card, .ucam-stats, .ucam-grid))):not(:is(.ucam-card, .ucam-stats, .ucam-grid) ~ *)';
@@ -1024,13 +1026,16 @@ ${abaixo('controle-deitado')} {
  * numa borda de trilha, e não em 45rem num lugar e 1205px no outro. */
 .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / -1; }
 .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) > :is(.ucam-textarea, .ucam-compositor) { inline-size: 100%; }
-/* A GRADE DE ESCOLHA DENTRO DA GRADE DE FORMULÁRIO, com uma ou duas
- * trilhas: dois cartões por fileira. Quatro cartões de 13rem num cartão de
- * 760px saíam 3 + 1 (Filtros do relatório a 1440, 08/10/2026), e a grade
- * equilibrada pela contagem é regra da ADR-055. A classe dobrada vence o
- * :has() que conta os filhos, mais abaixo na folha. */
+/* A GRADE DE QUATRO CARTÕES DENTRO DA GRADE DE FORMULÁRIO, com uma ou duas
+ * trilhas: dois por fileira. Quatro cartões de 13rem num cartão de 760px
+ * saíam 3 + 1 (Filtros do relatório a 1440, 08/10/2026), e a grade
+ * equilibrada pela contagem é regra da ADR-055. Só com QUATRO: três cabem
+ * numa fileira de duas trilhas (o Nível do integrante), e seis já saem
+ * 3 + 3 pela regra de contagem. Os :has() repetem os da contagem, mais
+ * abaixo na folha, para pesar mais que eles — com e sem legend. */
 ${contentorAbaixo('formulario-3col', 'formulario')} {
-  .ucam-form-grid > .ucam-choice-grid.ucam-choice-grid { --ucam-grid-max: 2; }
+  .ucam-form-grid > .ucam-choice-grid:has(> legend + * + * + * + *:last-child),
+  .ucam-form-grid > .ucam-choice-grid:not(:has(> legend)):has(> :nth-child(4):last-child) { --ucam-grid-max: 2; }
 }
 ${contentorAcima('formulario-3col', 'formulario')} {
   .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / span 2; }
