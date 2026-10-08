@@ -1,0 +1,58 @@
+# Perguntas e propostas do projeto Sistema de Protocolo (54)
+
+Cada linha: **id** [situação] (tela) texto — quem decide.
+
+- **protocolo--analise-requerimento--1** [proposta] (Caixa de entrada) A caixa tem quatro recortes da mesma fila: Aguardam você, Minha pauta, Encaminhados e Concluídos. — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--2** [aberta] (Caixa de entrada) O que põe um requerimento em "Aguardam você": a distribuição automática, o setor da pessoa, as unidades em que ela atua, ou os três juntos. — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--3** [aberta] (Caixa de entrada) Como se calcula o prazo de cada requerimento ("vence em 1 dia", "venceu há 18 dias"): a partir do envio, em dias úteis, com o prazo da natureza. — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--4** [aberta] (Caixa de entrada) O que é "urgente" na ordenação por urgência: prazo mais curto, prioridade marcada por alguém, ou natureza. — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--5** [aberta] (Caixa de entrada) Quem pode concluir e quem pode encaminhar, por nível do integrante. — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--6** [proposta] (Caixa de entrada) Encaminhar muda a situação para Encaminhado; concluir fecha o requerimento como Deferido ou Indeferido. — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--7** [aberta] (Caixa de entrada) Responder ao aluno muda a situação para Aguardando aluno? Ou só quando a resposta pede algo dele? — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--8** [aberta] (Caixa de entrada) Por quanto tempo Concluídos continua consultável na caixa. — decide: Gestão do Protocolo
+- **protocolo--analise-requerimento--13** [aberta] (Caixa de entrada) Esta tela ainda encaminha só com o setor. O nível e o despacho do encaminhamento entram no diálogo, ou o nível deixa de ser escolhido por quem encaminha. — decide: TI (dono do SIGU)
+- **protocolo--analise-requerimento--14** [aberta] (Caixa de entrada) Quem pode reabrir um requerimento concluído, até quando, e se o requerente é avisado de que o parecer deixou de valer. — decide: Gestão do Protocolo
+- **protocolo--requerimento-detalhe--1** [proposta] (Requerimento em página) Todo requerimento tem endereço próprio, que se pode mandar a um colega. — decide: TI (dono do SIGU)
+- **protocolo--requerimento-detalhe--2** [aberta] (Requerimento em página) Quem pode abrir o endereço de um requerimento: só o setor responsável, qualquer integrante do Protocolo, ou quem recebeu o link. — decide: Encarregado de dados (LGPD)
+- **protocolo--requerimento-detalhe--3** [proposta] (Requerimento em página) Mudança de situação é registrada como par DE → PARA, com autor e hora, e a linha do tempo não se edita. — decide: Gestão do Protocolo
+- **protocolo--requerimento-detalhe--4** [proposta] (Requerimento em página) Editar os dados do requerimento é um evento na linha do tempo com cada mudança dentro dele. — decide: Gestão do Protocolo
+- **protocolo--requerimento-detalhe--5** [aberta] (Requerimento em página) Quem pode editar os dados de um requerimento já enviado, e quais campos. — decide: Gestão do Protocolo
+- **protocolo--requerimento-detalhe--6** [proposta] (Requerimento em página) O andamento tem etapas (a tela mostra "Etapa 2 de 4"). Quais são as etapas de cada natureza ainda não está escrito em lugar nenhum. — decide: Gestão do Protocolo
+- **protocolo--requerimento-detalhe--11** [aberta] (Requerimento em página) Esta tela ainda encaminha só com o setor. O nível e o despacho do encaminhamento entram no diálogo, ou o nível deixa de ser escolhido por quem encaminha. — decide: TI (dono do SIGU)
+- **protocolo--requerimento-detalhe--12** [aberta] (Requerimento em página) Quem pode reabrir um requerimento concluído, até quando, e se o requerente é avisado de que o parecer deixou de valer. — decide: Gestão do Protocolo
+- **protocolo--gerencial--1** [proposta] (Painel gerencial) A carga do setor é medida contra a capacidade declarada em Parâmetros dos setores. — decide: Gestão do Protocolo
+- **protocolo--gerencial--2** [aberta] (Painel gerencial) O que conta como "atrasado": passou do prazo da natureza, ou do SLA alvo do setor. — decide: Gestão do Protocolo
+- **protocolo--gerencial--3** [aberta] (Painel gerencial) Como se calcula o SLA médio: sobre quais requerimentos (só concluídos?) e em qual janela de tempo. — decide: Gestão do Protocolo
+- **protocolo--gerencial--4** [aberta] (Painel gerencial) Quem vê o painel: coordenações de setor, gestão do Protocolo, reitoria. — decide: Gestão do Protocolo
+- **protocolo--analytics--1** [proposta] (Analytics) Toda variação diz contra qual período está sendo comparada. — decide: Gestão do Protocolo
+- **protocolo--analytics--2** [aberta] (Analytics) Qual é o período de comparação padrão: o mesmo intervalo anterior, ou o mesmo período do ano passado. — decide: Gestão do Protocolo
+- **protocolo--analytics--3** [aberta] (Analytics) Um requerimento conta no mês em que foi aberto ou no mês em que foi concluído. — decide: Gestão do Protocolo
+- **protocolo--analytics--4** [aberta] (Analytics) Quem pode exportar os dados, e se a exportação leva dado pessoal do aluno. — decide: Encarregado de dados (LGPD)
+- **protocolo--listagem-setores--2** [proposta] (Setores e integrantes) A pessoa aparece uma vez no setor, com as unidades dela; não é um vínculo por unidade. — decide: Gestão do Protocolo
+- **protocolo--listagem-setores--3** [aberta] (Setores e integrantes) Uma pessoa pode ser integrante de mais de um setor? — decide: Gestão do Protocolo
+- **protocolo--listagem-setores--4** [aberta] (Setores e integrantes) Todo setor precisa de coordenação? Pode ter mais de uma pessoa na coordenação? — decide: Gestão do Protocolo
+- **protocolo--naturezas--1** [proposta] (Naturezas do requerimento) Natureza não se exclui, porque há requerimentos apontando para ela. Arquivar é reversível: some da escolha do aluno e continua no cadastro. — decide: Gestão do Protocolo
+- **protocolo--naturezas--2** [proposta] (Naturezas do requerimento) Cada natureza tem um setor responsável, que recebe todo requerimento dela. — decide: Gestão do Protocolo
+- **protocolo--naturezas--3** [aberta] (Naturezas do requerimento) O que acontece com requerimentos em andamento quando a natureza é arquivada ou troca de setor. — decide: Gestão do Protocolo
+- **protocolo--naturezas--4** [proposta] (Naturezas do requerimento) Cada natureza declara as modalidades que atende; nenhuma unidade marcada vale como todas. — decide: Gestão do Protocolo
+- **protocolo--novo-requerimento--1** [proposta] (Novo requerimento) O atendimento abre requerimento em nome de um aluno buscado no cadastro, sem digitar os dados dele. — decide: Gestão do Protocolo
+- **protocolo--novo-requerimento--2** [proposta] (Novo requerimento) O setor responsável vem da natureza escolhida e não se troca na abertura. — decide: Gestão do Protocolo
+- **protocolo--novo-requerimento--3** [proposta] (Novo requerimento) Requerimento enviado não se edita. — decide: Gestão do Protocolo
+- **protocolo--novo-requerimento--4** [aberta] (Novo requerimento) Quem pode abrir em nome do aluno: qualquer integrante, ou só o atendimento. — decide: Gestão do Protocolo
+- **protocolo--novo-requerimento--5** [aberta] (Novo requerimento) O aluno é avisado quando alguém abre um requerimento em nome dele? Por qual canal? — decide: Gestão do Protocolo
+- **protocolo--novo-requerimento--6** [proposta] (Novo requerimento) Anexo em PDF de até 10 MB. — decide: TI (dono do SIGU)
+- **protocolo--parametros-setores--1** [proposta] (Parâmetros dos setores) Cada setor tem capacidade, SLA alvo, responsável, e três chaves: atende EAD, distribuição automática e aceita fila acima da capacidade. O sistema de hoje não tem nenhum desses campos. — decide: Gestão do Protocolo
+- **protocolo--parametros-setores--2** [aberta] (Parâmetros dos setores) Os valores de capacidade e SLA alvo de cada setor. Os números da tela (40, 30, 20; 2 a 5 dias) são exemplo. — decide: Gestão do Protocolo
+- **protocolo--parametros-setores--3** [aberta] (Parâmetros dos setores) O que "aceita fila acima da capacidade" faz quando está desligado: a distribuição para, o excedente vai para outro setor, ou só avisa. — decide: Gestão do Protocolo
+- **protocolo--parametros-setores--4** [aberta] (Parâmetros dos setores) Onde fica o limite entre "No alvo", "No limite" e "Acima do alvo". — decide: Gestão do Protocolo
+- **protocolo--parametros-setores--5** [proposta] (Parâmetros dos setores) Setor não se cria nem se apaga nesta tela: os seis existem, e aqui só se ajustam os valores. — decide: Gestão do Protocolo
+- **protocolo--natureza-form--1** [proposta] (Nova natureza) O prazo de resposta da natureza conta em dias úteis a partir do envio. — decide: Gestão do Protocolo
+- **protocolo--natureza-form--2** [aberta] (Nova natureza) O prazo da natureza pode ser maior que o SLA alvo do setor? Hoje a tela só avisa. — decide: Gestão do Protocolo
+- **protocolo--natureza-form--3** [aberta] (Nova natureza) Qual calendário define dia útil: feriados nacionais, municipais de cada campus, recesso acadêmico. — decide: Gestão do Protocolo
+- **protocolo--natureza-form--4** [proposta] (Nova natureza) Três exigências por natureza: anexo obrigatório, justificativa escrita, e se o aluno pode abrir pelo Portal (desligado, só o atendimento abre). — decide: Gestão do Protocolo
+- **protocolo--natureza-form--5** [aberta] (Nova natureza) O código da natureza é único e muda depois de criado? Ele vai para os relatórios e para a integração com o SIGU. — decide: TI (dono do SIGU)
+- **protocolo--integrante-form--2** [aberta] (Novo integrante) O que cada nível pode fazer. A tela propõe Nível 1 = triagem (recebe, confere, encaminha), Nível 2 = análise (responde, pede parecer), Nível 3 = decisão (defere, indefere, reabre), mas isso foi inventado pelo desenho. — decide: Gestão do Protocolo
+- **protocolo--integrante-form--3** [aberta] (Novo integrante) O nível decide o que a pessoa pode fazer ou quanto ela recebe na distribuição. A tela supõe o primeiro; as estrelas do legado sugerem o segundo. — decide: Gestão do Protocolo
+- **protocolo--integrante-form--4** [proposta] (Novo integrante) A conta vem do Gerencial: aqui se escolhe a pessoa, não se cria acesso. — decide: TI (dono do SIGU)
+- **protocolo--integrante-form--5** [proposta] (Novo integrante) A pessoa só vê requerimentos das unidades em que atua. — decide: Gestão do Protocolo
+- **protocolo--integrante-form--6** [proposta] (Novo integrante) Fora da distribuição automática, a pessoa só recebe o que lhe for encaminhado à mão. A coordenação recebe o que ninguém assumiu. — decide: Gestão do Protocolo

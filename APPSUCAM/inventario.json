@@ -1,0 +1,342 @@
+{
+  "levantado_em": "2026-10-06",
+  "alcance": "Repositório público da organização e três projetos clonados localmente; os demais repositórios privados não foram vistos.",
+  "projetos": [
+    {
+      "id": "lib-ucam-workspace",
+      "origem": "organização, público",
+      "stack": "Angular 22, lib de componentes",
+      "ultimo_commit": "2026-10-01",
+      "usa_ucamds": "cópia fatiada do ucam.css",
+      "detalhe": "proposta-lib-do-time.md"
+    },
+    {
+      "id": "processo-seletivo-frontend",
+      "origem": "organização, privado (clone local)",
+      "stack": "Angular 9, Material 9, Bootstrap 4, ngrx, ucam-material, default-style",
+      "ultimo_commit": "2026-08-12",
+      "usa_ucamds": "não",
+      "rotas": 17,
+      "dialogos": 8,
+      "regras_lidas": 115,
+      "perguntas_abertas": 36,
+      "detalhe": "levantamento-processo-seletivo-frontend.md"
+    },
+    {
+      "id": "vestibular-online",
+      "origem": "local, sem remoto",
+      "stack": "Angular 21, @ucam/ui 0.1.2, Tailwind 4",
+      "ultimo_commit": "2026-10-03",
+      "usa_ucamds": "@ucam/ui, @ucam/css, @ucam/tokens 0.1.2",
+      "telas": 15,
+      "regras_lidas": 87,
+      "perguntas_abertas": 13,
+      "pecas_escritas_a_mao": 25,
+      "detalhe": "levantamento-vestibular-online-e-cenpre.md"
+    },
+    {
+      "id": "cenpre-ui-angular-scss",
+      "origem": "outra conta do GitHub",
+      "stack": "Angular 22 SSR, SCSS, Storybook, cenpre-ui-kit",
+      "ultimo_commit": "2026-10-01",
+      "usa_ucamds": "não",
+      "rotas": 10,
+      "detalhe": "levantamento-vestibular-online-e-cenpre.md"
+    }
+  ],
+  "mapa": {
+    "sistema": "Vestibular online",
+    "legado": "processo-seletivo-frontend",
+    "reescrita": "vestibular-online",
+    "totais": {
+      "parcial": 11,
+      "falta": 6,
+      "coberta": 4,
+      "nao-migrar": 3
+    },
+    "telas": [
+      {
+        "tela": "Conferência de dados (entrada)",
+        "rota": "/, /vestibularonline/:oid",
+        "area": "candidato",
+        "estado": "parcial",
+        "base": [
+          "portal/login"
+        ],
+        "reescrita": true,
+        "falta": "tela de referência de entrada por link, sem senha"
+      },
+      {
+        "tela": "Folha de rosto (instruções)",
+        "rota": "/folha_rosto",
+        "area": "candidato",
+        "estado": "falta",
+        "base": [],
+        "reescrita": true,
+        "falta": "tela de referência"
+      },
+      {
+        "tela": "Prova: questão objetiva",
+        "rota": "/prova",
+        "area": "candidato",
+        "estado": "falta",
+        "base": [],
+        "reescrita": true,
+        "falta": "mapa de questões, relógio, indicador de salvamento, botão de alternância"
+      },
+      {
+        "tela": "Prova: redação",
+        "rota": "/prova",
+        "area": "candidato",
+        "estado": "falta",
+        "base": [],
+        "reescrita": true,
+        "falta": "contador de mínimo e máximo como parte do campo"
+      },
+      {
+        "tela": "Diálogo \"Entregar a prova\"",
+        "rota": null,
+        "area": "candidato",
+        "estado": "parcial",
+        "base": [
+          "dialog"
+        ],
+        "reescrita": true,
+        "falta": "tela de referência do fluxo de entrega"
+      },
+      {
+        "tela": "Diálogo de mensagem",
+        "rota": null,
+        "area": "candidato",
+        "estado": "coberta",
+        "base": [
+          "alert",
+          "dialog"
+        ],
+        "reescrita": true,
+        "falta": null
+      },
+      {
+        "tela": "Conclusão (resultado)",
+        "rota": "/conclusao",
+        "area": "candidato",
+        "estado": "falta",
+        "base": [],
+        "reescrita": true,
+        "falta": "tela de referência"
+      },
+      {
+        "tela": "Dados pessoais (passo 1 de 3)",
+        "rota": "/formulario",
+        "area": "candidato",
+        "estado": "parcial",
+        "base": [
+          "formulario-entidade",
+          "protocolo/novo-requerimento"
+        ],
+        "reescrita": false,
+        "falta": "formulário em passos; decidir se o fluxo ainda existe"
+      },
+      {
+        "tela": "Upload de documentos (passo 2)",
+        "rota": "/upload",
+        "area": "candidato",
+        "estado": "parcial",
+        "base": [
+          "file-field",
+          "anexo"
+        ],
+        "reescrita": false,
+        "falta": "lista de documentos exigidos com obrigatoriedade"
+      },
+      {
+        "tela": "Diálogo do termo de compromisso",
+        "rota": null,
+        "area": "candidato",
+        "estado": "parcial",
+        "base": [
+          "dialog"
+        ],
+        "reescrita": false,
+        "falta": null
+      },
+      {
+        "tela": "Contrato (passo 3)",
+        "rota": "/contract",
+        "area": "candidato",
+        "estado": "falta",
+        "base": [],
+        "reescrita": false,
+        "falta": "leitura de documento longo com aceite e impressão"
+      },
+      {
+        "tela": "Diálogo do contrato",
+        "rota": null,
+        "area": "candidato",
+        "estado": "falta",
+        "base": [],
+        "reescrita": false,
+        "falta": "leitura de documento longo com aceite e impressão"
+      },
+      {
+        "tela": "Inscrição finalizada",
+        "rota": "/finish",
+        "area": "candidato",
+        "estado": "parcial",
+        "base": [
+          "empty-state",
+          "card"
+        ],
+        "reescrita": false,
+        "falta": null
+      },
+      {
+        "tela": "Boleto",
+        "rota": "/bank-slip",
+        "area": "candidato",
+        "estado": "nao-migrar",
+        "base": [],
+        "reescrita": false,
+        "falta": "nenhuma navegação leva à rota"
+      },
+      {
+        "tela": "Acompanhamento da isenção",
+        "rota": "/isencao/:oid",
+        "area": "candidato",
+        "estado": "coberta",
+        "base": [
+          "isencao/acompanhamento",
+          "isencao/resultado"
+        ],
+        "reescrita": true,
+        "falta": null
+      },
+      {
+        "tela": "Volta do login único",
+        "rota": "/admin/login/:token/:usuario",
+        "area": "banca",
+        "estado": "parcial",
+        "base": [
+          "skeleton",
+          "empty-state"
+        ],
+        "reescrita": true,
+        "falta": null
+      },
+      {
+        "tela": "Boas-vindas",
+        "rota": "/admin",
+        "area": "banca",
+        "estado": "nao-migrar",
+        "base": [],
+        "reescrita": false,
+        "falta": null
+      },
+      {
+        "tela": "Correção de redação",
+        "rota": "/admin/correcao/redacao",
+        "area": "banca",
+        "estado": "parcial",
+        "base": [
+          "triagem-lista-detalhe",
+          "protocolo/analise-requerimento"
+        ],
+        "reescrita": true,
+        "falta": "tela de referência de correção com nota"
+      },
+      {
+        "tela": "Diálogo de correção",
+        "rota": null,
+        "area": "banca",
+        "estado": "parcial",
+        "base": [
+          "triagem-lista-detalhe"
+        ],
+        "reescrita": true,
+        "falta": null
+      },
+      {
+        "tela": "Correção de questão",
+        "rota": "/admin/correcao/questao",
+        "area": "banca",
+        "estado": "nao-migrar",
+        "base": [],
+        "reescrita": false,
+        "falta": "no legado é um esqueleto vazio"
+      },
+      {
+        "tela": "Cadastro de cadernos",
+        "rota": "/admin/cadastro",
+        "area": "banca",
+        "estado": "parcial",
+        "base": [
+          "listagem-crud"
+        ],
+        "reescrita": true,
+        "falta": "tela de referência"
+      },
+      {
+        "tela": "Diálogo de questão",
+        "rota": null,
+        "area": "banca",
+        "estado": "parcial",
+        "base": [
+          "protocolo/natureza-form"
+        ],
+        "reescrita": true,
+        "falta": "editor de texto rico (fórmula, imagem, lista)"
+      },
+      {
+        "tela": "Análise de isenção",
+        "rota": "/admin/isencao",
+        "area": "banca",
+        "estado": "coberta",
+        "base": [
+          "isencao/fila",
+          "isencao/analise",
+          "isencao/consulta"
+        ],
+        "reescrita": true,
+        "falta": null
+      },
+      {
+        "tela": "Diálogo \"sem documentos\"",
+        "rota": null,
+        "area": "banca",
+        "estado": "coberta",
+        "base": [
+          "isencao/sem-documentos"
+        ],
+        "reescrita": true,
+        "falta": null
+      }
+    ]
+  },
+  "lacunas_ds": {
+    "conferir_contra": "@ucam/ui 0.1.3 (levantadas na 0.1.2)",
+    "pecas_novas": [
+      "mapa de questões",
+      "relógio de prova",
+      "indicador de salvamento",
+      "stepper vertical",
+      "botão de alternância",
+      "entrada (login) como componente",
+      "alternância de tema",
+      "editor de texto rico"
+    ],
+    "ajustes": [
+      "ucam-button não estica na coluna",
+      "ucam-text-field sem degrau lg nem adorno",
+      "ucam-textarea sem evento de saída (não confirmado)",
+      "ucam-file-field sem mensagem de erro (não confirmado)",
+      "ucam-card com apoio de uma linha",
+      "largura do rótulo da description-list em painel",
+      "links do app-shell recarregam o app",
+      "ucam-cluster quebra com frase longa",
+      "CSS sem camada vence utilitárias do Tailwind",
+      "densidade para o candidato",
+      "nomes de entrada em dois idiomas",
+      "ucam_check_usage soma primários do arquivo inteiro"
+    ]
+  }
+}

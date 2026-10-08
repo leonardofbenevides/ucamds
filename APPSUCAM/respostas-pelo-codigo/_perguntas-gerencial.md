@@ -1,0 +1,66 @@
+# Perguntas e propostas do projeto Módulo Gerencial (62)
+
+Cada linha: **id** [situação] (tela) texto — quem decide.
+
+- **gerencial--inicio--1** [aberta] (Início do Gerencial) O que é "aguardando acesso": conta criada que ainda não fez o primeiro login, conta à espera de aprovação, ou outra coisa. A tela conta 6 e não diz o critério. — decide: TI (dono do SIGU)
+- **gerencial--inicio--2** [proposta] (Início do Gerencial) Os números do painel são da unidade escolhida na faixa, não da instituição inteira. — decide: TI (dono do SIGU)
+- **gerencial--inicio--3** [proposta] (Início do Gerencial) São pendência: conta bloqueada, conta sem grupo, conta aguardando acesso e grupo sem nenhum menu. — decide: TI (dono do SIGU)
+- **gerencial--inicio--4** [aberta] (Início do Gerencial) O servidor vai fornecer as contagens e as pendências do início (contas bloqueadas, sem grupo, alterações recentes)? Sem elas o início volta a ser uma lista de atalhos. — decide: TI (dono do SIGU)
+- **gerencial--usuarios--2** [proposta] (Usuários) Conta não se exclui pela listagem: bloquear é reversível e guarda o histórico. Se exclusão existir, é exceção na página do usuário, com confirmação. — decide: TI (dono do SIGU)
+- **gerencial--usuarios--3** [aberta] (Usuários) Quais dígitos do CPF ficam visíveis na máscara. A busca aceita o CPF inteiro. — decide: Encarregado de dados (LGPD)
+- **gerencial--usuarios--4** [aberta] (Usuários) Quem pode bloquear e desbloquear: qualquer operador do Gerencial ou só um perfil. — decide: TI (dono do SIGU)
+- **gerencial--usuarios--5** [aberta] (Usuários) Bloqueio tem motivo obrigatório? Quais motivos existem (desligamento, tentativas de senha, decisão manual)? — decide: TI (dono do SIGU)
+- **gerencial--usuarios--6** [proposta] (Usuários) Bloquear em lote pula quem já está bloqueado. — decide: TI (dono do SIGU)
+- **gerencial--usuarios--10** [aberta] (Usuários) A lista de usuários vai trazer os grupos e o último acesso de cada conta? Hoje o servidor não entrega nenhum dos dois. — decide: TI (dono do SIGU)
+- **gerencial--usuario-detalhe--1** [proposta] (Usuário) O acesso da pessoa é a união dos menus dos grupos com os acessos diretos vigentes, sem repetição. — decide: TI (dono do SIGU)
+- **gerencial--usuario-detalhe--2** [proposta] (Usuário) Acesso direto a menu sempre tem validade e deixa de valer sozinho quando vence. — decide: TI (dono do SIGU)
+- **gerencial--usuario-detalhe--3** [aberta] (Usuário) Prazo máximo de um acesso direto. — decide: TI (dono do SIGU)
+- **gerencial--usuario-detalhe--4** [aberta] (Usuário) Validade do link de redefinição de senha enviado por e-mail. — decide: TI (dono do SIGU)
+- **gerencial--usuario-detalhe--5** [proposta] (Usuário) Reemitir o cartão de segurança invalida o anterior na hora. — decide: TI (dono do SIGU)
+- **gerencial--usuario-detalhe--6** [aberta] (Usuário) Tirar a pessoa do último grupo é permitido? Ela fica sem ver nenhum menu. — decide: TI (dono do SIGU)
+- **gerencial--usuario-detalhe--8** [aberta] (Usuário) O sistema vai ter página de detalhe do usuário, com histórico e ações de conta, ou a edição continua sendo só o formulário. — decide: Gestão de acessos
+- **gerencial--usuario-form--2** [proposta] (Novo usuário) CPF é único: não se cria segunda conta com o mesmo CPF. — decide: TI (dono do SIGU)
+- **gerencial--usuario-form--3** [aberta] (Novo usuário) CPF que já tem conta bloqueada: o formulário reativa a conta ou recusa? — decide: TI (dono do SIGU)
+- **gerencial--usuario-form--4** [aberta] (Novo usuário) Quais campos são obrigatórios, e se o e-mail precisa ser do domínio da UCAM. — decide: TI (dono do SIGU)
+- **gerencial--usuario-form--5** [aberta] (Novo usuário) Grupo é obrigatório na criação? Sem ele, a conta nasce sem ver menu nenhum. — decide: TI (dono do SIGU)
+- **gerencial--usuario-form--6** [proposta] (Novo usuário) Grupo sem menu não aparece para escolha. — decide: TI (dono do SIGU)
+- **gerencial--usuario-form--7** [proposta] (Novo usuário) Acesso direto a menu não se concede na criação, só depois, na página do usuário. — decide: TI (dono do SIGU)
+- **gerencial--usuario-form--10** [aberta] (Novo usuário) O login é sempre o CPF? No sistema o campo é texto livre, e o código diz que login igual ao CPF vale "neste tenant". — decide: TI (dono do SIGU)
+- **gerencial--usuario-form--11** [aberta] (Novo usuário) Os grupos são escolhidos na criação da conta, como esta tela desenha, ou só depois, em Grupo × Usuários, como o sistema faz. — decide: Gestão de acessos
+- **gerencial--usuario-form--12** [aberta] (Novo usuário) O que acontece quando a validade do acesso vence: a conta bloqueia sozinha, alguém é avisado antes, e quem pode prorrogar. — decide: Gestão de acessos
+- **gerencial--grupo-menu--1** [proposta] (Grupo × Menu) Permissão se concede por grupo. "Menu × Usuários" deixa de ser tela e vira filtro de Usuário × Menu. — decide: TI (dono do SIGU)
+- **gerencial--grupo-menu--2** [proposta] (Grupo × Menu) Mudança de permissão só vale ao salvar o lote, nunca no clique. — decide: TI (dono do SIGU)
+- **gerencial--grupo-menu--3** [aberta] (Grupo × Menu) Permissão salva vale na hora para quem está logado, ou no próximo login? — decide: TI (dono do SIGU)
+- **gerencial--grupo-menu--4** [aberta] (Grupo × Menu) Quem pode editar as permissões de um grupo, e se alguém pode editar o grupo a que pertence. — decide: TI (dono do SIGU)
+- **gerencial--grupo-menu--5** [aberta] (Grupo × Menu) "Copiar de outro grupo" substitui as permissões do grupo ou soma às que ele já tem? — decide: TI (dono do SIGU)
+- **gerencial--grupo-menu--9** [aberta] (Grupo × Menu) A unidade da permissão é a unidade de trabalho da faixa, ou a tela precisa de um seletor próprio para conceder em outra unidade sem trocar a de trabalho. — decide: Gestão de acessos
+- **gerencial--grupo-menu--10** [aberta] (Grupo × Menu) O sistema real mantém "Menu × Usuários" como tela própria, onde só o acesso direto pode ser retirado. Ela continua existindo ou vira filtro, como esta tela propõe. — decide: Gestão de acessos
+- **gerencial--grupo-usuarios--4** [aberta] (Grupo × Usuários) O que o grupo padrão muda para a pessoa: o perfil com que ela entra, o menu inicial, ou nada visível. — decide: TI (dono do SIGU)
+- **gerencial--grupo-usuarios--5** [aberta] (Grupo × Usuários) Tirar a pessoa do grupo vale na hora para quem está com o sistema aberto, ou só no próximo acesso. — decide: TI (dono do SIGU)
+- **gerencial--grupo-usuarios--6** [aberta] (Grupo × Usuários) Quem pode mudar os integrantes de um grupo, e se alguém pode se pôr no grupo que administra. — decide: Gestão de acessos
+- **gerencial--auditoria--1** [proposta] (Trilha de auditoria) Registro de auditoria não se edita, não se apaga e não se trata em lote. — decide: TI (dono do SIGU)
+- **gerencial--auditoria--2** [aberta] (Trilha de auditoria) Retenção da trilha. A tela mostra 30 dias; quanto tempo o registro é guardado. — decide: Encarregado de dados (LGPD)
+- **gerencial--auditoria--3** [aberta] (Trilha de auditoria) Quais eventos entram na trilha: login, falha de senha, concessão, bloqueio, redefinição de senha, reemissão de cartão. — decide: TI (dono do SIGU)
+- **gerencial--auditoria--4** [aberta] (Trilha de auditoria) Quantas tentativas de senha erradas bloqueiam a conta. A tela usa 5. — decide: TI (dono do SIGU)
+- **gerencial--auditoria--5** [aberta] (Trilha de auditoria) O Gerencial vai registrar quem mudou o quê em contas e permissões? Hoje não registra, e o autor gravado nas alterações não é confiável. — decide: Encarregado de dados (LGPD)
+- **gerencial--unidades--3** [aberta] (Unidades) Unidade com usuários, grupos ou alunos vinculados pode ser inativada? Hoje o servidor não confere nada para unidade, grupo e usuário. — decide: TI (dono do SIGU)
+- **gerencial--unidades--4** [proposta] (Unidades) O registro inativo pode ser reativado pela própria listagem. Hoje só o login de usuário tem caminho de restauração. — decide: TI (dono do SIGU)
+- **gerencial--unidades--5** [aberta] (Unidades) Quem pode criar, editar e inativar cadastros. O sistema só exige estar autenticado; não há perfil. — decide: Gestão de acessos
+- **gerencial--unidade-form--1** [aberta] (Nova unidade) Quais campos da unidade são obrigatórios. A tela marca Sigla, Razão social e Mantenedora; o levantamento não confirmou a lista no servidor. — decide: TI (dono do SIGU)
+- **gerencial--unidade-form--2** [aberta] (Nova unidade) A sigla pode repetir entre unidades de mantenedoras diferentes. — decide: TI (dono do SIGU)
+- **gerencial--unidade-form--4** [proposta] (Nova unidade) O CEP preenche logradouro, bairro, cidade e UF, e os campos continuam editáveis. — decide: TI (dono do SIGU)
+- **gerencial--unidade-form--5** [aberta] (Nova unidade) O CNPJ e o CPF do responsável são validados pelo dígito verificador, e CNPJ repetido é recusado. — decide: TI (dono do SIGU)
+- **gerencial--grupos--4** [aberta] (Grupos) Grupo com integrantes pode ser inativado? Hoje o servidor não confere nada, e as pessoas perderiam os menus sem aviso. — decide: Gestão de acessos
+- **gerencial--grupos--5** [aberta] (Grupos) Quem pode criar grupo e mudar o que ele concede. — decide: Gestão de acessos
+- **gerencial--grupo-form--2** [aberta] (Novo grupo) Quais são os tipos de usuário e o que cada um muda no que o grupo pode conceder. — decide: TI (dono do SIGU)
+- **gerencial--grupo-form--3** [aberta] (Novo grupo) A sigla do grupo pode repetir entre unidades. — decide: TI (dono do SIGU)
+- **gerencial--aplicacoes--5** [aberta] (Aplicações) Onde se cadastra o endereço da aplicação e a marca "aparece no painel". O formulário do sistema não tem nenhum dos dois. — decide: TI (dono do SIGU)
+- **gerencial--aplicacao-form--2** [aberta] (Nova aplicação) A sigla da aplicação é a mesma usada como identificador no login único? Se for, mudá-la quebra o acesso. — decide: TI (dono do SIGU)
+- **gerencial--mantenedoras--4** [aberta] (Mantenedoras) O que se registra em "credenciamento": o ato do MEC, a data, a validade. — decide: Secretaria acadêmica
+- **gerencial--mantenedora-form--1** [aberta] (Nova mantenedora) Quais campos da mantenedora são obrigatórios. A tela marca Sigla e Razão social. — decide: TI (dono do SIGU)
+- **gerencial--mantenedora-form--2** [aberta] (Nova mantenedora) CNPJ e CPF do responsável são validados pelo dígito verificador. — decide: TI (dono do SIGU)
+- **gerencial--cartoes-seguranca--4** [proposta] (Cartões de segurança) O número do cartão aparece mascarado na lista, só com os quatro últimos dígitos. Hoje a lista mostra o número inteiro. — decide: Encarregado de dados (LGPD)
+- **gerencial--cartoes-seguranca--5** [aberta] (Cartões de segurança) Para que o cartão é usado e em que momento ele é pedido. A documentação do sistema não descreve o uso nem a reemissão. — decide: TI (dono do SIGU)
+- **gerencial--cartoes-seguranca--6** [aberta] (Cartões de segurança) Cartão vencido deixa de valer sozinho, ou alguém precisa inativá-lo. — decide: TI (dono do SIGU)
+- **gerencial--cartao-form--2** [aberta] (Novo cartão) A pessoa pode ter dois cartões valendo ao mesmo tempo. — decide: TI (dono do SIGU)
+- **gerencial--cartao-form--3** [aberta] (Novo cartão) Quem pode emitir cartão e como ele é entregue à pessoa. — decide: Gestão de acessos
