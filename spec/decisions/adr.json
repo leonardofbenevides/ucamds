@@ -1272,6 +1272,50 @@
         "O menu da conta continua com três opções; a marcada de fábrica passa a ser Claro."
       ],
       "afeta": ["*", "app-shell"]
+    },
+    {
+      "id": "ADR-067",
+      "titulo": "Um segundo sistema para os sites, sobre as mesmas fundações",
+      "status": "aceita",
+      "data": "2026-10-08",
+      "contexto": "Os sites públicos da UCAM (candidomendes.edu.br em Angular 18, cenpre.candidomendes.edu.br em Angular 22, ucam-campos.br em WordPress) não usam o UCAMDS. O institucional carrega três paletas ao mesmo tempo — Angular Material 3 com o azul de fábrica, Bootstrap 5 e os tons do CENPRE — e o bordô da marca aparece uma vez por folha. A pergunta foi se os sites seriam uma parte do UCAMDS ou outro design system. O UCAMDS é um sistema de aplicação, e isso está gravado nele: raio calibrado para aplicação de dados, uma densidade só, corpo de 14px, portões que exigem piso de tabela e um primário por tela. Um site precisa de hero, título de 68px, marquee e seção escura. Mas marca, neutros, feedback, foco, movimento, ícones, escrita e a ferramenta inteira servem aos dois.",
+      "decisao": "Nasce o UCAMDS Sites, em sites/, com semântica, tipografia e componentes próprios, que lê o primitivo compartilhado (spec/tokens/primitive.json) e só o estende (sites/spec/tokens/primitive.json): redefinir degrau compartilhado é falha de build. A constitution do dev do CENPRE proíbe framework utilitário, então os sites saem em CSS e SCSS puros e numa lib Angular sem Tailwind; o Trilho B não se aplica a sites. Sem tema escuro; a seção escura é uma superfície (color.surface.inverse), não um tema. Sem subpaleta por app (ADR-037): a variação entre sites é submarca, camada 3.",
+      "consequencias": [
+        "Dois sistemas, uma marca: wine.600 mudar muda para os dois, e é decisão de marca.",
+        "tools/lib/tokens.mjs passa a ser a única implementação de resolução de token; build-tokens e build-sites-tokens a importam.",
+        "Os portões de aplicação (faixa, obrigatoriedade, regra do anexo, subpaleta) não rodam para sites/. Os de fundação (contraste, marca × destrutivo, hex cru) rodam.",
+        "O catálogo, a lib Angular e o www são os subprojetos 2, 3 e 4 da spec de 08/10/2026."
+      ],
+      "afeta": ["*"]
+    },
+    {
+      "id": "ADR-068",
+      "titulo": "O CENPRE é submarca, e a ação dele desce um degrau",
+      "status": "aceita",
+      "data": "2026-10-08",
+      "contexto": "O CENPRE usa magenta #B4365B como cor primária, charcoal #303E49 e Work Sans com Inter. Medido em OKLCH: o magenta.900 do CENPRE (L 36, matiz 9°) é praticamente o wine.700 (L 36, 15°). O charcoal (242°) é a mesma família do neutral frio do UCAMDS. Não é outra marca; é a mesma família, dezesseis pontos mais clara e mais saturada no 700. A arquitetura de três camadas foi preparada para multimarca em 28/08/2026 e nunca usada. Medido com o portão de marca × destrutivo (ADR-026): magenta.700 como ação primária contra red.600 dá d=0,010 sob tritanopia — a mesma cor que o botão de excluir; e os três estados encostam (700×600, 800×700, 900×800). A única combinação monotônica (default < hover < active nos dois) que passa os três estados é ação em magenta.800/900/1000 contra red.600/700/800, com d=0,101/0,119/0,115; o próprio par do UCAMDS dá 0,104.",
+      "decisao": "O CENPRE entra como a primeira camada 3 de marca, sites/spec/tokens/marca.cenpre.json, aplicada por data-marca=\"cenpre\" no elemento raiz. Sobrescreve apenas semânticos: superfície de marca e link ficam no magenta.700 (5,80:1 sobre branco), a ação primária vai ao magenta.800 (8,29:1), hover ao 900, active ao 1000. O destrutivo continua o do UCAMDS. A rampa magenta vive na extensão primitiva dos sites, com os hex do Figma UCAM SITE. Os neutros não entram: cada ash e charcoal é mapeado por papel para o neutral compartilhado (sites/spec/adapters/cenpre-ui-kit.json), e quem decide é o contraste.",
+      "consequencias": [
+        "O botão primário do CENPRE fica um degrau mais escuro que hoje. O hero, as tags e os links continuam na cor de marca.",
+        "ash-600 (#939EAA) e ash-400 saem de texto e borda: dão 3,0:1 e menos; sobem para neutral.550 e neutral.400.",
+        "O anel de foco deixa de ser magenta a 45% e vira o cinza da ADR-048.",
+        "Submarca nova é um arquivo marca.<id>.json e passa pelos mesmos portões, na base e em cada marca."
+      ],
+      "afeta": ["*"]
+    },
+    {
+      "id": "ADR-069",
+      "titulo": "Tipografia dos sites: Work Sans para display, Inter para corpo",
+      "status": "aceita",
+      "data": "2026-10-08",
+      "contexto": "O UCAMDS usa Geist, escolhida para densidade de aplicação, com escala que para em 22px. Um site tem voz editorial e título que chega a 68px. O Figma UCAM SITE especifica Work Sans para títulos e Inter para corpo, e os dois sites já carregam as duas — de CDN. A alternativa era Geist nos dois sistemas, por unidade institucional, ao custo de redesenhar a escala display numa fonte que não foi desenhada para ela.",
+      "decisao": "Os sites usam Work Sans Variable para display e Inter Variable para corpo, auto-hospedadas em dist/sites/fonts/ por tools/build-sites-fonts.mjs, pelo mesmo @font-face parametrizado que serve a Geist. A escala display é em clamp() (38–68, 36–60, 32–52, 30–48px). Os pesos são os do compartilhado — 560 e 650 no eixo variável — porque 600/700 redondos pesam demais em título grande, pelo mesmo motivo da Geist. Corpo em 15px, o mesmo da ADR-056.",
+      "consequencias": [
+        "Nenhuma URL de fonts.googleapis.com nos sites; a regra sem CDN do UCAMDS vale também aqui.",
+        "Poppins, Nunito Sans e Roboto, que sobram nos dois sites de outros templates, saem.",
+        "Se um dia a decisão for Geist nos dois, muda fontFamily na extensão e os pesos; a escala em clamp() fica."
+      ],
+      "afeta": ["*"]
     }
   ]
 }
