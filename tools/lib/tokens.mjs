@@ -67,3 +67,41 @@ export function scssLine(P, t, resolve) {
   if (t.composite) return expandComposite(t, resolve).map((e) => `$${P}-${e.name}: ${e.value};`).join('\n');
   return `$${P}-${t.name}: ${t.value};`;
 }
+
+/**
+ * Camada 1 compartilhada + extensão. A extensão só ACRESCENTA: grupo novo, ou
+ * degrau novo dentro de grupo que existe. Redefinir o que a base declara é
+ * falha nomeada — se wine.600 mudar, muda para os dois sistemas, e isso é
+ * decisão de marca, não edição de extensão.
+ */
+export function mesclarPrimitivos(base, extensao) {
+  const colisoes = [];
+  const ehFolha = (v) => v && typeof v === 'object' && '$value' in v;
+
+  function mescla(a, b, trail) {
+    const out = { ...a };
+    for (const [k, v] of Object.entries(b)) {
+      if (k.startsWith('$') || k.startsWith('_')) {
+        if (!(k in out)) out[k] = v;
+        continue;
+      }
+      const caminho = [...trail, k].join('.');
+      if (!(k in a)) {
+        out[k] = v;
+        continue;
+      }
+      if (ehFolha(a[k]) || ehFolha(v)) {
+        colisoes.push(caminho);
+        continue;
+      }
+      out[k] = mescla(a[k], v, [...trail, k]);
+    }
+    return out;
+  }
+
+  const resultado = mescla(base, extensao, []);
+  if (colisoes.length) {
+    throw new Error(`a extensão redefine primitivo compartilhado: ${colisoes.join(', ')}`);
+  }
+  return resultado;
+}

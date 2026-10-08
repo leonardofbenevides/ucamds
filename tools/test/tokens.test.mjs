@@ -58,3 +58,38 @@ test('cssVar e scssLine escrevem com o prefixo pedido', () => {
   assert.equal(cssVar('ucam-site', t, resolve), '  --ucam-site-color-x: #6C1E2B;');
   assert.equal(scssLine('ucam-site', t, resolve), '$ucam-site-color-x: #6C1E2B;');
 });
+
+import { mesclarPrimitivos } from '../lib/tokens.mjs';
+
+test('mesclar: grupo novo entra inteiro, com o seu $type', () => {
+  const r = mesclarPrimitivos(primitive, { magenta: { $type: 'color', 700: { $value: '#b4365b' } } });
+  assert.equal(r.magenta.$type, 'color');
+  assert.equal(r.magenta[700].$value, '#b4365b');
+  assert.equal(r.wine[600].$value, '#8D293A');
+});
+
+test('mesclar: chave nova dentro de grupo existente entra e herda o $type do grupo', () => {
+  const r = mesclarPrimitivos(primitive, { fontSize: { title: { $value: '1.25rem' } } });
+  assert.equal(r.fontSize.title.$value, '1.25rem');
+  assert.equal(r.fontSize.md.$value, '0.9375rem');
+  assert.equal(r.fontSize.$type, 'dimension');
+});
+
+test('mesclar: redefinir degrau compartilhado derruba, nomeando o caminho', () => {
+  assert.throws(
+    () => mesclarPrimitivos(primitive, { wine: { 600: { $value: '#000000' } }, fontSize: { md: { $value: '1rem' } } }),
+    /a extensão redefine primitivo compartilhado: wine\.600, fontSize\.md/,
+  );
+});
+
+test('mesclar: trocar grupo por folha (ou folha por grupo) também é colisão', () => {
+  assert.throws(() => mesclarPrimitivos(primitive, { wine: { $value: '#000' } }), /wine/);
+  assert.throws(() => mesclarPrimitivos(primitive, { fontSize: { md: { x: { $value: '1rem' } } } }), /fontSize\.md/);
+});
+
+test('mesclar: metadado da base vence, e a base não é mutada', () => {
+  const base = { wine: { $type: 'color', $description: 'da base', 600: { $value: '#8D293A' } } };
+  const r = mesclarPrimitivos(base, { wine: { $description: 'da extensão', 650: { $value: '#000' } } });
+  assert.equal(r.wine.$description, 'da base');
+  assert.equal(base.wine[650], undefined);
+});
