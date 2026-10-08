@@ -36,10 +36,15 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   prova('análise: legenda da barra 0 0 1 8', ini.legenda === '0 0 1 8', ini.legenda);
   prova('análise: com documento pedido, o botão é Enviar pedido', ini.botao === 'Enviar pedido ao candidato', ini.botao);
   prova('análise: passos 1, 2, 3 e ficha com retrato, sem coluna de apoio', ini.passos === '123' && ini.ficha && !ini.aside, ini);
+  const cab = await p.js(`${AJUDA} return { meta: q('[data-pendentes-eco]').textContent, trilha: qa('.ucam-trilha li').map((l) => l.textContent.replace('/', '').trim()).join(' / '), voltar: !!q('.ucam-viewbar__voltar'), grupos: qa('.ucam-nav__group-title').map((g) => g.textContent.trim()), rodape: !!q('.ucam-nav__footer') };`);
+  prova('análise: a meta do cabeçalho é o pendente ("8 sem decisão"), trilha curta, sem Voltar', cab.meta === '8 sem decisão' && cab.trilha === 'Fila de análise / João Cutrim' && !cab.voltar, cab);
+  prova('coluna: grupo de um item sem título e rodapé sem itens mortos (ADR-070)', cab.grupos.join(',') === 'Favoritos,Cadastros' && !cab.rodape, cab);
 
   const d1 = await p.js(`${AJUDA} decide('Introdução ao Estudo do Direito', 'isentar'); decide('História do Direito', 'nao'); await w(250);
     return { pe: pe(), legenda: legenda(), barra: barra(), campos: !linha('Introdução ao Estudo do Direito').querySelector('[data-campos="isentar"]').hidden };`);
   prova('decidir: rodapé e legenda andam juntos', d1.pe.includes('1 isenta · 1 não isenta') && d1.legenda === '1 1 1 6', d1);
+  const eco1 = await p.js(`${AJUDA} return q('[data-pendentes-eco]').textContent;`);
+  prova('decidir: a meta do cabeçalho acompanha ("6 sem decisão")', eco1 === '6 sem decisão', eco1);
   prova('decidir: a barra tem as quatro partes em nonos', d1.barra === '11.1% 11.1% 11.1% 66.7%', d1.barra);
   prova('decidir Isentar abre os campos de origem', d1.campos === true);
 
@@ -67,6 +72,8 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   prova('tudo decidido: 5 isentas, 4 não isentas, botão Finalizar análise', fin.legenda === '5 4 0 0' && fin.botao === 'Finalizar análise' && fin.pend === '0', fin);
   prova('finalizar confirma nomeando os números', fin.dialogo && /5/.test(fin.texto) && /4/.test(fin.texto), fin);
   prova('confirmada, a situação vira Concluída', /Conclu/.test(fin.selo), fin.selo);
+  const ecoFim = await p.js(`${AJUDA} return q('[data-pendentes-eco]').textContent;`);
+  prova('concluída: a meta vira o resultado ("5 de 9 isentas")', ecoFim === '5 de 9 isentas', ecoFim);
   prova('análise: nenhum erro de script no percurso', p.erros.length === 0, p.erros.join(' | '));
   await p.fecha();
 }
@@ -86,6 +93,8 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   prova('enviado: o arquivo entra na fileira de documentos', env.docs === 3 && env.novo === 'ementa-civil.pdf', env);
   prova('enviado: Documentos fecha e a Análise vira a etapa atual', env.etapas === 'feita feita atual pendente', env.etapas);
   prova('enviado: barra, selo e rodapé dizem Em análise', env.barra === '100% 0%' && env.selo === 'Em análise' && env.pe === '9 disciplinas · 9 em análise' && env.aguardando === 0, env);
+  const cabA = await p.js(`${AJUDA} return { meta: q('[data-meta-estado]').textContent, marca: q('.ucam-appbar__brand').getAttribute('href') };`);
+  prova('aluno: a meta acompanha o envio e a marca da faixa leva ao Portal, não à fila (ADR-070)', cabA.meta === 'Documento enviado · em análise' && cabA.marca === 'portal-grade-modulos.html', cabA);
   prova('acompanhamento: nenhum erro de script', p.erros.length === 0, p.erros.join(' | '));
   await p.fecha();
 }
@@ -103,16 +112,28 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   prova('fila: o filtro de situação recorta', r.soAnalise.length === 4 && r.soAnalise.every((s) => s === 'analise'), r.soAnalise);
   prova('fila: a aba Concluídas mostra as 5', r.concl.length === 5 && r.concl.every((s) => s === 'concluida'), r.concl);
   prova('fila: o passo mora na célula da situação, sem coluna própria', r.colunas === 5, String(r.colunas));
+  const rod = await p.js(`${AJUDA} q('#is-aba-em-analise').click(); await w(200); const r1 = q('.ucam-pagination__range').textContent; q('.ucam-segmented [data-valor="analise"]').click(); await w(250); const r2 = q('.ucam-pagination__range').textContent; q('.ucam-segmented [data-valor=""]').click(); await w(150);
+    return { r1, r2, trilha: !!q('.ucam-trilha') };`);
+  prova('fila: cabendo numa página, o rodapé diz só a contagem; filtrada, as duas contas (ADR-070)', rod.r1 === '8 solicitações' && rod.r2 === '4 solicitações filtradas (8 no total)', rod);
+  prova('fila: lista não tem trilha — um nível só repetiria o título', !rod.trilha, rod);
   prova('fila: nenhum erro de script', p.erros.length === 0, p.erros.join(' | '));
   await p.fecha();
 }
 // ── consulta, resultado, sem documentos ────────────────────────────────────
 for (const [tela, espera] of [['consulta', '9 disciplinas · 6 isentas · 3 não isentas'], ['resultado', '9 disciplinas · 6 isentas · 3 não isentas'], ['sem-documentos', null]]) {
   const p = await abre(tela);
-  const r = await p.js(`${AJUDA} return { pe: (q('.ucam-pagination__range') || {}).textContent, icones: qa('.td--figura .ucam-icon-tile').length, ficha: !!q('.ucam-ficha img'), aside: !!q('.ucam-aside'), bloqueadas: qa('[data-decisao] button[aria-disabled="true"]').length };`);
+  const r = await p.js(`${AJUDA} return { pe: (q('.ucam-pagination__range') || {}).textContent, icones: qa('.td--figura .ucam-icon-tile').length, ficha: !!q('.ucam-ficha img'), aside: !!q('.ucam-aside'), decisoes: qa('[data-decisao]').length, aguardam: qa('[data-aguarda-documentos]').length, alerta: !!q('.ucam-alert--info'), meta: (q('.ucam-viewbar__meta') || {}).textContent, trilha: qa('.ucam-trilha li').map((l) => l.textContent.replace('/', '').trim()).join(' / '), voltar: !!q('.ucam-viewbar__voltar') };`);
   prova(`${tela}: ficha com retrato, 9 matérias com ícone, sem coluna de apoio`, r.ficha && r.icones === 9 && !r.aside, r);
   if (espera) prova(`${tela}: o rodapé fecha a conta`, r.pe === espera, r.pe);
-  else prova('sem documentos: as 27 opções de decisão ficam indisponíveis', r.bloqueadas === 27, String(r.bloqueadas));
+  else {
+    // ADR-070: a tela inteira espera os documentos — a célula diz isso em texto, sem controle bloqueado nem alerta explicando.
+    prova('sem documentos: nenhum segmentado de decisão, 9 células "Aguarda documentos", sem alerta', r.decisoes === 0 && r.aguardam === 9 && !r.alerta, r);
+    prova('sem documentos: o cabeçalho diz o estado e a trilha é curta, sem Voltar', /^Sem documentos há 16 dias/.test(r.meta) && r.trilha === 'Fila de análise / Ana Paula Rocha' && !r.voltar, r);
+    const n = await p.js(`${AJUDA} const b = q('#is-sem-docs [data-acao="notificar-candidato"]'); const primario = b && b.classList.contains('ucam-btn--primary') && qa('.ucam-btn--primary').length === 1; b.click(); await w(300);
+      return { primario, desc: q('#is-sem-docs .ucam-empty__description').textContent, rotulo: b.textContent.trim(), atividade: qa('.ucam-timeline__no, .ucam-timeline li').length };`);
+    prova('sem documentos: Notificar é o único primário, dentro do cartão vazio; o aviso atualiza a descrição e o rótulo', n.primario && /^Solicitada há 16 dias, em 08\/09\/2026\. Último aviso: hoje/.test(n.desc) && n.rotulo === 'Notificar de novo', n);
+  }
+  if (tela !== 'sem-documentos') prova(`${tela}: trilha curta e sem Voltar (coordenação) ou trilha do Portal (candidato)`, !r.voltar && (tela === 'consulta' ? r.trilha === 'Fila de análise / Pedro Alves' : r.trilha === 'Meus sistemas / Isenção de disciplinas'), r);
   prova(`${tela}: nenhum erro de script`, p.erros.length === 0, p.erros.join(' | '));
   await p.fecha();
 }
