@@ -58,7 +58,7 @@
     {
       "parte": "conector",
       "obrigatorio": false,
-      "descricao": "Traço entre etapas. Decorativo.",
+      "descricao": "Traço entre etapas. Decorativo. Com .ucam-stepper--empilha (08/10/2026), em contêiner estreito as etapas viram uma coluna e o conector sai: na fileira que quebra ele ficava pendurado no fim de cada linha. É para o stepper que informa em que etapa um processo está, com rótulo em todas — o cartão do aluno na isenção.",
       "classe": "ucam-stepper__conector"
     }
   ],

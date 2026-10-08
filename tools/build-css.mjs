@@ -12073,6 +12073,17 @@ figure:has(> .ucam-citacao) { margin: 0; }
 /* Faixa sem rótulo visível, para topo de formulário estreito. Só é aceitável
  * porque o nome da etapa continua no nome acessível e no título logo abaixo —
  * sem isso a barra informa que HÁ progresso e esconde qual. */
+/* EMPILHA (08/10/2026): com rótulo em toda etapa, a fileira que quebra deixa
+ * o conector pendurado no fim de cada linha — "Pedido enviado — Documentos —"
+ * e, embaixo, "Análise da coordenação ———". Em contêiner estreito as etapas
+ * viram uma coluna, uma por linha, e o conector sai: a ordem de cima para
+ * baixo já é a sequência. Para o stepper que INFORMA onde o processo está (o
+ * cartão do aluno na isenção); o de formulário curto segue em --barra. */
+${contentorAbaixo('formulario-em-fileira')} {
+  .ucam-stepper--empilha { flex-direction: column; align-items: flex-start; flex-wrap: nowrap; }
+  .ucam-stepper--empilha .ucam-stepper__conector { display: none; }
+}
+
 .ucam-stepper--barra { gap: 0.25rem; }
 
 .ucam-stepper--barra .ucam-stepper__passo {
