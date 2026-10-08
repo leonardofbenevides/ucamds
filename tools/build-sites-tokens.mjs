@@ -72,7 +72,9 @@ const banner = (fmt) => `/* @ucam/site-css — gerado de sites/spec/tokens/ por 
  * Formato: ${fmt}
  */\n`;
 
-export function construir({ raiz = ROOT } = {}) {
+const KIT_PADRAO = 'C:/Users/Leonardo/Documents/CENPRE/cenpre-ui-angular-scss/projects/cenpre-ui-kit/styles/_tokens.scss';
+
+export function construir({ raiz = ROOT, kitScss = process.env.CENPRE_KIT ?? KIT_PADRAO } = {}) {
   const lerJson = (p) => JSON.parse(readFileSync(join(raiz, p), 'utf8'));
   const falhas = [];
   const desvios = [];
@@ -130,6 +132,31 @@ export function construir({ raiz = ROOT } = {}) {
       falhas.push(...r.falhas);
       desvios.push(...r.desvios);
       relatos.push(...r.relatos);
+    }
+  }
+
+  /* ------------------------------------------------------ adaptadores --- */
+  // Cada $nome do _tokens.scss do kit aponta para o semântico que o substitui.
+  // É o mapa que o dev segue para trocar a folha, e a prova de que nada ficou
+  // sem lugar. O scss mora em outro repositório: se está no disco, cobertura
+  // incompleta é falha; se não está, é aviso — o CI não tem o clone.
+  const dirAdapt = join(raiz, 'sites/spec/adapters');
+  const semPaths = new Set(semFlat.map((t) => t.path.join('.')));
+  if (existsSync(dirAdapt)) {
+    for (const f of readdirSync(dirAdapt).filter((x) => x.endsWith('.json')).sort()) {
+      const a = lerJson(join('sites/spec/adapters', f));
+      for (const [nome, { destino }] of Object.entries(a.mapa)) {
+        if (destino !== null && !semPaths.has(destino)) falhas.push(`adaptador ${a.id}: ${nome} aponta para ${destino}, que não existe na semântica dos sites`);
+      }
+      if (existsSync(kitScss)) {
+        const declarados = [...readFileSync(kitScss, 'utf8').matchAll(/^[ \t]*(\$[a-z0-9-]+)[ \t]*:/gm)].map((m) => m[1]);
+        for (const n of new Set(declarados)) {
+          if (!(n in a.mapa)) falhas.push(`${n} do kit sem destino no adaptador ${a.id}`);
+        }
+        relatos.push(`  ✓ adaptador ${a.id}: ${new Set(declarados).size} nomes do kit, todos com destino`);
+      } else {
+        desvios.push(`adaptador ${a.id}: o scss do kit não está no disco (${kitScss}); cobertura não conferida`);
+      }
     }
   }
 

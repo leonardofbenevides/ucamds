@@ -90,3 +90,34 @@ test('submarca cuja ação encosta no vermelho é falha de marca × destrutivo',
   const r = construir({ raiz: repoMinimo({ extensao: ext, marcas: { cenpre: marca } }) });
   assert.ok(r.falhas.some((f) => /\[cenpre\] preenchimento em repouso/.test(f)), r.falhas.join('\n'));
 });
+
+test('adaptador: destino inexistente é falha; nome do kit fora do mapa é falha quando o scss existe', () => {
+  const raiz = repoMinimo();
+  mkdirSync(join(raiz, 'sites/spec/adapters'), { recursive: true });
+  writeFileSync(join(raiz, 'sites/spec/adapters/kit.json'), JSON.stringify({
+    id: 'kit', name: 'kit', alvo: { repositorio: 'x', arquivo: '_tokens.scss' },
+    mapa: { '$color-brand': { destino: 'color.action.primary.default' }, '$color-x': { destino: 'color.nao.existe' } },
+  }));
+  const scss = join(raiz, '_tokens.scss');
+  writeFileSync(scss, '$color-brand: #b4365b;\n$color-x: #000;\n$space-4: 4px;\n');
+  const r = construir({ raiz, kitScss: scss });
+  assert.ok(r.falhas.some((f) => /\$color-x.*color\.nao\.existe/.test(f)), r.falhas.join('\n'));
+  assert.ok(r.falhas.some((f) => /\$space-4.*sem destino no adaptador kit/.test(f)), r.falhas.join('\n'));
+});
+
+test('adaptador: sem o scss no disco, a cobertura vira aviso', () => {
+  const raiz = repoMinimo();
+  mkdirSync(join(raiz, 'sites/spec/adapters'), { recursive: true });
+  writeFileSync(join(raiz, 'sites/spec/adapters/kit.json'), JSON.stringify({
+    id: 'kit', name: 'kit', alvo: { repositorio: 'x', arquivo: '_tokens.scss' },
+    mapa: { '$color-brand': { destino: 'color.action.primary.default' } },
+  }));
+  const r = construir({ raiz, kitScss: join(raiz, 'nao-existe.scss') });
+  assert.deepEqual(r.falhas, []);
+  assert.ok(r.desvios.some((d) => /kit.*não está no disco/.test(d)));
+});
+
+test('o adaptador real do CENPRE cobre o _tokens.scss do kit, se ele estiver no disco', () => {
+  const r = construir({ raiz: ROOT });
+  assert.deepEqual(r.falhas, []);
+});
