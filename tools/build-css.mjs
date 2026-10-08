@@ -2826,6 +2826,8 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table .ucam-badge--success .ucam-badge__ponto { background: var(--ucam-color-feedback-success-border); }
 .ucam-table .ucam-badge--warning .ucam-badge__ponto { background: var(--ucam-color-feedback-warning-border); }
 .ucam-table .ucam-badge--danger  .ucam-badge__ponto { background: var(--ucam-color-feedback-danger-border); }
+.ucam-table .ucam-badge--espera  .ucam-badge__ponto { background: var(--ucam-color-situacao-espera-border); }
+.ucam-table .ucam-badge--classe  .ucam-badge__ponto { background: var(--ucam-color-situacao-classe-border); }
 .ucam-table .ucam-badge--neutral .ucam-badge__ponto { background: var(--ucam-color-text-placeholder); }
 
 /* Coluna de número: alinha ao FIM e trava a largura do dígito.
@@ -3361,6 +3363,8 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-prazo--proximo .ic { color: var(--ucam-color-feedback-warning-border); }
 .ucam-badge--danger  .ic,
 .ucam-prazo--vencido .ic { color: var(--ucam-color-feedback-danger-border); }
+.ucam-badge--espera  .ic { color: var(--ucam-color-situacao-espera-border); }
+.ucam-badge--classe  .ic { color: var(--ucam-color-situacao-classe-border); }
 
 /* PREENCHIMENTO PASTEL, com o rótulo na tinta do próprio tom. ADR-020.
  *
@@ -3386,6 +3390,32 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-prazo--proximo { background: var(--ucam-color-feedback-warning-background); color: var(--ucam-color-feedback-warning-foreground); }
 .ucam-badge--danger,
 .ucam-prazo--vencido { background: var(--ucam-color-feedback-danger-background);  color: var(--ucam-color-feedback-danger-foreground); }
+
+/* DOIS TONS DE SITUAÇÃO (ADR-066, 08/10/2026). Cinco tons carregavam 71
+ * rótulos nas telas, e estados sem nada em comum saíam da mesma cor: "Em
+ * análise" e "Aguardando acesso" no azul, "Aguardando candidato" e "Bloqueado"
+ * no âmbar. Os dois que faltavam:
+ *   espera  violeta — a bola está com OUTRA pessoa. Não pede nada de quem lê
+ *           (não é aviso) e ninguém da equipe está trabalhando nisso (não é
+ *           informação de andamento).
+ *   classe  turquesa — tipo ou categoria. Classifica, não julga.
+ * Só o selo os lê: alerta, indicador e linha do tempo seguem nos quatro tons
+ * de feedback. O significado continua na PALAVRA (WCAG 1.4.1) — sob
+ * deuteranopia o violeta encosta no azul e o turquesa no verde. */
+.ucam-badge--espera { background: var(--ucam-color-situacao-espera-background); color: var(--ucam-color-situacao-espera-foreground); }
+.ucam-badge--classe { background: var(--ucam-color-situacao-classe-background); color: var(--ucam-color-situacao-classe-foreground); }
+
+/* O FILETE DO PRÓPRIO TOM em todo selo preenchido ("melhor definidas"). O
+ * fundo pastel sobre o branco fica entre 1,1:1 e 1,2:1: a pastilha se via,
+ * mas a borda dela se desmanchava no papel. O filete é a tinta saturada do
+ * tom a 32% — a mesma receita do contorno —, e não muda a caixa: a borda de
+ * 1px já estava declarada, transparente. O prazo fica como estava. */
+.ucam-badge--info    { border-color: color-mix(in srgb, var(--ucam-color-feedback-info-border) 32%, transparent); }
+.ucam-badge--success { border-color: color-mix(in srgb, var(--ucam-color-feedback-success-border) 32%, transparent); }
+.ucam-badge--warning { border-color: color-mix(in srgb, var(--ucam-color-feedback-warning-border) 32%, transparent); }
+.ucam-badge--danger  { border-color: color-mix(in srgb, var(--ucam-color-feedback-danger-border) 32%, transparent); }
+.ucam-badge--espera  { border-color: color-mix(in srgb, var(--ucam-color-situacao-espera-border) 32%, transparent); }
+.ucam-badge--classe  { border-color: color-mix(in srgb, var(--ucam-color-situacao-classe-border) 32%, transparent); }
 
 /* NEUTRO fica de fora do preenchimento, e não por esquecimento.
  *
@@ -3518,6 +3548,8 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-badge--outline.ucam-badge--success { border-color: color-mix(in srgb, var(--ucam-color-feedback-success-border) 30%, transparent); }
 .ucam-badge--outline.ucam-badge--warning { border-color: color-mix(in srgb, var(--ucam-color-feedback-warning-border) 30%, transparent); }
 .ucam-badge--outline.ucam-badge--danger  { border-color: color-mix(in srgb, var(--ucam-color-feedback-danger-border) 30%, transparent); }
+.ucam-badge--outline.ucam-badge--espera  { border-color: color-mix(in srgb, var(--ucam-color-situacao-espera-border) 30%, transparent); }
+.ucam-badge--outline.ucam-badge--classe  { border-color: color-mix(in srgb, var(--ucam-color-situacao-classe-border) 30%, transparent); }
 
 /* SELO PLANO: o estado da MAIORIA, sem tinta. ADR-050.
  *
@@ -9284,6 +9316,15 @@ dialog.ucam-dialog:not([open]) { display: none; }
   padding: var(--ucam-space-inset-md);
   background: var(--ucam-color-surface-default);
   box-shadow: 0 0 0 1px var(--ucam-color-border-subtle);
+}
+/* O INDICADOR SOLTO É UM CARTÃO, e cartão tem canto (08/10/2026: "esses
+ * cards estão sem border-radius", com a captura da Sala de matrícula). O raio
+ * morava só no contêiner .ucam-stats, que recorta a grade contínua; um
+ * .ucam-stat posto direto numa fileira qualquer saía com o anel de 1px em
+ * volta de um retângulo de canto vivo. Dentro da grade contínua ele continua
+ * sem raio próprio: ali os ladrilhos se encostam e quem arredonda é a moldura. */
+.ucam-stat:not(.ucam-stats:not(.ucam-stats--cartoes) > *) {
+  border-radius: var(--ucam-radius-surface);
 }
 
 .ucam-stat__label {

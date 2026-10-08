@@ -3359,7 +3359,7 @@ ${FN_ANUNCIA}
         return /Ativo|Bloqueado|Aguardando/.test(b.textContent);
       })[0];
       if (seloConta) {
-        mudarSelo(seloConta, bloquear ? 'Bloqueado' : 'Ativo', bloquear ? 'warning' : 'success');
+        mudarSelo(seloConta, bloquear ? 'Bloqueado' : 'Ativo', bloquear ? 'danger' : 'success');
         // O MOTIVO ao lado do selo: "Bloqueado" sozinho manda perguntar por quê.
         // Só na célula: na barra de visão o pai do selo é a fileira inteira.
         var celulaConta = seloConta.closest('td, th');
@@ -4273,7 +4273,7 @@ ${FN_ANUNCIA}
       // o candidato, com prazo, e as decisões tomadas ficam como estão.
       if (tot.documento) {
         var obsP = document.querySelector('textarea[data-observacao]');
-        seloIsencao(seloS, 'warning', 'Aguardando candidato');
+        seloIsencao(seloS, 'espera', 'Aguardando candidato');
         registraAtividade(botao, 'Documento pedido ao candidato, prazo até ' + prazoIsencao(),
           (obsP && obsP.value.trim()) || ('Falta documento para ' + juntaNomes(tot.aguardam) + '.'), 'send', 'warning');
         /* O PEDIDO MUDA A TELA (28/09/2026: "o botão retorna pro mesmo
@@ -4321,7 +4321,7 @@ ${FN_ANUNCIA}
     if (qual === 'enviar-observacao') {
       var campoO = document.querySelector('textarea[data-observacao]');
       if (!campoO || !campoO.value.trim()) { anuncia('Escreva a observação antes de enviar.', botao); if (campoO) campoO.focus(); return; }
-      seloIsencao(document.querySelector('[data-selo-situacao]'), 'warning', 'Aguardando candidato');
+      seloIsencao(document.querySelector('[data-selo-situacao]'), 'espera', 'Aguardando candidato');
       registraAtividade(botao, 'Observação enviada ao candidato', campoO.value.trim(), 'send', 'warning');
       anuncia('Observação enviada. A situação passou a Aguardando candidato.', botao);
       return rotuloTemporario(botao, 'Enviada');
