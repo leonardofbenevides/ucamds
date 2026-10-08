@@ -163,7 +163,7 @@
       "parte": "nav-group",
       "classe": "ucam-nav__group",
       "obrigatorio": false,
-      "descricao": "Agrupamento de itens, com rótulo em caixa natural, 12px e tinta secundária. Até 23/09/2026 o rótulo era a única exceção à ADR-003 (caixa alta com tracking, para se distinguir dos itens do SIGFIN, que são todos em caixa alta); a distinção passa a ser tamanho e tinta, que é como Repliq e Attio separam título de grupo de destino navegável (ADR-046)."
+      "descricao": "Agrupamento de itens, com rótulo em caixa natural, 12px e tinta secundária. Até 23/09/2026 o rótulo era a única exceção à ADR-003 (caixa alta com tracking, para se distinguir dos itens do SIGFIN, que são todos em caixa alta); a distinção passa a ser tamanho e tinta, que é como Repliq e Attio separam título de grupo de destino navegável (ADR-046). Grupo com UM item não imprime o rótulo (08/10/2026, ADR-070): título sobre um destino só é o mesmo nome dito duas vezes — a coluna da Isenção trazia \"Trabalho\" sobre \"Fila de análise\". O grupo continua existindo, e com ele o vão entre blocos; só o título cala. No Trilho A o renderizador decide pela contagem de itens; no Trilho B o <ucam-app-shell> faz o mesmo com navGroups."
     },
     {
       "parte": "nav-favoritos",

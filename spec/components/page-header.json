@@ -135,7 +135,8 @@
     {
       "nome": "breadcrumb",
       "tipo": "Array<{ label: string; link?: string }> | null",
-      "default": "null"
+      "default": "null",
+      "descricao": "A trilha diz onde a tela está DENTRO do sistema, e só existe com dois níveis ou mais (08/10/2026, ADR-070). A lista não tem trilha — um nível só repetiria o título a 8px de distância. O detalhe tem \"Lista / Registro\": o nível de cima é o caminho de volta, e por isso dispensa backLink — trilha e Voltar juntos eram dois controles para o mesmo destino, ao lado do item aceso na coluna e da marca na faixa. Dentro de um sistema que tem o lançador na faixa a trilha NÃO começa em \"Meus sistemas\": o Portal já está a um clique, no lançador. Começa em \"Meus sistemas\" só a tela hospedada no Portal, sem lançador (o acompanhamento do candidato na isenção)."
     },
     {
       "nome": "backLink",

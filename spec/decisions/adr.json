@@ -1316,6 +1316,22 @@
         "Se um dia a decisão for Geist nos dois, muda fontFamily na extensão e os pesos; a escala em clamp() fica."
       ],
       "afeta": ["*"]
+    },
+    {
+      "id": "ADR-070",
+      "titulo": "A moldura diz menos, e a tela diz o estado antes de tudo",
+      "status": "aceita",
+      "data": "2026-10-08",
+      "contexto": "Sobre a Isenção de disciplinas, em 08/10/2026: \"revise como podemos deixar mais simples as navegações, tá muito poluído\" e \"tem que estar melhor sinalizado os estados das coisas, pq não posso tomar decisões; o usuário tem que bater o olho e entender\". Numa tela de detalhe havia cinco caminhos para a mesma fila ao mesmo tempo — trilha de três níveis a partir de \"Meus sistemas\", botão Voltar, item aceso na coluna, \"Ir para\" da busca e a marca da faixa —; a coluna tinha três grupos para cinco destinos (\"Trabalho\" sobre um item só) e dois itens mortos no rodapé; o cabeçalho repetia curso, período e inscrição que a ficha logo abaixo dizia de novo; a fila fechava com \"1–8 de 8\". E na solicitação sem documentos 27 segmentados de decisão saíam aria-disabled sem regra alguma na folha — liam como vivos — enquanto um alerta azul no meio da página explicava o que a tela devia mostrar.",
+      "decisao": "(1) Grupo de navegação com UM item não imprime o título: o grupo fica, e com ele o vão; só o rótulo cala. (2) Dentro de um sistema que tem o lançador na faixa, a trilha começa no sistema, não em \"Meus sistemas\", e só existe com dois níveis ou mais: a lista não tem trilha — um nível só repetiria o título —, e o detalhe tem \"Lista / Registro\", em que o nível de cima é o caminho de volta, o que dispensa o Voltar. A tela hospedada no Portal, sem lançador, continua começando em \"Meus sistemas\". (3) No cabeçalho do detalhe, a meta ao lado do selo é o número que a situação deixa pendente — \"8 sem decisão\", \"Sem documentos há 16 dias\", \"6 de 9 isentas\" —, e muda com a tela; curso, período e inscrição moram na ficha. (4) Controle bloqueado pelo estado da tela INTEIRA não se desenha como controle: a decisão da solicitação sem documentos é o texto \"Aguarda documentos\", e a única ação da tela — Notificar candidato — é o primário dentro do cartão vazio de Documentos, onde o problema está. O segmentado ganha o estado bloqueado da ADR-042 (tinta apagada sobre o trilho, sem plano nem hover) para o bloqueio por item. (5) Lista que cabe numa página diz só a contagem: \"8 solicitações\", e não \"1–8 de 8\". (6) Link com recorte leva a query no próprio href, já na geração — não só no clique. (7) Tela de um sistema hospedada no Portal aponta a marca da faixa ao Portal (chave inicioProjeto no shell da tela).",
+      "consequencias": [
+        "(1), (5), (6) e (7) são da moldura e valem para todo o parque neste build: Relatórios, Gerencial e Vestibular perdem o título dos grupos de um item só.",
+        "(2) e (3) entram na Isenção agora; os outros cinco sistemas recebem a mesma trilha e a mesma meta no passo seguinte, pelo mesmo script.",
+        "O rodapé da navegação da Isenção fica vazio (navRodape: []) porque nenhum item dele tem tela; a convenção data-sem-tela continua para quem declara o item.",
+        "O Trilho B acompanha: <ucam-page-header> sem backLink nas telas de detalhe, breadcrumb sem o nível do Portal, e a ação do <ucam-empty-state> projetada dentro dele.",
+        "O item disabled + reason do segmentado continua existindo para o bloqueio de UM item; o que muda é que o bloqueio da tela inteira não o usa."
+      ],
+      "afeta": ["*", "app-shell", "page-header", "pagination", "segmented", "empty-state", "data-table"]
     }
   ]
 }

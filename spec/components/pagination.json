@@ -51,7 +51,7 @@
     {
       "parte": "intervalo",
       "obrigatorio": true,
-      "descricao": "Texto do tipo 11–20 de 340. Substitui o TOTAL DE REQUERIMENTOS solto. É também a região que ANUNCIA (role=\"status\") e que recebe o foco quando a página troca — daí o tabindex=\"-1\". Com filtro de pé ela diz as duas contas: 11–20 de 12 requerimentos filtrados (340 no total).",
+      "descricao": "Texto do tipo 11–20 de 340. Substitui o TOTAL DE REQUERIMENTOS solto. É também a região que ANUNCIA (role=\"status\") e que recebe o foco quando a página troca — daí o tabindex=\"-1\". Com filtro de pé ela diz as duas contas: 11–20 de 12 requerimentos filtrados (340 no total). Quando tudo cabe numa página, só a contagem: \"8 solicitações\", e não \"1–8 de 8\" — intervalo que vai do primeiro ao último não é intervalo (08/10/2026, ADR-070); com filtro, \"4 solicitações filtradas (8 no total)\".",
       "classe": "ucam-pagination__range"
     },
     {

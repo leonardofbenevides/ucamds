@@ -298,13 +298,14 @@
     "trilho_a": {
       "contrato": "Trilho e segmentos vêm estilizados; a escolha é lida de aria-pressed=\"true\" no botão, e não de uma classe — para que o visual não possa divergir do que o leitor de tela ouve.",
       "raiz": ".ucam-segmented",
-      "estado": "hover em quem NÃO está escolhido clareia o plano e escurece a tinta; a escolha pinta o segmento por inteiro. Sem classe de estado própria — o seletor é o aria-pressed. Com data-tom (success, danger, warning) no botão, o escolhido usa o fundo e a tinta de feedback daquele tom em vez do bordô claro.",
+      "estado": "hover em quem NÃO está escolhido clareia o plano e escurece a tinta; a escolha pinta o segmento por inteiro. Sem classe de estado própria — o seletor é o aria-pressed. Com data-tom (success, danger, warning) no botão, o escolhido usa o fundo e a tinta de feedback daquele tom em vez do bordô claro. Bloqueado (aria-disabled=\"true\" no botão, 08/10/2026): tinta text.disabled sobre o trilho, sem plano, sem hover e cursor not-allowed — o segmento não tem chão próprio e cai na exceção do fantasma da ADR-042; até então a folha não desenhava o estado e o bloqueado saía igual ao vivo. Quando é a TELA inteira que bloqueia a decisão (a solicitação sem documentos), o controle não se desenha: a célula diz em texto o que espera (ADR-070).",
       "variaveis": [
         "--ucam-color-surface-inverse",
         "--ucam-color-text-on-action",
         "--ucam-color-surface-subtle",
         "--ucam-color-text-secondary",
         "--ucam-color-text-primary",
+        "--ucam-color-text-disabled",
         "--ucam-color-border-subtle",
         "--ucam-size-control-md",
         "--ucam-radius-control"

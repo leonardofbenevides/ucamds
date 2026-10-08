@@ -827,7 +827,11 @@ export function renderShell(cfg = {}, conteudo = '') {
   const grupos = navHtml ? navHtml : grupoFavoritos + (nav || [])
     .map((g) => {
       const itens = (g.itens || []).map((i) => item(i, navId)).join('');
-      const titulo = g.titulo
+      // RÓTULO SÓ COM DOIS ITENS OU MAIS (08/10/2026, ADR-070). "Trabalho"
+      // sobre "Fila de análise" era o mesmo destino dito duas vezes, e a coluna
+      // da Isenção lia três grupos para cinco destinos. O grupo continua
+      // existindo — é ele que dá o vão entre blocos —, só o título cala.
+      const titulo = g.titulo && (g.itens || []).length > 1
         ? `<p class="ucam-nav__group-title">${esc(g.titulo)}</p>`
         : '';
       return `<div class="ucam-nav__group">${titulo}${itens}</div>`;
@@ -1391,10 +1395,21 @@ export function indiceDeDestinos(projetos = []) {
    * serve aos dois destinos: a documentação continua recebendo a rota que
    * entende. */
   const religaPreview = (html = '') =>
-    String(html).replace(
-      /#\/templates\/([a-z0-9-]+)\/([a-z0-9-]+)/g,
-      (achado, projetoId, telaId) => porId[projetoId]?.porTela[telaId] ?? achado,
-    );
+    String(html)
+      .replace(
+        /#\/templates\/([a-z0-9-]+)\/([a-z0-9-]+)/g,
+        (achado, projetoId, telaId) => porId[projetoId]?.porTela[telaId] ?? achado,
+      )
+      /* O RECORTE VAI NO HREF (08/10/2026, ADR-070). O preview guarda o filtro
+       * em data-filtro, fora da rota, para o validador cobrar a convenção; aqui,
+       * com a rota já virada em arquivo, a query entra no href — antes só
+       * entrava no clique (filtroScript), e clique do meio, "copiar link" e o
+       * leitor de tela recebiam a fila inteira. Só quando a rota foi religada:
+       * no site a âncora continua #/templates/... e o clique segue cuidando. */
+      .replace(
+        /<a\b([^>]*?)\bhref=(['"])([^'"#?][^'"?]*)\2([^>]*?)\bdata-filtro=(['"])([^'"]+)\5/g,
+        (_, antes, q, href, meio, q2, filtro) => `<a${antes}href=${q}${href}?${filtro}${q}${meio}data-filtro=${q2}${filtro}${q2}`,
+      );
 
   return { de: (p) => ({ ...porId[p.id], porProjeto, entrada }), religaPreview };
 }
@@ -1498,7 +1513,10 @@ export function shellDaTela(projeto = {}, template = {}, destinos = {}) {
     favoritos,
     buscaResultados,
     notificacoesItens,
-    inicio: porProjeto[projeto.id] ?? null,
+    // A tela hospedada em outro sistema (o acompanhamento do candidato, no
+    // Portal) diz em `inicioProjeto` de quem é a marca: sem isso o logotipo
+    // levava o aluno à fila da coordenação (08/10/2026, ADR-070).
+    inicio: porProjeto[tela.inicioProjeto ?? projeto.id] ?? null,
     // Sem tela de entrada no conjunto (o preview do catálogo, por exemplo) o
     // item continua sendo um botão — link para lugar nenhum seria pior.
     saida: destinos.entrada ?? null,
@@ -2973,6 +2991,11 @@ ${FN_ANUNCIA}
     // O resumo do rodapé da tabela e o eco dele no fecho do telefone
     // (.ucam-viewbar__resumo, aria-hidden: quem ouve já tem o de cima).
     Array.prototype.forEach.call(document.querySelectorAll('[data-totais], [data-totais-eco]'), function (alvo) { alvo.textContent = linhaTot; });
+    // A META DO CABEÇALHO (08/10/2026, ADR-070): ao lado do selo, só o que a
+    // situação deixa pendente — "8 sem decisão" —, e não curso · período · id,
+    // que a ficha logo abaixo já diz. É o número que se lê de relance.
+    var ecoPend = document.querySelector('[data-pendentes-eco]');
+    if (ecoPend) ecoPend.textContent = t.pendentes ? t.pendentes + ' sem decisão' : t.documento ? t.documento + ' aguardando documento' : 'Todas decididas';
     // A BARRA das decisões, acima da tabela (06/10/2026): cada segmento e cada
     // número da legenda seguem a mesma conta do rodapé.
     var barraTot = document.querySelector('[data-totais-barra]');
@@ -4291,6 +4314,8 @@ ${FN_ANUNCIA}
           '; as ' + (tot.isentas + tot.nao) + ' decisões tomadas ficam salvas. Quando o documento chegar, a análise volta à fila.';
         avisa(textoP, document.querySelector('[data-decisoes]') || seloS || botao, 'warning');
         trocaDicas('pedido');
+        var ecoPed = document.querySelector('[data-pendentes-eco]');
+        if (ecoPed) ecoPed.textContent = 'Espera o documento até ' + prazoIsencao();
         var tituloP = document.querySelector('.ucam-viewbar__titulo');
         if (tituloP) { tituloP.setAttribute('tabindex', '-1'); tituloP.focus(); }
         anuncia(textoP, botao);
@@ -4312,6 +4337,8 @@ ${FN_ANUNCIA}
       var textoFim = 'Análise concluída às ' + hora() + ': ' + tot.isentas + (tot.isentas === 1 ? ' isenta' : ' isentas') + ' e ' + tot.nao + (tot.nao === 1 ? ' não isenta' : ' não isentas') + '. O candidato recebeu o resultado por e-mail.';
       avisa(textoFim, document.querySelector('[data-decisoes]') || seloS || botao, 'success');
       trocaDicas('concluida');
+      var ecoFim = document.querySelector('[data-pendentes-eco]');
+      if (ecoFim) ecoFim.textContent = tot.isentas + ' de ' + tot.total + ' isentas';
       var tituloTela = document.querySelector('.ucam-viewbar__titulo');
       if (tituloTela) { tituloTela.setAttribute('tabindex', '-1'); tituloTela.focus(); }
       anuncia(textoFim, botao);
@@ -4387,6 +4414,8 @@ ${FN_ANUNCIA}
         td.removeAttribute('data-aguarda-documento');
       });
       trocaDicas('enviado');
+      var metaEnv = document.querySelector('[data-meta-estado]');
+      if (metaEnv) metaEnv.textContent = 'Documento enviado · em análise';
       // As ETAPAS do cartão do aluno andam: Documentos fecha, a Análise vira a atual.
       Array.prototype.forEach.call(document.querySelectorAll('[data-etapa-enviado]'), function (li) {
         var est = li.getAttribute('data-etapa-enviado');
@@ -5741,13 +5770,20 @@ ${FN_ANUNCIA}
     var faixa = nav.querySelector('.ucam-pagination__range');
     if (!faixa) return;
     if (!nav.hasAttribute('data-paginacao-nome')) {
-      var m = faixa.textContent.trim().match(/^[0-9]+\\s*[\\u2013-]\\s*[0-9]+ de ([0-9.]+) (.+)$/);
-      nav.setAttribute('data-paginacao-nome', m ? m[2] : 'itens');
+      // As duas formas que a marcação pode trazer: "11–20 de 340 x" ou "8 x".
+      var m = faixa.textContent.trim().match(/^(?:[0-9]+\\s*[\\u2013-]\\s*[0-9]+ de )?([0-9.]+) ([^·]+)$/);
+      nav.setAttribute('data-paginacao-nome', m ? m[2].trim() : 'itens');
       nav.setAttribute('data-paginacao-total', m ? m[1].replace(/\\./g, '') : String(quantas));
     }
     var nome = nav.getAttribute('data-paginacao-nome');
     var total = Number(nav.getAttribute('data-paginacao-total')) || quantas;
-    var faixaTexto = de + '\\u2013' + ate + ' de ' + quantas + ' ' + nome;
+    /* CABENDO NUMA PÁGINA, SÓ A CONTAGEM (08/10/2026, ADR-070). "1–8 de 8"
+     * é um intervalo que vai do primeiro ao último — não é intervalo, é o
+     * total dito com três números. Fica "8 solicitações"; com mais páginas a
+     * faixa volta a dizer de onde a onde. */
+    var faixaTexto = (de === 1 && ate === quantas)
+      ? quantas + ' ' + nome
+      : de + '\\u2013' + ate + ' de ' + quantas + ' ' + nome;
     // "11–20 de 12 requerimentos filtrados (340 no total)": o contrato manda
     // dizer as duas contas, senão o filtro parece ter apagado o conjunto.
     if (quantas < total) {

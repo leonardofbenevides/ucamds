@@ -9816,6 +9816,24 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   color: var(--ucam-color-feedback-warning-foreground);
 }
 
+/* O SEGMENTO BLOQUEADO (08/10/2026, ADR-070). O contrato prometia desde
+ * setembro o item com disabled + reason — aria-disabled no botão, motivo no
+ * balão — e a folha não tinha regra nenhuma: as 27 decisões da tela
+ * sem-documentos saíam com a tinta e o hover de um controle vivo, e a
+ * coordenação lia "posso decidir" numa tela em que não podia ("tem que
+ * estar melhor sinalizado os estados das coisas"). O segmento solto não tem
+ * chão próprio — vive sobre o trilho, como o botão fantasma vive sobre o
+ * card —, e por isso cai na exceção da ADR-042: a tinta apagada medida
+ * contra a superfície (text.disabled), sem plano, sem hover e com o cursor
+ * dizendo não. É a mesma regra que o Trilho B já desenhava em
+ * ucam-segmented.ts. O balão com o motivo continua sendo do motivoScript. */
+.ucam-segmented button[aria-disabled="true"],
+.ucam-segmented button[aria-disabled="true"]:hover:not([aria-pressed="true"]) {
+  background: none;
+  color: var(--ucam-color-text-disabled);
+  cursor: not-allowed;
+}
+
 /* OS DOIS TAMANHOS, que o contrato declara desde a primeira versão e o Trilho
  * A nunca desenhou. Enquanto só o Angular os tinha, o mesmo componente tinha
  * duas anatomias conforme o trilho — e foi por ali que a divergência de 2px
