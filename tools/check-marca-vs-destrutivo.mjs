@@ -36,7 +36,7 @@ const ver = (hex, tipo) => (tipo === 'normal' ? hex : simula(hex, tipo));
  * nunca aparece, porque o ponteiro está num botão de cada vez. Comparar o que
  * não coexiste produz falha que ninguém pode consertar, e portão que grita sem
  * causa é portão que se aprende a ignorar. */
-const DECISIVOS = [
+export const DECISIVOS = [
   ['preenchimento em repouso', 'action-primary-default', 'action-danger-default'],
   ['preenchimento sob o ponteiro', 'action-primary-hover', 'action-danger-hover'],
   ['preenchimento sob pressão', 'action-primary-active', 'action-danger-active'],
@@ -57,7 +57,7 @@ const DECISIVOS = [
  * ADR-048, e ainda assim vigiado —
  * pousando em cima de um botão destrutivo, o selo de erro ao lado do botão
  * primário. Coexistem, então respondem pelo limiar de coexistência. */
-const COEXISTEM = [
+export const COEXISTEM = [
   ['realce de busca × fundo de erro', 'realce-background', 'feedback-danger-background'],
   ['ação primária × filete de erro', 'action-primary-default', 'feedback-danger-border'],
   ['ação primária × barra de erro', 'action-primary-default', 'feedback-danger-graphic'],
@@ -68,6 +68,51 @@ const COEXISTEM = [
    * Protocolo na grade; ao lado dela pode haver um selo de erro. */
   ['categoria de atendimento × tinta de erro', 'categoria-atendimento', 'feedback-danger-foreground'],
 ];
+
+/**
+ * Mede um conjunto de tokens. `cor(nome)` devolve o hex de `color-<nome>` ou
+ * null. Quem chama escolhe as listas: a aplicação mede as duas de cima; os
+ * sites (tools/build-sites-tokens.mjs) medem os decisivos e uma lista de
+ * coexistência própria, na base e em cada submarca.
+ */
+export function conferirMarcaVsDestrutivo({ tema, cor, decisivos = DECISIVOS, coexistem = COEXISTEM }) {
+  const falhas = [];
+  const desvios = [];
+  const relatos = [];
+
+  for (const [grupo, lista, limite, balde] of [
+    ['decisivo', decisivos, LIMITE_DECISIVO, falhas],
+    ['coexiste', coexistem, LIMITE_COEXISTE, desvios],
+  ]) {
+    for (const [rotulo, aNome, bNome] of lista) {
+      const a = cor(aNome);
+      const b = cor(bNome);
+      if (!a || !b) {
+        falhas.push(`[${tema}] token ausente ou não resolvido no par "${rotulo}": ${!a ? aNome : bNome}`);
+        continue;
+      }
+
+      let pior = { d: Infinity, tipo: 'normal' };
+      for (const tipo of TIPOS) {
+        const d = distancia(ver(a, tipo), ver(b, tipo));
+        if (d < pior.d) pior = { d, tipo };
+      }
+
+      /* ΔL é o diagnóstico, não enfeite. Sob protanopia e deuteranopia o arco
+       * vinho→vermelho→laranja colapsa num eixo só: matiz deixa de separar e
+       * tudo o que sobra mora na luminosidade. Sem esta linha o relatório diz
+       * QUE o par encostou e não diz que a saída é degrau de L — e a saída
+       * intuitiva, girar mais a matiz, foi medida e não rende nada. */
+      const dL = Math.abs(hexParaOklch(a).L - hexParaOklch(b).L);
+      const linha = `[${tema}] ${rotulo}: ${a} × ${b} · pior d=${pior.d.toFixed(3)} (${pior.tipo}, mínimo ${limite.toFixed(2)}) · ΔL ${dL.toFixed(1)}`;
+
+      if (pior.d < limite) balde.push(linha + (dL < 9 ? ' — sem degrau de luminosidade para sustentar a distinção' : ''));
+      else relatos.push('  ✓ ' + linha);
+    }
+  }
+
+  return { falhas, desvios, relatos };
+}
 
 function principal() {
   const NL = String.fromCharCode(10);
@@ -102,36 +147,10 @@ function principal() {
       return /^#[0-9A-Fa-f]{6}$/.test(hex) ? hex.toUpperCase() : null;
     };
 
-    for (const [grupo, lista, limite, balde] of [
-      ['decisivo', DECISIVOS, LIMITE_DECISIVO, falhas],
-      ['coexiste', COEXISTEM, LIMITE_COEXISTE, desvios],
-    ]) {
-      for (const [rotulo, aNome, bNome] of lista) {
-        const a = cor(aNome);
-        const b = cor(bNome);
-        if (!a || !b) {
-          falhas.push(`[${tema}] token ausente ou não resolvido no par "${rotulo}": ${!a ? aNome : bNome}`);
-          continue;
-        }
-
-        let pior = { d: Infinity, tipo: 'normal' };
-        for (const tipo of TIPOS) {
-          const d = distancia(ver(a, tipo), ver(b, tipo));
-          if (d < pior.d) pior = { d, tipo };
-        }
-
-        /* ΔL é o diagnóstico, não enfeite. Sob protanopia e deuteranopia o arco
-         * vinho→vermelho→laranja colapsa num eixo só: matiz deixa de separar e
-         * tudo o que sobra mora na luminosidade. Sem esta linha o relatório diz
-         * QUE o par encostou e não diz que a saída é degrau de L — e a saída
-         * intuitiva, girar mais a matiz, foi medida e não rende nada. */
-        const dL = Math.abs(hexParaOklch(a).L - hexParaOklch(b).L);
-        const linha = `[${tema}] ${rotulo}: ${a} × ${b} · pior d=${pior.d.toFixed(3)} (${pior.tipo}, mínimo ${limite.toFixed(2)}) · ΔL ${dL.toFixed(1)}`;
-
-        if (pior.d < limite) balde.push(linha + (dL < 9 ? ' — sem degrau de luminosidade para sustentar a distinção' : ''));
-        else relatos.push('  ✓ ' + linha);
-      }
-    }
+    const r = conferirMarcaVsDestrutivo({ tema, cor });
+    falhas.push(...r.falhas);
+    desvios.push(...r.desvios);
+    relatos.push(...r.relatos);
   }
 
   console.log('marca × destrutivo — o bordô e o vermelho ainda são duas cores? (ADR-002)');
