@@ -36,7 +36,8 @@
     "obrigatoriedade": "node tools/check-obrigatoriedade.mjs",
     "regra-anexo": "node tools/check-regra-anexo.mjs",
     "subpaleta": "node tools/check-subpaleta.mjs",
-    "publicar": "node tools/build-publicacao.mjs"
+    "publicar": "node tools/build-publicacao.mjs",
+    "test:tools": "node --test tools/test/*.test.mjs"
   },
   "devDependencies": {
     "@ng-icons/lucide": "^35.1.0",

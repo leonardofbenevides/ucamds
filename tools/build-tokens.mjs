@@ -34,53 +34,16 @@ const dark = read('theme.dark.json');
 import { contrast as ratio } from './lib/wcag.mjs';
 
 /* ----------------------------------------------------------- resolução --- */
+// A matemática vive em tools/lib/tokens.mjs desde 08/10/2026 — os sites usam a
+// mesma função, pelo mesmo motivo que o contraste vive em wcag.mjs.
 
-function lookup(root, path) {
-  let cur = root;
-  for (const seg of path) cur = cur?.[seg];
-  return cur;
-}
+import { criarResolvedor, flatten, cssVar as cssVarDe, scssLine as scssLineDe } from './lib/tokens.mjs';
 
-function resolve(value) {
-  if (typeof value !== 'string' || !value.startsWith('{')) return value;
-  const node = lookup(primitive, value.replace(/[{}]/g, '').split('.'));
-  if (!node || !('$value' in node)) throw new Error(`referência quebrada: ${value}`);
-  return node.$value;
-}
+const resolve = criarResolvedor(primitive);
 
-// Achata uma árvore DTCG em [{ name: 'color-text-primary', value, ref, group }]
-function flatten(node, trail = [], out = []) {
-  for (const [key, val] of Object.entries(node)) {
-    if (key.startsWith('$') || key.startsWith('_')) continue;
-    if (val && typeof val === 'object' && '$value' in val) {
-      const raw = val.$value;
-      out.push({
-        path: [...trail, key],
-        name: [...trail, key].join('-'),
-        ref: typeof raw === 'string' && raw.startsWith('{') ? raw : null,
-        value: typeof raw === 'object' ? raw : resolve(raw),
-        composite: typeof raw === 'object',
-        description: val.$description ?? '',
-        group: trail[0] ?? key,
-      });
-    } else if (val && typeof val === 'object') {
-      flatten(val, [...trail, key], out);
-    }
-  }
-  return out;
-}
-
-const primFlat = flatten(primitive);
-const semFlat = flatten(semantic);
-const darkFlat = flatten(dark);
-
-// Tokens compostos (tipografia) viram várias custom properties.
-function expandComposite(t) {
-  return Object.entries(t.value).map(([prop, v]) => ({
-    name: `${t.name}-${prop.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase())}`,
-    value: typeof v === 'string' && v.startsWith('{') ? resolve(v) : v,
-  }));
-}
+const primFlat = flatten(primitive, resolve);
+const semFlat = flatten(semantic, resolve);
+const darkFlat = flatten(dark, resolve);
 
 /* -------------------------------------------------------- portão de a11y --- */
 
@@ -219,10 +182,7 @@ const banner = (fmt) => `/* @ucam/tokens — gerado de spec/tokens/ por tools/bu
  * Formato: ${fmt}
  */\n`;
 
-const cssVar = (t) => {
-  if (t.composite) return expandComposite(t).map((e) => `  --${P}-${e.name}: ${e.value};`).join('\n');
-  return `  --${P}-${t.name}: ${t.value};`;
-};
+const cssVar = (t) => cssVarDe(P, t, resolve);
 
 // 1. CSS custom properties, com os dois temas nos três estados de tema.
 const cssPrimitives = primFlat.map(cssVar).join('\n');
@@ -270,10 +230,7 @@ ${cssDark}
 `;
 
 // 2. SCSS
-const scssLine = (t) => {
-  if (t.composite) return expandComposite(t).map((e) => `$${P}-${e.name}: ${e.value};`).join('\n');
-  return `$${P}-${t.name}: ${t.value};`;
-};
+const scssLine = (t) => scssLineDe(P, t, resolve);
 const scss = `${banner('SCSS')}
 ${primFlat.map(scssLine).join('\n')}
 
