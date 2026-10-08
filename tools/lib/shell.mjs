@@ -7365,9 +7365,37 @@ export const tabelaScript = `
     return (c.textContent || '').replace(/\\s+/g, ' ').trim();
   }
 
+  // O th de cada COLUNA, honrando colspan e rowspan. No cabeçalho em dois
+  // andares (.ucam-table__grupos) a lista plana de th dava "Dia, Recebido,
+  // À parte, Itaú…" e a terceira célula de dado recebia o nome do grupo.
+  // A coluna sob um grupo leva o nome dele antes do seu: "Recebido (R$) · Itaú".
+  function colunas(tabela) {
+    var linhas = tabela.querySelectorAll('thead tr');
+    var ocupa = [];
+    Array.prototype.forEach.call(linhas, function (tr, r) {
+      ocupa[r] = ocupa[r] || [];
+      var c = 0;
+      Array.prototype.forEach.call(tr.children, function (th) {
+        while (ocupa[r][c]) c++;
+        var cs = th.colSpan || 1, rs = th.rowSpan || 1;
+        for (var i = 0; i < rs; i++) {
+          ocupa[r + i] = ocupa[r + i] || [];
+          for (var j = 0; j < cs; j++) ocupa[r + i][c + j] = th;
+        }
+        c += cs;
+      });
+    });
+    var ultima = ocupa[linhas.length - 1] || [];
+    return ultima.map(function (th, c) {
+      var nome = rotulo(th);
+      var acima = ocupa[0][c];
+      if (acima && acima !== th && (acima.colSpan || 1) > 1) nome = rotulo(acima) + ' · ' + nome;
+      return nome;
+    });
+  }
+
   function rotula(tabela) {
-    var ths = tabela.querySelectorAll('thead th');
-    var nomes = Array.prototype.map.call(ths, rotulo);
+    var nomes = colunas(tabela);
     Array.prototype.forEach.call(tabela.querySelectorAll('tbody tr'), function (tr) {
       Array.prototype.forEach.call(tr.children, function (td, i) {
         if (nomes[i] && !td.hasAttribute('data-label')) td.setAttribute('data-label', nomes[i]);
@@ -7401,7 +7429,14 @@ export const tabelaScript = `
 
   function fixa(tabela, liga) {
     var linhas = tabela.querySelectorAll('tr');
+    // Fileiras em que a primeira coluna já está ocupada por uma célula de
+    // rowspan da fileira de cima: no cabeçalho em dois andares "Dia" cobre as
+    // duas, e "Itaú" — primeira célula da segunda fileira — NÃO é a primeira
+    // coluna. Fixá-lo o punha grudado em x=0 por cima de "Dia", com borda
+    // própria: fio dobrado e rótulo sobreposto (Recebimentos, 08/10/2026).
+    var cobertas = 0;
     Array.prototype.forEach.call(linhas, function (tr) {
+      if (cobertas > 0) { cobertas--; return; }
       var celulas = tr.children;
       var sel = celulas[0] && (celulas[0].classList.contains('td--selecao') || celulas[0].classList.contains('th--selecao')) ? celulas[0] : null;
       var primeira = sel ? celulas[1] : celulas[0];
@@ -7415,6 +7450,8 @@ export const tabelaScript = `
         if (liga) primeira.style.setProperty('--ucam-col-x', (sel ? sel.getBoundingClientRect().width : 0) + 'px');
         else primeira.style.removeProperty('--ucam-col-x');
       }
+      var cobre = primeira || sel;
+      cobertas = cobre ? (cobre.rowSpan || 1) - 1 : 0;
     });
   }
 

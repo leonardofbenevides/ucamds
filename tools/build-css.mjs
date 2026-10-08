@@ -1024,6 +1024,14 @@ ${abaixo('controle-deitado')} {
  * numa borda de trilha, e não em 45rem num lugar e 1205px no outro. */
 .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / -1; }
 .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) > :is(.ucam-textarea, .ucam-compositor) { inline-size: 100%; }
+/* A GRADE DE ESCOLHA DENTRO DA GRADE DE FORMULÁRIO, com uma ou duas
+ * trilhas: dois cartões por fileira. Quatro cartões de 13rem num cartão de
+ * 760px saíam 3 + 1 (Filtros do relatório a 1440, 08/10/2026), e a grade
+ * equilibrada pela contagem é regra da ADR-055. A classe dobrada vence o
+ * :has() que conta os filhos, mais abaixo na folha. */
+${contentorAbaixo('formulario-3col', 'formulario')} {
+  .ucam-form-grid > .ucam-choice-grid.ucam-choice-grid { --ucam-grid-max: 2; }
+}
 ${contentorAcima('formulario-3col', 'formulario')} {
   .ucam-form-grid > .ucam-field:has(> :is(.ucam-textarea, .ucam-compositor)) { grid-column: 1 / span 2; }
   /* O campo LARGO (autocompletar de pessoa, curso, tipo): duas trilhas. */
@@ -2215,11 +2223,17 @@ ${selectChevronCss}
  * meia-lua no canto, porque as curvas não eram concêntricas. Grudado, dobrava
  * de novo com o filete da barra de visão. Fica só para a tabela fora de
  * cartão, que não tem outra borda por cima. */
-.ucam-table-wrap:not(.ucam-card *) .ucam-table thead th {
+/* E só na PRIMEIRA FILEIRA do cabeçalho. No cabeçalho em dois andares a
+ * segunda fileira também levava o traço de cima, colado ao fio do pé da
+ * primeira: linha dupla de 2px entre "Recebido (R$)" e "Itaú" (Recebimentos,
+ * 08/10/2026). O fio entre os andares é um só, o do pé da fileira de cima.
+ * O raio dos cantos obedece ao mesmo limite: "Itaú", primeiro th da segunda
+ * fileira, nascia com meia-lua no canto esquerdo. */
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead tr:first-child > th {
   box-shadow: var(--ucam-table-fio-coluna), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
 }
-.ucam-table thead th:first-child { border-start-start-radius: calc(var(--ucam-radius-surface) - 1px); }
-.ucam-table thead th:last-child { border-start-end-radius: calc(var(--ucam-radius-surface) - 1px); }
+.ucam-table thead tr:first-child > th:first-child { border-start-start-radius: calc(var(--ucam-radius-surface) - 1px); }
+.ucam-table thead tr:first-child > th:last-child { border-start-end-radius: calc(var(--ucam-radius-surface) - 1px); }
 
 /* Quando o invólucro ROLA na horizontal ele vira contêiner de rolagem, e o
  * cabeçalho grudado passa a medir o deslocamento a partir DELE: a soma da
@@ -2740,6 +2754,17 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * aqui, as duas fileiras grudariam no mesmo topo, uma sobre a outra. */
 .ucam-table-wrap:not([data-rola="nao"]) .ucam-table thead tr.ucam-table__grupos + tr > th {
   inset-block-start: 2rem;
+}
+/* O FIO DE COLUNA CONTINUA SOB A CÉLULA DE DOIS ANDARES. O primeiro th da
+ * segunda fileira não tem irmão à esquerda, e a regra do fio ("th + th") não
+ * o alcançava: entre "Dia" e "Itaú" o fio parava na metade da altura. Quando
+ * a célula de cima é a coluna fixa, o fio é dela (borda default) e o de
+ * baixo apaga, como em qualquer vizinha de bloco fixo. */
+.ucam-table thead tr.ucam-table__grupos:has(> th:first-child[rowspan]) + tr > th:first-child {
+  --ucam-table-fio-coluna: inset 1px 0 0 var(--ucam-color-border-subtle);
+}
+.ucam-table thead tr.ucam-table__grupos:has(> th:first-child[rowspan].ucam-col--borda-inicio) + tr > th:first-child {
+  --ucam-table-fio-coluna: 0 0 transparent;
 }
 
 /* 3. LINHA QUE ABRE UMA SUBTABELA. O botão (.ucam-table__expansor) mora na
@@ -3268,10 +3293,12 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table thead .ucam-col--borda-fim {
   box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
 }
-.ucam-table-wrap:not(.ucam-card *) .ucam-table thead .ucam-col--borda-inicio {
+/* tr:first-child pelo mesmo motivo do traço de cima: só a primeira fileira
+ * do cabeçalho o desenha. */
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead tr:first-child > .ucam-col--borda-inicio {
   box-shadow: var(--ucam-table-fio-coluna), inset -1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
 }
-.ucam-table-wrap:not(.ucam-card *) .ucam-table thead .ucam-col--borda-fim {
+.ucam-table-wrap:not(.ucam-card *) .ucam-table thead tr:first-child > .ucam-col--borda-fim {
   box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
 }
 /* UM FIO SÓ na borda do bloco fixo. O fio de coluna da vizinha (borda

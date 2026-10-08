@@ -174,7 +174,7 @@
     {
       "parte": "column-group",
       "obrigatorio": false,
-      "descricao": "Cabeçalho em dois andares: uma fileira acima da de colunas (.ucam-table__grupos) em que cada th com colspan nomeia um grupo (\"Presencial\", \"EAD\"; \"Dinheiro\", \"Cartão\", \"PIX\"). O rótulo do grupo fica centrado sobre as colunas que cobre e não ordena nada. A coluna que não pertence a grupo entra na fileira de cima com rowspan=2. Cada th de grupo leva id, e cada th de coluna leva headers apontando para o grupo: é assim que o leitor de tela anuncia \"EAD, Matrículas\" na célula. As duas fileiras grudam; a de cima tem altura fixa para a de baixo saber onde parar. Até dois andares: três é tabela cruzada, que pede outro desenho.",
+      "descricao": "Cabeçalho em dois andares: uma fileira acima da de colunas (.ucam-table__grupos) em que cada th com colspan nomeia um grupo (\"Presencial\", \"EAD\"; \"Dinheiro\", \"Cartão\", \"PIX\"). O rótulo do grupo fica centrado sobre as colunas que cobre e não ordena nada. A coluna que não pertence a grupo entra na fileira de cima com rowspan=2. Cada th de grupo leva id, e cada th de coluna leva headers apontando para o grupo: é assim que o leitor de tela anuncia \"EAD, Matrículas\" na célula. As duas fileiras grudam; a de cima tem altura fixa para a de baixo saber onde parar. Até dois andares: três é tabela cruzada, que pede outro desenho. Os fios: um só entre os andares (o do pé da fileira de cima), o fio de coluna segue sob a célula de rowspan, e a coluna fixa é a de rowspan — a primeira célula da fileira de baixo não é a primeira coluna.",
       "classe": "ucam-table__grupos"
     },
     {
