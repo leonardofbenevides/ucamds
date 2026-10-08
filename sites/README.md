@@ -16,3 +16,10 @@ sobrescreve semânticos — a primeira é o CENPRE (ADR-068).
 Prefixos: CSS `--ucam-site-*`, SCSS `$ucam-site-*`. O que ainda não existe
 aqui (contratos de componente, catálogo, lib Angular) é dos subprojetos 2 e 3
 da spec.
+
+## Pendências (subprojeto 2)
+
+- `validate-spec.mjs` e `build-index.mjs` parametrizados por raiz de spec.
+- Contratos de componente em `sites/spec/components/` (25 na v1 da spec).
+- `dist/sites/css/ucam-site.css` com as classes `.ucam-site-*`.
+- Seção `/sites` no site de docs; os tokens servidos em `/sites/tokens/`.
