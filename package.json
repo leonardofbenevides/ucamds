@@ -18,7 +18,7 @@
     "legado": "node tools/build-docs.mjs",
     "dev:legado": "node tools/serve.mjs",
     "demo": "node tools/build-demo.mjs",
-    "build": "pnpm run validate && pnpm run tokens && pnpm run marca && pnpm run fonts && pnpm run icons && pnpm run css && pnpm run subpaleta && pnpm run faixa && pnpm run adaptador && pnpm run ui && pnpm run indice && pnpm run telas && pnpm run legado && pnpm run obrigatoriedade && pnpm run regra-anexo && pnpm run demo && pnpm run agentes && pnpm run site",
+    "build": "pnpm run validate && pnpm run tokens && pnpm run marca && pnpm run fonts && pnpm run icons && pnpm run css && pnpm run subpaleta && pnpm run faixa && pnpm run adaptador && pnpm run ui && pnpm run indice && pnpm run telas && pnpm run legado && pnpm run obrigatoriedade && pnpm run regra-anexo && pnpm run demo && pnpm run agentes && pnpm run sites && pnpm run site",
     "icons": "node tools/build-icons.mjs",
     "dev": "pnpm --dir site dev",
     "telas": "node tools/build-templates.mjs",
@@ -36,7 +36,9 @@
     "obrigatoriedade": "node tools/check-obrigatoriedade.mjs",
     "regra-anexo": "node tools/check-regra-anexo.mjs",
     "subpaleta": "node tools/check-subpaleta.mjs",
-    "publicar": "node tools/build-publicacao.mjs"
+    "publicar": "node tools/build-publicacao.mjs",
+    "test:tools": "node --test tools/test/*.test.mjs",
+    "sites": "node tools/build-sites-tokens.mjs && node tools/build-sites-fonts.mjs"
   },
   "devDependencies": {
     "@ng-icons/lucide": "^35.1.0",
@@ -45,6 +47,8 @@
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
-    "@fontsource-variable/geist-mono": "^5.3.0"
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/work-sans": "^5.3.0"
   }
 }

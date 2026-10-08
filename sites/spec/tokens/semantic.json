@@ -1,0 +1,180 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Camada 2 dos sites — a ÚNICA camada pública (ADR-007). Cada token nomeia um papel; nenhum nomeia uma cor. Lê o primitivo compartilhado mais a extensão. Não há tema escuro nos sites; há superfície INVERSA (seções escuras: hero, rodapé, CTA), que é outra coisa — é uma superfície, não um tema.",
+  "_meta": {
+    "regra": "Proibido nome de token que descreva a cor. Proibido hex cru em cor: tools/build-sites-tokens.mjs falha.",
+    "verificacao": "tools/build-sites-tokens.mjs confere contraste de cada par na base e em cada submarca, e marca × destrutivo nos três estados."
+  },
+  "color": {
+    "$type": "color",
+    "surface": {
+      "canvas": { "$value": "{neutral.0}", "$description": "Fundo da página." },
+      "default": { "$value": "{neutral.0}", "$description": "Cartão, painel." },
+      "subtle": { "$value": "{neutral.50}", "$description": "Seção que recua um degrau (faixa de depoimentos, biblioteca)." },
+      "sunken": { "$value": "{neutral.100}", "$description": "Campo, chip neutro, fundo de código." },
+      "inverse": { "$value": "{neutral.700}", "$description": "Seção escura: hero com foto, rodapé, CTA final. O charcoal-500 do CENPRE (L 35,6) cai aqui (L 37,1). Branco em cima dá 10,37:1." },
+      "brand": { "$value": "{wine.600}", "$description": "Faixa de marca. A submarca troca." },
+      "brand-soft": { "$value": "{wine.50}", "$description": "Lavagem da marca: fundo de tag, de ícone-chip." }
+    },
+    "text": {
+      "primary": { "$value": "{neutral.800}", "$description": "Título. 15,16:1 sobre branco." },
+      "body": { "$value": "{neutral.700}", "$description": "Corpo. O charcoal-400 do CENPRE." },
+      "secondary": { "$value": "{neutral.600}", "$description": "Apoio, meta de cartão. 7,23:1." },
+      "muted": { "$value": "{neutral.550}", "$description": "Legenda, placeholder. 5,70:1 sobre branco — o menor degrau de texto que o site usa." },
+      "on-inverse": { "$value": "{neutral.0}" },
+      "on-inverse-muted": { "$value": "{neutral.300}", "$description": "Apoio sobre seção escura. 9,89:1 sobre neutral.800; mais sobre o 700." },
+      "on-brand": { "$value": "{neutral.0}" },
+      "on-action": { "$value": "{neutral.0}" },
+      "link": { "$value": "{wine.600}", "$description": "Link no corpo. A submarca troca." },
+      "link-hover": { "$value": "{wine.700}" }
+    },
+    "action": {
+      "primary": {
+        "default": { "$value": "{wine.600}" },
+        "hover": { "$value": "{wine.700}" },
+        "active": { "$value": "{wine.800}" },
+        "subtle": { "$value": "{wine.50}", "$description": "Fundo do botão terciário em hover e do chip de marca." }
+      },
+      "secondary": {
+        "default": { "$value": "{neutral.0}" },
+        "hover": { "$value": "{neutral.50}" },
+        "active": { "$value": "{neutral.100}" },
+        "border": { "$value": "{neutral.400}", "$description": "3,47:1 sobre branco — acima do piso de 3:1 da 1.4.11. Nos sites a borda do secundário NÃO é desvio como na ADR-009: botão de site não tem campo ao lado para herdar repouso." }
+      },
+      "danger": {
+        "default": { "$value": "{red.600}" },
+        "hover": { "$value": "{red.700}" },
+        "active": { "$value": "{red.800}" },
+        "subtle": { "$value": "{red.100}" }
+      },
+      "disabled": {
+        "background": { "$value": "{neutral.200}" },
+        "text": { "$value": "{neutral.600}" }
+      }
+    },
+    "border": {
+      "subtle": { "$value": "{neutral.150}" },
+      "default": { "$value": "{neutral.200}", "$description": "O ash-300 do CENPRE, a borda padrão de cartão." },
+      "strong": { "$value": "{neutral.400}" },
+      "focus": { "$value": "{neutral.500}", "$description": "Anel de foco cinza, ADR-048: foco é estado de interação, não marca. 4,71:1 sobre branco." },
+      "on-inverse": { "$value": "{neutral.550}" },
+      "focus-on-inverse": { "$value": "{neutral.300}", "$description": "O anel sobre seção escura é outro degrau, medido: 9,89:1 sobre neutral.800." }
+    },
+    "feedback": {
+      "$description": "Os mesmos pares da aplicação. Sempre com ícone e texto (WCAG 1.4.1).",
+      "success": { "background": { "$value": "{green.100}" }, "foreground": { "$value": "{green.700}" }, "border": { "$value": "{green.500}" } },
+      "warning": { "background": { "$value": "{amber.100}" }, "foreground": { "$value": "{amber.700}" }, "border": { "$value": "{amber.500}" } },
+      "danger": { "background": { "$value": "{red.100}" }, "foreground": { "$value": "{red.700}" }, "border": { "$value": "{red.500}" } },
+      "info": { "background": { "$value": "{blue.100}" }, "foreground": { "$value": "{blue.700}" }, "border": { "$value": "{blue.500}" } }
+    },
+    "interaction": {
+      "hover": { "$value": "{alpha.ink-weak}" },
+      "active": { "$value": "{alpha.ink-strong}" }
+    }
+  },
+  "font": {
+    "$type": "fontFamily",
+    "display": { "$value": "{fontFamily.display}" },
+    "body": { "$value": "{fontFamily.body}" }
+  },
+  "typography": {
+    "$type": "typography",
+    "$description": "Dois eixos: display (Work Sans, apertado) e body (Inter, 1,5). Os pesos são os do compartilhado — 560 e 650 no eixo variável — porque Inter e Work Sans são variáveis e 600/700 redondos pesam demais em título grande, pelo mesmo motivo da Geist.",
+    "display-hero": { "$value": { "fontFamily": "{fontFamily.display}", "fontSize": "{fontSize.display-hero}", "fontWeight": "{fontWeight.bold}", "lineHeight": "1.03", "letterSpacing": "-0.02em" } },
+    "display-page": { "$value": { "fontFamily": "{fontFamily.display}", "fontSize": "{fontSize.display-page}", "fontWeight": "{fontWeight.bold}", "lineHeight": "1.03", "letterSpacing": "-0.02em" } },
+    "display-section": { "$value": { "fontFamily": "{fontFamily.display}", "fontSize": "{fontSize.display-section}", "fontWeight": "{fontWeight.semibold}", "lineHeight": "1.12", "letterSpacing": "-0.015em" } },
+    "display-section-sm": { "$value": { "fontFamily": "{fontFamily.display}", "fontSize": "{fontSize.display-section-sm}", "fontWeight": "{fontWeight.semibold}", "lineHeight": "1.12", "letterSpacing": "-0.01em" } },
+    "title": { "$value": { "fontFamily": "{fontFamily.body}", "fontSize": "{fontSize.title}", "fontWeight": "{fontWeight.semibold}", "lineHeight": "1.3" }, "$description": "Título de cartão e de pergunta do FAQ. 20px." },
+    "lede": { "$value": { "fontFamily": "{fontFamily.body}", "fontSize": "{fontSize.xl}", "fontWeight": "{fontWeight.regular}", "lineHeight": "1.5" }, "$description": "Parágrafo de abertura, 18px." },
+    "body-lg": { "$value": { "fontFamily": "{fontFamily.body}", "fontSize": "{fontSize.lg}", "fontWeight": "{fontWeight.regular}", "lineHeight": "1.5" }, "$description": "16px. Prosa de artigo." },
+    "body": { "$value": { "fontFamily": "{fontFamily.body}", "fontSize": "{fontSize.md}", "fontWeight": "{fontWeight.regular}", "lineHeight": "1.5" }, "$description": "15px. Parágrafo e item de lista — o $fs-base do CENPRE." },
+    "caption": { "$value": { "fontFamily": "{fontFamily.body}", "fontSize": "{fontSize.base}", "fontWeight": "{fontWeight.regular}", "lineHeight": "1.4" }, "$description": "14px. Meta de cartão, legenda." },
+    "eyebrow": { "$value": { "fontFamily": "{fontFamily.body}", "fontSize": "{fontSize.xs}", "fontWeight": "{fontWeight.semibold}", "lineHeight": "1rem", "letterSpacing": "0.08em" }, "$description": "12px, caixa alta pelo componente. A palavra acima do título de seção." },
+    "action": { "$value": { "fontFamily": "{fontFamily.body}", "fontSize": "{fontSize.md}", "fontWeight": "{fontWeight.semibold}", "lineHeight": "1.25rem" }, "$description": "Rótulo de botão e de link de navegação." }
+  },
+  "space": {
+    "$type": "dimension",
+    "$description": "Seção respira mais que aplicação. Os degraus vêm do compartilhado mais a extensão (14, 18, 20, 24).",
+    "section": { "$value": "{space.24}", "$description": "96px entre seções no desktop." },
+    "section-sm": { "$value": "{space.16}", "$description": "64px entre seções no telefone, e entre blocos dentro de uma seção." },
+    "block": { "$value": "{space.12}", "$description": "48px: título de seção até o conteúdo." },
+    "gutter": { "$value": "{space.18}", "$description": "72px de margem lateral no desktop." },
+    "gutter-sm": { "$value": "{space.4}", "$description": "16px de margem lateral no telefone." },
+    "stack-lg": { "$value": "{space.8}" },
+    "stack-md": { "$value": "{space.6}" },
+    "stack-sm": { "$value": "{space.4}" },
+    "stack-xs": { "$value": "{space.2}" },
+    "inline-md": { "$value": "{space.4}" },
+    "inline-sm": { "$value": "{space.2}" },
+    "inline-xs": { "$value": "{space.1}" },
+    "inset-card": { "$value": "{space.6}", "$description": "24px dentro do cartão." },
+    "inset-control": { "$value": "{space.5}", "$description": "20px nas laterais do botão." }
+  },
+  "container": {
+    "$type": "dimension",
+    "faixa": { "$value": "90rem", "$description": "1440px. Largura máxima de hero e seção full-bleed." },
+    "miolo": { "$value": "81rem", "$description": "1296px. Largura máxima do conteúdo." },
+    "prosa": { "$value": "51.25rem", "$description": "820px. Texto corrido de artigo." }
+  },
+  "radius": {
+    "$type": "dimension",
+    "control": { "$value": "{radius.lg}", "$description": "8px: botão, campo, ícone-chip. O $radius-chip do CENPRE." },
+    "card": { "$value": "{radius.2xl}", "$description": "16px: cartão e imagem grande." },
+    "pill": { "$value": "{radius.full}", "$description": "Tag, pílula, avatar." }
+  },
+  "elevation": {
+    "$type": "shadow",
+    "$description": "Os degraus do compartilhado. As sombras do Figma do CENPRE são tingidas de charcoal (rgba(48,62,73,…)); as daqui são pretas a opacidade parecida. A diferença não é visível a olho em superfície branca, e um degrau a mais não paga uma rampa paralela.",
+    "button": { "$value": "{shadow.xs}" },
+    "card": { "$value": "{shadow.sm}" },
+    "card-hover": { "$value": "{shadow.md}" },
+    "popover": { "$value": "{shadow.lg}" },
+    "modal": { "$value": "{shadow.stack}" }
+  },
+  "motion": {
+    "easing": {
+      "$type": "cubicBezier",
+      "standard": { "$value": "{easing.standard}" },
+      "entrance": { "$value": "{easing.entrance}" },
+      "emphasized": { "$value": "{easing.emphasized}" }
+    },
+    "duration": {
+      "$type": "duration",
+      "state": { "$value": "{duration.fast}" },
+      "reveal": { "$value": "{duration.normal}" },
+      "travel": { "$value": "{duration.slow}" }
+    }
+  },
+  "focus": {
+    "$type": "dimension",
+    "ring-width": { "$value": "2px" },
+    "ring-offset": { "$value": "2px" }
+  },
+  "size": {
+    "$type": "dimension",
+    "control-md": { "$value": "2.75rem", "$description": "44px: botão e campo de site. É também o alvo mínimo de toque." },
+    "control-lg": { "$value": "3.25rem", "$description": "52px: o botão do hero e da CTA." },
+    "touch-min": { "$value": "2.75rem" },
+    "icon-sm": { "$value": "1rem" },
+    "icon-md": { "$value": "1.25rem" },
+    "icon-lg": { "$value": "1.5rem" },
+    "avatar": { "$value": "2.5rem", "$description": "40px no depoimento." }
+  },
+  "viewport": {
+    "$type": "dimension",
+    "$description": "Mobile-first: sempre min-width. Nomes pelo que muda, não pelo aparelho.",
+    "duas-colunas": { "$value": "{breakpoint.sm}", "$description": "640px: cartões passam a dois por fileira." },
+    "nav-aberta": { "$value": "{breakpoint.md}", "$description": "768px: o menu sai da gaveta." },
+    "grade-completa": { "$value": "{breakpoint.xl}", "$description": "1024px: três e quatro colunas; gutter de 72." },
+    "desktop-largo": { "$value": "{breakpoint.2xl}", "$description": "1280px: o miolo chega ao teto de 1296." }
+  },
+  "z": {
+    "$type": "number",
+    "base": { "$value": 0 },
+    "header": { "$value": 100 },
+    "scrim": { "$value": 190 },
+    "menu": { "$value": 200 },
+    "overlay": { "$value": 300 },
+    "skip": { "$value": 400 }
+  }
+}

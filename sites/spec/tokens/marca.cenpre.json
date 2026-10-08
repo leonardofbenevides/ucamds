@@ -1,0 +1,25 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Camada 3 — submarca CENPRE (ADR-068). Sobrescreve APENAS tokens semânticos, remapeando-os para a rampa magenta da extensão. Nenhum token novo nasce aqui; tools/build-sites-tokens.mjs falha se nascer. Aplicada por data-marca=\"cenpre\" no elemento raiz.",
+  "_meta": {
+    "medida": "magenta.700 como ação dá d=0,010 contra red.600 sob tritanopia. A ação desce para o 800 (d=0,101, o mesmo par do UCAMDS); a superfície de marca e o link ficam no 700, que não entram no par decisivo."
+  },
+  "color": {
+    "surface": {
+      "brand": { "$value": "{magenta.700}" },
+      "brand-soft": { "$value": "{magenta.100}" }
+    },
+    "text": {
+      "link": { "$value": "{magenta.700}" },
+      "link-hover": { "$value": "{magenta.800}" }
+    },
+    "action": {
+      "primary": {
+        "default": { "$value": "{magenta.800}" },
+        "hover": { "$value": "{magenta.900}" },
+        "active": { "$value": "{magenta.1000}" },
+        "subtle": { "$value": "{magenta.100}" }
+      }
+    }
+  }
+}

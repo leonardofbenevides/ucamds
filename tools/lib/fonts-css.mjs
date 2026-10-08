@@ -11,6 +11,15 @@ export const familias = [
   { pkg: '@fontsource-variable/geist-mono', arquivo: 'geist-mono', nome: 'Geist Mono Variable' },
 ];
 
+// Os sites (sites/spec/tokens/primitive.json, ADR-069) têm voz editorial:
+// Work Sans para display e Inter para corpo. É o que o Figma "UCAM SITE"
+// especifica e o que os dois sites já carregam — de CDN, que é o que a
+// auto-hospedagem corrige.
+export const familiasSites = [
+  { pkg: '@fontsource-variable/work-sans', arquivo: 'work-sans', nome: 'Work Sans Variable' },
+  { pkg: '@fontsource-variable/inter', arquivo: 'inter', nome: 'Inter Variable' },
+];
+
 // latin cobre o português; latin-ext entra pelos nomes próprios com diacrítico
 // fora do latin básico. Cirílico e grego, que o @fontsource também traz, não
 // servem a uma universidade brasileira e triplicariam o peso.
@@ -27,13 +36,15 @@ export const subconjuntos = [
   },
 ];
 
-export const arquivosWoff2 = familias.flatMap((f) =>
-  subconjuntos.map((s) => `${f.arquivo}-${s.id}-wght-normal.woff2`),
-);
+export const arquivosWoff2De = (lista) =>
+  lista.flatMap((f) => subconjuntos.map((s) => `${f.arquivo}-${s.id}-wght-normal.woff2`));
 
-/** @param prefixo caminho até a pasta das fontes, sem barra final. */
-export function fontFaceCss(prefixo) {
-  return familias
+export const arquivosWoff2 = arquivosWoff2De(familias);
+
+/** @param prefixo caminho até a pasta das fontes, sem barra final.
+ *  @param lista famílias a declarar; a aplicação usa a padrão, os sites passam familiasSites. */
+export function fontFaceCss(prefixo, lista = familias) {
+  return lista
     .flatMap((familia) =>
       subconjuntos.map(
         (sub) => `@font-face {

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Camada 1 dos sites — EXTENSÃO do primitivo compartilhado (spec/tokens/primitive.json). Só acrescenta: grupo novo ou degrau novo. Redefinir degrau que exista lá é falha de build (tools/lib/tokens.mjs, mesclarPrimitivos). Tudo que a aplicação e o site têm em comum — marca, neutros, feedback, raio, sombra, movimento — mora no compartilhado e não se repete aqui.",
+  "_meta": {
+    "origem": "Valores extraídos de projects/cenpre-ui-kit/styles/_tokens.scss do repositório cenpre-ui-angular-scss (Figma \"UCAM SITE\", página CENPRE - 2.0), medidos em 08/10/2026.",
+    "regra": "Hex só na rampa magenta, que é submarca (ADR-068). Tamanho de display em clamp() porque a escala de um site responde à largura da janela sem media query por degrau."
+  },
+  "magenta": {
+    "$type": "color",
+    "$description": "Submarca do CENPRE (ADR-068). Mesma família do bordô — matiz 7° a 9° em OKLCH contra 15° do wine — dezesseis pontos de L mais clara no 700 e mais saturada. O 900 (L 36) é, na prática, o wine.700 (L 36). Hex mantidos do Figma; o portão mede.",
+    "100": { "$value": "#FFF0F5" },
+    "200": { "$value": "#FFDDE8" },
+    "300": { "$value": "#FCB9CE" },
+    "400": { "$value": "#F494B2" },
+    "500": { "$value": "#EA7095" },
+    "600": { "$value": "#D64E76", "$description": "Branco em cima dá 4,03:1 — não serve de ação. Fica para preenchimento decorativo." },
+    "700": { "$value": "#B4365B", "$description": "A cor de marca do CENPRE. Superfície de marca e link (5,80:1 sobre branco). NÃO é a ação primária: contra red.600 dá d=0,010 sob tritanopia — a mesma cor que o destrutivo. Ver ADR-068." },
+    "800": { "$value": "#922243", "$description": "Ação primária do CENPRE. Branco em cima 8,29:1; contra red.600, d=0,101 no pior caso — o mesmo que o par wine.600 × red.600 do UCAMDS." },
+    "900": { "$value": "#70132F", "$description": "Hover do primário. L 36, a altura do wine.700." },
+    "1000": { "$value": "#530E23", "$description": "Active do primário." }
+  },
+  "fontFamily": {
+    "display": {
+      "$value": "\"Work Sans Variable\", \"Inter Variable\", ui-sans-serif, system-ui, sans-serif",
+      "$description": "Títulos e hero. Work Sans auto-hospedada (tools/build-sites-fonts.mjs), sem CDN. ADR-069."
+    },
+    "body": {
+      "$value": "\"Inter Variable\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+      "$description": "Corpo e interface do site. Inter auto-hospedada. ADR-069."
+    }
+  },
+  "fontSize": {
+    "title": { "$value": "1.25rem", "$description": "20px. Título de cartão e de grupo (FAQ). O compartilhado para no xl (18px) e pula para 2xl (22px)." },
+    "display-section-sm": { "$value": "clamp(1.9rem, 3.6vw, 3rem)", "$description": "Título de seção compacta: 30 a 48px." },
+    "display-section": { "$value": "clamp(2rem, 4vw, 3.25rem)", "$description": "Título de seção principal: 32 a 52px." },
+    "display-page": { "$value": "clamp(2.25rem, 4.5vw, 3.75rem)", "$description": "Hero das subpáginas: 36 a 60px." },
+    "display-hero": { "$value": "clamp(2.35rem, 5vw, 4.25rem)", "$description": "Hero da home: 38 a 68px." }
+  },
+  "space": {
+    "14": { "$value": "3.5rem", "$description": "56px." },
+    "18": { "$value": "4.5rem", "$description": "72px. A margem lateral do conteúdo no desktop, a mesma em todas as páginas do Figma." },
+    "20": { "$value": "5rem", "$description": "80px." },
+    "24": { "$value": "6rem", "$description": "96px. Respiro entre seções de página." }
+  },
+  "breakpoint": {
+    "2xl": { "$value": "80rem", "$description": "1280px. O desktop largo do Figma (1440) começa a valer aqui. Os sites usam sm, md e xl do compartilhado (640, 768, 1024)." }
+  }
+}
