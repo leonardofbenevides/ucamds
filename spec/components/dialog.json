@@ -320,7 +320,7 @@
     "trilho_a": {
       "contrato": "Superfície e sobreposição. O <dialog> nativo carrega o resto.",
       "raiz": ".ucam-dialog",
-      "nota": "Foco preso, inert atrás e fechamento por Escape vêm do elemento <dialog> nativo, não do CSS. Um <div class=\"ucam-dialog\"> tem o visual certo e nenhum dos comportamentos.",
+      "nota": "Foco preso, inert atrás e fechamento por Escape vêm do elemento <dialog> nativo, não do CSS. Um <div class=\"ucam-dialog\"> tem o visual certo e nenhum dos comportamentos. O fechamento por clique no fundo NÃO vem do nativo: o ::backdrop não recebe evento, o clique chega ao <dialog>, e é o retângulo que diz se foi fora da caixa — um listener de documento (dialogoScript, tools/lib/shell.mjs) fecha todo .ucam-dialog aberto nesse caso, salvo aria-busy=true ou data-dismissible=\"false\". Mesma conta do aoClicarNoFundo do componente Angular.",
       "estado": "loading: aria-busy=true no <dialog>, aria-disabled=true no botão de fechar e o cancel do Esc impedido em script; o botão primário leva aria-busy, aria-disabled e o svg.ic.ucam-spinner no lugar do ícone."
     },
     "trilho_b": "ui/projects/ui/src/lib/ucam/dialog/ucam-dialog.ts — <ucam-dialog>. SOBRE O <dialog> NATIVO, com showModal — e não sobre o overlay do CDK nem sobre o z-dialog da base. Entradas: title, size, variant, dismissible, loading, initialFocus, open. Saídas: closed. (Entrada escrita em 29/09/2026 a partir do código; o contrato manda nos nomes.)"

@@ -929,8 +929,15 @@ ${abaixo('controle-deitado')} {
 /* A TEXTAREA FORA DA GRADE para na medida de leitura (48rem, a mesma de
  * .ucam-corpo--leitura): a descrição do Novo requerimento abria em 1205px a
  * 1920, ~170 caracteres por linha (28/09/2026). Na grade quem manda é a
- * trilha (1 / span 2). */
-:where(:not(.ucam-form-grid) > .ucam-field) > .ucam-textarea { max-inline-size: 48rem; }
+ * trilha (1 / span 2).
+ *
+ * Salvo no campo que DECLARA ocupar a linha (.ucam-field--linha): aí o teto
+ * é o do cartão, como o --linha já fazia com os outros controles. Foi o que
+ * a Observação da isenção mostrou (08/10/2026, "campo fill"): sozinha num
+ * cartão de largura cheia, a textarea parava em 768px e o contador "0 de 150
+ * caracteres", alinhado ao fim do campo, ficava 265px à direita dela — o
+ * número lia como de outra coisa. */
+:where(:not(.ucam-form-grid) > .ucam-field:not(.ucam-field--linha)) > .ucam-textarea { max-inline-size: 48rem; }
 
 /* O TETO É DO CAMPO, não da fileira (28/09/2026, auditoria de largura). O
  * teto de 30rem só valia em .ucam-form-row > .ucam-field; campo solto numa
@@ -9733,6 +9740,14 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   color: var(--ucam-color-text-secondary);
 }
 .ucam-ia-nota > .ic { flex: none; inline-size: 0.8125rem; block-size: 0.8125rem; margin-block-start: 0.2em; opacity: 0.8; }
+/* O Desfazer da nota é botão (link.json: ação não é link), no degrau sm. A
+ * nota alinha pelo topo para o ícone acompanhar a primeira linha de um texto
+ * que quebra; com botão na fileira, o botão de 32px é o item mais alto e o
+ * texto de uma linha ficava 8px acima do rótulo dele (medido 08/10/2026).
+ * Com botão, a fileira centra inteira: ícone, frase e botão na mesma linha. */
+.ucam-ia-nota > .ucam-btn { flex: none; }
+.ucam-ia-nota:has(> .ucam-btn) { align-items: center; }
+.ucam-ia-nota:has(> .ucam-btn) > .ic { margin-block-start: 0; }
 .ucam-ia-nota--caixa {
   padding: var(--ucam-space-inline-sm) var(--ucam-space-inline-md);
   border: 1px solid var(--ucam-color-border-subtle);

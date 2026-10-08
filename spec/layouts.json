@@ -274,7 +274,7 @@
         },
         {
           "classe": "ucam-field--linha",
-          "quando": "Ocupa a linha inteira: grupo de caixas, grade de escolha, grupo de interruptores. Todo filho da grade que não é campo nem grupo (aviso, cluster, anexos) já ocupa a linha."
+          "quando": "Ocupa a linha inteira: grupo de caixas, grade de escolha, grupo de interruptores. Todo filho da grade que não é campo nem grupo (aviso, cluster, anexos) já ocupa a linha. Fora da grade, é o que tira da textarea o teto de 48rem: o campo preenche o cartão e o contador termina onde ele termina (Observação da isenção, 08/10/2026)."
         },
         {
           "classe": "ucam-form-row (dentro da grade)",
@@ -282,7 +282,7 @@
         },
         {
           "classe": "textarea / compositor",
-          "quando": "Linha inteira com uma ou duas trilhas; 1 / span 2 com três ou mais (~48rem, a medida de leitura). Fora da grade, a textarea para em 48rem."
+          "quando": "Linha inteira com uma ou duas trilhas; 1 / span 2 com três ou mais (~48rem, a medida de leitura). Fora da grade, a textarea para em 48rem, salvo em .ucam-field--linha."
         }
       ],
       "variaveis": [],

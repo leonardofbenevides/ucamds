@@ -4210,7 +4210,7 @@ ${FN_ANUNCIA}
         notaIA.className = 'ucam-field__hint ucam-ia-nota';
         campoIA.closest('.ucam-field').appendChild(notaIA);
       }
-      notaIA.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg> Rascunho da IA a partir das disciplinas com documento pedido. Revise antes de enviar. <button type="button" class="ucam-link ucam-link--apoio" data-fluxo="c" data-acao="ia-desfazer-observacao">Desfazer</button>';
+      notaIA.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg> Rascunho da IA a partir das disciplinas com documento pedido. Revise antes de enviar. <button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-fluxo="c" data-acao="ia-desfazer-observacao">Desfazer</button>';
       campoIA.focus();
       anuncia('Rascunho da IA no campo de observação. Revise antes de enviar.', botao);
       return;
@@ -6301,6 +6301,25 @@ export const dialogoScript = `
     var primeiro = d.querySelector('select, [data-listbox], input, textarea');
     if (primeiro) primeiro.focus();
   }, true);
+
+  /* CLICAR NO FUNDO FECHA (08/10/2026: "clicar fora no modal faz fechar").
+   * O contrato (dismissible, padrão true) promete Esc, fundo e ×; o <dialog>
+   * nativo entrega só o Esc. O ::backdrop não recebe evento próprio: o clique
+   * nele chega ao próprio <dialog>, e o que distingue fundo de conteúdo é o
+   * retângulo — ponto fora da caixa, foi no fundo. Mesma conta do
+   * aoClicarNoFundo do Trilho B. Vale para TODO .ucam-dialog da página, o do
+   * HTML e o que o confirmaScript monta, e respeita as duas exceções do
+   * contrato: aria-busy (operação em curso) e data-dismissible="false"
+   * (perda de dado, com saída rotulada na tela). Fechar pelo fundo é desistir:
+   * returnValue fica vazio e o onclose de quem abriu não confirma nada. */
+  document.addEventListener('click', function (e) {
+    var d = e.target;
+    if (!d || d.tagName !== 'DIALOG' || !d.open || !d.classList.contains('ucam-dialog')) return;
+    if (d.getAttribute('aria-busy') === 'true' || d.getAttribute('data-dismissible') === 'false') return;
+    var r = d.getBoundingClientRect();
+    var dentro = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (!dentro) d.close();
+  });
 })();
 `;
 
