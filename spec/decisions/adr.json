@@ -1285,7 +1285,7 @@
         "Sob deuteranopia o violeta encosta no azul e o turquesa no verde: o significado continua na PALAVRA do selo, nunca só na cor (WCAG 1.4.1). Os dois tons novos ficam fora de color.feedback de propósito — têm a matiz de duas categorias de sistema, e o portão da subpaleta os reprovaria.",
         "Só o selo lê os tons de situação. Alerta, indicador, linha do tempo e o tom do seletor segmentado continuam nos quatro de feedback.",
         "Rótulo novo numa tela escolhe entre sete tons pela pergunta \"de quem é a vez?\": de quem lê (aviso), da equipe (informação), de outra pessoa (espera), de ninguém (neutro); e, fechado o caso, deu certo (sucesso) ou não (perigo). Tipo e categoria vão em classe.",
-        "O esboço em Angular de cada tela (campo codigo) não foi retonalizado nesta rodada: ele ainda pode citar o tom antigo."
+        "O esboço em Angular de cada tela (campo codigo) foi retonalizado no mesmo dia, nos quatro pontos em que citava o tom antigo."
       ],
       "afeta": ["*", "badge", "stat", "data-table", "text-field", "button"]
     }
