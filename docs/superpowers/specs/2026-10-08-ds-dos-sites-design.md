@@ -198,8 +198,10 @@ Contratos em `sites/spec/components/`, no **mesmo
 componente de site não tem (mapa de migração do legado, por exemplo) recebe
 o valor que o schema já aceita para "não se aplica".
 
-A v1 porta as 18 peças do `cenpre-ui-kit` e acrescenta as quatro que a home
-institucional precisa e o CENPRE não tem:
+A v1 tem 25 contratos: as 18 peças do `cenpre-ui-kit`, o `section-heading`
+que lá é só CSS, três seções de página do CENPRE que viram peça porque o
+`www` também as tem (`hero`, `stats-band`, `prose`) e três que só a home
+institucional precisa (`course-card`, `testimonial`, `newsletter-form`):
 
 | Grupo | Componentes | Origem |
 |---|---|---|
@@ -275,7 +277,7 @@ Na sequência única, depois da ADR-066:
 | # | Subprojeto | Entrega | Critério de aceite |
 |---|---|---|---|
 | 1 | **Fundação compartilhada** | Ferramenta parametrizada, `sites/spec/tokens/`, extensão, submarca CENPRE, portões, `dist/sites/tokens/`, ADR-067/068/069 | `pnpm run build` do UCAMDS com o mesmo resultado; `pnpm run sites` passa daltonismo, contraste, hex cru e colisão; cada token do CENPRE tem destino no adaptador |
-| 2 | Componentes v1 e `@ucam/site-css` | 22 contratos, CSS gerado, seção `/sites` no docs | Cada contrato passa o schema; o catálogo mostra os 22 com miniatura |
+| 2 | Componentes v1 e `@ucam/site-css` | 25 contratos, CSS gerado, seção `/sites` no docs | Cada contrato passa o schema; o catálogo mostra os 25 com miniatura |
 | 3 | `@ucam/site-ui` e a prova no CENPRE | Lib Angular 22; o `cenpre-ui-angular-scss` consome tokens e lib com zero hex cru no kit | Site do CENPRE no ar renderizando igual, medido por captura, Cypress verde |
 | 4 | O `www` | Adaptador Bootstrap/M3 → tokens; mega-menu, course-finder, carousel | Fica para spec própria quando houver acesso ao repositório do `www` |
 
