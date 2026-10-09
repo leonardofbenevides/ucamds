@@ -889,6 +889,12 @@ ${contentorAbaixo('formulario-em-fileira')} {
 }
 .ucam-form-row > .ucam-field--grow .ucam-input,
 .ucam-form-row > .ucam-field--grow .ucam-select { inline-size: 100%; }
+/* O campo de DATA que cresce: o invólucro do calendário (.ucam-date-field) é
+ * inline-block e mede o conteúdo, e a regra do dado (10ch + 3rem, mais
+ * específica) vencia o --grow. "Ingresso de/até" nos filtros do relatório
+ * preenche a trilha como os meses de Competência (08/10/2026). */
+.ucam-form-row > .ucam-field--grow .ucam-date-field,
+.ucam-form-row > .ucam-field--grow .ucam-date-field .ucam-input { inline-size: 100%; }
 
 /* Sem subgrid, cai para alinhamento pelo topo: os controles desalinham se um
  * rótulo quebrar em duas linhas, mas nada empurra rótulo para baixo. */
@@ -2222,21 +2228,16 @@ ${selectChevronCss}
   --ucam-table-fio-coluna: 0 0 transparent;
   box-shadow: var(--ucam-table-fio-coluna), inset 0 -1px 0 var(--ucam-color-border-default);
 }
-/* TRAÇO EM CIMA SÓ ONDE NADA O DESENHA. Entrou em 25/09/2026 para toda
- * tabela ("o topo do header está sem stroke") e, dentro de cartão, pintava um
- * segundo fio colado na borda do cartão: linha dupla, de duas cores, e uma
- * meia-lua no canto, porque as curvas não eram concêntricas. Grudado, dobrava
- * de novo com o filete da barra de visão. Fica só para a tabela fora de
- * cartão, que não tem outra borda por cima. */
-/* E só na PRIMEIRA FILEIRA do cabeçalho. No cabeçalho em dois andares a
- * segunda fileira também levava o traço de cima, colado ao fio do pé da
- * primeira: linha dupla de 2px entre "Recebido (R$)" e "Itaú" (Recebimentos,
- * 08/10/2026). O fio entre os andares é um só, o do pé da fileira de cima.
- * O raio dos cantos obedece ao mesmo limite: "Itaú", primeiro th da segunda
- * fileira, nascia com meia-lua no canto esquerdo. */
-.ucam-table-wrap:not(.ucam-card *) .ucam-table thead tr:first-child > th {
-  box-shadow: var(--ucam-table-fio-coluna), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
-}
+/* SEM TRAÇO EM CIMA. Entrou em 25/09/2026 ("o topo do header está sem
+ * stroke"), quando o invólucro ainda não tinha borda; dentro de cartão
+ * dobrava com a borda do cartão e saiu de lá no mesmo dia. Fora de cartão
+ * ficou — e o invólucro ganhou a sua borda de 1px: medido em 08/10/2026 nos
+ * Parâmetros dos setores e em Recebimentos, o topo do cabeçalho tinha duas
+ * linhas coladas, a subtle do invólucro e a default do th. A linha de cima
+ * do cabeçalho é a borda de quem o contém — invólucro ou cartão —, uma só,
+ * e o th desenha só o pé e o fio de coluna. O raio dos cantos vale só na
+ * PRIMEIRA FILEIRA: no cabeçalho em dois andares "Itaú", primeiro th da
+ * segunda fileira, nascia com meia-lua no canto esquerdo. */
 .ucam-table thead tr:first-child > th:first-child { border-start-start-radius: calc(var(--ucam-radius-surface) - 1px); }
 .ucam-table thead tr:first-child > th:last-child { border-start-end-radius: calc(var(--ucam-radius-surface) - 1px); }
 
@@ -2707,8 +2708,11 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table tbody tr[aria-selected="true"] > :is(th, td):not(.td--selecao):nth-child(1 of :not(.td--selecao)) {
   font-weight: var(--ucam-typography-action-font-weight);
 }
-.ucam-table tbody tr:last-child td,
-.ucam-table tbody tr:last-child th { border-block-end: 0; }
+/* A ÚLTIMA LINHA VISÍVEL, não a última do HTML. Paginação e filtro escondem
+ * linhas com [hidden]: com :last-child a última que se VÊ guardava o fio do
+ * pé, colado à borda do invólucro — duas linhas no pé da tabela (Resultado
+ * do relatório, 08/10/2026). "of" conta só quem ocupa lugar. */
+.ucam-table tbody tr:nth-last-child(1 of :not([hidden])) :is(td, th) { border-block-end: 0; }
 
 /* TRÊS PEÇAS DA TABELA DE RELATÓRIO (06/10/2026).
  *
@@ -3298,14 +3302,8 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table thead .ucam-col--borda-fim {
   box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
 }
-/* tr:first-child pelo mesmo motivo do traço de cima: só a primeira fileira
- * do cabeçalho o desenha. */
-.ucam-table-wrap:not(.ucam-card *) .ucam-table thead tr:first-child > .ucam-col--borda-inicio {
-  box-shadow: var(--ucam-table-fio-coluna), inset -1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
-}
-.ucam-table-wrap:not(.ucam-card *) .ucam-table thead tr:first-child > .ucam-col--borda-fim {
-  box-shadow: inset 1px 0 0 var(--ucam-color-border-default), inset 0 1px 0 var(--ucam-color-border-default), inset 0 -1px 0 var(--ucam-color-border-default);
-}
+/* (As variantes fora de cartão, que somavam o traço de cima, saíram em
+ * 08/10/2026 junto com ele — ver "SEM TRAÇO EM CIMA".) */
 /* UM FIO SÓ na borda do bloco fixo. O fio de coluna da vizinha (borda
  * subtle à esquerda) encostava na borda default do bloco e desenhava uma
  * linha dupla, mais grossa e de dois tons. A vizinha apaga o dela; na coluna
@@ -4202,6 +4200,12 @@ ${SISTEMAS.map((s) => '.ucam-icon-tile--' + s + ' { --ucam-tile-cor: var(--ucam-
   color: var(--ucam-color-text-secondary);
   max-inline-size: 68ch;
 }
+/* OS SELOS DEPOIS DA DESCRIÇÃO respiram um degrau. O cluster de selos do
+ * cabeçalho do requerimento (caixa de entrada) vinha logo abaixo da frase
+ * com vão de 0px — a pastilha encostava na descida das letras, enquanto o
+ * título fica a 4px da frase e as ações a 8px dos selos (medido em
+ * 09/10/2026). 8px: o mesmo degrau que separa os selos dos botões. */
+.ucam-page-header__description + .ucam-cluster { margin-block-start: var(--ucam-space-inline-sm); }
 
 /* As ações assentam na linha do título.
  *
