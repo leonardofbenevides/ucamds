@@ -29,6 +29,7 @@ import {
   releases,
   componentesPorCategoria,
 } from './spec/spec';
+import { sitesMeta, sitesPorCategoria } from './spec/sites';
 import { SPRITE } from '../generated/sprite';
 import { ligarListbox, ligarMenuConta, ligarEstado, ligarDescricao, ligarLinhaDoTempo, ligarAbas } from '../generated/listbox';
 import { SearchComponent } from './shell/search.component';
@@ -1407,6 +1408,15 @@ export class AppComponent {
         { rotulo: 'Padrões', link: '/padroes', secoes: ['padroes'] },
       ],
     },
+    // Os SITES (ADR-067): o segundo sistema, para o site institucional, o
+    // CENPRE e o de Campos. Área própria porque não é uma aba do catálogo da
+    // aplicação: outra folha, outro prefixo, outra semântica.
+    {
+      id: 'sites',
+      rotulo: 'Sites',
+      icone: 'i-monitor',
+      abas: [{ rotulo: 'Componentes', link: '/sites', secoes: ['sites'] }],
+    },
     {
       id: 'projeto',
       rotulo: 'Projeto',
@@ -1637,6 +1647,21 @@ export class AppComponent {
           busca: `${b.classe} ${b.papel}`,
         })),
       ],
+    },
+    // Mesma regra do catálogo: a lateral sai de sitesPorCategoria(), a função
+    // que a página /sites chama, para os dois nunca discordarem.
+    {
+      id: 'sites',
+      titulo: `Sites · ${sitesMeta.componentes}`,
+      itens: sitesPorCategoria().flatMap((g) =>
+        g.itens.map((c) => ({
+          rotulo: c.name,
+          link: `/sites/${c.id}`,
+          estado: c.status,
+          grupo: g.rotulo,
+          busca: g.rotulo,
+        })),
+      ),
     },
     {
       id: 'telas',

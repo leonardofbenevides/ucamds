@@ -12,6 +12,10 @@
    do componentes.css de propósito: mesma especificidade perderia para o
    original em empate, e o palco precisa vencer. */
 @import './generated/estados.css';
+/* Os sites (ADR-067): tokens --ucam-site-*, submarcas e a folha .ucam-site-*,
+   mais o espelho de estados. Prefixos próprios; não colidem com a aplicação. */
+@import './generated/sites.css';
+@import './generated/sites-estados.css';
 
 /* --- ponte para os componentes reais de @ucam/ui ------------------------ */
 /* Os componentes da base escrevem classes no vocabulário shadcn

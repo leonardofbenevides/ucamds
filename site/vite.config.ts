@@ -33,7 +33,13 @@ function specRoutes(): string[] {
       p.templates.map((t) => `/telas/${p.id}/${t.id}`),
   );
 
-  return [...componentes, ...padroes, ...decisoes, ...telas];
+  // Os sites: o segundo catálogo (ADR-067), de sites/spec/components.
+  const SITES = join(import.meta.dirname, '..', 'sites', 'spec', 'components');
+  const sites = readdirSync(SITES)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => `/sites/${JSON.parse(readFileSync(join(SITES, f), 'utf8')).id}`);
+
+  return [...componentes, ...padroes, ...decisoes, ...telas, ...sites];
 }
 
 // As rotas estáticas saem do DIRETÓRIO de páginas, não de uma lista.
