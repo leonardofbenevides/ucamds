@@ -61,15 +61,15 @@
   "props": [
     {
       "nome": "tone",
-      "tipo": "'neutral' | 'info' | 'success' | 'warning' | 'danger'",
+      "tipo": "'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'espera' | 'classe'",
       "default": "'neutral'",
-      "descricao": "Semântica visual. Mapeia para color.feedback.*.",
+      "descricao": "Semântica visual. Os quatro primeiros tons mapeiam para color.feedback.*; espera e classe, para color.situacao.* (ADR-066). Todo selo preenchido leva o filete do próprio tom.",
       "valores": {
         "neutral": {
           "uso": "Estado inicial ou inerte: Rascunho, Arquivado."
         },
         "info": {
-          "uso": "Em andamento, sem exigir ação: Em análise, Encaminhado."
+          "uso": "Em andamento COM A EQUIPE, sem exigir ação de quem lê: Em análise, Em processamento, Em correção."
         },
         "success": {
           "uso": "Concluído favoravelmente: Deferido, Concluído."
@@ -81,6 +81,14 @@
         "danger": {
           "uso": "Encerrado desfavoravelmente ou vencido: Indeferido, Prazo expirado.",
           "limite": "Não é erro de sistema; é desfecho de negócio."
+        },
+        "espera": {
+          "uso": "A bola está com OUTRA pessoa ou com outro sistema: Aguardando candidato, Aguardando envio, Encaminhado ao setor, Respondido ao aluno.",
+          "limite": "Se quem lê precisa agir, é warning. Se a equipe está trabalhando nisso, é info."
+        },
+        "classe": {
+          "uso": "Tipo ou categoria, não estado: Padrão, Permissão, Graduação EAD.",
+          "limite": "Classifica, não julga. Nunca para dizer que algo deu certo ou errado."
         }
       }
     },

@@ -165,6 +165,15 @@ function checar(tema, tokens) {
     const r = ratio(f, b);
     if (r < 4.5) falhas.push({ tema, desc: `feedback ${tom}`, fg: `color-feedback-${tom}-foreground`, valor: f, bg: b, r, min: 4.5 });
   }
+
+  // Os tons de SITUAÇÃO do selo (ADR-066) respondem pelo mesmo par.
+  for (const tom of ['espera', 'classe']) {
+    const f = get(`color-situacao-${tom}-foreground`);
+    const b = get(`color-situacao-${tom}-background`);
+    if (!f || !b) { falhas.push({ tema, desc: `situação ${tom} ausente`, fg: `color-situacao-${tom}-foreground`, valor: String(f), bg: String(b), r: 0, min: 4.5 }); continue; }
+    const r = ratio(f, b);
+    if (r < 4.5) falhas.push({ tema, desc: `situação ${tom}`, fg: `color-situacao-${tom}-foreground`, valor: f, bg: b, r, min: 4.5 });
+  }
 }
 
 // O tema escuro é o claro com as sobrescritas aplicadas por cima.
