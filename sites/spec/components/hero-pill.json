@@ -1,0 +1,152 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "hero-pill",
+  "name": "HeroPill",
+  "selector": "ucam-site-hero-pill",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "Um fato curto sobre a seção escura do hero: 1.700 empresas parceiras, desde 2001. Pílula com contorno, nunca clicável.",
+  "quando_usar": [
+    "No hero, para dois ou três fatos que sustentam o título.",
+    "Na chamada final, para um dado que reforça o pedido."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (hero) e cenpre-ui-kit (src/lib/layout/hero-pill), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — hero das subpáginas",
+        "problema": "pílula com borda e fundo em branco translúcido escritos à mão, fora de token"
+      },
+      {
+        "tela": "cenpre — hero da home",
+        "problema": "nenhum na forma: é o ponto de partida"
+      }
+    ],
+    "conclusao": "A pílula do hero vira peça, com o contorno e a lavagem da superfície inversa."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<li> ou <span>. Pílula com contorno claro e lavagem de papel."
+    },
+    {
+      "parte": "icon",
+      "obrigatorio": false,
+      "descricao": "Ícone de 16px antes do texto, decorativo."
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Um número e o que ele conta."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O texto."
+    },
+    {
+      "nome": "icon",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome do ícone no sprite."
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Só sobre a superfície inversa.",
+      "Não clicável.",
+      "No máximo três por hero."
+    ],
+    "motivo": "O contorno claro só se vê sobre fundo escuro. E três fatos sustentam um título; seis o enterram."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Texto na tinta sobre inverso; a lavagem da pílula é de 6% e não muda o contraste medido da superfície.",
+      "O ícone é aria-hidden.",
+      "Sem foco e sem papel de controle.",
+      "Várias pílulas formam uma lista: ul e li."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "1.700 empresas parceiras",
+        "Desde 2001",
+        "5 mil alunos encaminhados"
+      ],
+      "ruim": [
+        "Saiba mais",
+        "A melhor do Rio!",
+        "Clique e conheça nossas empresas"
+      ]
+    },
+    "regras": [
+      "Um número e o que ele conta.",
+      "Sem verbo: a pílula informa, não pede."
+    ]
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-site-hero",
+      "ucam-site-editorial-page-hero"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": ".hero-pill",
+        "novo": ".ucam-site-hero-pill",
+        "nota": "Borda e fundo passam a vir de token."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Fatos do hero",
+      "codigo": "<ul class=\"ucam-site-hero__pills\">\n  <li class=\"ucam-site-hero-pill\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-briefcase\"/></svg> 1.700 empresas parceiras</li>\n  <li class=\"ucam-site-hero-pill\">Desde 2001</li>\n</ul>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Número mais o que ele conta.",
+      "evite": "Adjetivo.",
+      "porque": "A melhor do Rio não é um fato; 1.700 empresas é."
+    },
+    {
+      "faca": "Até três.",
+      "evite": "Uma fileira de seis.",
+      "porque": "A pílula apoia o título; em fileira longa ela vira o assunto."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "tag",
+      "diferenca": "A pílula do hero é um FATO sobre a seção escura, com contorno. A Tag é uma CATEGORIA de um item, em qualquer superfície.",
+      "escolha": "Se classifica um item de uma lista, é tag. Se é um dado no hero, é pílula."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe, sem variante.",
+      "raiz": ".ucam-site-hero-pill",
+      "variaveis": [
+        "--ucam-site-color-border-on-inverse",
+        "--ucam-site-color-interaction-hover-on-inverse"
+      ]
+    }
+  }
+}

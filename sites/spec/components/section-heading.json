@@ -16,17 +16,49 @@
   "evidencia": {
     "origem": "candidomendes.edu.br e cenpre-ui-kit (styles/components/_section-heading.scss), 08/10/2026",
     "ocorrencias": [
-      { "tela": "www — home", "rotulo": "Encontre o seu curso / Vale a pena ser UCAM / Como ingressar?", "problema": "três tamanhos de título em três seções seguidas, um deles em Roboto e os outros em Work Sans" },
-      { "tela": "cenpre — home", "rotulo": "O CENPRE em números", "problema": "nenhum: o section-heading do kit é o ponto de partida, com eyebrow, título e lede" }
+      {
+        "tela": "www — home",
+        "rotulo": "Encontre o seu curso / Vale a pena ser UCAM / Como ingressar?",
+        "problema": "três tamanhos de título em três seções seguidas, um deles em Roboto e os outros em Work Sans"
+      },
+      {
+        "tela": "cenpre — home",
+        "rotulo": "O CENPRE em números",
+        "problema": "nenhum: o section-heading do kit é o ponto de partida, com eyebrow, título e lede"
+      }
     ],
     "conclusao": "Um cabeçalho de seção com uma escala só, em Work Sans, e a frase de abertura em Inter. O que varia é o alinhamento e o tamanho, não a fonte."
   },
   "anatomia": [
-    { "parte": "root", "obrigatorio": true, "descricao": "<header> ou <div>. Pilha com vão curto; largura de prosa." },
-    { "parte": "eyebrow", "obrigatorio": false, "descricao": "<p> com a palavra acima do título, em caixa alta pela folha. Não é heading.", "classe": "ucam-site-section-heading__eyebrow" },
-    { "parte": "title", "obrigatorio": true, "descricao": "<h2> (ou o nível que a página pede) em display.", "classe": "ucam-site-section-heading__title" },
-    { "parte": "lede", "obrigatorio": false, "descricao": "<p> de uma ou duas frases, em Inter 18px.", "classe": "ucam-site-section-heading__lede" },
-    { "parte": "acoes", "obrigatorio": false, "descricao": "Fileira de botões: ver todas, inscrever-se.", "classe": "ucam-site-section-heading__acoes" }
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<header> ou <div>. Pilha com vão curto; largura de prosa."
+    },
+    {
+      "parte": "eyebrow",
+      "obrigatorio": false,
+      "descricao": "<p> com a palavra acima do título, em caixa alta pela folha. Não é heading.",
+      "classe": "ucam-site-section-heading__eyebrow"
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "<h2> (ou o nível que a página pede) em display.",
+      "classe": "ucam-site-section-heading__title"
+    },
+    {
+      "parte": "lede",
+      "obrigatorio": false,
+      "descricao": "<p> de uma ou duas frases, em Inter 18px.",
+      "classe": "ucam-site-section-heading__lede"
+    },
+    {
+      "parte": "acoes",
+      "obrigatorio": false,
+      "descricao": "Fileira de botões: ver todas, inscrever-se.",
+      "classe": "ucam-site-section-heading__acoes"
+    }
   ],
   "props": [
     {
@@ -35,8 +67,14 @@
       "default": "'start'",
       "descricao": "Alinhamento do bloco.",
       "valores": {
-        "start": { "uso": "Seção com conteúdo em colunas abaixo: a borda esquerda do título alinha com a primeira coluna." },
-        "center": { "uso": "Faixa de largura inteira: números, depoimentos, CTA.", "limite": "Com lede de mais de duas linhas, centralizar deixa as linhas desiguais e difíceis de ler.", "classe": ".ucam-site-section-heading--center" }
+        "start": {
+          "uso": "Seção com conteúdo em colunas abaixo: a borda esquerda do título alinha com a primeira coluna."
+        },
+        "center": {
+          "uso": "Faixa de largura inteira: números, depoimentos, CTA.",
+          "limite": "Com lede de mais de duas linhas, centralizar deixa as linhas desiguais e difíceis de ler.",
+          "classe": ".ucam-site-section-heading--center"
+        }
       }
     },
     {
@@ -45,8 +83,13 @@
       "default": "'section'",
       "descricao": "32–52px ou 30–48px, em clamp().",
       "valores": {
-        "section": { "uso": "Seção principal da página." },
-        "section-sm": { "uso": "Seção secundária, ou seção dentro de uma coluna.", "classe": ".ucam-site-section-heading--sm" }
+        "section": {
+          "uso": "Seção principal da página."
+        },
+        "section-sm": {
+          "uso": "Seção secundária, ou seção dentro de uma coluna.",
+          "classe": ".ucam-site-section-heading--sm"
+        }
       }
     },
     {
@@ -55,12 +98,22 @@
       "default": "false",
       "descricao": "Sobre seção escura: título em branco, lede e eyebrow no apoio claro.",
       "valores": {
-        "true": { "uso": "Dentro de .ucam-site-inverso.", "classe": ".ucam-site-section-heading--inverse" }
+        "true": {
+          "uso": "Dentro de .ucam-site-inverso.",
+          "classe": ".ucam-site-section-heading--inverse"
+        }
       }
     },
-    { "nome": "level", "tipo": "2 | 3", "default": "2", "descricao": "O nível do heading. Dois por padrão; três quando a seção está dentro de outra." }
+    {
+      "nome": "level",
+      "tipo": "2 | 3",
+      "default": "2",
+      "descricao": "O nível do heading. Dois por padrão; três quando a seção está dentro de outra."
+    }
   ],
-  "estados": ["default"],
+  "estados": [
+    "default"
+  ],
   "limites": {
     "regras": [
       "Não é o hero: o hero tem o h1 e a foto; este é h2 em diante.",
@@ -76,11 +129,36 @@
       "O lede fica na largura de prosa (51,25rem) para a linha não passar de 75 caracteres.",
       "Título a 4,5:1 sobre a superfície, no claro e no inverso — medido."
     ],
-    "criterios_wcag": ["1.3.1", "1.4.3", "2.4.6"]
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.4.6"
+    ]
   },
   "conteudo": {
-    "eyebrow": { "bom": ["Cursos", "Carreiras", "Como ingressar"], "ruim": ["Conheça agora", "SEÇÃO 3", "Bem-vindo"] },
-    "titulo": { "bom": ["Encontre o seu curso", "O CENPRE em números", "Como ingressar"], "ruim": ["Conheça agora mesmo todas as nossas incríveis vantagens!", "Por que devo escolher estudar na UCAM??"] },
+    "eyebrow": {
+      "bom": [
+        "Cursos",
+        "Carreiras",
+        "Como ingressar"
+      ],
+      "ruim": [
+        "Conheça agora",
+        "SEÇÃO 3",
+        "Bem-vindo"
+      ]
+    },
+    "titulo": {
+      "bom": [
+        "Encontre o seu curso",
+        "O CENPRE em números",
+        "Como ingressar"
+      ],
+      "ruim": [
+        "Conheça agora mesmo todas as nossas incríveis vantagens!",
+        "Por que devo escolher estudar na UCAM??"
+      ]
+    },
     "regras": [
       "Eyebrow: uma a três palavras, substantivo.",
       "Título: até oito palavras, sem ponto final, uma exclamação ou interrogação no máximo.",
@@ -88,29 +166,61 @@
     ]
   },
   "composicao": {
-    "usa": ["ucam-site-button"]
+    "usa": [
+      "ucam-site-button"
+    ]
   },
   "migracao": {
     "de": "cenpre-ui-kit",
     "mapa": [
-      { "legado": ".section-heading", "novo": ".ucam-site-section-heading" },
-      { "legado": ".section-heading__eyebrow", "novo": ".ucam-site-section-heading__eyebrow" },
-      { "legado": "@include display-heading($fs-display-section)", "novo": "typography.display-section", "nota": "A mixin vira o token composto; a escala em clamp() é a mesma." }
+      {
+        "legado": ".section-heading",
+        "novo": ".ucam-site-section-heading"
+      },
+      {
+        "legado": ".section-heading__eyebrow",
+        "novo": ".ucam-site-section-heading__eyebrow"
+      },
+      {
+        "legado": "@include display-heading($fs-display-section)",
+        "novo": "typography.display-section",
+        "nota": "A mixin vira o token composto; a escala em clamp() é a mesma."
+      }
     ]
   },
   "exemplos": [
-    { "titulo": "Seção com ações", "codigo": "<header class=\"ucam-site-section-heading\">\n  <p class=\"ucam-site-section-heading__eyebrow\">Carreiras</p>\n  <h2 class=\"ucam-site-section-heading__title\">Vagas e oportunidades</h2>\n  <p class=\"ucam-site-section-heading__lede\">As vagas de estágio e emprego abertas às alunas e aos alunos da UCAM esta semana.</p>\n  <div class=\"ucam-site-section-heading__acoes\"><a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"/vagas\">Ver todas</a></div>\n</header>" },
-    { "titulo": "Faixa centralizada", "codigo": "<header class=\"ucam-site-section-heading ucam-site-section-heading--center\">\n  <h2 class=\"ucam-site-section-heading__title\">O CENPRE em números</h2>\n</header>" }
+    {
+      "titulo": "Seção com ações",
+      "codigo": "<header class=\"ucam-site-section-heading\">\n  <p class=\"ucam-site-section-heading__eyebrow\">Carreiras</p>\n  <h2 class=\"ucam-site-section-heading__title\">Vagas e oportunidades</h2>\n  <p class=\"ucam-site-section-heading__lede\">As vagas de estágio e emprego abertas às alunas e aos alunos da UCAM esta semana.</p>\n  <div class=\"ucam-site-section-heading__acoes\"><a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"/vagas\">Ver todas</a></div>\n</header>"
+    },
+    {
+      "titulo": "Faixa centralizada",
+      "codigo": "<header class=\"ucam-site-section-heading ucam-site-section-heading--center\">\n  <h2 class=\"ucam-site-section-heading__title\">O CENPRE em números</h2>\n</header>"
+    }
   ],
   "boas_praticas": [
-    { "faca": "Alinhar à esquerda quando há colunas abaixo.", "evite": "Centralizar tudo.", "porque": "Centralizado, o título flutua e a primeira coluna começa fora do eixo dele." },
-    { "faca": "Lede que diz o que a seção mostra.", "evite": "Lede de adjetivos.", "porque": "Incrível, moderno e inovador não dizem o que está abaixo." }
+    {
+      "faca": "Alinhar à esquerda quando há colunas abaixo.",
+      "evite": "Centralizar tudo.",
+      "porque": "Centralizado, o título flutua e a primeira coluna começa fora do eixo dele."
+    },
+    {
+      "faca": "Lede que diz o que a seção mostra.",
+      "evite": "Lede de adjetivos.",
+      "porque": "Incrível, moderno e inovador não dizem o que está abaixo."
+    }
   ],
   "implementacao": {
     "trilho_a": {
       "contrato": "Uma classe na raiz, uma por parte; alinhamento, tamanho e inverso por modificador.",
       "raiz": ".ucam-site-section-heading",
-      "variaveis": ["--ucam-site-typography-display-section-font-size", "--ucam-site-typography-display-section-sm-font-size", "--ucam-site-typography-eyebrow-font-size", "--ucam-site-typography-lede-font-size", "--ucam-site-container-prosa"]
+      "variaveis": [
+        "--ucam-site-typography-display-section-font-size",
+        "--ucam-site-typography-display-section-sm-font-size",
+        "--ucam-site-typography-eyebrow-font-size",
+        "--ucam-site-typography-lede-font-size",
+        "--ucam-site-container-prosa"
+      ]
     }
   }
 }

@@ -1,0 +1,211 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "editorial-page-hero",
+  "name": "EditorialPageHero",
+  "selector": "ucam-site-editorial-page-hero",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "layout",
+  "description": "O topo de toda página interna: a trilha, a palavra da seção, o título da página e uma frase, sobre a superfície escura e sem foto.",
+  "quando_usar": [
+    "Em toda página interna, no lugar do hero da home.",
+    "Na largura de prosa, no topo de um artigo."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (hero das subpáginas e do artigo) e cenpre-ui-kit (src/lib/layout/editorial-page-hero), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — Orientações de estágio",
+        "problema": "palavra acima do título em magenta claro sobre o fundo escuro, com brilho e granulado decorativos em cor crua"
+      },
+      {
+        "tela": "cenpre — artigo",
+        "problema": "o mesmo hero reescrito na folha da página, com outra largura e outro respiro"
+      },
+      {
+        "tela": "www — páginas de curso",
+        "problema": "banner em imagem com o nome do curso dentro do arquivo"
+      }
+    ],
+    "conclusao": "Um hero só para as páginas internas, com a variante de prosa para o artigo, e todo o texto em texto."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<header> da página, na superfície inversa."
+    },
+    {
+      "parte": "inner",
+      "obrigatorio": true,
+      "descricao": "A largura da faixa com a margem lateral; empilha as partes.",
+      "classe": "ucam-site-page-hero__inner"
+    },
+    {
+      "parte": "breadcrumb",
+      "obrigatorio": false,
+      "descricao": "A trilha, na forma inversa, como primeira coisa."
+    },
+    {
+      "parte": "eyebrow",
+      "obrigatorio": false,
+      "descricao": "<p> com a seção do site.",
+      "classe": "ucam-site-page-hero__eyebrow"
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "<h1>, na escala de página.",
+      "classe": "ucam-site-page-hero__title"
+    },
+    {
+      "parte": "lede",
+      "obrigatorio": false,
+      "descricao": "<p> de uma ou duas frases.",
+      "classe": "ucam-site-page-hero__lede"
+    },
+    {
+      "parte": "pills",
+      "obrigatorio": false,
+      "descricao": "<ul> de pílulas.",
+      "classe": "ucam-site-page-hero__pills"
+    },
+    {
+      "parte": "actions",
+      "obrigatorio": false,
+      "descricao": "Botões na forma inversa.",
+      "classe": "ucam-site-page-hero__actions"
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O título da página, o h1."
+    },
+    {
+      "nome": "lede",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A frase de abertura."
+    },
+    {
+      "nome": "width",
+      "tipo": "'faixa' | 'prosa'",
+      "default": "'faixa'",
+      "descricao": "A largura do conteúdo.",
+      "valores": {
+        "prosa": {
+          "uso": "No topo de um artigo, alinhado com o texto que vem abaixo.",
+          "classe": ".ucam-site-page-hero--prosa"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não na home.",
+      "Sem foto de fundo.",
+      "Um por página: é onde mora o h1."
+    ],
+    "motivo": "A página interna precisa dizer onde a pessoa está e o que vai encontrar. Foto e efeito competem com isso."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O título é o h1 da página.",
+      "A trilha vem antes do título, na forma inversa.",
+      "Título, palavra e frase a 4,5:1 sobre a superfície inversa, medidos no build.",
+      "Título e frase não passam da largura de prosa."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "1.4.8",
+      "2.4.6",
+      "2.4.8"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Orientações de estágio",
+        "Cadastro de convênio"
+      ],
+      "ruim": [
+        "Saiba tudo sobre estágio!",
+        "Página de orientações"
+      ]
+    },
+    "regras": [
+      "O título é o nome da página, o mesmo do menu e da trilha.",
+      "A palavra acima é a seção do site, não um slogan."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-breadcrumb",
+      "ucam-site-hero-pill",
+      "ucam-site-button"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-editorial-page-hero>",
+        "novo": ".ucam-site-page-hero"
+      },
+      {
+        "legado": ".artigo-hero",
+        "novo": ".ucam-site-page-hero--prosa",
+        "nota": "O hero do artigo deixa de ser uma folha própria."
+      },
+      {
+        "legado": ".editorial-hero__glow e .editorial-hero__grain",
+        "novo": ".ucam-site-page-hero",
+        "nota": "Brilho e granulado saem: eram cor crua e imagem embutida."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Página interna",
+      "codigo": "<header class=\"ucam-site-page-hero\">\n  <div class=\"ucam-site-page-hero__inner\">\n    <nav class=\"ucam-site-breadcrumb ucam-site-breadcrumb--inverse\" aria-label=\"Trilha\">\n      <ol class=\"ucam-site-breadcrumb__list\">\n        <li class=\"ucam-site-breadcrumb__item\"><a href=\"/\">Início</a></li>\n        <li class=\"ucam-site-breadcrumb__item\"><span aria-current=\"page\">Orientações de estágio</span></li>\n      </ol>\n    </nav>\n    <p class=\"ucam-site-page-hero__eyebrow\">Alunos e egressos</p>\n    <h1 class=\"ucam-site-page-hero__title\">Orientações de estágio</h1>\n    <p class=\"ucam-site-page-hero__lede\">O que é, como formalizar e quais documentos entregar.</p>\n  </div>\n</header>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "O mesmo nome no menu, na trilha e no título.",
+      "evite": "Um título criativo diferente do menu.",
+      "porque": "A pessoa confere se chegou onde clicou."
+    },
+    {
+      "faca": "A variante de prosa no artigo.",
+      "evite": "Reescrever o hero na folha da página.",
+      "porque": "Foi assim que o artigo ganhou largura e respiro próprios."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "hero",
+      "diferenca": "O hero editorial é o de cada página interna, sem foto. O Hero é o da home, com foto, uma vez no site.",
+      "escolha": "Em qualquer página que não seja a home, hero editorial."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma pilha sobre a superfície inversa; a variante de prosa estreita o conteúdo.",
+      "raiz": ".ucam-site-page-hero",
+      "variaveis": [
+        "--ucam-site-typography-display-page-font-size",
+        "--ucam-site-container-prosa",
+        "--ucam-site-color-surface-inverse"
+      ]
+    }
+  }
+}

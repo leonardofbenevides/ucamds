@@ -188,5 +188,10 @@
         "--ucam-site-color-surface-brand-soft"
       ]
     }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-site-testimonial"
+    ]
   }
 }

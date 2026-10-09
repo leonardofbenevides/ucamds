@@ -1,0 +1,210 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "course-card",
+  "name": "CourseCard",
+  "selector": "ucam-site-course-card",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "O cartão de um curso na vitrine: a modalidade, o nome, a duração, o turno e o campus, com o cartão inteiro levando à página do curso.",
+  "quando_usar": [
+    "Na grade de cursos da home e da página Todos os cursos.",
+    "No resultado da busca de cursos."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br (cursos em destaque e Encontre o seu curso), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — cursos em destaque",
+        "rotulo": "Direito · Administração · Design de Interiores · Psicologia",
+        "problema": "a modalidade aparece como texto solto no peso do título"
+      },
+      {
+        "tela": "www — cursos em destaque",
+        "rotulo": "Saiba mais",
+        "problema": "quatro links com o mesmo texto: fora de contexto não se sabe de qual curso"
+      },
+      {
+        "tela": "www — cursos em destaque",
+        "problema": "duração, turno e campus não aparecem no cartão: é preciso entrar em cada curso para comparar"
+      }
+    ],
+    "conclusao": "O nome do curso é o link, e o cartão traz o que a pessoa compara: modalidade, duração, turno e campus."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<article>. A mesma caixa do card, sempre clicável."
+    },
+    {
+      "parte": "media",
+      "obrigatorio": false,
+      "descricao": "<img> no alto, em 16 por 9.",
+      "classe": "ucam-site-course-card__media"
+    },
+    {
+      "parte": "body",
+      "obrigatorio": true,
+      "descricao": "A pilha de conteúdo.",
+      "classe": "ucam-site-course-card__body"
+    },
+    {
+      "parte": "tags",
+      "obrigatorio": true,
+      "descricao": "<ul> com a modalidade e o nível.",
+      "classe": "ucam-site-course-card__tags"
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "Heading com o nome do curso e o link dentro.",
+      "classe": "ucam-site-course-card__title"
+    },
+    {
+      "parte": "link",
+      "obrigatorio": true,
+      "descricao": "<a> esticado sobre o cartão.",
+      "classe": "ucam-site-course-card__link"
+    },
+    {
+      "parte": "meta",
+      "obrigatorio": true,
+      "descricao": "<ul> com duração, turno e campus.",
+      "classe": "ucam-site-course-card__meta"
+    }
+  ],
+  "props": [
+    {
+      "nome": "name",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O nome do curso."
+    },
+    {
+      "nome": "href",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A página do curso."
+    },
+    {
+      "nome": "modality",
+      "tipo": "'Presencial' | 'EAD' | 'Semipresencial'",
+      "obrigatorio": true,
+      "descricao": "A modalidade, em tag."
+    },
+    {
+      "nome": "level",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Graduação, Pós-graduação, Mestrado."
+    },
+    {
+      "nome": "duration",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A duração: 5 anos."
+    },
+    {
+      "nome": "shift",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O turno."
+    },
+    {
+      "nome": "campus",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O campus."
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Sem botão Saiba mais: o nome do curso é o link.",
+      "Sem preço nem promoção no cartão.",
+      "Só para curso: outro conteúdo usa o card."
+    ],
+    "motivo": "Quatro Saiba mais numa fileira não dizem nada a quem navega por links. E preço muda mais rápido do que a vitrine é revista."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O nome do link é o nome do curso.",
+      "Modalidade e nível são tags em lista; duração, turno e campus, outra lista.",
+      "O foco do link se desenha em volta do cartão, com o anel cinza (ADR-048).",
+      "A foto tem alt vazio: o nome do curso já diz.",
+      "Com movimento reduzido o cartão não sobe."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.3.1",
+      "2.4.4",
+      "2.4.7",
+      "2.3.3"
+    ]
+  },
+  "conteudo": {
+    "meta": {
+      "bom": [
+        "5 anos",
+        "Noturno",
+        "Campus Centro"
+      ],
+      "ruim": [
+        "Duração: consulte",
+        "Vários turnos",
+        "Rio de Janeiro e região"
+      ]
+    },
+    "regras": [
+      "O nome do curso, sem Curso de na frente.",
+      "Duração em anos ou semestres, com o número.",
+      "Sem dado, o item sai; não se escreve Consulte."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-tag"
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Curso na vitrine",
+      "codigo": "<article class=\"ucam-site-course-card\">\n  <img class=\"ucam-site-course-card__media\" src=\"/cursos/direito.jpg\" alt=\"\">\n  <div class=\"ucam-site-course-card__body\">\n    <ul class=\"ucam-site-course-card__tags\"><li class=\"ucam-site-tag\">Graduação</li><li class=\"ucam-site-tag\">Presencial</li></ul>\n    <h3 class=\"ucam-site-course-card__title\"><a class=\"ucam-site-course-card__link\" href=\"/cursos/direito\">Direito</a></h3>\n    <ul class=\"ucam-site-course-card__meta\"><li>5 anos</li><li>Noturno</li><li>Campus Centro</li></ul>\n  </div>\n</article>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "O nome do curso como link.",
+      "evite": "Saiba mais.",
+      "porque": "Numa lista de links, Saiba mais quatro vezes não diz de quê."
+    },
+    {
+      "faca": "Duração, turno e campus no cartão.",
+      "evite": "Só o nome e a foto.",
+      "porque": "É o que a pessoa compara antes de escolher em qual entrar."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "card",
+      "diferenca": "O cartão de curso tem a estrutura do curso e é sempre clicável. O Card serve a qualquer item.",
+      "escolha": "Para curso, este; para artigo, notícia e vaga, card."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "A caixa e o link esticado são os do card; as listas de tags e de metadados são próprias.",
+      "raiz": ".ucam-site-course-card",
+      "variaveis": [
+        "--ucam-site-radius-card",
+        "--ucam-site-elevation-card-hover",
+        "--ucam-site-typography-title-font-size"
+      ]
+    }
+  }
+}

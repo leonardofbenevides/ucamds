@@ -1,0 +1,211 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "card",
+  "name": "Card",
+  "selector": "ucam-site-card",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "A caixa de um item de lista: um conteúdo da biblioteca, uma notícia, uma vaga. Imagem opcional, título, texto e metadados, clicável por inteiro por um link só.",
+  "quando_usar": [
+    "Numa grade de itens do mesmo tipo: artigos, notícias, vagas.",
+    "Quando o item leva a uma página própria."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (biblioteca e vagas) e cenpre-ui-kit (styles/components/_card.scss), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — biblioteca de conteúdos",
+        "problema": "o cartão inteiro dentro de um link: o leitor de tela lê título, texto e tags como um nome de link só"
+      },
+      {
+        "tela": "cenpre — painel de vagas",
+        "rotulo": "Tenho interesse",
+        "problema": "botão dentro de um cartão que também é link"
+      },
+      {
+        "tela": "cenpre — cartão interativo",
+        "problema": "no hover a borda vai a um rosa claro de 1,4:1"
+      }
+    ],
+    "conclusao": "O link é o do título, esticado sobre o cartão. O nome do link é o título, e não há link dentro de link."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<article>. Caixa com borda, canto de 16px e sombra curta."
+    },
+    {
+      "parte": "media",
+      "obrigatorio": false,
+      "descricao": "<img> no alto, em 16 por 9.",
+      "classe": "ucam-site-card__media"
+    },
+    {
+      "parte": "body",
+      "obrigatorio": true,
+      "descricao": "A pilha de conteúdo, com 24px de respiro.",
+      "classe": "ucam-site-card__body"
+    },
+    {
+      "parte": "meta",
+      "obrigatorio": false,
+      "descricao": "<ul> de tags.",
+      "classe": "ucam-site-card__meta"
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "Heading com o link dentro.",
+      "classe": "ucam-site-card__title"
+    },
+    {
+      "parte": "link",
+      "obrigatorio": false,
+      "descricao": "<a> dentro do título. Um ::after o estica sobre o cartão inteiro.",
+      "classe": "ucam-site-card__link"
+    },
+    {
+      "parte": "text",
+      "obrigatorio": false,
+      "descricao": "<p> de resumo.",
+      "classe": "ucam-site-card__text"
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O título."
+    },
+    {
+      "nome": "href",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Para onde o cartão leva. Sem ele, o cartão não é clicável."
+    },
+    {
+      "nome": "interactive",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Realce ao passar o ponteiro. Só com href.",
+      "valores": {
+        "true": {
+          "uso": "Em grade de itens clicáveis.",
+          "limite": "Nunca sem link: realce que não leva a lugar nenhum engana.",
+          "classe": ".ucam-site-card--interativo"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Não pôr botão nem segundo link dentro de um cartão clicável.",
+      "Não envolver o cartão inteiro num <a>.",
+      "Não mais de três tags.",
+      "Não para curso nem para lista de documentos: há cartões próprios."
+    ],
+    "motivo": "Link em volta de tudo vira um nome de link de cinquenta palavras. E dois alvos sobrepostos fazem a pessoa errar o clique."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O nome do link é o título do cartão.",
+      "O foco do link se desenha em volta do cartão inteiro, com o anel cinza (ADR-048).",
+      "A imagem tem alt vazio quando o título já diz o que é.",
+      "No hover a borda vai à borda forte, a 3:1; o realce não depende só da sombra.",
+      "Com movimento reduzido o cartão não sobe."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.4.11",
+      "2.4.4",
+      "2.4.7",
+      "2.3.3"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Como montar o primeiro currículo",
+        "Estágio em Direito: o que muda no terceiro ano"
+      ],
+      "ruim": [
+        "Leia mais",
+        "Novidade!",
+        "Artigo 12"
+      ]
+    },
+    "regras": [
+      "O título se sustenta sozinho: é o nome do link.",
+      "O resumo tem até duas linhas."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": ".card",
+        "novo": ".ucam-site-card"
+      },
+      {
+        "legado": ".card--interactive",
+        "novo": ".ucam-site-card--interativo",
+        "nota": "A borda do hover sai do rosa claro e vai à borda forte."
+      },
+      {
+        "legado": ".card--padding-sm e .card--padding-lg",
+        "novo": ".ucam-site-card__body",
+        "nota": "Um respiro só."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Conteúdo da biblioteca",
+      "codigo": "<article class=\"ucam-site-card ucam-site-card--interativo\">\n  <img class=\"ucam-site-card__media\" src=\"/imagens/curriculo.jpg\" alt=\"\">\n  <div class=\"ucam-site-card__body\">\n    <ul class=\"ucam-site-card__meta\"><li class=\"ucam-site-tag\">Currículo</li></ul>\n    <h3 class=\"ucam-site-card__title\"><a class=\"ucam-site-card__link\" href=\"/conteudos/primeiro-curriculo\">Como montar o primeiro currículo</a></h3>\n    <p class=\"ucam-site-card__text\">O que entra, o que sai e o que o recrutador lê primeiro.</p>\n  </div>\n</article>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "O link no título, esticado.",
+      "evite": "Um <a> em volta do cartão.",
+      "porque": "O leitor de tela lê o cartão inteiro como o nome do link."
+    },
+    {
+      "faca": "Um destino por cartão.",
+      "evite": "Botão dentro de cartão clicável.",
+      "porque": "Dois alvos, um por cima do outro."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "doc-card",
+      "diferenca": "O Card leva a uma página. O cartão de documentos é uma lista de consulta que se lê ali mesmo e não é clicável.",
+      "escolha": "Se tem destino, é card."
+    },
+    {
+      "componente": "course-card",
+      "diferenca": "O Card serve a qualquer item. O cartão de curso tem a estrutura do curso: modalidade, duração, turno e campus.",
+      "escolha": "Para curso, cartão de curso; para o resto, card."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "A caixa ancora o link do título, esticado por ::after. O foco do link aparece no cartão por :has().",
+      "raiz": ".ucam-site-card",
+      "variaveis": [
+        "--ucam-site-radius-card",
+        "--ucam-site-elevation-card",
+        "--ucam-site-elevation-card-hover",
+        "--ucam-site-space-inset-card"
+      ]
+    }
+  }
+}

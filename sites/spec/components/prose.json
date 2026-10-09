@@ -1,0 +1,166 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "prose",
+  "name": "Prose",
+  "selector": "ucam-site-prose",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "O texto corrido de um artigo, que vem de um editor e não leva classe em cada parágrafo: títulos, parágrafos, listas, links, citações e imagens, na largura de leitura.",
+  "quando_usar": [
+    "No corpo de um artigo, de uma notícia ou de uma página de texto.",
+    "Em volta de conteúdo que vem de um CMS."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (página de artigo), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — artigo",
+        "problema": "os estilos do texto moram na folha da página: outro artigo, em outra página, precisa copiá-los"
+      },
+      {
+        "tela": "www — páginas institucionais",
+        "problema": "texto corrido na largura inteira da janela: linhas de mais de 150 caracteres"
+      }
+    ],
+    "conclusao": "Uma raiz que estiliza o que está dentro dela, na largura de prosa. É a única peça que toca elemento sem classe, e só ali."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<div> ou <article>. Limita a linha à largura de prosa."
+    },
+    {
+      "parte": "heading",
+      "obrigatorio": false,
+      "descricao": "h2 e h3. O h1 é do hero da página."
+    },
+    {
+      "parte": "paragraph",
+      "obrigatorio": true,
+      "descricao": "p, em 16px com entrelinha de 1,5."
+    },
+    {
+      "parte": "list",
+      "obrigatorio": false,
+      "descricao": "ul e ol."
+    },
+    {
+      "parte": "link",
+      "obrigatorio": false,
+      "descricao": "a, sublinhado."
+    },
+    {
+      "parte": "quote",
+      "obrigatorio": false,
+      "descricao": "blockquote, com um fio de marca à esquerda."
+    },
+    {
+      "parte": "figure",
+      "obrigatorio": false,
+      "descricao": "figure com img e figcaption."
+    }
+  ],
+  "props": [
+    {
+      "nome": "html",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O conteúdo, já saneado."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Não pôr peça do sistema dentro da prosa: um botão ali herda o sublinhado de link.",
+      "Não usar h1 dentro: é do hero.",
+      "Não pular de h2 para h4.",
+      "Não entrega tabela nem código: quando um artigo precisar, entram no contrato."
+    ],
+    "motivo": "A prosa estiliza elemento sem classe, e por isso alcança tudo que estiver dentro. O que é peça fica fora."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "A linha não passa de 820px, cerca de 75 caracteres.",
+      "O link é sublinhado: não depende só da cor.",
+      "Corpo, título e link a 4,5:1, medidos no build.",
+      "A ordem dos títulos começa em h2.",
+      "A imagem não passa da largura do texto; a legenda é um figcaption."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "1.4.8",
+      "2.4.6"
+    ]
+  },
+  "conteudo": {
+    "link": {
+      "bom": [
+        "Veja o regulamento de estágio",
+        "a lista de empresas conveniadas"
+      ],
+      "ruim": [
+        "clique aqui",
+        "neste link",
+        "https://www.candidomendes.edu.br/documentos/regulamento-2026.pdf"
+      ]
+    },
+    "regras": [
+      "O texto do link diz o destino.",
+      "Um assunto por parágrafo.",
+      "O título de seção (h2) usa a tipografia de display dos sites (ADR-069)."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": ".artigo-body",
+        "novo": ".ucam-site-prose",
+        "nota": "Os estilos saem da folha da página."
+      },
+      {
+        "legado": "$width-prose",
+        "novo": "container.prosa"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Corpo de um artigo",
+      "codigo": "<div class=\"ucam-site-prose\">\n  <p>O estágio obrigatório é o que está previsto no projeto pedagógico do curso.</p>\n  <h2>Como formalizar</h2>\n  <p>Veja <a href=\"/regulamento\">o regulamento de estágio</a> antes de assinar.</p>\n  <ul>\n    <li>Termo de compromisso</li>\n    <li>Plano de atividades</li>\n  </ul>\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "A prosa só em volta do texto do artigo.",
+      "evite": "A página inteira dentro dela.",
+      "porque": "Ela alcança todo link e todo título que estiver dentro."
+    },
+    {
+      "faca": "Link com o nome do destino.",
+      "evite": "clique aqui.",
+      "porque": "Fora da frase, clique aqui não diz para onde."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz; o resto é seletor de elemento dentro dela.",
+      "raiz": ".ucam-site-prose",
+      "variaveis": [
+        "--ucam-site-container-prosa",
+        "--ucam-site-typography-subtitle-font-size",
+        "--ucam-site-color-text-link"
+      ],
+      "nota": "Não entrega tabela nem bloco de código."
+    }
+  }
+}

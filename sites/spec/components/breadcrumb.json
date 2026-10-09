@@ -155,5 +155,10 @@
         "--ucam-site-color-text-on-inverse-muted"
       ]
     }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-site-editorial-page-hero"
+    ]
   }
 }

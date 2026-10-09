@@ -1,0 +1,230 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "hero",
+  "name": "Hero",
+  "selector": "ucam-site-hero",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "layout",
+  "description": "O topo da home: a frase que diz o que o site é, uma ou duas ações e, na janela larga, uma foto ao lado. Na superfície escura, com o único h1 da página.",
+  "quando_usar": [
+    "Na home, uma vez.",
+    "Para uma mensagem e no máximo duas ações."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br e cenpre.candidomendes.edu.br (hero das homes), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — hero da home",
+        "rotulo": "01 / 05",
+        "problema": "carrossel de cinco mensagens: a primeira é a única que quase todos veem, e as outras quatro disputam o mesmo lugar"
+      },
+      {
+        "tela": "cenpre — hero da home",
+        "problema": "título branco sobre a foto, com um véu que escurece mais ou menos conforme a imagem do slide"
+      },
+      {
+        "tela": "www — hero da home",
+        "problema": "carrossel de banners em imagem, com o texto dentro do arquivo: não é lido por leitor de tela nem reflui no telefone"
+      }
+    ],
+    "conclusao": "Uma mensagem, em texto de verdade, sobre a superfície escura. A foto fica ao lado, nunca atrás do texto."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<section>, na superfície inversa."
+    },
+    {
+      "parte": "media",
+      "obrigatorio": false,
+      "descricao": "<img alt=\"\"> decorativa. Só aparece a partir da grade completa, na metade final.",
+      "classe": "ucam-site-hero__media"
+    },
+    {
+      "parte": "scrim",
+      "obrigatorio": false,
+      "descricao": "<div aria-hidden=\"true\">: o véu que funde a borda da foto na superfície.",
+      "classe": "ucam-site-hero__scrim"
+    },
+    {
+      "parte": "inner",
+      "obrigatorio": true,
+      "descricao": "A largura da faixa com a margem lateral.",
+      "classe": "ucam-site-hero__inner"
+    },
+    {
+      "parte": "content",
+      "obrigatorio": true,
+      "descricao": "A pilha de texto e ações. Com foto, ocupa a metade inicial.",
+      "classe": "ucam-site-hero__content"
+    },
+    {
+      "parte": "eyebrow",
+      "obrigatorio": false,
+      "descricao": "<p> acima do título.",
+      "classe": "ucam-site-hero__eyebrow"
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "<h1>, na escala de hero.",
+      "classe": "ucam-site-hero__title"
+    },
+    {
+      "parte": "lede",
+      "obrigatorio": false,
+      "descricao": "<p> de uma ou duas frases.",
+      "classe": "ucam-site-hero__lede"
+    },
+    {
+      "parte": "pills",
+      "obrigatorio": false,
+      "descricao": "<ul> de pílulas com fatos curtos.",
+      "classe": "ucam-site-hero__pills"
+    },
+    {
+      "parte": "actions",
+      "obrigatorio": false,
+      "descricao": "Um botão primário e, se houver, um secundário, na forma inversa.",
+      "classe": "ucam-site-hero__actions"
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O título, o h1 da página."
+    },
+    {
+      "nome": "lede",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A frase de abertura."
+    },
+    {
+      "nome": "image",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A foto ao lado. Com ela, o texto fica na metade inicial.",
+      "valores": {
+        "true": {
+          "uso": "Quando há uma foto que acrescenta: o campus, alunos de verdade.",
+          "limite": "Nunca com texto dentro da imagem.",
+          "classe": ".ucam-site-hero--com-foto"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Um por página, e só na home: páginas internas usam o hero editorial.",
+      "Não entrega carrossel: uma mensagem só.",
+      "Não pôr texto sobre a foto nem dentro dela.",
+      "Não mais de duas ações."
+    ],
+    "motivo": "Num carrossel a primeira mensagem é a única que quase todo mundo vê. E texto sobre foto tem o contraste da foto do dia, que ninguém mede."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O título é o h1, e o único da página.",
+      "A foto é decorativa: alt vazio. O que importa está no texto.",
+      "Título e frase a 4,5:1 sobre a superfície inversa, medidos no build; o texto nunca fica sobre a imagem.",
+      "Nada se move sozinho."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.3.1",
+      "1.4.3",
+      "2.2.2",
+      "2.4.6"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Seu estágio começa aqui",
+        "Há 120 anos formando o Rio"
+      ],
+      "ruim": [
+        "Bem-vindo ao nosso site",
+        "Vale a pena ser UCAM!!!",
+        "Soluções inovadoras em educação de qualidade"
+      ]
+    },
+    "regras": [
+      "O título diz o que a pessoa ganha ou o que a instituição é, em até oito palavras.",
+      "A frase de abertura completa o título, não o repete.",
+      "A tipografia é a de display dos sites (ADR-069)."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-button",
+      "ucam-site-hero-pill"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": ".home-hero",
+        "novo": ".ucam-site-hero",
+        "nota": "Deixa de ser carrossel."
+      },
+      {
+        "legado": ".home-hero__bg e .home-hero__scrim",
+        "novo": ".ucam-site-hero__media",
+        "nota": "A foto sai de trás do texto e vai para a metade final."
+      },
+      {
+        "legado": "$fs-display-hero",
+        "novo": "typography.display-hero"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Home, com foto",
+      "codigo": "<section class=\"ucam-site-hero ucam-site-hero--com-foto\">\n  <img class=\"ucam-site-hero__media\" src=\"/imagens/campus.jpg\" alt=\"\">\n  <div class=\"ucam-site-hero__scrim\" aria-hidden=\"true\"></div>\n  <div class=\"ucam-site-hero__inner\">\n    <div class=\"ucam-site-hero__content\">\n      <p class=\"ucam-site-hero__eyebrow\">CENPRE Carreiras</p>\n      <h1 class=\"ucam-site-hero__title\">Seu estágio começa aqui</h1>\n      <p class=\"ucam-site-hero__lede\">Vagas, orientação e convênios para quem estuda na UCAM.</p>\n      <div class=\"ucam-site-hero__actions\">\n        <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse ucam-site-btn--lg\" href=\"/vagas\">Ver vagas</a>\n      </div>\n    </div>\n  </div>\n</section>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Uma mensagem e uma ação principal.",
+      "evite": "Cinco slides.",
+      "porque": "O segundo slide em diante quase ninguém vê, e a home fica sem dizer o que é."
+    },
+    {
+      "faca": "Foto ao lado do texto.",
+      "evite": "Texto sobre a foto.",
+      "porque": "O contraste passa a depender da imagem, e a próxima foto pode apagar o título."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "editorial-page-hero",
+      "diferenca": "O Hero é o da home: maior, com foto, uma vez no site. O hero editorial é o de cada página interna: trilha, título e frase, sem foto.",
+      "escolha": "Na home, hero. Em qualquer outra página, hero editorial."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "A foto e o véu nascem escondidos e entram no viewport grade-completa, na metade final; com a variante de foto, o texto se limita à metade inicial.",
+      "raiz": ".ucam-site-hero",
+      "variaveis": [
+        "--ucam-site-size-hero",
+        "--ucam-site-color-surface-inverse",
+        "--ucam-site-typography-display-hero-font-size",
+        "--ucam-site-container-faixa"
+      ],
+      "nota": "Não entrega carrossel."
+    }
+  }
+}

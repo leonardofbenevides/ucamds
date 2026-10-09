@@ -1,0 +1,202 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "editorial-cta",
+  "name": "EditorialCta",
+  "selector": "ucam-site-editorial-cta",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "layout",
+  "description": "A chamada que fecha a página: uma frase, um apoio e o botão do próximo passo, num bloco escuro arredondado. Com foto ao lado na janela larga.",
+  "quando_usar": [
+    "No fim de uma página, antes do rodapé, para o próximo passo.",
+    "Uma vez por página."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (CTA final das páginas) e cenpre-ui-kit (src/lib/layout/editorial-cta), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — CTA final",
+        "problema": "degradê entre texto e foto escrito com a cor do fundo em hexadecimal, repetida quatro vezes"
+      },
+      {
+        "tela": "cenpre — CTA final",
+        "problema": "brilho magenta decorativo em cor crua"
+      },
+      {
+        "tela": "www — Como ingressar?",
+        "problema": "cinco caminhos com o mesmo peso e nenhum destacado como próximo passo"
+      }
+    ],
+    "conclusao": "Uma chamada, um botão principal, e o véu entre texto e foto tirado do token da superfície."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<section>. Bloco na superfície inversa, com o canto do cartão."
+    },
+    {
+      "parte": "media",
+      "obrigatorio": false,
+      "descricao": "<img alt=\"\"> decorativa, só a partir da grade completa, na metade final.",
+      "classe": "ucam-site-cta__media"
+    },
+    {
+      "parte": "scrim",
+      "obrigatorio": false,
+      "descricao": "<div aria-hidden=\"true\">: o véu da superfície para transparente.",
+      "classe": "ucam-site-cta__scrim"
+    },
+    {
+      "parte": "content",
+      "obrigatorio": true,
+      "descricao": "A pilha de texto e ações.",
+      "classe": "ucam-site-cta__content"
+    },
+    {
+      "parte": "eyebrow",
+      "obrigatorio": false,
+      "descricao": "<p> acima do título.",
+      "classe": "ucam-site-cta__eyebrow"
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "<h2>.",
+      "classe": "ucam-site-cta__title"
+    },
+    {
+      "parte": "text",
+      "obrigatorio": false,
+      "descricao": "<p> de apoio.",
+      "classe": "ucam-site-cta__text"
+    },
+    {
+      "parte": "actions",
+      "obrigatorio": true,
+      "descricao": "O botão primário e, se houver, um secundário, na forma inversa.",
+      "classe": "ucam-site-cta__actions"
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A chamada."
+    },
+    {
+      "nome": "text",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O apoio."
+    },
+    {
+      "nome": "image",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A foto ao lado.",
+      "valores": {
+        "true": {
+          "uso": "Quando a foto acrescenta ao pedido.",
+          "limite": "Nunca com texto dentro.",
+          "classe": ".ucam-site-cta--com-foto"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Uma por página.",
+      "Uma ação principal; a segunda é secundária.",
+      "Não é o hero: vem no fim, e o título é h2."
+    ],
+    "motivo": "A chamada final responde o que faço agora. Com três botões iguais, a resposta é nada."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O título é um h2.",
+      "Texto a 4,5:1 sobre a superfície inversa, medido no build; nunca sobre a foto.",
+      "A foto é decorativa: alt vazio.",
+      "Os botões usam a forma inversa."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.3.1",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Pronto para o primeiro estágio?",
+        "Sua empresa pode ser parceira"
+      ],
+      "ruim": [
+        "Não perca tempo!!!",
+        "Entre em contato conosco para maiores informações"
+      ]
+    },
+    "regras": [
+      "A chamada fala com a pessoa, em até oito palavras.",
+      "O botão diz o verbo e o objeto."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-button"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-editorial-cta>",
+        "novo": ".ucam-site-cta"
+      },
+      {
+        "legado": ".editorial-cta__image-scrim",
+        "novo": ".ucam-site-cta__scrim",
+        "nota": "O degrade deixa de repetir a cor em hexadecimal: vai do token da superfície a transparente."
+      },
+      {
+        "legado": ".editorial-cta__glow",
+        "novo": ".ucam-site-cta",
+        "nota": "O brilho sai."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Chamada final",
+      "codigo": "<section class=\"ucam-site-cta\">\n  <div class=\"ucam-site-cta__content\">\n    <p class=\"ucam-site-cta__eyebrow\">Próximo passo</p>\n    <h2 class=\"ucam-site-cta__title\">Pronto para o primeiro estágio?</h2>\n    <p class=\"ucam-site-cta__text\">Cadastre o currículo e veja as vagas abertas esta semana.</p>\n    <div class=\"ucam-site-cta__actions\">\n      <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse\" href=\"/vagas\">Ver vagas</a>\n    </div>\n  </div>\n</section>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Um botão principal.",
+      "evite": "Três botões do mesmo peso.",
+      "porque": "A chamada existe para apontar um caminho."
+    },
+    {
+      "faca": "Dentro do contêiner, com margem.",
+      "evite": "Colada no rodapé.",
+      "porque": "Dois blocos escuros encostados leem como um só."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Bloco na superfície inversa. A foto e o véu entram no viewport grade-completa; com a variante de foto, o texto se limita à metade inicial.",
+      "raiz": ".ucam-site-cta",
+      "variaveis": [
+        "--ucam-site-radius-card",
+        "--ucam-site-typography-display-section-sm-font-size",
+        "--ucam-site-color-surface-inverse"
+      ]
+    }
+  }
+}

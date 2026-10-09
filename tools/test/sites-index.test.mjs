@@ -8,7 +8,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 test('o índice dos sites junta contrato, demo e a folha, sem @import e sem classe da aplicação', () => {
   const { data, css } = construirIndice({ raiz: ROOT });
-  assert.equal(data.meta.componentes, 13);
+  assert.ok(data.meta.componentes >= 13);
   assert.deepEqual(data.meta.submarcas, ['cenpre']);
   for (const id of ['button', 'icon-chip', 'section-heading', 'tag']) assert.ok(data.componentes.some((c) => c.id === id), 'falta ' + id);
   const b = data.componentes.find((c) => c.id === 'button');

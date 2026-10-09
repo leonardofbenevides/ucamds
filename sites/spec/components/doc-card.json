@@ -1,0 +1,181 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "doc-card",
+  "name": "DocCard",
+  "selector": "ucam-site-doc-card",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "A lista de documentos de um caso: o que levar para formalizar o estágio obrigatório, o que a empresa entrega no convênio. Um cartão de consulta, que não é clicável.",
+  "quando_usar": [
+    "Para uma lista curta de itens que a pessoa precisa conferir: documentos, requisitos.",
+    "Lado a lado, para comparar casos: estágio obrigatório e não obrigatório."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (Orientações de estágio) e cenpre-ui-kit (src/lib/ui/doc-card), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — documentos necessários",
+        "problema": "o marcador de cada item é um caractere solto, lido em voz alta a cada linha"
+      },
+      {
+        "tela": "cenpre — documentos necessários",
+        "problema": "nenhum na forma: é o ponto de partida"
+      }
+    ],
+    "conclusao": "O cartão de documentos vira peça, com lista de verdade e marcador decorativo fora da leitura."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<section> ou <article>. Caixa com um fio de marca no alto."
+    },
+    {
+      "parte": "header",
+      "obrigatorio": true,
+      "descricao": "A pastilha de ícone e o rótulo.",
+      "classe": "ucam-site-doc-card__header"
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Heading com o caso: Estágio obrigatório.",
+      "classe": "ucam-site-doc-card__label"
+    },
+    {
+      "parte": "list",
+      "obrigatorio": true,
+      "descricao": "<ul>.",
+      "classe": "ucam-site-doc-card__list"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<li> com o ícone de marcação, aria-hidden, e o texto.",
+      "classe": "ucam-site-doc-card__item"
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O caso."
+    },
+    {
+      "nome": "icon",
+      "tipo": "string",
+      "default": "'fileText'",
+      "descricao": "O ícone da pastilha."
+    },
+    {
+      "nome": "items",
+      "tipo": "string[]",
+      "obrigatorio": true,
+      "descricao": "Os documentos. Até seis."
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não clicável.",
+      "Não mais de seis itens: lista longa é página.",
+      "Não para passos em ordem: isso é o cartão de passo."
+    ],
+    "motivo": "É uma lista de conferência. Se a ordem importa ou se cada item pede explicação, a forma é outra."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O rótulo é um heading; os itens são uma lista.",
+      "O ícone de marcação é aria-hidden.",
+      "A pastilha do cabeçalho é decorativa.",
+      "Texto a 4,5:1 sobre o cartão, medido no build."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.3.1",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "item": {
+      "bom": [
+        "Termo de compromisso assinado pelas três partes",
+        "Plano de atividades"
+      ],
+      "ruim": [
+        "TCE",
+        "Documentação pertinente",
+        "Vide regulamento"
+      ]
+    },
+    "regras": [
+      "Cada item é o nome do documento, por extenso.",
+      "Sigla só depois do nome: Termo de Compromisso de Estágio (TCE)."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-icon-chip"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-doc-card>",
+        "novo": ".ucam-site-doc-card"
+      },
+      {
+        "legado": ".doc-card__accent",
+        "novo": ".ucam-site-doc-card",
+        "nota": "A barra de 4px vira a borda de cima da caixa."
+      },
+      {
+        "legado": ".doc-card__list li span",
+        "novo": ".ucam-site-doc-card__item",
+        "nota": "O marcador digitado vira ícone fora da leitura."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Documentos do estágio obrigatório",
+      "codigo": "<section class=\"ucam-site-doc-card\">\n  <div class=\"ucam-site-doc-card__header\">\n    <span class=\"ucam-site-icon-chip\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-fileText\"/></svg></span>\n    <h3 class=\"ucam-site-doc-card__label\">Estágio obrigatório</h3>\n  </div>\n  <ul class=\"ucam-site-doc-card__list\">\n    <li class=\"ucam-site-doc-card__item\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-check\"/></svg> Termo de compromisso assinado pelas três partes</li>\n    <li class=\"ucam-site-doc-card__item\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-check\"/></svg> Plano de atividades</li>\n  </ul>\n</section>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "O nome do documento por extenso.",
+      "evite": "Só a sigla.",
+      "porque": "Quem está no primeiro estágio não sabe o que é TCE."
+    },
+    {
+      "faca": "Dois cartões lado a lado para comparar.",
+      "evite": "Uma tabela.",
+      "porque": "No telefone os cartões empilham; a tabela não cabe."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "card",
+      "diferenca": "O cartão de documentos é uma lista que se lê ali mesmo. O Card leva a uma página.",
+      "escolha": "Sem destino e com itens a conferir, cartão de documentos."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Caixa com a borda de cima na cor de marca; cabeçalho e lista.",
+      "raiz": ".ucam-site-doc-card",
+      "variaveis": [
+        "--ucam-site-color-surface-brand",
+        "--ucam-site-radius-card",
+        "--ucam-site-space-inset-card"
+      ]
+    }
+  }
+}

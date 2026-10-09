@@ -1,0 +1,167 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "logo-marquee",
+  "name": "LogoMarquee",
+  "selector": "ucam-site-logo-marquee",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "layout",
+  "description": "O desfile de logos das empresas parceiras, em laço. Para sob o ponteiro e sob foco, e fica parado, em linhas, para quem pede menos movimento.",
+  "quando_usar": [
+    "Para mostrar que há muitas empresas parceiras, sem pedir que alguém leia cada uma.",
+    "Com pelo menos seis logos."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (faixa de parceiros) e cenpre-ui-kit (src/lib/ui/logo-marquee), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — parceiros",
+        "problema": "os logos repetidos para fechar o laço são lidos duas vezes pelo leitor de tela"
+      },
+      {
+        "tela": "cenpre — parceiros",
+        "problema": "para sob o ponteiro, mas não por teclado"
+      }
+    ],
+    "conclusao": "O laço continua, com a segunda cópia fora da leitura, parada por foco, e a forma parada para movimento reduzido."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<div>, depois do título da seção."
+    },
+    {
+      "parte": "viewport",
+      "obrigatorio": true,
+      "descricao": "A janela que recorta o desfile.",
+      "classe": "ucam-site-marquee__viewport"
+    },
+    {
+      "parte": "track",
+      "obrigatorio": true,
+      "descricao": "A trilha que anda: duas cópias do grupo.",
+      "classe": "ucam-site-marquee__track"
+    },
+    {
+      "parte": "group",
+      "obrigatorio": true,
+      "descricao": "<ul>. A segunda cópia leva aria-hidden=\"true\".",
+      "classe": "ucam-site-marquee__group"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<li> com a <img> do logo, de 48px de altura.",
+      "classe": "ucam-site-marquee__item"
+    }
+  ],
+  "props": [
+    {
+      "nome": "logos",
+      "tipo": "{ src: string; alt: string }[]",
+      "obrigatorio": true,
+      "descricao": "Os logos, com o nome da empresa no alt."
+    },
+    {
+      "nome": "paused",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "A forma parada: os logos em linhas, centralizados.",
+      "valores": {
+        "true": {
+          "uso": "Com poucos logos, ou quando a página já tem outro movimento.",
+          "classe": ".ucam-site-marquee--parado"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-within",
+    "reduced-motion"
+  ],
+  "limites": {
+    "regras": [
+      "Não para conteúdo que precisa ser lido: quem quer achar uma empresa usa a lista de conveniadas.",
+      "Não mais de um desfile por página.",
+      "Não entrega botão de pausa: para sob ponteiro e sob foco. Com logos que não são link, não há foco, e a parada por teclado não existe."
+    ],
+    "motivo": "O desfile diz que são muitas. Para dizer quais, o movimento atrapalha."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "A segunda cópia do grupo leva aria-hidden: cada empresa é lida uma vez.",
+      "Cada logo tem o nome da empresa no alt.",
+      "Com prefers-reduced-motion, nada se move: os logos assentam em linhas e a segunda cópia some.",
+      "Para sob o ponteiro e quando algo dentro recebe foco.",
+      "Movimento que dura mais de cinco segundos pede um jeito de parar (WCAG 2.2.2): com logos que são link, o foco para; sem link, use a forma parada."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "2.2.2",
+      "2.3.3"
+    ]
+  },
+  "conteudo": {
+    "alt": {
+      "bom": [
+        "Petrobras",
+        "Globo"
+      ],
+      "ruim": [
+        "logo",
+        "empresa parceira 3",
+        "Logotipo da empresa Petrobras em fundo branco"
+      ]
+    },
+    "regras": [
+      "O alt é o nome da empresa, só.",
+      "O título da seção diz o que são: Empresas parceiras."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-logo-marquee>",
+        "novo": ".ucam-site-marquee"
+      },
+      {
+        "legado": ".logo-marquee__track",
+        "novo": ".ucam-site-marquee__track",
+        "nota": "Passa a parar também sob foco."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Empresas parceiras",
+      "codigo": "<div class=\"ucam-site-marquee\">\n  <div class=\"ucam-site-marquee__viewport\">\n    <div class=\"ucam-site-marquee__track\">\n      <ul class=\"ucam-site-marquee__group\">\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/aurora.svg\" alt=\"Aurora\"></li>\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/brisa.svg\" alt=\"Brisa\"></li>\n      </ul>\n      <ul class=\"ucam-site-marquee__group\" aria-hidden=\"true\">\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/aurora.svg\" alt=\"\"></li>\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/brisa.svg\" alt=\"\"></li>\n      </ul>\n    </div>\n  </div>\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "aria-hidden na segunda cópia.",
+      "evite": "Duas listas iguais lidas em seguida.",
+      "porque": "Quem ouve a página recebe o nome de cada empresa duas vezes."
+    },
+    {
+      "faca": "A forma parada quando há poucos logos.",
+      "evite": "Desfile de quatro logos.",
+      "porque": "Com poucos, o laço mostra o mesmo logo a cada instante."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "A trilha tem duas cópias do grupo e anda metade da própria largura, em laço. A pausa e a forma sem movimento são da folha.",
+      "raiz": ".ucam-site-marquee",
+      "variaveis": [
+        "--ucam-site-motion-duration-desfile",
+        "--ucam-site-size-logo-parceiro"
+      ],
+      "nota": "Não entrega botão de pausa."
+    }
+  }
+}

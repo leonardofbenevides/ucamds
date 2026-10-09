@@ -16,15 +16,35 @@
   "evidencia": {
     "origem": "candidomendes.edu.br e cenpre-ui-kit (projects/cenpre-ui-kit/src/lib/ui/tag), 08/10/2026",
     "ocorrencias": [
-      { "tela": "www — cartões de curso", "rotulo": "Graduação / EAD", "problema": "a modalidade aparece como texto solto no mesmo peso do título" },
-      { "tela": "cenpre — painel de vagas", "rotulo": "Estágio", "problema": "nenhum: a tag do kit é o ponto de partida" },
-      { "tela": "cenpre — biblioteca", "rotulo": "Orienta Candido", "problema": "tag de série em azul inventado ($color-info-700), fora de qualquer paleta" }
+      {
+        "tela": "www — cartões de curso",
+        "rotulo": "Graduação / EAD",
+        "problema": "a modalidade aparece como texto solto no mesmo peso do título"
+      },
+      {
+        "tela": "cenpre — painel de vagas",
+        "rotulo": "Estágio",
+        "problema": "nenhum: a tag do kit é o ponto de partida"
+      },
+      {
+        "tela": "cenpre — biblioteca",
+        "rotulo": "Orienta Candido",
+        "problema": "tag de série em azul inventado ($color-info-700), fora de qualquer paleta"
+      }
     ],
     "conclusao": "A tag existe para a modalidade e a área lerem como metadado, não como título. O tom info sai do azul avulso e entra na paleta de feedback compartilhada."
   },
   "anatomia": [
-    { "parte": "root", "obrigatorio": true, "descricao": "<span>. Pílula com fundo suave e texto na tinta do tom." },
-    { "parte": "label", "obrigatorio": true, "descricao": "Uma ou duas palavras, substantivo." }
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<span>. Pílula com fundo suave e texto na tinta do tom."
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "Uma ou duas palavras, substantivo."
+    }
   ],
   "props": [
     {
@@ -33,14 +53,28 @@
       "default": "'neutral'",
       "descricao": "A tinta. Neutro é o padrão; marca para o que a instituição destaca; info para série ou evento; inverso sobre seção escura.",
       "valores": {
-        "neutral": { "uso": "Modalidade, turno, área: metadado comum." },
-        "brand": { "uso": "O que a instituição quer que salte: Novo curso, Vagas abertas.", "limite": "Uma por cartão. Três tags de marca no mesmo cartão é uma faixa, não uma classificação.", "classe": ".ucam-site-tag--brand" },
-        "info": { "uso": "Série editorial ou evento: Orienta Candido, Semana Jurídica.", "classe": ".ucam-site-tag--info" },
-        "inverse": { "uso": "Sobre hero ou rodapé escuros.", "classe": ".ucam-site-tag--inverse" }
+        "neutral": {
+          "uso": "Modalidade, turno, área: metadado comum."
+        },
+        "brand": {
+          "uso": "O que a instituição quer que salte: Novo curso, Vagas abertas.",
+          "limite": "Uma por cartão. Três tags de marca no mesmo cartão é uma faixa, não uma classificação.",
+          "classe": ".ucam-site-tag--brand"
+        },
+        "info": {
+          "uso": "Série editorial ou evento: Orienta Candido, Semana Jurídica.",
+          "classe": ".ucam-site-tag--info"
+        },
+        "inverse": {
+          "uso": "Sobre hero ou rodapé escuros.",
+          "classe": ".ucam-site-tag--inverse"
+        }
       }
     }
   ],
-  "estados": ["default"],
+  "estados": [
+    "default"
+  ],
   "limites": {
     "regras": [
       "Não é botão nem filtro: se o clique filtra a lista, é um botão secundário com aria-pressed.",
@@ -56,12 +90,24 @@
       "Não é foco nem alvo: nenhum tabindex, nenhum role.",
       "Num cartão que é link, a tag fica dentro do link como texto comum."
     ],
-    "criterios_wcag": ["1.4.1", "1.4.3"]
+    "criterios_wcag": [
+      "1.4.1",
+      "1.4.3"
+    ]
   },
   "conteudo": {
     "rotulo": {
-      "bom": ["EAD", "Presencial", "Estágio", "Orienta Candido"],
-      "ruim": ["Clique para filtrar", "NOVO!!!", "Curso de graduação presencial noturno"]
+      "bom": [
+        "EAD",
+        "Presencial",
+        "Estágio",
+        "Orienta Candido"
+      ],
+      "ruim": [
+        "Clique para filtrar",
+        "NOVO!!!",
+        "Curso de graduação presencial noturno"
+      ]
     },
     "regras": [
       "Uma ou duas palavras, substantivo ou sigla, sem ponto.",
@@ -72,27 +118,71 @@
   "migracao": {
     "de": "cenpre-ui-kit",
     "mapa": [
-      { "legado": "<app-tag>", "novo": ".ucam-site-tag" },
-      { "legado": "$color-info-700 na tag de série", "novo": "color.feedback.info.foreground", "nota": "O azul avulso do kit vira o info compartilhado." }
+      {
+        "legado": "<app-tag>",
+        "novo": ".ucam-site-tag"
+      },
+      {
+        "legado": "$color-info-700 na tag de série",
+        "novo": "color.feedback.info.foreground",
+        "nota": "O azul avulso do kit vira o info compartilhado."
+      }
     ]
   },
   "exemplos": [
-    { "titulo": "Modalidade no cartão de curso", "codigo": "<span class=\"ucam-site-tag\">EAD</span>\n<span class=\"ucam-site-tag\">Noturno</span>" },
-    { "titulo": "Destaque e série", "codigo": "<span class=\"ucam-site-tag ucam-site-tag--brand\">Vagas abertas</span>\n<span class=\"ucam-site-tag ucam-site-tag--info\">Orienta Candido</span>" }
+    {
+      "titulo": "Modalidade no cartão de curso",
+      "codigo": "<span class=\"ucam-site-tag\">EAD</span>\n<span class=\"ucam-site-tag\">Noturno</span>"
+    },
+    {
+      "titulo": "Destaque e série",
+      "codigo": "<span class=\"ucam-site-tag ucam-site-tag--brand\">Vagas abertas</span>\n<span class=\"ucam-site-tag ucam-site-tag--info\">Orienta Candido</span>"
+    }
   ],
   "boas_praticas": [
-    { "faca": "Até três tags por cartão, neutras por padrão.", "evite": "Uma fileira de seis tags coloridas.", "porque": "Depois da terceira, a classificação vira ruído e o título perde." },
-    { "faca": "Botão com aria-pressed para filtrar.", "evite": "Tag com (click).", "porque": "Filtro é controle; tag é texto." }
+    {
+      "faca": "Até três tags por cartão, neutras por padrão.",
+      "evite": "Uma fileira de seis tags coloridas.",
+      "porque": "Depois da terceira, a classificação vira ruído e o título perde."
+    },
+    {
+      "faca": "Botão com aria-pressed para filtrar.",
+      "evite": "Tag com (click).",
+      "porque": "Filtro é controle; tag é texto."
+    }
   ],
   "vs": [
-    { "componente": "button", "diferenca": "Tag classifica; Button age. A tag nunca recebe clique.", "escolha": "Substantivo é tag; verbo é botão." },
-    { "componente": "icon-chip", "diferenca": "As duas são pastilhas, mas a Tag carrega uma PALAVRA e o IconChip carrega um ÍCONE decorativo ao lado de um texto que está fora dele.", "escolha": "Se a informação está dentro da pastilha, é tag; se a pastilha só acompanha um título, é icon-chip." }
+    {
+      "componente": "button",
+      "diferenca": "Tag classifica; Button age. A tag nunca recebe clique.",
+      "escolha": "Substantivo é tag; verbo é botão."
+    },
+    {
+      "componente": "icon-chip",
+      "diferenca": "As duas são pastilhas, mas a Tag carrega uma PALAVRA e o IconChip carrega um ÍCONE decorativo ao lado de um texto que está fora dele.",
+      "escolha": "Se a informação está dentro da pastilha, é tag; se a pastilha só acompanha um título, é icon-chip."
+    },
+    {
+      "componente": "hero-pill",
+      "diferenca": "A Tag é uma CATEGORIA de um item, em qualquer superfície. A pílula do hero é um FATO sobre a seção escura, com contorno.",
+      "escolha": "Se classifica um item de uma lista, é tag."
+    }
   ],
   "implementacao": {
     "trilho_a": {
       "contrato": "Uma classe na raiz, tom por modificador.",
       "raiz": ".ucam-site-tag",
-      "variaveis": ["--ucam-site-color-surface-sunken", "--ucam-site-color-surface-brand-soft", "--ucam-site-color-feedback-info-background", "--ucam-site-radius-pill"]
+      "variaveis": [
+        "--ucam-site-color-surface-sunken",
+        "--ucam-site-color-surface-brand-soft",
+        "--ucam-site-color-feedback-info-background",
+        "--ucam-site-radius-pill"
+      ]
     }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-site-course-card"
+    ]
   }
 }
