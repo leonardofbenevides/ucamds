@@ -134,7 +134,7 @@
       "nome": "size",
       "tipo": "'sm' | 'md'",
       "default": "'md'",
-      "descricao": "md é 40px, a medida da grade de módulos e do item de lista (a mesma do item de navegação). sm é 28px: a marquinha do módulo na faixa e a fileira densa onde o ladrilho acompanha texto de apoio em vez de título."
+      "descricao": "md é size.control-lg, a medida da grade de módulos e do item de lista (a mesma do item de navegação). sm é size.control-sm: a fileira densa onde o ladrilho acompanha texto de apoio em vez de título. A marquinha do módulo na faixa fica entre os dois, em size.control-md (desde 08/10/2026): é a altura dos controles da própria faixa, e a medida é do AppShell, não uma terceira opção desta prop."
     }
   ],
   "estados": [

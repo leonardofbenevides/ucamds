@@ -5268,8 +5268,19 @@ ${cssDaSubpaleta(tokensCss)}
 ${cssDaCorDeFaixa()}
 
 /* A marquinha no degrau do ladrilho do Portal: o nome do sistema é o maior
- * texto da faixa, e o ladrilho de 28px ao lado dele lia como ícone de menu. */
-.ucam-appbar__marca { flex: none; }
+ * texto da faixa, e o ladrilho de 28px ao lado dele lia como ícone de menu.
+ *
+ * UM DEGRAU ABAIXO DO LADRILHO (08/10/2026: "os símbolos de todos os projetos
+ * pode diminuir agora, no caso os quadrados"). Com a ADR-056 o ladrilho foi a
+ * 44px e a marquinha foi junto; na faixa ela ficava mais alta que o campo de
+ * busca e que os botões ao lado. Passa a control-md (36px), a altura dos
+ * controles da própria faixa, com o ícone no mesmo degrau de 20px. Vale para
+ * a gaveta, que reaproveita a classe. */
+.ucam-appbar__marca {
+  flex: none;
+  inline-size: var(--ucam-size-control-md);
+  block-size: var(--ucam-size-control-md);
+}
 
 /* LOGO + MARQUINHA (ADR-060). Onde as duas vêm juntas, a logo só existe com a
  * navegação fixa: abaixo disso a faixa ganha o botão de menu e perde largura,
@@ -5667,12 +5678,8 @@ ${abaixo('nav-fixa')} {
   .ucam-appbar > .ucam-appbar__brand { margin-inline-end: auto; }
 }
 ${abaixo('faixa-minima')} {
-  /* A marquinha desce um degrau (40 → 32px): os 8px são os que faltavam
-   * para "Relatórios" caber inteiro na linha dele a 390px. */
-  .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
-    inline-size: var(--ucam-size-control-md);
-    block-size: var(--ucam-size-control-md);
-  }
+  /* A marquinha já nasce em control-md desde 08/10/2026; o degrau que ela
+   * descia aqui para "Relatórios" caber a 390px é hoje a medida de base. */
   .ucam-appbar__system:not([data-cortado]) {
     font-size: 0.875rem;
     line-height: 1.15;
@@ -5687,7 +5694,7 @@ ${abaixo('faixa-minima')} {
    * regra do inteiro ou nenhum; "Relatórios Acadêmicos" saía já a 375, com
    * "Acadêmicos" sem caber na segunda linha. Três ajustes, nenhum às custas
    * de alvo:
-   * - a marquinha desce mais um degrau, 32 → 28 (control-sm);
+   * - a marquinha desce um degrau, para control-sm;
    * - o vão entre ela e o nome vai a inline-xs;
    * - o vão ANTES da marca cai à metade. O vão de 16 existe para o extensor
    *   de 44 do botão de menu (8px para cada lado) não invadir a peça vizinha;
@@ -9756,8 +9763,16 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * (ADR-049) — é a cor do sistema dizendo "comece por aqui".
  *
  * Só em repouso. Decidida a linha, quem fala é o tom da decisão: a posição
- * pressionada pinta como sempre pintou, sugerida ou não, e o brilho fica. */
-.ucam-segmented button:has(> .ucam-segmented__sugerido):not([aria-pressed="true"]) {
+ * pressionada pinta como sempre pintou, sugerida ou não, e o brilho fica.
+ *
+ * "Em repouso" é o GRUPO sem escolha, não o botão solto (08/10/2026: "tá
+ * confuso, não dá pra saber qual tá selecionado"). O seletor só excluía a
+ * própria sugerida quando pressionada: escolhida OUTRA posição, a sugerida
+ * seguia com fundo, contorno e peso, e a escolhida — fundo sem contorno —
+ * perdia para ela. Agora o destaque sai assim que qualquer posição é
+ * pressionada; a sugerida volta a texto neutro com o brilho, e a linha tem
+ * uma posição pintada só. */
+.ucam-segmented:not(:has(button[aria-pressed="true"])) button:has(> .ucam-segmented__sugerido) {
   background: var(--ucam-color-action-primary-subtle);
   color: var(--ucam-color-action-primary-default);
   font-weight: var(--ucam-typography-action-font-weight);

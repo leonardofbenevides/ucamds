@@ -74,9 +74,11 @@ export interface UcamSegmentItem {
   `,
   styles: `
     /* A opção sugerida se vê, como no Trilho A (06/10/2026): enquanto não há
-       decisão, veste a família da ação — fundo sutil, contorno e tinta. */
+       decisão, veste a família da ação — fundo sutil, contorno e tinta.
+       Escolhida qualquer posição, o destaque sai (08/10/2026): a sugerida
+       disputava com a escolhida. */
     ucam-segmented .ucam-segmented__sugerido { margin-inline-start: 0.25rem; }
-    ucam-segmented button:has(.ucam-segmented__sugerido):not([aria-pressed='true']) {
+    ucam-segmented .ucam-segmented:not(:has(button[aria-pressed='true'])) button:has(.ucam-segmented__sugerido) {
       background: var(--ucam-color-action-primary-subtle);
       color: var(--ucam-color-action-primary-default);
       font-weight: var(--ucam-typography-action-font-weight);
