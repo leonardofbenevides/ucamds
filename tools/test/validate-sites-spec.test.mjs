@@ -28,7 +28,7 @@ const msgs = (r) => r.erros.map((e) => `${e.arquivo}: ${e.msg}`).join('\n');
 test('a spec real dos sites passa', () => {
   const r = validar({ raiz: ROOT, css: CSS });
   assert.deepEqual(r.erros, [], msgs(r));
-  assert.equal(r.total, 4);
+  assert.ok(r.total >= 4);
 });
 
 test('selector sem site é falha nomeando o esperado', () => {

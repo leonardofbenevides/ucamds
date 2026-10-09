@@ -20,10 +20,20 @@ export function construirIndice({ raiz = ROOT } = {}) {
     if (!existsSync(join(dist, f))) throw new Error(`dist/sites/${f} não existe — rode pnpm run sites`);
   }
   const demos = ler('sites/spec/demos.json').demos;
+  // AS DECISÕES DE CADA PEÇA são as ADRs que o contrato dela CITA, na ordem do
+  // adr.json. Não vêm do campo afeta: lá o casamento é pelo id, e o button dos
+  // sites herdava as vinte e uma ADRs do button da aplicação; e pôr seletor
+  // dos sites em afeta faria o validador da aplicação avisar "sem contrato".
+  // O contrato já diz o que o governa, e o validador já confere que existe.
+  const adrIds = ler('spec/decisions/adr.json').decisions.map((a) => a.id);
+  const decisoesDe = (c) => {
+    const citadas = new Set(JSON.stringify(c).match(/ADR-\d{3}/g) ?? []);
+    return adrIds.filter((id) => citadas.has(id));
+  };
   const componentes = readdirSync(join(raiz, 'sites/spec/components'))
     .filter((f) => f.endsWith('.json'))
     .map((f) => ler(`sites/spec/components/${f}`))
-    .map((c) => ({ ...c, demo: demos[c.id] }))
+    .map((c) => ({ ...c, demo: demos[c.id], decisoes: decisoesDe(c) }))
     .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   const submarcas = readdirSync(join(dist, 'tokens'))
     .filter((f) => /^ucam-site-marca-.+\.css$/.test(f))

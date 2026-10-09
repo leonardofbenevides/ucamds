@@ -8,10 +8,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 test('o índice dos sites junta contrato, demo e a folha, sem @import e sem classe da aplicação', () => {
   const { data, css } = construirIndice({ raiz: ROOT });
-  assert.equal(data.meta.componentes, 4);
+  assert.equal(data.meta.componentes, 13);
   assert.deepEqual(data.meta.submarcas, ['cenpre']);
-  assert.deepEqual(data.componentes.map((c) => c.id), ['button', 'icon-chip', 'section-heading', 'tag']);
-  const b = data.componentes[0];
+  for (const id of ['button', 'icon-chip', 'section-heading', 'tag']) assert.ok(data.componentes.some((c) => c.id === id), 'falta ' + id);
+  const b = data.componentes.find((c) => c.id === 'button');
   assert.equal(b.selector, 'ucam-site-button');
   assert.match(b.demo.principal.preview, /ucam-site-btn--primary/);
   assert.equal(b.trilhos, undefined);

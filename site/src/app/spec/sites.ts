@@ -51,15 +51,17 @@ export function sitesPorCategoria(): GrupoSites[] {
 }
 
 /**
- * ADRs que citam ESTE componente dos sites em afeta, pelo seletor dos sites.
+ * As ADRs que governam um componente dos sites: as que o contrato dele cita.
+ * A lista de ids vem pronta do índice (tools/build-sites-index.mjs).
  *
  * Não reaproveita decisoesQueAfetam() da aplicação: ela casa pelo id, e o
  * button dos sites herdava as vinte e uma ADRs do button da aplicação —
  * controle de 36px, outputs do Angular, Trilho A+ — na mesma página em que o
  * contrato diz 44px e CSS puro (revisão de 09/10/2026).
  */
-export function sitesDecisoesQueAfetam(id: string): Adr[] {
-  return adrs.filter((a) => a.afeta.some((x) => x === `ucam-site-${id}`));
+export function sitesDecisoesDe(id: string): Adr[] {
+  const citadas = new Set((sitesComponentePorId(id) as { decisoes?: string[] } | undefined)?.decisoes ?? []);
+  return adrs.filter((a) => citadas.has(a.id));
 }
 
 export function sitesDependentesDe(id: string): Componente[] {
