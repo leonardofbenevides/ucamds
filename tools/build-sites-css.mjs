@@ -1245,6 +1245,7 @@ ${acima('grade-completa')} {
 .ucam-site-stats__item {
   display: flex;
   flex-direction: column-reverse;
+  justify-content: flex-end;
   gap: ${V('space-inline-xs')};
   padding-block-start: ${V('space-stack-sm')};
   border-block-start: 1px solid ${V('color-border-default')};

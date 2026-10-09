@@ -104,3 +104,12 @@ test('o índice traz as vinte e cinco peças', () => {
   assert.equal(data.meta.componentes, 25);
   for (const id of Object.keys(PECAS)) assert.ok(data.componentes.some((c) => c.id === id && c.demo?.principal?.preview), `falta ${id} com demo`);
 });
+
+test('os números da faixa alinham pelo topo, mesmo com rótulos de alturas diferentes', () => {
+  // A coluna é invertida (o rótulo vem antes no documento e aparece embaixo),
+  // e coluna invertida empacota no PÉ: com um rótulo de duas linhas, o número
+  // dele subia em relação aos vizinhos (captura de 09/10/2026).
+  const item = regrasDe('.ucam-site-stats__item')[0];
+  assert.match(item, /flex-direction: column-reverse;/);
+  assert.match(item, /justify-content: flex-end;/);
+});
