@@ -45,7 +45,7 @@ interface Palco {
         @for (p of palcos(); track p.chave) {
           <li>
             <div class="estados-palco ucam-estado" [attr.data-ucam-estado]="p.chave" #palco>
-              <div class="ucam" [innerHTML]="html()" inert></div>
+              <div [class]="raiz()" [innerHTML]="html()" inert></div>
             </div>
             <p class="estados-rotulo">
               <code>{{ p.rotulo }}</code>
@@ -114,6 +114,8 @@ export class EstadosGradeComponent {
   readonly estados = input<string[]>([]);
   /** O preview do Trilho A — o mesmo HTML que o catálogo desenha. */
   readonly preview = input<string>('');
+  /** Classe-raiz que escopa a folha do preview: "ucam" (aplicação) ou "ucam-site" (sites). */
+  readonly raiz = input<string>('ucam');
 
   /**
    * Os estados que o espelho cobre.

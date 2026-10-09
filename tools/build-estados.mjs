@@ -41,7 +41,7 @@
  *      começava um bloco. Os comentários saem antes de qualquer varredura.
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { join, dirname, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -52,8 +52,15 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // build morria aqui (24/09/2026). Localmente passava porque a cópia sobrava
 // de builds anteriores. E o diretório de saída pode ainda não existir pela
 // mesma razão: é criado na hora.
-const ENTRADA = join(ROOT, 'dist', 'css', 'ucam.css');
-const SAIDA = join(ROOT, 'site', 'src', 'generated', 'estados.css');
+// Entrada e saída por argumento (08/10/2026): os sites espelham a própria
+// folha (dist/sites/css/ucam-site.css) em site/src/generated/sites-estados.css
+// pelo mesmo gerador. Sem argumento, é a aplicação, como sempre foi.
+function argumento(nome, padrao) {
+  const i = process.argv.indexOf(nome);
+  return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : padrao;
+}
+const ENTRADA = argumento('--entrada', join(ROOT, 'dist', 'css', 'ucam.css'));
+const SAIDA = argumento('--saida', join(ROOT, 'site', 'src', 'generated', 'estados.css'));
 
 /** Os estados que o espelho cobre, na ordem em que a matriz os mostra. */
 const ESTADOS = [
@@ -280,7 +287,7 @@ mkdirSync(dirname(SAIDA), { recursive: true });
 writeFileSync(SAIDA, saida, 'utf8');
 
 const total = Object.values(contagem).reduce((a, b) => a + b, 0);
-console.log('site/src/generated/estados.css');
+console.log(relative(ROOT, SAIDA).split(sep).join('/'));
 console.log(
   '  ' +
     total +

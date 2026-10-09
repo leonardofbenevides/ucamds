@@ -223,7 +223,8 @@ ${semFlat.filter((t) => !t.composite).map((t) => `  "${t.name}": $${P}-${t.name}
     arquivos.push([`ucam-site-marca-${m.id}.css`, `${banner(`submarca ${m.id} (camada 3)`)}
 /* Importe DEPOIS de ucam-site-tokens.css. Aplica-se com data-marca="${m.id}"
  * no elemento raiz: só os semânticos listados mudam; o resto herda. */
-:root[data-marca="${m.id}"] {
+:root[data-marca="${m.id}"],
+[data-marca="${m.id}"] {
 ${m.flat.map((t) => cssVar(P, t, resolve)).join('\n')}
 }
 `]);

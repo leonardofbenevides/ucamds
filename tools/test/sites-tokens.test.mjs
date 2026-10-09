@@ -46,7 +46,7 @@ test('a spec real dos sites passa em todos os portões e gera os quatro arquivos
   assert.match(css, /--ucam-site-typography-display-hero-font-size: clamp\(/);
   assert.doesNotMatch(css, /--ucam-color-/);
   const marca = r.arquivos[3][1];
-  assert.match(marca, /:root\[data-marca="cenpre"\] \{/);
+  assert.match(marca, /:root\[data-marca="cenpre"\],\n\[data-marca="cenpre"\] \{/);
   assert.match(marca, /--ucam-site-color-action-primary-default: #922243;/);
   assert.doesNotMatch(marca, /--ucam-site-color-text-primary/);
 });

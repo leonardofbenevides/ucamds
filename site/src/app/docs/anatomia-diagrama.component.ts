@@ -58,7 +58,7 @@ interface Marca {
     @if (preview()) {
       <figure class="anatomia-figura">
         <div class="anatomia-palco" #palco>
-          <div class="ucam anatomia-peca" #peca [innerHTML]="html()" inert></div>
+          <div [class]="raiz() + ' anatomia-peca'" #peca [innerHTML]="html()" inert></div>
           @for (m of marcas(); track m.n) {
             <span
               class="anatomia-caixa"
@@ -267,6 +267,8 @@ export class AnatomiaDiagramaComponent {
   readonly partes = input<Anatomia[]>([]);
   /** O HTML do preview do Trilho A — o mesmo que o catálogo desenha. */
   readonly preview = input<string>('');
+  /** Classe-raiz que escopa a folha do preview: "ucam" (aplicação) ou "ucam-site" (sites). */
+  readonly raiz = input<string>('ucam');
 
   private readonly palco = viewChild<ElementRef<HTMLElement>>('palco');
   private readonly peca = viewChild<ElementRef<HTMLElement>>('peca');

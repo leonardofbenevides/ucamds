@@ -1,0 +1,110 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "icon-chip",
+  "name": "IconChip",
+  "selector": "ucam-site-icon-chip",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.6",
+  "category": "conteudo",
+  "description": "A pastilha de ícone ao lado de um título: os quatro passos do CENPRE, os quatro motivos para escolher a UCAM. Decorativa sempre; o texto ao lado é quem fala.",
+  "quando_usar": [
+    "Uma fileira de três ou quatro blocos de destaque com título e frase, cada um com um símbolo.",
+    "Um passo numerado ou simbolizado numa lista de como começar.",
+    "O item de uma lista de benefícios dentro de um cartão."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br e cenpre-ui-kit (styles/components/_icon-chip.scss), 08/10/2026",
+    "ocorrencias": [
+      { "tela": "www — Por que devo escolher estudar na UCAM?", "problema": "quatro blocos com ícone de bitmap, cada um de um tamanho" },
+      { "tela": "cenpre — Plataforma CENPRE Carreiras em quatro passos", "problema": "nenhum: o icon-chip do kit é o ponto de partida" }
+    ],
+    "conclusao": "Um tamanho por papel e um tom por superfície. O ícone vem do sprite compartilhado, nunca de bitmap."
+  },
+  "anatomia": [
+    { "parte": "root", "obrigatorio": true, "descricao": "<span aria-hidden=\"true\">. Quadrado com canto do controle, fundo suave e ícone na tinta." },
+    { "parte": "icon", "obrigatorio": true, "descricao": "<svg class=\"ic\"><use href=\"#i-…\"/></svg>, do sprite do sistema. 20px no md, 24 no lg." }
+  ],
+  "props": [
+    {
+      "nome": "icon",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome do ícone no sprite (briefcase, graduationCap, mapPin…)."
+    },
+    {
+      "nome": "size",
+      "tipo": "'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "40px ou 56px.",
+      "valores": {
+        "md": { "uso": "Ao lado do título de um item de lista ou dentro de um cartão." },
+        "lg": { "uso": "No bloco de destaque de uma seção, acima do título.", "limite": "Não em lista: 56px por item empurra o texto para baixo.", "classe": ".ucam-site-icon-chip--lg" }
+      }
+    },
+    {
+      "nome": "tone",
+      "tipo": "'brand' | 'neutral' | 'inverse'",
+      "default": "'brand'",
+      "descricao": "Lavagem de marca por padrão; neutro quando a fileira já tem cor demais; inverso sobre seção escura.",
+      "valores": {
+        "brand": { "uso": "O padrão numa seção clara." },
+        "neutral": { "uso": "Dentro de um cartão que já tem tag de marca, ou numa lista longa.", "classe": ".ucam-site-icon-chip--neutral" },
+        "inverse": { "uso": "Sobre hero ou CTA escuros.", "classe": ".ucam-site-icon-chip--inverse" }
+      }
+    }
+  ],
+  "estados": ["default"],
+  "limites": {
+    "regras": [
+      "Não para pessoa: pessoa é avatar.",
+      "Não para estado (sucesso, erro): isso é o ícone do selo da aplicação.",
+      "Não clicável. Se o bloco inteiro é link, o link é o bloco, não a pastilha."
+    ],
+    "motivo": "A pastilha é decoração ao lado de um texto. Quando passa a carregar informação própria — quem, qual estado — virou outro componente."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Sempre aria-hidden: o título ao lado é o nome.",
+      "O traço do ícone a 3:1 sobre o fundo da pastilha (WCAG 1.4.11), nos três tons — medido.",
+      "Sem foco, sem papel."
+    ],
+    "criterios_wcag": ["1.1.1", "1.4.11"]
+  },
+  "conteudo": {
+    "icone": {
+      "bom": ["briefcase ao lado de Orientação de estágio", "graduationCap ao lado de Cursos", "mapPin ao lado de Campus Centro"],
+      "ruim": ["um ícone diferente para curso em cada página", "ícone sem título ao lado", "bitmap recortado no lugar do sprite"]
+    },
+    "regras": [
+      "O ícone reforça o título; não o substitui.",
+      "Mesmo ícone para o mesmo conceito em todo o site: estágio é briefcase, curso é graduationCap, campus é mapPin.",
+      "Um símbolo só por pastilha."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      { "legado": ".icon-chip", "novo": ".ucam-site-icon-chip" },
+      { "legado": ".icon-chip--lg", "novo": ".ucam-site-icon-chip--lg" }
+    ]
+  },
+  "exemplos": [
+    { "titulo": "Bloco de destaque", "codigo": "<span class=\"ucam-site-icon-chip ucam-site-icon-chip--lg\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-briefcase\"/></svg></span>\n<h3>Orientação de estágio</h3>" },
+    { "titulo": "Item de lista", "codigo": "<span class=\"ucam-site-icon-chip ucam-site-icon-chip--neutral\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-mapPin\"/></svg></span>\n<span>Campus Centro</span>" }
+  ],
+  "boas_praticas": [
+    { "faca": "Um ícone por conceito, o mesmo em todo o site.", "evite": "Três ícones diferentes para curso em três páginas.", "porque": "O símbolo só ajuda quando se repete." },
+    { "faca": "Pastilha decorativa, título ao lado.", "evite": "Pastilha com tooltip explicando o ícone.", "porque": "Se o ícone precisa de legenda, a legenda é o título." }
+  ],
+  "vs": [
+    { "componente": "tag", "diferenca": "O IconChip carrega um ícone decorativo e acompanha um texto que está fora dele; a Tag carrega a própria palavra.", "escolha": "Informação dentro da pastilha é tag; símbolo ao lado de um título é icon-chip." }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz, tamanho e tom por modificador. O <svg class=\"ic\"> de dentro recebe o degrau do papel pela folha.",
+      "raiz": ".ucam-site-icon-chip",
+      "variaveis": ["--ucam-site-size-icon-chip-md", "--ucam-site-size-icon-chip-lg", "--ucam-site-size-icon-md", "--ucam-site-size-icon-lg", "--ucam-site-color-surface-brand-soft"]
+    }
+  }
+}

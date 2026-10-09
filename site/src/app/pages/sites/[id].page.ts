@@ -1,0 +1,1095 @@
+import { Component, ChangeDetectionStrategy, input, computed, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { KeyValuePipe } from '@angular/common';
+
+import { UcamSectionBar } from '@ucam/ui';
+
+import { sitesComponentePorId, sitesDecisoesQueAfetam, sitesDependentesDe, sitesMeta } from '../../spec/sites';
+import { PageHeaderComponent } from '../../docs/page-header.component';
+import { LooseBlockComponent } from '../../docs/loose-block.component';
+import { DemoPainelComponent } from '../../docs/demo-painel.component';
+import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
+import { AnatomiaDiagramaComponent } from '../../docs/anatomia-diagrama.component';
+import { EstadosGradeComponent } from '../../docs/estados-grade.component';
+import { TextoComponent } from '../../docs/texto.component';
+
+@Component({
+  selector: 'ucam-site-componente',
+  imports: [
+    TextoComponent,
+    RouterLink,
+    UcamSectionBar,
+    KeyValuePipe,
+    PageHeaderComponent,
+    LooseBlockComponent,
+    DemoPainelComponent,
+    NestaPaginaComponent,
+    AnatomiaDiagramaComponent,
+    EstadosGradeComponent,
+  ],
+  host: { class: 'pagina' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    @let c = componente();
+
+    @if (!c) {
+      <p class="lede">Componente não encontrado.</p>
+      <p><a routerLink="/sites">Voltar aos sites</a></p>
+    } @else {
+      <ucam-page-header secao="Sites" [titulo]="c.name" [lede]="c.description">
+        <span slot="selo" class="pill" [class]="'pill-' + c.status">{{ c.status }}</span>
+        <p class="meta">
+          <code>&lt;{{ c.selector }}&gt;</code>
+          <span>versão {{ c.version }}</span>
+          <span>{{ c.category }}</span>
+          @if (c.since) {
+            <span>desde {{ c.since }}</span>
+          }
+        </p>
+      </ucam-page-header>
+
+      <!-- O índice desta página virou o componente compartilhado: era o único
+           do site, e só existia a partir de 82rem. Agora todas as páginas com
+           três seções ou mais têm o mesmo, e abaixo de 82rem ele aparece como
+           faixa de abas em vez de sumir. A lista continua saindo das MESMAS
+           condições que decidem se a seção existe — índice que aponta para
+           âncora inexistente é pior que índice nenhum. -->
+      <ucam-nesta-pagina [secoes]="indice()" />
+
+      <!-- A SUBMARCA dos previews. A camada 3 (ADR-068) aplica-se por
+           data-marca num invólucro; aqui o invólucro é a página inteira de
+           previews, e o alternador troca bordô por CENPRE sem recarregar. -->
+      <div class="marcas" role="group" aria-label="Submarca dos previews">
+        <span class="marcas-rotulo">Ver em</span>
+        <button type="button" class="marca" [attr.aria-pressed]="marca() === 'base'" (click)="marca.set('base')">Bordô UCAM</button>
+        @for (m of submarcas; track m) {
+          <button type="button" class="marca" [attr.aria-pressed]="marca() === m" (click)="marca.set(m)">{{ m === 'cenpre' ? 'CENPRE' : m }}</button>
+        }
+      </div>
+
+      <div class="prose" [attr.data-marca]="marca() === 'base' ? null : marca()">
+        <div class="area" id="area-ver">
+          <p class="area-nome">Ver</p>
+        </div>
+
+        <!-- O exemplo abre a página, sempre: quem chega quer ver a peça
+             antes de ler sobre ela. Nos sites há uma fonte só, o CSS puro. -->
+        <section class="abertura" id="exemplo">
+          @if (c.demo?.principal) {
+            <ucam-demo-painel [painel]="c.demo!.principal!" raiz="ucam-site" />
+          } @else if (c.exemplos.length) {
+            <ucam-demo-painel [painel]="{ codigo: c.exemplos[0].codigo }" raiz="ucam-site" />
+          }
+
+          @if (c.demo?.$nota) {
+            <p class="small muted nota"><ucam-t [t]="c.demo?.$nota" /></p>
+          }
+        </section>
+
+
+        @if (c.demo?.exemplos?.length) {
+          <section id="variacoes">
+            <h2>Variações</h2>
+            @for (e of c.demo?.exemplos; track e.titulo ?? $index) {
+              <ucam-demo-painel [painel]="e" raiz="ucam-site" />
+            }
+          </section>
+        }
+
+
+        <!-- Aparência antes da API, não dentro dela. O contrato já diz, por
+             valor de enum, PARA QUE serve cada variante e qual o limite de
+             uso; isso é orientação de design e vinha espremido em cartões
+             dentro da tabela de props. Aqui cada valor ganha o espaço de uma
+             subseção, com âncora própria no índice. -->
+        @for (p of propsComValores(); track p.nome) {
+          <section [id]="'variantes-' + p.nome">
+            <h2>
+              Aparência <span class="por">por <code>{{ p.nome }}</code></span>
+            </h2>
+            @for (v of p.valores | keyvalue; track v.key) {
+              <article class="variante" [id]="'v-' + p.nome + '-' + v.key">
+                <h3><code>{{ v.key }}</code></h3>
+                <p><ucam-t [t]="v.value.uso" /></p>
+
+                @if (v.value.limite) {
+                  <p class="limite"><strong class="k">Limite.</strong>&ngsp;<ucam-t [t]="v.value.limite" /></p>
+                }
+
+                @if (v.value.tokens) {
+                  <p class="small muted tokens resto">
+                    @for (t of v.value.tokens | keyvalue; track t.key) {
+                      <span class="par"><strong>{{ t.key }}</strong> <code>{{ t.value }}</code></span>
+                    }
+                  </p>
+                }
+              </article>
+            }
+          </section>
+        }
+
+
+        <div class="area" id="area-decidir">
+          <p class="area-nome">Decidir</p>
+        </div>
+
+        <!-- QUANDO USAR e QUANDO NÃO USAR, juntos e ANTES de props e anatomia.
+             O contrato só tinha a segunda metade: nasceu como resposta a uso
+             indevido, e por isso sabia dizer o que proibir sem nunca dizer o
+             que recomendar. Quem chega nesta página ainda NÃO escolheu o
+             componente, e uma lista de proibições não escolhe por ele.
+
+             Ant Design ("When To Use"), Carbon ("When to use" / "When not to
+             use"), Atlassian e VibeDS ("whenUse" / "whenAvoid") põem os dois
+             lados no alto pelo mesmo motivo. Aqui eles vêm no mesmo bloco e
+             lado a lado: separados, a segunda coluna vira rodapé que ninguém
+             lê depois de já ter copiado o código. -->
+        @if (c.quando_usar?.length || c.limites) {
+          <section id="quando">
+            <h2>Quando usar</h2>
+            <div class="quando">
+              @if (c.quando_usar?.length) {
+                <div class="quando-lado quando-sim">
+                  <p class="quando-titulo">
+                    <svg class="ic" aria-hidden="true"><use href="#i-circleCheck" /></svg>
+                    Use quando
+                  </p>
+                  <ul class="list">
+                    @for (q of c.quando_usar; track q) {
+                      <li><ucam-t [t]="q" /></li>
+                    }
+                  </ul>
+                </div>
+              }
+              @if (c.limites) {
+                <div class="quando-lado quando-nao">
+                  <p class="quando-titulo">
+                    <svg class="ic" aria-hidden="true"><use href="#i-circleAlert" /></svg>
+                    Não use quando
+                  </p>
+                  <ucam-loose-block
+                    [bloco]="c.limites"
+                    [semRotulo]="['regras', 'regra']"
+                    [exceto]="['motivo']"
+                  />
+                </div>
+              }
+            </div>
+            <!-- O porquê sai do par e vira prosa: dentro da caixa ele
+                 desequilibrava o do/don't e se lia como se fosse mais uma
+                 regra a consultar. -->
+            @if (motivoDoLimite(); as motivo) {
+              <p class="quando-motivo resto"><strong class="k">Por quê.</strong> {{ motivo }}</p>
+            }
+          </section>
+        }
+
+
+        @if (c.boas_praticas; as praticas) {
+          <section id="boas-praticas">
+            <h2>Boas práticas</h2>
+            <ul class="praticas">
+              @for (p of praticas; track p.faca) {
+                <li [class.resto]="$index >= CORTE">
+                  <p class="lado faca"><span class="rotulo">Faça</span> <span><ucam-t [t]="p.faca" /></span></p>
+                  <p class="lado evite"><span class="rotulo">Evite</span> <span><ucam-t [t]="p.evite" /></span></p>
+                  @if (p.porque) {
+                    <p class="porque small muted resto">{{ p.porque }}</p>
+                  }
+                </li>
+              }
+              @if (praticas.length > CORTE) {
+                <li class="so-resumo mais">Mais {{ praticas.length - CORTE }} no texto completo.</li>
+              }
+            </ul>
+          </section>
+        }
+
+
+        @if (c.vs; as vizinhos) {
+          <section id="vs">
+            <h2>Qual dos dois eu uso?</h2>
+            <ul class="vs-lista">
+              @for (v of vizinhos; track v.componente) {
+                <li>
+                  <a class="vs-alvo" [routerLink]="['/sites', v.componente]">
+                    {{ v.componente }}
+                  </a>
+                  <p class="vs-diferenca"><ucam-t [t]="v.diferenca" /></p>
+                  @if (v.escolha) {
+                    <p class="vs-escolha small muted resto">{{ v.escolha }}</p>
+                  }
+                </li>
+              }
+            </ul>
+          </section>
+        }
+
+
+        @if (decisoes().length) {
+          <section id="decisoes">
+            <h2>Decisões que governam este componente</h2>
+            <!-- No resumo, só o número de cada ADR: os vinte títulos do Button
+                 somavam 150 palavras, e o título está a um clique (e no
+                 title). Os cartões voltam no texto completo. -->
+            <p class="chips so-resumo">
+              @for (a of decisoes(); track a.slug) {
+                <a class="chip" [routerLink]="'/decisoes/' + a.slug" [title]="a.titulo">{{ a.id }}</a>
+              }
+            </p>
+            <div class="grade-cartoes resto">
+              @for (a of decisoes(); track a.slug) {
+                <a class="card cartao-adr plain" [routerLink]="'/decisoes/' + a.slug">
+                  <span class="ucam-icon-tile" aria-hidden="true">
+                    <svg class="ic"><use href="#i-scrollText" /></svg>
+                  </span>
+                  <code class="adr-id">{{ a.id }}</code>
+                  <span class="adr-titulo">{{ a.titulo }}</span>
+                </a>
+              }
+            </div>
+          </section>
+        }
+
+
+        <div class="area" id="area-construir">
+          <p class="area-nome">Construir</p>
+        </div>
+
+        @if (c.demo?.instalacao) {
+          <section id="instalacao">
+            <h2>Instalação</h2>
+            <pre class="code"><code>{{ c.demo?.instalacao }}</code></pre>
+            <p class="small muted resto">
+              Uma folha de estilo, sem JavaScript. Tudo vive sob um ancestral com a classe de raiz
+              dos sites; o WordPress de Campos e o site institucional carregam a mesma folha.
+            </p>
+            @if (c.demo?.importacao) {
+              <pre class="code"><code>{{ c.demo?.importacao }}</code></pre>
+            }
+          </section>
+        }
+
+
+        <section id="props">
+          <h2>Props</h2>
+          <div class="scroller">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Prop</th>
+                  <th scope="col">Tipo</th>
+                  <th scope="col">Padrão</th>
+                  <th scope="col">Descrição</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of c.props; track p.nome) {
+                  <tr [class.resto]="$index >= CORTE_PROPS">
+                    <td><code>{{ p.nome }}</code></td>
+                    <td><code>{{ p.tipo }}</code></td>
+                    <td>
+                      @if (p.default !== undefined && p.default !== null) {
+                        <code>{{ p.default }}</code>
+                      } @else {
+                        <span class="muted">—</span>
+                      }
+                    </td>
+                    <td><ucam-t [t]="p.descricao" /></td>
+                  </tr>
+                }
+                @if (c.props.length > CORTE_PROPS) {
+                  <tr class="so-resumo">
+                    <td colspan="4" class="small muted">
+                      Mais {{ c.props.length - CORTE_PROPS }} no texto completo.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+
+
+        <section id="uso">
+          <h2>Uso em código</h2>
+          @for (e of c.exemplos; track e.titulo) {
+            <h4>{{ e.titulo }}</h4>
+            <pre class="code"><code>{{ e.codigo }}</code></pre>
+          }
+        </section>
+
+
+        <section id="composicao">
+          <h2>Composição</h2>
+          @if (c.composicao?.$descricao) {
+            <p><ucam-t [t]="c.composicao?.$descricao" /></p>
+          }
+          @if (c.composicao?.usa?.length) {
+            <h4>Usa</h4>
+            <div class="chips">
+              @for (u of c.composicao?.usa; track u) {
+                <span class="chip">{{ u }}</span>
+              }
+            </div>
+          }
+          @if (dependentes().length) {
+            <h4>Quem quebra se este mudar</h4>
+            <div class="chips">
+              @for (d of dependentes(); track d.id) {
+                <a class="chip" [routerLink]="'/sites/' + d.id">{{ d.name }}</a>
+              }
+            </div>
+          } @else {
+            <p class="small muted">Nenhum contrato declara depender deste.</p>
+          }
+        </section>
+
+
+        <div class="area" id="area-garantir">
+          <p class="area-nome">Garantir</p>
+        </div>
+
+        <section id="anatomia">
+          <h2>Anatomia</h2>
+          <!-- DESENHO, não tabela de três colunas.
+               O contrato já diz qual classe do Trilho A é cada parte; o
+               diagrama mede onde essa classe caiu no preview e põe a chamada
+               ali. Ver anatomia-diagrama.component.ts para o porquê e para
+               como ele degrada quando a parte não declara classe. -->
+          <ucam-anatomia-diagrama
+            [partes]="c.anatomia"
+            [preview]="c.demo?.principal?.preview ?? ''"
+            raiz="ucam-site"
+          />
+
+          <h3>Estados</h3>
+          <!-- A MATRIZ, não a lista de nomes.
+               Eram chips com as palavras "hover", "active", "disabled" — a
+               pergunta repetida em vez de respondida. Ver a nota em
+               estados-grade.component.ts para como o palco liga um estado que
+               o CSS só entrega por pseudo-classe. -->
+          <ucam-estados-grade
+            [estados]="c.estados"
+            [preview]="c.demo?.principal?.preview ?? ''"
+            raiz="ucam-site"
+          />
+          @if (!c.demo?.principal?.preview) {
+            <div class="chips">
+              @for (e of c.estados; track e) {
+                <span class="chip">{{ e }}</span>
+              }
+            </div>
+          }
+        </section>
+
+
+        <section id="acessibilidade">
+          <h2>Acessibilidade</h2>
+          @if (c.acessibilidade.papel) {
+            <p><strong class="k">Papel.</strong> <code>{{ c.acessibilidade.papel }}</code></p>
+          }
+
+          @if (c.acessibilidade.teclado?.length) {
+            <h3>Teclado</h3>
+            <div class="scroller">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Tecla</th>
+                    <th scope="col">Comportamento</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (t of c.acessibilidade.teclado; track t.tecla) {
+                    <tr>
+                      <td><kbd>{{ t.tecla }}</kbd></td>
+                      <td><ucam-t [t]="t.comportamento" /></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          <h3>Requisitos</h3>
+          <div class="pontos">
+            @for (r of c.acessibilidade.requisitos; track r) {
+              <div class="ponto" data-tom="bom" [class.resto]="$index >= CORTE">
+                <span class="ucam-icon-tile" aria-hidden="true">
+                  <svg class="ic"><use href="#i-circleCheck" /></svg>
+                </span>
+                <p><ucam-t [t]="r" /></p>
+              </div>
+            }
+            @if (c.acessibilidade.requisitos.length > CORTE) {
+              <p class="so-resumo small muted">
+                Mais {{ c.acessibilidade.requisitos.length - CORTE }} no texto completo.
+              </p>
+            }
+          </div>
+
+          <div class="chips">
+            @for (w of c.acessibilidade.criterios_wcag; track w) {
+              <span class="chip">WCAG {{ w }}</span>
+            }
+          </div>
+        </section>
+
+
+        @if (c.conteudo) {
+          <section id="conteudo">
+            <h2>Conteúdo</h2>
+            <ucam-loose-block [bloco]="c.conteudo" />
+          </section>
+        }
+
+
+        <!-- As seções de extensão eram as únicas sem id da página: ficavam
+             fora do índice e sem endereço para linkar. O id sai do mesmo campo
+             que vira o rótulo, então não há segunda lista para desalinhar. -->
+        @for (ext of extensoes(); track ext.rotulo) {
+          <section [id]="'ext-' + ext.rotulo">
+            <h2>{{ ext.rotulo }}</h2>
+            <ucam-loose-block [bloco]="ext.bloco" />
+          </section>
+        }
+
+
+        <!-- Evidência e migração ficam recolhidas no rodapé de propósito.
+             São o histórico de como o componente nasceu e o caminho de saída
+             do legado — assunto real, mas não o que se procura ao abrir a
+             página de um componente. -->
+        @if (c.evidencia || c.migracao) {
+          <section class="arquivo" id="evidencia">
+            <h2>Evidência e migração do kit</h2>
+
+            @if (c.evidencia; as ev) {
+              <ucam-section-bar
+                title="Evidência nos sites"
+                [level]="3"
+                [count]="ev.ocorrencias.length + ' ocorrências'"
+                collapsible
+                [open]="false"
+              >
+                <div ucamSecao>
+                <p class="small muted">
+                  Origem: <code>{{ ev.origem }}</code>
+                </p>
+                <div class="scroller">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Tela</th>
+                        <th scope="col">Rótulo</th>
+                        <th scope="col">Problema observado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (o of ev.ocorrencias; track $index) {
+                        <tr>
+                          <td>
+                            {{ o.tela }}
+                            @if (o.origem) {
+                              <span class="chip">{{ o.origem }}</span>
+                            }
+                          </td>
+                          <td>
+                            @if (o.rotulo) {
+                              <code>{{ o.rotulo }}</code>
+                            }
+                          </td>
+                          <td>{{ o.problema }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+                @if (ev.conclusao) {
+                  <p><strong class="k">Conclusão.</strong> {{ ev.conclusao }}</p>
+                }
+              </div>
+              </ucam-section-bar>
+            }
+
+            @if (c.migracao; as mig) {
+              <ucam-section-bar title="Migração" [level]="3" collapsible [open]="false">
+                <div ucamSecao>
+                <p class="small muted">De: {{ mig.de }}</p>
+                <div class="scroller">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Legado</th>
+                        <th scope="col">Novo</th>
+                        <th scope="col">Nota</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (m of mig.mapa; track $index) {
+                        <tr>
+                          <td>{{ m.legado }}</td>
+                          <td><code>{{ m.novo }}</code></td>
+                          <td>{{ m.nota ?? '' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              </ucam-section-bar>
+            }
+          </section>
+        }
+      </div>
+    }
+  `,
+  styles: `
+    /* A grade de duas colunas mora em styles.css, na classe .pagina — são dez
+       páginas com navegação de âncora, e cada uma redeclarando a grade era o
+       mesmo erro dos três ritmos de seção. Aqui fica só o que é desta página. */
+
+    /* Uma variante por bloco, com respiro de seção — o valor do enum é o
+       assunto, não uma célula de tabela. */
+    .variante {
+      padding-block: 1rem;
+      border-block-start: 1px solid var(--ucam-color-border-subtle);
+      max-inline-size: var(--measure);
+    }
+    .variante:first-of-type {
+      border-block-start: 0;
+      padding-block-start: 0.25rem;
+    }
+    /* Cada variante tem âncora própria no índice lateral — é subseção de
+       navegação, e por isso entra no degrau de 17px, não no corpo de 16 em
+       que estava. */
+    .variante h3 {
+      margin: 0 0 0.4rem;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.012em;
+    }
+    .variante h3 code {
+      font-size: 0.9em;
+      background: var(--ucam-color-surface-subtle);
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-sm);
+      padding: 0.1rem 0.4rem;
+    }
+    .variante p {
+      margin: 0 0 0.5rem;
+    }
+    .variante p:last-child {
+      margin-block-end: 0;
+    }
+    .variante .tokens {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.15rem 1rem;
+    }
+    /* "Aparência por variant" — o qualificador não compete com o substantivo. */
+    h2 .por {
+      font-weight: 400;
+      color: var(--ucam-color-text-secondary);
+    }
+
+    .prose {
+      max-inline-size: none;
+    }
+    .marcas {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0 0 2rem;
+    }
+    .marcas-rotulo {
+      font-size: 0.8125rem;
+      color: var(--ucam-color-text-secondary);
+      margin-inline-end: 0.25rem;
+    }
+    .marca {
+      min-block-size: 2rem;
+      padding: 0 0.75rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-full);
+      background: var(--ucam-color-surface-default);
+      color: var(--ucam-color-text-primary);
+      font: inherit;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .marca[aria-pressed='true'] {
+      border-color: var(--ucam-color-text-primary);
+      font-weight: 650;
+    }
+    /* O ritmo entre seções mora em styles.css (--ritmo-secao), não aqui.
+       Esta página tinha filete + 2,75rem enquanto /comecar usava 3rem e as
+       outras onze não usavam nada — três réguas na mesma documentação. O
+       filete saiu junto: nem a Vibe nem a Ant Design separam seção com linha,
+       e a 72px de vão a linha só somava ruído. */
+    .prose section:last-child {
+      padding-block-end: 1rem;
+    }
+
+    .abertura {
+      margin-block-end: 2.75rem;
+    }
+    .abertura .nota {
+      max-inline-size: var(--measure);
+      margin: 0.85rem 0 0;
+    }
+
+    /* Grade e não flex-wrap: em 750px os três itens somam mais que a linha e
+       o flex quebrava 2 + 1, com o terceiro trilho pendurado sozinho. Numa
+       grade eles caem em colunas alinhadas e quebram todos juntos. */
+    /* ------------------------------------------------------------ áreas ---
+
+       As dezesseis seções desta página vinham numa fileira só, separadas por
+       4,5rem IGUAIS — doze mil pixels de rolagem sem um degrau de hierarquia,
+       e um índice de dezoito entradas como único mapa. O agrupamento é o que
+       Spectrum faz com os seus H2 fixos por componente: quem chega para ESCOLHER
+       lê Decidir, quem já escolheu vai para Construir.
+
+       Aqui elas ficam TODAS na página, em quatro áreas. Não é aba: nada some,
+       nenhuma âncora mudou de destino e o prerender continua entregando o texto
+       inteiro no primeiro HTML. A lição do segundo andar de abas continua valendo
+       — alcance não é presença. */
+    .area {
+      margin-block: 5.5rem 0;
+      padding-block-end: 0.75rem;
+      border-block-end: 2px solid var(--ucam-color-border-default);
+    }
+    /* A primeira área abre logo abaixo do cabeçalho, que já trouxe o filete. */
+    .prose > .area:first-child {
+      margin-block-start: 0;
+    }
+    .area-nome {
+      margin: 0;
+      font-family: var(--f-display);
+      font-size: 1.75rem;
+      font-weight: 650;
+      letter-spacing: -0.026em;
+      line-height: 1.15;
+    }
+    .area-nota {
+      margin: 0.15rem 0 0;
+      font-size: 0.875rem;
+      color: var(--ucam-color-text-secondary);
+      max-inline-size: var(--measure);
+    }
+    /* A primeira seção de uma área encosta no divisor: o vão de 4,5rem separa
+       IRMÃS, e a primeira não tem irmã acima — tinha o divisor, que é mais
+       forte. Sem isto o título da área flutuava sozinho no meio do branco. */
+    .prose > .area + * {
+      margin-block-start: 2rem;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.3rem 0.9rem;
+      font-family: var(--f-mono);
+      /* 0,7rem = 11,2px. É a régua de metadado do site e ela estava um degrau
+         abaixo do piso que /fundamentos/acessibilidade cobra das próprias
+         telas. Sobe para 12px, junto com os selos. */
+      font-size: 0.75rem;
+      letter-spacing: 0.01em;
+      color: var(--ucam-color-text-secondary);
+      margin: 1.1rem 0 0;
+    }
+    /* Ponto médio entre os itens: sem ele os quatro campos viram uma frase
+       só, e o olho não sabe onde um termina. */
+    .meta span + span::before {
+      content: '·';
+      margin-inline-end: 0.9rem;
+      color: var(--ucam-color-border-default);
+    }
+    .meta code {
+      color: var(--ucam-color-text-primary);
+    }
+
+    /* Faça/evite lado a lado. Empilha abaixo de 46rem: em coluna estreita a
+       comparação some e o par vira duas frases desconexas. */
+    /* Desambiguação. Uma coluna só, de propósito: o par faça/evite das boas
+       práticas se lê em duas colunas porque são dois lados da MESMA regra;
+       aqui cada item é um vizinho diferente, e lado a lado sugeriria uma
+       comparação entre eles que não existe. */
+    /* Duas colunas de peso igual: a decisão é uma comparação, e comparar exige
+       os dois lados no mesmo campo de visão. Abaixo de 46rem elas empilham —
+       e aí o filete lateral vira filete superior, para o "não use" nunca ser
+       lido como continuação da lista de cima. */
+    .quando {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+      gap: 1.25rem;
+      margin-block-start: 0.75rem;
+      /* Cada lado com a própria altura. Esticados, o lado curto ganha um
+         vazio do tamanho da diferença — e num componente em que "não use"
+         tem cinco itens contra três do "use", esse vazio é metade do bloco. */
+      align-items: start;
+    }
+    /* A barra de 3px num fundo branco deixava o bloco com três lados abertos
+       — o mesmo defeito que o .callout já tinha registrado e corrigido com
+       moldura. Aqui a moldura fecha, e a barra continua dizendo o TIPO. */
+    .quando-lado {
+      position: relative;
+      padding: 0.9rem 1rem 0.9rem 1.1rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--r-superficie);
+      background: var(--ucam-color-surface-default);
+      overflow: hidden;
+    }
+    /* Largura de prosa, não a do grid: o motivo é texto corrido e segue a
+       régua de 68 caracteres do resto da página. O vão de topo é o mesmo
+       vão do par acima, para o parágrafo ler como parte do bloco. */
+    .quando-motivo {
+      max-inline-size: var(--measure);
+      margin-block: 1.25rem 0;
+    }
+    .quando-lado::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: 0;
+      inline-size: 3px;
+      background: var(--ucam-color-border-default);
+    }
+    .quando-sim::before {
+      background: var(--ucam-color-feedback-success-border);
+    }
+    .quando-nao::before {
+      background: var(--ucam-color-feedback-danger-border);
+    }
+    /* O ícone acompanha a tinta do título, que já é a do tom: um portador só
+       por linha, e aqui o par ícone+rótulo conta como um. */
+    /* Linha, não alinhamento vertical: o .ic do sistema é block, e
+       vertical-align não o alcança — o símbolo saía numa linha própria por
+       cima do rótulo. */
+    .quando-titulo {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .quando-titulo .ic {
+      inline-size: 1rem;
+      block-size: 1rem;
+      flex: none;
+    }
+    .cartao-adr {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.25rem 0.75rem;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+    }
+    .cartao-adr .ucam-icon-tile {
+      grid-row: 1 / span 2;
+    }
+    .cartao-adr .adr-id {
+      font-size: 0.75rem;
+      color: var(--ucam-color-text-secondary);
+    }
+    .cartao-adr .adr-titulo {
+      font-size: 0.8125rem;
+      line-height: 1.4;
+      color: var(--ucam-color-text-primary);
+    }
+    .cartao-adr:hover {
+      border-color: var(--borda-marca);
+      box-shadow: var(--sombra-hover);
+    }
+    .quando-titulo {
+      margin: 0 0 0.4rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--ucam-color-text-primary);
+    }
+    .quando-lado .list {
+      margin-block: 0;
+    }
+    .vs-lista {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.5rem;
+    }
+    .vs-lista li {
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--r-superficie);
+      padding: 0.8rem 0.9rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+    .vs-alvo {
+      font-family: var(--ucam-typography-mono-font-family, monospace);
+      font-size: 0.8125rem;
+      justify-self: start;
+    }
+    .vs-lista p {
+      margin: 0;
+      font-size: 0.875rem;
+      /* A medida vem da caixa, não do var(--measure) que .prose impõe a todo
+         parágrafo — mesma razão do .porque das boas práticas. */
+      max-inline-size: none;
+    }
+
+    .praticas {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.75rem;
+    }
+    .praticas li {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1px;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--r-superficie);
+      overflow: hidden;
+      background: var(--ucam-color-border-subtle);
+    }
+    @media (min-width: 46rem) {
+      .praticas li {
+        grid-template-columns: 1fr 1fr;
+      }
+      .praticas .porque {
+        grid-column: 1 / -1;
+      }
+    }
+    /* A linha "Mais N" não é um par faça/evite: sem moldura nem fundo. */
+    .praticas li.mais {
+      display: block;
+      border: 0;
+      background: none;
+    }
+    .praticas .lado {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0.8rem 0.9rem;
+      font-size: 0.875rem;
+      /* Mesmo motivo do .porque: quem define a medida aqui é a coluna da
+         grade, não o var(--measure) que .prose p impõe a todo parágrafo. */
+      max-inline-size: none;
+    }
+    /* O rótulo é palavra, não símbolo: o glifo que estava aqui ia
+       aria-hidden, então quem ouve a página recebia dois trechos sem saber
+       qual era qual — e a cor sozinha não pode carregar o significado
+       (WCAG 1.4.1). */
+    .praticas .rotulo {
+      flex: none;
+      min-inline-size: 3rem;
+      font-family: var(--f-mono);
+      /* 12px, não 0,65rem = 10,4px. Dez pixels e meio está abaixo do piso de
+         toda referência (Carbon, Polaris e Primer param em 12), e o valor não
+         era escolha: caía de um arredondamento. */
+      font-size: 0.75rem;
+      line-height: 1.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 650;
+    }
+    .praticas .faca {
+      background: var(--ucam-color-feedback-success-background);
+      color: var(--ucam-color-feedback-success-foreground);
+    }
+    .praticas .evite {
+      background: var(--ucam-color-feedback-danger-background);
+      color: var(--ucam-color-feedback-danger-foreground);
+    }
+    .praticas .porque {
+      margin: 0;
+      padding: 0.65rem 0.9rem;
+      background: var(--ucam-color-surface-default);
+      /* .prose p limita todo parágrafo a var(--measure). Aqui isso deixava a
+         faixa do "porque" mais curta que a linha e expunha o fundo do <li>,
+         que é o próprio filete de 1px — parecia célula faltando. O bloco já
+         está contido pela largura do cartão. */
+      max-inline-size: none;
+    }
+
+    .valores {
+      display: grid;
+      gap: 0.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+      margin-block-end: 1.25rem;
+    }
+    .valor {
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-lg);
+      background: var(--ucam-color-surface-default);
+    }
+    .valor .chave {
+      font-weight: 600;
+      color: var(--ucam-color-action-primary-default);
+    }
+    .valor p {
+      margin: 0.4rem 0 0;
+    }
+    .par {
+      display: block;
+    }
+    .limite {
+      color: var(--ucam-color-feedback-danger-foreground);
+    }
+
+    kbd {
+      font-size: 0.75rem;
+      padding: 0.1rem 0.35rem;
+      border: 1px solid var(--ucam-color-border-default);
+      border-radius: var(--ucam-radius-sm);
+      background: var(--ucam-color-surface-subtle);
+    }
+
+    a.chip {
+      text-decoration: none;
+    }
+    a.chip:hover {
+      border-color: var(--ucam-color-action-primary-default);
+      color: var(--ucam-color-action-primary-default);
+    }
+
+    /* --------------------------------------------------------- arquivo --- */
+
+    /* O bloco de arquivo usa a SEÇÃO RECOLHÍVEL do próprio design system
+       (section-bar, collapsible). Antes eram <details> nativos: sem seta,
+       sem estado anunciado pelo aria-expanded e com um filete por baixo do
+       título inteiro. O catálogo contradizia a peça que documenta.
+       Aqui fica só o respiro entre uma seção e a seguinte. */
+    .arquivo ucam-section-bar + ucam-section-bar {
+      margin-block-start: 0.5rem;
+    }
+    .arquivo ucam-section-bar [ucamSecao] > :last-child {
+      margin-block-end: 1.25rem;
+    }
+  `,
+})
+export default class SiteComponentePage {
+  /**
+   * Quantos itens de uma lista a página mostra no resumo (06/10/2026, segunda
+   * rodada do corte de texto). A lista inteira continua no texto completo e na
+   * spec; a linha "Mais N" diz que existe. Props tem teto próprio e mais alto:
+   * é a tabela que se consulta com o editor aberto.
+   */
+  protected readonly CORTE = 5;
+  protected readonly CORTE_PROPS = 8;
+
+  /**
+   * Parâmetro de rota `[id]`, ligado por `withComponentInputBinding()`. É
+   * signal: ler `rota.snapshot` num `computed` congelava a página no primeiro
+   * componente aberto, porque snapshot não é reativo e o roteador reaproveita
+   * a instância entre /catalogo/x e /catalogo/y.
+   */
+  readonly id = input('');
+
+  protected readonly componente = computed(() => sitesComponentePorId(this.id()));
+
+  protected readonly submarcas = sitesMeta.submarcas;
+  /** A submarca que os previews vestem: 'base' é o bordô, sem data-marca. */
+  protected readonly marca = signal<string>('base');
+
+  protected readonly propsComValores = computed(() =>
+    (this.componente()?.props ?? []).filter((p) => p.valores),
+  );
+
+  /**
+   * O `motivo` de `limites`, quando existe e é prosa.
+   *
+   * Sai da caixa "Não use quando" e vira parágrafo sob o par — ver a nota em
+   * loose-block.component.ts. A checagem de tipo não é defensiva à toa: 28 dos
+   * 49 contratos têm a chave, e o schema não obriga que seja string.
+   */
+  protected readonly motivoDoLimite = computed(() => {
+    const m = (this.componente()?.limites as Record<string, unknown> | undefined)?.['motivo'];
+    return typeof m === 'string' && m.trim() ? m : null;
+  });
+
+  /**
+   * O índice da página.
+   *
+   * Espelha, na ordem, as condições do template. Fica aqui e não numa varredura
+   * do DOM de propósito: no prerender não há DOM para varrer, e um índice que
+   * só aparecesse depois da hidratação seria um salto de layout em toda página.
+   * O preço é que uma seção nova precisa ser somada nos dois lugares — por isso
+   * o índice inteiro cabe em uma tela.
+   */
+  protected readonly indice = computed(() => {
+    const c = this.componente();
+    if (!c) return [];
+
+    const itens: Ancora[] = [];
+    const põe = (cond: unknown, id: string, rotulo: string, sub = false) => {
+      if (cond) itens.push({ id, rotulo, sub });
+    };
+    const area = (id: string, rotulo: string) => itens.push({ id: `area-${id}`, rotulo, grupo: true });
+
+    // ---- Ver: o componente rodando, e cada aparência que ele tem.
+    area('ver', 'Ver');
+    itens.push({ id: 'exemplo', rotulo: 'Exemplo' });
+    põe(c.demo?.exemplos?.length, 'variacoes', 'Variações');
+    for (const p of this.propsComValores()) {
+      itens.push({ id: `variantes-${p.nome}`, rotulo: `Aparência por ${p.nome}` });
+      for (const chave of Object.keys(p.valores ?? {})) {
+        itens.push({ id: `v-${p.nome}-${chave}`, rotulo: chave, sub: true });
+      }
+    }
+
+    // ---- Decidir: se é este o componente, e como usá-lo sem errar.
+    area('decidir', 'Decidir');
+    põe(c.quando_usar?.length || c.limites, 'quando', 'Quando usar');
+    põe(c.boas_praticas, 'boas-praticas', 'Boas práticas');
+    põe(c.vs, 'vs', 'Qual dos dois eu uso?');
+    põe(this.decisoes().length, 'decisoes', 'Decisões');
+
+    // ---- Construir: instalar, ligar as props, compor com os vizinhos.
+    area('construir', 'Construir');
+    põe(c.demo?.instalacao, 'instalacao', 'Instalação');
+    itens.push({ id: 'props', rotulo: 'Props' });
+    itens.push({ id: 'uso', rotulo: 'Uso em código' });
+    itens.push({ id: 'composicao', rotulo: 'Composição' });
+
+    // ---- Garantir: as partes, o teclado, o texto e o caminho do legado.
+    area('garantir', 'Garantir');
+    itens.push({ id: 'anatomia', rotulo: 'Anatomia' });
+    itens.push({ id: 'acessibilidade', rotulo: 'Acessibilidade' });
+    põe(c.conteudo, 'conteudo', 'Conteúdo');
+    for (const ext of this.extensoes()) itens.push({ id: `ext-${ext.rotulo}`, rotulo: ext.rotulo });
+    põe(c.evidencia, 'evidencia', 'Evidência e migração');
+
+    return itens;
+  });
+
+  protected readonly dependentes = computed(() => sitesDependentesDe(this.componente()?.id ?? ''));
+
+  protected readonly decisoes = computed(() => sitesDecisoesQueAfetam(this.componente()?.id ?? ''));
+
+  /**
+   * Seções de extensão presentes neste contrato. A lista de nomes é fixa
+   * porque o JSON Schema a fixa; o que varia é quais existem em cada
+   * componente.
+   */
+  protected readonly extensoes = computed(() => {
+    const c = this.componente();
+    if (!c) return [];
+    const nomes = [
+      ['schemas', 'Tipos'],
+      ['responsividade', 'Responsividade'],
+      ['foco', 'Foco'],
+      ['rolagem', 'Rolagem'],
+      ['dependencia', 'Dependência entre campos'],
+      ['obrigatoriedade', 'Obrigatoriedade'],
+      ['formatacao', 'Formatação'],
+    ] as const;
+    return nomes
+      .map(([chave, rotulo]) => ({ rotulo, bloco: c[chave] }))
+      .filter((e) => e.bloco);
+  });
+}

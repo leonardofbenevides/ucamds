@@ -69,7 +69,9 @@
     },
     "interaction": {
       "hover": { "$value": "{alpha.ink-weak}" },
-      "active": { "$value": "{alpha.ink-strong}" }
+      "active": { "$value": "{alpha.ink-strong}" },
+      "hover-on-inverse": { "$value": "{alpha.paper-weak}", "$description": "Hover de botão fantasma e de tag sobre seção escura: lavagem de papel, não de tinta." },
+      "active-on-inverse": { "$value": "{alpha.paper-strong}", "$description": "Pressionado sobre seção escura: a lavagem de papel um degrau acima." }
     }
   },
   "font": {
@@ -158,7 +160,9 @@
     "icon-sm": { "$value": "1rem" },
     "icon-md": { "$value": "1.25rem" },
     "icon-lg": { "$value": "1.5rem" },
-    "avatar": { "$value": "2.5rem", "$description": "40px no depoimento." }
+    "avatar": { "$value": "2.5rem", "$description": "40px no depoimento." },
+    "icon-chip-md": { "$value": "2.5rem", "$description": "40px: a pastilha de ícone ao lado de um título de item." },
+    "icon-chip-lg": { "$value": "3.5rem", "$description": "56px: a pastilha de um bloco de destaque (Por que escolher a UCAM, os quatro passos do CENPRE)." }
   },
   "viewport": {
     "$type": "dimension",

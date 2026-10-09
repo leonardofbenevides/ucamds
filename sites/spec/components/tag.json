@@ -1,0 +1,98 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "tag",
+  "name": "Tag",
+  "selector": "ucam-site-tag",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.6",
+  "category": "conteudo",
+  "description": "Uma palavra que classifica: a modalidade do curso, a área da vaga, a série de um evento. Pílula pequena, nunca clicável.",
+  "quando_usar": [
+    "Modalidade e turno no cartão de curso: EAD, Presencial, Noturno.",
+    "Área e tipo no cartão de vaga: Estágio, Direito, Remoto.",
+    "A série de um conteúdo da biblioteca: Orienta Candido."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br e cenpre-ui-kit (projects/cenpre-ui-kit/src/lib/ui/tag), 08/10/2026",
+    "ocorrencias": [
+      { "tela": "www — cartões de curso", "rotulo": "Graduação / EAD", "problema": "a modalidade aparece como texto solto no mesmo peso do título" },
+      { "tela": "cenpre — painel de vagas", "rotulo": "Estágio", "problema": "nenhum: a tag do kit é o ponto de partida" },
+      { "tela": "cenpre — biblioteca", "rotulo": "Orienta Candido", "problema": "tag de série em azul inventado ($color-info-700), fora de qualquer paleta" }
+    ],
+    "conclusao": "A tag existe para a modalidade e a área lerem como metadado, não como título. O tom info sai do azul avulso e entra na paleta de feedback compartilhada."
+  },
+  "anatomia": [
+    { "parte": "root", "obrigatorio": true, "descricao": "<span>. Pílula com fundo suave e texto na tinta do tom." },
+    { "parte": "label", "obrigatorio": true, "descricao": "Uma ou duas palavras, substantivo." }
+  ],
+  "props": [
+    {
+      "nome": "tone",
+      "tipo": "'neutral' | 'brand' | 'info' | 'inverse'",
+      "default": "'neutral'",
+      "descricao": "A tinta. Neutro é o padrão; marca para o que a instituição destaca; info para série ou evento; inverso sobre seção escura.",
+      "valores": {
+        "neutral": { "uso": "Modalidade, turno, área: metadado comum." },
+        "brand": { "uso": "O que a instituição quer que salte: Novo curso, Vagas abertas.", "limite": "Uma por cartão. Três tags de marca no mesmo cartão é uma faixa, não uma classificação.", "classe": ".ucam-site-tag--brand" },
+        "info": { "uso": "Série editorial ou evento: Orienta Candido, Semana Jurídica.", "classe": ".ucam-site-tag--info" },
+        "inverse": { "uso": "Sobre hero ou rodapé escuros.", "classe": ".ucam-site-tag--inverse" }
+      }
+    }
+  ],
+  "estados": ["default"],
+  "limites": {
+    "regras": [
+      "Não é botão nem filtro: se o clique filtra a lista, é um botão secundário com aria-pressed.",
+      "Não carrega estado do sistema (aprovado, pendente): isso é selo da aplicação, não tag de site.",
+      "No máximo três por cartão."
+    ],
+    "motivo": "Tag que recebe clique vira controle sem papel, foco nem tecla. Tag que carrega estado precisa de ícone e texto, e esse componente é outro."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Texto a 4,5:1 sobre o fundo da pílula, nos quatro tons (medido).",
+      "A cor nunca é o único portador: o texto da tag é a classificação inteira.",
+      "Não é foco nem alvo: nenhum tabindex, nenhum role.",
+      "Num cartão que é link, a tag fica dentro do link como texto comum."
+    ],
+    "criterios_wcag": ["1.4.1", "1.4.3"]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": ["EAD", "Presencial", "Estágio", "Orienta Candido"],
+      "ruim": ["Clique para filtrar", "NOVO!!!", "Curso de graduação presencial noturno"]
+    },
+    "regras": [
+      "Uma ou duas palavras, substantivo ou sigla, sem ponto.",
+      "Caixa normal: a pílula já destaca; maiúsculas gritariam.",
+      "Sem verbo: tag classifica, não pede."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      { "legado": "<app-tag>", "novo": ".ucam-site-tag" },
+      { "legado": "$color-info-700 na tag de série", "novo": "color.feedback.info.foreground", "nota": "O azul avulso do kit vira o info compartilhado." }
+    ]
+  },
+  "exemplos": [
+    { "titulo": "Modalidade no cartão de curso", "codigo": "<span class=\"ucam-site-tag\">EAD</span>\n<span class=\"ucam-site-tag\">Noturno</span>" },
+    { "titulo": "Destaque e série", "codigo": "<span class=\"ucam-site-tag ucam-site-tag--brand\">Vagas abertas</span>\n<span class=\"ucam-site-tag ucam-site-tag--info\">Orienta Candido</span>" }
+  ],
+  "boas_praticas": [
+    { "faca": "Até três tags por cartão, neutras por padrão.", "evite": "Uma fileira de seis tags coloridas.", "porque": "Depois da terceira, a classificação vira ruído e o título perde." },
+    { "faca": "Botão com aria-pressed para filtrar.", "evite": "Tag com (click).", "porque": "Filtro é controle; tag é texto." }
+  ],
+  "vs": [
+    { "componente": "button", "diferenca": "Tag classifica; Button age. A tag nunca recebe clique.", "escolha": "Substantivo é tag; verbo é botão." },
+    { "componente": "icon-chip", "diferenca": "As duas são pastilhas, mas a Tag carrega uma PALAVRA e o IconChip carrega um ÍCONE decorativo ao lado de um texto que está fora dele.", "escolha": "Se a informação está dentro da pastilha, é tag; se a pastilha só acompanha um título, é icon-chip." }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz, tom por modificador.",
+      "raiz": ".ucam-site-tag",
+      "variaveis": ["--ucam-site-color-surface-sunken", "--ucam-site-color-surface-brand-soft", "--ucam-site-color-feedback-info-background", "--ucam-site-radius-pill"]
+    }
+  }
+}

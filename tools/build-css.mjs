@@ -4837,8 +4837,11 @@ ${acima('nav-fixa')} {
    * As duas molduras leem daqui. A testeira do Protocolo tinha as suas
    * próprias (6.6 x 1.25) e por isso a MESMA marca saía com dois tamanhos
    * conforme o arranjo — 18,4px na faixa, 19,3px na testeira. */
-  --ucam-appbar-logo-width: 6.85rem;
-  --ucam-appbar-logo-height: 1.25rem;
+  /* 8.2rem x 1.5rem desde 08/10/2026 ("aumente um pouco a marca"): 5.47:1,
+   * a proporção do arquivo; a logo desenha 24px de altura, o mesmo degrau do
+   * ícone do módulo ao lado, que perdeu o ladrilho. */
+  --ucam-appbar-logo-width: 8.2rem;
+  --ucam-appbar-logo-height: 1.5rem;
   /* O NOME DO SISTEMA. Também uma medida só para as duas molduras, e pelo
    * mesmo motivo: era 0.9375rem na faixa e 0.8125rem na testeira. Na testeira
    * isso o deixava do TAMANHO EXATO de um item da fileira de seções logo
@@ -5158,6 +5161,10 @@ ${abaixo('respiro-completo')} {
 .ucam-appbar__brand .ucam-appbar__divider {
   block-size: var(--ucam-appbar-logo-height);
   margin-block: 0;
+  /* Mais ar entre o filete e o módulo (08/10/2026: "espaço maior do divider
+   * pro ícone + label"): o vão do lockup é 8px, e o lado do módulo ganha
+   * mais 8 — a assinatura da universidade fica junta, o sistema respira. */
+  margin-inline-end: var(--ucam-space-inline-sm);
 }
 
 .ucam-appbar__system {
@@ -5245,9 +5252,13 @@ ${cssDaSubpaleta(tokensCss)}
  * ladrilho cheio na tinta do sistema sumiria. Ele fica num tom mais claro
  * da mesma cor — o branco da faixa a 18% sobre o fundo — com o ícone em
  * branco. Vale para toda faixa de marca, inclusive a do Portal. */
+/* SEM O QUADRADO (08/10/2026: "pode retirar o quadrado do fundo, deixe só
+ * o ícone + label"). A composição tonal a 18% saiu: o ícone fica solto na
+ * tinta da faixa, ao lado do nome, e o que equilibra o par é o tamanho — o
+ * ícone no degrau de 24px, a mesma altura da logo. */
 .ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile,
 :root:not([data-paleta="comum"]) .ucam-shell[data-sistema] .ucam-appbar--marca .ucam-appbar__marca {
-  background: color-mix(in srgb, var(--ucam-appbar-fg) 18%, transparent);
+  background: transparent;
   color: var(--ucam-appbar-fg);
 }
 
@@ -5280,6 +5291,20 @@ ${cssDaCorDeFaixa()}
   flex: none;
   inline-size: var(--ucam-size-control-md);
   block-size: var(--ucam-size-control-md);
+}
+/* NA FAIXA DE MARCA, SÓ O ÍCONE (09/10/2026: "pode retirar o quadrado do
+ * fundo, deixe só o ícone + label"). O ladrilho de 36px acima continua
+ * valendo onde a classe é reaproveitada — a gaveta — e na faixa clara. Aqui a
+ * caixa mede o ícone, que sobe ao degrau de 24px para ficar no mesmo peso da
+ * logo de 24px à esquerda; a altura segue a dos controles da faixa, para o
+ * nome ao lado centrar no mesmo eixo. */
+.ucam-appbar--marca .ucam-appbar__marca {
+  inline-size: auto;
+  padding: 0;
+}
+.ucam-appbar--marca .ucam-appbar__marca .ic {
+  inline-size: var(--ucam-size-icon-lg);
+  block-size: var(--ucam-size-icon-lg);
 }
 
 /* LOGO + MARQUINHA (ADR-060). Onde as duas vêm juntas, a logo só existe com a
@@ -5680,6 +5705,12 @@ ${abaixo('nav-fixa')} {
 ${abaixo('faixa-minima')} {
   /* A marquinha já nasce em control-md desde 08/10/2026; o degrau que ela
    * descia aqui para "Relatórios" caber a 390px é hoje a medida de base. */
+  /* Na faixa de marca a marquinha é só o ícone, e ele desce ao degrau de
+   * 20px. */
+  .ucam-appbar--marca .ucam-appbar__marca .ic {
+    inline-size: var(--ucam-size-icon-md);
+    block-size: var(--ucam-size-icon-md);
+  }
   .ucam-appbar__system:not([data-cortado]) {
     font-size: 0.875rem;
     line-height: 1.15;
@@ -5708,6 +5739,7 @@ ${abaixo('faixa-minima')} {
       inline-size: var(--ucam-size-control-sm);
       block-size: var(--ucam-size-control-sm);
     }
+    .ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile { inline-size: auto; }
     .ucam-appbar > .ucam-appbar__brand { column-gap: var(--ucam-space-inline-xs); }
     .ucam-appbar > .ucam-btn + .ucam-appbar__brand { margin-inline-start: calc(var(--ucam-space-inline-sm) * -1); }
   }
@@ -5810,7 +5842,7 @@ ${abaixo('faixa-minima')} {
  * sistema escondido quando havia campus — valem só para a faixa que ainda o
  * leva (.ucam-appbar--lockup, o Portal). */
 ${abaixo('respiro-completo')} {
-  .ucam-appbar--lockup .ucam-appbar__brand { min-inline-size: calc(var(--ucam-appbar-logo-width) + 2 * var(--ucam-space-inline-sm) + 1px); }
+  .ucam-appbar--lockup .ucam-appbar__brand { min-inline-size: calc(var(--ucam-appbar-logo-width) + 3 * var(--ucam-space-inline-sm) + 1px); }
   /* O filete entre o campus e os ícones: 9px que decidem se a faixa cabe a 480. */
   .ucam-campus--faixa + .ucam-appbar__divider { display: none; }
 }
@@ -9771,11 +9803,15 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * seguia com fundo, contorno e peso, e a escolhida — fundo sem contorno —
  * perdia para ela. Agora o destaque sai assim que qualquer posição é
  * pressionada; a sugerida volta a texto neutro com o brilho, e a linha tem
- * uma posição pintada só. */
+ * uma posição pintada só.
+ *
+ * SUGESTÃO É CONTORNO, ESCOLHA É FUNDO (09/10/2026). Dentro do grupo a disputa
+ * tinha acabado, mas entre linhas não: a sugerida em repouso, com fundo e
+ * peso, lia como escolhida ao lado de uma linha já decidida, e só a cor do
+ * fundo as separava. Fundo e peso ficam sendo sinais só da posição
+ * pressionada; a sugerida guarda o contorno, a tinta e o brilho. */
 .ucam-segmented:not(:has(button[aria-pressed="true"])) button:has(> .ucam-segmented__sugerido) {
-  background: var(--ucam-color-action-primary-subtle);
   color: var(--ucam-color-action-primary-default);
-  font-weight: var(--ucam-typography-action-font-weight);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ucam-color-action-primary-default) 45%, transparent);
 }
 
@@ -13850,10 +13886,11 @@ ${acima('respiro-completo')} {
  * mesmo. Um pouco maior que na moldura: aqui ela é a única marca da tela. */
 .ucam-login__logo {
   flex: none;
-  /* 1.25 × 20px = 25px, altura ímpar que centrava em meio-pixel; 1.2 dá 24
-   * e mantém a proporção do lockup, porque a máscara é contain. */
-  inline-size: calc(var(--ucam-appbar-logo-width) * 1.2);
-  block-size: calc(var(--ucam-appbar-logo-height) * 1.2);
+  /* 24px, a medida da própria faixa desde 08/10/2026. Era a logo de 20px
+   * vezes 1.2; com a logo da faixa em 24, o fator a levava a 28,8px — o
+   * meio-pixel que o 1.2 existia para evitar (revisão de 09/10/2026). */
+  inline-size: var(--ucam-appbar-logo-width);
+  block-size: var(--ucam-appbar-logo-height);
   background: currentColor;
   color: var(--ucam-color-text-primary);
   -webkit-mask: var(--ucam-appbar-logo) no-repeat center / contain;
