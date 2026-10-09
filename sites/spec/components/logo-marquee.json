@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
-  "description": "O desfile de logos das empresas parceiras, em laço. Para sob o ponteiro e sob foco, e fica parado, em linhas, para quem pede menos movimento.",
+  "description": "O desfile de logos das empresas parceiras, em laço. Tem uma caixa de pausa, para sob o ponteiro e sob foco, e fica parado, em linhas, para quem pede menos movimento.",
   "quando_usar": [
     "Para mostrar que há muitas empresas parceiras, sem pedir que alguém leia cada uma.",
     "Com pelo menos seis logos."
@@ -33,6 +33,18 @@
       "descricao": "<div>, depois do título da seção."
     },
     {
+      "parte": "pausa",
+      "obrigatorio": true,
+      "descricao": "<input type=\"checkbox\"> ANTES da janela, irmã dela: marcada, o desfile para. Some na forma parada e com movimento reduzido.",
+      "classe": "ucam-site-marquee__pausa"
+    },
+    {
+      "parte": "pausa-rotulo",
+      "obrigatorio": true,
+      "descricao": "<label for> da caixa: Pausar o desfile.",
+      "classe": "ucam-site-marquee__pausa-rotulo"
+    },
+    {
       "parte": "viewport",
       "obrigatorio": true,
       "descricao": "A janela que recorta o desfile.",
@@ -47,7 +59,7 @@
     {
       "parte": "group",
       "obrigatorio": true,
-      "descricao": "<ul>. A segunda cópia leva aria-hidden=\"true\".",
+      "descricao": "<ul>. A segunda cópia leva aria-hidden=\"true\", alt vazio em cada logo e, se os logos são link, tabindex=\"-1\" em cada link.",
       "classe": "ucam-site-marquee__group"
     },
     {
@@ -80,23 +92,25 @@
   "estados": [
     "hover",
     "focus-within",
+    "pausado",
     "reduced-motion"
   ],
   "limites": {
     "regras": [
       "Não para conteúdo que precisa ser lido: quem quer achar uma empresa usa a lista de conveniadas.",
       "Não mais de um desfile por página.",
-      "Não entrega botão de pausa: para sob ponteiro e sob foco. Com logos que não são link, não há foco, e a parada por teclado não existe."
+      "A pausa é uma caixa de seleção, sem script: não guarda a escolha entre páginas. Quando a lib entregar o botão, ele ocupa o mesmo lugar.",
+      "O laço fecha com qualquer número de logos: cada grupo ocupa no mínimo a largura da janela. Com menos de seis, os logos ficam espaçados demais; use a forma parada."
     ],
     "motivo": "O desfile diz que são muitas. Para dizer quais, o movimento atrapalha."
   },
   "acessibilidade": {
     "requisitos": [
-      "A segunda cópia do grupo leva aria-hidden: cada empresa é lida uma vez.",
+      "A segunda cópia do grupo leva aria-hidden e alt vazio: cada empresa é lida uma vez. Se os logos são link, os da segunda cópia levam tabindex=\"-1\", para o Tab não passar duas vezes por cada empresa nem cair em conteúdo escondido.",
       "Cada logo tem o nome da empresa no alt.",
       "Com prefers-reduced-motion, nada se move: os logos assentam em linhas e a segunda cópia some.",
-      "Para sob o ponteiro e quando algo dentro recebe foco.",
-      "Movimento que dura mais de cinco segundos pede um jeito de parar (WCAG 2.2.2): com logos que são link, o foco para; sem link, use a forma parada."
+      "Para sob o ponteiro e quando algo dentro recebe foco. Isso é conforto, não o mecanismo de parada.",
+      "Movimento que dura mais de cinco segundos pede um jeito de parar (WCAG 2.2.2): é a caixa Pausar o desfile, que vem antes do desfile no documento e funciona por teclado e por toque. Sem ela, só a forma parada atende o critério."
     ],
     "criterios_wcag": [
       "1.1.1",
@@ -138,7 +152,7 @@
   "exemplos": [
     {
       "titulo": "Empresas parceiras",
-      "codigo": "<div class=\"ucam-site-marquee\">\n  <div class=\"ucam-site-marquee__viewport\">\n    <div class=\"ucam-site-marquee__track\">\n      <ul class=\"ucam-site-marquee__group\">\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/aurora.svg\" alt=\"Aurora\"></li>\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/brisa.svg\" alt=\"Brisa\"></li>\n      </ul>\n      <ul class=\"ucam-site-marquee__group\" aria-hidden=\"true\">\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/aurora.svg\" alt=\"\"></li>\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/brisa.svg\" alt=\"\"></li>\n      </ul>\n    </div>\n  </div>\n</div>"
+      "codigo": "<div class=\"ucam-site-marquee\">\n  <input class=\"ucam-site-marquee__pausa\" type=\"checkbox\" id=\"desfile-pausa\">\n  <label class=\"ucam-site-marquee__pausa-rotulo\" for=\"desfile-pausa\">Pausar o desfile</label>\n  <div class=\"ucam-site-marquee__viewport\">\n    <div class=\"ucam-site-marquee__track\">\n      <ul class=\"ucam-site-marquee__group\">\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/aurora.svg\" alt=\"Aurora\"></li>\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/brisa.svg\" alt=\"Brisa\"></li>\n      </ul>\n      <ul class=\"ucam-site-marquee__group\" aria-hidden=\"true\">\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/aurora.svg\" alt=\"\"></li>\n        <li class=\"ucam-site-marquee__item\"><img src=\"/empresas/brisa.svg\" alt=\"\"></li>\n      </ul>\n    </div>\n  </div>\n</div>"
     }
   ],
   "boas_praticas": [

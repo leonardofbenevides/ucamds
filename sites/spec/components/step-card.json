@@ -28,9 +28,15 @@
   },
   "anatomia": [
     {
+      "parte": "lista",
+      "obrigatorio": true,
+      "descricao": "<ol role=\"list\"> que guarda os passos: tira o recuo e o marcador e dá o vão entre os cartões.",
+      "classe": "ucam-site-steps"
+    },
+    {
       "parte": "root",
       "obrigatorio": true,
-      "descricao": "<li> de uma <ol>. Caixa com o número à esquerda."
+      "descricao": "<li> de uma <ol class=\"ucam-site-steps\">. Caixa com o número à esquerda."
     },
     {
       "parte": "number",
@@ -103,7 +109,7 @@
   },
   "acessibilidade": {
     "requisitos": [
-      "Os passos estão numa lista ordenada; o número desenhado é aria-hidden.",
+      "Os passos estão numa lista ordenada; o número desenhado é aria-hidden. A <ol> leva role=\"list\": sem marcador, o Safari deixa de anunciar a lista, e com ela a ordem. Não testado no VoiceOver.",
       "Número sobre o disco a 4,5:1, medido no build (rótulo sobre ação primária).",
       "O link diz o destino, não Clique aqui."
     ],
@@ -146,7 +152,7 @@
   "exemplos": [
     {
       "titulo": "Um passo de uma lista ordenada",
-      "codigo": "<ol>\n  <li class=\"ucam-site-step-card\">\n    <span class=\"ucam-site-step-card__number\" aria-hidden=\"true\">1</span>\n    <div class=\"ucam-site-step-card__body\">\n      <h3 class=\"ucam-site-step-card__title\">Cadastre o currículo</h3>\n      <p class=\"ucam-site-step-card__text\">Na plataforma, com o e-mail da universidade.</p>\n      <a class=\"ucam-site-step-card__link\" href=\"/plataforma\">Acessar a plataforma <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-arrowRight\"/></svg></a>\n    </div>\n  </li>\n</ol>"
+      "codigo": "<ol class=\"ucam-site-steps\" role=\"list\">\n  <li class=\"ucam-site-step-card\">\n    <span class=\"ucam-site-step-card__number\" aria-hidden=\"true\">1</span>\n    <div class=\"ucam-site-step-card__body\">\n      <h3 class=\"ucam-site-step-card__title\">Cadastre o currículo</h3>\n      <p class=\"ucam-site-step-card__text\">Na plataforma, com o e-mail da universidade.</p>\n      <a class=\"ucam-site-step-card__link\" href=\"/plataforma\">Acessar a plataforma <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-arrowRight\"/></svg></a>\n    </div>\n  </li>\n</ol>"
     }
   ],
   "boas_praticas": [

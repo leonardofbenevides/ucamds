@@ -39,7 +39,7 @@
     {
       "parte": "media",
       "obrigatorio": false,
-      "descricao": "<img alt=\"\"> decorativa, só a partir da grade completa, na metade final.",
+      "descricao": "<img alt=\"\"> decorativa. Só aparece com .ucam-site-cta--com-foto na raiz e a partir da grade completa, na metade final. Sem o modificador fica escondida: é ele que guarda a metade inicial para o texto.",
       "classe": "ucam-site-cta__media"
     },
     {
@@ -113,7 +113,8 @@
     "regras": [
       "Uma por página.",
       "Uma ação principal; a segunda é secundária.",
-      "Não é o hero: vem no fim, e o título é h2."
+      "Não é o hero: vem no fim, e o título é h2.",
+      "Título com palavra muito longa quebra dentro da palavra em vez de entrar na foto. Prefira títulos de palavras curtas."
     ],
     "motivo": "A chamada final responde o que faço agora. Com três botões iguais, a resposta é nada."
   },

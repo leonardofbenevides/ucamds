@@ -32,7 +32,7 @@
     {
       "parte": "root",
       "obrigatorio": true,
-      "descricao": "<dl>. Duas colunas no telefone, quatro na grade completa."
+      "descricao": "<dl>. Duas colunas no telefone; na grade completa, uma coluna por número."
     },
     {
       "parte": "item",

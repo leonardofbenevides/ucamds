@@ -51,8 +51,20 @@ test('texto nunca assenta sobre foto: foto e véu nascem escondidos e só entram
   for (const p of ['hero', 'cta']) {
     for (const parte of ['media', 'scrim']) {
       assert.ok(regrasDe(`.ucam-site-${p}__${parte}`)[0].includes('display: none'), `${p}__${parte} não nasce escondido`);
-      assert.ok(largo.includes(`.ucam-site-${p}__${parte} { display: block; }`), `${p}__${parte} não entra a 64rem`);
+      // A foto só entra COM o modificador que limita o texto: sem ele, uma
+      // <img> esquecida no hero punha o título em cima da foto (revisão de 09/10/2026).
+      assert.ok(largo.includes(`.ucam-site-${p}--com-foto .ucam-site-${p}__${parte} { display: block; }`), `${p}__${parte} não entra a 64rem sob o modificador`);
+      assert.ok(!largo.includes(`\n  .ucam-site-${p}__${parte} { display: block; }`), `${p}__${parte} entra sem o modificador`);
     }
+    // Palavra longa não alarga a coluna do texto para dentro da foto.
+    assert.match(regrasDe(`.ucam-site-${p}__content`)[0], /grid-template-columns: minmax\(0, 1fr\);/, `a coluna de ${p} cresce com a palavra`);
+    assert.match(regrasDe(`.ucam-site-${p}__title`)[0], /overflow-wrap: break-word;/, `o título de ${p} não quebra palavra longa`);
+    // O título é item de grade alinhado ao início: sem teto ele toma a largura
+    // da palavra mais longa e sai da trilha, mesmo com a quebra ligada.
+    assert.match(regrasDe(`.ucam-site-${p}__title`)[0], /max-inline-size: 100%;/, `o título de ${p} sai da trilha`);
+    // No hero o bloco é item de flex: sem piso zero ele não encolhe abaixo da
+    // palavra, e a 1024px "Internacionalização" entrava 30px na foto (medido).
+    assert.match(regrasDe(`.ucam-site-${p}__content`)[0], /min-inline-size: 0;/, `o bloco de ${p} não encolhe abaixo da palavra`);
     assert.match(regrasDe(`.ucam-site-${p}__media`)[0], /inset-inline: 50% 0/, `a foto de ${p} não fica na metade final`);
     assert.match(largo, new RegExp(`\\.ucam-site-${p}--com-foto \\.ucam-site-${p}__content \\{[^}]*max-inline-size: 50%`), `o texto de ${p} não fica na metade inicial`);
   }
@@ -112,4 +124,75 @@ test('os números da faixa alinham pelo topo, mesmo com rótulos de alturas dife
   const item = regrasDe('.ucam-site-stats__item')[0];
   assert.match(item, /flex-direction: column-reverse;/);
   assert.match(item, /justify-content: flex-end;/);
+});
+
+// ---- O que a revisão de 09/10/2026 achou -----------------------------------
+
+test('hero, hero de página e CTA são superfície inversa: o anel de foco é o claro', () => {
+  // Sem isto o anel cinza caía a 2,20:1 sobre a superfície escura.
+  for (const p of ['hero', 'page-hero', 'cta']) {
+    const r = regrasDe(`.ucam-site-${p} :focus-visible`).join('\n');
+    assert.match(r, /outline-color: var\(--ucam-site-color-border-focus-on-inverse\)/, `${p} não troca o anel`);
+  }
+});
+
+test('o desfile tem um controle de pausa que funciona por teclado e por toque', () => {
+  assert.ok(emite('.ucam-site-marquee__pausa'), 'falta o controle de pausa');
+  assert.match(css, /\.ucam-site-marquee__pausa:checked ~ \.ucam-site-marquee__viewport \.ucam-site-marquee__track \{[^}]*animation-play-state: paused;/);
+  // Parado não há o que pausar: o controle some.
+  assert.match(comMovimentoReduzido, /\.ucam-site-marquee__pausa[^{]*\{ display: none; \}/);
+});
+
+test('o grupo do desfile enche a janela: com poucos logos o laço não abre buraco', () => {
+  assert.match(regrasDe('.ucam-site-marquee__viewport')[0], /container-type: inline-size;/);
+  assert.match(regrasDe('.ucam-site-marquee__group')[0], /min-inline-size: 100cqi;/);
+  assert.match(comMovimentoReduzido, /\.ucam-site-marquee__group \{[^}]*min-inline-size: 0;/);
+});
+
+test('a demo do desfile não lê a empresa duas vezes e traz a pausa', () => {
+  const { data } = construirIndice({ raiz: ROOT });
+  const demo = data.componentes.find((c) => c.id === 'logo-marquee').demo.principal;
+  for (const html of [demo.preview, demo.codigo]) {
+    const segunda = html.split(/aria-hidden=['"]true['"]/)[1];
+    assert.ok(segunda, 'a segunda cópia não leva aria-hidden');
+    assert.ok(!/alt=['"][^'"]+['"]/.test(segunda), 'a segunda cópia tem alt com texto');
+    assert.match(html, /ucam-site-marquee__pausa/);
+  }
+});
+
+test('sem :has() o cartão ainda mostra o foco: o anel de reserva é do link esticado', () => {
+  for (const c of ['card', 'course-card']) {
+    const reserva = regrasDe(`.ucam-site-${c}__link:focus-visible::after`).join('\n');
+    assert.match(reserva, /outline: var\(--ucam-site-focus-ring-width\) solid/, `${c} fica sem anel onde não há :has()`);
+  }
+  const suporte = css.match(/@supports selector\(:has\(\*\)\) \{([\s\S]*?)\n\}/);
+  assert.ok(suporte, 'o anel no cartão não está atrás de @supports');
+  assert.match(suporte[1], /\.ucam-site-card:has\(\.ucam-site-card__link:focus-visible\)/);
+  // Fora do @supports, nenhum anel de foco depende de :has().
+  assert.ok(!/:has\([^)]*:focus-visible/.test(css.replace(suporte[0], '')), 'há foco por :has() sem rede');
+});
+
+test('três números ocupam a faixa inteira: as colunas nascem dos itens', () => {
+  const largo = dentroDe(64);
+  assert.match(largo, /\.ucam-site-stats \{[^}]*grid-auto-flow: column;[^}]*grid-auto-columns: minmax\(0, 1fr\);/);
+});
+
+test('os passos têm uma classe de lista, e o código da demo é o do preview', () => {
+  assert.match(regrasDe('.ucam-site-steps')[0], /list-style: none;/);
+  const { data } = construirIndice({ raiz: ROOT });
+  const demo = data.componentes.find((c) => c.id === 'step-card').demo.principal;
+  for (const html of [demo.preview, demo.codigo]) assert.match(html, /<ol class=['"]ucam-site-steps['"] role=['"]list['"]/);
+  assert.ok(!/<ol style=/.test(demo.preview), 'o preview ainda arruma a lista com estilo em linha');
+});
+
+test('as aspas do depoimento são da folha', () => {
+  assert.match(regrasDe('.ucam-site-testimonial__quote::before')[0], /content: open-quote;/);
+  assert.match(regrasDe('.ucam-site-testimonial__quote::after')[0], /content: close-quote;/);
+});
+
+test('os contratos não prometem o que a folha não mede', () => {
+  const ler = (id) => readFileSync(join(ROOT, `sites/spec/components/${id}.json`), 'utf8');
+  assert.ok(!ler('prose').includes('75 caracteres'), 'a prosa promete 75 caracteres a 820px');
+  assert.ok(!JSON.parse(ler('prose')).acessibilidade.criterios_wcag.includes('1.4.8'));
+  assert.ok(!ler('hero-pill').includes('não muda o contraste'), 'a pílula diz que a lavagem não muda o contraste');
 });

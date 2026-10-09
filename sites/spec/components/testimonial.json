@@ -134,7 +134,7 @@
     "regras": [
       "A fala é de quem falou, sem retoque de publicidade.",
       "Nome completo, com curso e ano ou cargo e empresa.",
-      "As aspas são do blockquote; não se digitam."
+      "As aspas são da folha; não se digitam. A fala vai direto no blockquote, sem <p> dentro."
     ]
   },
   "composicao": {

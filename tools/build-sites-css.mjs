@@ -994,6 +994,13 @@ ${acima('grade-completa')} {
   background: ${V('color-surface-inverse')};
   color: ${V('color-text-on-inverse')};
 }
+/* Hero, hero de página e CTA são superfície inversa sem levar .ucam-site-inverso:
+ * o anel de foco troca aqui, como no rodapé. O cinza dava 2,20:1 sobre o escuro. */
+.ucam-site-hero :focus-visible,
+.ucam-site-page-hero :focus-visible,
+.ucam-site-cta :focus-visible {
+  outline-color: ${V('color-border-focus-on-inverse')};
+}
 .ucam-site-hero__media {
   display: none;
   position: absolute;
@@ -1021,6 +1028,8 @@ ${acima('grade-completa')} {
 }
 .ucam-site-hero__content {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
   gap: ${V('space-stack-md')};
   justify-items: start;
   max-inline-size: ${V('container-prosa')};
@@ -1041,6 +1050,8 @@ ${acima('grade-completa')} {
   font-weight: ${V('typography-display-hero-font-weight')};
   line-height: ${V('typography-display-hero-line-height')};
   letter-spacing: ${V('typography-display-hero-letter-spacing')};
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
   text-wrap: balance;
 }
 .ucam-site-hero__lede {
@@ -1064,8 +1075,8 @@ ${acima('grade-completa')} {
   gap: ${V('space-inline-md')};
 }
 ${acima('grade-completa')} {
-  .ucam-site-hero__media { display: block; }
-  .ucam-site-hero__scrim { display: block; }
+  .ucam-site-hero--com-foto .ucam-site-hero__media { display: block; }
+  .ucam-site-hero--com-foto .ucam-site-hero__scrim { display: block; }
   .ucam-site-hero__inner { display: flex; align-items: center; min-block-size: ${V('size-hero')}; padding: ${V('space-section')} ${V('space-gutter')}; }
   .ucam-site-hero--com-foto .ucam-site-hero__content { max-inline-size: 50%; padding-inline-end: ${V('space-stack-lg')}; }
 }
@@ -1191,6 +1202,8 @@ ${acima('grade-completa')} {
 }
 .ucam-site-cta__content {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-inline-size: 0;
   gap: ${V('space-stack-sm')};
   justify-items: start;
   max-inline-size: ${V('container-prosa')};
@@ -1211,6 +1224,8 @@ ${acima('grade-completa')} {
   font-weight: ${V('typography-display-section-sm-font-weight')};
   line-height: ${V('typography-display-section-sm-line-height')};
   letter-spacing: ${V('typography-display-section-sm-letter-spacing')};
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
   text-wrap: balance;
 }
 .ucam-site-cta__text {
@@ -1227,15 +1242,16 @@ ${acima('grade-completa')} {
 }
 ${acima('grade-completa')} {
   .ucam-site-cta { padding: ${V('space-section-sm')}; }
-  .ucam-site-cta__media { display: block; }
-  .ucam-site-cta__scrim { display: block; }
+  .ucam-site-cta--com-foto .ucam-site-cta__media { display: block; }
+  .ucam-site-cta--com-foto .ucam-site-cta__scrim { display: block; }
   .ucam-site-cta--com-foto .ucam-site-cta__content { max-inline-size: 50%; padding-inline-end: ${V('space-stack-lg')}; }
 }
 
 /* ---------------------------------------------------------- stats-band --- */
 /* Contrato: sites/spec/components/stats-band.json. Uma lista de definição: o
  * rótulo vem antes no documento e o número aparece em cima. Duas colunas no
- * telefone, quatro na grade completa. */
+ * telefone; na grade completa, uma coluna por número — com quatro trilhas
+ * fixas, três números deixavam um quarto da faixa vazio. */
 .ucam-site-stats {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1272,7 +1288,7 @@ ${acima('grade-completa')} {
   color: ${V('color-text-on-inverse-muted')};
 }
 ${acima('grade-completa')} {
-  .ucam-site-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .ucam-site-stats { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
 }
 
 /* -------------------------------------------------------- logo-marquee --- */
@@ -1280,12 +1296,39 @@ ${acima('grade-completa')} {
  * laço: a trilha tem duas cópias do grupo e anda metade da própria largura.
  * Movimento que não para sozinho precisa de parada: para sob o ponteiro e sob
  * foco, e com movimento reduzido não anima — os logos assentam em linhas e a
- * segunda cópia some. */
+ * segunda cópia some. Ponteiro e foco não bastam: logo sem link não recebe
+ * foco e no toque não há ponteiro. A parada de verdade é a caixa "Pausar",
+ * irmã da janela, que funciona sem script. */
 .ucam-site-marquee {
   display: block;
 }
+.ucam-site-marquee__pausa {
+  inline-size: ${V('size-icon-sm')};
+  block-size: ${V('size-icon-sm')};
+  margin: 0;
+  margin-inline-end: ${V('space-inline-xs')};
+  accent-color: ${V('color-action-primary-default')};
+  vertical-align: middle;
+}
+.ucam-site-marquee__pausa-rotulo {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: ${V('size-icon-button')};
+  color: ${V('color-text-secondary')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+  vertical-align: middle;
+  cursor: pointer;
+}
+.ucam-site-marquee__pausa:checked ~ .ucam-site-marquee__viewport .ucam-site-marquee__track {
+  animation-play-state: paused;
+}
+/* A janela é o contêiner: cada grupo tem no mínimo a largura dela. Com poucos
+ * logos o grupo ficava mais estreito que a janela e o fim de cada volta
+ * mostrava um vazio. */
 .ucam-site-marquee__viewport {
   overflow: hidden;
+  container-type: inline-size;
 }
 .ucam-site-marquee__track {
   display: flex;
@@ -1301,6 +1344,8 @@ ${acima('grade-completa')} {
   display: flex;
   flex: none;
   align-items: center;
+  justify-content: space-around;
+  min-inline-size: 100cqi;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1337,6 +1382,11 @@ ${acima('grade-completa')} {
   flex-wrap: wrap;
   justify-content: center;
   row-gap: ${V('space-stack-md')};
+  min-inline-size: 0;
+}
+.ucam-site-marquee--parado .ucam-site-marquee__pausa,
+.ucam-site-marquee--parado .ucam-site-marquee__pausa-rotulo {
+  display: none;
 }
 .ucam-site-marquee--parado .ucam-site-marquee__group + .ucam-site-marquee__group {
   display: none;
@@ -1347,8 +1397,9 @@ ${acima('grade-completa')} {
 }
 @media (prefers-reduced-motion: reduce) {
   .ucam-site-marquee__track { flex-wrap: wrap; justify-content: center; row-gap: ${V('space-stack-md')}; inline-size: auto; animation: none; }
-  .ucam-site-marquee__group { flex-wrap: wrap; justify-content: center; row-gap: ${V('space-stack-md')}; }
+  .ucam-site-marquee__group { flex-wrap: wrap; justify-content: center; row-gap: ${V('space-stack-md')}; min-inline-size: 0; }
   .ucam-site-marquee__group + .ucam-site-marquee__group { display: none; }
+  .ucam-site-marquee__pausa, .ucam-site-marquee__pausa-rotulo { display: none; }
 }
 
 /* ------------------------------------------------ card e course-card --- */
@@ -1430,10 +1481,25 @@ ${acima('grade-completa')} {
 .ucam-site-course-card__link:focus-visible {
   outline: none;
 }
-.ucam-site-card:has(.ucam-site-card__link:focus-visible),
-.ucam-site-course-card:has(.ucam-site-course-card__link:focus-visible) {
+/* O anel de reserva é do próprio link esticado, por dentro da borda (o cartão
+ * recorta o que sai). Onde há :has(), o anel passa para o cartão, por fora.
+ * Sem a reserva, navegador sem :has() ficava sem indicador de foco nenhum. */
+.ucam-site-card__link:focus-visible::after,
+.ucam-site-course-card__link:focus-visible::after {
+  border-radius: ${V('radius-card')};
   outline: ${V('focus-ring-width')} solid ${V('color-border-focus')};
-  outline-offset: ${V('focus-ring-offset')};
+  outline-offset: calc(-1 * ${V('focus-ring-width')});
+}
+@supports selector(:has(*)) {
+  .ucam-site-card__link:focus-visible::after,
+  .ucam-site-course-card__link:focus-visible::after {
+    outline: none;
+  }
+  .ucam-site-card:has(.ucam-site-card__link:focus-visible),
+  .ucam-site-course-card:has(.ucam-site-course-card__link:focus-visible) {
+    outline: ${V('focus-ring-width')} solid ${V('color-border-focus')};
+    outline-offset: ${V('focus-ring-offset')};
+  }
 }
 .ucam-site-card--interativo,
 .ucam-site-course-card {
@@ -1503,7 +1569,16 @@ ${acima('grade-completa')} {
 
 /* ----------------------------------------------------------- step-card --- */
 /* Contrato: sites/spec/components/step-card.json. Um passo de uma sequência:
- * o número, o que fazer e, se houver, para onde ir. */
+ * o número, o que fazer e, se houver, para onde ir. A lista tem classe
+ * própria: sem ela, quem copiava o exemplo recebia os cartões recuados e
+ * colados. */
+.ucam-site-steps {
+  display: grid;
+  gap: ${V('space-stack-sm')};
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
 .ucam-site-step-card {
   display: flex;
   align-items: flex-start;
@@ -1582,6 +1657,13 @@ ${acima('grade-completa')} {
   font-size: ${V('typography-lede-font-size')};
   line-height: ${V('typography-lede-line-height')};
   text-wrap: pretty;
+  quotes: "\\201C" "\\201D";
+}
+.ucam-site-testimonial__quote::before {
+  content: open-quote;
+}
+.ucam-site-testimonial__quote::after {
+  content: close-quote;
 }
 .ucam-site-testimonial__autor {
   display: flex;
@@ -1613,9 +1695,9 @@ ${acima('grade-completa')} {
 
 /* --------------------------------------------------------------- prose --- */
 /* Contrato: sites/spec/components/prose.json. O texto corrido de um artigo.
- * É a ÚNICA peça que estiliza elemento sem classe — o texto vem de um CMS e
- * não tem como levar classe em cada parágrafo —, e só o que está dentro da
- * raiz. A linha não passa da largura de prosa. */
+ * É a ÚNICA peça cujo conteúdo não leva classe — o texto vem de um CMS e
+ * não tem como levar classe em cada parágrafo —, e só alcança o que está
+ * dentro da raiz. A linha não passa da largura de prosa. */
 .ucam-site-prose {
   max-inline-size: ${V('container-prosa')};
   color: ${V('color-text-body')};

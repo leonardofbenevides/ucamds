@@ -70,7 +70,7 @@
   },
   "acessibilidade": {
     "requisitos": [
-      "Texto na tinta sobre inverso; a lavagem da pílula é de 6% e não muda o contraste medido da superfície.",
+      "Texto na tinta sobre inverso. A lavagem de 6% clareia o fundo: o contraste cai de 10,4:1 para 8,7:1, calculado sobre a cor composta. O par não entra na lista medida no build.",
       "O ícone é aria-hidden.",
       "Sem foco e sem papel de controle.",
       "Várias pílulas formam uma lista: ul e li."

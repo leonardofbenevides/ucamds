@@ -81,13 +81,13 @@
       "Não pôr peça do sistema dentro da prosa: um botão ali herda o sublinhado de link.",
       "Não usar h1 dentro: é do hero.",
       "Não pular de h2 para h4.",
-      "Não entrega tabela nem código: quando um artigo precisar, entram no contrato."
+      "Não entrega tabela, código, h4 nem lista dentro de lista: saem com o estilo do navegador. Quando um artigo precisar, entram no contrato."
     ],
     "motivo": "A prosa estiliza elemento sem classe, e por isso alcança tudo que estiver dentro. O que é peça fica fora."
   },
   "acessibilidade": {
     "requisitos": [
-      "A linha não passa de 820px, cerca de 75 caracteres.",
+      "A linha não passa de 820px, a largura de prosa do sistema. A 18px isso dá perto de cem caracteres: mais que os oitenta do critério 1.4.8, que este contrato não promete.",
       "O link é sublinhado: não depende só da cor.",
       "Corpo, título e link a 4,5:1, medidos no build.",
       "A ordem dos títulos começa em h2.",
@@ -97,7 +97,6 @@
       "1.3.1",
       "1.4.1",
       "1.4.3",
-      "1.4.8",
       "2.4.6"
     ]
   },

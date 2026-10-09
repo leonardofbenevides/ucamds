@@ -40,7 +40,7 @@
     {
       "parte": "media",
       "obrigatorio": false,
-      "descricao": "<img alt=\"\"> decorativa. Só aparece a partir da grade completa, na metade final.",
+      "descricao": "<img alt=\"\"> decorativa. Só aparece com .ucam-site-hero--com-foto na raiz e a partir da grade completa, na metade final. Sem o modificador fica escondida: é ele que guarda a metade inicial para o texto.",
       "classe": "ucam-site-hero__media"
     },
     {
@@ -127,7 +127,8 @@
       "Um por página, e só na home: páginas internas usam o hero editorial.",
       "Não entrega carrossel: uma mensagem só.",
       "Não pôr texto sobre a foto nem dentro dela.",
-      "Não mais de duas ações."
+      "Não mais de duas ações.",
+      "Título com palavra muito longa quebra dentro da palavra em vez de entrar na foto. Prefira títulos de palavras curtas."
     ],
     "motivo": "Num carrossel a primeira mensagem é a única que quase todo mundo vê. E texto sobre foto tem o contraste da foto do dia, que ninguém mede."
   },
