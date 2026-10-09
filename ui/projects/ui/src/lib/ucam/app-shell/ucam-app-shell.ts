@@ -386,7 +386,7 @@ export type UcamSystemCategory =
               aria-hidden="true"
             ></span>
             <span
-              class="ucam-shell-logo-fio hidden w-px shrink-0 bg-current opacity-30 min-[64rem]:block"
+              class="ucam-shell-logo-fio hidden w-px shrink-0 bg-current opacity-30 me-[var(--ucam-space-inline-sm)] min-[64rem]:block"
               [style.block-size]="'var(--ucam-appbar-logo-height, 1.5rem)'"
               aria-hidden="true"
             ></span>

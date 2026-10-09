@@ -5157,6 +5157,10 @@ ${abaixo('respiro-completo')} {
 .ucam-appbar__brand .ucam-appbar__divider {
   block-size: var(--ucam-appbar-logo-height);
   margin-block: 0;
+  /* Mais ar entre o filete e o módulo (08/10/2026: "espaço maior do divider
+   * pro ícone + label"): o vão do lockup é 8px, e o lado do módulo ganha
+   * mais 8 — a assinatura da universidade fica junta, o sistema respira. */
+  margin-inline-end: var(--ucam-space-inline-sm);
 }
 
 .ucam-appbar__system {
