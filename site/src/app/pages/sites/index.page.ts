@@ -45,12 +45,12 @@ import { TextoComponent } from '../../docs/texto.component';
               <p class="small muted"><ucam-t [t]="g.nota" /></p>
             }
           </div>
-          <div class="grade">
+          <div class="grade" [class.larga]="g.chave === 'layout'">
             @for (c of g.itens; track c.id) {
               <a class="card" [routerLink]="'/sites/' + c.id">
                 <div class="palco" inert>
                   @if (preview(c); as html) {
-                    <div class="ucam-site palco-conteudo" [class.reduzido]="g.chave === 'layout'" [innerHTML]="html"></div>
+                    <div class="ucam-site palco-conteudo" [innerHTML]="html"></div>
                   }
                 </div>
                 <div class="corpo">
@@ -158,15 +158,21 @@ import { TextoComponent } from '../../docs/texto.component';
       display: grid;
       justify-items: center;
     }
-    /* MOLDURA E SEÇÃO aparecem reduzidas. Um cabeçalho de seção é desenhado
-       para a largura da página: o título em display mede pela JANELA (clamp
-       com vw) e saía com 52px num cartão de 320 — duas palavras por linha e o
-       cartão três vezes mais alto que os vizinhos (captura de 09/10/2026).
-       Átomo continua em tamanho real; só o que é seção encolhe, e na página
-       do componente ele volta ao tamanho inteiro. */
-    .palco-conteudo.reduzido {
-      zoom: 0.55;
-      justify-items: start;
+    /* MOLDURA E SEÇÃO ocupam a fileira inteira, em tamanho real. Cabeçalho,
+       rodapé e cabeçalho de seção são desenhados para a largura da PÁGINA, e
+       respondem à janela, não ao cartão: num cartão de 320px o cabeçalho
+       cortava o botão, as cinco colunas do rodapé se sobrepunham e o título
+       em display quebrava em três linhas (capturas de 09/10/2026). Reduzir
+       por zoom só trocava o defeito por texto de 8px. Um cartão por fileira
+       mostra a peça como ela é; átomo continua na grade de cartões. */
+    .grade.larga {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .grade.larga .palco {
+      place-items: stretch;
+    }
+    .grade.larga .palco-conteudo {
+      justify-items: stretch;
     }
     .corpo {
       padding: 0.9rem 1rem 1rem;
