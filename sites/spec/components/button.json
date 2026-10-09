@@ -1,0 +1,133 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "button",
+  "name": "Button",
+  "selector": "ucam-site-button",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.6",
+  "category": "acao",
+  "description": "A ação de um site: inscrever-se, ver vagas, acessar a plataforma. Três pesos, dois tamanhos, e a forma de link quando leva a outra página.",
+  "quando_usar": [
+    "A chamada principal de uma seção ou do hero: uma por bloco, no peso primário.",
+    "A alternativa ao lado dela — ver mais, conhecer o curso — no peso secundário.",
+    "Um link que precisa de área de toque e peso de ação dentro de um cartão ou de uma lista de vagas."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br e cenpre.candidomendes.edu.br, lidos em 08/10/2026",
+    "ocorrencias": [
+      { "tela": "www — faixa superior e menu", "rotulo": "INSCREVA-SE / Matricule-se Agora!", "problema": "três estilos de botão na mesma página — Angular Material, Bootstrap e o do CENPRE —, um deles em caixa alta com ponto de exclamação" },
+      { "tela": "www — cartão de curso", "rotulo": "Saiba mais", "problema": "rótulo genérico que não diz o que acontece ao clicar" },
+      { "tela": "cenpre — painel de vagas", "rotulo": "Tenho interesse", "problema": "botão de 36px de altura num cartão tocado no telefone; abaixo do alvo mínimo" },
+      { "tela": "cenpre — hero", "rotulo": "Ver oportunidades / Acessar plataforma", "problema": "nenhum: é o par primário + secundário que este contrato formaliza" }
+    ],
+    "conclusao": "Os sites têm o botão certo em um lugar e três errados nos outros. O contrato fixa o par primário + secundário, o alvo de 44px e o rótulo que diz o verbo."
+  },
+  "anatomia": [
+    { "parte": "root", "obrigatorio": true, "descricao": "<button> quando dispara algo na página; <a> quando leva a outra página. A classe é a mesma." },
+    { "parte": "label", "obrigatorio": true, "descricao": "O rótulo. Verbo no imperativo, sem caixa alta, sem exclamação." },
+    { "parte": "icon", "obrigatorio": false, "descricao": "Ícone antes ou depois do rótulo, decorativo. Seta para a direita só quando leva para fora da página.", "classe": "ucam-site-btn__icon" }
+  ],
+  "props": [
+    {
+      "nome": "variant",
+      "tipo": "'primary' | 'secondary' | 'ghost'",
+      "default": "'primary'",
+      "descricao": "O peso. Um primário por bloco; o resto é secundário ou fantasma.",
+      "valores": {
+        "primary": { "uso": "A ação que a seção existe para pedir: inscrever-se, ver as vagas.", "limite": "Um por bloco visual. Dois primários lado a lado é uma decisão que o site não tomou.", "classe": ".ucam-site-btn--primary" },
+        "secondary": { "uso": "A alternativa ao lado do primário, ou a ação de um cartão.", "classe": ".ucam-site-btn--secondary" },
+        "ghost": { "uso": "Ação de baixo peso numa fileira de cartões ou dentro de texto: ver todas, voltar.", "limite": "Não como única ação de uma seção: sem borda nem fundo ele some entre parágrafos.", "classe": ".ucam-site-btn--ghost" }
+      }
+    },
+    {
+      "nome": "size",
+      "tipo": "'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "44px ou 52px de altura.",
+      "valores": {
+        "md": { "uso": "Em cartão, lista, formulário e rodapé. 44px é também o alvo mínimo de toque." },
+        "lg": { "uso": "No hero e na CTA final, onde o botão é a maior peça do bloco.", "limite": "Nunca dentro de cartão: o botão fica maior que o título.", "classe": ".ucam-site-btn--lg" }
+      }
+    },
+    {
+      "nome": "inverse",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Sobre seção escura (hero com foto, rodapé, CTA). O primário vira branco com texto escuro; o secundário ganha borda clara; o fantasma lê em branco.",
+      "valores": {
+        "true": { "uso": "Dentro de .ucam-site-inverso ou de qualquer bloco com color.surface.inverse.", "limite": "Não misturar: um botão inverso sobre fundo claro é um retângulo branco sem borda.", "classe": ".ucam-site-btn--inverse" }
+      }
+    },
+    { "nome": "href", "tipo": "string | null", "default": "null", "descricao": "Com href, a raiz é <a>. Sem, é <button type=\"button\">." },
+    { "nome": "disabled", "tipo": "boolean", "default": "false", "descricao": "Raro num site. Quando existe, o motivo está escrito ao lado." }
+  ],
+  "estados": ["hover", "active", "focus-visible", "disabled"],
+  "limites": {
+    "regras": [
+      "Não usar para navegação do menu: item de menu é link de texto.",
+      "Não usar caixa alta no rótulo: o peso vem do fundo, não das maiúsculas.",
+      "Não usar <a> sem href nem <button> para ir a outra página — leitor de tela anuncia o papel errado."
+    ],
+    "motivo": "O site institucional tinha INSCREVA-SE em caixa alta e três famílias de botão na mesma página. O contrato existe para que o botão seja um só, e para que o papel no DOM diga a verdade."
+  },
+  "acessibilidade": {
+    "papel": "button (ou link, com href)",
+    "requisitos": [
+      "Alvo de toque de 44px no mínimo, nos dois tamanhos (WCAG 2.5.8).",
+      "Rótulo visível é o nome acessível. Ícone sozinho exige aria-label.",
+      "Anel de foco cinza de 2px com 2px de folga sobre fundo claro; degrau próprio sobre seção escura (3:1 contra o fundo).",
+      "Contraste do rótulo sobre o preenchimento de 4,5:1 nos três estados, na base e na submarca — medido por tools/build-sites-tokens.mjs.",
+      "Desabilitado não some: fica a 4,5:1 sobre o próprio fundo e com cursor not-allowed."
+    ],
+    "criterios_wcag": ["1.4.3", "1.4.11", "2.4.7", "2.5.8", "4.1.2"],
+    "teclado": [
+      { "tecla": "Enter / Espaço", "comportamento": "Aciona. Em <a>, só Enter." },
+      { "tecla": "Tab", "comportamento": "Foco na ordem do documento. Botão desabilitado sai da ordem." }
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": ["Ver vagas", "Inscreva-se", "Acessar plataforma", "Conhecer o curso"],
+      "ruim": ["Clique aqui", "SAIBA MAIS!!!", "INSCREVA-SE", "Enviar formulário de contato agora"]
+    },
+    "regras": [
+      "Verbo no imperativo mais o objeto: duas a três palavras.",
+      "Sem ponto final, sem exclamação, sem caixa alta.",
+      "O rótulo diz o que acontece, não o que o usuário deve fazer com o mouse."
+    ]
+  },
+  "composicao": {
+    "usada_por": ["ucam-site-section-heading"]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      { "legado": "<app-button variant=\"primary\">", "novo": ".ucam-site-btn.ucam-site-btn--primary" },
+      { "legado": "<app-button variant=\"secondary\">", "novo": ".ucam-site-btn.ucam-site-btn--secondary" },
+      { "legado": "<app-button variant=\"ghost\">", "novo": ".ucam-site-btn.ucam-site-btn--ghost" },
+      { "legado": "$color-brand no fundo do botão", "novo": "color.action.primary.default", "nota": "Um degrau mais escuro no CENPRE (magenta.800, ADR-068)." }
+    ]
+  },
+  "exemplos": [
+    { "titulo": "Par do hero", "codigo": "<a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--lg\" href=\"/vagas\">Ver oportunidades</a>\n<a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--lg\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>" },
+    { "titulo": "Ação de cartão", "codigo": "<button type=\"button\" class=\"ucam-site-btn ucam-site-btn--secondary\">Tenho interesse</button>" },
+    { "titulo": "Sobre seção escura", "codigo": "<div class=\"ucam-site-inverso\">\n  <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse\" href=\"/inscricao\">Inscreva-se</a>\n</div>" }
+  ],
+  "boas_praticas": [
+    { "faca": "Um primário por bloco, com o secundário ao lado quando há alternativa.", "evite": "Dois primários na mesma fileira.", "porque": "Dois botões iguais em peso dizem que o site não sabe o que quer que a pessoa faça." },
+    { "faca": "<a> com href para ir a outra página; <button> para agir nesta.", "evite": "<a href=\"#\"> com onclick, ou <button> que navega.", "porque": "O papel é o que o leitor de tela anuncia e o que o botão direito do mouse oferece." },
+    { "faca": "Rótulo com o verbo e o objeto: Ver vagas.", "evite": "Clique aqui, Saiba mais.", "porque": "Fora de contexto — numa lista de links do leitor de tela — Saiba mais não diz sobre o quê." }
+  ],
+  "vs": [
+    { "componente": "tag", "diferenca": "Button age; Tag classifica. A tag tem o formato de pílula e nunca recebe clique.", "escolha": "Se o texto é um verbo, é botão. Se é uma categoria, é tag." }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz, variante e tamanho por modificador. Funciona em <a> e em <button> sem mudar nada.",
+      "raiz": ".ucam-site-btn",
+      "variaveis": ["--ucam-site-color-action-primary-default", "--ucam-site-color-action-primary-hover", "--ucam-site-color-action-primary-active", "--ucam-site-color-action-secondary-border", "--ucam-site-size-control-md", "--ucam-site-size-control-lg", "--ucam-site-radius-control"],
+      "nota": "O inverso lê a lavagem de papel (color.interaction.hover-on-inverse) para o hover do fantasma e do secundário sobre fundo escuro."
+    }
+  }
+}
