@@ -246,6 +246,10 @@ function siteCss() {
     }
     cpSync(origem, join(dir, sub), { recursive: true });
   }
+  // O sprite é o MESMO da aplicação: os ícones são fundação compartilhada.
+  // Sem ele, quem copia a demo do icon-chip recebe uma pastilha vazia.
+  if (existsSync(join(DIST, 'icons'))) cpSync(join(DIST, 'icons'), join(dir, 'icons'), { recursive: true });
+  else erros.push('dist/icons não existe — rode: pnpm run icons');
   const pkg = {
     name: '@ucam/site-css',
     version: VERSAO,
@@ -257,6 +261,7 @@ function siteCss() {
       './ucam-site.css': './css/ucam-site.css',
       './ucam-site-fonts.css': './css/ucam-site-fonts.css',
       './tokens/*': './tokens/*',
+      './icons/sprite.svg': './icons/sprite.svg',
       './fonts/*': './fonts/*',
       './package.json': './package.json',
     },
@@ -289,6 +294,21 @@ submarca e marque o elemento raiz:
 
 SCSS: \`@use 'node_modules/@ucam/site-css/tokens/ucam-site-tokens' as site;\`
 expõe as variáveis \`$ucam-site-*\` e o mapa \`$ucam-site-semantic\`.
+
+## Ícones
+
+O sprite fica em \`icons/sprite.svg\`, o mesmo da aplicação, e todo símbolo é
+prefixado com \`i-\`. A folha já traz a regra da classe \`ic\`:
+
+\`\`\`html
+<span class="ucam-site-icon-chip" aria-hidden="true">
+  <svg class="ic"><use href="/caminho/sprite.svg#i-briefcase"></use></svg>
+</span>
+\`\`\`
+
+Sirva o arquivo da MESMA origem da página: referência externa de \`<use>\` é
+same-origin. As demos do catálogo escrevem só \`#i-briefcase\` porque lá o
+sprite está embutido no documento.
 
 Tudo vive sob \`.ucam-site\`. Não há reset global. Os tokens primitivos saem na
 folha mas não são para uso: só os semânticos (\`--ucam-site-color-*\`,

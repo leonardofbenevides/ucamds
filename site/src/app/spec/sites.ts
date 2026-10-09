@@ -3,7 +3,8 @@
 // importa sites.data.json.
 
 import bruto from '../../generated/sites.data.json';
-import type { Componente } from './spec.types';
+import type { Adr, Componente } from './spec.types';
+import { adrs } from './spec';
 
 interface SitesData {
   meta: { componentes: number; versao: string; submarcas: string[] };
@@ -47,6 +48,18 @@ export function sitesPorCategoria(): GrupoSites[] {
     .filter((k) => !CATEGORIAS.some((c) => c.chave === k))
     .map((k) => ({ chave: k, rotulo: k, nota: '', itens: grupos.get(k)! }));
   return [...conhecidas, ...restantes];
+}
+
+/**
+ * ADRs que citam ESTE componente dos sites em afeta, pelo seletor dos sites.
+ *
+ * Não reaproveita decisoesQueAfetam() da aplicação: ela casa pelo id, e o
+ * button dos sites herdava as vinte e uma ADRs do button da aplicação —
+ * controle de 36px, outputs do Angular, Trilho A+ — na mesma página em que o
+ * contrato diz 44px e CSS puro (revisão de 09/10/2026).
+ */
+export function sitesDecisoesQueAfetam(id: string): Adr[] {
+  return adrs.filter((a) => a.afeta.some((x) => x === `ucam-site-${id}`));
 }
 
 export function sitesDependentesDe(id: string): Componente[] {

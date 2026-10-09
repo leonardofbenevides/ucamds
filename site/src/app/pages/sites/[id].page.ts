@@ -4,8 +4,7 @@ import { KeyValuePipe } from '@angular/common';
 
 import { UcamSectionBar } from '@ucam/ui';
 
-import { decisoesQueAfetam } from '../../spec/spec';
-import { sitesComponentePorId, sitesDependentesDe, sitesMeta } from '../../spec/sites';
+import { sitesComponentePorId, sitesDecisoesQueAfetam, sitesDependentesDe, sitesMeta } from '../../spec/sites';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { LooseBlockComponent } from '../../docs/loose-block.component';
 import { DemoPainelComponent } from '../../docs/demo-painel.component';
@@ -1070,7 +1069,7 @@ export default class SiteComponentePage {
 
   protected readonly dependentes = computed(() => sitesDependentesDe(this.componente()?.id ?? ''));
 
-  protected readonly decisoes = computed(() => decisoesQueAfetam(this.componente()?.id ?? ''));
+  protected readonly decisoes = computed(() => sitesDecisoesQueAfetam(this.componente()?.id ?? ''));
 
   /**
    * Seções de extensão presentes neste contrato. A lista de nomes é fixa

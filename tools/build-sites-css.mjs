@@ -45,9 +45,24 @@ function lerTokens(raiz) {
   };
 }
 
-/** Os três portões, puros: recebem a folha e as listas, devolvem falhas. */
-export function conferirFolha(css, tokens) {
+/** Os portões, puros: recebem a folha e as listas, devolvem falhas. */
+export function conferirFolha(bruta, tokens) {
   const falhas = [];
+  // Sem os comentários: o que um comentário cita não é o que a folha faz.
+  const css = bruta.replace(/\/\*[\s\S]*?\*\//g, '');
+
+  // VARIÁVEL DA APLICAÇÃO. No site de docs ela resolveria — os tokens da
+  // aplicação estão carregados ali — e o defeito só apareceria no WordPress.
+  for (const v of new Set([...css.matchAll(/var\(\s*(--ucam-(?!site-)[a-z0-9-]+)/gi)].map((m) => m[1]))) {
+    falhas.push(`variável da aplicação na folha dos sites: ${v}`);
+  }
+  // O QUE O PORTÃO NÃO MEDE NÃO ENTRA (lição da subpaleta, ADR-037): cor
+  // calculada no navegador e cor escrita à mão escapam do contraste medido.
+  if (/color-mix\(/i.test(css)) falhas.push('color-mix() na folha dos sites: cor calculada em tempo de execução não passa por portão');
+  if (/oklch\(/i.test(css)) falhas.push('oklch() na folha dos sites: cor calculada em tempo de execução não passa por portão');
+  for (const h of new Set([...css.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map((m) => m[0]))) {
+    falhas.push(`hex cru na folha dos sites: ${h} — cor vem de token semântico`);
+  }
   const referenciadas = [...new Set([...css.matchAll(/var\(\s*(--ucam-site-[a-z0-9-]+)\s*[,)]/g)].map((m) => m[1]))];
   const declaradas = new Set([...css.matchAll(/(?:^|[{;])\s*(--ucam-site-[a-z0-9-]+)\s*:/gm)].map((m) => m[1]));
   for (const t of referenciadas) {
@@ -55,9 +70,10 @@ export function conferirFolha(css, tokens) {
     if (!tokens.disponiveis.has(t)) falhas.push(`token inexistente na folha dos sites: ${t}`);
     else if (tokens.primitivos.has(t) && !tokens.semanticos.has(t)) falhas.push(`primitivo em componente (ADR-007): ${t}`);
   }
-  for (const m of css.matchAll(/\((min|max)-width:\s*([^)]+)\)/g)) {
-    const chave = `${m[1]}:${m[2].trim()}`;
-    if (m[1] === 'max') falhas.push(`max-width na folha dos sites (mobile-first, só min-width): ${chave}`);
+  for (const m of css.matchAll(/\((min|max)-width:\s*([^)]+)\)/gi)) {
+    const lado = m[1].toLowerCase();
+    const chave = `${lado}:${m[2].trim()}`;
+    if (lado === 'max') falhas.push(`max-width na folha dos sites (mobile-first, só min-width): ${chave}`);
     else if (!tokens.viewports.has(chave)) falhas.push(`media query fora dos viewports da semântica: ${chave}`);
   }
   return { falhas };
@@ -87,6 +103,19 @@ export function construirCss({ raiz = ROOT } = {}) {
 .ucam-site *::before,
 .ucam-site *::after {
   box-sizing: border-box;
+}
+/* O ÍCONE. O markup é o do sprite compartilhado — um svg com a classe ic e um
+ * use apontando para o símbolo —, e um svg sem inline-size estica até o
+ * contêiner. A regra morava só na folha do site de docs: quem copiava a demo
+ * do pacote recebia o icon-chip vazio (revisão de 09/10/2026). Fica ANTES das
+ * peças, para o degrau por papel de cada uma vencer. */
+.ucam-site .ic {
+  display: inline-block;
+  inline-size: ${V('size-icon-md')};
+  block-size: ${V('size-icon-md')};
+  flex: none;
+  vertical-align: -0.15em;
+  stroke-width: 2;
 }
 /* Anel de foco cinza (ADR-048), igual em toda peça. Sobre seção escura o
  * degrau é outro, medido. */
@@ -168,20 +197,20 @@ export function construirCss({ raiz = ROOT } = {}) {
   color: ${V('color-text-on-action')};
   box-shadow: ${V('elevation-button')};
 }
-.ucam-site-btn--primary:hover { background: ${V('color-action-primary-hover')}; }
-.ucam-site-btn--primary:active { background: ${V('color-action-primary-active')}; box-shadow: none; }
+.ucam-site-btn--primary:hover:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-action-primary-hover')}; }
+.ucam-site-btn--primary:active:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-action-primary-active')}; box-shadow: none; }
 .ucam-site-btn--secondary {
   background: ${V('color-action-secondary-default')};
   border-color: ${V('color-action-secondary-border')};
   color: ${V('color-text-primary')};
 }
-.ucam-site-btn--secondary:hover { background: ${V('color-action-secondary-hover')}; }
-.ucam-site-btn--secondary:active { background: ${V('color-action-secondary-active')}; }
+.ucam-site-btn--secondary:hover:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-action-secondary-hover')}; }
+.ucam-site-btn--secondary:active:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-action-secondary-active')}; }
 .ucam-site-btn--ghost {
   color: ${V('color-action-primary-default')};
 }
-.ucam-site-btn--ghost:hover { background: ${V('color-action-primary-subtle')}; }
-.ucam-site-btn--ghost:active { background: ${V('color-interaction-active')}; }
+.ucam-site-btn--ghost:hover:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-action-primary-subtle')}; }
+.ucam-site-btn--ghost:active:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-interaction-active')}; }
 /* Sobre seção escura: o primário vira papel com tinta escura, o secundário
  * ganha borda clara, o fantasma lê em branco e o hover é lavagem de papel. */
 .ucam-site-btn--inverse.ucam-site-btn--primary {
@@ -189,20 +218,20 @@ export function construirCss({ raiz = ROOT } = {}) {
   color: ${V('color-text-primary')};
   box-shadow: none;
 }
-.ucam-site-btn--inverse.ucam-site-btn--primary:hover { background: ${V('color-surface-subtle')}; }
-.ucam-site-btn--inverse.ucam-site-btn--primary:active { background: ${V('color-surface-sunken')}; }
+.ucam-site-btn--inverse.ucam-site-btn--primary:hover:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-surface-subtle')}; }
+.ucam-site-btn--inverse.ucam-site-btn--primary:active:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-surface-sunken')}; }
 .ucam-site-btn--inverse.ucam-site-btn--secondary {
   background: transparent;
   border-color: ${V('color-border-on-inverse')};
   color: ${V('color-text-on-inverse')};
 }
-.ucam-site-btn--inverse.ucam-site-btn--secondary:hover { background: ${V('color-interaction-hover-on-inverse')}; }
-.ucam-site-btn--inverse.ucam-site-btn--secondary:active { background: ${V('color-interaction-active-on-inverse')}; }
+.ucam-site-btn--inverse.ucam-site-btn--secondary:hover:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-interaction-hover-on-inverse')}; }
+.ucam-site-btn--inverse.ucam-site-btn--secondary:active:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-interaction-active-on-inverse')}; }
 .ucam-site-btn--inverse.ucam-site-btn--ghost {
   color: ${V('color-text-on-inverse')};
 }
-.ucam-site-btn--inverse.ucam-site-btn--ghost:hover { background: ${V('color-interaction-hover-on-inverse')}; }
-.ucam-site-btn--inverse.ucam-site-btn--ghost:active { background: ${V('color-interaction-active-on-inverse')}; }
+.ucam-site-btn--inverse.ucam-site-btn--ghost:hover:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-interaction-hover-on-inverse')}; }
+.ucam-site-btn--inverse.ucam-site-btn--ghost:active:not(:disabled):not([aria-disabled="true"]) { background: ${V('color-interaction-active-on-inverse')}; }
 .ucam-site-btn:disabled,
 .ucam-site-btn[aria-disabled="true"] {
   background: ${V('color-action-disabled-background')};

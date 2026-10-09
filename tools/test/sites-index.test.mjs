@@ -17,7 +17,7 @@ test('o índice dos sites junta contrato, demo e a folha, sem @import e sem clas
   assert.equal(b.trilhos, undefined);
   assert.match(css, /--ucam-site-color-action-primary-default: #8D293A/);
   assert.match(css, /\[data-marca="cenpre"\]/);
-  assert.match(css, /\.ucam-site \.ic\{/);
+  assert.match(css, /\.ucam-site \.ic \{/);
   assert.match(css, /\.ucam-site-btn \{/);
   assert.doesNotMatch(css, /@import/);
   // As fontes dos sites carregam no site de docs pelo espelho em /sites/fonts.

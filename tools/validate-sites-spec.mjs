@@ -1,8 +1,9 @@
 // Valida os contratos de sites/spec/components/ contra o MESMO JSON Schema da
 // aplicação e contra o perfil de contrato dos sites (spec de 08/10/2026):
 // selector ucam-site-<id>, só token semântico dos sites, classes que existem
-// na folha, vs e composição simétricos, demo com preview e código, evidência,
-// limites, boas práticas, sem trilho_b.
+// na folha — no preview, no código e no mapa de migração —, vs e composição
+// simétricos, demo com preview e código, evidência, limites, boas práticas,
+// sem trilho_b.
 //
 // Roda DEPOIS do build-sites-css: confere classe contra a folha.
 //
@@ -35,6 +36,24 @@ function nomesDe(arvore) {
   return out;
 }
 
+/** Toda string do contrato, onde quer que esteja. */
+function stringsDe(no, out = []) {
+  if (typeof no === 'string') out.push(no);
+  else if (Array.isArray(no)) for (const v of no) stringsDe(v, out);
+  else if (no && typeof no === 'object') for (const v of Object.values(no)) stringsDe(v, out);
+  return out;
+}
+
+/* As classes de um trecho de HTML: só o que está em class="…". Varrer o texto
+ * inteiro tomava por classe a variável de um style (--ucam-site-space-…) e o
+ * domínio de um href (www.ucam-campos.br, que é um dos três sites-alvo). */
+function classesDoHtml(html) {
+  const out = [];
+  for (const m of String(html ?? '').matchAll(/\bclass\s*=\s*(["'])(.*?)\1/g)) out.push(...m[2].split(/\s+/).filter(Boolean));
+  return out;
+}
+const elementosDaAplicacao = (html) => [...String(html ?? '').matchAll(/<(ucam-(?!site-)[a-z0-9-]+)/g)].map((m) => m[1]);
+
 export function validar({ raiz = ROOT, css } = {}) {
   const ler = (p) => JSON.parse(readFileSync(join(raiz, p), 'utf8'));
   const erros = [];
@@ -45,8 +64,10 @@ export function validar({ raiz = ROOT, css } = {}) {
   const caminhoFolha = join(raiz, 'dist/sites/css/ucam-site.css');
   const folha = css ?? (existsSync(caminhoFolha) ? readFileSync(caminhoFolha, 'utf8') : '');
   if (!folha) falha('dist/sites/css/ucam-site.css', 'não existe — rode node tools/build-sites-css.mjs antes');
-  const classesDaFolha = new Set([...folha.matchAll(/\.(ucam-site[a-z0-9_-]*)/g)].map((m) => m[1]));
-  const variaveisDaFolha = new Set([...folha.matchAll(/var\(\s*(--ucam-site-[a-z0-9-]+)/g)].map((m) => m[1]));
+  // Sem os comentários: classe citada só num comentário não é classe emitida.
+  const folhaSemComentario = folha.replace(/\/\*[\s\S]*?\*\//g, '');
+  const classesDaFolha = new Set([...folhaSemComentario.matchAll(/\.(ucam-site[a-z0-9_-]*)/g)].map((m) => m[1]));
+  const variaveisDaFolha = new Set([...folhaSemComentario.matchAll(/var\(\s*(--ucam-site-[a-z0-9-]+)/g)].map((m) => m[1]));
 
   /* ---------------------------------------------------------- schema --- */
   const schema = ler('spec/schema/component.schema.json');
@@ -54,6 +75,8 @@ export function validar({ raiz = ROOT, css } = {}) {
   const valido = ajv.compile(schema);
   const dir = join(raiz, 'sites/spec/components');
   const arquivos = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).sort() : [];
+  // Zero contratos não é "tudo válido": é diretório errado ou apagado.
+  if (!arquivos.length) falha('sites/spec/components', 'nenhum contrato encontrado — o validador não aprova o vazio');
   const contratos = arquivos.map((f) => ({ file: `sites/spec/components/${f}`, spec: ler(`sites/spec/components/${f}`) }));
   const ids = new Set(contratos.map((c) => c.spec.id));
   const seletores = new Set(contratos.map((c) => c.spec.selector));
@@ -66,31 +89,38 @@ export function validar({ raiz = ROOT, css } = {}) {
   }
 
   /* ------------------------------------------------------ tokens --- */
+  // Uma string do contrato que é, INTEIRA, um caminho com pontos e cujo
+  // primeiro segmento é um grupo de token. A forma antiga só aceitava letras
+  // minúsculas e deixava passar justamente o caso canônico da ADR-007: o
+  // degrau de cor (wine.600), além de fontSize.title e space.4.
   const semantic = ler('sites/spec/tokens/semantic.json');
   const primitive = { ...ler('spec/tokens/primitive.json'), ...ler('sites/spec/tokens/primitive.json') };
-  const grupos = new Set(Object.keys(primitive).filter((k) => !k.startsWith('$') && !k.startsWith('_')));
-  const existeSemantico = (ref) => {
+  const ehGrupo = (k) => !k.startsWith('$') && !k.startsWith('_');
+  const gruposPrimitivos = new Set(Object.keys(primitive).filter(ehGrupo));
+  const gruposSemanticos = new Set(Object.keys(semantic).filter(ehGrupo));
+  /** 'token' se o caminho termina num nó com $value; 'grupo' se para antes; null se não existe. */
+  const noSemantico = (ref) => {
     let cur = semantic;
     for (const seg of ref.split('.')) {
       cur = cur?.[seg];
-      if (!cur) return false;
+      if (cur === undefined || cur === null) return null;
     }
-    return true;
+    return typeof cur === 'object' && '$value' in cur ? 'token' : 'grupo';
   };
   const semanticos = nomesDe(semantic);
   const primitivos = nomesDe(primitive);
-  const GRUPOS_SEMANTICOS = /^(color|space|size|radius|typography|elevation|container|viewport|motion|font|focus|z)\./;
+  const CAMINHO = /^[A-Za-z][A-Za-z0-9-]*(?:\.[A-Za-z0-9-]+)+$/;
 
   for (const { file, spec } of contratos) {
-    const json = JSON.stringify(spec);
-    for (const m of json.matchAll(/"([a-z]+(?:\.[a-z-]+){1,4})"/g)) {
-      const ref = m[1];
+    for (const ref of new Set(stringsDe(spec))) {
+      if (!CAMINHO.test(ref)) continue;
       const grupo = ref.split('.')[0];
-      if (grupos.has(grupo) && !['color', 'space', 'radius'].includes(grupo)) {
-        falha(file, `cita token primitivo "${ref}" — só a camada semântica dos sites é pública (ADR-007)`);
-      } else if (GRUPOS_SEMANTICOS.test(ref) && !existeSemantico(ref)) {
-        falha(file, `cita token semântico inexistente nos sites "${ref}"`);
-      }
+      if (!gruposPrimitivos.has(grupo) && !gruposSemanticos.has(grupo)) continue;
+      const tipo = gruposSemanticos.has(grupo) ? noSemantico(ref) : null;
+      if (tipo === 'token') continue;
+      if (tipo === 'grupo') falha(file, `cita token semântico inexistente nos sites "${ref}" — é um grupo, não um token`);
+      else if (gruposPrimitivos.has(grupo)) falha(file, `cita token primitivo "${ref}" — só a camada semântica dos sites é pública (ADR-007)`);
+      else falha(file, `cita token semântico inexistente nos sites "${ref}"`);
     }
     for (const v of spec.implementacao?.trilho_a?.variaveis ?? []) {
       if (!v.startsWith('--ucam-site-')) falha(file, `variável fora do prefixo dos sites: ${v}`);
@@ -103,6 +133,21 @@ export function validar({ raiz = ROOT, css } = {}) {
   /* ------------------------------------------------------ perfil --- */
   const caminhoDemos = join(raiz, 'sites/spec/demos.json');
   const demos = existsSync(caminhoDemos) ? ler('sites/spec/demos.json').demos : {};
+
+  /* A mesma régua para o preview e para o código. O código é o que o
+   * WordPress de Campos e o site institucional copiam: classe que a folha
+   * não emite ali é instrução errada, pior que no preview. */
+  const conferirHtml = (file, id, onde, html) => {
+    for (const c of classesDoHtml(html)) {
+      if (c.startsWith('ucam-site')) {
+        if (!classesDaFolha.has(c)) falha(file, `${id}: o ${onde} usa a classe ${c}, que a folha não emite`);
+      } else if (c.startsWith('ucam-')) {
+        falha(file, `${id}: o ${onde} usa classe da aplicação (${c}) — os sites só leem ucam-site-*`);
+      }
+    }
+    for (const el of new Set(elementosDaAplicacao(html))) falha(file, `${id}: o ${onde} usa elemento da aplicação <${el}> — os sites não têm o Trilho B`);
+  };
+
   for (const { file, spec } of contratos) {
     const id = spec.id;
     if (!spec.evidencia) falha(file, `${id} sem evidencia — o perfil dos sites exige a origem no site no ar ou no kit`);
@@ -126,22 +171,30 @@ export function validar({ raiz = ROOT, css } = {}) {
         if (cl && !classesDaFolha.has(cl)) falha(file, `${id}: prop ${p.nome}=${chave} cita a classe ${cl}, que a folha não emite`);
       }
     }
+    for (const e of spec.exemplos ?? []) conferirHtml(file, id, 'codigo', e.codigo);
+    for (const linha of spec.migracao?.mapa ?? []) {
+      for (const m of String(linha.novo ?? '').matchAll(/\.(ucam-site[a-z0-9_-]*)/g)) {
+        if (!classesDaFolha.has(m[1])) falha(file, `${id}: migracao cita a classe ${m[1]}, que a folha não emite`);
+      }
+    }
     const d = demos[id];
     if (!d) falha(file, `${id} sem demo em sites/spec/demos.json`);
     else {
       if (!d.principal?.preview) falha(file, `${id}: demo sem principal.preview`);
       if (!d.principal?.codigo) falha(file, `${id}: demo sem principal.codigo`);
-      for (const html of [d.principal?.preview, ...(d.exemplos ?? []).map((e) => e.preview)]) {
-        for (const m of (html ?? '').matchAll(/\b(ucam-site[a-z0-9_-]*)/g)) {
-          if (!classesDaFolha.has(m[1])) falha(file, `${id}: o preview usa a classe ${m[1]}, que a folha não emite`);
-        }
-        if (/\bucam-(?!site)[a-z]/.test(html ?? '')) falha(file, `${id}: o preview usa classe da aplicação (ucam-…) — os sites só leem ucam-site-*`);
+      for (const painel of [d.principal, ...(d.exemplos ?? [])]) {
+        conferirHtml(file, id, 'preview', painel?.preview);
+        conferirHtml(file, id, 'codigo', painel?.codigo);
       }
     }
     for (const sel of [...(spec.composicao?.usa ?? []), ...(spec.composicao?.usada_por ?? [])]) {
       if (!sel.startsWith('ucam-site-')) falha(file, `${id}: composicao cita ${sel}, que não é dos sites`);
       else if (!seletores.has(sel)) avisa(file, `${id}: composicao cita ${sel}, ainda sem contrato`);
     }
+  }
+  // Demo sem contrato é sobra de uma peça renomeada ou apagada.
+  for (const id of Object.keys(demos)) {
+    if (!ids.has(id)) falha('sites/spec/demos.json', `demo "${id}" sem contrato em sites/spec/components`);
   }
 
   /* ------------------------------------------------- simetrias --- */

@@ -9,7 +9,6 @@
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync, cpSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { iconCss } from './lib/icon-css.mjs';
 import { familiasSites, fontFaceCss } from './lib/fonts-css.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,10 +35,6 @@ export function construirIndice({ raiz = ROOT } = {}) {
   const tokensCss = readFileSync(join(dist, 'tokens/ucam-site-tokens.css'), 'utf8');
   const marcasCss = submarcas.map((m) => readFileSync(join(dist, `tokens/ucam-site-marca-${m}.css`), 'utf8')).join('\n');
   const folha = readFileSync(join(dist, 'css/ucam-site.css'), 'utf8').replace(/@import\s+["'][^"']*ucam-site-tokens\.css["'];\s*/, '');
-  // O .ic escopado sob .ucam-site, pelo mesmo motivo que o build-index escopa
-  // sob .ucam: no topo, para o degrau por papel vencer. A medida passa a ser a
-  // dos sites — sem a troca, o ícone leria uma variável da aplicação.
-  const icScoped = iconCss.replace(/^\./gm, '.ucam-site .').replace(/--ucam-size-icon-md/g, '--ucam-site-size-icon-md');
   // As fontes dos sites, para o site de docs: o espelho que este gerador copia
   // fica em /sites/fonts. Sem este bloco o preview declarava Work Sans e Inter
   // e desenhava na fonte do sistema — um catálogo que não mostra a tipografia
@@ -52,8 +47,6 @@ ${fontes}
 ${tokensCss}
 
 ${marcasCss}
-
-${icScoped}
 
 ${folha}
 `;
