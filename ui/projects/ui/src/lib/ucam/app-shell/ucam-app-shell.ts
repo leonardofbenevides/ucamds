@@ -379,26 +379,26 @@ export type UcamSystemCategory =
           @if (logoUrl()) {
             <span
               class="ucam-shell-logo hidden shrink-0 bg-current min-[64rem]:block"
-              [style.inline-size]="'var(--ucam-appbar-logo-width, 6.85rem)'"
-              [style.block-size]="'var(--ucam-appbar-logo-height, 1.25rem)'"
+              [style.inline-size]="'var(--ucam-appbar-logo-width, 8.2rem)'"
+              [style.block-size]="'var(--ucam-appbar-logo-height, 1.5rem)'"
               [style.mask]="mascaraLogo()"
               [style.-webkit-mask]="mascaraLogo()"
               aria-hidden="true"
             ></span>
             <span
               class="ucam-shell-logo-fio hidden w-px shrink-0 bg-current opacity-30 min-[64rem]:block"
-              [style.block-size]="'var(--ucam-appbar-logo-height, 1.25rem)'"
+              [style.block-size]="'var(--ucam-appbar-logo-height, 1.5rem)'"
               aria-hidden="true"
             ></span>
           }
           @if (systemIcon()) {
             <span
-              class="ucam-shell-marca inline-flex size-[var(--ucam-size-control-lg)] shrink-0 items-center justify-center rounded-[var(--ucam-radius-control)]"
+              class="ucam-shell-marca inline-flex h-[var(--ucam-size-control-md)] shrink-0 items-center justify-center"
               [style.background]="ladrilhoMarca()"
-              [style.color]="appbarAppearance() === 'light' ? 'var(--ucam-color-text-on-action)' : 'currentColor'"
+              [style.color]="appbarAppearance() === 'light' ? tintaSistema() : 'currentColor'"
               aria-hidden="true"
             >
-              <ucam-icon [name]="systemIcon()!" />
+              <ucam-icon [name]="systemIcon()!" size="lg" />
             </span>
           }
           <span
@@ -1246,9 +1246,9 @@ export class UcamAppShell {
    *  tom mais claro da própria faixa (o texto a 18%) com o ícone em branco —
    *  o ladrilho cheio na tinta sumiria sobre a faixa da mesma cor. Na faixa
    *  clara ele continua na tinta do sistema. */
-  protected readonly ladrilhoMarca = computed(() =>
-    this.appbarAppearance() === 'light' ? this.tintaSistema() : 'color-mix(in srgb, currentColor 18%, transparent)',
-  );
+  /** Sem o quadrado desde 08/10/2026 ("deixe só o ícone + label"): a
+   *  marquinha é o ícone solto, no degrau de 24px, ao lado do nome. */
+  protected readonly ladrilhoMarca = computed(() => 'transparent');
 
   protected readonly classesFaixa = computed(() =>
     this.appbarAppearance() === 'brand'

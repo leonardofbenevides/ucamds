@@ -4833,8 +4833,11 @@ ${acima('nav-fixa')} {
    * As duas molduras leem daqui. A testeira do Protocolo tinha as suas
    * próprias (6.6 x 1.25) e por isso a MESMA marca saía com dois tamanhos
    * conforme o arranjo — 18,4px na faixa, 19,3px na testeira. */
-  --ucam-appbar-logo-width: 6.85rem;
-  --ucam-appbar-logo-height: 1.25rem;
+  /* 8.2rem x 1.5rem desde 08/10/2026 ("aumente um pouco a marca"): 5.47:1,
+   * a proporção do arquivo; a logo desenha 24px de altura, o mesmo degrau do
+   * ícone do módulo ao lado, que perdeu o ladrilho. */
+  --ucam-appbar-logo-width: 8.2rem;
+  --ucam-appbar-logo-height: 1.5rem;
   /* O NOME DO SISTEMA. Também uma medida só para as duas molduras, e pelo
    * mesmo motivo: era 0.9375rem na faixa e 0.8125rem na testeira. Na testeira
    * isso o deixava do TAMANHO EXATO de um item da fileira de seções logo
@@ -5241,9 +5244,13 @@ ${cssDaSubpaleta(tokensCss)}
  * ladrilho cheio na tinta do sistema sumiria. Ele fica num tom mais claro
  * da mesma cor — o branco da faixa a 18% sobre o fundo — com o ícone em
  * branco. Vale para toda faixa de marca, inclusive a do Portal. */
+/* SEM O QUADRADO (08/10/2026: "pode retirar o quadrado do fundo, deixe só
+ * o ícone + label"). A composição tonal a 18% saiu: o ícone fica solto na
+ * tinta da faixa, ao lado do nome, e o que equilibra o par é o tamanho — o
+ * ícone no degrau de 24px, a mesma altura da logo. */
 .ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile,
 :root:not([data-paleta="comum"]) .ucam-shell[data-sistema] .ucam-appbar--marca .ucam-appbar__marca {
-  background: color-mix(in srgb, var(--ucam-appbar-fg) 18%, transparent);
+  background: transparent;
   color: var(--ucam-appbar-fg);
 }
 
@@ -5263,9 +5270,20 @@ ${cssDaSubpaleta(tokensCss)}
  * subpaleta — e não precisa: o que distingue a isenção é a testeira. */
 ${cssDaCorDeFaixa()}
 
-/* A marquinha no degrau do ladrilho do Portal: o nome do sistema é o maior
- * texto da faixa, e o ladrilho de 28px ao lado dele lia como ícone de menu. */
-.ucam-appbar__marca { flex: none; }
+/* A marquinha é só o ícone (08/10/2026). Sem o ladrilho, a caixa não tem
+ * largura própria: mede o ícone, que sobe ao degrau de 24px para ficar no
+ * mesmo peso da logo de 24px à esquerda. A altura continua a dos controles
+ * da faixa, para o nome ao lado centrar no mesmo eixo. */
+.ucam-appbar__marca {
+  flex: none;
+  inline-size: auto;
+  block-size: var(--ucam-size-control-md);
+  padding: 0;
+}
+.ucam-appbar__marca .ic {
+  inline-size: var(--ucam-size-icon-lg);
+  block-size: var(--ucam-size-icon-lg);
+}
 
 /* LOGO + MARQUINHA (ADR-060). Onde as duas vêm juntas, a logo só existe com a
  * navegação fixa: abaixo disso a faixa ganha o botão de menu e perde largura,
@@ -5666,8 +5684,12 @@ ${abaixo('faixa-minima')} {
   /* A marquinha desce um degrau (40 → 32px): os 8px são os que faltavam
    * para "Relatórios" caber inteiro na linha dele a 390px. */
   .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
-    inline-size: var(--ucam-size-control-md);
+    inline-size: auto;
     block-size: var(--ucam-size-control-md);
+  }
+  .ucam-appbar .ucam-appbar__marca .ic {
+    inline-size: var(--ucam-size-icon-md);
+    block-size: var(--ucam-size-icon-md);
   }
   .ucam-appbar__system:not([data-cortado]) {
     font-size: 0.875rem;
@@ -5694,7 +5716,7 @@ ${abaixo('faixa-minima')} {
    * 375, "Relatórios / Acadêmicos" em duas linhas. */
   @media (pointer: coarse) {
     .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
-      inline-size: var(--ucam-size-control-sm);
+      inline-size: auto;
       block-size: var(--ucam-size-control-sm);
     }
     .ucam-appbar > .ucam-appbar__brand { column-gap: var(--ucam-space-inline-xs); }
