@@ -72,6 +72,10 @@
     "criterios_wcag": ["1.1.1", "1.4.11"]
   },
   "conteudo": {
+    "icone": {
+      "bom": ["briefcase ao lado de Orientação de estágio", "graduationCap ao lado de Cursos", "mapPin ao lado de Campus Centro"],
+      "ruim": ["um ícone diferente para curso em cada página", "ícone sem título ao lado", "bitmap recortado no lugar do sprite"]
+    },
     "regras": [
       "O ícone reforça o título; não o substitui.",
       "Mesmo ícone para o mesmo conceito em todo o site: estágio é briefcase, curso é graduationCap, campus é mapPin.",
