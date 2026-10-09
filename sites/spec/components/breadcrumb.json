@@ -1,0 +1,159 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "breadcrumb",
+  "name": "Breadcrumb",
+  "selector": "ucam-site-breadcrumb",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "navegacao",
+  "description": "A trilha que diz onde a página está no site: Início, Empresas, Cadastro de convênio. Cada nível é um link, menos o último.",
+  "quando_usar": [
+    "Em toda página interna, a partir do segundo nível.",
+    "Sobre o hero das subpáginas, na forma inversa."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (hero das subpáginas) e cenpre-ui-kit (src/lib/layout/breadcrumb), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — hero de Orientações de estágio",
+        "problema": "trilha em branco a 70% sobre a foto: o contraste depende de que foto está atrás"
+      },
+      {
+        "tela": "www — páginas de curso",
+        "problema": "não há trilha; do curso não se volta à lista senão pelo menu"
+      }
+    ],
+    "conclusao": "A trilha existe em toda página interna, e sobre o hero ela assenta na superfície inversa, de contraste medido, não direto sobre a foto."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<nav aria-label=\"Trilha\">."
+    },
+    {
+      "parte": "list",
+      "obrigatorio": true,
+      "descricao": "<ol>: a ordem importa.",
+      "classe": "ucam-site-breadcrumb__list"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<li> com um link; no último, um <span aria-current=\"page\">. O separador é desenhado pela folha.",
+      "classe": "ucam-site-breadcrumb__item"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "{ label: string; href?: string }[]",
+      "obrigatorio": true,
+      "descricao": "Do início até a página atual. O último não tem href."
+    },
+    {
+      "nome": "inverse",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Sobre seção escura.",
+      "valores": {
+        "true": {
+          "uso": "No hero das subpáginas.",
+          "classe": ".ucam-site-breadcrumb--inverse"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible",
+    "current"
+  ],
+  "limites": {
+    "regras": [
+      "Não na home: não há trilha de um nível só.",
+      "Não substitui o menu.",
+      "Não é o histórico de navegação: mostra onde a página mora, não por onde a pessoa veio."
+    ],
+    "motivo": "A trilha responde uma pergunta só: onde estou. Quando passa a responder por onde vim, ela muda a cada visita e deixa de orientar."
+  },
+  "acessibilidade": {
+    "papel": "navigation",
+    "requisitos": [
+      "nav com aria-label=\"Trilha\", para não se confundir com o menu.",
+      "Lista ordenada: o leitor de tela anuncia quantos níveis há.",
+      "A página atual leva aria-current=\"page\" e não é link.",
+      "O separador é conteúdo gerado com texto alternativo vazio: não é lido.",
+      "Sobre fundo escuro, link e página atual a 4,5:1, medidos no build."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.4.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Início",
+        "Empresas",
+        "Cadastro de convênio"
+      ],
+      "ruim": [
+        "Home",
+        "Você está aqui:",
+        "Página inicial do portal CENPRE Carreiras"
+      ]
+    },
+    "regras": [
+      "O nome de cada nível é o do menu, igual.",
+      "Início, não Home.",
+      "O último é o título da página, encurtado se passar de quatro palavras."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": ".breadcrumb",
+        "novo": ".ucam-site-breadcrumb",
+        "nota": "No hero, com a variante inversa."
+      },
+      {
+        "legado": ".breadcrumb__current",
+        "novo": ".ucam-site-breadcrumb__item",
+        "nota": "A classe some: quem diz é aria-current=\"page\"."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Página de terceiro nível",
+      "codigo": "<nav class=\"ucam-site-breadcrumb\" aria-label=\"Trilha\">\n  <ol class=\"ucam-site-breadcrumb__list\">\n    <li class=\"ucam-site-breadcrumb__item\"><a href=\"/\">Início</a></li>\n    <li class=\"ucam-site-breadcrumb__item\"><a href=\"/empresa\">Empresas</a></li>\n    <li class=\"ucam-site-breadcrumb__item\"><span aria-current=\"page\">Cadastro de convênio</span></li>\n  </ol>\n</nav>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Os mesmos nomes do menu.",
+      "evite": "Um nome na trilha e outro no menu.",
+      "porque": "Dois nomes para o mesmo lugar fazem a pessoa achar que são dois lugares."
+    },
+    {
+      "faca": "A página atual como texto.",
+      "evite": "Link para a própria página.",
+      "porque": "Link que não leva a lugar nenhum é um clique perdido e um anúncio a mais no leitor de tela."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "nav, ol e li. O separador é ::before do item; a página atual se diz por aria-current.",
+      "raiz": ".ucam-site-breadcrumb",
+      "variaveis": [
+        "--ucam-site-typography-caption-font-size",
+        "--ucam-site-color-text-on-inverse-muted"
+      ]
+    }
+  }
+}

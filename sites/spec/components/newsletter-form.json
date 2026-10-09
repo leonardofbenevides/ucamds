@@ -1,0 +1,167 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "newsletter-form",
+  "name": "NewsletterForm",
+  "selector": "ucam-site-newsletter-form",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "formulario",
+  "description": "O cadastro de e-mail para receber notícias: um título, um campo, um botão e a frase que diz o que a pessoa vai receber e como sair.",
+  "quando_usar": [
+    "No pé da home ou de um artigo, para quem quer continuar recebendo conteúdo.",
+    "Dentro do rodapé, sobre a superfície escura."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br (faixa Mais de 30 mil alunos formados), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — newsletter da home",
+        "rotulo": "Mais de 30 mil alunos formados",
+        "problema": "o título é um número da instituição, não diz que aquilo é um cadastro de e-mail"
+      },
+      {
+        "tela": "www — newsletter da home",
+        "problema": "campo sem rótulo; nenhuma frase sobre o que será enviado nem sobre como cancelar"
+      }
+    ],
+    "conclusao": "O formulário diz o que é no título, rotula o campo e promete, numa frase, o que envia e que dá para sair."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<form>. Empilha título, campos e nota."
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": true,
+      "descricao": "Heading curto que diz o que a pessoa recebe.",
+      "classe": "ucam-site-newsletter__titulo"
+    },
+    {
+      "parte": "campos",
+      "obrigatorio": true,
+      "descricao": "O campo de e-mail e o botão: empilhados no telefone, lado a lado a partir de duas colunas.",
+      "classe": "ucam-site-newsletter__campos"
+    },
+    {
+      "parte": "nota",
+      "obrigatorio": true,
+      "descricao": "A frase de consentimento: frequência e como cancelar.",
+      "classe": "ucam-site-newsletter__nota"
+    }
+  ],
+  "props": [
+    {
+      "nome": "title",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O título."
+    },
+    {
+      "nome": "note",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A frase de consentimento."
+    },
+    {
+      "nome": "inverse",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Sobre seção escura: título, rótulo e nota leem em claro; o campo continua branco.",
+      "valores": {
+        "true": {
+          "uso": "No rodapé ou numa faixa escura de chamada.",
+          "classe": ".ucam-site-newsletter--inverse"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Só o e-mail. Nome, curso e telefone ficam para depois da confirmação.",
+      "Uma vez por página.",
+      "Não entrega envio, confirmação nem mensagem de sucesso: é marcação e folha."
+    ],
+    "motivo": "Cada campo a mais derruba o cadastro. E um formulário que não diz o que vai mandar é o que a pessoa aprende a ignorar."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O campo tem label visível; type=\"email\" e autocomplete=\"email\".",
+      "A nota é ligada ao campo por aria-describedby.",
+      "O botão é de envio e diz o verbo: Assinar.",
+      "Sobre fundo escuro, título e nota a 4,5:1, medidos no build."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.3.5",
+      "1.4.3",
+      "3.3.2"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Receba as vagas da semana",
+        "Notícias da UCAM no seu e-mail"
+      ],
+      "ruim": [
+        "Mais de 30 mil alunos formados",
+        "Newsletter",
+        "Cadastre-se já!"
+      ]
+    },
+    "nota": {
+      "bom": [
+        "Um e-mail por semana. Você cancela quando quiser."
+      ],
+      "ruim": [
+        "Ao se cadastrar você concorda com os termos.",
+        "Não enviamos spam!!!"
+      ]
+    },
+    "regras": [
+      "O título diz o que chega na caixa de entrada.",
+      "A nota diz a frequência e que dá para cancelar."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-input",
+      "ucam-site-button"
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "No pé da home",
+      "codigo": "<form class=\"ucam-site-newsletter\" action=\"/newsletter\" method=\"post\">\n  <h2 class=\"ucam-site-newsletter__titulo\">Receba as vagas da semana</h2>\n  <div class=\"ucam-site-newsletter__campos\">\n    <div class=\"ucam-site-input\">\n      <label class=\"ucam-site-input__label\" for=\"nl-email\">E-mail</label>\n      <div class=\"ucam-site-input__control\"><input class=\"ucam-site-input__field\" id=\"nl-email\" name=\"email\" type=\"email\" autocomplete=\"email\" aria-describedby=\"nl-nota\" required></div>\n    </div>\n    <button type=\"submit\" class=\"ucam-site-btn ucam-site-btn--primary\">Assinar</button>\n  </div>\n  <p class=\"ucam-site-newsletter__nota\" id=\"nl-nota\">Um e-mail por semana. Você cancela quando quiser.</p>\n</form>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Pedir só o e-mail.",
+      "evite": "Nome, curso e telefone no mesmo passo.",
+      "porque": "O resto se pergunta depois, a quem já disse sim."
+    },
+    {
+      "faca": "Dizer a frequência e que dá para cancelar.",
+      "evite": "Termos genéricos de aceite.",
+      "porque": "A promessa concreta é o que faz a pessoa confiar o e-mail."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Um form com três partes; o campo e o botão são as peças próprias, compostas dentro de campos.",
+      "raiz": ".ucam-site-newsletter",
+      "variaveis": [
+        "--ucam-site-container-prosa",
+        "--ucam-site-typography-title-font-size"
+      ],
+      "nota": "Não entrega envio nem estado de sucesso."
+    }
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "input",
+  "name": "Input",
+  "selector": "ucam-site-input",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "formulario",
+  "description": "O campo de texto de um site: a busca de vagas, o e-mail da newsletter, o formulário de contato. Rótulo sempre à vista, e erro dito em texto.",
+  "quando_usar": [
+    "Busca dentro de uma lista: vagas, empresas, conteúdos.",
+    "Um dado curto que a pessoa digita: nome, e-mail, telefone.",
+    "Dentro do formulário de newsletter."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (busca de vagas e formulário de indicação) e cenpre-ui-kit (src/lib/ui/input), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — busca de vagas",
+        "problema": "borda do campo a 1,3:1 sobre o branco: o campo some para quem tem baixa visão"
+      },
+      {
+        "tela": "cenpre — formulário de indicação",
+        "problema": "o foco tira o contorno e só troca a cor da borda para um rosa claro"
+      },
+      {
+        "tela": "www — Encontre o seu curso",
+        "problema": "rótulo dentro do campo, que some ao digitar"
+      }
+    ],
+    "conclusao": "Borda a 3:1, rótulo persistente fora do campo, anel de foco igual ao de todo o resto."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<div>. Empilha rótulo, controle e apoio."
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "<label for>. Visível sempre; escondido só quando o contexto já diz o que é o campo, e mesmo assim presente.",
+      "classe": "ucam-site-input__label"
+    },
+    {
+      "parte": "control",
+      "obrigatorio": true,
+      "descricao": "<div> que posiciona o ícone sobre o campo.",
+      "classe": "ucam-site-input__control"
+    },
+    {
+      "parte": "field",
+      "obrigatorio": true,
+      "descricao": "<input>. 44px de altura, texto de 16px.",
+      "classe": "ucam-site-input__field"
+    },
+    {
+      "parte": "icon",
+      "obrigatorio": false,
+      "descricao": "Ícone à esquerda, decorativo: a lupa na busca.",
+      "classe": "ucam-site-input__icon"
+    },
+    {
+      "parte": "hint",
+      "obrigatorio": false,
+      "descricao": "Texto de apoio: o formato esperado, por que o dado é pedido.",
+      "classe": "ucam-site-input__hint"
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false,
+      "descricao": "A mensagem de erro, ligada ao campo por aria-describedby.",
+      "classe": "ucam-site-input__erro"
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O rótulo."
+    },
+    {
+      "nome": "type",
+      "tipo": "'text' | 'email' | 'tel' | 'search'",
+      "default": "'text'",
+      "descricao": "O tipo do campo; decide o teclado no telefone."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto de apoio abaixo do campo."
+    },
+    {
+      "nome": "error",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Mensagem de erro. Com ela o campo leva aria-invalid=\"true\"."
+    },
+    {
+      "nome": "icon",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Nome do ícone à esquerda."
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Campo indisponível."
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible",
+    "invalid",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Não usar placeholder como rótulo.",
+      "Não validar enquanto a pessoa ainda digita: só ao sair do campo ou ao enviar.",
+      "Não para texto longo nem para escolha entre opções: são outros controles, fora desta fatia.",
+      "Não entrega validação: a folha desenha o erro que a marcação declara."
+    ],
+    "motivo": "Placeholder some ao digitar e tem contraste de apoio. Campo que grita erro na primeira letra ensina a pessoa a desconfiar do formulário."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "label ligado ao campo por for e id.",
+      "A borda do campo a 3:1 contra a página (WCAG 1.4.11): é o limite que identifica o controle.",
+      "Erro em texto, com aria-invalid=\"true\" no campo e aria-describedby apontando para a mensagem. A borda vermelha é reforço.",
+      "Texto do campo em 16px, para o iOS não aproximar a página ao focar.",
+      "autocomplete declarado em nome, e-mail e telefone.",
+      "Anel de foco cinza (ADR-048), nunca removido."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.3.5",
+      "1.4.3",
+      "1.4.11",
+      "2.4.7",
+      "3.3.1",
+      "3.3.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "E-mail",
+        "Buscar vagas",
+        "Nome da empresa"
+      ],
+      "ruim": [
+        "Digite aqui",
+        "E-MAIL:",
+        "Informe o seu melhor e-mail"
+      ]
+    },
+    "erro": {
+      "bom": [
+        "Informe um e-mail no formato nome@dominio.com.",
+        "O telefone precisa do DDD."
+      ],
+      "ruim": [
+        "Campo inválido",
+        "Erro!",
+        "Preenchimento incorreto"
+      ]
+    },
+    "regras": [
+      "Rótulo: o nome do dado, sem dois-pontos.",
+      "Erro: o que está errado e como corrigir, numa frase."
+    ]
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-site-newsletter-form"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-input>",
+        "novo": ".ucam-site-input"
+      },
+      {
+        "legado": ".app-input__field",
+        "novo": ".ucam-site-input__field",
+        "nota": "De 40 para 44px de altura, e a borda sobe de ash-300 para a borda forte."
+      },
+      {
+        "legado": ":focus { outline: none }",
+        "novo": "color.border.focus",
+        "nota": "O contorno volta: anel cinza de 2px."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Busca com ícone",
+      "codigo": "<div class=\"ucam-site-input\">\n  <label class=\"ucam-site-input__label\" for=\"busca\">Buscar vagas</label>\n  <div class=\"ucam-site-input__control\">\n    <svg class=\"ic ucam-site-input__icon\" aria-hidden=\"true\"><use href=\"#i-search\"/></svg>\n    <input class=\"ucam-site-input__field\" id=\"busca\" type=\"search\" placeholder=\"Cargo, empresa ou área\">\n  </div>\n</div>"
+    },
+    {
+      "titulo": "Com erro",
+      "codigo": "<div class=\"ucam-site-input\">\n  <label class=\"ucam-site-input__label\" for=\"email\">E-mail</label>\n  <div class=\"ucam-site-input__control\">\n    <input class=\"ucam-site-input__field\" id=\"email\" type=\"email\" autocomplete=\"email\" aria-invalid=\"true\" aria-describedby=\"email-erro\" value=\"ana@\">\n  </div>\n  <p class=\"ucam-site-input__erro\" id=\"email-erro\">Informe um e-mail no formato nome@dominio.com.</p>\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Rótulo acima do campo, sempre visível.",
+      "evite": "Rótulo só no placeholder.",
+      "porque": "Com o campo preenchido, ninguém lembra o que ele pedia."
+    },
+    {
+      "faca": "Dizer no erro como corrigir.",
+      "evite": "Campo inválido.",
+      "porque": "A pessoa já sabe que errou; falta saber o quê."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe por parte. O estado de erro vem do aria-invalid do campo; a folha não tem classe de erro.",
+      "raiz": ".ucam-site-input",
+      "variaveis": [
+        "--ucam-site-size-control-md",
+        "--ucam-site-color-border-strong",
+        "--ucam-site-color-feedback-danger-border",
+        "--ucam-site-color-feedback-danger-foreground",
+        "--ucam-site-typography-body-lg-font-size"
+      ],
+      "nota": "Não entrega validação nem máscara."
+    }
+  }
+}

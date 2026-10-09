@@ -1,0 +1,237 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "site-header",
+  "name": "SiteHeader",
+  "selector": "ucam-site-site-header",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "layout",
+  "description": "O cabeçalho do site: a marca, a navegação principal e as ações. No telefone a navegação recolhe num menu que abre sem script.",
+  "quando_usar": [
+    "Em toda página, como primeiro marco depois do atalho para o conteúdo.",
+    "Com até seis itens de navegação e até duas ações."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (cabeçalho) e candidomendes.edu.br (faixa utilitária e mega-menu), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — cabeçalho",
+        "rotulo": "Início · Alunos e Egressos · Empresas · Vagas · Conteúdos",
+        "problema": "nenhum na estrutura: é o ponto de partida; o menu do telefone depende de script"
+      },
+      {
+        "tela": "www — cabeçalho",
+        "rotulo": "Matricule-se Agora! · Webmail · Ouvidoria · Acompanhe sua Inscrição · Fale Conosco!",
+        "problema": "duas faixas e um mega-menu de seis grupos: onze destinos à vista antes do primeiro título"
+      },
+      {
+        "tela": "www e cenpre",
+        "problema": "a página atual não é marcada na navegação"
+      }
+    ],
+    "conclusao": "Uma faixa só, a página atual dita por aria-current, e o menu do telefone num details. O mega-menu do site institucional fica fora desta fatia."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<header>. Gruda no topo ao rolar."
+    },
+    {
+      "parte": "bar",
+      "obrigatorio": true,
+      "descricao": "A faixa de 64px, na largura da faixa do site.",
+      "classe": "ucam-site-header__bar"
+    },
+    {
+      "parte": "brand",
+      "obrigatorio": true,
+      "descricao": "<a href=\"/\"> com a logo ou o nome. O nome acessível diz para onde leva.",
+      "classe": "ucam-site-header__brand"
+    },
+    {
+      "parte": "logo",
+      "obrigatorio": false,
+      "descricao": "<img> da marca, com 32px de altura.",
+      "classe": "ucam-site-header__logo"
+    },
+    {
+      "parte": "nav",
+      "obrigatorio": true,
+      "descricao": "<nav aria-label=\"Principal\">, em linha. Só a partir de nav-aberta.",
+      "classe": "ucam-site-header__nav"
+    },
+    {
+      "parte": "link",
+      "obrigatorio": true,
+      "descricao": "<a>. A página atual leva aria-current=\"page\".",
+      "classe": "ucam-site-header__link"
+    },
+    {
+      "parte": "actions",
+      "obrigatorio": false,
+      "descricao": "Até dois botões. Só a partir de nav-aberta.",
+      "classe": "ucam-site-header__actions"
+    },
+    {
+      "parte": "menu",
+      "obrigatorio": true,
+      "descricao": "<details>: o menu recolhido do telefone. Some a partir de nav-aberta.",
+      "classe": "ucam-site-header__menu"
+    },
+    {
+      "parte": "toggle",
+      "obrigatorio": true,
+      "descricao": "<summary> com o ícone de menu e aria-label.",
+      "classe": "ucam-site-header__toggle"
+    },
+    {
+      "parte": "mobile",
+      "obrigatorio": true,
+      "descricao": "<nav aria-label=\"Menu\"> com os mesmos links e as ações, empilhados.",
+      "classe": "ucam-site-header__mobile"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "{ label: string; href: string }[]",
+      "obrigatorio": true,
+      "descricao": "A navegação principal. Até seis."
+    },
+    {
+      "nome": "current",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O href da página atual."
+    },
+    {
+      "nome": "homeHref",
+      "tipo": "string",
+      "default": "'/'",
+      "descricao": "Para onde a marca leva."
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible",
+    "current",
+    "menu-open"
+  ],
+  "limites": {
+    "regras": [
+      "Não mais de seis itens: o sétimo vai para o rodapé.",
+      "Não duas faixas empilhadas.",
+      "Não entrega mega-menu nem submenu.",
+      "Não entrega o fechamento do menu ao escolher um destino nem ao apertar Esc: é CSS puro. A página nova já nasce com ele fechado."
+    ],
+    "motivo": "Onze destinos antes do primeiro título é a página que ninguém lê. E um menu que só abre com script é um site que não navega quando o script falha."
+  },
+  "acessibilidade": {
+    "papel": "banner",
+    "requisitos": [
+      "As duas navegações têm aria-label diferentes, e nunca estão visíveis ao mesmo tempo.",
+      "aria-current=\"page\" no link da página atual, nas duas.",
+      "O botão do menu é um summary: anuncia aberto e fechado sozinho. Tem aria-label e 44px.",
+      "Cada link da navegação mede 44px de altura.",
+      "A marca diz o destino no nome acessível: UCAM, página inicial.",
+      "Anel de foco cinza (ADR-048)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.4.1",
+      "2.4.7",
+      "2.4.8",
+      "2.5.8",
+      "4.1.2"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Marca, links e ações, na ordem. No telefone: marca, botão do menu e, aberto, os links."
+      },
+      {
+        "tecla": "Enter / Espaço",
+        "comportamento": "No botão do menu, abre e fecha."
+      }
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Vagas",
+        "Empresas",
+        "Conteúdos"
+      ],
+      "ruim": [
+        "Matricule-se Agora!",
+        "Clique aqui",
+        "Acompanhe sua Inscrição"
+      ]
+    },
+    "regras": [
+      "Item de navegação: uma ou duas palavras, substantivo.",
+      "Verbo é ação, e ação é botão, à direita.",
+      "Sem exclamação."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-button"
+    ],
+    "usada_por": [
+      "ucam-site-page-shell"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-site-header>",
+        "novo": ".ucam-site-header"
+      },
+      {
+        "legado": ".site-header__toggle",
+        "novo": ".ucam-site-header__toggle",
+        "nota": "De <button> com script para <summary> de um <details>."
+      },
+      {
+        "legado": ".site-header__mobile",
+        "novo": ".ucam-site-header__mobile",
+        "nota": "Sai do @if do Angular e passa a existir sempre, dentro do details."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Cabeçalho do CENPRE",
+      "codigo": "<header class=\"ucam-site-header\">\n  <div class=\"ucam-site-header__bar\">\n    <a class=\"ucam-site-header__brand\" href=\"/\" aria-label=\"CENPRE, página inicial\"><img class=\"ucam-site-header__logo\" src=\"/assets/cenpre-logo.svg\" alt=\"\"></a>\n    <nav class=\"ucam-site-header__nav\" aria-label=\"Principal\">\n      <a class=\"ucam-site-header__link\" href=\"/vagas\" aria-current=\"page\">Vagas</a>\n      <a class=\"ucam-site-header__link\" href=\"/empresa\">Empresas</a>\n    </nav>\n    <div class=\"ucam-site-header__actions\">\n      <a class=\"ucam-site-btn ucam-site-btn--primary\" href=\"/plataforma\">Acessar plataforma</a>\n    </div>\n    <details class=\"ucam-site-header__menu\">\n      <summary class=\"ucam-site-header__toggle\" aria-label=\"Menu\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-menu\"/></svg></summary>\n      <nav class=\"ucam-site-header__mobile\" aria-label=\"Menu\">\n        <a class=\"ucam-site-header__link\" href=\"/vagas\" aria-current=\"page\">Vagas</a>\n        <a class=\"ucam-site-header__link\" href=\"/empresa\">Empresas</a>\n        <a class=\"ucam-site-btn ucam-site-btn--primary\" href=\"/plataforma\">Acessar plataforma</a>\n      </nav>\n    </details>\n  </div>\n</header>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Os mesmos links nas duas navegações, na mesma ordem.",
+      "evite": "Um menu de telefone com itens que o desktop não tem.",
+      "porque": "A pessoa que troca de aparelho procura o item onde o viu."
+    },
+    {
+      "faca": "Marcar a página atual.",
+      "evite": "Todos os links iguais.",
+      "porque": "Sem a marca, o cabeçalho não responde onde estou."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Mobile-first. A navegação em linha e as ações nascem escondidas e aparecem em nav-aberta; o menu, um details, faz o caminho inverso.",
+      "raiz": ".ucam-site-header",
+      "variaveis": [
+        "--ucam-site-size-header",
+        "--ucam-site-size-logo",
+        "--ucam-site-z-header",
+        "--ucam-site-size-touch-min"
+      ],
+      "nota": "Não entrega mega-menu, nem o fechamento do menu por Esc ou ao navegar."
+    }
+  }
+}

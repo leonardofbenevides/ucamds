@@ -1,0 +1,192 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "avatar",
+  "name": "Avatar",
+  "selector": "ucam-site-avatar",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "Quem fala ou quem contrata: a pessoa do depoimento em círculo, com foto ou iniciais, e a empresa conveniada em quadrado, com a marca inteira.",
+  "quando_usar": [
+    "Ao lado do nome de quem deu um depoimento.",
+    "Na lista de empresas conveniadas, com o logo de cada uma.",
+    "No autor de um artigo da biblioteca."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br (carrossel de depoimentos) e cenpre-ui-kit (src/lib/ui/avatar), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — depoimentos de alunos",
+        "problema": "foto recortada em tamanhos diferentes de um slide para o outro; sem foto, um círculo cinza vazio"
+      },
+      {
+        "tela": "cenpre — empresas conveniadas",
+        "problema": "logo de empresa em quadrado de três raios diferentes (8, 10 e 12px) conforme o tamanho"
+      }
+    ],
+    "conclusao": "Duas formas e três tamanhos. Pessoa é círculo e cai para iniciais; empresa é quadrado com a marca contida, sem corte."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<span>. Círculo com as iniciais; com a variante logo, quadrado com borda."
+    },
+    {
+      "parte": "image",
+      "obrigatorio": false,
+      "descricao": "<img> dentro da raiz. Cobre o círculo na pessoa; fica contida, com respiro, no logo."
+    },
+    {
+      "parte": "initials",
+      "obrigatorio": false,
+      "descricao": "Texto de uma ou duas letras, quando não há imagem."
+    }
+  ],
+  "props": [
+    {
+      "nome": "name",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome da pessoa ou da empresa. Dá as iniciais e o texto alternativo."
+    },
+    {
+      "nome": "src",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Endereço da foto ou do logo. Sem ele, iniciais."
+    },
+    {
+      "nome": "size",
+      "tipo": "'sm' | 'md' | 'lg'",
+      "default": "'md'",
+      "descricao": "32, 40 e 56px.",
+      "valores": {
+        "sm": {
+          "uso": "Em linha de lista e na meta de um artigo.",
+          "classe": ".ucam-site-avatar--sm"
+        },
+        "lg": {
+          "uso": "No depoimento em destaque e no cartão de empresa conveniada.",
+          "limite": "Um por cartão.",
+          "classe": ".ucam-site-avatar--lg"
+        }
+      }
+    },
+    {
+      "nome": "shape",
+      "tipo": "'person' | 'logo'",
+      "default": "'person'",
+      "descricao": "Pessoa em círculo; marca de empresa em quadrado.",
+      "valores": {
+        "person": {
+          "uso": "Gente: aluno, egresso, autor."
+        },
+        "logo": {
+          "uso": "A marca de uma empresa ou de um parceiro.",
+          "limite": "Nunca para pessoa: o quadrado com borda lê como logotipo.",
+          "classe": ".ucam-site-avatar--logo"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não é botão. Se o cartão inteiro é link, o link é o cartão.",
+      "Não para um conceito (estágio, curso): isso é a pastilha de ícone.",
+      "Nunca um desenho genérico de pessoa: sem foto, as iniciais identificam melhor."
+    ],
+    "motivo": "Um círculo cinza igual para todos não identifica ninguém, e um logo recortado em círculo corta a marca de quem é parceiro."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Com o nome escrito ao lado, o avatar é decorativo: alt vazio na imagem e aria-hidden nas iniciais.",
+      "Sozinho, a imagem leva o nome no alt; as iniciais levam role=\"img\" e aria-label com o nome.",
+      "Iniciais a 4,5:1 sobre o fundo: é o par ação primária sobre a própria lavagem, medido no build.",
+      "A cor do fundo não carrega significado."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.4.1",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "iniciais": {
+      "bom": [
+        "LB para Leonardo Benevides",
+        "AS para Ana de Souza",
+        "PB para Petrobras"
+      ],
+      "ruim": [
+        "LFB",
+        "?",
+        "foto de banco de imagens"
+      ]
+    },
+    "regras": [
+      "Primeira letra do primeiro nome e do último; preposição não conta.",
+      "Empresa de uma palavra usa as duas primeiras letras."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-avatar size=\"md\">",
+        "novo": ".ucam-site-avatar"
+      },
+      {
+        "legado": ".avatar--image",
+        "novo": ".ucam-site-avatar--logo",
+        "nota": "Os três raios do kit (8, 10 e 12px) viram um só."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Depoimento, com o nome ao lado",
+      "codigo": "<span class=\"ucam-site-avatar\" aria-hidden=\"true\">AS</span>\n<strong>Ana de Souza</strong>"
+    },
+    {
+      "titulo": "Logo de empresa conveniada",
+      "codigo": "<span class=\"ucam-site-avatar ucam-site-avatar--lg ucam-site-avatar--logo\"><img src=\"/empresas/petrobras.svg\" alt=\"Petrobras\"></span>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Cair para iniciais quando não há foto.",
+      "evite": "Silhueta genérica igual para todos.",
+      "porque": "A silhueta ocupa espaço e não diz quem é."
+    },
+    {
+      "faca": "Quadrado com a marca contida para empresa.",
+      "evite": "Recortar o logo em círculo.",
+      "porque": "O círculo corta a marca do parceiro, e marca cortada é marca errada."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "icon-chip",
+      "diferenca": "Avatar é ALGUÉM — uma pessoa ou uma empresa com nome. A pastilha de ícone é um CONCEITO.",
+      "escolha": "Se tem nome próprio, é avatar."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz, tamanho e forma por modificador. As iniciais são texto na marcação; a folha não as deriva do nome.",
+      "raiz": ".ucam-site-avatar",
+      "variaveis": [
+        "--ucam-site-size-avatar",
+        "--ucam-site-size-avatar-sm",
+        "--ucam-site-size-avatar-lg",
+        "--ucam-site-radius-pill",
+        "--ucam-site-color-surface-brand-soft"
+      ]
+    }
+  }
+}

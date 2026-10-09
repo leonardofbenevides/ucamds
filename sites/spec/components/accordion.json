@@ -1,0 +1,188 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "accordion",
+  "name": "Accordion",
+  "selector": "ucam-site-accordion",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "Perguntas e respostas que abrem uma por vez: o FAQ do estágio, as formas de ingresso. É um details nativo, e por isso abre sem script.",
+  "quando_usar": [
+    "Perguntas frequentes, onde a pessoa procura uma e ignora as outras.",
+    "Uma lista de itens paralelos com explicação longa: as cinco formas de ingresso.",
+    "Conteúdo que precisa estar na página para a busca, mas não todo à vista."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (FAQ) e candidomendes.edu.br (Como ingressar?), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — FAQ da home",
+        "problema": "o cabeçalho da seção traz a palavra API sobrando do template"
+      },
+      {
+        "tela": "cenpre — acordeão do kit",
+        "problema": "abre por classe trocada em script; sem JavaScript as respostas ficam inacessíveis"
+      },
+      {
+        "tela": "www — Como ingressar?",
+        "problema": "cinco blocos sempre abertos, uma rolagem de três telas no telefone"
+      }
+    ],
+    "conclusao": "O acordeão vira details com summary: abre por clique, Enter e Espaço, é achado pela busca do navegador, e continua funcionando sem script."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<div>. Agrupa os itens e desenha o fio de cima."
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<details>. O mesmo name em todos os itens faz o navegador fechar os outros ao abrir um.",
+      "classe": "ucam-site-accordion__item"
+    },
+    {
+      "parte": "trigger",
+      "obrigatorio": true,
+      "descricao": "<summary>, com a pergunta e o ícone.",
+      "classe": "ucam-site-accordion__trigger"
+    },
+    {
+      "parte": "icon",
+      "obrigatorio": true,
+      "descricao": "Disco com a seta para baixo; gira quando o item abre. Decorativo.",
+      "classe": "ucam-site-accordion__icon"
+    },
+    {
+      "parte": "panel",
+      "obrigatorio": true,
+      "descricao": "<div> com a resposta, na largura de prosa.",
+      "classe": "ucam-site-accordion__panel"
+    }
+  ],
+  "props": [
+    {
+      "nome": "name",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Atributo name dos details. Igual em todos os itens, só um fica aberto."
+    },
+    {
+      "nome": "open",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Atributo open do item que nasce aberto. No máximo um, e só quando é a resposta que quase todos procuram."
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible",
+    "open"
+  ],
+  "limites": {
+    "regras": [
+      "Não para conteúdo que todos precisam ler: o que está fechado não é lido.",
+      "Não aninhar acordeão dentro de acordeão.",
+      "Não para navegação: item de menu é link.",
+      "Não entrega animação de altura: o painel aparece e some, sem deslizar."
+    ],
+    "motivo": "Acordeão esconde. Serve quando a pessoa procura um item entre vários, e atrapalha quando o texto é um só."
+  },
+  "acessibilidade": {
+    "papel": "group (details) com um botão de alternância (summary)",
+    "requisitos": [
+      "details e summary nativos: o estado aberto ou fechado é anunciado sem aria nenhuma.",
+      "O gatilho mede pelo menos 44px de altura.",
+      "A pergunta é o texto do summary; o ícone é aria-hidden.",
+      "Anel de foco cinza no summary (ADR-048).",
+      "Com prefers-reduced-motion, a seta não gira com transição."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.4.7",
+      "2.5.8",
+      "4.1.2"
+    ],
+    "teclado": [
+      {
+        "tecla": "Enter / Espaço",
+        "comportamento": "Abre ou fecha o item em foco."
+      },
+      {
+        "tecla": "Tab",
+        "comportamento": "Vai ao próximo gatilho; o que está dentro de um painel aberto entra na ordem."
+      }
+    ]
+  },
+  "conteudo": {
+    "pergunta": {
+      "bom": [
+        "O que é estágio obrigatório?",
+        "Quais documentos preciso entregar?"
+      ],
+      "ruim": [
+        "Estágio",
+        "Clique para saber mais",
+        "DÚVIDAS SOBRE DOCUMENTAÇÃO"
+      ]
+    },
+    "regras": [
+      "A pergunta é uma pergunta, na voz de quem pergunta.",
+      "A resposta começa respondendo; o contexto vem depois.",
+      "Até quatro frases; mais que isso é uma página."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-accordion-item>",
+        "novo": ".ucam-site-accordion__item",
+        "nota": "Passa a ser <details>; o estado sai do componente e vai para o atributo open."
+      },
+      {
+        "legado": ".accordion-item__trigger",
+        "novo": ".ucam-site-accordion__trigger"
+      },
+      {
+        "legado": ".accordion-item__panel--open",
+        "novo": ".ucam-site-accordion__panel",
+        "nota": "A classe de aberto some: quem diz é o open do details."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "FAQ em que só um item fica aberto",
+      "codigo": "<div class=\"ucam-site-accordion\">\n  <details class=\"ucam-site-accordion__item\" name=\"faq\">\n    <summary class=\"ucam-site-accordion__trigger\">O que é estágio obrigatório? <span class=\"ucam-site-accordion__icon\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-chevronDown\"/></svg></span></summary>\n    <div class=\"ucam-site-accordion__panel\"><p>É o estágio previsto no projeto pedagógico do curso.</p></div>\n  </details>\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "O mesmo name nos itens de um FAQ.",
+      "evite": "Deixar seis respostas abertas ao mesmo tempo.",
+      "porque": "Com tudo aberto a página volta a ser o bloco comprido que o acordeão veio resolver."
+    },
+    {
+      "faca": "details e summary.",
+      "evite": "div com onclick.",
+      "porque": "O nativo já anuncia o estado, responde ao teclado e é achado pela busca do navegador."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe por parte sobre details e summary. O estado aberto é o atributo open; não há classe de estado.",
+      "raiz": ".ucam-site-accordion",
+      "variaveis": [
+        "--ucam-site-size-touch-min",
+        "--ucam-site-size-icon-button",
+        "--ucam-site-color-border-default",
+        "--ucam-site-container-prosa"
+      ],
+      "nota": "Não entrega animação de altura do painel."
+    }
+  }
+}

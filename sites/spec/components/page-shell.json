@@ -1,0 +1,201 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "page-shell",
+  "name": "PageShell",
+  "selector": "ucam-site-page-shell",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "layout",
+  "description": "A moldura de toda página do site: o atalho para o conteúdo, o cabeçalho, a área principal, o rodapé, e as duas réguas que o resto usa — o contêiner e a seção.",
+  "quando_usar": [
+    "Em toda página: é o que garante a mesma margem lateral e o mesmo respiro entre seções.",
+    "O contêiner, sozinho, dentro de qualquer faixa que precise alinhar com o resto."
+  ],
+  "evidencia": {
+    "origem": "cenpre-ui-kit (mixin container e src/lib/layout/page-shell) e candidomendes.edu.br, 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — home",
+        "problema": "cada seção com a própria largura máxima e a própria margem: a borda esquerda do texto pula de uma seção para a outra"
+      },
+      {
+        "tela": "cenpre — todas as páginas",
+        "problema": "nenhum: o container do kit, com a margem de 72px do Figma, é o ponto de partida"
+      },
+      {
+        "tela": "www e cenpre",
+        "problema": "nenhum dos dois tem atalho para pular ao conteúdo"
+      }
+    ],
+    "conclusao": "Uma margem e três larguras para o site inteiro, e o atalho para o conteúdo como primeira coisa da página."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<div> que empilha cabeçalho, principal e rodapé e ocupa a altura da janela, para o rodapé ficar no pé."
+    },
+    {
+      "parte": "skip",
+      "obrigatorio": true,
+      "descricao": "<a href=\"#conteudo\">: o primeiro foco da página. Fora da vista até receber foco.",
+      "classe": "ucam-site-skip"
+    },
+    {
+      "parte": "main",
+      "obrigatorio": true,
+      "descricao": "<main id=\"conteudo\">. Cresce para empurrar o rodapé.",
+      "classe": "ucam-site-page__main"
+    },
+    {
+      "parte": "container",
+      "obrigatorio": true,
+      "descricao": "A largura do miolo com a margem lateral: 16px no telefone, 72 na grade completa.",
+      "classe": "ucam-site-container"
+    },
+    {
+      "parte": "secao",
+      "obrigatorio": true,
+      "descricao": "<section> com o respiro vertical: 64px no telefone, 96 na grade completa.",
+      "classe": "ucam-site-secao"
+    }
+  ],
+  "props": [
+    {
+      "nome": "width",
+      "tipo": "'miolo' | 'faixa' | 'prosa'",
+      "default": "'miolo'",
+      "descricao": "A largura máxima do contêiner: 1296, 1440 ou 820px.",
+      "valores": {
+        "miolo": {
+          "uso": "O conteúdo de quase toda seção."
+        },
+        "faixa": {
+          "uso": "Cabeçalho, rodapé e seção que sangra até a borda.",
+          "classe": ".ucam-site-container--faixa"
+        },
+        "prosa": {
+          "uso": "Texto corrido de artigo: a linha não passa de 75 caracteres.",
+          "classe": ".ucam-site-container--prosa"
+        }
+      }
+    },
+    {
+      "nome": "tone",
+      "tipo": "'default' | 'sutil'",
+      "default": "'default'",
+      "descricao": "O fundo da seção.",
+      "valores": {
+        "sutil": {
+          "uso": "Seção que recua um degrau para se separar das vizinhas.",
+          "limite": "Não duas seguidas: o que separa é a alternância.",
+          "classe": ".ucam-site-secao--sutil"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não escrever margem lateral nem largura máxima na página: é o contêiner que as tem.",
+      "Não aninhar contêiner dentro de contêiner.",
+      "Um main por página."
+    ],
+    "motivo": "Margem escrita em cada seção é o que faz a borda do texto pular. Com um contêiner só, alinhar deixa de ser uma decisão."
+  },
+  "acessibilidade": {
+    "papel": "main (no elemento main)",
+    "requisitos": [
+      "O atalho Ir para o conteúdo é o primeiro elemento focável e aparece ao receber foco (WCAG 2.4.1).",
+      "Um main, um header e um footer por página: os marcos pelos quais o leitor de tela navega.",
+      "O id do main é o destino do atalho.",
+      "A largura de prosa mantém a linha dentro de 75 caracteres."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.8",
+      "2.4.1"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "O primeiro Tab da página mostra o atalho; Enter leva o foco ao conteúdo."
+      }
+    ]
+  },
+  "conteudo": {
+    "atalho": {
+      "bom": [
+        "Ir para o conteúdo"
+      ],
+      "ruim": [
+        "Skip to content",
+        "Pular",
+        "Clique aqui para pular a navegação"
+      ]
+    },
+    "regras": [
+      "O atalho é uma frase só, em português."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-site-site-header",
+      "ucam-site-site-footer"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "@include container($width-content)",
+        "novo": ".ucam-site-container"
+      },
+      {
+        "legado": "@include container($width-container)",
+        "novo": ".ucam-site-container--faixa"
+      },
+      {
+        "legado": "$width-prose",
+        "novo": ".ucam-site-container--prosa"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "A página inteira",
+      "codigo": "<body class=\"ucam-site\">\n  <div class=\"ucam-site-page\">\n    <a class=\"ucam-site-skip\" href=\"#conteudo\">Ir para o conteúdo</a>\n    <header class=\"ucam-site-header\">…</header>\n    <main class=\"ucam-site-page__main\" id=\"conteudo\">\n      <section class=\"ucam-site-secao\">\n        <div class=\"ucam-site-container\">…</div>\n      </section>\n      <section class=\"ucam-site-secao ucam-site-secao--sutil\">\n        <div class=\"ucam-site-container ucam-site-container--prosa\">…</div>\n      </section>\n    </main>\n    <footer class=\"ucam-site-footer\">…</footer>\n  </div>\n</body>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Seção por fora, contêiner por dentro.",
+      "evite": "Contêiner com fundo.",
+      "porque": "O fundo sangra até a borda da janela; o conteúdo é que tem margem."
+    },
+    {
+      "faca": "O atalho para o conteúdo em toda página.",
+      "evite": "Deixar para quando houver tempo.",
+      "porque": "Sem ele, quem navega por teclado atravessa o menu inteiro a cada página."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Classes de estrutura, sem estado. A margem lateral e o respiro vertical trocam de degrau no viewport grade-completa.",
+      "raiz": ".ucam-site-page",
+      "variaveis": [
+        "--ucam-site-container-miolo",
+        "--ucam-site-container-faixa",
+        "--ucam-site-container-prosa",
+        "--ucam-site-space-gutter",
+        "--ucam-site-space-gutter-sm",
+        "--ucam-site-space-section",
+        "--ucam-site-space-section-sm",
+        "--ucam-site-z-skip"
+      ]
+    }
+  }
+}

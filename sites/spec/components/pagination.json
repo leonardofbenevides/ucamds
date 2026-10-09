@@ -1,0 +1,174 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "pagination",
+  "name": "Pagination",
+  "selector": "ucam-site-pagination",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "navegacao",
+  "description": "A troca de página de uma lista longa: as vagas, as empresas conveniadas, a biblioteca. Links de 44px, com a página atual dita ao leitor de tela.",
+  "quando_usar": [
+    "Lista com mais itens do que cabe numa página, onde cada página tem endereço próprio.",
+    "Resultado de busca que a pessoa quer poder compartilhar pela URL."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br (painel de vagas, página 1 de 89) e cenpre-ui-kit (src/lib/ui/pagination), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — painel de vagas",
+        "rotulo": "1 2 3 … 89",
+        "problema": "itens de 36px, abaixo do alvo de toque, colados uns nos outros no telefone"
+      },
+      {
+        "tela": "cenpre — empresas conveniadas",
+        "problema": "a página atual só se distingue pela cor do fundo"
+      }
+    ],
+    "conclusao": "Item de 44px, e a página atual dita por aria-current além da cor."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<nav> com aria-label que diz de que lista é a paginação."
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<a> com o número. A página atual leva aria-current=\"page\".",
+      "classe": "ucam-site-pagination__item"
+    },
+    {
+      "parte": "seta",
+      "obrigatorio": false,
+      "descricao": "Anterior e próxima: <a> com ícone e aria-label. Sem destino, aria-disabled e sem href.",
+      "classe": "ucam-site-pagination__item--seta"
+    },
+    {
+      "parte": "reticencias",
+      "obrigatorio": false,
+      "descricao": "<span aria-hidden=\"true\"> no lugar das páginas omitidas.",
+      "classe": "ucam-site-pagination__reticencias"
+    }
+  ],
+  "props": [
+    {
+      "nome": "page",
+      "tipo": "number",
+      "obrigatorio": true,
+      "descricao": "A página atual, a partir de 1."
+    },
+    {
+      "nome": "total",
+      "tipo": "number",
+      "obrigatorio": true,
+      "descricao": "O total de páginas."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O aria-label do nav: Paginação das vagas."
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible",
+    "current",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Não com menos de duas páginas: some.",
+      "Não mostrar todas as páginas quando são muitas: a primeira, a última, a atual e as vizinhas, com reticências.",
+      "Não entrega a conta de quais números mostrar: quem monta a marcação decide."
+    ],
+    "motivo": "Oitenta e nove números numa fileira não cabem no telefone, e a pessoa só usa a próxima, a anterior e a última."
+  },
+  "acessibilidade": {
+    "papel": "navigation",
+    "requisitos": [
+      "nav com aria-label próprio: numa página com duas listas, o leitor de tela precisa saber qual.",
+      "aria-current=\"page\" na página atual; a cor é reforço, não o único sinal.",
+      "Cada item mede 44 por 44px.",
+      "As setas têm aria-label (Página anterior, Próxima página); o ícone é aria-hidden.",
+      "A seta sem destino não tem href e leva aria-disabled=\"true\": sai da ordem de foco.",
+      "Número sobre o preenchimento da página atual a 4,5:1, medido no build."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "1.4.3",
+      "2.4.4",
+      "2.5.8",
+      "4.1.2"
+    ],
+    "teclado": [
+      {
+        "tecla": "Tab",
+        "comportamento": "Passa por cada link de página; Enter navega."
+      }
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Paginação das vagas",
+        "Página anterior",
+        "Próxima página"
+      ],
+      "ruim": [
+        "Paginação",
+        "<",
+        "Clique para avançar"
+      ]
+    },
+    "regras": [
+      "O aria-label do nav diz de qual lista.",
+      "Seta é ícone com nome acessível, nunca o sinal de menor digitado."
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": ".pagination",
+        "novo": ".ucam-site-pagination"
+      },
+      {
+        "legado": ".pagination__item--active",
+        "novo": ".ucam-site-pagination__item",
+        "nota": "A classe de ativo some: quem diz é aria-current=\"page\"."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Vagas, na página 2 de 89",
+      "codigo": "<nav class=\"ucam-site-pagination\" aria-label=\"Paginação das vagas\">\n  <a class=\"ucam-site-pagination__item ucam-site-pagination__item--seta\" href=\"?p=1\" aria-label=\"Página anterior\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-chevronLeft\"/></svg></a>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=1\">1</a>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=2\" aria-current=\"page\">2</a>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=3\">3</a>\n  <span class=\"ucam-site-pagination__reticencias\" aria-hidden=\"true\">…</span>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=89\">89</a>\n  <a class=\"ucam-site-pagination__item ucam-site-pagination__item--seta\" href=\"?p=3\" aria-label=\"Próxima página\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-chevronRight\"/></svg></a>\n</nav>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Um endereço por página.",
+      "evite": "Trocar a lista sem mudar a URL.",
+      "porque": "Quem recebe o link da página 12 precisa cair na página 12."
+    },
+    {
+      "faca": "Primeira, última, atual e vizinhas.",
+      "evite": "Todos os números.",
+      "porque": "A fileira estoura o telefone e ninguém clica na página 47."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "nav com links. A página atual e a seta sem destino se dizem por atributo ARIA, e a folha desenha a partir dele.",
+      "raiz": ".ucam-site-pagination",
+      "variaveis": [
+        "--ucam-site-size-touch-min",
+        "--ucam-site-color-action-primary-default",
+        "--ucam-site-radius-pill"
+      ]
+    }
+  }
+}

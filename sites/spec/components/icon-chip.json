@@ -98,7 +98,8 @@
     { "faca": "Pastilha decorativa, título ao lado.", "evite": "Pastilha com tooltip explicando o ícone.", "porque": "Se o ícone precisa de legenda, a legenda é o título." }
   ],
   "vs": [
-    { "componente": "tag", "diferenca": "O IconChip carrega um ícone decorativo e acompanha um texto que está fora dele; a Tag carrega a própria palavra.", "escolha": "Informação dentro da pastilha é tag; símbolo ao lado de um título é icon-chip." }
+    { "componente": "tag", "diferenca": "O IconChip carrega um ícone decorativo e acompanha um texto que está fora dele; a Tag carrega a própria palavra.", "escolha": "Informação dentro da pastilha é tag; símbolo ao lado de um título é icon-chip." },
+    { "componente": "avatar", "diferenca": "O IconChip é um CONCEITO — estágio, curso, campus. O Avatar é ALGUÉM: uma pessoa ou uma empresa com nome.", "escolha": "Sem nome próprio, é icon-chip." }
   ],
   "implementacao": {
     "trilho_a": {

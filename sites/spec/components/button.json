@@ -98,7 +98,7 @@
     ]
   },
   "composicao": {
-    "usada_por": ["ucam-site-section-heading"]
+    "usada_por": ["ucam-site-section-heading", "ucam-site-newsletter-form", "ucam-site-site-header"]
   },
   "migracao": {
     "de": "cenpre-ui-kit",

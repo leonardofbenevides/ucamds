@@ -1,0 +1,229 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "site-footer",
+  "name": "SiteFooter",
+  "selector": "ucam-site-site-footer",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "layout",
+  "description": "O rodapé do site: a marca, as colunas de links por público, o contato e a linha legal, sobre a superfície escura.",
+  "quando_usar": [
+    "Em toda página, como último marco.",
+    "Com três a quatro colunas de links e uma de contato."
+  ],
+  "evidencia": {
+    "origem": "cenpre.candidomendes.edu.br e candidomendes.edu.br (rodapés), 09/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "cenpre — rodapé",
+        "rotulo": "Aluno / Egresso · Empresa · Institucional · Contato",
+        "problema": "título de coluna em cinza a 3,0:1 sobre o fundo escuro"
+      },
+      {
+        "tela": "cenpre — rodapé",
+        "problema": "três ícones de rede social com href=\"#\": links que não levam a lugar nenhum"
+      },
+      {
+        "tela": "www — rodapé",
+        "rotulo": "Cursos · EAD · Serviços · Links relacionados",
+        "problema": "Links relacionados não diz a que se relacionam"
+      }
+    ],
+    "conclusao": "Colunas com nome de público ou de assunto, títulos legíveis, e rede social só quando há endereço, escrita por extenso."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<footer>, na superfície inversa."
+    },
+    {
+      "parte": "inner",
+      "obrigatorio": true,
+      "descricao": "A largura da faixa com a margem lateral.",
+      "classe": "ucam-site-footer__inner"
+    },
+    {
+      "parte": "grid",
+      "obrigatorio": true,
+      "descricao": "Uma coluna no telefone, duas a partir de duas colunas, cinco na grade completa.",
+      "classe": "ucam-site-footer__grid"
+    },
+    {
+      "parte": "brand",
+      "obrigatorio": true,
+      "descricao": "A marca e, se houver, o acesso ao portal.",
+      "classe": "ucam-site-footer__brand"
+    },
+    {
+      "parte": "logo",
+      "obrigatorio": false,
+      "descricao": "<img> da marca em branco, com 40px de altura.",
+      "classe": "ucam-site-footer__logo"
+    },
+    {
+      "parte": "col",
+      "obrigatorio": true,
+      "descricao": "<ul> de links de uma coluna.",
+      "classe": "ucam-site-footer__col"
+    },
+    {
+      "parte": "col-title",
+      "obrigatorio": true,
+      "descricao": "O heading da coluna.",
+      "classe": "ucam-site-footer__col-title"
+    },
+    {
+      "parte": "link",
+      "obrigatorio": true,
+      "descricao": "<a>.",
+      "classe": "ucam-site-footer__link"
+    },
+    {
+      "parte": "contact",
+      "obrigatorio": false,
+      "descricao": "<address> com e-mail e telefone.",
+      "classe": "ucam-site-footer__contact"
+    },
+    {
+      "parte": "bottom",
+      "obrigatorio": true,
+      "descricao": "A linha de baixo, separada por um fio.",
+      "classe": "ucam-site-footer__bottom"
+    },
+    {
+      "parte": "legal",
+      "obrigatorio": true,
+      "descricao": "A linha de direitos.",
+      "classe": "ucam-site-footer__legal"
+    },
+    {
+      "parte": "social",
+      "obrigatorio": false,
+      "descricao": "<ul> com as redes, por extenso.",
+      "classe": "ucam-site-footer__social"
+    }
+  ],
+  "props": [
+    {
+      "nome": "columns",
+      "tipo": "{ title: string; links: { label: string; href: string }[] }[]",
+      "obrigatorio": true,
+      "descricao": "As colunas de links. Três ou quatro."
+    },
+    {
+      "nome": "legal",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A linha de direitos."
+    },
+    {
+      "nome": "social",
+      "tipo": "{ label: string; href: string }[]",
+      "default": "[]",
+      "descricao": "As redes sociais que têm endereço."
+    }
+  ],
+  "estados": [
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Não repetir o menu inteiro sem acrescentar nada.",
+      "Não pôr rede social sem endereço.",
+      "Não mais de cinco colunas na grade completa.",
+      "Não entrega ícone de rede social: o sprite compartilhado não tem marcas."
+    ],
+    "motivo": "O rodapé é onde se procura o que o menu não tinha. Link vazio e coluna sem nome fazem dele um depósito."
+  },
+  "acessibilidade": {
+    "papel": "contentinfo",
+    "requisitos": [
+      "Texto, links e títulos a 4,5:1 sobre a superfície inversa, medidos no build.",
+      "Cada coluna tem um heading de verdade e uma lista.",
+      "O anel de foco usa o degrau claro sobre o fundo escuro.",
+      "O contato vai em address; e-mail e telefone são links mailto e tel.",
+      "Rede social por extenso: o nome é o texto do link."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3",
+      "2.4.4",
+      "2.4.7"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Aluno e egresso",
+        "Empresa",
+        "Contato"
+      ],
+      "ruim": [
+        "Links relacionados",
+        "Links úteis",
+        "Mais"
+      ]
+    },
+    "regras": [
+      "O título da coluna é o público ou o assunto.",
+      "A linha legal traz o ano e o nome da instituição, sem Todos os direitos reservados em caixa alta."
+    ]
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-site-page-shell"
+    ]
+  },
+  "migracao": {
+    "de": "cenpre-ui-kit",
+    "mapa": [
+      {
+        "legado": "<app-site-footer>",
+        "novo": ".ucam-site-footer"
+      },
+      {
+        "legado": ".site-footer__col h3",
+        "novo": ".ucam-site-footer__col-title",
+        "nota": "De ash-600 (3,0:1) para o texto sobre inverso."
+      },
+      {
+        "legado": ".site-footer__social a[href=\"#\"]",
+        "novo": ".ucam-site-footer__social",
+        "nota": "Só redes com endereço, por extenso."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Rodapé com duas colunas e contato",
+      "codigo": "<footer class=\"ucam-site-footer\">\n  <div class=\"ucam-site-footer__inner\">\n    <div class=\"ucam-site-footer__grid\">\n      <div class=\"ucam-site-footer__brand\"><img class=\"ucam-site-footer__logo\" src=\"/assets/ucam-logo-branca.svg\" alt=\"Universidade Candido Mendes\"></div>\n      <div>\n        <h2 class=\"ucam-site-footer__col-title\">Aluno e egresso</h2>\n        <ul class=\"ucam-site-footer__col\">\n          <li><a class=\"ucam-site-footer__link\" href=\"/vagas\">Vagas e oportunidades</a></li>\n        </ul>\n      </div>\n      <div>\n        <h2 class=\"ucam-site-footer__col-title\">Contato</h2>\n        <address class=\"ucam-site-footer__contact\"><a class=\"ucam-site-footer__link\" href=\"mailto:cenpre@ucam.edu.br\">cenpre@ucam.edu.br</a></address>\n      </div>\n    </div>\n    <div class=\"ucam-site-footer__bottom\">\n      <p class=\"ucam-site-footer__legal\">© 2026 Universidade Candido Mendes.</p>\n      <ul class=\"ucam-site-footer__social\"><li><a class=\"ucam-site-footer__link\" href=\"https://www.linkedin.com/school/ucam\">LinkedIn</a></li></ul>\n    </div>\n  </div>\n</footer>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Nomear a coluna pelo público.",
+      "evite": "Links relacionados.",
+      "porque": "Quem procura acha a coluna pelo título, e esse título não diz nada."
+    },
+    {
+      "faca": "Rede social por extenso, só com endereço.",
+      "evite": "Ícone com href vazio.",
+      "porque": "O link que não leva a lugar nenhum é o primeiro que alguém clica."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Classes de estrutura sobre a superfície inversa. A grade troca de colunas em duas-colunas e em grade-completa.",
+      "raiz": ".ucam-site-footer",
+      "variaveis": [
+        "--ucam-site-color-surface-inverse",
+        "--ucam-site-size-logo-footer",
+        "--ucam-site-color-border-on-inverse"
+      ],
+      "nota": "Não entrega ícone de rede social."
+    }
+  }
+}
