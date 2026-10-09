@@ -513,8 +513,16 @@ kbd {
 /* O sublinhado do link do texto corrido nasce de um gradiente de 1px e não do
    text-decoration: assim ele é FINO (o padrão do navegador acompanha o peso
    da fonte e engrossa junto), fica abaixo das descidas do g e do p, e cresce
-   até a cor cheia no hover. */
-.prose a:not(.plain) {
+   até a cor cheia no hover.
+
+   FORA do preview dos sites (09/10/2026). Nos sites o botão é quase sempre um
+   <a>, e esta regra pintava o rótulo de azul-link com um filete embaixo, por
+   cima do bordô — o primário ficava ilegível na página do componente. O corte
+   que serve à aplicação (.prose .ucam a { color: inherit }) não serve aqui:
+   ele VENCE a cor do próprio botão. A saída é a prosa não casar com o que
+   está dentro de .ucam-site; o argumento a mais no :not() não muda a
+   especificidade da regra, então nada do resto do site se mexe. */
+.prose a:not(.plain, .ucam-site *) {
   color: var(--ucam-color-text-link);
   text-decoration: none;
   background-image: linear-gradient(currentColor, currentColor);
@@ -528,7 +536,7 @@ kbd {
     background-size var(--transicao);
 }
 
-.prose a:not(.plain):hover {
+.prose a:not(.plain, .ucam-site *):hover {
   opacity: 1;
   background-size: 100% 2px;
 }
@@ -537,7 +545,8 @@ kbd {
    _ngcontent do componente, então nenhum style de componente o alcança — e a
    prosa do site alcança. Estas regras cortam esse vazamento. Dentro de .ucam
    quem manda é @ucam/css, senão o preview deixa de ser prova. */
-.prose .ucam p {
+.prose .ucam p,
+.prose .ucam-site p {
   margin: 0;
   max-inline-size: none;
 }

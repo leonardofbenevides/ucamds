@@ -50,7 +50,7 @@ import { TextoComponent } from '../../docs/texto.component';
               <a class="card" [routerLink]="'/sites/' + c.id">
                 <div class="palco" inert>
                   @if (preview(c); as html) {
-                    <div class="ucam-site palco-conteudo" [innerHTML]="html"></div>
+                    <div class="ucam-site palco-conteudo" [class.reduzido]="g.chave === 'layout'" [innerHTML]="html"></div>
                   }
                 </div>
                 <div class="corpo">
@@ -157,6 +157,16 @@ import { TextoComponent } from '../../docs/texto.component';
       inline-size: 100%;
       display: grid;
       justify-items: center;
+    }
+    /* MOLDURA E SEÇÃO aparecem reduzidas. Um cabeçalho de seção é desenhado
+       para a largura da página: o título em display mede pela JANELA (clamp
+       com vw) e saía com 52px num cartão de 320 — duas palavras por linha e o
+       cartão três vezes mais alto que os vizinhos (captura de 09/10/2026).
+       Átomo continua em tamanho real; só o que é seção encolhe, e na página
+       do componente ele volta ao tamanho inteiro. */
+    .palco-conteudo.reduzido {
+      zoom: 0.55;
+      justify-items: start;
     }
     .corpo {
       padding: 0.9rem 1rem 1rem;

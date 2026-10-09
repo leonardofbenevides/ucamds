@@ -20,6 +20,9 @@ test('o índice dos sites junta contrato, demo e a folha, sem @import e sem clas
   assert.match(css, /\.ucam-site \.ic\{/);
   assert.match(css, /\.ucam-site-btn \{/);
   assert.doesNotMatch(css, /@import/);
-  assert.doesNotMatch(css, /@font-face/);
+  // As fontes dos sites carregam no site de docs pelo espelho em /sites/fonts.
+  assert.ok(css.includes("font-family: 'Work Sans Variable'"), 'falta o @font-face da Work Sans');
+  assert.ok(css.includes("url('/sites/fonts/inter-latin-wght-normal.woff2')"), 'falta a Inter em /sites/fonts');
+  assert.ok(!css.includes('http://') && !css.includes('https://'), 'URL externa na folha dos sites');
   assert.doesNotMatch(css, /var\(--ucam-(?!site-)/, 'variável da aplicação na folha dos sites');
 });
