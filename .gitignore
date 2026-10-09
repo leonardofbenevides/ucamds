@@ -17,6 +17,7 @@ site/out-tsc/
 site/src/assets/t/
 site/src/assets/fonts/
 site/src/assets/tokens/
+site/src/assets/sites/
 docs/*
 !docs/superpowers/
 
