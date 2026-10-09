@@ -58,6 +58,13 @@ const PARES = [
   ['color-border-focus', 'color-surface-canvas', 'anel de foco sobre a página', 3],
   ['color-border-focus-on-inverse', 'color-surface-inverse', 'anel de foco sobre seção escura', 3],
   ['color-action-secondary-border', 'color-surface-canvas', 'borda do botão secundário', 3],
+  // O limite que identifica o campo (WCAG 1.4.11) e o reforço do erro. Estes
+  // números só existiam em comentário da folha (revisão de 09/10/2026).
+  ['color-border-strong', 'color-surface-canvas', 'borda do campo sobre a página', 3],
+  ['color-border-strong', 'color-surface-subtle', 'borda do campo sobre seção recuada', 3],
+  ['color-feedback-danger-border', 'color-surface-canvas', 'borda de erro sobre a página', 3],
+  ['color-feedback-danger-foreground', 'color-surface-canvas', 'mensagem de erro sobre a página', 4.5],
+  ['color-feedback-danger-on-inverse', 'color-surface-inverse', 'erro sobre seção escura', 4.5],
 ];
 
 /* Pares que dividem a tela do site. Não decidem a ação; viram desvio nomeado. */

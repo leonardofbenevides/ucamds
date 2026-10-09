@@ -47,9 +47,9 @@ test('acordeão e menu são <details>: o marcador nativo do summary some, e nenh
 test('o cabeçalho troca de navegação no viewport nav-aberta, e nunca mostra as duas', () => {
   // Mobile-first: a navegação em linha nasce escondida e o menu nasce visível.
   assert.match(semComentario, /\.ucam-site-header__nav \{[^}]*display: none;/);
-  const largo = dentroDe(48);
-  assert.ok(largo.includes('.ucam-site-header__nav { display: flex; }'), 'a navegação em linha não aparece a 48rem');
-  assert.ok(largo.includes('.ucam-site-header__menu { display: none; }'), 'o menu recolhido não some a 48rem');
+  const largo = dentroDe(64);
+  assert.ok(largo.includes('.ucam-site-header__nav { display: flex; }'), 'a navegação em linha não aparece a 64rem');
+  assert.ok(largo.includes('.ucam-site-header__menu { display: none; }'), 'o menu recolhido não some a 64rem');
 });
 
 test('alvo de toque: paginação, gatilho do acordeão e botão do menu medem pelo menos touch-min', () => {

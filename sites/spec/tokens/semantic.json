@@ -64,7 +64,7 @@
       "$description": "Os mesmos pares da aplicação. Sempre com ícone e texto (WCAG 1.4.1).",
       "success": { "background": { "$value": "{green.100}" }, "foreground": { "$value": "{green.700}" }, "border": { "$value": "{green.500}" } },
       "warning": { "background": { "$value": "{amber.100}" }, "foreground": { "$value": "{amber.700}" }, "border": { "$value": "{amber.500}" } },
-      "danger": { "background": { "$value": "{red.100}" }, "foreground": { "$value": "{red.700}" }, "border": { "$value": "{red.500}" } },
+      "danger": { "background": { "$value": "{red.100}" }, "foreground": { "$value": "{red.700}" }, "border": { "$value": "{red.500}" }, "on-inverse": { "$value": "{red.200}", "$description": "A mensagem de erro sobre seção escura. O foreground (red.700) dava 1,44:1 sobre a superfície inversa; este dá 5,31:1." } },
       "info": { "background": { "$value": "{blue.100}" }, "foreground": { "$value": "{blue.700}" }, "border": { "$value": "{blue.500}" } }
     },
     "interaction": {
@@ -174,7 +174,7 @@
     "$type": "dimension",
     "$description": "Mobile-first: sempre min-width. Nomes pelo que muda, não pelo aparelho.",
     "duas-colunas": { "$value": "{breakpoint.sm}", "$description": "640px: cartões passam a dois por fileira." },
-    "nav-aberta": { "$value": "{breakpoint.md}", "$description": "768px: o menu sai da gaveta." },
+    "nav-aberta": { "$value": "{breakpoint.xl}", "$description": "1024px: o menu sai da gaveta. Era 768 (breakpoint.md): com cinco itens e uma ação o cabeçalho estourava 178px a 768 de janela, medido em 09/10/2026. Coincide com grade-completa; são dois papéis com a mesma medida." },
     "grade-completa": { "$value": "{breakpoint.xl}", "$description": "1024px: três e quatro colunas; gutter de 72." },
     "desktop-largo": { "$value": "{breakpoint.2xl}", "$description": "1280px: o miolo chega ao teto de 1296." }
   },

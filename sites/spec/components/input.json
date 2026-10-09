@@ -134,7 +134,8 @@
       "Erro em texto, com aria-invalid=\"true\" no campo e aria-describedby apontando para a mensagem. A borda vermelha é reforço.",
       "Texto do campo em 16px, para o iOS não aproximar a página ao focar.",
       "autocomplete declarado em nome, e-mail e telefone.",
-      "Anel de foco cinza (ADR-048), nunca removido."
+      "Anel de foco cinza (ADR-048), nunca removido.",
+      "Sobre seção escura, rótulo, apoio e erro trocam para as tintas claras e o campo continua branco; o erro lê a 4,5:1, medido no build."
     ],
     "criterios_wcag": [
       "1.3.1",
@@ -230,7 +231,8 @@
         "--ucam-site-color-border-strong",
         "--ucam-site-color-feedback-danger-border",
         "--ucam-site-color-feedback-danger-foreground",
-        "--ucam-site-typography-body-lg-font-size"
+        "--ucam-site-typography-body-lg-font-size",
+        "--ucam-site-color-feedback-danger-on-inverse"
       ],
       "nota": "Não entrega validação nem máscara."
     }

@@ -41,7 +41,7 @@
     {
       "parte": "item",
       "obrigatorio": true,
-      "descricao": "<li> com um link; no último, um <span aria-current=\"page\">. O separador é desenhado pela folha.",
+      "descricao": "<li> com um link; no último, um <span aria-current=\"page\">. O separador é desenhado pela folha, com valor de reserva para navegador que não entende texto alternativo em conteúdo gerado.",
       "classe": "ucam-site-breadcrumb__item"
     }
   ],

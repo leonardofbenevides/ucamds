@@ -10,7 +10,7 @@
   "description": "O cabeçalho do site: a marca, a navegação principal e as ações. No telefone a navegação recolhe num menu que abre sem script.",
   "quando_usar": [
     "Em toda página, como primeiro marco depois do atalho para o conteúdo.",
-    "Com até seis itens de navegação e até duas ações."
+    "Com até cinco itens de navegação, uma ação primária e, na janela larga, uma secundária."
   ],
   "evidencia": {
     "origem": "cenpre.candidomendes.edu.br (cabeçalho) e candidomendes.edu.br (faixa utilitária e mega-menu), 09/10/2026",
@@ -59,7 +59,7 @@
     {
       "parte": "nav",
       "obrigatorio": true,
-      "descricao": "<nav aria-label=\"Principal\">, em linha. Só a partir de nav-aberta.",
+      "descricao": "<nav aria-label=\"Principal\">, em linha, com cada link numa linha só. A partir de nav-aberta (1024px).",
       "classe": "ucam-site-header__nav"
     },
     {
@@ -71,7 +71,7 @@
     {
       "parte": "actions",
       "obrigatorio": false,
-      "descricao": "Até dois botões. Só a partir de nav-aberta.",
+      "descricao": "A ação primária e, a partir de desktop-largo, uma secundária. A partir de nav-aberta.",
       "classe": "ucam-site-header__actions"
     },
     {
@@ -89,7 +89,7 @@
     {
       "parte": "mobile",
       "obrigatorio": true,
-      "descricao": "<nav aria-label=\"Menu\"> com os mesmos links e as ações, empilhados.",
+      "descricao": "<nav aria-label=\"Menu\"> com os mesmos links e as ações, empilhados. Rola quando passa da altura da janela.",
       "classe": "ucam-site-header__mobile"
     }
   ],
@@ -98,7 +98,7 @@
       "nome": "items",
       "tipo": "{ label: string; href: string }[]",
       "obrigatorio": true,
-      "descricao": "A navegação principal. Até seis."
+      "descricao": "A navegação principal. Até cinco."
     },
     {
       "nome": "current",
@@ -121,10 +121,10 @@
   ],
   "limites": {
     "regras": [
-      "Não mais de seis itens: o sétimo vai para o rodapé.",
+      "Não mais de cinco itens: o sexto vai para o rodapé. Com seis, a faixa estoura a 1024px.",
       "Não duas faixas empilhadas.",
       "Não entrega mega-menu nem submenu.",
-      "Não entrega o fechamento do menu ao escolher um destino nem ao apertar Esc: é CSS puro. A página nova já nasce com ele fechado."
+      "Não entrega o fechamento do menu por Esc, por clique fora nem ao seguir uma âncora da mesma página, e o ícone não vira um X: é CSS puro. Ao ir para outra página, ela já nasce com o menu fechado."
     ],
     "motivo": "Onze destinos antes do primeiro título é a página que ninguém lê. E um menu que só abre com script é um site que não navega quando o script falha."
   },
@@ -231,7 +231,7 @@
         "--ucam-site-z-header",
         "--ucam-site-size-touch-min"
       ],
-      "nota": "Não entrega mega-menu, nem o fechamento do menu por Esc ou ao navegar."
+      "nota": "Não entrega mega-menu, nem o fechamento do menu por Esc, por clique fora ou ao seguir uma âncora."
     }
   }
 }

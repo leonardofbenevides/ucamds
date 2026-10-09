@@ -561,7 +561,7 @@ ${acima('nav-aberta')} {
   color: ${V('color-text-muted')};
   opacity: 1;
 }
-.ucam-site-input__field:hover:not(:disabled) {
+.ucam-site-input__field:hover:not(:disabled):not([aria-invalid="true"]) {
   border-color: ${V('color-border-focus')};
 }
 .ucam-site-input__field:disabled {
@@ -593,6 +593,19 @@ ${acima('nav-aberta')} {
   font-size: ${V('typography-caption-font-size')};
   font-weight: ${V('typography-action-font-weight')};
   line-height: ${V('typography-caption-line-height')};
+}
+/* SOBRE SEÇÃO ESCURA, em qualquer lugar: a busca de vagas num hero, o campo
+ * no rodapé. O campo continua branco; quem troca é o que fica fora dele. O
+ * conserto morava só no modificador da newsletter, e um campo solto sobre
+ * fundo escuro saía com rótulo a 1,5:1 e erro a 1,44:1. */
+.ucam-site-inverso .ucam-site-input__label {
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-inverso .ucam-site-input__hint {
+  color: ${V('color-text-on-inverse-muted')};
+}
+.ucam-site-inverso .ucam-site-input__erro {
+  color: ${V('color-feedback-danger-on-inverse')};
 }
 
 /* ----------------------------------------------------- newsletter-form --- */
@@ -629,6 +642,9 @@ ${acima('nav-aberta')} {
 .ucam-site-newsletter--inverse .ucam-site-input__hint {
   color: ${V('color-text-on-inverse-muted')};
 }
+.ucam-site-newsletter--inverse .ucam-site-input__erro {
+  color: ${V('color-feedback-danger-on-inverse')};
+}
 ${acima('duas-colunas')} {
   .ucam-site-newsletter__campos { grid-template-columns: minmax(0, 1fr) auto; }
 }
@@ -657,6 +673,9 @@ ${acima('duas-colunas')} {
   gap: ${V('space-inline-xs')};
 }
 .ucam-site-breadcrumb__item + .ucam-site-breadcrumb__item::before {
+  /* O primeiro valor é a reserva: onde a sintaxe de texto alternativo não é
+   * entendida, a declaração inteira cairia e a trilha ficaria sem separador. */
+  content: "/";
   content: "/" / "";
   color: ${V('color-border-strong')};
 }
@@ -781,6 +800,7 @@ ${acima('grade-completa')} {
   color: ${V('color-text-secondary')};
   font-size: ${V('typography-action-font-size')};
   text-decoration: none;
+  white-space: nowrap;
   transition: color ${V('motion-duration-state')} ${V('motion-easing-standard')};
 }
 .ucam-site-header__link:hover {
@@ -795,6 +815,11 @@ ${acima('grade-completa')} {
   display: none;
   align-items: center;
   gap: ${V('space-inline-sm')};
+}
+/* A ação secundária só cabe na janela larga: com cinco itens, a primária e a
+ * secundária, a faixa passava de 1024px. */
+.ucam-site-header__actions .ucam-site-btn--secondary {
+  display: none;
 }
 .ucam-site-header__menu {
   display: block;
@@ -829,6 +854,10 @@ ${acima('grade-completa')} {
   border-block-end: 1px solid ${V('color-border-default')};
   background: ${V('color-surface-default')};
   box-shadow: ${V('elevation-popover')};
+  /* Teto e rolagem: num telefone deitado o painel passava da janela e, com o
+   * cabeçalho grudado no topo, os últimos links ficavam inalcançáveis. */
+  max-block-size: calc(100dvh - ${V('size-header')});
+  overflow-y: auto;
 }
 .ucam-site-header__mobile .ucam-site-header__link[aria-current="page"] {
   box-shadow: none;
@@ -844,11 +873,16 @@ ${acima('nav-aberta')} {
 ${acima('grade-completa')} {
   .ucam-site-header__bar { padding-inline: ${V('space-gutter')}; }
 }
+${acima('desktop-largo')} {
+  .ucam-site-header__actions .ucam-site-btn--secondary { display: inline-flex; }
+}
 
 /* --------------------------------------------------------- site-footer --- */
 /* Contrato: sites/spec/components/site-footer.json. Superfície inversa: uma
- * coluna no telefone, duas a partir de duas colunas, e marca + três colunas +
- * contato na grade completa. */
+ * coluna no telefone, duas a partir de duas colunas, e na grade completa a
+ * marca mais uma trilha por coluna que houver — três ou quatro de links e a de
+ * contato. Cinco trilhas fixas derrubavam o contato para uma segunda fileira
+ * quando havia quatro colunas de links. */
 .ucam-site-footer {
   background: ${V('color-surface-inverse')};
   color: ${V('color-text-on-inverse-muted')};
@@ -945,7 +979,7 @@ ${acima('duas-colunas')} {
 }
 ${acima('grade-completa')} {
   .ucam-site-footer__inner { padding-inline: ${V('space-gutter')}; }
-  .ucam-site-footer__grid { grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)) 1.4fr; }
+  .ucam-site-footer__grid { grid-template-columns: 1.4fr; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
 }
 `;
 

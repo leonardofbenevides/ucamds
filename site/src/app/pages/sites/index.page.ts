@@ -5,6 +5,7 @@ import { DomSanitizer, type SafeHtml } from '@angular/platform-browser';
 import { sitesPorCategoria, sitesMeta } from '../../spec/sites';
 import type { Componente } from '../../spec/spec.types';
 import { PageHeaderComponent } from '../../docs/page-header.component';
+import { noNavegador } from '../../docs/no-navegador';
 import { TextoComponent } from '../../docs/texto.component';
 
 /**
@@ -169,10 +170,24 @@ import { TextoComponent } from '../../docs/texto.component';
       grid-template-columns: minmax(0, 1fr);
     }
     .grade.larga .palco {
-      place-items: stretch;
+      place-items: start stretch;
+      overflow: hidden;
     }
     .grade.larga .palco-conteudo {
       justify-items: stretch;
+    }
+    /* A PEÇA RESPONDE À JANELA, e o cartão é mais estreito que a janela: a
+       1280px o cartão mede uns 950, e o cabeçalho — já em modo de navegação
+       aberta, porque a janela passou de 1024 — cortava o botão dentro dele.
+       A partir de 64rem a peça ganha a largura de uma página (1100px) e é
+       reduzida por inteiro para caber; a escala sai da medida do cartão, em
+       encaixar(). Abaixo de 64rem a peça já está no modo de telefone e cabe
+       sozinha, em tamanho real. */
+    @media (min-width: 64rem) {
+      .grade.larga .palco-conteudo {
+        inline-size: 68.75rem;
+        zoom: var(--escala, 1);
+      }
     }
     .corpo {
       padding: 0.9rem 1rem 1rem;
@@ -196,6 +211,36 @@ export default class SitesPage {
   protected readonly submarcas = sitesMeta.submarcas;
   protected readonly grupos = sitesPorCategoria();
   protected readonly marca = signal<string>('base');
+
+  constructor() {
+    // Depois da primeira renderização e a cada mudança de largura da fileira
+    // de moldura. Observa a LARGURA, e encaixar() só escreve uma propriedade
+    // que não muda a largura do palco: não realimenta.
+    noNavegador(() => {
+      this.encaixar();
+      const fileira = document.querySelector<HTMLElement>('.grade.larga');
+      if (!fileira) return;
+      let largura = fileira.getBoundingClientRect().width;
+      new ResizeObserver(() => {
+        const agora = fileira.getBoundingClientRect().width;
+        if (Math.abs(agora - largura) < 0.5) return;
+        largura = agora;
+        this.encaixar();
+      }).observe(fileira);
+    });
+  }
+
+  /** A largura de página que a peça de moldura recebe dentro do cartão, em px (68.75rem). */
+  private static readonly PAGINA = 1100;
+
+  /** Escreve em cada palco de moldura a escala que faz a peça caber: nunca acima de 1. */
+  private encaixar(): void {
+    document.querySelectorAll<HTMLElement>('.grade.larga .palco').forEach((palco) => {
+      const estilo = getComputedStyle(palco);
+      const util = palco.clientWidth - parseFloat(estilo.paddingLeft) - parseFloat(estilo.paddingRight);
+      palco.style.setProperty('--escala', String(Math.min(1, util / SitesPage.PAGINA)));
+    });
+  }
 
   protected rotulo(m: string): string {
     return m === 'cenpre' ? 'CENPRE' : m;

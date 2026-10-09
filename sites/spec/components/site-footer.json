@@ -47,7 +47,7 @@
     {
       "parte": "grid",
       "obrigatorio": true,
-      "descricao": "Uma coluna no telefone, duas a partir de duas colunas, cinco na grade completa.",
+      "descricao": "Uma coluna no telefone, duas a partir de duas colunas; na grade completa, a marca e uma trilha para cada coluna que houver.",
       "classe": "ucam-site-footer__grid"
     },
     {
@@ -216,7 +216,7 @@
   ],
   "implementacao": {
     "trilho_a": {
-      "contrato": "Classes de estrutura sobre a superfície inversa. A grade troca de colunas em duas-colunas e em grade-completa.",
+      "contrato": "Classes de estrutura sobre a superfície inversa. A grade troca em duas-colunas e, em grade-completa, flui em colunas: serve a três ou a quatro colunas de links.",
       "raiz": ".ucam-site-footer",
       "variaveis": [
         "--ucam-site-color-surface-inverse",
