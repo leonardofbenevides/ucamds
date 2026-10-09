@@ -162,7 +162,13 @@
     "icon-lg": { "$value": "1.5rem" },
     "avatar": { "$value": "2.5rem", "$description": "40px no depoimento." },
     "icon-chip-md": { "$value": "2.5rem", "$description": "40px: a pastilha de ícone ao lado de um título de item." },
-    "icon-chip-lg": { "$value": "3.5rem", "$description": "56px: a pastilha de um bloco de destaque (Por que escolher a UCAM, os quatro passos do CENPRE)." }
+    "icon-chip-lg": { "$value": "3.5rem", "$description": "56px: a pastilha de um bloco de destaque (Por que escolher a UCAM, os quatro passos do CENPRE)." },
+    "avatar-sm": { "$value": "2rem", "$description": "32px: avatar em linha de lista e em meta de artigo." },
+    "avatar-lg": { "$value": "3.5rem", "$description": "56px: o logo da empresa conveniada e o retrato do depoimento em destaque." },
+    "icon-button": { "$value": "2rem", "$description": "32px: o disco do ícone dentro de um gatilho — a seta do acordeão. O alvo de toque é o gatilho inteiro, não o disco." },
+    "header": { "$value": "4rem", "$description": "64px: a altura da barra do cabeçalho do site." },
+    "logo": { "$value": "2rem", "$description": "32px: a altura da logo no cabeçalho." },
+    "logo-footer": { "$value": "2.5rem", "$description": "40px: a altura da logo no rodapé." }
   },
   "viewport": {
     "$type": "dimension",

@@ -368,6 +368,585 @@ ${acima('nav-aberta')} {
     gap: ${V('space-stack-sm')};
   }
 }
+
+/* -------------------------------------------------------------- avatar --- */
+/* Contrato: sites/spec/components/avatar.json. Pessoa em círculo, com foto ou
+ * iniciais; empresa em quadrado (--logo), com a marca contida e sem corte. */
+.ucam-site-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: ${V('size-avatar')};
+  block-size: ${V('size-avatar')};
+  border-radius: ${V('radius-pill')};
+  overflow: hidden;
+  background: ${V('color-surface-brand-soft')};
+  color: ${V('color-action-primary-default')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: 1;
+}
+.ucam-site-avatar img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.ucam-site-avatar--sm {
+  inline-size: ${V('size-avatar-sm')};
+  block-size: ${V('size-avatar-sm')};
+  font-size: ${V('typography-eyebrow-font-size')};
+}
+.ucam-site-avatar--lg {
+  inline-size: ${V('size-avatar-lg')};
+  block-size: ${V('size-avatar-lg')};
+  font-size: ${V('typography-body-lg-font-size')};
+}
+.ucam-site-avatar--logo {
+  border: 1px solid ${V('color-border-default')};
+  border-radius: ${V('radius-control')};
+  background: ${V('color-surface-default')};
+}
+.ucam-site-avatar--logo img {
+  padding: ${V('space-inline-xs')};
+  object-fit: contain;
+}
+
+/* ----------------------------------------------------------- accordion --- */
+/* Contrato: sites/spec/components/accordion.json. Cada item é um details e o
+ * gatilho é o summary dele: abre por clique, Enter e Espaço sem uma linha de
+ * script, e o estado aberto é o atributo open. Com o mesmo name nos itens o
+ * navegador fecha os outros. */
+.ucam-site-accordion {
+  display: block;
+  border-block-start: 1px solid ${V('color-border-default')};
+}
+.ucam-site-accordion__item {
+  border-block-end: 1px solid ${V('color-border-default')};
+}
+.ucam-site-accordion__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${V('space-stack-sm')};
+  min-block-size: ${V('size-touch-min')};
+  padding-block: ${V('space-inset-control')};
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-lede-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+  list-style: none;
+  cursor: pointer;
+  transition: color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-accordion__trigger::-webkit-details-marker {
+  display: none;
+}
+.ucam-site-accordion__trigger:hover {
+  color: ${V('color-action-primary-default')};
+}
+.ucam-site-accordion__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: ${V('size-icon-button')};
+  block-size: ${V('size-icon-button')};
+  border-radius: ${V('radius-pill')};
+  background: ${V('color-surface-sunken')};
+  color: ${V('color-text-secondary')};
+  transition:
+    transform ${V('motion-duration-reveal')} ${V('motion-easing-standard')},
+    background-color ${V('motion-duration-state')} ${V('motion-easing-standard')},
+    color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-accordion__trigger:hover .ucam-site-accordion__icon {
+  background: ${V('color-surface-brand-soft')};
+  color: ${V('color-action-primary-default')};
+}
+.ucam-site-accordion__item[open] > .ucam-site-accordion__trigger .ucam-site-accordion__icon {
+  transform: rotate(180deg);
+}
+.ucam-site-accordion__panel {
+  max-inline-size: ${V('container-prosa')};
+  padding-block-end: ${V('space-inset-control')};
+  color: ${V('color-text-body')};
+}
+.ucam-site-accordion__panel > :first-child { margin-block-start: 0; }
+.ucam-site-accordion__panel > :last-child { margin-block-end: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .ucam-site-accordion__icon { transition: none; }
+}
+
+/* ---------------------------------------------------------- pagination --- */
+/* Contrato: sites/spec/components/pagination.json. 44px por item: no kit eram
+ * 36, e paginação é o controle mais tocado de uma lista de vagas no telefone. */
+.ucam-site-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${V('space-inline-xs')};
+}
+.ucam-site-pagination__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: ${V('size-touch-min')};
+  min-block-size: ${V('size-touch-min')};
+  padding-inline: ${V('space-inline-sm')};
+  border-radius: ${V('radius-pill')};
+  color: ${V('color-text-secondary')};
+  font-size: ${V('typography-body-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  text-decoration: none;
+  transition: background-color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-pagination__item:hover:not([aria-current="page"]):not([aria-disabled="true"]) {
+  background: ${V('color-surface-sunken')};
+  color: ${V('color-text-primary')};
+}
+.ucam-site-pagination__item[aria-current="page"] {
+  background: ${V('color-action-primary-default')};
+  color: ${V('color-text-on-action')};
+}
+.ucam-site-pagination__item[aria-disabled="true"] {
+  color: ${V('color-text-muted')};
+  pointer-events: none;
+}
+.ucam-site-pagination__item--seta .ic {
+  inline-size: ${V('size-icon-md')};
+  block-size: ${V('size-icon-md')};
+}
+.ucam-site-pagination__reticencias {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: ${V('size-icon-button')};
+  color: ${V('color-text-muted')};
+}
+
+/* --------------------------------------------------------------- input --- */
+/* Contrato: sites/spec/components/input.json. A borda é a FORTE (3,47:1): é
+ * ela que diz onde o campo começa (WCAG 1.4.11); a do kit dava 1,3:1. O texto
+ * do campo é 16px para o iOS não dar zoom ao focar. */
+.ucam-site-input {
+  display: grid;
+  gap: ${V('space-inline-xs')};
+}
+.ucam-site-input__label {
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-input__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.ucam-site-input__field {
+  inline-size: 100%;
+  min-block-size: ${V('size-control-md')};
+  padding-inline: ${V('space-stack-sm')};
+  border: 1px solid ${V('color-border-strong')};
+  border-radius: ${V('radius-control')};
+  background: ${V('color-surface-default')};
+  color: ${V('color-text-primary')};
+  font-family: ${V('font-body')};
+  font-size: ${V('typography-body-lg-font-size')};
+  line-height: ${V('typography-body-lg-line-height')};
+  transition: border-color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-input__field::placeholder {
+  color: ${V('color-text-muted')};
+  opacity: 1;
+}
+.ucam-site-input__field:hover:not(:disabled) {
+  border-color: ${V('color-border-focus')};
+}
+.ucam-site-input__field:disabled {
+  background: ${V('color-action-disabled-background')};
+  color: ${V('color-action-disabled-text')};
+  cursor: not-allowed;
+}
+.ucam-site-input__field[aria-invalid="true"] {
+  border-color: ${V('color-feedback-danger-border')};
+}
+.ucam-site-input__icon {
+  position: absolute;
+  inset-inline-start: ${V('space-stack-sm')};
+  inline-size: ${V('size-icon-md')};
+  block-size: ${V('size-icon-md')};
+  color: ${V('color-text-muted')};
+  pointer-events: none;
+}
+.ucam-site-input__control:has(.ucam-site-input__icon) .ucam-site-input__field {
+  padding-inline-start: calc(${V('space-stack-sm')} * 2 + ${V('size-icon-md')});
+}
+.ucam-site-input__hint {
+  color: ${V('color-text-muted')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-input__erro {
+  color: ${V('color-feedback-danger-foreground')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-caption-line-height')};
+}
+
+/* ----------------------------------------------------- newsletter-form --- */
+/* Contrato: sites/spec/components/newsletter-form.json. Campo e botão
+ * empilham no telefone e deitam lado a lado a partir de duas colunas. */
+.ucam-site-newsletter {
+  display: grid;
+  gap: ${V('space-stack-sm')};
+  max-inline-size: ${V('container-prosa')};
+}
+.ucam-site-newsletter__titulo {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-title-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+}
+.ucam-site-newsletter__campos {
+  display: grid;
+  gap: ${V('space-inline-sm')};
+  align-items: end;
+}
+.ucam-site-newsletter__nota {
+  margin: 0;
+  color: ${V('color-text-muted')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-newsletter--inverse .ucam-site-newsletter__titulo,
+.ucam-site-newsletter--inverse .ucam-site-input__label {
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-newsletter--inverse .ucam-site-newsletter__nota,
+.ucam-site-newsletter--inverse .ucam-site-input__hint {
+  color: ${V('color-text-on-inverse-muted')};
+}
+${acima('duas-colunas')} {
+  .ucam-site-newsletter__campos { grid-template-columns: minmax(0, 1fr) auto; }
+}
+
+/* ---------------------------------------------------------- breadcrumb --- */
+/* Contrato: sites/spec/components/breadcrumb.json. Lista ordenada dentro de
+ * um nav; o separador é desenho (o texto alternativo dele é vazio) e a página
+ * atual não é link. */
+.ucam-site-breadcrumb {
+  color: ${V('color-text-muted')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${V('space-inline-xs')};
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-site-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  gap: ${V('space-inline-xs')};
+}
+.ucam-site-breadcrumb__item + .ucam-site-breadcrumb__item::before {
+  content: "/" / "";
+  color: ${V('color-border-strong')};
+}
+.ucam-site-breadcrumb__item a {
+  color: ${V('color-text-secondary')};
+  text-decoration: none;
+}
+.ucam-site-breadcrumb__item a:hover {
+  color: ${V('color-text-link')};
+  text-decoration: underline;
+}
+.ucam-site-breadcrumb__item [aria-current="page"] {
+  color: ${V('color-text-primary')};
+  font-weight: ${V('typography-action-font-weight')};
+}
+.ucam-site-breadcrumb--inverse,
+.ucam-site-breadcrumb--inverse .ucam-site-breadcrumb__item a {
+  color: ${V('color-text-on-inverse-muted')};
+}
+.ucam-site-breadcrumb--inverse .ucam-site-breadcrumb__item a:hover,
+.ucam-site-breadcrumb--inverse .ucam-site-breadcrumb__item [aria-current="page"] {
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-breadcrumb--inverse .ucam-site-breadcrumb__item + .ucam-site-breadcrumb__item::before {
+  color: ${V('color-border-on-inverse')};
+}
+
+/* ---------------------------------------------------------- page-shell --- */
+/* Contrato: sites/spec/components/page-shell.json. A moldura da página: o
+ * atalho para o conteúdo, a coluna que empurra o rodapé para o pé, o
+ * contêiner com a margem lateral e a seção com o respiro vertical. */
+.ucam-site-page {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100dvh;
+  background: ${V('color-surface-canvas')};
+}
+.ucam-site-page__main {
+  flex: 1 0 auto;
+}
+.ucam-site-skip {
+  position: absolute;
+  inset-block-start: ${V('space-gutter-sm')};
+  inset-inline-start: ${V('space-gutter-sm')};
+  z-index: ${V('z-skip')};
+  padding: ${V('space-inline-sm')} ${V('space-stack-sm')};
+  border-radius: ${V('radius-control')};
+  background: ${V('color-surface-default')};
+  color: ${V('color-text-primary')};
+  box-shadow: ${V('elevation-popover')};
+  transform: translateY(-200%);
+}
+.ucam-site-skip:focus {
+  transform: none;
+}
+.ucam-site-container {
+  inline-size: 100%;
+  max-inline-size: ${V('container-miolo')};
+  margin-inline: auto;
+  padding-inline: ${V('space-gutter-sm')};
+}
+.ucam-site-container--faixa { max-inline-size: ${V('container-faixa')}; }
+.ucam-site-container--prosa { max-inline-size: ${V('container-prosa')}; }
+.ucam-site-secao {
+  padding-block: ${V('space-section-sm')};
+}
+.ucam-site-secao--sutil {
+  background: ${V('color-surface-subtle')};
+}
+${acima('grade-completa')} {
+  .ucam-site-container { padding-inline: ${V('space-gutter')}; }
+  .ucam-site-secao { padding-block: ${V('space-section')}; }
+}
+
+/* --------------------------------------------------------- site-header --- */
+/* Contrato: sites/spec/components/site-header.json. Mobile-first: a
+ * navegação em linha nasce escondida e o menu recolhido — um details — nasce
+ * visível; a partir de nav-aberta os dois trocam. Nunca aparecem juntos. */
+.ucam-site-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: ${V('z-header')};
+  border-block-end: 1px solid ${V('color-border-default')};
+  background: ${V('color-surface-default')};
+}
+.ucam-site-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${V('space-stack-md')};
+  inline-size: 100%;
+  max-inline-size: ${V('container-faixa')};
+  min-block-size: ${V('size-header')};
+  margin-inline: auto;
+  padding-inline: ${V('space-gutter-sm')};
+}
+.ucam-site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-block-size: ${V('size-touch-min')};
+  color: ${V('color-text-primary')};
+  font-family: ${V('font-display')};
+  font-size: ${V('typography-title-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  text-decoration: none;
+}
+.ucam-site-header__logo {
+  display: block;
+  inline-size: auto;
+  block-size: ${V('size-logo')};
+}
+.ucam-site-header__nav {
+  display: none;
+  align-items: center;
+  gap: ${V('space-stack-md')};
+}
+.ucam-site-header__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: ${V('size-touch-min')};
+  color: ${V('color-text-secondary')};
+  font-size: ${V('typography-action-font-size')};
+  text-decoration: none;
+  transition: color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-header__link:hover {
+  color: ${V('color-action-primary-default')};
+}
+.ucam-site-header__link[aria-current="page"] {
+  color: ${V('color-text-primary')};
+  font-weight: ${V('typography-action-font-weight')};
+  box-shadow: inset 0 -2px 0 ${V('color-action-primary-default')};
+}
+.ucam-site-header__actions {
+  display: none;
+  align-items: center;
+  gap: ${V('space-inline-sm')};
+}
+.ucam-site-header__menu {
+  display: block;
+}
+.ucam-site-header__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: ${V('size-touch-min')};
+  min-block-size: ${V('size-touch-min')};
+  border-radius: ${V('radius-control')};
+  color: ${V('color-text-primary')};
+  list-style: none;
+  cursor: pointer;
+}
+.ucam-site-header__toggle::-webkit-details-marker {
+  display: none;
+}
+.ucam-site-header__toggle:hover {
+  background: ${V('color-interaction-hover')};
+}
+.ucam-site-header__menu[open] > .ucam-site-header__toggle {
+  background: ${V('color-interaction-active')};
+}
+.ucam-site-header__mobile {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline: 0;
+  display: grid;
+  gap: ${V('space-inline-xs')};
+  padding: ${V('space-stack-sm')} ${V('space-gutter-sm')} ${V('space-stack-md')};
+  border-block-end: 1px solid ${V('color-border-default')};
+  background: ${V('color-surface-default')};
+  box-shadow: ${V('elevation-popover')};
+}
+.ucam-site-header__mobile .ucam-site-header__link[aria-current="page"] {
+  box-shadow: none;
+}
+.ucam-site-header__mobile .ucam-site-btn {
+  margin-block-start: ${V('space-inline-sm')};
+}
+${acima('nav-aberta')} {
+  .ucam-site-header__nav { display: flex; }
+  .ucam-site-header__actions { display: flex; }
+  .ucam-site-header__menu { display: none; }
+}
+${acima('grade-completa')} {
+  .ucam-site-header__bar { padding-inline: ${V('space-gutter')}; }
+}
+
+/* --------------------------------------------------------- site-footer --- */
+/* Contrato: sites/spec/components/site-footer.json. Superfície inversa: uma
+ * coluna no telefone, duas a partir de duas colunas, e marca + três colunas +
+ * contato na grade completa. */
+.ucam-site-footer {
+  background: ${V('color-surface-inverse')};
+  color: ${V('color-text-on-inverse-muted')};
+}
+.ucam-site-footer :focus-visible {
+  outline-color: ${V('color-border-focus-on-inverse')};
+}
+.ucam-site-footer__inner {
+  inline-size: 100%;
+  max-inline-size: ${V('container-faixa')};
+  margin-inline: auto;
+  padding: ${V('space-section-sm')} ${V('space-gutter-sm')};
+}
+.ucam-site-footer__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: ${V('space-block')} ${V('space-stack-lg')};
+}
+.ucam-site-footer__brand {
+  display: grid;
+  gap: ${V('space-stack-sm')};
+  align-content: start;
+  justify-items: start;
+  color: ${V('color-text-on-inverse')};
+  font-family: ${V('font-display')};
+  font-size: ${V('typography-title-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+}
+.ucam-site-footer__logo {
+  display: block;
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: ${V('size-logo-footer')};
+}
+.ucam-site-footer__col {
+  display: grid;
+  gap: ${V('space-inline-xs')};
+  align-content: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-site-footer__col-title {
+  margin: 0 0 ${V('space-inline-xs')};
+  color: ${V('color-text-on-inverse')};
+  font-size: ${V('typography-eyebrow-font-size')};
+  font-weight: ${V('typography-eyebrow-font-weight')};
+  line-height: ${V('typography-eyebrow-line-height')};
+  letter-spacing: ${V('typography-eyebrow-letter-spacing')};
+  text-transform: uppercase;
+}
+.ucam-site-footer__link {
+  display: inline-flex;
+  padding-block: ${V('space-inline-xs')};
+  color: ${V('color-text-on-inverse-muted')};
+  text-decoration: none;
+  transition: color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-footer__link:hover {
+  color: ${V('color-text-on-inverse')};
+  text-decoration: underline;
+}
+.ucam-site-footer__contact {
+  display: grid;
+  gap: ${V('space-inline-xs')};
+  align-content: start;
+  font-style: normal;
+}
+.ucam-site-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${V('space-stack-sm')};
+  margin-block-start: ${V('space-block')};
+  padding-block-start: ${V('space-stack-md')};
+  border-block-start: 1px solid ${V('color-border-on-inverse')};
+}
+.ucam-site-footer__legal {
+  margin: 0;
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-footer__social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-stack-sm')};
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+${acima('duas-colunas')} {
+  .ucam-site-footer__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+${acima('grade-completa')} {
+  .ucam-site-footer__inner { padding-inline: ${V('space-gutter')}; }
+  .ucam-site-footer__grid { grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr)) 1.4fr; }
+}
 `;
 
   const { falhas } = conferirFolha(css, tokens);
