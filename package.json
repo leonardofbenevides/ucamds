@@ -38,7 +38,7 @@
     "subpaleta": "node tools/check-subpaleta.mjs",
     "publicar": "node tools/build-publicacao.mjs",
     "test:tools": "node --test tools/test/*.test.mjs",
-    "sites": "node tools/build-sites-tokens.mjs && node tools/build-sites-fonts.mjs"
+    "sites": "node tools/build-sites-tokens.mjs && node tools/build-sites-fonts.mjs && node tools/build-sites-css.mjs && node tools/build-estados.mjs --entrada dist/sites/css/ucam-site.css --saida site/src/generated/sites-estados.css && node tools/validate-sites-spec.mjs && node tools/build-sites-index.mjs"
   },
   "devDependencies": {
     "@ng-icons/lucide": "^35.1.0",

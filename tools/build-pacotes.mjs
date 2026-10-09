@@ -229,6 +229,76 @@ mostra a tabela equivalente.
   return dir;
 }
 
+/* --------------------------------------------------------- @ucam/site-css --- */
+// O Trilho A dos SITES (ADR-067): tokens --ucam-site-*, submarcas, a folha
+// .ucam-site-* e as fontes Work Sans e Inter. Quem consome: o WordPress de
+// Campos, o site institucional em Angular 18 e o CENPRE.
+
+function siteCss() {
+  if (!exigir(join(DIST, 'sites', 'css', 'ucam-site.css'), 'rode: pnpm run sites')) return null;
+  const dir = join(SAIDA, 'site-css');
+  mkdirSync(dir, { recursive: true });
+  for (const sub of ['css', 'tokens', 'fonts']) {
+    const origem = join(DIST, 'sites', sub);
+    if (!existsSync(origem)) {
+      erros.push(`dist/sites/${sub} não existe — rode: pnpm run sites`);
+      continue;
+    }
+    cpSync(origem, join(dir, sub), { recursive: true });
+  }
+  const pkg = {
+    name: '@ucam/site-css',
+    version: VERSAO,
+    description:
+      'Folha de estilo do UCAMDS Sites: tokens, submarcas e classes .ucam-site-* para os sites públicos da UCAM. CSS puro, sem framework.',
+    license: 'UNLICENSED',
+    sideEffects: ['*.css'],
+    exports: {
+      './ucam-site.css': './css/ucam-site.css',
+      './ucam-site-fonts.css': './css/ucam-site-fonts.css',
+      './tokens/*': './tokens/*',
+      './fonts/*': './fonts/*',
+      './package.json': './package.json',
+    },
+  };
+  writeFileSync(join(dir, 'package.json'), JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+  writeFileSync(join(dir, 'LICENSE'), LICENCA, 'utf8');
+  writeFileSync(
+    join(dir, 'README.md'),
+    `# @ucam/site-css
+
+O UCAMDS Sites (ADR-067): a folha dos sites públicos da UCAM — institucional,
+CENPRE, Campos. CSS puro, mobile-first, sem framework.
+
+\`\`\`html
+<link rel="stylesheet" href="node_modules/@ucam/site-css/css/ucam-site-fonts.css">
+<link rel="stylesheet" href="node_modules/@ucam/site-css/css/ucam-site.css">
+
+<body class="ucam-site">
+  <a class="ucam-site-btn ucam-site-btn--primary" href="/inscricao">Inscreva-se</a>
+</body>
+\`\`\`
+
+\`ucam-site.css\` já importa os tokens. Para o CENPRE, carregue também a
+submarca e marque o elemento raiz:
+
+\`\`\`html
+<link rel="stylesheet" href="node_modules/@ucam/site-css/tokens/ucam-site-marca-cenpre.css">
+<html data-marca="cenpre">
+\`\`\`
+
+SCSS: \`@use 'node_modules/@ucam/site-css/tokens/ucam-site-tokens' as site;\`
+expõe as variáveis \`$ucam-site-*\` e o mapa \`$ucam-site-semantic\`.
+
+Tudo vive sob \`.ucam-site\`. Não há reset global. Os tokens primitivos saem na
+folha mas não são para uso: só os semânticos (\`--ucam-site-color-*\`,
+\`--ucam-site-typography-*\`…) são públicos (ADR-007).
+`,
+    'utf8',
+  );
+  return dir;
+}
+
 /* ---------------------------------------------------------------- @ucam/ui --- */
 // Trilho B. Aqui não se monta nada: ng-packagr já produziu a árvore correta em
 // ui/dist/ui. O que se faz é conferir que ela não está velha.
@@ -437,7 +507,7 @@ function empacotar(dir) {
 rmSync(SAIDA, { recursive: true, force: true });
 mkdirSync(SAIDA, { recursive: true });
 
-for (const montar of [tokens, css, ui, elements, agentes]) {
+for (const montar of [tokens, css, siteCss, ui, elements, agentes]) {
   const dir = montar();
   if (!dir) continue;
   // O AGENTS.md viaja em TODO pacote: quem instala só o @ucam/css também
