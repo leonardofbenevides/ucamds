@@ -981,6 +981,719 @@ ${acima('grade-completa')} {
   .ucam-site-footer__inner { padding-inline: ${V('space-gutter')}; }
   .ucam-site-footer__grid { grid-template-columns: 1.4fr; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
 }
+
+/* ---------------------------------------------------------------- hero --- */
+/* Contrato: sites/spec/components/hero.json. O topo da home, na superfície
+ * inversa. TEXTO NUNCA ASSENTA SOBRE FOTO: a imagem e o véu nascem escondidos
+ * e só entram na grade completa, na metade final; o texto fica na inicial.
+ * Sobre foto o contraste dependeria de qual foto, e nenhum portão o mede. */
+.ucam-site-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: ${V('color-surface-inverse')};
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-hero__media {
+  display: none;
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 50% 0;
+  z-index: -2;
+  inline-size: 50%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.ucam-site-hero__scrim {
+  display: none;
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 50% 0;
+  z-index: -1;
+  background: linear-gradient(to right, ${V('color-surface-inverse')} 0%, transparent 60%);
+  pointer-events: none;
+}
+.ucam-site-hero__inner {
+  inline-size: 100%;
+  max-inline-size: ${V('container-faixa')};
+  margin-inline: auto;
+  padding: ${V('space-section-sm')} ${V('space-gutter-sm')};
+}
+.ucam-site-hero__content {
+  display: grid;
+  gap: ${V('space-stack-md')};
+  justify-items: start;
+  max-inline-size: ${V('container-prosa')};
+}
+.ucam-site-hero__eyebrow {
+  margin: 0;
+  color: ${V('color-text-on-inverse-muted')};
+  font-size: ${V('typography-eyebrow-font-size')};
+  font-weight: ${V('typography-eyebrow-font-weight')};
+  line-height: ${V('typography-eyebrow-line-height')};
+  letter-spacing: ${V('typography-eyebrow-letter-spacing')};
+  text-transform: uppercase;
+}
+.ucam-site-hero__title {
+  margin: 0;
+  font-family: ${V('typography-display-hero-font-family')};
+  font-size: ${V('typography-display-hero-font-size')};
+  font-weight: ${V('typography-display-hero-font-weight')};
+  line-height: ${V('typography-display-hero-line-height')};
+  letter-spacing: ${V('typography-display-hero-letter-spacing')};
+  text-wrap: balance;
+}
+.ucam-site-hero__lede {
+  margin: 0;
+  color: ${V('color-text-on-inverse-muted')};
+  font-size: ${V('typography-lede-font-size')};
+  line-height: ${V('typography-lede-line-height')};
+  text-wrap: pretty;
+}
+.ucam-site-hero__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-inline-sm')};
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-site-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-inline-md')};
+}
+${acima('grade-completa')} {
+  .ucam-site-hero__media { display: block; }
+  .ucam-site-hero__scrim { display: block; }
+  .ucam-site-hero__inner { display: flex; align-items: center; min-block-size: ${V('size-hero')}; padding: ${V('space-section')} ${V('space-gutter')}; }
+  .ucam-site-hero--com-foto .ucam-site-hero__content { max-inline-size: 50%; padding-inline-end: ${V('space-stack-lg')}; }
+}
+
+/* ------------------------------------------------- editorial-page-hero --- */
+/* Contrato: sites/spec/components/editorial-page-hero.json. O topo das
+ * páginas internas: trilha, palavra, título, frase e, se houver, pílulas e
+ * ações. Sem foto. */
+.ucam-site-page-hero {
+  background: ${V('color-surface-inverse')};
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-page-hero__inner {
+  display: grid;
+  gap: ${V('space-stack-md')};
+  justify-items: start;
+  inline-size: 100%;
+  max-inline-size: ${V('container-faixa')};
+  margin-inline: auto;
+  padding: ${V('space-section-sm')} ${V('space-gutter-sm')};
+}
+.ucam-site-page-hero--prosa .ucam-site-page-hero__inner {
+  max-inline-size: ${V('container-prosa')};
+}
+.ucam-site-page-hero__eyebrow {
+  margin: 0;
+  color: ${V('color-text-on-inverse-muted')};
+  font-size: ${V('typography-eyebrow-font-size')};
+  font-weight: ${V('typography-eyebrow-font-weight')};
+  line-height: ${V('typography-eyebrow-line-height')};
+  letter-spacing: ${V('typography-eyebrow-letter-spacing')};
+  text-transform: uppercase;
+}
+.ucam-site-page-hero__title {
+  max-inline-size: ${V('container-prosa')};
+  margin: 0;
+  font-family: ${V('typography-display-page-font-family')};
+  font-size: ${V('typography-display-page-font-size')};
+  font-weight: ${V('typography-display-page-font-weight')};
+  line-height: ${V('typography-display-page-line-height')};
+  letter-spacing: ${V('typography-display-page-letter-spacing')};
+  text-wrap: balance;
+}
+.ucam-site-page-hero__lede {
+  max-inline-size: ${V('container-prosa')};
+  margin: 0;
+  color: ${V('color-text-on-inverse-muted')};
+  font-size: ${V('typography-lede-font-size')};
+  line-height: ${V('typography-lede-line-height')};
+  text-wrap: pretty;
+}
+.ucam-site-page-hero__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-inline-sm')};
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-site-page-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-inline-md')};
+}
+${acima('grade-completa')} {
+  .ucam-site-page-hero__inner { padding: ${V('space-section')} ${V('space-gutter')}; }
+}
+
+/* ----------------------------------------------------------- hero-pill --- */
+/* Contrato: sites/spec/components/hero-pill.json. Um fato curto sobre a
+ * seção escura: 1.700 empresas, desde 2001. Não é clicável. */
+.ucam-site-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: ${V('space-inline-sm')};
+  min-block-size: ${V('size-icon-button')};
+  padding-inline: ${V('space-stack-sm')};
+  border: 1px solid ${V('color-border-on-inverse')};
+  border-radius: ${V('radius-pill')};
+  background: ${V('color-interaction-hover-on-inverse')};
+  color: ${V('color-text-on-inverse')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-caption-line-height')};
+  white-space: nowrap;
+}
+.ucam-site-hero-pill .ic {
+  inline-size: ${V('size-icon-sm')};
+  block-size: ${V('size-icon-sm')};
+}
+
+/* ------------------------------------------------------- editorial-cta --- */
+/* Contrato: sites/spec/components/editorial-cta.json. A chamada que fecha a
+ * página. Com foto, a mesma regra do hero: a imagem entra só na grade
+ * completa e na metade que não tem texto. */
+.ucam-site-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: ${V('space-block')} ${V('space-inset-card')};
+  border-radius: ${V('radius-card')};
+  background: ${V('color-surface-inverse')};
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-cta__media {
+  display: none;
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 50% 0;
+  z-index: -2;
+  inline-size: 50%;
+  block-size: 100%;
+  object-fit: cover;
+}
+.ucam-site-cta__scrim {
+  display: none;
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 50% 0;
+  z-index: -1;
+  background: linear-gradient(to right, ${V('color-surface-inverse')} 0%, transparent 60%);
+  pointer-events: none;
+}
+.ucam-site-cta__content {
+  display: grid;
+  gap: ${V('space-stack-sm')};
+  justify-items: start;
+  max-inline-size: ${V('container-prosa')};
+}
+.ucam-site-cta__eyebrow {
+  margin: 0;
+  color: ${V('color-text-on-inverse-muted')};
+  font-size: ${V('typography-eyebrow-font-size')};
+  font-weight: ${V('typography-eyebrow-font-weight')};
+  line-height: ${V('typography-eyebrow-line-height')};
+  letter-spacing: ${V('typography-eyebrow-letter-spacing')};
+  text-transform: uppercase;
+}
+.ucam-site-cta__title {
+  margin: 0;
+  font-family: ${V('typography-display-section-sm-font-family')};
+  font-size: ${V('typography-display-section-sm-font-size')};
+  font-weight: ${V('typography-display-section-sm-font-weight')};
+  line-height: ${V('typography-display-section-sm-line-height')};
+  letter-spacing: ${V('typography-display-section-sm-letter-spacing')};
+  text-wrap: balance;
+}
+.ucam-site-cta__text {
+  margin: 0;
+  color: ${V('color-text-on-inverse-muted')};
+  font-size: ${V('typography-lede-font-size')};
+  line-height: ${V('typography-lede-line-height')};
+}
+.ucam-site-cta__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-inline-md')};
+  margin-block-start: ${V('space-inline-sm')};
+}
+${acima('grade-completa')} {
+  .ucam-site-cta { padding: ${V('space-section-sm')}; }
+  .ucam-site-cta__media { display: block; }
+  .ucam-site-cta__scrim { display: block; }
+  .ucam-site-cta--com-foto .ucam-site-cta__content { max-inline-size: 50%; padding-inline-end: ${V('space-stack-lg')}; }
+}
+
+/* ---------------------------------------------------------- stats-band --- */
+/* Contrato: sites/spec/components/stats-band.json. Uma lista de definição: o
+ * rótulo vem antes no documento e o número aparece em cima. Duas colunas no
+ * telefone, quatro na grade completa. */
+.ucam-site-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: ${V('space-stack-lg')} ${V('space-stack-md')};
+  margin: 0;
+}
+.ucam-site-stats__item {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: ${V('space-inline-xs')};
+  padding-block-start: ${V('space-stack-sm')};
+  border-block-start: 1px solid ${V('color-border-default')};
+}
+.ucam-site-stats__value {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-family: ${V('typography-display-section-sm-font-family')};
+  font-size: ${V('typography-display-section-sm-font-size')};
+  font-weight: ${V('typography-display-section-sm-font-weight')};
+  line-height: ${V('typography-display-section-sm-line-height')};
+  letter-spacing: ${V('typography-display-section-sm-letter-spacing')};
+}
+.ucam-site-stats__label {
+  color: ${V('color-text-secondary')};
+}
+.ucam-site-stats--inverse .ucam-site-stats__item {
+  border-block-start-color: ${V('color-border-on-inverse')};
+}
+.ucam-site-stats--inverse .ucam-site-stats__value {
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-stats--inverse .ucam-site-stats__label {
+  color: ${V('color-text-on-inverse-muted')};
+}
+${acima('grade-completa')} {
+  .ucam-site-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* -------------------------------------------------------- logo-marquee --- */
+/* Contrato: sites/spec/components/logo-marquee.json. Os logos desfilam em
+ * laço: a trilha tem duas cópias do grupo e anda metade da própria largura.
+ * Movimento que não para sozinho precisa de parada: para sob o ponteiro e sob
+ * foco, e com movimento reduzido não anima — os logos assentam em linhas e a
+ * segunda cópia some. */
+.ucam-site-marquee {
+  display: block;
+}
+.ucam-site-marquee__viewport {
+  overflow: hidden;
+}
+.ucam-site-marquee__track {
+  display: flex;
+  align-items: center;
+  inline-size: max-content;
+  animation: ucam-site-desfile ${V('motion-duration-desfile')} linear infinite;
+}
+.ucam-site-marquee__track:hover,
+.ucam-site-marquee__track:focus-within {
+  animation-play-state: paused;
+}
+.ucam-site-marquee__group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-site-marquee__item {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding-inline-end: ${V('space-block')};
+}
+.ucam-site-marquee__item img {
+  inline-size: auto;
+  block-size: ${V('size-logo-parceiro')};
+  object-fit: contain;
+  filter: grayscale(0.65);
+  opacity: 0.9;
+  transition:
+    filter ${V('motion-duration-state')} ${V('motion-easing-standard')},
+    opacity ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-marquee__item:hover img,
+.ucam-site-marquee__item:focus-within img {
+  filter: none;
+  opacity: 1;
+}
+.ucam-site-marquee--parado .ucam-site-marquee__track {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: ${V('space-stack-md')};
+  inline-size: auto;
+  animation: none;
+}
+.ucam-site-marquee--parado .ucam-site-marquee__group {
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: ${V('space-stack-md')};
+}
+.ucam-site-marquee--parado .ucam-site-marquee__group + .ucam-site-marquee__group {
+  display: none;
+}
+@keyframes ucam-site-desfile {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ucam-site-marquee__track { flex-wrap: wrap; justify-content: center; row-gap: ${V('space-stack-md')}; inline-size: auto; animation: none; }
+  .ucam-site-marquee__group { flex-wrap: wrap; justify-content: center; row-gap: ${V('space-stack-md')}; }
+  .ucam-site-marquee__group + .ucam-site-marquee__group { display: none; }
+}
+
+/* ------------------------------------------------ card e course-card --- */
+/* Contratos: sites/spec/components/card.json e course-card.json. A mesma
+ * caixa para os dois: o que muda é o que vai dentro. O cartão inteiro é
+ * clicável por UM link — o do título, esticado por ::after —, nunca por um
+ * link em volta de tudo; o foco do link se desenha no cartão. */
+.ucam-site-card,
+.ucam-site-course-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid ${V('color-border-default')};
+  border-radius: ${V('radius-card')};
+  background: ${V('color-surface-default')};
+  box-shadow: ${V('elevation-card')};
+}
+.ucam-site-card__media,
+.ucam-site-course-card__media {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: ${V('color-surface-sunken')};
+}
+.ucam-site-card__body,
+.ucam-site-course-card__body {
+  display: grid;
+  flex: 1;
+  gap: ${V('space-inline-sm')};
+  align-content: start;
+  padding: ${V('space-inset-card')};
+}
+.ucam-site-card__title,
+.ucam-site-course-card__title {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-title-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+}
+.ucam-site-card__text {
+  margin: 0;
+  color: ${V('color-text-body')};
+}
+.ucam-site-card__meta,
+.ucam-site-course-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-inline-sm')};
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-site-course-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${V('space-inline-xs')} ${V('space-stack-sm')};
+  margin: 0;
+  padding: 0;
+  color: ${V('color-text-secondary')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+  list-style: none;
+}
+.ucam-site-card__link,
+.ucam-site-course-card__link {
+  color: inherit;
+  text-decoration: none;
+}
+.ucam-site-card__link::after,
+.ucam-site-course-card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.ucam-site-card__link:focus-visible,
+.ucam-site-course-card__link:focus-visible {
+  outline: none;
+}
+.ucam-site-card:has(.ucam-site-card__link:focus-visible),
+.ucam-site-course-card:has(.ucam-site-course-card__link:focus-visible) {
+  outline: ${V('focus-ring-width')} solid ${V('color-border-focus')};
+  outline-offset: ${V('focus-ring-offset')};
+}
+.ucam-site-card--interativo,
+.ucam-site-course-card {
+  transition:
+    border-color ${V('motion-duration-state')} ${V('motion-easing-standard')},
+    box-shadow ${V('motion-duration-state')} ${V('motion-easing-standard')},
+    transform ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-card--interativo:hover,
+.ucam-site-course-card:hover {
+  border-color: ${V('color-border-strong')};
+  box-shadow: ${V('elevation-card-hover')};
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ucam-site-card--interativo:hover { transform: none; }
+  .ucam-site-course-card:hover { transform: none; }
+}
+
+/* ------------------------------------------------------------ doc-card --- */
+/* Contrato: sites/spec/components/doc-card.json. A lista de documentos de um
+ * caso: o que levar para formalizar o estágio. O fio de marca no alto diz que
+ * é um cartão de consulta, não de conteúdo. */
+.ucam-site-doc-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid ${V('color-border-default')};
+  border-block-start: ${V('space-inline-xs')} solid ${V('color-surface-brand')};
+  border-radius: ${V('radius-card')};
+  background: ${V('color-surface-default')};
+  box-shadow: ${V('elevation-card')};
+}
+.ucam-site-doc-card__header {
+  display: flex;
+  align-items: center;
+  gap: ${V('space-inline-sm')};
+  padding: ${V('space-inset-card')} ${V('space-inset-card')} ${V('space-stack-sm')};
+  border-block-end: 1px solid ${V('color-border-subtle')};
+}
+.ucam-site-doc-card__label {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-body-lg-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+}
+.ucam-site-doc-card__list {
+  display: grid;
+  gap: ${V('space-inline-sm')};
+  margin: 0;
+  padding: ${V('space-stack-sm')} ${V('space-inset-card')} ${V('space-inset-card')};
+  list-style: none;
+}
+.ucam-site-doc-card__item {
+  display: flex;
+  align-items: flex-start;
+  gap: ${V('space-inline-sm')};
+  color: ${V('color-text-body')};
+}
+.ucam-site-doc-card__item .ic {
+  inline-size: ${V('size-icon-sm')};
+  block-size: ${V('size-icon-sm')};
+  margin-block-start: 0.25em;
+  color: ${V('color-action-primary-default')};
+}
+
+/* ----------------------------------------------------------- step-card --- */
+/* Contrato: sites/spec/components/step-card.json. Um passo de uma sequência:
+ * o número, o que fazer e, se houver, para onde ir. */
+.ucam-site-step-card {
+  display: flex;
+  align-items: flex-start;
+  gap: ${V('space-stack-sm')};
+  padding: ${V('space-inset-card')};
+  border: 1px solid ${V('color-border-default')};
+  border-radius: ${V('radius-card')};
+  background: ${V('color-surface-default')};
+  box-shadow: ${V('elevation-card')};
+}
+.ucam-site-step-card__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: ${V('size-icon-chip-md')};
+  block-size: ${V('size-icon-chip-md')};
+  border-radius: ${V('radius-pill')};
+  background: ${V('color-action-primary-default')};
+  color: ${V('color-text-on-action')};
+  font-size: ${V('typography-body-lg-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: 1;
+}
+.ucam-site-step-card__body {
+  display: grid;
+  gap: ${V('space-inline-xs')};
+  min-inline-size: 0;
+}
+.ucam-site-step-card__title {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-body-lg-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+}
+.ucam-site-step-card__text {
+  margin: 0;
+  color: ${V('color-text-body')};
+}
+.ucam-site-step-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: ${V('space-inline-xs')};
+  justify-self: start;
+  margin-block-start: ${V('space-inline-sm')};
+  color: ${V('color-text-link')};
+  font-weight: ${V('typography-action-font-weight')};
+  text-decoration: none;
+}
+.ucam-site-step-card__link:hover {
+  color: ${V('color-text-link-hover')};
+  text-decoration: underline;
+}
+.ucam-site-step-card__link .ic {
+  inline-size: ${V('size-icon-sm')};
+  block-size: ${V('size-icon-sm')};
+}
+
+/* --------------------------------------------------------- testimonial --- */
+/* Contrato: sites/spec/components/testimonial.json. Uma figure: a fala e
+ * quem falou. Sem estrelas. */
+.ucam-site-testimonial {
+  display: grid;
+  gap: ${V('space-stack-md')};
+  align-content: start;
+  margin: 0;
+  padding: ${V('space-inset-card')};
+  border: 1px solid ${V('color-border-default')};
+  border-radius: ${V('radius-card')};
+  background: ${V('color-surface-default')};
+}
+.ucam-site-testimonial__quote {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-lede-font-size')};
+  line-height: ${V('typography-lede-line-height')};
+  text-wrap: pretty;
+}
+.ucam-site-testimonial__autor {
+  display: flex;
+  align-items: center;
+  gap: ${V('space-stack-sm')};
+}
+.ucam-site-testimonial__nome {
+  display: block;
+  color: ${V('color-text-primary')};
+  font-weight: ${V('typography-action-font-weight')};
+}
+.ucam-site-testimonial__papel {
+  display: block;
+  color: ${V('color-text-muted')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-testimonial--inverse {
+  border-color: ${V('color-border-on-inverse')};
+  background: transparent;
+}
+.ucam-site-testimonial--inverse .ucam-site-testimonial__quote,
+.ucam-site-testimonial--inverse .ucam-site-testimonial__nome {
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-testimonial--inverse .ucam-site-testimonial__papel {
+  color: ${V('color-text-on-inverse-muted')};
+}
+
+/* --------------------------------------------------------------- prose --- */
+/* Contrato: sites/spec/components/prose.json. O texto corrido de um artigo.
+ * É a ÚNICA peça que estiliza elemento sem classe — o texto vem de um CMS e
+ * não tem como levar classe em cada parágrafo —, e só o que está dentro da
+ * raiz. A linha não passa da largura de prosa. */
+.ucam-site-prose {
+  max-inline-size: ${V('container-prosa')};
+  color: ${V('color-text-body')};
+  font-size: ${V('typography-body-lg-font-size')};
+  line-height: ${V('typography-body-lg-line-height')};
+}
+.ucam-site-prose p,
+.ucam-site-prose ul,
+.ucam-site-prose ol,
+.ucam-site-prose blockquote,
+.ucam-site-prose figure {
+  margin: 0 0 ${V('space-stack-sm')};
+}
+.ucam-site-prose h2 {
+  margin: ${V('space-block')} 0 ${V('space-stack-sm')};
+  color: ${V('color-text-primary')};
+  font-family: ${V('typography-subtitle-font-family')};
+  font-size: ${V('typography-subtitle-font-size')};
+  font-weight: ${V('typography-subtitle-font-weight')};
+  line-height: ${V('typography-subtitle-line-height')};
+  letter-spacing: ${V('typography-subtitle-letter-spacing')};
+  text-wrap: balance;
+}
+.ucam-site-prose h3 {
+  margin: ${V('space-stack-lg')} 0 ${V('space-inline-sm')};
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-title-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+}
+.ucam-site-prose a {
+  color: ${V('color-text-link')};
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.ucam-site-prose a:hover {
+  color: ${V('color-text-link-hover')};
+}
+.ucam-site-prose ul,
+.ucam-site-prose ol {
+  padding-inline-start: ${V('space-stack-md')};
+}
+.ucam-site-prose li + li {
+  margin-block-start: ${V('space-inline-xs')};
+}
+.ucam-site-prose strong {
+  color: ${V('color-text-primary')};
+  font-weight: ${V('typography-action-font-weight')};
+}
+.ucam-site-prose blockquote {
+  padding-inline-start: ${V('space-stack-sm')};
+  border-inline-start: ${V('space-inline-xs')} solid ${V('color-surface-brand')};
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-lede-font-size')};
+  line-height: ${V('typography-lede-line-height')};
+}
+.ucam-site-prose img {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  border-radius: ${V('radius-card')};
+}
+.ucam-site-prose figcaption {
+  margin-block-start: ${V('space-inline-sm')};
+  color: ${V('color-text-muted')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-prose hr {
+  margin-block: ${V('space-stack-lg')};
+  border: 0;
+  border-block-start: 1px solid ${V('color-border-default')};
+}
+.ucam-site-prose > :first-child {
+  margin-block-start: 0;
+}
+.ucam-site-prose > :last-child {
+  margin-block-end: 0;
+}
 `;
 
   const { falhas } = conferirFolha(css, tokens);
