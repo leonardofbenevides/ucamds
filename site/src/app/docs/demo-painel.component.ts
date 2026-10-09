@@ -75,7 +75,7 @@ let seq = 0;
             role="tabpanel"
             [hidden]="aba() !== 'preview'"
           >
-            <div class="ucam" [innerHTML]="html()"></div>
+            <div [class]="raiz()" [innerHTML]="html()"></div>
           </div>
         }
 
@@ -222,7 +222,7 @@ let seq = 0;
     }
     /* O palco entrega a largura toda ao preview: sem isto uma tabela ou um
        app-shell encolhem ao conteúdo e ficam desalinhados da moldura. */
-    .painel-corpo.palco > .ucam {
+    .painel-corpo.palco > :first-child {
       inline-size: 100%;
     }
     .painel-corpo.codigo {
@@ -248,6 +248,8 @@ let seq = 0;
 })
 export class DemoPainelComponent {
   readonly painel = input.required<DemoPainel>();
+  /** Classe-raiz que escopa a folha do preview: "ucam" (aplicação) ou "ucam-site" (sites). */
+  readonly raiz = input<string>('ucam');
 
   private readonly sanitizer = inject(DomSanitizer);
 
