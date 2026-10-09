@@ -5278,13 +5278,17 @@ ${cssDaCorDeFaixa()}
  * largura própria: mede o ícone, que sobe ao degrau de 24px para ficar no
  * mesmo peso da logo de 24px à esquerda. A altura continua a dos controles
  * da faixa, para o nome ao lado centrar no mesmo eixo. */
-.ucam-appbar__marca {
-  flex: none;
+.ucam-appbar__marca { flex: none; }
+/* SÓ NA FAIXA DE MARCA. A classe é reaproveitada pela gaveta e existe na
+ * faixa clara, e lá o ladrilho continua: sem este escopo a marquinha da
+ * gaveta virava um retângulo tinto de 24 x 36 com o ícone encostado nas
+ * bordas (revisão de 09/10/2026). */
+.ucam-appbar--marca .ucam-appbar__marca {
   inline-size: auto;
   block-size: var(--ucam-size-control-md);
   padding: 0;
 }
-.ucam-appbar__marca .ic {
+.ucam-appbar--marca .ucam-appbar__marca .ic {
   inline-size: var(--ucam-size-icon-lg);
   block-size: var(--ucam-size-icon-lg);
 }
@@ -5688,10 +5692,13 @@ ${abaixo('faixa-minima')} {
   /* A marquinha desce um degrau (40 → 32px): os 8px são os que faltavam
    * para "Relatórios" caber inteiro na linha dele a 390px. */
   .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
-    inline-size: auto;
+    inline-size: var(--ucam-size-control-md);
     block-size: var(--ucam-size-control-md);
   }
-  .ucam-appbar .ucam-appbar__marca .ic {
+  /* Na faixa de marca a marquinha é só o ícone: a caixa volta a medir o
+   * ícone, que desce ao degrau de 20px. */
+  .ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile { inline-size: auto; }
+  .ucam-appbar--marca .ucam-appbar__marca .ic {
     inline-size: var(--ucam-size-icon-md);
     block-size: var(--ucam-size-icon-md);
   }
@@ -5720,9 +5727,10 @@ ${abaixo('faixa-minima')} {
    * 375, "Relatórios / Acadêmicos" em duas linhas. */
   @media (pointer: coarse) {
     .ucam-appbar .ucam-appbar__marca.ucam-icon-tile {
-      inline-size: auto;
+      inline-size: var(--ucam-size-control-sm);
       block-size: var(--ucam-size-control-sm);
     }
+    .ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile { inline-size: auto; }
     .ucam-appbar > .ucam-appbar__brand { column-gap: var(--ucam-space-inline-xs); }
     .ucam-appbar > .ucam-btn + .ucam-appbar__brand { margin-inline-start: calc(var(--ucam-space-inline-sm) * -1); }
   }
@@ -5825,7 +5833,7 @@ ${abaixo('faixa-minima')} {
  * sistema escondido quando havia campus — valem só para a faixa que ainda o
  * leva (.ucam-appbar--lockup, o Portal). */
 ${abaixo('respiro-completo')} {
-  .ucam-appbar--lockup .ucam-appbar__brand { min-inline-size: calc(var(--ucam-appbar-logo-width) + 2 * var(--ucam-space-inline-sm) + 1px); }
+  .ucam-appbar--lockup .ucam-appbar__brand { min-inline-size: calc(var(--ucam-appbar-logo-width) + 3 * var(--ucam-space-inline-sm) + 1px); }
   /* O filete entre o campus e os ícones: 9px que decidem se a faixa cabe a 480. */
   .ucam-campus--faixa + .ucam-appbar__divider { display: none; }
 }
@@ -13857,10 +13865,11 @@ ${acima('respiro-completo')} {
  * mesmo. Um pouco maior que na moldura: aqui ela é a única marca da tela. */
 .ucam-login__logo {
   flex: none;
-  /* 1.25 × 20px = 25px, altura ímpar que centrava em meio-pixel; 1.2 dá 24
-   * e mantém a proporção do lockup, porque a máscara é contain. */
-  inline-size: calc(var(--ucam-appbar-logo-width) * 1.2);
-  block-size: calc(var(--ucam-appbar-logo-height) * 1.2);
+  /* 24px, a medida da própria faixa desde 08/10/2026. Era a logo de 20px
+   * vezes 1.2; com a logo da faixa em 24, o fator a levava a 28,8px — o
+   * meio-pixel que o 1.2 existia para evitar (revisão de 09/10/2026). */
+  inline-size: var(--ucam-appbar-logo-width);
+  block-size: var(--ucam-appbar-logo-height);
   background: currentColor;
   color: var(--ucam-color-text-primary);
   -webkit-mask: var(--ucam-appbar-logo) no-repeat center / contain;

@@ -393,12 +393,13 @@ export type UcamSystemCategory =
           }
           @if (systemIcon()) {
             <span
-              class="ucam-shell-marca inline-flex h-[var(--ucam-size-control-md)] shrink-0 items-center justify-center"
+              class="ucam-shell-marca inline-flex shrink-0 items-center justify-center"
+              [class]="classesMarca()"
               [style.background]="ladrilhoMarca()"
-              [style.color]="appbarAppearance() === 'light' ? tintaSistema() : 'currentColor'"
+              [style.color]="appbarAppearance() === 'light' ? 'var(--ucam-color-text-on-action)' : 'currentColor'"
               aria-hidden="true"
             >
-              <ucam-icon [name]="systemIcon()!" size="lg" />
+              <ucam-icon [name]="systemIcon()!" [size]="appbarAppearance() === 'light' ? 'md' : 'lg'" />
             </span>
           }
           <span
@@ -1246,9 +1247,19 @@ export class UcamAppShell {
    *  tom mais claro da própria faixa (o texto a 18%) com o ícone em branco —
    *  o ladrilho cheio na tinta sumiria sobre a faixa da mesma cor. Na faixa
    *  clara ele continua na tinta do sistema. */
-  /** Sem o quadrado desde 08/10/2026 ("deixe só o ícone + label"): a
-   *  marquinha é o ícone solto, no degrau de 24px, ao lado do nome. */
-  protected readonly ladrilhoMarca = computed(() => 'transparent');
+  /** NA FAIXA DE MARCA, sem o quadrado desde 08/10/2026 ("deixe só o ícone
+   *  + label"): a marquinha é o ícone solto, no degrau de 24px, ao lado do
+   *  nome. Na faixa CLARA o ladrilho continua, cheio na tinta do sistema —
+   *  é o que a folha do Trilho A faz, e os dois trilhos não podem divergir. */
+  protected readonly ladrilhoMarca = computed(() =>
+    this.appbarAppearance() === 'light' ? this.tintaSistema() : 'transparent',
+  );
+
+  protected readonly classesMarca = computed(() =>
+    this.appbarAppearance() === 'light'
+      ? 'size-[var(--ucam-size-control-lg)] rounded-[var(--ucam-radius-control)]'
+      : 'h-[var(--ucam-size-control-md)]',
+  );
 
   protected readonly classesFaixa = computed(() =>
     this.appbarAppearance() === 'brand'
