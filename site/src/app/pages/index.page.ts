@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { meta } from '../spec/spec';
+import { sitesMeta } from '../spec/sites';
 
 /* ------------------------------------------------------------------------
  * A ILUSTRAÇÃO DA HOME é geometria isométrica CALCULADA, não desenhada à mão.
@@ -443,9 +444,20 @@ function montarCena(): Face[] {
     :host {
       display: block;
     }
-    /* As cinco portas numa linha a partir de ~1100px (a 1280 saíam 4 + 1 com
-       a coluna mínima de 16rem do site); abaixo, 3 + 2 e depois uma por linha. */
-    .grade-cartoes { grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+    /* As seis portas em trilhas FIXAS por degrau: 1, 2, 3 e 6, os divisores
+       de seis. Com auto-fit (como era com cinco portas) sobrava uma porta
+       sozinha na segunda fileira: 5 + 1 a 1024 (medido em 10/10/2026, quando
+       a porta dos Sites entrou). */
+    .grade-cartoes { grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 30rem) {
+      .grade-cartoes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 48rem) {
+      .grade-cartoes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 72rem) {
+      .grade-cartoes { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    }
     .porta > .ucam-icon-tile {
       margin-block-end: 0.85rem;
     }
@@ -470,15 +482,19 @@ export default class IndexPage {
   /** A cena isométrica, calculada uma vez. Ver o cabeçalho do arquivo. */
   protected readonly cena = montarCena();
 
-  /** As cinco portas da capa: destino, ícone do sprite, nome e uma linha.
+  /** As seis portas da capa: destino, ícone do sprite, nome e uma linha.
    *  O Servidor MCP saiu da capa em 29/09/2026 (pedido do Leonardo); segue
-   *  no menu Começar. */
+   *  no menu Começar. Sites entrou em 10/10/2026 (pedido do Leonardo: "um
+   *  acesso, um ícone para acessar o modo sites"): o segundo sistema só se
+   *  alcançava pela aba da faixa, e a capa não dizia que ele existe. O ícone
+   *  é o mesmo da aba. */
   protected readonly portas = [
     { link: '/comecar/instalacao', icone: 'download', titulo: 'Instalação', texto: 'Como consumir o design system hoje, em cada trilho.' },
     { link: '/fundamentos/cor', icone: 'bookOpen', titulo: 'Fundamentos', texto: 'Cor, tipografia e espaçamento, com contraste calculado no build.' },
     { link: '/catalogo', icone: 'layoutGrid', titulo: 'Catálogo', texto: `${meta.componentes} contratos de componente.` },
     { link: '/decisoes', icone: 'scrollText', titulo: 'Decisões', texto: 'O porquê de cada regra, registrado em ADR.' },
     { link: '/padroes', icone: 'listChecks', titulo: 'Padrões', texto: 'Composições que resolvem uma tarefa inteira.' },
+    { link: '/sites', icone: 'monitor', titulo: 'Sites', texto: `${sitesMeta.componentes} peças para os sites da universidade.` },
   ];
 
   /** Os sete números da grade, na ordem em que respondem "o que já existe?". */
