@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "pnpm",
+    "analytics": false
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "site-ui": {
+      "projectType": "library",
+      "root": "projects/site-ui",
+      "sourceRoot": "projects/site-ui/src",
+      "prefix": "ucamSite",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/site-ui/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/site-ui/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/site-ui/tsconfig.spec.json"
+          }
+        }
+      }
+    }
+  }
+}

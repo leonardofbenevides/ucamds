@@ -35,3 +35,9 @@ scratchpad/
 .env
 .env.*
 .DS_Store
+
+# A lib dos sites: saídas do ng-packagr e as demos geradas de sites/spec/demos.json.
+sites/ui/dist/
+sites/ui/.angular/
+sites/ui/out-tsc/
+sites/ui/projects/site-ui/src/testing/demos.gerado.ts

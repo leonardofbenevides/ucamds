@@ -1,0 +1,16 @@
+{
+  "name": "@ucam/site-ui",
+  "version": "0.1.5",
+  "description": "Peças Angular do UCAMDS Sites. Casca fina sobre @ucam/site-css: nenhuma peça tem estilo próprio.",
+  "license": "UNLICENSED",
+  "sideEffects": false,
+  "peerDependencies": {
+    "@angular/common": ">=21.0.0 <23.0.0",
+    "@angular/core": ">=21.0.0 <23.0.0",
+    "@angular/forms": ">=21.0.0 <23.0.0",
+    "@ucam/site-css": "0.1.5"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}

@@ -7,6 +7,8 @@ packages:
   - site
   - elements
   - ui
+  # A lib dos sites, pelo mesmo motivo do `ui`: `pnpm dist` chama `pnpm lib:sites`.
+  - sites/ui
 
 # esbuild precisa do script de instalação para baixar o binário da plataforma.
 # Os demais são aceleradores nativos opcionais do Nx (que entra como peer do
