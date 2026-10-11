@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Renderer2, computed, inject, input } from '@angular/core';
+import { Directive, computed, input } from '@angular/core';
 import { classesDe, umDe } from '../nucleo/classes';
 
 export type UcamSiteAvatarSize = 'sm' | 'md' | 'lg';
@@ -24,16 +24,9 @@ const FORMAS = ['person', 'logo'] as const;
   },
 })
 export class UcamSiteAvatar {
-  readonly size = input<UcamSiteAvatarSize, unknown>('md', { transform: umDe(TAMANHOS, 'md') });
-  readonly shape = input<UcamSiteAvatarShape, unknown>('person', { transform: umDe(FORMAS, 'person') });
+  readonly size = input<UcamSiteAvatarSize, UcamSiteAvatarSize | null | undefined>('md', { transform: umDe(TAMANHOS, 'md') });
+  readonly shape = input<UcamSiteAvatarShape, UcamSiteAvatarShape | null | undefined>('person', { transform: umDe(FORMAS, 'person') });
   readonly name = input<string | null | undefined>(null);
-
-  constructor() {
-    // Escrita como atributo (name="Ana de Souza"), a entrada ficaria no DOM
-    // como um `name` num <span>, que não é atributo dele. O portão de paridade
-    // acusou; o nome que conta é o aria-label.
-    inject(Renderer2).removeAttribute(inject(ElementRef).nativeElement, 'name');
-  }
 
   /** O nome aparado, ou null quando não há o que anunciar. */
   protected readonly rotulo = computed(() => this.name()?.trim() || null);

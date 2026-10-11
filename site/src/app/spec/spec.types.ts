@@ -159,6 +159,8 @@ export interface Composicao {
 }
 
 export interface Componente {
+  /** Só nos sites: o seletor de verdade da peça em @ucam/site-ui, tirado do trilho_b pelo índice. */
+  seletor_angular?: string;
   id: string;
   name: string;
   selector: string;

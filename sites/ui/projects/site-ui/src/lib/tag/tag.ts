@@ -14,7 +14,7 @@ const TONS = ['neutral', 'brand', 'info', 'inverse'] as const;
   host: { '[class]': 'classes()' },
 })
 export class UcamSiteTag {
-  readonly tone = input<UcamSiteTagTone, unknown>('neutral', { transform: umDe(TONS, 'neutral') });
+  readonly tone = input<UcamSiteTagTone, UcamSiteTagTone | null | undefined>('neutral', { transform: umDe(TONS, 'neutral') });
 
   protected readonly classes = computed(() => classesDe('ucam-site-tag', this.tone() !== 'neutral' && this.tone()));
 }

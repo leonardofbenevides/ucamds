@@ -42,4 +42,35 @@ describe('paridade', () => {
   it('lê a raiz da peça no contrato', () => {
     expect(contratoDe('button').raiz).toBe('ucam-site-btn');
   });
+
+  // A lista era de atributos que CONTAM, e escondia o que as próximas peças
+  // têm de acertar: target e rel no link externo, required e placeholder no
+  // campo, loading na imagem (revisão de 10/10/2026). Agora conta tudo, menos
+  // o andaime do Angular e as entradas da própria peça.
+  it('reprova qualquer atributo diferente, não só os de uma lista', () => {
+    for (const [a, b] of [
+      ['<a href="/x" target="_blank" rel="noopener">x</a>', '<a href="/x">x</a>'],
+      ['<input required placeholder="E-mail">', '<input placeholder="E-mail">'],
+      ['<img src="a.jpg" alt="" loading="lazy">', '<img src="a.jpg" alt="">'],
+      ['<p lang="en">x</p>', '<p>x</p>'],
+      ['<div hidden>x</div>', '<div>x</div>'],
+      ['<span data-estado="a">x</span>', '<span data-estado="b">x</span>'],
+    ]) {
+      expect(mesmaArvore(no(a), no(b)).igual, `${a} × ${b}`).toBe(false);
+    }
+  });
+  it('ignora a entrada só no elemento que leva o seletor da peça', () => {
+    // No botão, `variant` e `size` são entradas: não contam.
+    expect(mesmaArvore(no('<a class="ucam-site-btn"></a>'), no('<a ucamsitebutton variant="ghost" size="lg" class="ucam-site-btn"></a>')).igual).toBe(true);
+    // Num elemento que não é a peça, o mesmo atributo é um atributo de verdade.
+    expect(mesmaArvore(no('<a class="ucam-site-btn"></a>'), no('<a size="lg" class="ucam-site-btn"></a>')).igual).toBe(false);
+    // `name` é entrada do avatar e atributo de verdade num campo.
+    expect(mesmaArvore(no('<span class="ucam-site-avatar"></span>'), no('<span ucamsiteavatar name="Ana" class="ucam-site-avatar"></span>')).igual).toBe(true);
+    expect(mesmaArvore(no('<input>'), no('<input name="email">')).igual).toBe(false);
+  });
+  it('o valor do seletor do ícone é entrada; o href do <use> conta', () => {
+    const a = no('<svg class="ic" aria-hidden="true"><use href="#i-check"></use></svg>');
+    const b = no('<svg ucamSiteIcon="check" class="ic" aria-hidden="true"><use href="#i-check"></use></svg>');
+    expect(mesmaArvore(a, b).igual).toBe(true);
+  });
 });

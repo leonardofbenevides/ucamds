@@ -41,7 +41,15 @@ import { SitesParidadeComponent, temFormaAngular } from '../../docs/sites-parida
       <ucam-page-header secao="Sites" [titulo]="c.name" [lede]="c.description">
         <span slot="selo" class="pill" [class]="'pill-' + c.status">{{ c.status }}</span>
         <p class="meta">
-          <code>&lt;{{ c.selector }}&gt;</code>
+          <!-- O "selector" do contrato é o nome da peça no catálogo, não um
+               elemento: mostrá-lo entre sinais de menor e maior dizia ao dev
+               para escrever uma tag que não existe. Com a peça na lib, o que
+               aparece é o seletor de atributo dela. -->
+          @if (c.seletor_angular) {
+            <code>{{ c.seletor_angular }}</code>
+          } @else {
+            <code>{{ c.selector }}</code>
+          }
           <span>versão {{ c.version }}</span>
           <span>{{ c.category }}</span>
           @if (c.since) {

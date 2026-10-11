@@ -17,8 +17,8 @@ const TONS = ['brand', 'neutral', 'inverse'] as const;
   host: { '[class]': 'classes()', 'aria-hidden': 'true' },
 })
 export class UcamSiteIconChip {
-  readonly size = input<UcamSiteIconChipSize, unknown>('md', { transform: umDe(TAMANHOS, 'md') });
-  readonly tone = input<UcamSiteIconChipTone, unknown>('brand', { transform: umDe(TONS, 'brand') });
+  readonly size = input<UcamSiteIconChipSize, UcamSiteIconChipSize | null | undefined>('md', { transform: umDe(TAMANHOS, 'md') });
+  readonly tone = input<UcamSiteIconChipTone, UcamSiteIconChipTone | null | undefined>('brand', { transform: umDe(TONS, 'brand') });
 
   protected readonly classes = computed(() =>
     classesDe('ucam-site-icon-chip', this.size() === 'lg' && 'lg', this.tone() !== 'brand' && this.tone()),

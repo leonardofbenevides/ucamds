@@ -24,6 +24,20 @@ const CONTRATOS: Record<string, unknown> = {
   'section-heading': sectionHeading,
 };
 
+/**
+ * As entradas de cada peça, pelo atributo de seletor em minúsculas
+ * (`ucamsitebutton` → variant, size, inverse). Sai do `trilho_b` do
+ * contrato; o normalizador de paridade usa para saber quais atributos de um
+ * elemento são entrada e não atributo de verdade.
+ */
+export const ENTRADAS_POR_SELETOR: Record<string, string[]> = { ucamsiteicon: ['ucamsiteicon'] };
+for (const c of Object.values(CONTRATOS) as { implementacao: { trilho_b?: string } }[]) {
+  const m = / — (.+)\. Entradas: ([^.]+)\.$/.exec(c.implementacao.trilho_b ?? '');
+  if (!m) continue;
+  const entradas = m[2].split(',').map((x) => x.trim());
+  for (const s of m[1].matchAll(/\[([A-Za-z]+)\]/g)) ENTRADAS_POR_SELETOR[s[1].toLowerCase()] = entradas;
+}
+
 export function contratoDe(id: string): { props: Prop[]; raiz: string } {
   const c = CONTRATOS[id] as { props: Prop[]; implementacao: { trilho_a: { raiz: string } } } | undefined;
   if (!c) throw new Error(`contrato desconhecido: ${id}`);

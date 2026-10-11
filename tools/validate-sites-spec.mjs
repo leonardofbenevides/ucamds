@@ -171,16 +171,27 @@ export function validar({ raiz = ROOT, css } = {}) {
         const [, arquivo, seletor, entradas] = m;
         if (!existsSync(join(raiz, arquivo))) falha(file, `${id}: trilho_b aponta para ${arquivo}, que não existe`);
         else {
-          const fonte = readFileSync(join(raiz, arquivo), 'utf8');
+          // Sem os comentários: seletor ou entrada citados só num comentário não existem.
+          const fonte = readFileSync(join(raiz, arquivo), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
           for (const sel of seletor.split(',').map((x) => x.trim())) {
             if (!fonte.includes(sel)) falha(file, `${id}: trilho_b cita o seletor ${sel}, que ${arquivo} não declara`);
           }
           for (const nome of entradas.split(',').map((x) => x.trim())) {
-            if (!new RegExp(`\\b${nome}\\s*=\\s*input\\b`).test(fonte)) falha(file, `${id}: trilho_b cita a entrada "${nome}", que ${arquivo} não declara`);
+            if (!/^[A-Za-z][A-Za-z0-9]*$/.test(nome)) falha(file, `${id}: trilho_b cita a entrada "${nome}", que não é um nome de entrada`);
+            else if (!new RegExp(`\\b${nome}\\s*=\\s*input\\b`).test(fonte)) falha(file, `${id}: trilho_b cita a entrada "${nome}", que ${arquivo} não declara`);
+          }
+          // O outro sentido: entrada que a peça tem e o contrato não diz.
+          const citadas = new Set(entradas.split(',').map((x) => x.trim()));
+          for (const d of fonte.matchAll(/\breadonly\s+([A-Za-z][A-Za-z0-9]*)\s*=\s*input\b/g)) {
+            if (!citadas.has(d[1])) falha(file, `${id}: ${arquivo} declara a entrada "${d[1]}", que o trilho_b não cita`);
           }
         }
       }
       if (!demoAngular) falha(file, `${id}: tem trilho_b e a demo principal não tem a forma Angular (campo angular)`);
+      // Exemplo sem a forma Angular encolheria a cobertura do portão em silêncio.
+      for (const e of demos[id]?.exemplos ?? []) {
+        if (!e.angular) falha(file, `${id}: o exemplo "${e.titulo}" não tem a forma Angular`);
+      }
     } else {
       if (spec.status === 'review' || spec.status === 'stable') falha(file, `${id}: status "${spec.status}" sem implementacao.trilho_b — só sai de draft a peça que a lib entrega`);
       if (demoAngular) falha(file, `${id}: a demo tem a forma Angular e o contrato não tem trilho_b`);

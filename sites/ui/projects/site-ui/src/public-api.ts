@@ -14,7 +14,6 @@ import { UcamSiteSectionHeading, UcamSiteSectionHeadingAcoes } from './lib/secti
 import { UcamSiteTag } from './lib/tag/tag';
 
 export * from './lib/nucleo/provedor';
-export * from './lib/nucleo/classes';
 export * from './lib/icon/icon';
 export * from './lib/button/button';
 export * from './lib/tag/tag';

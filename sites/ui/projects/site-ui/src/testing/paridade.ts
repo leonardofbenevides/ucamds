@@ -1,12 +1,30 @@
 /**
  * O portão de paridade: a peça Angular tem de produzir a MESMA árvore da demo
- * em HTML do catálogo. Compara-se o que o contrato promete — elemento, classes
- * e os atributos que mudam o que o usuário recebe — e ignora-se o que é
- * andaime do Angular (comentários, _ng*, os atributos de seletor e de entrada).
+ * em HTML do catálogo.
+ *
+ * Conta TUDO o que o navegador recebe — elemento, classes, texto e todo
+ * atributo —, menos o que é andaime do Angular: comentários, `_ng*`, `ng-*`,
+ * o atributo de seletor da peça e as ENTRADAS da peça escritas como atributo
+ * (`variant="ghost"` fica no DOM, e não é atributo do <a>). A lista de
+ * entradas vem do contrato (`trilho_b`), e só vale no elemento que leva o
+ * seletor daquela peça: `name` é entrada no avatar e atributo num campo.
+ *
+ * Nasceu como lista do que conta, e escondia o que as próximas peças têm de
+ * acertar (target, rel, required, loading). Lista do que se ignora erra para
+ * o lado seguro: atributo novo conta até alguém dizer que não.
  */
-const ATRIBUTOS = new Set(['role', 'href', 'type', 'disabled', 'alt', 'src', 'for', 'id', 'name', 'open', 'tabindex']);
+import { ENTRADAS_POR_SELETOR } from './contrato';
 
-const conta = (nome: string) => ATRIBUTOS.has(nome) || nome.startsWith('aria-');
+/** As entradas das peças cujo seletor este elemento leva, em minúsculas. */
+function entradasDe(el: Element): Set<string> {
+  const fora = new Set<string>();
+  for (const a of Array.from(el.attributes)) {
+    for (const entrada of ENTRADAS_POR_SELETOR[a.name.toLowerCase()] ?? []) fora.add(entrada.toLowerCase());
+  }
+  return fora;
+}
+
+const andaime = (nome: string) => nome === 'class' || nome.startsWith('_ng') || nome.startsWith('ng-') || nome.startsWith('ucamsite');
 
 function linhas(no: Node, nivel: number, saida: string[]): void {
   for (const filho of Array.from(no.childNodes)) {
@@ -19,9 +37,11 @@ function linhas(no: Node, nivel: number, saida: string[]): void {
     if (filho.nodeType !== 1) continue;
     const el = filho as Element;
     const classes = (el.getAttribute('class') ?? '').split(/\s+/).filter(Boolean).sort().join(' ');
+    const entradas = entradasDe(el);
     const atributos = Array.from(el.attributes)
-      .filter((a) => conta(a.name))
-      .map((a) => `${a.name}="${a.value}"`)
+      .map((a) => ({ nome: a.name.toLowerCase(), valor: a.value }))
+      .filter((a) => !andaime(a.nome) && !entradas.has(a.nome))
+      .map((a) => `${a.nome}="${a.valor}"`)
       .sort()
       .join(' ');
     saida.push(`${recuo}<${el.localName}${classes ? ` class="${classes}"` : ''}${atributos ? ` ${atributos}` : ''}>`);

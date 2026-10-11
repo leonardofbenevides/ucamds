@@ -6,30 +6,30 @@
       "importacao": "@use 'node_modules/@ucam/site-css/tokens/ucam-site-tokens' as site;",
       "principal": {
         "preview": "<div style='display:flex;flex-wrap:wrap;gap:.75rem;align-items:center'><a class='ucam-site-btn ucam-site-btn--primary' href='#'>Ver oportunidades</a><a class='ucam-site-btn ucam-site-btn--secondary' href='#'>Acessar plataforma</a><button type='button' class='ucam-site-btn ucam-site-btn--ghost'>Ver todas <svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></button></div>",
-        "codigo": "<a class=\"ucam-site-btn ucam-site-btn--primary\" href=\"/vagas\">Ver oportunidades</a>\n<a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>\n<button type=\"button\" class=\"ucam-site-btn ucam-site-btn--ghost\">Ver todas <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-arrowRight\"/></svg></button>",
-        "angular": "<a ucamSiteButton href=\"/vagas\">Ver oportunidades</a>\n<a ucamSiteButton variant=\"secondary\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>\n<button ucamSiteButton variant=\"ghost\" type=\"button\">Ver todas <svg ucamSiteIcon=\"arrowRight\"></svg></button>"
+        "codigo": "<div class=\"ucam-site-fileira\">\n  <a class=\"ucam-site-btn ucam-site-btn--primary\" href=\"/vagas\">Ver oportunidades</a>\n  <a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>\n  <button type=\"button\" class=\"ucam-site-btn ucam-site-btn--ghost\">Ver todas <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-arrowRight\"/></svg></button>\n</div>",
+        "angular": "<div class=\"ucam-site-fileira\">\n  <a ucamSiteButton href=\"/vagas\">Ver oportunidades</a>\n  <a ucamSiteButton variant=\"secondary\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>\n  <button ucamSiteButton variant=\"ghost\" type=\"button\">Ver todas <svg ucamSiteIcon=\"arrowRight\"></svg></button>\n</div>"
       },
       "exemplos": [
         {
           "titulo": "Tamanho grande, no hero",
           "descricao": "52px de altura para a maior peça do bloco. Um primário, um secundário.",
           "preview": "<div style='display:flex;flex-wrap:wrap;gap:.75rem'><a class='ucam-site-btn ucam-site-btn--primary ucam-site-btn--lg' href='#'>Inscreva-se</a><a class='ucam-site-btn ucam-site-btn--secondary ucam-site-btn--lg' href='#'>Conhecer os cursos</a></div>",
-          "codigo": "<a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--lg\" href=\"/inscricao\">Inscreva-se</a>\n<a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--lg\" href=\"/cursos\">Conhecer os cursos</a>",
-          "angular": "<a ucamSiteButton size=\"lg\" href=\"/inscricao\">Inscreva-se</a>\n<a ucamSiteButton variant=\"secondary\" size=\"lg\" href=\"/cursos\">Conhecer os cursos</a>"
+          "codigo": "<div class=\"ucam-site-fileira\">\n  <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--lg\" href=\"/inscricao\">Inscreva-se</a>\n  <a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--lg\" href=\"/cursos\">Conhecer os cursos</a>\n</div>",
+          "angular": "<div class=\"ucam-site-fileira\">\n  <a ucamSiteButton size=\"lg\" href=\"/inscricao\">Inscreva-se</a>\n  <a ucamSiteButton variant=\"secondary\" size=\"lg\" href=\"/cursos\">Conhecer os cursos</a>\n</div>"
         },
         {
           "titulo": "Sobre seção escura",
           "descricao": "Os três pesos lendo sobre color.surface.inverse.",
           "preview": "<div class='ucam-site-inverso' style='display:flex;flex-wrap:wrap;gap:.75rem;padding:1.5rem;border-radius:.5rem'><a class='ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse' href='#'>Inscreva-se</a><a class='ucam-site-btn ucam-site-btn--secondary ucam-site-btn--inverse' href='#'>Fale conosco</a><button type='button' class='ucam-site-btn ucam-site-btn--ghost ucam-site-btn--inverse'>Ver todas</button></div>",
-          "codigo": "<div class=\"ucam-site-inverso\">\n  <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse\" href=\"/inscricao\">Inscreva-se</a>\n  <a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--inverse\" href=\"/contato\">Fale conosco</a>\n</div>",
-          "angular": "<div class=\"ucam-site-inverso\">\n  <a ucamSiteButton inverse href=\"/inscricao\">Inscreva-se</a>\n  <a ucamSiteButton variant=\"secondary\" inverse href=\"/contato\">Fale conosco</a>\n</div>"
+          "codigo": "<div class=\"ucam-site-inverso ucam-site-fileira\">\n  <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse\" href=\"/inscricao\">Inscreva-se</a>\n  <a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--inverse\" href=\"/contato\">Fale conosco</a>\n</div>",
+          "angular": "<div class=\"ucam-site-inverso ucam-site-fileira\">\n  <a ucamSiteButton inverse href=\"/inscricao\">Inscreva-se</a>\n  <a ucamSiteButton variant=\"secondary\" inverse href=\"/contato\">Fale conosco</a>\n</div>"
         },
         {
           "titulo": "Desabilitado",
           "descricao": "Raro num site. Quando existe, o motivo está escrito ao lado.",
           "preview": "<div style='display:flex;gap:.75rem;align-items:center'><button type='button' class='ucam-site-btn ucam-site-btn--primary' disabled>Enviar</button><span class='ucam-site-muted'>Inscrições abrem em 3 de novembro.</span></div>",
-          "codigo": "<button type=\"button\" class=\"ucam-site-btn ucam-site-btn--primary\" disabled>Enviar</button>\n<span class=\"ucam-site-muted\">Inscrições abrem em 3 de novembro.</span>",
-          "angular": "<button ucamSiteButton type=\"button\" disabled>Enviar</button>\n<span class=\"ucam-site-muted\">Inscrições abrem em 3 de novembro.</span>"
+          "codigo": "<div class=\"ucam-site-fileira\">\n  <button type=\"button\" class=\"ucam-site-btn ucam-site-btn--primary\" disabled>Enviar</button>\n  <span class=\"ucam-site-muted\">Inscrições abrem em 3 de novembro.</span>\n</div>",
+          "angular": "<div class=\"ucam-site-fileira\">\n  <button ucamSiteButton type=\"button\" disabled>Enviar</button>\n  <span class=\"ucam-site-muted\">Inscrições abrem em 3 de novembro.</span>\n</div>"
         }
       ]
     },
@@ -37,8 +37,8 @@
       "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
       "principal": {
         "preview": "<div style='display:flex;flex-wrap:wrap;gap:.5rem;align-items:center'><span class='ucam-site-tag'>EAD</span><span class='ucam-site-tag'>Noturno</span><span class='ucam-site-tag ucam-site-tag--brand'>Vagas abertas</span><span class='ucam-site-tag ucam-site-tag--info'>Orienta Candido</span></div>",
-        "codigo": "<span class=\"ucam-site-tag\">EAD</span>\n<span class=\"ucam-site-tag\">Noturno</span>\n<span class=\"ucam-site-tag ucam-site-tag--brand\">Vagas abertas</span>\n<span class=\"ucam-site-tag ucam-site-tag--info\">Orienta Candido</span>",
-        "angular": "<span ucamSiteTag>EAD</span>\n<span ucamSiteTag>Noturno</span>\n<span ucamSiteTag tone=\"brand\">Vagas abertas</span>\n<span ucamSiteTag tone=\"info\">Orienta Candido</span>"
+        "codigo": "<div class=\"ucam-site-fileira\">\n  <span class=\"ucam-site-tag\">EAD</span>\n  <span class=\"ucam-site-tag\">Noturno</span>\n  <span class=\"ucam-site-tag ucam-site-tag--brand\">Vagas abertas</span>\n  <span class=\"ucam-site-tag ucam-site-tag--info\">Orienta Candido</span>\n</div>",
+        "angular": "<div class=\"ucam-site-fileira\">\n  <span ucamSiteTag>EAD</span>\n  <span ucamSiteTag>Noturno</span>\n  <span ucamSiteTag tone=\"brand\">Vagas abertas</span>\n  <span ucamSiteTag tone=\"info\">Orienta Candido</span>\n</div>"
       },
       "exemplos": [
         {
@@ -53,8 +53,8 @@
       "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
       "principal": {
         "preview": "<div style='display:flex;flex-wrap:wrap;gap:1rem;align-items:center'><span class='ucam-site-icon-chip' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-briefcase'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--lg' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--neutral' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-mapPin'/></svg></span></div>",
-        "codigo": "<span class=\"ucam-site-icon-chip\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-briefcase\"/></svg></span>\n<span class=\"ucam-site-icon-chip ucam-site-icon-chip--lg\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-graduationCap\"/></svg></span>\n<span class=\"ucam-site-icon-chip ucam-site-icon-chip--neutral\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-mapPin\"/></svg></span>",
-        "angular": "<span ucamSiteIconChip><svg ucamSiteIcon=\"briefcase\"></svg></span>\n<span ucamSiteIconChip size=\"lg\"><svg ucamSiteIcon=\"graduationCap\"></svg></span>\n<span ucamSiteIconChip tone=\"neutral\"><svg ucamSiteIcon=\"mapPin\"></svg></span>"
+        "codigo": "<div class=\"ucam-site-fileira\">\n  <span class=\"ucam-site-icon-chip\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-briefcase\"/></svg></span>\n  <span class=\"ucam-site-icon-chip ucam-site-icon-chip--lg\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-graduationCap\"/></svg></span>\n  <span class=\"ucam-site-icon-chip ucam-site-icon-chip--neutral\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-mapPin\"/></svg></span>\n</div>",
+        "angular": "<div class=\"ucam-site-fileira\">\n  <span ucamSiteIconChip><svg ucamSiteIcon=\"briefcase\"></svg></span>\n  <span ucamSiteIconChip size=\"lg\"><svg ucamSiteIcon=\"graduationCap\"></svg></span>\n  <span ucamSiteIconChip tone=\"neutral\"><svg ucamSiteIcon=\"mapPin\"></svg></span>\n</div>"
       },
       "exemplos": [
         {
@@ -98,16 +98,16 @@
       "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
       "principal": {
         "preview": "<div style='display:flex;gap:1rem;align-items:center'><span class='ucam-site-avatar ucam-site-avatar--sm' role='img' aria-label='Leonardo Benevides'>LB</span><span class='ucam-site-avatar' role='img' aria-label='Ana de Souza'>AS</span><span class='ucam-site-avatar ucam-site-avatar--lg' role='img' aria-label='Marina Costa'>MC</span><span class='ucam-site-avatar ucam-site-avatar--lg ucam-site-avatar--logo' role='img' aria-label='Petrobras'>PB</span></div>",
-        "codigo": "<div>\n  <span class=\"ucam-site-avatar ucam-site-avatar--sm\" role=\"img\" aria-label=\"Leonardo Benevides\">LB</span>\n  <span class=\"ucam-site-avatar\" role=\"img\" aria-label=\"Ana de Souza\">AS</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg\" role=\"img\" aria-label=\"Marina Costa\">MC</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg ucam-site-avatar--logo\" role=\"img\" aria-label=\"Petrobras\">PB</span>\n</div>",
-        "angular": "<div>\n  <span ucamSiteAvatar size=\"sm\" name=\"Leonardo Benevides\">LB</span>\n  <span ucamSiteAvatar name=\"Ana de Souza\">AS</span>\n  <span ucamSiteAvatar size=\"lg\" name=\"Marina Costa\">MC</span>\n  <span ucamSiteAvatar size=\"lg\" shape=\"logo\" name=\"Petrobras\">PB</span>\n</div>"
+        "codigo": "<div class=\"ucam-site-fileira\">\n  <span class=\"ucam-site-avatar ucam-site-avatar--sm\" role=\"img\" aria-label=\"Leonardo Benevides\">LB</span>\n  <span class=\"ucam-site-avatar\" role=\"img\" aria-label=\"Ana de Souza\">AS</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg\" role=\"img\" aria-label=\"Marina Costa\">MC</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg ucam-site-avatar--logo\" role=\"img\" aria-label=\"Petrobras\">PB</span>\n</div>",
+        "angular": "<div class=\"ucam-site-fileira\">\n  <span ucamSiteAvatar size=\"sm\" name=\"Leonardo Benevides\">LB</span>\n  <span ucamSiteAvatar name=\"Ana de Souza\">AS</span>\n  <span ucamSiteAvatar size=\"lg\" name=\"Marina Costa\">MC</span>\n  <span ucamSiteAvatar size=\"lg\" shape=\"logo\" name=\"Petrobras\">PB</span>\n</div>"
       },
       "exemplos": [
         {
           "titulo": "Depoimento, com o nome ao lado",
           "descricao": "O avatar é decorativo: o nome está escrito.",
           "preview": "<div style='display:flex;gap:.75rem;align-items:center'><span class='ucam-site-avatar' aria-hidden='true'>AS</span><span><strong class='ucam-site-titulo'>Ana de Souza</strong><span class='ucam-site-muted'>Direito, turma de 2024</span></span></div>",
-          "codigo": "<div>\n  <span class=\"ucam-site-avatar\" aria-hidden=\"true\">AS</span>\n  <span><strong class=\"ucam-site-titulo\">Ana de Souza</strong><span class=\"ucam-site-muted\">Direito, turma de 2024</span></span>\n</div>",
-          "angular": "<div>\n  <span ucamSiteAvatar>AS</span>\n  <span><strong class=\"ucam-site-titulo\">Ana de Souza</strong><span class=\"ucam-site-muted\">Direito, turma de 2024</span></span>\n</div>"
+          "codigo": "<div class=\"ucam-site-fileira\">\n  <span class=\"ucam-site-avatar\" aria-hidden=\"true\">AS</span>\n  <span><strong class=\"ucam-site-titulo\">Ana de Souza</strong><span class=\"ucam-site-muted\">Direito, turma de 2024</span></span>\n</div>",
+          "angular": "<div class=\"ucam-site-fileira\">\n  <span ucamSiteAvatar>AS</span>\n  <span><strong class=\"ucam-site-titulo\">Ana de Souza</strong><span class=\"ucam-site-muted\">Direito, turma de 2024</span></span>\n</div>"
         }
       ]
     },

@@ -19,20 +19,20 @@ const TAMANHOS = ['section', 'section-sm'] as const;
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'classes()' },
-  template: `@if (eyebrow()) {<p class="ucam-site-section-heading__eyebrow">{{ eyebrow() }}</p>}
+  template: `@if (eyebrow()?.trim(); as texto) {<p class="ucam-site-section-heading__eyebrow">{{ texto }}</p>}
 @if (level() === 3) {<h3 class="ucam-site-section-heading__title">{{ heading() }}</h3>} @else {<h2 class="ucam-site-section-heading__title">{{ heading() }}</h2>}
-@if (lede()) {<p class="ucam-site-section-heading__lede">{{ lede() }}</p>}
+@if (lede()?.trim(); as texto) {<p class="ucam-site-section-heading__lede">{{ texto }}</p>}
 <ng-content />`,
 })
 export class UcamSiteSectionHeading {
   readonly heading = input.required<string>();
   readonly eyebrow = input<string | null | undefined>(null);
   readonly lede = input<string | null | undefined>(null);
-  readonly align = input<UcamSiteSectionHeadingAlign, unknown>('start', { transform: umDe(ALINHAMENTOS, 'start') });
-  readonly size = input<UcamSiteSectionHeadingSize, unknown>('section', { transform: umDe(TAMANHOS, 'section') });
+  readonly align = input<UcamSiteSectionHeadingAlign, UcamSiteSectionHeadingAlign | null | undefined>('start', { transform: umDe(ALINHAMENTOS, 'start') });
+  readonly size = input<UcamSiteSectionHeadingSize, UcamSiteSectionHeadingSize | null | undefined>('section', { transform: umDe(TAMANHOS, 'section') });
   readonly inverse = input(false, { transform: booleanAttribute });
   /** Nível do título: 2 por padrão, 3 quando a seção está dentro de outra. */
-  readonly level = input<2 | 3, unknown>(2, { transform: (v) => (Number(v) === 3 ? 3 : 2) });
+  readonly level = input<2 | 3, 2 | 3 | '2' | '3' | null | undefined>(2, { transform: (v) => (Number(v) === 3 ? 3 : 2) });
 
   protected readonly classes = computed(() =>
     classesDe(

@@ -24,7 +24,9 @@ import { DEMOS } from '@ucam/site-ui/demos';
     @for (d of pares(); track d.titulo) {
       <figure class="par">
         <figcaption class="par-titulo">{{ d.titulo === 'principal' ? 'Exemplo' : d.titulo }}</figcaption>
-        <div class="lados">
+        <!-- Os links das demos são de exemplo (/vagas, /inscricao): o clique
+             não pode tirar o leitor da documentação. -->
+        <div class="lados" (click)="naoNavega($event)">
           <div class="lado">
             <p class="rotulo">HTML</p>
             <div class="ucam-site" data-paridade="html" [innerHTML]="d.html"></div>
@@ -73,6 +75,10 @@ export class SitesParidadeComponent {
   readonly peca = input.required<string>();
 
   private readonly sanitizer = inject(DomSanitizer);
+
+  protected naoNavega(evento: Event): void {
+    if ((evento.target as Element | null)?.closest?.('a[href]')) evento.preventDefault();
+  }
 
   protected readonly pares = computed(() =>
     (DEMOS[this.peca()] ?? []).map((d) => ({ ...d, html: this.sanitizer.bypassSecurityTrustHtml(d.html) })),

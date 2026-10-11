@@ -18,8 +18,10 @@ const TAMANHOS = ['md', 'lg'] as const;
   host: { '[class]': 'classes()' },
 })
 export class UcamSiteButton {
-  readonly variant = input<UcamSiteButtonVariant, unknown>('primary', { transform: umDe(VARIANTES, 'primary') });
-  readonly size = input<UcamSiteButtonSize, unknown>('md', { transform: umDe(TAMANHOS, 'md') });
+  // A ESCRITA é tipada pelo contrato: literal errado no template não compila. O
+  // transform ainda cai no padrão para o que chega sem tipo ($any, JS, dado de CMS).
+  readonly variant = input<UcamSiteButtonVariant, UcamSiteButtonVariant | null | undefined>('primary', { transform: umDe(VARIANTES, 'primary') });
+  readonly size = input<UcamSiteButtonSize, UcamSiteButtonSize | null | undefined>('md', { transform: umDe(TAMANHOS, 'md') });
   readonly inverse = input(false, { transform: booleanAttribute });
 
   protected readonly classes = computed(() =>

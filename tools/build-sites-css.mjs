@@ -155,6 +155,18 @@ export function construirCss({ raiz = ROOT } = {}) {
   color: ${V('color-text-on-inverse')};
 }
 
+/* ------------------------------------------------------------- fileira --- */
+/* Peças em linha lado a lado: botões, tags, pastilhas, avatar e nome. Quem
+ * separa é o gap, não o espaço em branco do HTML: um template Angular tira
+ * esse espaço ao compilar, e dois botões irmãos ficavam encostados na lib e
+ * com 4px no HTML (medido, 10/10/2026). Dentro da fileira os dois dão igual. */
+.ucam-site-fileira {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${V('space-inline-md')};
+}
+
 /* -------------------------------------------------------------- button --- */
 /* Contrato: sites/spec/components/button.json. Uma classe, variante e
  * tamanho por modificador; <a> e <button> sem diferença. */
