@@ -39,6 +39,9 @@ test('a principal vem primeiro, e cada exemplo com Angular vira um componente co
   assert.ok(ts.includes(JSON.stringify('<span class="ucam-site-tag">EAD</span>')), 'o html da principal não é o codigo');
   assert.ok(ts.includes('template: `<span ucamSiteTag tone="inverse">Estágio</span>`'));
   assert.match(ts, /import \{ UCAM_SITE \} from '\.\.\/public-api';/);
+  // O espaço entre dois elementos em linha é parte do que a demo mostra: o
+  // Angular o tira ao compilar, e dois botões ficavam 4px mais juntos que no HTML.
+  assert.equal((ts.match(/preserveWhitespaces: true/g) ?? []).length, 2);
 });
 
 test('crase, cifrão-chave e barra invertida do template saem escapados', () => {

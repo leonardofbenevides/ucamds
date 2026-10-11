@@ -31,7 +31,12 @@ export function gerarDemos({ raiz = ROOT } = {}) {
     const itens = paineis.map((p, i) => {
       if (/<\/script/i.test(p.angular)) throw new Error(`${id}: a demo "${p.titulo}" tem </script no template Angular`);
       const nome = nomeDe(id, i);
-      classes.push(`@Component({ imports: [UCAM_SITE], template: ${literal(p.angular)} })\nclass ${nome} {}`);
+      // preserveWhitespaces: o Angular tira o espaço entre dois elementos ao
+      // compilar, e o HTML o mantém — dois botões em linha ficavam 4px mais
+      // juntos na forma Angular (medido por CDP em 10/10/2026). A demo tem de
+      // renderizar o que está escrito; num site, quem separa é o `gap` do
+      // contêiner, não o espaço do template.
+      classes.push(`@Component({ imports: [UCAM_SITE], preserveWhitespaces: true, template: ${literal(p.angular)} })\nclass ${nome} {}`);
       const titulo = p.titulo === 'principal' ? "'principal'" : JSON.stringify(p.titulo);
       return `    { titulo: ${titulo}, html: ${JSON.stringify(p.codigo)}, componente: ${nome} },`;
     });

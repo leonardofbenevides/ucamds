@@ -37,6 +37,8 @@
       "echarts": ["./node_modules/echarts"],
       "echarts/*": ["./node_modules/echarts/*"],
       "@ucam/ui": ["../ui/projects/ui/src/public-api.ts"],
+      "@ucam/site-ui/demos": ["../sites/ui/projects/site-ui/src/testing/demos.gerado.ts"],
+      "@ucam/site-ui": ["../sites/ui/projects/site-ui/src/public-api.ts"],
       "@/*": ["../ui/projects/ui/src/lib/*"],
       "@generated/*": ["./src/generated/*"]
     }

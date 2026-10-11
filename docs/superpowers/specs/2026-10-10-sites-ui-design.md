@@ -77,6 +77,8 @@ proíbe.
 
 ### Diretiva ou componente
 
+**Corrigido na fatia 3a-1 (10/10/2026): toda peça tem seletor de ATRIBUTO sobre o elemento nativo do contrato**, inclusive as que têm template (`header[ucamSiteSectionHeading]`, não `<ucam-site-section-heading>`). Um elemento hospedeiro próprio seria uma caixa a mais no DOM: quebraria a paridade exata e tiraria a semântica de `header`, `nav` e `footer`. O que segue vale com essa correção: onde se lê "componente" com nome de elemento, leia-se componente de seletor de atributo.
+
 A regra é do DOM, não do gosto:
 
 - **Diretiva de atributo** quando a peça é UM elemento que o consumidor
@@ -131,9 +133,11 @@ peça.
    peça em HTML, e uma sonda por CDP compara caixa e estilo computado das
    duas em 390, 768, 1024, 1280 e 1440. Tolerância zero em caixa.
 
-A demo de cada peça ganha a forma Angular no campo `codigo` (hoje `preview` e
-`codigo` são o mesmo HTML), e o painel de demo ganha o alternador HTML /
-Angular.
+A demo de cada peça ganha a forma Angular no campo **`angular`**, ao lado de
+`codigo` (corrigido na fatia 3a-1: `codigo` continua sendo o HTML, porque o
+validador cobra as classes nele), e o painel de demo ganha a aba Angular.
+`implementacao.trilho_b` é TEXTO, como o schema compartilhado define, no
+formato `<arquivo> — <seletor>. Entradas: a, b.`
 
 ## Ferramenta e saídas
 

@@ -12,6 +12,7 @@ import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.compo
 import { AnatomiaDiagramaComponent } from '../../docs/anatomia-diagrama.component';
 import { EstadosGradeComponent } from '../../docs/estados-grade.component';
 import { TextoComponent } from '../../docs/texto.component';
+import { SitesParidadeComponent, temFormaAngular } from '../../docs/sites-paridade.component';
 
 @Component({
   selector: 'ucam-site-componente',
@@ -26,6 +27,7 @@ import { TextoComponent } from '../../docs/texto.component';
     NestaPaginaComponent,
     AnatomiaDiagramaComponent,
     EstadosGradeComponent,
+    SitesParidadeComponent,
   ],
   host: { class: 'pagina' },
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -93,6 +95,17 @@ import { TextoComponent } from '../../docs/texto.component';
             @for (e of c.demo?.exemplos; track e.titulo ?? $index) {
               <ucam-demo-painel [painel]="e" raiz="ucam-site" />
             }
+          </section>
+        }
+
+        <!-- A peça pela lib Angular, ao lado do HTML (fatia 3a-1). Só aparece
+             para as peças que @ucam/site-ui já entrega; é o par que a sonda de
+             paridade mede. -->
+        @if (temAngular()) {
+          <section id="angular">
+            <h2>Em Angular</h2>
+            <p>A mesma peça por <code>&#64;ucam/site-ui</code>, ao lado do HTML. As duas têm de sair iguais.</p>
+            <ucam-sites-paridade [peca]="c.id" />
           </section>
         }
 
@@ -992,6 +1005,9 @@ export default class SiteComponentePage {
 
   protected readonly componente = computed(() => sitesComponentePorId(this.id()));
 
+  /** A peça já existe em @ucam/site-ui? Decide a seção "Em Angular". */
+  protected readonly temAngular = computed(() => temFormaAngular(this.id()));
+
   protected readonly submarcas = sitesMeta.submarcas;
   /** A submarca que os previews vestem: 'base' é o bordô, sem data-marca. */
   protected readonly marca = signal<string>('base');
@@ -1035,6 +1051,7 @@ export default class SiteComponentePage {
     area('ver', 'Ver');
     itens.push({ id: 'exemplo', rotulo: 'Exemplo' });
     põe(c.demo?.exemplos?.length, 'variacoes', 'Variações');
+    põe(temFormaAngular(c.id), 'angular', 'Em Angular');
     for (const p of this.propsComValores()) {
       itens.push({ id: `variantes-${p.nome}`, rotulo: `Aparência por ${p.nome}` });
       for (const chave of Object.keys(p.valores ?? {})) {

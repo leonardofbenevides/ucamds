@@ -58,10 +58,25 @@ let seq = 0;
             [attr.aria-controls]="id + '-c'"
             (click)="aba.set('codigo')"
           >
-            Código
+            {{ d.angular ? 'HTML' : 'Código' }}
           </button>
+          <!-- A forma Angular da mesma demo (sites, fatia 3a-1). Com ela, a
+               aba do código passa a se chamar HTML: são duas formas do mesmo
+               exemplo, e "Código" ao lado de "Angular" não diria qual. -->
+          @if (d.angular) {
+            <button
+              type="button"
+              role="tab"
+              class="aba"
+              [attr.aria-selected]="aba() === 'angular'"
+              [attr.aria-controls]="id + '-a'"
+              (click)="aba.set('angular')"
+            >
+              Angular
+            </button>
+          }
 
-          <button type="button" class="copiar" (click)="copiar(d.codigo)">
+          <button type="button" class="copiar" (click)="copiar(aba() === 'angular' ? d.angular! : d.codigo)">
             {{ copiado() ? 'Copiado' : 'Copiar' }}
           </button>
         </div>
@@ -87,6 +102,17 @@ let seq = 0;
         >
           <pre><code>{{ d.codigo }}</code></pre>
         </div>
+
+        @if (d.angular) {
+          <div
+            class="painel-corpo codigo"
+            [id]="id + '-a'"
+            role="tabpanel"
+            [hidden]="aba() !== 'angular'"
+          >
+            <pre><code>{{ d.angular }}</code></pre>
+          </div>
+        }
       </div>
     </figure>
   `,
@@ -254,7 +280,7 @@ export class DemoPainelComponent {
   private readonly sanitizer = inject(DomSanitizer);
 
   protected readonly id = `demo-${++seq}`;
-  protected readonly aba = signal<'preview' | 'codigo'>('preview');
+  protected readonly aba = signal<'preview' | 'codigo' | 'angular'>('preview');
   protected readonly copiado = signal(false);
 
   protected readonly temPreview = computed(() => !!this.painel().preview?.trim());

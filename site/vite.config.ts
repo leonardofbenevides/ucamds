@@ -92,6 +92,10 @@ export default defineConfig(() => ({
     // interno da lib para a base ZardUI.
     alias: {
       '@ucam/ui': join(import.meta.dirname, '..', 'ui/projects/ui/src/public-api.ts'),
+      // A lib dos sites, pelo fonte. O alias mais específico vem antes: as demos
+      // são geradas de sites/spec/demos.json por `pnpm run sites`.
+      '@ucam/site-ui/demos': join(import.meta.dirname, '..', 'sites/ui/projects/site-ui/src/testing/demos.gerado.ts'),
+      '@ucam/site-ui': join(import.meta.dirname, '..', 'sites/ui/projects/site-ui/src/public-api.ts'),
       '@/': join(import.meta.dirname, '..', 'ui/projects/ui/src/lib') + '/',
     },
     // Uma única instância de cada pacote Angular no bundle.

@@ -118,6 +118,8 @@ export interface Desambiguacao {
 export interface DemoPainel {
   preview?: string;
   codigo: string;
+  /** A mesma demo pela lib Angular. Só os sites usam (fatia 3a-1): o painel ganha a aba "Angular". */
+  angular?: string;
   titulo?: string;
   descricao?: string;
 }
