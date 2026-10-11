@@ -3,8 +3,32 @@
  *
  * REGRA (spec de 10/10/2026): a lib não tem estilo. Cada peça monta o DOM do
  * contrato e aplica as classes de @ucam/site-css; a aparência tem uma fonte
- * só, a folha gerada da spec.
+ * só, a folha gerada da spec. Toda peça tem seletor de ATRIBUTO sobre o
+ * elemento nativo do contrato: nenhuma cria elemento hospedeiro próprio.
  */
+import { UcamSiteAvatar } from './lib/avatar/avatar';
+import { UcamSiteButton } from './lib/button/button';
+import { UcamSiteIcon } from './lib/icon/icon';
+import { UcamSiteIconChip } from './lib/icon-chip/icon-chip';
+import { UcamSiteSectionHeading, UcamSiteSectionHeadingAcoes } from './lib/section-heading/section-heading';
+import { UcamSiteTag } from './lib/tag/tag';
+
 export * from './lib/nucleo/provedor';
 export * from './lib/nucleo/classes';
 export * from './lib/icon/icon';
+export * from './lib/button/button';
+export * from './lib/tag/tag';
+export * from './lib/icon-chip/icon-chip';
+export * from './lib/avatar/avatar';
+export * from './lib/section-heading/section-heading';
+
+/** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
+export const UCAM_SITE = [
+  UcamSiteIcon,
+  UcamSiteButton,
+  UcamSiteTag,
+  UcamSiteIconChip,
+  UcamSiteAvatar,
+  UcamSiteSectionHeading,
+  UcamSiteSectionHeadingAcoes,
+] as const;

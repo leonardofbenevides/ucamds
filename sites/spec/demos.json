@@ -6,26 +6,30 @@
       "importacao": "@use 'node_modules/@ucam/site-css/tokens/ucam-site-tokens' as site;",
       "principal": {
         "preview": "<div style='display:flex;flex-wrap:wrap;gap:.75rem;align-items:center'><a class='ucam-site-btn ucam-site-btn--primary' href='#'>Ver oportunidades</a><a class='ucam-site-btn ucam-site-btn--secondary' href='#'>Acessar plataforma</a><button type='button' class='ucam-site-btn ucam-site-btn--ghost'>Ver todas <svg class='ic' aria-hidden='true'><use href='#i-arrowRight'/></svg></button></div>",
-        "codigo": "<a class=\"ucam-site-btn ucam-site-btn--primary\" href=\"/vagas\">Ver oportunidades</a>\n<a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>\n<button type=\"button\" class=\"ucam-site-btn ucam-site-btn--ghost\">Ver todas <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-arrowRight\"/></svg></button>"
+        "codigo": "<a class=\"ucam-site-btn ucam-site-btn--primary\" href=\"/vagas\">Ver oportunidades</a>\n<a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>\n<button type=\"button\" class=\"ucam-site-btn ucam-site-btn--ghost\">Ver todas <svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-arrowRight\"/></svg></button>",
+        "angular": "<a ucamSiteButton href=\"/vagas\">Ver oportunidades</a>\n<a ucamSiteButton variant=\"secondary\" href=\"https://plataforma.exemplo\">Acessar plataforma</a>\n<button ucamSiteButton variant=\"ghost\" type=\"button\">Ver todas <svg ucamSiteIcon=\"arrowRight\"></svg></button>"
       },
       "exemplos": [
         {
           "titulo": "Tamanho grande, no hero",
           "descricao": "52px de altura para a maior peça do bloco. Um primário, um secundário.",
           "preview": "<div style='display:flex;flex-wrap:wrap;gap:.75rem'><a class='ucam-site-btn ucam-site-btn--primary ucam-site-btn--lg' href='#'>Inscreva-se</a><a class='ucam-site-btn ucam-site-btn--secondary ucam-site-btn--lg' href='#'>Conhecer os cursos</a></div>",
-          "codigo": "<a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--lg\" href=\"/inscricao\">Inscreva-se</a>\n<a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--lg\" href=\"/cursos\">Conhecer os cursos</a>"
+          "codigo": "<a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--lg\" href=\"/inscricao\">Inscreva-se</a>\n<a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--lg\" href=\"/cursos\">Conhecer os cursos</a>",
+          "angular": "<a ucamSiteButton size=\"lg\" href=\"/inscricao\">Inscreva-se</a>\n<a ucamSiteButton variant=\"secondary\" size=\"lg\" href=\"/cursos\">Conhecer os cursos</a>"
         },
         {
           "titulo": "Sobre seção escura",
           "descricao": "Os três pesos lendo sobre color.surface.inverse.",
           "preview": "<div class='ucam-site-inverso' style='display:flex;flex-wrap:wrap;gap:.75rem;padding:1.5rem;border-radius:.5rem'><a class='ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse' href='#'>Inscreva-se</a><a class='ucam-site-btn ucam-site-btn--secondary ucam-site-btn--inverse' href='#'>Fale conosco</a><button type='button' class='ucam-site-btn ucam-site-btn--ghost ucam-site-btn--inverse'>Ver todas</button></div>",
-          "codigo": "<div class=\"ucam-site-inverso\">\n  <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse\" href=\"/inscricao\">Inscreva-se</a>\n  <a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--inverse\" href=\"/contato\">Fale conosco</a>\n</div>"
+          "codigo": "<div class=\"ucam-site-inverso\">\n  <a class=\"ucam-site-btn ucam-site-btn--primary ucam-site-btn--inverse\" href=\"/inscricao\">Inscreva-se</a>\n  <a class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-btn--inverse\" href=\"/contato\">Fale conosco</a>\n</div>",
+          "angular": "<div class=\"ucam-site-inverso\">\n  <a ucamSiteButton inverse href=\"/inscricao\">Inscreva-se</a>\n  <a ucamSiteButton variant=\"secondary\" inverse href=\"/contato\">Fale conosco</a>\n</div>"
         },
         {
           "titulo": "Desabilitado",
           "descricao": "Raro num site. Quando existe, o motivo está escrito ao lado.",
           "preview": "<div style='display:flex;gap:.75rem;align-items:center'><button type='button' class='ucam-site-btn ucam-site-btn--primary' disabled>Enviar</button><span class='ucam-site-muted'>Inscrições abrem em 3 de novembro.</span></div>",
-          "codigo": "<button type=\"button\" class=\"ucam-site-btn ucam-site-btn--primary\" disabled>Enviar</button>\n<span class=\"ucam-site-muted\">Inscrições abrem em 3 de novembro.</span>"
+          "codigo": "<button type=\"button\" class=\"ucam-site-btn ucam-site-btn--primary\" disabled>Enviar</button>\n<span class=\"ucam-site-muted\">Inscrições abrem em 3 de novembro.</span>",
+          "angular": "<button ucamSiteButton type=\"button\" disabled>Enviar</button>\n<span class=\"ucam-site-muted\">Inscrições abrem em 3 de novembro.</span>"
         }
       ]
     },
@@ -33,33 +37,38 @@
       "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
       "principal": {
         "preview": "<div style='display:flex;flex-wrap:wrap;gap:.5rem;align-items:center'><span class='ucam-site-tag'>EAD</span><span class='ucam-site-tag'>Noturno</span><span class='ucam-site-tag ucam-site-tag--brand'>Vagas abertas</span><span class='ucam-site-tag ucam-site-tag--info'>Orienta Candido</span></div>",
-        "codigo": "<span class=\"ucam-site-tag\">EAD</span>\n<span class=\"ucam-site-tag\">Noturno</span>\n<span class=\"ucam-site-tag ucam-site-tag--brand\">Vagas abertas</span>\n<span class=\"ucam-site-tag ucam-site-tag--info\">Orienta Candido</span>"
+        "codigo": "<span class=\"ucam-site-tag\">EAD</span>\n<span class=\"ucam-site-tag\">Noturno</span>\n<span class=\"ucam-site-tag ucam-site-tag--brand\">Vagas abertas</span>\n<span class=\"ucam-site-tag ucam-site-tag--info\">Orienta Candido</span>",
+        "angular": "<span ucamSiteTag>EAD</span>\n<span ucamSiteTag>Noturno</span>\n<span ucamSiteTag tone=\"brand\">Vagas abertas</span>\n<span ucamSiteTag tone=\"info\">Orienta Candido</span>"
       },
       "exemplos": [
         {
           "titulo": "Sobre seção escura",
           "preview": "<div class='ucam-site-inverso' style='display:flex;gap:.5rem;padding:1.25rem;border-radius:.5rem'><span class='ucam-site-tag ucam-site-tag--inverse'>Estágio</span><span class='ucam-site-tag ucam-site-tag--inverse'>Remoto</span></div>",
-          "codigo": "<span class=\"ucam-site-tag ucam-site-tag--inverse\">Estágio</span>"
+          "codigo": "<span class=\"ucam-site-tag ucam-site-tag--inverse\">Estágio</span>",
+          "angular": "<span ucamSiteTag tone=\"inverse\">Estágio</span>"
         }
       ]
     },
     "icon-chip": {
       "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
       "principal": {
-        "preview": "<div style='display:flex;flex-wrap:wrap;gap:1rem;align-items:center'><span class='ucam-site-icon-chip' aria-hidden='true'><svg class='ic'><use href='#i-briefcase'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--lg' aria-hidden='true'><svg class='ic'><use href='#i-graduationCap'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--neutral' aria-hidden='true'><svg class='ic'><use href='#i-mapPin'/></svg></span></div>",
-        "codigo": "<span class=\"ucam-site-icon-chip\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-briefcase\"/></svg></span>\n<span class=\"ucam-site-icon-chip ucam-site-icon-chip--lg\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-graduationCap\"/></svg></span>\n<span class=\"ucam-site-icon-chip ucam-site-icon-chip--neutral\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-mapPin\"/></svg></span>"
+        "preview": "<div style='display:flex;flex-wrap:wrap;gap:1rem;align-items:center'><span class='ucam-site-icon-chip' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-briefcase'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--lg' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--neutral' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-mapPin'/></svg></span></div>",
+        "codigo": "<span class=\"ucam-site-icon-chip\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-briefcase\"/></svg></span>\n<span class=\"ucam-site-icon-chip ucam-site-icon-chip--lg\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-graduationCap\"/></svg></span>\n<span class=\"ucam-site-icon-chip ucam-site-icon-chip--neutral\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-mapPin\"/></svg></span>",
+        "angular": "<span ucamSiteIconChip><svg ucamSiteIcon=\"briefcase\"></svg></span>\n<span ucamSiteIconChip size=\"lg\"><svg ucamSiteIcon=\"graduationCap\"></svg></span>\n<span ucamSiteIconChip tone=\"neutral\"><svg ucamSiteIcon=\"mapPin\"></svg></span>"
       },
       "exemplos": [
         {
           "titulo": "Bloco de destaque",
           "descricao": "A pastilha grande acima do título, como nos quatro passos do CENPRE.",
-          "preview": "<div style='display:grid;gap:.75rem;max-width:18rem'><span class='ucam-site-icon-chip ucam-site-icon-chip--lg' aria-hidden='true'><svg class='ic'><use href='#i-briefcase'/></svg></span><strong class='ucam-site-titulo'>Orientação de estágio</strong><span class='ucam-site-muted'>Como formalizar o estágio obrigatório e o não obrigatório.</span></div>",
-          "codigo": "<span class=\"ucam-site-icon-chip ucam-site-icon-chip--lg\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-briefcase\"/></svg></span>\n<h3>Orientação de estágio</h3>\n<p>Como formalizar o estágio obrigatório e o não obrigatório.</p>"
+          "preview": "<div style='display:grid;gap:.75rem;max-width:18rem'><span class='ucam-site-icon-chip ucam-site-icon-chip--lg' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-briefcase'/></svg></span><strong class='ucam-site-titulo'>Orientação de estágio</strong><span class='ucam-site-muted'>Como formalizar o estágio obrigatório e o não obrigatório.</span></div>",
+          "codigo": "<span class=\"ucam-site-icon-chip ucam-site-icon-chip--lg\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-briefcase\"/></svg></span>\n<h3>Orientação de estágio</h3>\n<p>Como formalizar o estágio obrigatório e o não obrigatório.</p>",
+          "angular": "<span ucamSiteIconChip size=\"lg\"><svg ucamSiteIcon=\"briefcase\"></svg></span>\n<h3>Orientação de estágio</h3>\n<p>Como formalizar o estágio obrigatório e o não obrigatório.</p>"
         },
         {
           "titulo": "Sobre seção escura",
-          "preview": "<div class='ucam-site-inverso' style='display:flex;gap:1rem;padding:1.25rem;border-radius:.5rem'><span class='ucam-site-icon-chip ucam-site-icon-chip--inverse' aria-hidden='true'><svg class='ic'><use href='#i-users'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--inverse ucam-site-icon-chip--lg' aria-hidden='true'><svg class='ic'><use href='#i-chartColumn'/></svg></span></div>",
-          "codigo": "<span class=\"ucam-site-icon-chip ucam-site-icon-chip--inverse\" aria-hidden=\"true\"><svg class=\"ic\"><use href=\"#i-users\"/></svg></span>"
+          "preview": "<div class='ucam-site-inverso' style='display:flex;gap:1rem;padding:1.25rem;border-radius:.5rem'><span class='ucam-site-icon-chip ucam-site-icon-chip--inverse' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-users'/></svg></span><span class='ucam-site-icon-chip ucam-site-icon-chip--inverse ucam-site-icon-chip--lg' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-chartColumn'/></svg></span></div>",
+          "codigo": "<span class=\"ucam-site-icon-chip ucam-site-icon-chip--inverse\" aria-hidden=\"true\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-users\"/></svg></span>",
+          "angular": "<span ucamSiteIconChip tone=\"inverse\"><svg ucamSiteIcon=\"users\"></svg></span>"
         }
       ]
     },
@@ -67,18 +76,21 @@
       "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
       "principal": {
         "preview": "<header class='ucam-site-section-heading'><p class='ucam-site-section-heading__eyebrow'>Carreiras</p><h2 class='ucam-site-section-heading__title'>Vagas e oportunidades</h2><p class='ucam-site-section-heading__lede'>As vagas de estágio e emprego abertas às alunas e aos alunos da UCAM esta semana.</p><div class='ucam-site-section-heading__acoes'><a class='ucam-site-btn ucam-site-btn--secondary' href='#'>Ver todas</a></div></header>",
-        "codigo": "<header class=\"ucam-site-section-heading\">\n  <p class=\"ucam-site-section-heading__eyebrow\">Carreiras</p>\n  <h2 class=\"ucam-site-section-heading__title\">Vagas e oportunidades</h2>\n  <p class=\"ucam-site-section-heading__lede\">As vagas de estágio e emprego abertas às alunas e aos alunos da UCAM esta semana.</p>\n  <div class=\"ucam-site-section-heading__acoes\"><a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"/vagas\">Ver todas</a></div>\n</header>"
+        "codigo": "<header class=\"ucam-site-section-heading\">\n  <p class=\"ucam-site-section-heading__eyebrow\">Carreiras</p>\n  <h2 class=\"ucam-site-section-heading__title\">Vagas e oportunidades</h2>\n  <p class=\"ucam-site-section-heading__lede\">As vagas de estágio e emprego abertas às alunas e aos alunos da UCAM esta semana.</p>\n  <div class=\"ucam-site-section-heading__acoes\"><a class=\"ucam-site-btn ucam-site-btn--secondary\" href=\"/vagas\">Ver todas</a></div>\n</header>",
+        "angular": "<header ucamSiteSectionHeading eyebrow=\"Carreiras\" heading=\"Vagas e oportunidades\" lede=\"As vagas de estágio e emprego abertas às alunas e aos alunos da UCAM esta semana.\">\n  <div ucamSiteSectionHeadingAcoes><a ucamSiteButton variant=\"secondary\" href=\"/vagas\">Ver todas</a></div>\n</header>"
       },
       "exemplos": [
         {
           "titulo": "Centralizado, tamanho menor",
           "preview": "<header class='ucam-site-section-heading ucam-site-section-heading--center ucam-site-section-heading--sm'><p class='ucam-site-section-heading__eyebrow'>Desde 2001</p><h2 class='ucam-site-section-heading__title'>O CENPRE em números</h2></header>",
-          "codigo": "<header class=\"ucam-site-section-heading ucam-site-section-heading--center ucam-site-section-heading--sm\">\n  <p class=\"ucam-site-section-heading__eyebrow\">Desde 2001</p>\n  <h2 class=\"ucam-site-section-heading__title\">O CENPRE em números</h2>\n</header>"
+          "codigo": "<header class=\"ucam-site-section-heading ucam-site-section-heading--center ucam-site-section-heading--sm\">\n  <p class=\"ucam-site-section-heading__eyebrow\">Desde 2001</p>\n  <h2 class=\"ucam-site-section-heading__title\">O CENPRE em números</h2>\n</header>",
+          "angular": "<header ucamSiteSectionHeading align=\"center\" size=\"section-sm\" eyebrow=\"Desde 2001\" heading=\"O CENPRE em números\"></header>"
         },
         {
           "titulo": "Sobre seção escura",
           "preview": "<div class='ucam-site-inverso' style='padding:1.5rem;border-radius:.5rem'><header class='ucam-site-section-heading ucam-site-section-heading--inverse'><p class='ucam-site-section-heading__eyebrow'>Ingresso</p><h2 class='ucam-site-section-heading__title'>Como ingressar</h2><p class='ucam-site-section-heading__lede'>Vestibular, ENEM, transferência, segunda graduação e ENCCEJA.</p></header></div>",
-          "codigo": "<div class=\"ucam-site-inverso\">\n  <header class=\"ucam-site-section-heading ucam-site-section-heading--inverse\">\n    <p class=\"ucam-site-section-heading__eyebrow\">Ingresso</p>\n    <h2 class=\"ucam-site-section-heading__title\">Como ingressar</h2>\n  </header>\n</div>"
+          "codigo": "<div class=\"ucam-site-inverso\">\n  <header class=\"ucam-site-section-heading ucam-site-section-heading--inverse\">\n    <p class=\"ucam-site-section-heading__eyebrow\">Ingresso</p>\n    <h2 class=\"ucam-site-section-heading__title\">Como ingressar</h2>\n  </header>\n</div>",
+          "angular": "<div class=\"ucam-site-inverso\">\n  <header ucamSiteSectionHeading inverse eyebrow=\"Ingresso\" heading=\"Como ingressar\"></header>\n</div>"
         }
       ]
     },
@@ -86,14 +98,16 @@
       "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
       "principal": {
         "preview": "<div style='display:flex;gap:1rem;align-items:center'><span class='ucam-site-avatar ucam-site-avatar--sm' role='img' aria-label='Leonardo Benevides'>LB</span><span class='ucam-site-avatar' role='img' aria-label='Ana de Souza'>AS</span><span class='ucam-site-avatar ucam-site-avatar--lg' role='img' aria-label='Marina Costa'>MC</span><span class='ucam-site-avatar ucam-site-avatar--lg ucam-site-avatar--logo' role='img' aria-label='Petrobras'>PB</span></div>",
-        "codigo": "<div>\n  <span class=\"ucam-site-avatar ucam-site-avatar--sm\" role=\"img\" aria-label=\"Leonardo Benevides\">LB</span>\n  <span class=\"ucam-site-avatar\" role=\"img\" aria-label=\"Ana de Souza\">AS</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg\" role=\"img\" aria-label=\"Marina Costa\">MC</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg ucam-site-avatar--logo\" role=\"img\" aria-label=\"Petrobras\">PB</span>\n</div>"
+        "codigo": "<div>\n  <span class=\"ucam-site-avatar ucam-site-avatar--sm\" role=\"img\" aria-label=\"Leonardo Benevides\">LB</span>\n  <span class=\"ucam-site-avatar\" role=\"img\" aria-label=\"Ana de Souza\">AS</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg\" role=\"img\" aria-label=\"Marina Costa\">MC</span>\n  <span class=\"ucam-site-avatar ucam-site-avatar--lg ucam-site-avatar--logo\" role=\"img\" aria-label=\"Petrobras\">PB</span>\n</div>",
+        "angular": "<div>\n  <span ucamSiteAvatar size=\"sm\" name=\"Leonardo Benevides\">LB</span>\n  <span ucamSiteAvatar name=\"Ana de Souza\">AS</span>\n  <span ucamSiteAvatar size=\"lg\" name=\"Marina Costa\">MC</span>\n  <span ucamSiteAvatar size=\"lg\" shape=\"logo\" name=\"Petrobras\">PB</span>\n</div>"
       },
       "exemplos": [
         {
           "titulo": "Depoimento, com o nome ao lado",
           "descricao": "O avatar é decorativo: o nome está escrito.",
           "preview": "<div style='display:flex;gap:.75rem;align-items:center'><span class='ucam-site-avatar' aria-hidden='true'>AS</span><span><strong class='ucam-site-titulo'>Ana de Souza</strong><span class='ucam-site-muted'>Direito, turma de 2024</span></span></div>",
-          "codigo": "<div>\n  <span class=\"ucam-site-avatar\" aria-hidden=\"true\">AS</span>\n  <span><strong class=\"ucam-site-titulo\">Ana de Souza</strong><span class=\"ucam-site-muted\">Direito, turma de 2024</span></span>\n</div>"
+          "codigo": "<div>\n  <span class=\"ucam-site-avatar\" aria-hidden=\"true\">AS</span>\n  <span><strong class=\"ucam-site-titulo\">Ana de Souza</strong><span class=\"ucam-site-muted\">Direito, turma de 2024</span></span>\n</div>",
+          "angular": "<div>\n  <span ucamSiteAvatar>AS</span>\n  <span><strong class=\"ucam-site-titulo\">Ana de Souza</strong><span class=\"ucam-site-muted\">Direito, turma de 2024</span></span>\n</div>"
         }
       ]
     },
