@@ -323,6 +323,36 @@ folha mas não são para uso: só os semânticos (\`--ucam-site-color-*\`,
 // Trilho B. Aqui não se monta nada: ng-packagr já produziu a árvore correta em
 // ui/dist/ui. O que se faz é conferir que ela não está velha.
 
+/* ---------------------------------------------------------- @ucam/site-ui --- */
+// A lib Angular dos sites: casca fina sobre @ucam/site-css, sem estilo
+// próprio. Sai pronta do ng-packagr; aqui se confere que é a versão da raiz e
+// que pede a folha na MESMA versão — lib e folha andam juntas, porque a lib
+// só aplica classes que a folha daquela versão emite.
+function siteUi() {
+  const origem = join(ROOT, 'sites', 'ui', 'dist', 'site-ui');
+  if (!exigir(join(origem, 'package.json'), 'rode: pnpm run lib:sites')) return null;
+
+  const pkgLib = JSON.parse(readFileSync(join(origem, 'package.json'), 'utf8'));
+  if (pkgLib.name !== '@ucam/site-ui') erros.push(`sites/ui/dist/site-ui declara "${pkgLib.name}"`);
+  if (pkgLib.version !== VERSAO) {
+    erros.push(`sites/ui/dist/site-ui está na ${pkgLib.version} e a raiz na ${VERSAO} — acerte sites/ui/projects/site-ui/package.json e refaça o build`);
+  }
+  const folha = pkgLib.peerDependencies?.['@ucam/site-css'];
+  if (folha !== VERSAO) erros.push(`@ucam/site-ui pede @ucam/site-css "${folha}" e a folha sai na ${VERSAO}`);
+  for (const proibida of ['tailwindcss', '@angular/cdk', '@angular/router']) {
+    if (pkgLib.peerDependencies?.[proibida] || pkgLib.dependencies?.[proibida]) erros.push(`@ucam/site-ui depende de ${proibida}, que a spec dos sites proíbe`);
+  }
+  if (!pkgLib.typings || !existsSync(join(origem, pkgLib.typings))) {
+    erros.push(`sites/ui/dist/site-ui não tem os tipos declarados em "typings" (${pkgLib.typings ?? 'ausente'})`);
+  }
+
+  const dir = join(SAIDA, 'site-ui');
+  mkdirSync(dir, { recursive: true });
+  cpSync(origem, dir, { recursive: true });
+  writeFileSync(join(dir, 'LICENSE'), LICENCA, 'utf8');
+  return dir;
+}
+
 function ui() {
   const origem = join(ROOT, 'ui', 'dist', 'ui');
   if (!exigir(join(origem, 'package.json'), 'rode: pnpm run lib')) return null;
@@ -527,7 +557,7 @@ function empacotar(dir) {
 rmSync(SAIDA, { recursive: true, force: true });
 mkdirSync(SAIDA, { recursive: true });
 
-for (const montar of [tokens, css, siteCss, ui, elements, agentes]) {
+for (const montar of [tokens, css, siteCss, siteUi, ui, elements, agentes]) {
   const dir = montar();
   if (!dir) continue;
   // O AGENTS.md viaja em TODO pacote: quem instala só o @ucam/css também

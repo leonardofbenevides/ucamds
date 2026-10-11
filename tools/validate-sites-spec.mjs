@@ -157,7 +157,34 @@ export function validar({ raiz = ROOT, css } = {}) {
     const temBomRuim = Object.values(spec.conteudo ?? {}).some((v) => v && typeof v === 'object' && !Array.isArray(v) && (v.bom || v.ruim));
     if (!temBomRuim) avisa(file, `${id}: conteudo sem par bom/ruim`);
     if (!spec.implementacao?.trilho_a?.raiz) falha(file, `${id} sem implementacao.trilho_a.raiz`);
-    if (spec.implementacao?.trilho_b) avisa(file, `${id} declara trilho_b — a lib Angular dos sites é o subprojeto 3`);
+    /* ---- trilho B: a peça Angular de @ucam/site-ui (subprojeto 3) ----
+     * O schema compartilhado define trilho_b como TEXTO, e o formato é
+     * "<arquivo> — <seletor>. Entradas: a, b." O que se confere é que o texto
+     * não mente: o arquivo existe, declara o seletor e cada entrada citada, e
+     * a demo tem a forma Angular. Peça em revisão tem de ter a peça. */
+    const trilhoB = spec.implementacao?.trilho_b;
+    const demoAngular = demos[id]?.principal?.angular;
+    if (trilhoB) {
+      const m = /^(\S+\.ts) — (.+)\. Entradas: ([^.]+)\.$/.exec(trilhoB);
+      if (!m) falha(file, `${id}: trilho_b fora do formato "<arquivo.ts> — <seletor>. Entradas: a, b."`);
+      else {
+        const [, arquivo, seletor, entradas] = m;
+        if (!existsSync(join(raiz, arquivo))) falha(file, `${id}: trilho_b aponta para ${arquivo}, que não existe`);
+        else {
+          const fonte = readFileSync(join(raiz, arquivo), 'utf8');
+          for (const sel of seletor.split(',').map((x) => x.trim())) {
+            if (!fonte.includes(sel)) falha(file, `${id}: trilho_b cita o seletor ${sel}, que ${arquivo} não declara`);
+          }
+          for (const nome of entradas.split(',').map((x) => x.trim())) {
+            if (!new RegExp(`\\b${nome}\\s*=\\s*input\\b`).test(fonte)) falha(file, `${id}: trilho_b cita a entrada "${nome}", que ${arquivo} não declara`);
+          }
+        }
+      }
+      if (!demoAngular) falha(file, `${id}: tem trilho_b e a demo principal não tem a forma Angular (campo angular)`);
+    } else {
+      if (spec.status === 'review' || spec.status === 'stable') falha(file, `${id}: status "${spec.status}" sem implementacao.trilho_b — só sai de draft a peça que a lib entrega`);
+      if (demoAngular) falha(file, `${id}: a demo tem a forma Angular e o contrato não tem trilho_b`);
+    }
     if (spec.eventos) falha(file, `${id} declara eventos — é Angular; sai até o subprojeto 3`);
     const raizClasse = spec.implementacao?.trilho_a?.raiz?.replace(/^\./, '');
     if (raizClasse && !classesDaFolha.has(raizClasse)) falha(file, `${id}: trilho_a.raiz ${raizClasse} não existe na folha`);

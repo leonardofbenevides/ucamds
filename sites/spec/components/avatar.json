@@ -3,7 +3,7 @@
   "id": "avatar",
   "name": "Avatar",
   "selector": "ucam-site-avatar",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -187,7 +187,8 @@
         "--ucam-site-radius-pill",
         "--ucam-site-color-surface-brand-soft"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/avatar/avatar.ts — [ucamSiteAvatar]. Entradas: size, shape, name."
   },
   "composicao": {
     "usada_por": [

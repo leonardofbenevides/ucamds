@@ -3,7 +3,7 @@
   "id": "section-heading",
   "name": "SectionHeading",
   "selector": "ucam-site-section-heading",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.6",
   "category": "layout",
@@ -221,6 +221,7 @@
         "--ucam-site-typography-lede-font-size",
         "--ucam-site-container-prosa"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/section-heading/section-heading.ts — header[ucamSiteSectionHeading], div[ucamSiteSectionHeading]. Entradas: heading, eyebrow, lede, align, size, inverse, level."
   }
 }

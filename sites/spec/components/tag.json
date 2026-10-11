@@ -3,7 +3,7 @@
   "id": "tag",
   "name": "Tag",
   "selector": "ucam-site-tag",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.6",
   "category": "conteudo",
@@ -178,7 +178,8 @@
         "--ucam-site-color-feedback-info-background",
         "--ucam-site-radius-pill"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/tag/tag.ts — [ucamSiteTag]. Entradas: tone."
   },
   "composicao": {
     "usada_por": [

@@ -23,6 +23,8 @@ function repo() {
   cpSync(join(ROOT, 'spec/decisions/adr.json'), join(raiz, 'spec/decisions/adr.json'));
   cpSync(join(ROOT, 'spec/tokens'), join(raiz, 'spec/tokens'), { recursive: true });
   cpSync(join(ROOT, 'sites/spec'), join(raiz, 'sites/spec'), { recursive: true });
+  // Os contratos com trilho_b apontam para o fonte da lib: sem ele a spec real reprova.
+  cpSync(join(ROOT, 'sites/ui/projects/site-ui/src/lib'), join(raiz, 'sites/ui/projects/site-ui/src/lib'), { recursive: true });
   return raiz;
 }
 const le = (raiz, id) => JSON.parse(readFileSync(join(raiz, `sites/spec/components/${id}.json`), 'utf8'));

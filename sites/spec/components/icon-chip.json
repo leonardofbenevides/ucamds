@@ -3,7 +3,7 @@
   "id": "icon-chip",
   "name": "IconChip",
   "selector": "ucam-site-icon-chip",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.6",
   "category": "conteudo",
@@ -181,7 +181,8 @@
         "--ucam-site-size-icon-lg",
         "--ucam-site-color-surface-brand-soft"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/icon-chip/icon-chip.ts — [ucamSiteIconChip]. Entradas: size, tone."
   },
   "composicao": {
     "usada_por": [

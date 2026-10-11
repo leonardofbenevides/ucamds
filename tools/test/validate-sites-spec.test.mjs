@@ -19,6 +19,8 @@ function repo() {
   cpSync(join(ROOT, 'spec/decisions/adr.json'), join(raiz, 'spec/decisions/adr.json'));
   cpSync(join(ROOT, 'spec/tokens'), join(raiz, 'spec/tokens'), { recursive: true });
   cpSync(join(ROOT, 'sites/spec'), join(raiz, 'sites/spec'), { recursive: true });
+  // Os contratos com trilho_b apontam para o fonte da lib: sem ele a spec real reprova.
+  cpSync(join(ROOT, 'sites/ui/projects/site-ui/src/lib'), join(raiz, 'sites/ui/projects/site-ui/src/lib'), { recursive: true });
   return raiz;
 }
 const le = (raiz, id) => JSON.parse(readFileSync(join(raiz, `sites/spec/components/${id}.json`), 'utf8'));
@@ -69,7 +71,7 @@ test('vs de mão única e composicao citando a aplicação são falha', () => {
   assert.ok(r.erros.some((e) => /ucam-button/.test(e.msg)), msgs(r));
 });
 
-test('contrato sem evidencia, sem demo ou com trilho_b entra no perfil', () => {
+test('contrato sem evidencia, sem demo ou com trilho_b fora do formato entra no perfil', () => {
   const raiz = repo();
   const c = le(raiz, 'icon-chip');
   delete c.evidencia;
@@ -81,5 +83,6 @@ test('contrato sem evidencia, sem demo ou com trilho_b entra no perfil', () => {
   const r = validar({ raiz, css: CSS });
   assert.ok(r.erros.some((e) => /icon-chip sem evidencia/.test(e.msg)), msgs(r));
   assert.ok(r.erros.some((e) => /icon-chip sem demo/.test(e.msg)), msgs(r));
-  assert.ok(r.avisos.some((a) => /trilho_b/.test(a.msg)), JSON.stringify(r.avisos));
+  // Era aviso até a fatia 3a-1 ("a lib é o subprojeto 3"); com a lib no ar, o texto é conferido.
+  assert.ok(r.erros.some((e) => /icon-chip: trilho_b fora do formato/.test(e.msg)), msgs(r));
 });
