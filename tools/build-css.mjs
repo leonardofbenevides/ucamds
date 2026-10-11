@@ -9851,9 +9851,14 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * peso, lia como escolhida ao lado de uma linha já decidida, e só a cor do
  * fundo as separava. Fundo e peso ficam sendo sinais só da posição
  * pressionada; a sugerida guarda o contorno, a tinta e o brilho. */
+/* A SUGESTÃO NÃO TEM COR (11/10/2026: "tá confuso, a sugestão da IA e as
+ * diversas cores, poder escolher 2 no mesmo"). Na tinta da ação, a sugerida
+ * era a quarta cor da coluna — ao lado do verde, do vermelho e do âmbar das
+ * decisões — e lia como mais uma escolha. O contorno passa ao fio neutro e o
+ * rótulo à tinta primária: na coluna, cor é só decisão tomada. */
 .ucam-segmented:not(:has(button[aria-pressed="true"])) button:has(> .ucam-segmented__sugerido) {
-  color: var(--ucam-color-action-primary-default);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ucam-color-action-primary-default) 45%, transparent);
+  color: var(--ucam-color-text-primary);
+  box-shadow: inset 0 0 0 1px var(--ucam-color-border-default);
 }
 
 /* A NOTA DA IA (29/09/2026, ações de IA): o que a máquina escreveu ou
@@ -9886,7 +9891,16 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
 }
 .ucam-ia-nota[hidden] { display: none; }
 /* O detalhe da explicação dentro da célula de sugestão: apoio que quebra. */
-.ucam-table .td--apoio[data-ia-detalhe] { display: block; white-space: normal; max-inline-size: 22rem; margin-block-start: var(--ucam-space-inline-xs); }
+/* UM FATO POR LINHA, E LARGURA PARA LER (11/10/2026: "tá confuso e tem pouco
+ * espaço (largura) pra texto grande assim"). A coluna é th--min: encolhe até
+ * a maior palavra, e a explicação descia em sete linhas de três palavras, com
+ * os três fatos emendados por "·". O detalhe passa a lista — cada fato na
+ * sua linha, o nome do critério antes do valor — e traz piso de 16rem: aberto,
+ * é ele que dá a largura da coluna. */
+.ucam-table .td--apoio[data-ia-detalhe] { display: block; white-space: normal; min-inline-size: 16rem; max-inline-size: 22rem; margin: var(--ucam-space-inline-xs) 0 0; padding: 0; list-style: none; }
+.ucam-table .td--apoio[data-ia-detalhe][hidden] { display: none; }
+.ucam-table .td--apoio[data-ia-detalhe] > li + li { margin-block-start: var(--ucam-space-inline-xs); }
+.ucam-table .td--apoio[data-ia-detalhe] > li > b { font-weight: var(--ucam-typography-label-font-weight); color: var(--ucam-color-text-primary); }
 /* O botão de explicar fica na PRÓPRIA linha, sob o motivo, e o detalhe abre
  * embaixo dele — lado a lado, "Ocultar" encostava na primeira palavra. */
 .ucam-table td > button[data-acao="ia-explicar"] { display: flex; margin-block-start: var(--ucam-space-inline-xs); margin-inline-start: calc(-1 * var(--ucam-space-inline-sm)); }
@@ -9928,6 +9942,26 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
   background: none;
   color: var(--ucam-color-text-disabled);
   cursor: not-allowed;
+}
+/* O GRUPO INTEIRO BLOQUEADO TEM CHÃO (11/10/2026: "tinha que estar mais claro
+ * que tá disabled"). Com as três posições apagadas, só a tinta mudava: o fio
+ * do trilho continuava o de um controle vivo, e numa coluna de nove linhas
+ * iguais não havia o vivo ao lado para comparar. Quando nenhuma posição pode
+ * ser escolhida, quem está bloqueado é o controle, e ele veste os dois sinais
+ * da ADR-042: o chão único do bloqueado e a borda que some. A tinta troca
+ * para a que é medida contra esse chão. O bloqueio de UMA posição continua
+ * só na tinta, acima. */
+.ucam-segmented:not(:has(button:not([aria-disabled="true"]))) {
+  background: var(--ucam-color-action-disabled-background);
+  border-color: transparent;
+}
+.ucam-segmented:not(:has(button:not([aria-disabled="true"]))) button,
+.ucam-segmented:not(:has(button:not([aria-disabled="true"]))) button:hover:not([aria-pressed="true"]),
+.ucam-segmented:not(:has(button:not([aria-disabled="true"]))):not(:has(button[aria-pressed="true"])) button:has(> .ucam-segmented__sugerido) {
+  color: var(--ucam-color-action-disabled-text);
+  /* A sugerida perde o contorno: sugestão para um controle que não se pode
+   * usar é ruído, e o fio escuro sobre o chão lia como posição viva. */
+  box-shadow: none;
 }
 
 /* OS DOIS TAMANHOS, que o contrato declara desde a primeira versão e o Trilho
@@ -11155,8 +11189,14 @@ a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
 .ucam-descricao--faixa {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--ucam-space-stack-md) var(--ucam-space-inset-xl);
+  /* RESPIRO (11/10/2026: "dê mais respiro/espaçamento nos conteúdos"). Com
+   * 24px entre pares, o fim de um valor e o ícone do rótulo seguinte liam
+   * como uma frase só. 40px entre pares, 4px do rótulo ao valor e 24px da
+   * ficha à faixa: o par continua sendo a unidade, e a fileira deixa de ser
+   * um bloco. */
+  gap: var(--ucam-space-stack-md) calc(var(--ucam-space-stack-lg) + var(--ucam-space-stack-sm));
 }
+.ucam-ficha + .ucam-descricao--faixa { margin-block-start: var(--ucam-space-stack-sm); }
 
 .ucam-descricao--faixa .ucam-descricao__par { flex: 0 1 auto; max-inline-size: 100%; }
 
@@ -11942,7 +11982,13 @@ figure:has(> .ucam-citacao) { margin: 0; }
  * julgamento — "sem decisão" na isenção — é segmento desenhado, na mesma
  * tinta do ponto da legenda (.ucam-progress__ponto--neutral). Era o valor de
  * base, sem nome: o Trilho B já emitia a classe e aqui ela não existia. */
-.ucam-progress__fill--neutral { background: var(--ucam-color-text-secondary); }
+/* O NEUTRO É O MAIS LEVE DA BARRA (11/10/2026: "melhore as cores semânticas
+ * dos gráficos"). Em text.secondary ele saía quase preto: "sem decisão",
+ * que é o que ainda NÃO aconteceu, pesava mais que o verde, o vermelho e o
+ * âmbar juntos, e ao lado dele o âmbar lia como marrom. Passa a
+ * border.default — cinza médio, 3:1 ou mais contra o cartão nos dois temas —
+ * e a cor fica com quem já foi julgado. */
+.ucam-progress__fill--neutral { background: var(--ucam-color-border-default); }
 /* marca (07/10/2026): o andamento que é DA PESSOA numa tela de tarefa única —
  * o tempo da prova, as questões respondidas. Não julga, como o neutro, mas é a
  * peça principal da barra da tela, e em cinza ela lia como barra apagada. Veste
@@ -12057,7 +12103,7 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__ponto--success { color: var(--ucam-color-feedback-success-graphic); }
 .ucam-progress__ponto--warning { color: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__ponto--danger  { color: var(--ucam-color-feedback-danger-graphic); }
-.ucam-progress__ponto--neutral { color: var(--ucam-color-text-secondary); }
+.ucam-progress__ponto--neutral { color: var(--ucam-color-border-default); }
 
 /* LEGENDA EM FILEIRA (06/10/2026): a barra na largura inteira da página. A
  * tabelinha põe o nome à esquerda e o número à direita, e com a barra em
@@ -13678,6 +13724,25 @@ ${abaixo('nav-fixa')} {
       block-size: calc(var(--ucam-size-control-sm) + 2 * var(--ucam-segmented-folga));
     }
     .ucam-segmented > * { pointer-events: auto; }
+    /* O grupo bloqueado: aqui a caixa do trilho é maior que o desenho dele, e
+     * o chão pintaria a folga. Ele desce para as posições, e o contorno some. */
+    .ucam-segmented:not(:has(button:not([aria-disabled="true"]))) {
+      background: none;
+      outline-color: transparent;
+      gap: 0;
+    }
+    .ucam-segmented:not(:has(button:not([aria-disabled="true"]))) button {
+      background: var(--ucam-color-action-disabled-background);
+      border-radius: 0;
+    }
+    .ucam-segmented:not(:has(button:not([aria-disabled="true"]))) button:first-child {
+      border-start-start-radius: var(--ucam-radius-control);
+      border-end-start-radius: var(--ucam-radius-control);
+    }
+    .ucam-segmented:not(:has(button:not([aria-disabled="true"]))) button:last-child {
+      border-start-end-radius: var(--ucam-radius-control);
+      border-end-end-radius: var(--ucam-radius-control);
+    }
     /* O degrau abaixo do título do painel continua medindo do FIO. */
     .ucam-aside__title + .ucam-segmented,
     .ucam-section__title--painel + .ucam-segmented {

@@ -33,7 +33,8 @@ export interface UcamProgressSegment {
  * de 8px lê como marrom, não como aviso. Barra é objeto gráfico: piso de 3:1.
  */
 const PREENCHIMENTO: Record<UcamProgressTone, string> = {
-  neutral: 'bg-muted-foreground',
+  // O neutro é o mais leve da barra (11/10/2026): ver build-css.mjs.
+  neutral: 'bg-[var(--ucam-color-border-default)]',
   // No escuro a superfície de marca é funda e some sobre o trilho: usa a tinta da ação.
   marca: 'bg-[light-dark(var(--ucam-color-surface-brand),var(--ucam-color-action-primary-default))]',
   info: 'bg-[var(--ucam-color-feedback-info-graphic)]',
