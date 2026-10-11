@@ -254,21 +254,33 @@
     "$description": "Série de gráfico, slot 3. Puxado para o amarelo (matiz OKLCH ~85°) e NÃO para o laranja: no laranja ele colidia com o vinho no tema escuro (ΔE de visão normal 12,5, abaixo do piso 15). Não confundir com a rampa amber, que é feedback de atenção e não pode virar série."
   },
   "teal": {
+    "100": {
+      "$value": "#D1F2EB"
+    },
     "400": {
       "$value": "#17A18F"
     },
     "500": {
       "$value": "#0E8F80"
     },
+    "700": {
+      "$value": "#004840"
+    },
     "$type": "color",
     "$description": "Série de gráfico, slot 4. O croma é o mínimo que passa no piso de 0,1 — abaixo disso a cor lê cinza sobre o branco."
   },
   "violet": {
+    "100": {
+      "$value": "#EBE5FF"
+    },
     "400": {
       "$value": "#9179DC"
     },
     "500": {
       "$value": "#6D46B8"
+    },
+    "700": {
+      "$value": "#45267C"
     },
     "$type": "color",
     "$description": "Série de gráfico, slot 5. Vizinho perigoso do azul: os dois só se separam com folga quando NÃO ficam lado a lado (por isso a ordem dos slots põe ocre e turquesa entre eles)."

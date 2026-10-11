@@ -464,6 +464,8 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table ucam-badge[data-tone='success'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-success-border); }
     .ucam-table ucam-badge[data-tone='warning'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-warning-border); }
     .ucam-table ucam-badge[data-tone='danger'] > z-badge > span[aria-hidden] { background: var(--ucam-color-feedback-danger-border); }
+    .ucam-table ucam-badge[data-tone='espera'] > z-badge > span[aria-hidden] { background: var(--ucam-color-situacao-espera-border); }
+    .ucam-table ucam-badge[data-tone='classe'] > z-badge > span[aria-hidden] { background: var(--ucam-color-situacao-classe-border); }
     .ucam-table ucam-badge[data-tone='neutral'] > z-badge > span[aria-hidden] { background: var(--ucam-color-text-placeholder); }
     .ucam-table--sticky thead th {
       position: sticky;
