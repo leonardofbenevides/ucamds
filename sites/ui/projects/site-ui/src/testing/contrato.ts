@@ -32,7 +32,8 @@ const CONTRATOS: Record<string, unknown> = {
  */
 export const ENTRADAS_POR_SELETOR: Record<string, string[]> = { ucamsiteicon: ['ucamsiteicon'] };
 for (const c of Object.values(CONTRATOS) as { implementacao: { trilho_b?: string } }[]) {
-  const m = / — (.+)\. Entradas: ([^.]+)\.$/.exec(c.implementacao.trilho_b ?? '');
+  // Depois das Entradas o texto pode seguir com Nativos e Conteúdo.
+  const m = / — (.+?)\. Entradas: ([^.]+)\./.exec(c.implementacao.trilho_b ?? '');
   if (!m) continue;
   const entradas = m[2].split(',').map((x) => x.trim());
   for (const s of m[1].matchAll(/\[([A-Za-z]+)\]/g)) ENTRADAS_POR_SELETOR[s[1].toLowerCase()] = entradas;

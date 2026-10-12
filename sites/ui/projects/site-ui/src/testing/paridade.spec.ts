@@ -73,4 +73,35 @@ describe('paridade', () => {
     const b = no('<svg ucamSiteIcon="check" class="ic" aria-hidden="true"><use href="#i-check"></use></svg>');
     expect(mesmaArvore(a, b).igual).toBe(true);
   });
+
+  // A página de cada peça renderiza a demo três vezes, e ids iguais fariam o
+  // rótulo de uma cópia apontar para o campo de outra. As demos Angular usam
+  // ids próprios; o que se compara é a LIGAÇÃO, não o nome (fatia 3a-2).
+  it('ids diferentes com a mesma ligação são iguais', () => {
+    const a = no('<label for="a">E-mail</label><input id="a" aria-describedby="a-h a-e"><p id="a-h">x</p><p id="a-e">y</p><a href="#a">ir</a>');
+    const b = no('<label for="b-ng">E-mail</label><input id="b-ng" aria-describedby="b-ng-h b-ng-e"><p id="b-ng-h">x</p><p id="b-ng-e">y</p><a href="#b-ng">ir</a>');
+    expect(mesmaArvore(a, b).igual).toBe(true);
+  });
+  it('ligação quebrada reprova: rótulo que aponta para um id que não existe', () => {
+    const certo = no('<label for="a">E-mail</label><input id="a">');
+    const quebrado = no('<label for="a">E-mail</label><input id="b">');
+    expect(mesmaArvore(certo, quebrado).igual).toBe(false);
+  });
+  it('descrição que aponta para outro elemento reprova', () => {
+    const a = no('<input id="c" aria-describedby="h"><p id="h">apoio</p><p id="e">erro</p>');
+    const b = no('<input id="c" aria-describedby="e"><p id="h">apoio</p><p id="e">erro</p>');
+    expect(mesmaArvore(a, b).igual).toBe(false);
+  });
+  it('o grupo do acordeão é comparado pela ligação: mesmo name contra names diferentes reprova', () => {
+    const grupo = no('<details name="faq"></details><details name="faq"></details>');
+    const outroNome = no('<details name="faq-ng"></details><details name="faq-ng"></details>');
+    const soltos = no('<details name="a"></details><details name="b"></details>');
+    expect(mesmaArvore(grupo, outroNome).igual).toBe(true);
+    expect(mesmaArvore(grupo, soltos).igual).toBe(false);
+  });
+  it('href de âncora que não aponta para dentro do trecho continua literal', () => {
+    // O ícone aponta para o sprite, fora do trecho: #i-check contra #i-x é diferença de verdade.
+    expect(mesmaArvore(no('<use href="#i-check"></use>'), no('<use href="#i-x"></use>')).igual).toBe(false);
+    expect(mesmaArvore(no('<a href="/x">x</a>'), no('<a href="/y">x</a>')).igual).toBe(false);
+  });
 });

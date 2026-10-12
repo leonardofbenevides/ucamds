@@ -36,7 +36,7 @@ export function construirIndice({ raiz = ROOT } = {}) {
     // seletor_angular: o seletor de verdade da peça em @ucam/site-ui, tirado do
     // trilho_b. O campo `selector` do contrato é o identificador da peça no
     // catálogo (ucam-site-<id>), não um elemento que exista.
-    .map((c) => ({ ...c, demo: demos[c.id], decisoes: decisoesDe(c), seletor_angular: / — (.+)\. Entradas: /.exec(c.implementacao?.trilho_b ?? '')?.[1] }))
+    .map((c) => ({ ...c, demo: demos[c.id], decisoes: decisoesDe(c), seletor_angular: / — (.+?)\. Entradas: /.exec(c.implementacao?.trilho_b ?? '')?.[1] }))
     .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   const submarcas = readdirSync(join(dist, 'tokens'))
     .filter((f) => /^ucam-site-marca-.+\.css$/.test(f))

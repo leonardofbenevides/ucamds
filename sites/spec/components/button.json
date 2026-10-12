@@ -269,6 +269,6 @@
       ],
       "nota": "O inverso lê a lavagem de papel (color.interaction.hover-on-inverse) para o hover do fantasma e do secundário sobre fundo escuro."
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/button/button.ts — a[ucamSiteButton], button[ucamSiteButton]. Entradas: variant, size, inverse."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/button/button.ts — a[ucamSiteButton], button[ucamSiteButton]. Entradas: variant, size, inverse. Nativos: href, disabled."
   }
 }

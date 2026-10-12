@@ -5,8 +5,8 @@
   "license": "UNLICENSED",
   "sideEffects": false,
   "peerDependencies": {
-    "@angular/common": ">=21.0.0 <23.0.0",
-    "@angular/core": ">=21.0.0 <23.0.0",
+    "@angular/common": ">=22.0.0 <23.0.0",
+    "@angular/core": ">=22.0.0 <23.0.0",
     "@ucam/site-css": "0.1.5"
   },
   "dependencies": {

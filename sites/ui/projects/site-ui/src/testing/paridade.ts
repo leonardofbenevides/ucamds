@@ -12,6 +12,14 @@
  * Nasceu como lista do que conta, e escondia o que as próximas peças têm de
  * acertar (target, rel, required, loading). Lista do que se ignora erra para
  * o lado seguro: atributo novo conta até alguém dizer que não.
+ *
+ * IDS SÃO COMPARADOS PELA LIGAÇÃO, não pelo nome (fatia 3a-2). A página de
+ * cada peça renderiza a demo três vezes, então a forma Angular usa ids
+ * próprios. Cada id vira um número pela ordem em que aparece no trecho, e
+ * `for`, `aria-describedby`, `aria-labelledby`, `aria-controls` e `href="#…"`
+ * passam a citar esse número. Referência a um id que NÃO existe no trecho
+ * fica literal: é assim que a ligação quebrada, e o `#i-check` do sprite,
+ * continuam sendo diferença. O `name` de <details> é numerado do mesmo jeito.
  */
 import { ENTRADAS_POR_SELETOR } from './contrato';
 
@@ -26,7 +34,34 @@ function entradasDe(el: Element): Set<string> {
 
 const andaime = (nome: string) => nome === 'class' || nome.startsWith('_ng') || nome.startsWith('ng-') || nome.startsWith('ucamsite');
 
-function linhas(no: Node, nivel: number, saida: string[]): void {
+const REFERENCIAS = new Set(['for', 'aria-describedby', 'aria-labelledby', 'aria-controls']);
+
+interface Ligacoes {
+  ids: Map<string, string>;
+  grupos: Map<string, string>;
+}
+
+function ligacoesDe(raiz: Element): Ligacoes {
+  const ids = new Map<string, string>();
+  const grupos = new Map<string, string>();
+  for (const el of Array.from(raiz.querySelectorAll('*'))) {
+    const id = el.getAttribute('id');
+    if (id && !ids.has(id)) ids.set(id, `id#${ids.size + 1}`);
+    const nome = el.localName === 'details' ? el.getAttribute('name') : null;
+    if (nome && !grupos.has(nome)) grupos.set(nome, `grupo#${grupos.size + 1}`);
+  }
+  return { ids, grupos };
+}
+
+function valorDe(el: Element, nome: string, valor: string, l: Ligacoes): string {
+  if (nome === 'id') return l.ids.get(valor) ?? valor;
+  if (REFERENCIAS.has(nome)) return valor.split(/\s+/).filter(Boolean).map((v) => l.ids.get(v) ?? v).join(' ');
+  if (nome === 'href' && valor.startsWith('#') && l.ids.has(valor.slice(1))) return `#${l.ids.get(valor.slice(1))}`;
+  if (nome === 'name' && el.localName === 'details') return l.grupos.get(valor) ?? valor;
+  return valor;
+}
+
+function linhas(no: Node, nivel: number, saida: string[], l: Ligacoes): void {
   for (const filho of Array.from(no.childNodes)) {
     const recuo = '  '.repeat(nivel);
     if (filho.nodeType === 3) {
@@ -41,11 +76,11 @@ function linhas(no: Node, nivel: number, saida: string[]): void {
     const atributos = Array.from(el.attributes)
       .map((a) => ({ nome: a.name.toLowerCase(), valor: a.value }))
       .filter((a) => !andaime(a.nome) && !entradas.has(a.nome))
-      .map((a) => `${a.nome}="${a.valor}"`)
+      .map((a) => `${a.nome}="${valorDe(el, a.nome, a.valor, l)}"`)
       .sort()
       .join(' ');
     saida.push(`${recuo}<${el.localName}${classes ? ` class="${classes}"` : ''}${atributos ? ` ${atributos}` : ''}>`);
-    linhas(el, nivel + 1, saida);
+    linhas(el, nivel + 1, saida, l);
   }
 }
 
@@ -59,7 +94,7 @@ export function normalizar(raiz: Element | string): string {
     no = raiz;
   }
   const saida: string[] = [];
-  linhas(no, 0, saida);
+  linhas(no, 0, saida, ligacoesDe(no));
   return saida.join('\n');
 }
 

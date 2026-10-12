@@ -54,6 +54,21 @@ function classesDoHtml(html) {
 }
 const elementosDaAplicacao = (html) => [...String(html ?? '').matchAll(/<(ucam-(?!site-)[a-z0-9-]+)/g)].map((m) => m[1]);
 
+/* Nomes que uma entrada da lib não pode ter: escrita como atributo
+ * (size="lg"), a entrada fica no HTML servido, e nesses elementos o nome já
+ * quer dizer outra coisa. Os gerais valem em qualquer elemento. */
+const NATIVOS_GERAIS = ['title', 'id', 'class', 'style', 'hidden', 'lang', 'dir', 'role', 'tabindex'];
+const NATIVOS_POR_ELEMENTO = {
+  a: ['href', 'name', 'type', 'target', 'rel'],
+  button: ['name', 'type', 'value', 'disabled'],
+  input: ['name', 'type', 'size', 'value', 'disabled', 'src', 'alt', 'placeholder', 'required', 'width', 'height'],
+  select: ['name', 'size', 'disabled', 'required'],
+  textarea: ['name', 'disabled', 'placeholder', 'required', 'rows', 'cols'],
+  details: ['open', 'name'],
+  img: ['src', 'alt', 'width', 'height', 'loading'],
+  form: ['name', 'action', 'method', 'target'],
+};
+
 export function validar({ raiz = ROOT, css } = {}) {
   const ler = (p) => JSON.parse(readFileSync(join(raiz, p), 'utf8'));
   const erros = [];
@@ -158,17 +173,35 @@ export function validar({ raiz = ROOT, css } = {}) {
     if (!temBomRuim) avisa(file, `${id}: conteudo sem par bom/ruim`);
     if (!spec.implementacao?.trilho_a?.raiz) falha(file, `${id} sem implementacao.trilho_a.raiz`);
     /* ---- trilho B: a peça Angular de @ucam/site-ui (subprojeto 3) ----
-     * O schema compartilhado define trilho_b como TEXTO, e o formato é
-     * "<arquivo> — <seletor>. Entradas: a, b." O que se confere é que o texto
-     * não mente: o arquivo existe, declara o seletor e cada entrada citada, e
-     * a demo tem a forma Angular. Peça em revisão tem de ter a peça. */
+     * O schema compartilhado define trilho_b como TEXTO. O formato é
+     *   "<arquivo.ts> — <seletor>. Entradas: a, b. Nativos: c. Conteúdo: d."
+     * com Nativos e Conteúdo opcionais. Entradas são as input() da peça;
+     * Nativos são props do contrato que o consumidor escreve como atributo do
+     * próprio elemento (href, disabled); Conteúdo são props que ele põe dentro
+     * do elemento (o ícone da pastilha, a imagem do avatar).
+     *
+     * O que se confere é que o texto não mente, nos dois sentidos: o arquivo
+     * existe e declara seletor e entradas; toda prop do contrato tem destino;
+     * toda entrada é prop do contrato; e nenhuma entrada tem nome de atributo
+     * nativo, porque a entrada escrita como atributo FICA no HTML servido. */
     const trilhoB = spec.implementacao?.trilho_b;
     const demoAngular = demos[id]?.principal?.angular;
     if (trilhoB) {
-      const m = /^(\S+\.ts) — (.+)\. Entradas: ([^.]+)\.$/.exec(trilhoB);
-      if (!m) falha(file, `${id}: trilho_b fora do formato "<arquivo.ts> — <seletor>. Entradas: a, b."`);
+      const m = /^(\S+\.ts) — (.+?)\. Entradas: ([^.]+)\.(?: Nativos: ([^.]+)\.)?(?: Conteúdo: ([^.]+)\.)?$/.exec(trilhoB);
+      if (!m) falha(file, `${id}: trilho_b fora do formato "<arquivo.ts> — <seletor>. Entradas: a, b. Nativos: c. Conteúdo: d."`);
       else {
-        const [, arquivo, seletor, entradas] = m;
+        const lista = (t) => (t ?? '').split(',').map((x) => x.trim()).filter(Boolean);
+        const [, arquivo, seletor] = m;
+        const entradas = lista(m[3]);
+        const nativos = lista(m[4]);
+        const conteudo = lista(m[5]);
+        const props = new Set((spec.props ?? []).map((x) => x.nome));
+        for (const nome of props) {
+          if (![...entradas, ...nativos, ...conteudo].includes(nome)) falha(file, `${id}: a prop "${nome}" do contrato não é Entrada, Nativo nem Conteúdo no trilho_b`);
+        }
+        for (const nome of entradas) if (!props.has(nome)) falha(file, `${id}: a entrada "${nome}" não é prop do contrato`);
+        for (const nome of [...nativos, ...conteudo]) if (!props.has(nome)) falha(file, `${id}: o trilho_b cita "${nome}", que não é prop do contrato`);
+
         if (!existsSync(join(raiz, arquivo))) falha(file, `${id}: trilho_b aponta para ${arquivo}, que não existe`);
         else {
           // Sem os comentários: seletor ou entrada citados só num comentário não existem.
@@ -176,14 +209,26 @@ export function validar({ raiz = ROOT, css } = {}) {
           for (const sel of seletor.split(',').map((x) => x.trim())) {
             if (!fonte.includes(sel)) falha(file, `${id}: trilho_b cita o seletor ${sel}, que ${arquivo} não declara`);
           }
-          for (const nome of entradas.split(',').map((x) => x.trim())) {
-            if (!/^[A-Za-z][A-Za-z0-9]*$/.test(nome)) falha(file, `${id}: trilho_b cita a entrada "${nome}", que não é um nome de entrada`);
-            else if (!new RegExp(`\\b${nome}\\s*=\\s*input\\b`).test(fonte)) falha(file, `${id}: trilho_b cita a entrada "${nome}", que ${arquivo} não declara`);
+          // Um arquivo pode ter mais de uma classe (a raiz do acordeão e o item):
+          // cada entrada é conferida contra o seletor da classe que a declara.
+          const declaradas = new Set();
+          for (const bloco of fonte.split(/@(?:Directive|Component)\(/).slice(1)) {
+            const sel = /selector:\s*'([^']+)'/.exec(bloco)?.[1] ?? '';
+            const elementos = new Set([...sel.matchAll(/(^|,\s*)([a-z][a-z0-9]*)\[/g)].map((x) => x[2]));
+            const proibidos = new Set(NATIVOS_GERAIS);
+            for (const el of elementos) for (const n of NATIVOS_POR_ELEMENTO[el] ?? []) proibidos.add(n);
+            for (const d of bloco.matchAll(/\breadonly\s+([A-Za-z][A-Za-z0-9]*)\s*=\s*input\b/g)) {
+              declaradas.add(d[1]);
+              // A exceção é a entrada que LIGA o atributo de mesmo nome (o open do <details>).
+              const liga = new RegExp("'\\[(?:attr\\.)?" + d[1] + "\\]'").test(bloco);
+              if (proibidos.has(d[1]) && !liga) falha(file, `${id}: a entrada "${d[1]}" tem nome de atributo nativo${NATIVOS_GERAIS.includes(d[1]) ? '' : ` de ${sel}`} — escrita como atributo ela fica no HTML com outro sentido; renomeie`);
+            }
           }
-          // O outro sentido: entrada que a peça tem e o contrato não diz.
-          const citadas = new Set(entradas.split(',').map((x) => x.trim()));
-          for (const d of fonte.matchAll(/\breadonly\s+([A-Za-z][A-Za-z0-9]*)\s*=\s*input\b/g)) {
-            if (!citadas.has(d[1])) falha(file, `${id}: ${arquivo} declara a entrada "${d[1]}", que o trilho_b não cita`);
+          for (const nome of entradas) {
+            if (!declaradas.has(nome)) falha(file, `${id}: trilho_b cita a entrada "${nome}", que ${arquivo} não declara`);
+          }
+          for (const nome of declaradas) {
+            if (!entradas.includes(nome)) falha(file, `${id}: ${arquivo} declara a entrada "${nome}", que o trilho_b não cita`);
           }
         }
       }

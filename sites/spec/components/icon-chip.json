@@ -182,7 +182,7 @@
         "--ucam-site-color-surface-brand-soft"
       ]
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/icon-chip/icon-chip.ts — [ucamSiteIconChip]. Entradas: size, tone."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/icon-chip/icon-chip.ts — [ucamSiteIconChip]. Entradas: size, tone. Conteúdo: icon."
   },
   "composicao": {
     "usada_por": [

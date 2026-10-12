@@ -47,9 +47,9 @@
   "props": [
     {
       "nome": "name",
-      "tipo": "string",
-      "obrigatorio": true,
-      "descricao": "Nome da pessoa ou da empresa. Dá as iniciais e o texto alternativo."
+      "tipo": "string | null",
+      "descricao": "O nome de quem o avatar representa. Com ele, o avatar vira imagem com rótulo (role=\"img\" e aria-label); sem ele, é decorativo. As iniciais são conteúdo, escritas por quem usa.",
+      "default": "null"
     },
     {
       "nome": "src",
@@ -188,7 +188,7 @@
         "--ucam-site-color-surface-brand-soft"
       ]
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/avatar/avatar.ts — [ucamSiteAvatar]. Entradas: size, shape, name."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/avatar/avatar.ts — [ucamSiteAvatar]. Entradas: size, shape, name. Conteúdo: src."
   },
   "composicao": {
     "usada_por": [

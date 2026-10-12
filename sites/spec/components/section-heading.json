@@ -62,6 +62,24 @@
   ],
   "props": [
     {
+      "nome": "heading",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O título da seção. Chama-se heading, e não title, porque title é a dica nativa do navegador."
+    },
+    {
+      "nome": "eyebrow",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A palavra acima do título."
+    },
+    {
+      "nome": "lede",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A frase de abertura, de uma ou duas frases."
+    },
+    {
       "nome": "align",
       "tipo": "'start' | 'center'",
       "default": "'start'",
