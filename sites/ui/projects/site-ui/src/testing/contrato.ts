@@ -13,6 +13,7 @@ import pageShell from '../../../../../spec/components/page-shell.json';
 import accordion from '../../../../../spec/components/accordion.json';
 import input from '../../../../../spec/components/input.json';
 import pagination from '../../../../../spec/components/pagination.json';
+import newsletterForm from '../../../../../spec/components/newsletter-form.json';
 
 export interface Prop {
   nome: string;
@@ -32,6 +33,7 @@ const CONTRATOS: Record<string, unknown> = {
   'accordion': accordion,
   'input': input,
   'pagination': pagination,
+  'newsletter-form': newsletterForm,
 };
 
 /**

@@ -664,6 +664,25 @@ ${acima('nav-aberta')} {
   font-size: ${V('typography-caption-font-size')};
   line-height: ${V('typography-caption-line-height')};
 }
+/* A região de status: a confirmação do envio. Fica SEMPRE no documento,
+ * porque região que nasce junto com o texto não é anunciada pelo leitor de
+ * tela. Vazia, sai do fluxo (não ocupa trilha nem vão da grade) sem deixar
+ * de existir: display none a calaria. */
+.ucam-site-newsletter__status {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-weight: ${V('typography-action-font-weight')};
+}
+.ucam-site-newsletter__status:empty {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.ucam-site-newsletter--inverse .ucam-site-newsletter__status {
+  color: ${V('color-text-on-inverse')};
+}
 .ucam-site-newsletter--inverse .ucam-site-newsletter__titulo,
 .ucam-site-newsletter--inverse .ucam-site-input__label {
   color: ${V('color-text-on-inverse')};

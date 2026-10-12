@@ -3,7 +3,7 @@
   "id": "newsletter-form",
   "name": "NewsletterForm",
   "selector": "ucam-site-newsletter-form",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "formulario",
@@ -50,11 +50,17 @@
       "obrigatorio": true,
       "descricao": "A frase de consentimento: frequência e como cancelar.",
       "classe": "ucam-site-newsletter__nota"
+    },
+    {
+      "parte": "status",
+      "obrigatorio": true,
+      "descricao": "<p role=\"status\">, sempre no documento e vazio até haver o que dizer: é onde a confirmação aparece e é anunciada.",
+      "classe": "ucam-site-newsletter__status"
     }
   ],
   "props": [
     {
-      "nome": "title",
+      "nome": "heading",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "O título."
@@ -76,6 +82,36 @@
           "classe": ".ucam-site-newsletter--inverse"
         }
       }
+    },
+    {
+      "nome": "fieldLabel",
+      "tipo": "string",
+      "default": "'E-mail'",
+      "descricao": "O rótulo do campo."
+    },
+    {
+      "nome": "submitLabel",
+      "tipo": "string",
+      "default": "'Assinar'",
+      "descricao": "O texto do botão."
+    },
+    {
+      "nome": "fieldId",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O id do campo. Sem ele a peça gera um."
+    },
+    {
+      "nome": "state",
+      "tipo": "'idle' | 'sending' | 'success' | 'error'",
+      "default": "'idle'",
+      "descricao": "O estado do envio, que quem usa a peça devolve: enviando desabilita o botão; sucesso mostra a mensagem na região de status; erro a põe no campo e leva o foco para ele."
+    },
+    {
+      "nome": "message",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O texto do estado: a confirmação no sucesso, o motivo no erro."
     }
   ],
   "estados": [
@@ -85,7 +121,7 @@
     "regras": [
       "Só o e-mail. Nome, curso e telefone ficam para depois da confirmação.",
       "Uma vez por página.",
-      "Não entrega envio, confirmação nem mensagem de sucesso: é marcação e folha."
+      "A peça não envia nada. No HTML puro é marcação e folha, com a região de status vazia no lugar certo para quem ligar o envio. Na lib, ela confere o e-mail, avisa por submitted e mostra o estado que recebe."
     ],
     "motivo": "Cada campo a mais derruba o cadastro. E um formulário que não diz o que vai mandar é o que a pessoa aprende a ignorar."
   },
@@ -162,6 +198,7 @@
         "--ucam-site-typography-title-font-size"
       ],
       "nota": "Não entrega envio nem estado de sucesso."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/newsletter-form/newsletter-form.ts — form[ucamSiteNewsletter]. Entradas: heading, note, inverse, fieldLabel, submitLabel, fieldId, state, message."
   }
 }
