@@ -3,7 +3,7 @@
   "id": "pagination",
   "name": "Pagination",
   "selector": "ucam-site-pagination",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "navegacao",
@@ -66,10 +66,22 @@
       "descricao": "O total de páginas."
     },
     {
-      "nome": "label",
+      "nome": "ariaLabel",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "O aria-label do nav: Paginação das vagas."
+    },
+    {
+      "nome": "hrefDe",
+      "tipo": "(pagina: number) => string",
+      "default": "(p) => '?pagina=' + p",
+      "descricao": "O endereço de cada página. Cada número é um link de verdade, que funciona sem script."
+    },
+    {
+      "nome": "emMemoria",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "A lista já está na página: o clique não navega e a peça avisa por pageChange."
     }
   ],
   "estados": [
@@ -82,7 +94,7 @@
     "regras": [
       "Não com menos de duas páginas: some.",
       "Não mostrar todas as páginas quando são muitas: a primeira, a última, a atual e as vizinhas, com reticências.",
-      "Não entrega a conta de quais números mostrar: quem monta a marcação decide."
+      "No HTML puro, quem monta a marcação decide quais números mostrar. A lib faz a conta: a primeira, a última, a atual e as duas vizinhas, e um buraco de uma página mostra a página."
     ],
     "motivo": "Oitenta e nove números numa fileira não cabem no telefone, e a pessoa só usa a próxima, a anterior e a última."
   },
@@ -169,6 +181,7 @@
         "--ucam-site-color-action-primary-default",
         "--ucam-site-radius-pill"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/pagination/pagination.ts — nav[ucamSitePagination]. Entradas: page, total, ariaLabel, hrefDe, emMemoria."
   }
 }
