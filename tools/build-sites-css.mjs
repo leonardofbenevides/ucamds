@@ -612,11 +612,13 @@ ${acima('nav-aberta')} {
   padding-inline-start: calc(${V('space-stack-sm')} * 2 + ${V('size-icon-md')});
 }
 .ucam-site-input__hint {
+  margin: 0;
   color: ${V('color-text-muted')};
   font-size: ${V('typography-caption-font-size')};
   line-height: ${V('typography-caption-line-height')};
 }
 .ucam-site-input__erro {
+  margin: 0;
   color: ${V('color-feedback-danger-foreground')};
   font-size: ${V('typography-caption-font-size')};
   font-weight: ${V('typography-action-font-weight')};

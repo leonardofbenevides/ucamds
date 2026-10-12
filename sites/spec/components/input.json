@@ -3,7 +3,7 @@
   "id": "input",
   "name": "Input",
   "selector": "ucam-site-input",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "formulario",
@@ -110,6 +110,18 @@
       "tipo": "boolean",
       "default": "false",
       "descricao": "Campo indisponível."
+    },
+    {
+      "nome": "fieldId",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O id do campo. Sem ele a peça gera um, igual no servidor e no cliente."
+    },
+    {
+      "nome": "describedBy",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Ids de elementos de fora do campo que o descrevem, como a nota de um formulário."
     }
   ],
   "estados": [
@@ -123,7 +135,7 @@
       "Não usar placeholder como rótulo.",
       "Não validar enquanto a pessoa ainda digita: só ao sair do campo ou ao enviar.",
       "Não para texto longo nem para escolha entre opções: são outros controles, fora desta fatia.",
-      "Não entrega validação: a folha desenha o erro que a marcação declara."
+      "Não entrega validação nem mensagens: o erro é o texto que se passa em error. Com texto, o campo fica inválido e descrito por ele."
     ],
     "motivo": "Placeholder some ao digitar e tem contraste de apoio. Campo que grita erro na primeira letra ensina a pessoa a desconfiar do formulário."
   },
@@ -235,6 +247,7 @@
         "--ucam-site-color-feedback-danger-on-inverse"
       ],
       "nota": "Não entrega validação nem máscara."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/input/input.ts — div[ucamSiteField], input[ucamSiteInput]. Entradas: label, hint, error, icon, fieldId, describedBy. Nativos: type, disabled."
   }
 }

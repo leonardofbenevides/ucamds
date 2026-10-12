@@ -15,6 +15,7 @@ import { UcamSiteTag } from './lib/tag/tag';
 import { UcamSiteBreadcrumb } from './lib/breadcrumb/breadcrumb';
 import { UcamSitePage, UcamSiteSkip, UcamSitePageMain, UcamSiteSecao, UcamSiteContainer } from './lib/page-shell/page-shell';
 import { UcamSiteAccordion, UcamSiteAccordionItem } from './lib/accordion/accordion';
+import { UcamSiteField, UcamSiteInput } from './lib/input/input';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -26,6 +27,7 @@ export * from './lib/section-heading/section-heading';
 export * from './lib/breadcrumb/breadcrumb';
 export * from './lib/page-shell/page-shell';
 export * from './lib/accordion/accordion';
+export * from './lib/input/input';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -44,4 +46,6 @@ export const UCAM_SITE = [
   UcamSiteContainer,
   UcamSiteAccordion,
   UcamSiteAccordionItem,
+  UcamSiteField,
+  UcamSiteInput,
 ] as const;
