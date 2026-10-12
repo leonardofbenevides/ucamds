@@ -3,7 +3,7 @@
   "id": "breadcrumb",
   "name": "Breadcrumb",
   "selector": "ucam-site-breadcrumb",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "navegacao",
@@ -63,6 +63,12 @@
           "classe": ".ucam-site-breadcrumb--inverse"
         }
       }
+    },
+    {
+      "nome": "ariaLabel",
+      "tipo": "string",
+      "default": "'Trilha'",
+      "descricao": "O nome da navegação para leitor de tela (aria-label)."
     }
   ],
   "estados": [
@@ -154,7 +160,8 @@
         "--ucam-site-typography-caption-font-size",
         "--ucam-site-color-text-on-inverse-muted"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/breadcrumb/breadcrumb.ts — nav[ucamSiteBreadcrumb]. Entradas: items, inverse, ariaLabel."
   },
   "composicao": {
     "usada_por": [

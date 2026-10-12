@@ -8,6 +8,8 @@ import tag from '../../../../../spec/components/tag.json';
 import iconChip from '../../../../../spec/components/icon-chip.json';
 import avatar from '../../../../../spec/components/avatar.json';
 import sectionHeading from '../../../../../spec/components/section-heading.json';
+import breadcrumb from '../../../../../spec/components/breadcrumb.json';
+import pageShell from '../../../../../spec/components/page-shell.json';
 
 export interface Prop {
   nome: string;
@@ -22,6 +24,8 @@ const CONTRATOS: Record<string, unknown> = {
   'icon-chip': iconChip,
   avatar,
   'section-heading': sectionHeading,
+  'breadcrumb': breadcrumb,
+  'page-shell': pageShell,
 };
 
 /**

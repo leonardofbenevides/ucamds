@@ -3,7 +3,7 @@
   "id": "page-shell",
   "name": "PageShell",
   "selector": "ucam-site-page-shell",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -196,6 +196,7 @@
         "--ucam-site-space-section-sm",
         "--ucam-site-z-skip"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/page-shell/page-shell.ts — [ucamSitePage], a[ucamSiteSkip], main[ucamSitePageMain], [ucamSiteSecao], [ucamSiteContainer]. Entradas: width, tone."
   }
 }

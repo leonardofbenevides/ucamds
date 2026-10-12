@@ -12,6 +12,8 @@ import { UcamSiteIcon } from './lib/icon/icon';
 import { UcamSiteIconChip } from './lib/icon-chip/icon-chip';
 import { UcamSiteSectionHeading, UcamSiteSectionHeadingAcoes } from './lib/section-heading/section-heading';
 import { UcamSiteTag } from './lib/tag/tag';
+import { UcamSiteBreadcrumb } from './lib/breadcrumb/breadcrumb';
+import { UcamSitePage, UcamSiteSkip, UcamSitePageMain, UcamSiteSecao, UcamSiteContainer } from './lib/page-shell/page-shell';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -20,6 +22,8 @@ export * from './lib/tag/tag';
 export * from './lib/icon-chip/icon-chip';
 export * from './lib/avatar/avatar';
 export * from './lib/section-heading/section-heading';
+export * from './lib/breadcrumb/breadcrumb';
+export * from './lib/page-shell/page-shell';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -30,4 +34,10 @@ export const UCAM_SITE = [
   UcamSiteAvatar,
   UcamSiteSectionHeading,
   UcamSiteSectionHeadingAcoes,
+  UcamSiteBreadcrumb,
+  UcamSitePage,
+  UcamSiteSkip,
+  UcamSitePageMain,
+  UcamSiteSecao,
+  UcamSiteContainer,
 ] as const;

@@ -10,7 +10,8 @@ import { validar } from '../validate-sites-spec.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CSS = readFileSync(join(ROOT, 'dist/sites/css/ucam-site.css'), 'utf8');
 const LIB = 'sites/ui/projects/site-ui/src/lib';
-const COM_LIB = ['avatar', 'button', 'icon-chip', 'section-heading', 'tag'];
+// As peças que a lib entrega são as pastas dela, menos o núcleo e o ícone (fundação, sem contrato).
+const COM_LIB = readdirSync(join(ROOT, LIB), { withFileTypes: true }).filter((d) => d.isDirectory() && !['nucleo', 'icon'].includes(d.name)).map((d) => d.name);
 
 /* A spec real e o fonte da lib copiados; cada teste estraga uma coisa. */
 function repo() {
@@ -29,7 +30,7 @@ const grava = (raiz, id, c) => writeFileSync(join(raiz, `sites/spec/components/$
 const msgs = (r) => r.erros.map((e) => `${e.arquivo}: ${e.msg}`).join('\n');
 const roda = (raiz) => validar({ raiz, css: CSS });
 
-test('na spec real, as cinco peças da lib têm trilho B e estão em revisão; as outras seguem rascunho', () => {
+test('na spec real, as peças da lib têm trilho B e estão em revisão; as outras seguem rascunho', () => {
   const r = validar({ raiz: ROOT, css: CSS });
   assert.deepEqual(r.erros, [], msgs(r));
   assert.deepEqual(r.avisos, [], JSON.stringify(r.avisos));
