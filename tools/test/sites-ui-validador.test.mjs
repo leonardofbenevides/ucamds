@@ -82,14 +82,14 @@ test('peça com trilho B e sem demo Angular reprova', () => {
 
 test('peça em revisão sem trilho B reprova', () => {
   const raiz = repo();
-  const c = le(raiz, 'accordion'); c.status = 'review'; grava(raiz, 'accordion', c);
-  assert.ok(roda(raiz).erros.some((e) => /accordion: status "review" sem implementacao\.trilho_b/.test(e.msg)), msgs(roda(raiz)));
+  const c = le(raiz, 'card'); c.status = 'review'; grava(raiz, 'card', c);
+  assert.ok(roda(raiz).erros.some((e) => /card: status "review" sem implementacao\.trilho_b/.test(e.msg)), msgs(roda(raiz)));
 });
 
 test('demo Angular sem trilho B reprova: a forma documentada não teria peça', () => {
   const raiz = repo();
   const d = JSON.parse(readFileSync(join(raiz, 'sites/spec/demos.json'), 'utf8'));
-  d.demos.accordion.principal.angular = '<details ucamSiteAccordionItem></details>';
+  d.demos.card.principal.angular = '<article ucamSiteCard></article>';
   writeFileSync(join(raiz, 'sites/spec/demos.json'), JSON.stringify(d));
-  assert.ok(roda(raiz).erros.some((e) => /accordion: a demo tem a forma Angular e o contrato não tem trilho_b/.test(e.msg)), msgs(roda(raiz)));
+  assert.ok(roda(raiz).erros.some((e) => /card: a demo tem a forma Angular e o contrato não tem trilho_b/.test(e.msg)), msgs(roda(raiz)));
 });

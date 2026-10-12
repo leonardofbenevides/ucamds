@@ -486,8 +486,24 @@ ${acima('nav-aberta')} {
 }
 .ucam-site-accordion__panel > :first-child { margin-block-start: 0; }
 .ucam-site-accordion__panel > :last-child { margin-block-end: 0; }
+/* O painel desliza onde o navegador sabe animar até a altura do conteúdo
+ * (interpolate-size) e expõe o conteúdo do details (::details-content). Nos
+ * outros ele aparece e some, como antes. É da folha, não da lib: vale também
+ * para quem escreve o HTML à mão. */
+@supports (interpolate-size: allow-keywords) {
+  .ucam-site-accordion { interpolate-size: allow-keywords; }
+  .ucam-site-accordion__item::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size ${V('motion-duration-state')} ${V('motion-easing-standard')},
+      content-visibility ${V('motion-duration-state')} allow-discrete;
+  }
+  .ucam-site-accordion__item[open]::details-content { block-size: auto; }
+}
 @media (prefers-reduced-motion: reduce) {
   .ucam-site-accordion__icon { transition: none; }
+  .ucam-site-accordion__item::details-content { transition: none; }
 }
 
 /* ---------------------------------------------------------- pagination --- */

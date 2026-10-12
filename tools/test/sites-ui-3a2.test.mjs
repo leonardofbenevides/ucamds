@@ -6,6 +6,7 @@ import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { validar } from '../validate-sites-spec.mjs';
+import { construirCss } from '../build-sites-css.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CSS = readFileSync(join(ROOT, 'dist/sites/css/ucam-site.css'), 'utf8');
@@ -101,4 +102,17 @@ test('trilho_b só com Entradas continua válido quando o contrato não tem outr
   const r = validar({ raiz: ROOT, css: CSS });
   assert.match(le(ROOT, 'tag').implementacao.trilho_b, /Entradas: tone\.$/);
   assert.ok(!tem(r, /^tag:/), msgs(r));
+});
+
+test('o painel do acordeão desliza onde o navegador entrega, e fica parado com movimento reduzido', () => {
+  const { css, falhas } = construirCss({ raiz: ROOT });
+  assert.deepEqual(falhas, []);
+  const bloco = /@supports \(interpolate-size: allow-keywords\) \{([\s\S]*?)\n\}/.exec(css)?.[1] ?? '';
+  assert.match(bloco, /\.ucam-site-accordion \{ interpolate-size: allow-keywords; \}/);
+  assert.match(bloco, /\.ucam-site-accordion__item::details-content \{[^}]*block-size: 0;[^}]*transition:/);
+  assert.match(bloco, /\.ucam-site-accordion__item\[open\]::details-content \{ block-size: auto; \}/);
+  // Fora do @supports nada mexe na altura: navegador sem suporte mostra e esconde, como antes.
+  assert.ok(!css.replace(/@supports \(interpolate-size[\s\S]*?\n\}/, '').includes('block-size: 0;\n    overflow: clip'), 'a altura zero vazou do @supports');
+  const reduzido = [...css.matchAll(/@media \(prefers-reduced-motion: reduce\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]).join('\n');
+  assert.match(reduzido, /\.ucam-site-accordion__item::details-content \{ transition: none; \}/);
 });

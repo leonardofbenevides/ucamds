@@ -3,7 +3,7 @@
   "id": "accordion",
   "name": "Accordion",
   "selector": "ucam-site-accordion",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -74,6 +74,12 @@
       "tipo": "boolean",
       "default": "false",
       "descricao": "Atributo open do item que nasce aberto. No máximo um, e só quando é a resposta que quase todos procuram."
+    },
+    {
+      "nome": "heading",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "A pergunta ou o título do item: o texto do summary."
     }
   ],
   "estados": [
@@ -86,7 +92,7 @@
       "Não para conteúdo que todos precisam ler: o que está fechado não é lido.",
       "Não aninhar acordeão dentro de acordeão.",
       "Não para navegação: item de menu é link.",
-      "Não entrega animação de altura: o painel aparece e some, sem deslizar."
+      "A altura só desliza onde o navegador anima até o tamanho do conteúdo (interpolate-size); nos outros, o painel aparece e some. Com movimento reduzido, nunca desliza."
     ],
     "motivo": "Acordeão esconde. Serve quando a pessoa procura um item entre vários, e atrapalha quando o texto é um só."
   },
@@ -183,6 +189,7 @@
         "--ucam-site-container-prosa"
       ],
       "nota": "Não entrega animação de altura do painel."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/accordion/accordion.ts — [ucamSiteAccordion], details[ucamSiteAccordionItem]. Entradas: name, open, heading."
   }
 }

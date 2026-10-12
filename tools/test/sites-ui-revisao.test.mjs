@@ -71,7 +71,7 @@ test('o índice entrega o seletor Angular de verdade, tirado do trilho B', () =>
   const de = (id) => data.componentes.find((c) => c.id === id);
   assert.equal(de('button').seletor_angular, 'a[ucamSiteButton], button[ucamSiteButton]');
   assert.equal(de('tag').seletor_angular, '[ucamSiteTag]');
-  assert.equal(de('accordion').seletor_angular, undefined);
+  assert.equal(de('card').seletor_angular, undefined);
 });
 
 /* ---- validador: o trilho B conferido nos dois sentidos ---- */

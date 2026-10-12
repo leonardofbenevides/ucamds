@@ -10,6 +10,7 @@ import avatar from '../../../../../spec/components/avatar.json';
 import sectionHeading from '../../../../../spec/components/section-heading.json';
 import breadcrumb from '../../../../../spec/components/breadcrumb.json';
 import pageShell from '../../../../../spec/components/page-shell.json';
+import accordion from '../../../../../spec/components/accordion.json';
 
 export interface Prop {
   nome: string;
@@ -26,6 +27,7 @@ const CONTRATOS: Record<string, unknown> = {
   'section-heading': sectionHeading,
   'breadcrumb': breadcrumb,
   'page-shell': pageShell,
+  'accordion': accordion,
 };
 
 /**

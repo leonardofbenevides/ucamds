@@ -34,6 +34,17 @@ function entradasDe(el: Element): Set<string> {
 
 const andaime = (nome: string) => nome === 'class' || nome.startsWith('_ng') || nome.startsWith('ng-') || nome.startsWith('ucamsite');
 
+/**
+ * Onde o nome da entrada É um atributo do elemento, ele conta: o `open` e o
+ * `name` de um <details> são o que a peça entrega, não só o que ela recebe.
+ */
+const NATIVOS: Record<string, string[]> = {
+  details: ['open', 'name'],
+  a: ['href'],
+  input: ['type', 'value', 'disabled', 'placeholder', 'required', 'name'],
+  button: ['type', 'disabled'],
+};
+
 const REFERENCIAS = new Set(['for', 'aria-describedby', 'aria-labelledby', 'aria-controls']);
 
 interface Ligacoes {
@@ -75,7 +86,7 @@ function linhas(no: Node, nivel: number, saida: string[], l: Ligacoes): void {
     const entradas = entradasDe(el);
     const atributos = Array.from(el.attributes)
       .map((a) => ({ nome: a.name.toLowerCase(), valor: a.value }))
-      .filter((a) => !andaime(a.nome) && !entradas.has(a.nome))
+      .filter((a) => !andaime(a.nome) && (!entradas.has(a.nome) || (NATIVOS[el.localName] ?? []).includes(a.nome)))
       .map((a) => `${a.nome}="${valorDe(el, a.nome, a.valor, l)}"`)
       .sort()
       .join(' ');
