@@ -3,7 +3,7 @@
   "id": "logo-marquee",
   "name": "LogoMarquee",
   "selector": "ucam-site-logo-marquee",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -87,6 +87,18 @@
           "classe": ".ucam-site-marquee--parado"
         }
       }
+    },
+    {
+      "nome": "pauseLabel",
+      "tipo": "string",
+      "default": "'Pausar o desfile'",
+      "descricao": "O rótulo da caixa de pausa."
+    },
+    {
+      "nome": "fieldId",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O id da caixa de pausa. Sem ele a peça gera um."
     }
   ],
   "estados": [
@@ -176,6 +188,7 @@
         "--ucam-site-size-logo-parceiro"
       ],
       "nota": "Não entrega botão de pausa."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/logo-marquee/logo-marquee.ts — div[ucamSiteMarquee]. Entradas: logos, paused, pauseLabel, fieldId."
   }
 }
