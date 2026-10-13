@@ -31,9 +31,13 @@ export class UcamSiteTestimonial {
   protected readonly marca = computed(() => {
     const dada = this.initials()?.trim();
     if (dada) return dada;
-    const nomes = (this.autor() ?? '').split(' ').filter(Boolean);
-    const letras = nomes.length > 1 ? [nomes[0], nomes.at(-1)!] : nomes;
-    return letras.map((n) => n[0].toUpperCase()).join('');
+    // A primeira LETRA de cada palavra: parêntese, aspas, número e emoji não são inicial de ninguém.
+    const iniciais = (this.autor() ?? '')
+      .split(' ')
+      .map((palavra) => /\p{L}/u.exec(palavra)?.[0])
+      .filter((letra): letra is string => !!letra);
+    const letras = iniciais.length > 1 ? [iniciais[0], iniciais.at(-1)!] : iniciais;
+    return letras.map((l) => l.toUpperCase()).join('');
   });
   protected readonly classes = computed(() => classesDe('ucam-site-testimonial', this.inverse() && 'inverse'));
 }

@@ -17,13 +17,16 @@ const LARGURAS = ['faixa', 'prosa'] as const;
  * Sem foto. A trilha, as pílulas e as ações são conteúdo de quem usa, e saem
  * na ordem do contrato: trilha, palavra, título, frase, pílulas, ações. O
  * que não casar com nenhum encaixe (um `@if` com vários nós) vai para o fim.
+ *
+ * Os encaixes aceitam a diretiva da parte OU a classe dela: quem escreve a
+ * parte em HTML puro (`<ul class="ucam-site-…">`) a vê no mesmo lugar.
  */
 @Component({
   selector: 'header[ucamSitePageHero]',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'classes()' },
-  template: `<div class="ucam-site-page-hero__inner"><ng-content select="[ucamSiteBreadcrumb]" />@if (palavra(); as t) {<p class="ucam-site-page-hero__eyebrow">{{ t }}</p>}<h1 class="ucam-site-page-hero__title">{{ heading() }}</h1>@if (frase(); as t) {<p class="ucam-site-page-hero__lede">{{ t }}</p>}<ng-content select="[ucamSitePageHeroPills]" /><ng-content select="[ucamSitePageHeroActions]" /><ng-content /></div>`,
+  template: `<div class="ucam-site-page-hero__inner"><ng-content select="[ucamSiteBreadcrumb],.ucam-site-breadcrumb" />@if (palavra(); as t) {<p class="ucam-site-page-hero__eyebrow">{{ t }}</p>}<h1 class="ucam-site-page-hero__title">{{ heading() }}</h1>@if (frase(); as t) {<p class="ucam-site-page-hero__lede">{{ t }}</p>}<ng-content select="[ucamSitePageHeroPills],.ucam-site-page-hero__pills" /><ng-content select="[ucamSitePageHeroActions],.ucam-site-page-hero__actions" /><ng-content /></div>`,
 })
 export class UcamSitePageHero {
   /** O título, o h1 da página. */

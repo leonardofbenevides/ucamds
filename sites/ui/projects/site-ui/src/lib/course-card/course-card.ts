@@ -30,7 +30,8 @@ export class UcamSiteCourseCard {
 
   private readonly ditos = (...valores: (string | null | undefined)[]) => valores.map((v) => v?.trim()).filter((v): v is string => !!v);
 
-  protected readonly destino = computed(() => this.href()?.trim() || null);
+  /** Só há link com destino E nome do curso: link sem texto não tem nome. */
+  protected readonly destino = computed(() => (this.name()?.trim() ? this.href()?.trim() || null : null));
   protected readonly foto = computed(() => this.image()?.trim() || null);
   protected readonly tags = computed(() => this.ditos(this.level(), this.modality()));
   protected readonly meta = computed(() => this.ditos(this.duration(), this.shift(), this.campus()));

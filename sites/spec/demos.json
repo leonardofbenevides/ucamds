@@ -248,7 +248,7 @@
       "principal": {
         "preview": "<div class='ucam-site-inverso' style='padding:1.5rem;border-radius:.5rem'><ul class='ucam-site-hero__pills'><li class='ucam-site-hero-pill'><svg class='ic' aria-hidden='true'><use href='#i-briefcase'/></svg> 1.700 empresas parceiras</li><li class='ucam-site-hero-pill'><svg class='ic' aria-hidden='true'><use href='#i-users'/></svg> 5 mil alunos encaminhados</li><li class='ucam-site-hero-pill'>Desde 2001</li></ul></div>",
         "codigo": "<div class=\"ucam-site-inverso\">\n  <ul class=\"ucam-site-hero__pills\">\n    <li class=\"ucam-site-hero-pill\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-briefcase\"/></svg> 1.700 empresas parceiras</li>\n    <li class=\"ucam-site-hero-pill\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-users\"/></svg> 5 mil alunos encaminhados</li>\n    <li class=\"ucam-site-hero-pill\">Desde 2001</li>\n  </ul>\n</div>",
-        "angular": "<div class=\"ucam-site-inverso\">\n  <ul class=\"ucam-site-hero__pills\">\n    <li ucamSiteHeroPill><svg ucamSiteIcon=\"briefcase\"></svg> 1.700 empresas parceiras</li>\n    <li ucamSiteHeroPill><svg ucamSiteIcon=\"users\"></svg> 5 mil alunos encaminhados</li>\n    <li ucamSiteHeroPill>Desde 2001</li>\n  </ul>\n</div>"
+        "angular": "<div class=\"ucam-site-inverso\">\n  <ul ucamSiteHeroPills>\n    <li ucamSiteHeroPill><svg ucamSiteIcon=\"briefcase\"></svg> 1.700 empresas parceiras</li>\n    <li ucamSiteHeroPill><svg ucamSiteIcon=\"users\"></svg> 5 mil alunos encaminhados</li>\n    <li ucamSiteHeroPill>Desde 2001</li>\n  </ul>\n</div>"
       }
     },
     "editorial-cta": {

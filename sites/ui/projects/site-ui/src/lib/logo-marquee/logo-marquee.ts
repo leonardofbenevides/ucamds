@@ -28,10 +28,10 @@ export interface UcamSiteLogo {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'classes()' },
-  template: `@if (validos().length) {@if (!parado()) {<input class="ucam-site-marquee__pausa" type="checkbox" [attr.id]="id()"><label class="ucam-site-marquee__pausa-rotulo" [attr.for]="id()">{{ rotulo() }}</label>}<div class="ucam-site-marquee__viewport"><div class="ucam-site-marquee__track"><ul class="ucam-site-marquee__group">@for (logo of validos(); track $index) {<li class="ucam-site-marquee__item">@if (logo.href) {<a [attr.href]="logo.href"><img [attr.src]="logo.src" [attr.alt]="logo.alt"></a>} @else {<img [attr.src]="logo.src" [attr.alt]="logo.alt">}</li>}</ul>@if (!parado()) {<ul class="ucam-site-marquee__group" aria-hidden="true">@for (logo of validos(); track $index) {<li class="ucam-site-marquee__item">@if (logo.href) {<a [attr.href]="logo.href" tabindex="-1"><img [attr.src]="logo.src" alt=""></a>} @else {<img [attr.src]="logo.src" alt="">}</li>}</ul>}</div></div>}`,
+  template: `@if (validos().length) {@if (!parado()) {<input class="ucam-site-marquee__pausa" type="checkbox" [attr.id]="id()"><label class="ucam-site-marquee__pausa-rotulo" [attr.for]="id()">{{ rotulo() }}</label>}<div class="ucam-site-marquee__viewport"><div class="ucam-site-marquee__track"><ul class="ucam-site-marquee__group">@for (logo of validos(); track logo.src) {<li class="ucam-site-marquee__item">@if (logo.href) {<a [attr.href]="logo.href"><img [attr.src]="logo.src" [attr.alt]="logo.alt"></a>} @else {<img [attr.src]="logo.src" [attr.alt]="logo.alt">}</li>}</ul>@if (!parado()) {<ul class="ucam-site-marquee__group" aria-hidden="true">@for (logo of validos(); track logo.src) {<li class="ucam-site-marquee__item">@if (logo.href) {<a [attr.href]="logo.href" tabindex="-1"><img [attr.src]="logo.src" alt=""></a>} @else {<img [attr.src]="logo.src" alt="">}</li>}</ul>}</div></div>}`,
 })
 export class UcamSiteMarquee {
-  readonly logos = input.required<UcamSiteLogo[], UcamSiteLogo[] | null | undefined>({ transform: (v) => v ?? [] });
+  readonly logos = input.required<UcamSiteLogo[], UcamSiteLogo[] | null | undefined>({ transform: (v) => (Array.isArray(v) ? v : []) });
   /** A forma parada: os logos em linhas, centralizados. */
   readonly paused = input(false, { transform: booleanAttribute });
   readonly pauseLabel = input<string | null | undefined>('Pausar o desfile');
@@ -40,10 +40,20 @@ export class UcamSiteMarquee {
 
   private readonly gerado = inject(UcamSiteIds).proximo('ucam-site-desfile');
 
+  /**
+   * O que dá para desenhar. Logo sem endereço sai; o que não é texto (dado de
+   * CMS com o tipo errado) é tratado como ausente, e não derruba a página.
+   * Logo com destino e SEM nome fica só como imagem: um link cujo único
+   * conteúdo é uma imagem sem alt não tem nome acessível.
+   */
   protected readonly validos = computed(() =>
     this.logos()
-      .filter((l) => l?.src?.trim())
-      .map((l) => ({ src: l.src.trim(), alt: l.alt?.trim() ?? '', href: l.href?.trim() || null })),
+      .map((l) => {
+        const texto = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+        const alt = texto(l?.alt);
+        return { src: texto(l?.src), alt, href: alt ? texto(l?.href) || null : null };
+      })
+      .filter((l) => l.src),
   );
   /** Com menos de dois logos não há laço: a peça se comporta como parada. */
   protected readonly parado = computed(() => this.paused() || this.validos().length < 2);

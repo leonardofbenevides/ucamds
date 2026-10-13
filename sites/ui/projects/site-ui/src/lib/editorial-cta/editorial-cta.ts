@@ -16,7 +16,7 @@ import { classesDe } from '../nucleo/classes';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'classes()' },
-  template: `@if (foto(); as src) {<img class="ucam-site-cta__media" [attr.src]="src" alt=""><div class="ucam-site-cta__scrim" aria-hidden="true"></div>}<div class="ucam-site-cta__content">@if (palavra(); as t) {<p class="ucam-site-cta__eyebrow">{{ t }}</p>}<h2 class="ucam-site-cta__title">{{ heading() }}</h2>@if (apoio(); as t) {<p class="ucam-site-cta__text">{{ t }}</p>}<ng-content select="[ucamSiteCtaActions]" /><ng-content /></div>`,
+  template: `@if (foto(); as src) {<img class="ucam-site-cta__media" [attr.src]="src" alt=""><div class="ucam-site-cta__scrim" aria-hidden="true"></div>}<div class="ucam-site-cta__content">@if (palavra(); as t) {<p class="ucam-site-cta__eyebrow">{{ t }}</p>}<h2 class="ucam-site-cta__title">{{ heading() }}</h2>@if (apoio(); as t) {<p class="ucam-site-cta__text">{{ t }}</p>}<ng-content select="[ucamSiteCtaActions],.ucam-site-cta__actions" /><ng-content /></div>`,
 })
 export class UcamSiteCta {
   /** A chamada, um h2. */

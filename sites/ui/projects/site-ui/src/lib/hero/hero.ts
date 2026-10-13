@@ -21,13 +21,16 @@ import { classesDe } from '../nucleo/classes';
  * `select` o conteúdo de um `@if` com mais de um nó na raiz (aviso NG8011).
  * Esse conteúdo não some — cai no encaixe geral, no fim do bloco —, mas sai
  * na ordem escrita, não na do contrato.
+ *
+ * Os encaixes aceitam a diretiva da parte OU a classe dela: quem escreve a
+ * parte em HTML puro (`<ul class="ucam-site-…">`) a vê no mesmo lugar.
  */
 @Component({
   selector: 'section[ucamSiteHero]',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'classes()' },
-  template: `@if (foto(); as src) {<img class="ucam-site-hero__media" [attr.src]="src" alt=""><div class="ucam-site-hero__scrim" aria-hidden="true"></div>}<div class="ucam-site-hero__inner"><div class="ucam-site-hero__content">@if (palavra(); as t) {<p class="ucam-site-hero__eyebrow">{{ t }}</p>}<h1 class="ucam-site-hero__title">{{ heading() }}</h1>@if (frase(); as t) {<p class="ucam-site-hero__lede">{{ t }}</p>}<ng-content select="[ucamSiteHeroPills]" /><ng-content select="[ucamSiteHeroActions]" /><ng-content /></div></div>`,
+  template: `@if (foto(); as src) {<img class="ucam-site-hero__media" [attr.src]="src" alt=""><div class="ucam-site-hero__scrim" aria-hidden="true"></div>}<div class="ucam-site-hero__inner"><div class="ucam-site-hero__content">@if (palavra(); as t) {<p class="ucam-site-hero__eyebrow">{{ t }}</p>}<h1 class="ucam-site-hero__title">{{ heading() }}</h1>@if (frase(); as t) {<p class="ucam-site-hero__lede">{{ t }}</p>}<ng-content select="[ucamSiteHeroPills],.ucam-site-hero__pills" /><ng-content select="[ucamSiteHeroActions],.ucam-site-hero__actions" /><ng-content /></div></div>`,
 })
 export class UcamSiteHero {
   /** O título, o h1 da página. */

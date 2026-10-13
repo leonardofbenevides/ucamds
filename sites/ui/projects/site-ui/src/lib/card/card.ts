@@ -25,7 +25,7 @@ import { classesDe } from '../nucleo/classes';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'classes()' },
-  template: `@if (foto(); as src) {<img class="ucam-site-card__media" [attr.src]="src" alt="">}<div class="ucam-site-card__body"><ng-content select="[ucamSiteCardMeta]" />@switch (level()) {@case (2) {<h2 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h2>} @case (4) {<h4 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h4>} @default {<h3 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h3>}}@if (texto(); as t) {<p class="ucam-site-card__text">{{ t }}</p>}<ng-content /></div><ng-template #titulo>@if (destino(); as d) {<a class="ucam-site-card__link" [attr.href]="d">{{ heading() }}</a>} @else {<ng-container>{{ heading() }}</ng-container>}</ng-template>`,
+  template: `@if (foto(); as src) {<img class="ucam-site-card__media" [attr.src]="src" alt="">}<div class="ucam-site-card__body"><ng-content select="[ucamSiteCardMeta],.ucam-site-card__meta" />@switch (level()) {@case (2) {<h2 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h2>} @case (4) {<h4 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h4>} @default {<h3 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h3>}}@if (texto(); as t) {<p class="ucam-site-card__text">{{ t }}</p>}<ng-content /></div><ng-template #titulo>@if (destino(); as d) {<a class="ucam-site-card__link" [attr.href]="d">{{ heading() }}</a>} @else {<ng-container>{{ heading() }}</ng-container>}</ng-template>`,
 })
 export class UcamSiteCard {
   readonly heading = input.required<string>();
@@ -38,7 +38,8 @@ export class UcamSiteCard {
   /** O nível do título: 3 por padrão; 2 ou 4 conforme a seção em que o cartão está. */
   readonly level = input<2 | 3 | 4, 2 | 3 | 4 | '2' | '3' | '4' | null | undefined>(3, { transform: (v) => ([2, 4].includes(Number(v)) ? (Number(v) as 2 | 4) : 3) });
 
-  protected readonly destino = computed(() => this.href()?.trim() || null);
+  /** Só há link com destino E título: link sem texto, esticado sobre o cartão, não tem nome. */
+  protected readonly destino = computed(() => (this.heading()?.trim() ? this.href()?.trim() || null : null));
   protected readonly foto = computed(() => this.image()?.trim() || null);
   protected readonly texto = computed(() => this.text()?.trim() || null);
   protected readonly classes = computed(() => classesDe('ucam-site-card', this.interactive() && !!this.destino() && 'interativo'));

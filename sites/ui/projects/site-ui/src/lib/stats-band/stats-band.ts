@@ -21,9 +21,14 @@ export interface UcamSiteStat {
   template: `@for (n of numeros(); track $index) {<div class="ucam-site-stats__item"><dt class="ucam-site-stats__label">{{ n.label }}</dt><dd class="ucam-site-stats__value">{{ n.value }}</dd></div>}`,
 })
 export class UcamSiteStats {
-  readonly items = input.required<UcamSiteStat[], UcamSiteStat[] | null | undefined>({ transform: (v) => v ?? [] });
+  readonly items = input.required<UcamSiteStat[], UcamSiteStat[] | null | undefined>({ transform: (v) => (Array.isArray(v) ? v : []) });
   readonly inverse = input(false, { transform: booleanAttribute });
 
-  protected readonly numeros = computed(() => this.items().filter((n) => n && String(n.value ?? '').trim() && n.label?.trim()));
+  /** Valor e rótulo viram texto aqui: rótulo numérico ou item solto, vindos de um CMS, não derrubam a página. */
+  protected readonly numeros = computed(() =>
+    this.items()
+      .map((n) => ({ value: String(n?.value ?? '').trim(), label: String(n?.label ?? '').trim() }))
+      .filter((n) => n.value && n.label),
+  );
   protected readonly classes = computed(() => classesDe('ucam-site-stats', this.inverse() && 'inverse'));
 }

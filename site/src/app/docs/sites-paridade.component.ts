@@ -65,7 +65,9 @@ import { prefixarIds } from './prefixar-ids';
        cada um a largura inteira do conteúdo. */
     .lados.empilhados .lado {
       padding-inline: 0;
-      overflow: hidden;
+      /* clip só na horizontal: hidden criaria um contêiner de rolagem e
+         cortaria o que a peça abre para baixo, como o menu do cabeçalho. */
+      overflow-x: clip;
     }
     .lados.empilhados .rotulo {
       padding-inline: 1rem;

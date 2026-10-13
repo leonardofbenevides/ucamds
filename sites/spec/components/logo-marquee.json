@@ -72,9 +72,9 @@
   "props": [
     {
       "nome": "logos",
-      "tipo": "{ src: string; alt: string }[]",
+      "tipo": "{ src: string; alt: string; href?: string }[]",
       "obrigatorio": true,
-      "descricao": "Os logos, com o nome da empresa no alt."
+      "descricao": "Os logos, com o nome da empresa no alt. Com href, o logo é link — desde que tenha nome: logo sem alt fica só como imagem."
     },
     {
       "nome": "paused",
