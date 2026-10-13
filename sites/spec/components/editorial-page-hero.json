@@ -3,7 +3,7 @@
   "id": "editorial-page-hero",
   "name": "EditorialPageHero",
   "selector": "ucam-site-editorial-page-hero",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -80,7 +80,7 @@
   ],
   "props": [
     {
-      "nome": "title",
+      "nome": "heading",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "O título da página, o h1."
@@ -102,6 +102,12 @@
           "classe": ".ucam-site-page-hero--prosa"
         }
       }
+    },
+    {
+      "nome": "eyebrow",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A palavra acima do título."
     }
   ],
   "estados": [
@@ -206,6 +212,7 @@
         "--ucam-site-container-prosa",
         "--ucam-site-color-surface-inverse"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/editorial-page-hero/editorial-page-hero.ts — header[ucamSitePageHero], [ucamSitePageHeroPills], [ucamSitePageHeroActions]. Entradas: heading, eyebrow, lede, width."
   }
 }

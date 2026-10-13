@@ -28,6 +28,9 @@ import { UcamSiteTestimonial } from './lib/testimonial/testimonial';
 import { UcamSiteSteps, UcamSiteStep } from './lib/step-card/step-card';
 import { UcamSiteCard, UcamSiteCardMeta } from './lib/card/card';
 import { UcamSiteCourseCard } from './lib/course-card/course-card';
+import { UcamSiteHero, UcamSiteHeroPills, UcamSiteHeroActions } from './lib/hero/hero';
+import { UcamSitePageHero, UcamSitePageHeroPills, UcamSitePageHeroActions } from './lib/editorial-page-hero/editorial-page-hero';
+import { UcamSiteCta, UcamSiteCtaActions } from './lib/editorial-cta/editorial-cta';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -52,6 +55,9 @@ export * from './lib/testimonial/testimonial';
 export * from './lib/step-card/step-card';
 export * from './lib/card/card';
 export * from './lib/course-card/course-card';
+export * from './lib/hero/hero';
+export * from './lib/editorial-page-hero/editorial-page-hero';
+export * from './lib/editorial-cta/editorial-cta';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -87,4 +93,12 @@ export const UCAM_SITE = [
   UcamSiteCard,
   UcamSiteCardMeta,
   UcamSiteCourseCard,
+  UcamSiteHero,
+  UcamSiteHeroPills,
+  UcamSiteHeroActions,
+  UcamSitePageHero,
+  UcamSitePageHeroPills,
+  UcamSitePageHeroActions,
+  UcamSiteCta,
+  UcamSiteCtaActions,
 ] as const;

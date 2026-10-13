@@ -3,7 +3,7 @@
   "id": "editorial-cta",
   "name": "EditorialCta",
   "selector": "ucam-site-editorial-cta",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -81,7 +81,7 @@
   ],
   "props": [
     {
-      "nome": "title",
+      "nome": "heading",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "A chamada."
@@ -104,6 +104,12 @@
           "classe": ".ucam-site-cta--com-foto"
         }
       }
+    },
+    {
+      "nome": "eyebrow",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A palavra acima do título."
     }
   ],
   "estados": [
@@ -198,6 +204,7 @@
         "--ucam-site-typography-display-section-sm-font-size",
         "--ucam-site-color-surface-inverse"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/editorial-cta/editorial-cta.ts — section[ucamSiteCta], [ucamSiteCtaActions]. Entradas: heading, eyebrow, text, image."
   }
 }

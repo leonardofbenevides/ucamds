@@ -15,6 +15,9 @@ import { classesDe } from '../nucleo/classes';
  * `href` não há link: o título é texto, e o cartão não se diz interativo,
  * mesmo que `interactive` venha ligado (realce de clique em algo que não
  * leva a lugar nenhum engana).
+ *
+ * O que for escrito dentro do cartão sem ser a meta vai para o fim do corpo.
+ * Nada de link nem de botão ali: o link do título cobre o cartão inteiro.
  */
 @Component({
   selector: 'article[ucamSiteCard]',
@@ -22,7 +25,7 @@ import { classesDe } from '../nucleo/classes';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'classes()' },
-  template: `@if (foto(); as src) {<img class="ucam-site-card__media" [attr.src]="src" alt="">}<div class="ucam-site-card__body"><ng-content select="[ucamSiteCardMeta]" />@switch (level()) {@case (2) {<h2 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h2>} @case (4) {<h4 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h4>} @default {<h3 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h3>}}@if (texto(); as t) {<p class="ucam-site-card__text">{{ t }}</p>}</div><ng-template #titulo>@if (destino(); as d) {<a class="ucam-site-card__link" [attr.href]="d">{{ heading() }}</a>} @else {<ng-container>{{ heading() }}</ng-container>}</ng-template>`,
+  template: `@if (foto(); as src) {<img class="ucam-site-card__media" [attr.src]="src" alt="">}<div class="ucam-site-card__body"><ng-content select="[ucamSiteCardMeta]" />@switch (level()) {@case (2) {<h2 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h2>} @case (4) {<h4 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h4>} @default {<h3 class="ucam-site-card__title"><ng-container *ngTemplateOutlet="titulo" /></h3>}}@if (texto(); as t) {<p class="ucam-site-card__text">{{ t }}</p>}<ng-content /></div><ng-template #titulo>@if (destino(); as d) {<a class="ucam-site-card__link" [attr.href]="d">{{ heading() }}</a>} @else {<ng-container>{{ heading() }}</ng-container>}</ng-template>`,
 })
 export class UcamSiteCard {
   readonly heading = input.required<string>();

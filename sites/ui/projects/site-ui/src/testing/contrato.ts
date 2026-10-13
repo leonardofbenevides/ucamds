@@ -24,6 +24,9 @@ import testimonial from '../../../../../spec/components/testimonial.json';
 import stepCard from '../../../../../spec/components/step-card.json';
 import card from '../../../../../spec/components/card.json';
 import courseCard from '../../../../../spec/components/course-card.json';
+import hero from '../../../../../spec/components/hero.json';
+import editorialPageHero from '../../../../../spec/components/editorial-page-hero.json';
+import editorialCta from '../../../../../spec/components/editorial-cta.json';
 
 export interface Prop {
   nome: string;
@@ -54,6 +57,9 @@ const CONTRATOS: Record<string, unknown> = {
   'step-card': stepCard,
   'card': card,
   'course-card': courseCard,
+  'hero': hero,
+  'editorial-page-hero': editorialPageHero,
+  'editorial-cta': editorialCta,
 };
 
 /**

@@ -3,7 +3,7 @@
   "id": "hero",
   "name": "Hero",
   "selector": "ucam-site-hero",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -94,7 +94,7 @@
   ],
   "props": [
     {
-      "nome": "title",
+      "nome": "heading",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "O título, o h1 da página."
@@ -117,6 +117,12 @@
           "classe": ".ucam-site-hero--com-foto"
         }
       }
+    },
+    {
+      "nome": "eyebrow",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A palavra acima do título."
     }
   ],
   "estados": [
@@ -226,6 +232,7 @@
         "--ucam-site-container-faixa"
       ],
       "nota": "Não entrega carrossel."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/hero/hero.ts — section[ucamSiteHero], [ucamSiteHeroPills], [ucamSiteHeroActions]. Entradas: heading, eyebrow, lede, image."
   }
 }

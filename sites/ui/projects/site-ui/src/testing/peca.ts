@@ -56,9 +56,10 @@ export function blocosComuns<T extends Hospede>(id: string, tipo: Type<T>): void
       const padrao = [...monta(tipo, {}, nome).classes].sort();
       const { classes } = monta(tipo, { [nome]: 'valor-que-nao-existe' }, nome);
       expect([...classes].some((c) => c.includes('valor-que-nao-existe')), `${nome}: inventou classe`).toBe(false);
-      // Entrada booleana lê qualquer texto como verdadeiro; a união é que cai no padrão.
+      // Só a UNIÃO de valores fechados cai no padrão. Entrada booleana lê qualquer
+      // texto como verdadeiro, e entrada livre (o endereço de uma foto) aceita qualquer texto.
       const p = contratoDe(id).props.find((x) => x.nome === nome)!;
-      if (p.tipo !== 'boolean') expect([...classes].sort(), `${nome}: não caiu no padrão`).toEqual(padrao);
+      if (p.tipo.includes("'")) expect([...classes].sort(), `${nome}: não caiu no padrão`).toEqual(padrao);
     }
   });
 
