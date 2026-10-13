@@ -3,7 +3,7 @@
   "id": "site-header",
   "name": "SiteHeader",
   "selector": "ucam-site-site-header",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -111,6 +111,36 @@
       "tipo": "string",
       "default": "'/'",
       "descricao": "Para onde a marca leva."
+    },
+    {
+      "nome": "brand",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O nome do site, no link da marca. Nesta versão a marca é texto; a imagem entra quando houver arquivo de marca dos sites."
+    },
+    {
+      "nome": "brandLabel",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O nome acessível do link da marca, que diz o destino: CENPRE, página inicial."
+    },
+    {
+      "nome": "action",
+      "tipo": "{ label: string; href: string } | null",
+      "default": "null",
+      "descricao": "A ação primária: à direita da navegação e no fim do menu do telefone."
+    },
+    {
+      "nome": "secondaryAction",
+      "tipo": "{ label: string; href: string } | null",
+      "default": "null",
+      "descricao": "A ação secundária. Na faixa, só aparece a partir da janela larga."
+    },
+    {
+      "nome": "menuLabel",
+      "tipo": "string",
+      "default": "'Menu'",
+      "descricao": "O nome do botão e da navegação do telefone."
     }
   ],
   "estados": [
@@ -124,7 +154,7 @@
       "Não mais de cinco itens: o sexto vai para o rodapé. Com seis, a faixa estoura a 1024px.",
       "Não duas faixas empilhadas.",
       "Não entrega mega-menu nem submenu.",
-      "Não entrega o fechamento do menu por Esc, por clique fora nem ao seguir uma âncora da mesma página, e o ícone não vira um X: é CSS puro. Ao ir para outra página, ela já nasce com o menu fechado."
+      "No HTML puro o menu só fecha pelo próprio botão, e o ícone não vira um X: é CSS. Ao ir para outra página, ela já nasce com o menu fechado. A lib fecha por Esc (devolvendo o foco ao botão), ao clicar fora e ao seguir um link."
     ],
     "motivo": "Onze destinos antes do primeiro título é a página que ninguém lê. E um menu que só abre com script é um site que não navega quando o script falha."
   },
@@ -232,6 +262,7 @@
         "--ucam-site-size-touch-min"
       ],
       "nota": "Não entrega mega-menu, nem o fechamento do menu por Esc, por clique fora ou ao seguir uma âncora."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/site-header/site-header.ts — header[ucamSiteHeader]. Entradas: items, current, homeHref, brand, brandLabel, action, secondaryAction, menuLabel."
   }
 }

@@ -14,6 +14,7 @@ import accordion from '../../../../../spec/components/accordion.json';
 import input from '../../../../../spec/components/input.json';
 import pagination from '../../../../../spec/components/pagination.json';
 import newsletterForm from '../../../../../spec/components/newsletter-form.json';
+import siteHeader from '../../../../../spec/components/site-header.json';
 
 export interface Prop {
   nome: string;
@@ -34,6 +35,7 @@ const CONTRATOS: Record<string, unknown> = {
   'input': input,
   'pagination': pagination,
   'newsletter-form': newsletterForm,
+  'site-header': siteHeader,
 };
 
 /**
