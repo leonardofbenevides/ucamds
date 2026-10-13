@@ -51,4 +51,58 @@ test('prop do contrato continua precisando de destino mesmo sem entradas', () =>
   assert.ok(tem(r, /hero-pill: a prop "icon" do contrato não é Entrada, Nativo nem Conteúdo/), msgs(r));
 });
 
-export { ROOT, CSS, LIB, repo, le, grava, msgs, tem, readdirSync };
+test('as 25 peças do catálogo têm forma Angular e estão em revisão', () => {
+  const arquivos = readdirSync(join(ROOT, 'sites/spec/components')).filter((f) => f.endsWith('.json'));
+  assert.equal(arquivos.length, 25);
+  for (const f of arquivos) {
+    const c = le(ROOT, f.replace(/\.json$/, ''));
+    assert.ok(c.implementacao?.trilho_b, `${c.id} sem trilho_b`);
+    assert.equal(c.status, 'review', `${c.id} não está em review`);
+  }
+  // E toda pasta de peça da lib é de um contrato: nem peça sem contrato, nem contrato sem peça.
+  const pastas = readdirSync(join(ROOT, LIB), { withFileTypes: true }).filter((d) => d.isDirectory() && !['nucleo', 'icon'].includes(d.name)).map((d) => d.name).sort();
+  assert.deepEqual(pastas, arquivos.map((f) => f.replace(/\.json$/, '')).sort());
+});
+
+/* ---- as saídas das peças no contrato (campo `eventos`) ---- */
+test('os contratos documentam as saídas que a lib tem', () => {
+  const r = validar({ raiz: ROOT, css: CSS });
+  assert.deepEqual(r.erros, [], msgs(r));
+  const nomes = (id) => (le(ROOT, id).eventos ?? []).map((e) => e.nome);
+  assert.deepEqual(nomes('accordion'), ['openChange']);
+  assert.deepEqual(nomes('pagination'), ['pageChange']);
+  assert.deepEqual(nomes('newsletter-form'), ['submitted']);
+  assert.equal(le(ROOT, 'button').eventos, undefined);
+});
+
+test('evento citado que o arquivo não emite reprova', () => {
+  const raiz = repo();
+  const c = le(raiz, 'pagination');
+  c.eventos = [...c.eventos, { nome: 'sizeChange', payload: 'number', descricao: 'x' }];
+  grava(raiz, 'pagination', c);
+  const r = validar({ raiz, css: CSS });
+  assert.ok(tem(r, /pagination: o contrato cita o evento "sizeChange", que .*pagination\.ts não emite/), msgs(r));
+});
+
+test('saída que o arquivo emite e o contrato não documenta reprova', () => {
+  const raiz = repo();
+  const c = le(raiz, 'accordion');
+  delete c.eventos;
+  grava(raiz, 'accordion', c);
+  const r = validar({ raiz, css: CSS });
+  assert.ok(tem(r, /accordion: .*accordion\.ts emite "openChange", que o contrato não documenta em eventos/), msgs(r));
+});
+
+test('evento em contrato sem peça na lib continua reprovado', () => {
+  const raiz = repo();
+  const c = le(raiz, 'tag');
+  delete c.implementacao.trilho_b;
+  c.status = 'draft';
+  c.eventos = [{ nome: 'clicked', payload: 'void', descricao: 'x' }];
+  grava(raiz, 'tag', c);
+  const d = JSON.parse(readFileSync(join(raiz, 'sites/spec/demos.json'), 'utf8'));
+  for (const p of [d.demos.tag.principal, ...(d.demos.tag.exemplos ?? [])]) delete p.angular;
+  writeFileSync(join(raiz, 'sites/spec/demos.json'), JSON.stringify(d));
+  const r = validar({ raiz, css: CSS });
+  assert.ok(tem(r, /tag declara eventos sem ter peça na lib/), msgs(r));
+});

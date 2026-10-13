@@ -242,7 +242,19 @@ export function validar({ raiz = ROOT, css } = {}) {
       if (spec.status === 'review' || spec.status === 'stable') falha(file, `${id}: status "${spec.status}" sem implementacao.trilho_b — só sai de draft a peça que a lib entrega`);
       if (demoAngular) falha(file, `${id}: a demo tem a forma Angular e o contrato não tem trilho_b`);
     }
-    if (spec.eventos) falha(file, `${id} declara eventos — é Angular; sai até o subprojeto 3`);
+    /* As SAÍDAS da peça (campo eventos). Até a lib existir o campo era barrado;
+     * agora descreve a outra metade da API, e é conferido nos dois sentidos
+     * contra o arquivo do trilho B. */
+    const arquivoB = /^(\S+\.ts) — /.exec(trilhoB ?? '')?.[1];
+    if (!arquivoB) {
+      if (spec.eventos) falha(file, `${id} declara eventos sem ter peça na lib (implementacao.trilho_b)`);
+    } else if (existsSync(join(raiz, arquivoB))) {
+      const fonteB = readFileSync(join(raiz, arquivoB), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+      const emitidos = new Set([...fonteB.matchAll(/\breadonly\s+([A-Za-z][A-Za-z0-9]*)\s*=\s*output\b/g)].map((x) => x[1]));
+      const citados = new Set((spec.eventos ?? []).map((e) => e.nome));
+      for (const nome of citados) if (!emitidos.has(nome)) falha(file, `${id}: o contrato cita o evento "${nome}", que ${arquivoB} não emite`);
+      for (const nome of emitidos) if (!citados.has(nome)) falha(file, `${id}: ${arquivoB} emite "${nome}", que o contrato não documenta em eventos`);
+    }
     const raizClasse = spec.implementacao?.trilho_a?.raiz?.replace(/^\./, '');
     if (raizClasse && !classesDaFolha.has(raizClasse)) falha(file, `${id}: trilho_a.raiz ${raizClasse} não existe na folha`);
     for (const parte of spec.anatomia ?? []) {

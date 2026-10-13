@@ -31,14 +31,17 @@ da spec.
     pnpm run test:sites-ui   roda os testes da lib Angular (vitest)
     pnpm run lib:sites       constrói @ucam/site-ui em sites/ui/dist
 
-## A lib Angular (`sites/ui`, fatias 3a-1 e 3a-2, 13/10/2026)
+## A lib Angular (`sites/ui`, completa: fatias 3a-1, 3a-2 e 3a-3, 13/10/2026)
 
 `@ucam/site-ui` é uma casca fina sobre a folha: nenhuma peça tem estilo próprio. Cada uma é uma diretiva ou um componente de seletor de ATRIBUTO sobre o elemento nativo do contrato, e só aplica as classes de `@ucam/site-css`.
 
     <a ucamSiteButton variant="secondary" href="/vagas">Ver todas</a>
     <header ucamSiteSectionHeading eyebrow="Carreiras" heading="Vagas e oportunidades"></header>
 
-- Treze peças até aqui. Base: button, tag, icon-chip, avatar e section-heading. Moldura e formulário: breadcrumb, page-shell, accordion, input (o campo), pagination, newsletter-form, site-header e site-footer. Mais `<svg ucamSiteIcon="nome">` e `provideUcamSite({ sprite })`.
+- As 25 peças do catálogo. Base: button, tag, icon-chip, avatar e section-heading. Moldura e formulário: breadcrumb, page-shell, accordion, input (o campo), pagination, newsletter-form, site-header e site-footer. Hero, seções, cartões e prosa: hero, editorial-page-hero, hero-pill, editorial-cta, stats-band, logo-marquee, card, course-card, doc-card, step-card, testimonial e prose.
+- **Dado ou conteúdo.** Texto curto e lista entram como entrada (`heading`, `items`, `logos`). O que é livre é conteúdo de quem usa, marcado por uma diretiva da parte: as pílulas e as ações do hero (`ucamSiteHeroPills`, `ucamSiteHeroActions`), as tags do cartão (`ucamSiteCardMeta`), o HTML da prosa. Cada conteúdo condicional vai no seu próprio `@if`: o Angular não projeta por `select` um `@if` com vários nós (ele cai no encaixe geral, no fim).
+- **Foto e modificador juntos.** No hero e na CTA, a entrada `image` desenha a foto, o véu e o modificador que guarda a metade do texto.
+- **Eventos no contrato.** As saídas (`openChange`, `pageChange`, `submitted`) estão no campo `eventos` dos contratos e na página de cada peça; o validador as confere contra o arquivo, nos dois sentidos. Mais `<svg ucamSiteIcon="nome">` e `provideUcamSite({ sprite })`.
 - O que a lib faz além do CSS: o menu do cabeçalho fecha por Esc (devolvendo o foco), ao clicar fora e ao seguir um link; o acordeão tem `[(open)]`; o campo liga rótulo, apoio e erro por id; a paginação calcula a janela de páginas; a newsletter confere o e-mail, avisa por `submitted` e mostra o estado que recebe.
 - **Sem `@angular/forms`.** O erro do campo tem uma fonte só, a entrada `error`. Com formulário reativo: `[error]="c.touched && c.invalid ? 'Informe o e-mail.' : null"`.
 - **Contrato e lib falam os mesmos nomes.** O `trilho_b` diz o destino de cada prop: `Entradas` (as `input()`), `Nativos` (atributo do próprio elemento, como `href`) e `Conteúdo` (o que vai dentro). O validador cruza nos dois sentidos, e reprova entrada com nome de atributo nativo.
@@ -54,10 +57,11 @@ da spec.
 
 ## Pendências
 
-- Fatia 3a-3 da lib: as doze peças que faltam (hero, seções, cartões e prosa).
+- 3b: o kit de agentes (MCP) servindo os sites. 3c: a prova no CENPRE, em spec própria.
 - **Endereço só de consulta ou só de âncora não serve num app Angular.** `?pagina=2` e `#conteudo` resolvem contra o `<base href>`, e levam para a home. A paginação monta o endereço a partir do atual (ou de `hrefDe`), e o link de salto trata o clique.
 - Do que a revisão da 3a-2 deixou, menor: `<select>` e `<textarea>` dentro do campo ficam com o rótulo apontando para um id que ninguém tem (falta aviso em modo de desenvolvimento); o botão da newsletter fica `disabled` durante o envio e pode perder o foco; a seta sem destino da paginação é um `<a>` sem papel com `aria-disabled` (vem do contrato em HTML); o título das colunas do rodapé é sempre `<h2>`; os exemplos dentro dos contratos não são conferidos contra as demos; o validador só reconhece `selector` entre aspas simples; nada foi rodado em Safari, Firefox nem com leitor de tela.
-- Do que a 3a-2 deixou: a marca do cabeçalho e do rodapé é texto (falta a imagem, quando houver arquivo de marca dos sites); as saídas das peças (`openChange`, `pageChange`, `submitted`) não estão no campo `eventos` dos contratos, que o validador ainda barra; a página de cada peça repete ids entre o preview, a anatomia e a grade de estados, fora do par de paridade.
+- Do que a 3a-2 deixou: a marca do cabeçalho e do rodapé é texto (falta a imagem, quando houver arquivo de marca dos sites); a página de cada peça repete ids entre o preview, a anatomia e a grade de estados, fora do par de paridade.
+- Do que a 3a-3 deixou: as fotos e os logos das demos apontam para arquivos que o site de docs não tem (`/imagens/foto.jpg`, `/empresas/*.svg`), então o par mostra o quadro vazio; a pílula do hero não quebra linha e estoura numa coluna estreita; o título dos cartões de curso, de documentos e do passo é sempre `<h3>`.
 - 3b: o MCP servindo os sites. 3c: a prova no CENPRE, em spec própria.
 - A página de componente dos sites é cópia da do catálogo; extrair o que é comum é dívida registrada na spec.
 - Só foi provado no Chrome. Falta conferir no Safari o campo de busca, o `<summary>` em flex e se a lista de passos (`role="list"`) é anunciada como lista no VoiceOver.

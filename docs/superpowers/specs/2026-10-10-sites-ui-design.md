@@ -105,7 +105,7 @@ Só o que os contratos já listam como "não entrega" ou "limite":
 | accordion | `open` e `openChange` por item (`[(open)]`). **Corrigido na fatia 3a-2:** a animação de altura é da folha, por `interpolate-size`, onde o navegador entrega; vale também para o HTML puro |
 | field e input | Liga rótulo, apoio e erro por `id` e `aria-describedby`. **Corrigido na fatia 3a-2:** sem `@angular/forms`. Importar `NgControl` obrigaria todo consumidor a instalar o pacote; o erro tem uma fonte só, a entrada `error`, e com texto o campo fica inválido |
 | newsletter-form | Estados enviando, sucesso e erro, anunciados em região viva |
-| logo-marquee | Recebe a lista uma vez e duplica sozinho, com a segunda cópia inerte; pausa por `<button aria-pressed>` no lugar da caixa |
+| logo-marquee | Recebe a lista uma vez e duplica sozinho, com a segunda cópia fora da leitura e do foco. **Corrigido na fatia 3a-3:** a pausa continua sendo a caixa de seleção da folha, que funciona sem script e é igual no HTML puro |
 | pagination | Calcula a janela de páginas com reticências; `hrefDe(pagina)` para link real e `pageChange` para quem pagina em memória |
 | breadcrumb | Recebe a trilha como dado e marca a página atual |
 

@@ -200,5 +200,12 @@
       "nota": "Não entrega envio nem estado de sucesso."
     },
     "trilho_b": "sites/ui/projects/site-ui/src/lib/newsletter-form/newsletter-form.ts — form[ucamSiteNewsletter]. Entradas: heading, note, inverse, fieldLabel, submitLabel, fieldId, state, message."
-  }
+  },
+  "eventos": [
+    {
+      "nome": "submitted",
+      "payload": "string",
+      "descricao": "O e-mail, aparado, quando o formulário é enviado com um endereço que o navegador aceita. A peça não envia nada: quem recebe o evento faz o envio e devolve o estado em state e message."
+    }
+  ]
 }

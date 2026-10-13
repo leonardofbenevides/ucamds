@@ -29,7 +29,7 @@ import { prefixarIds } from './prefixar-ids';
         <!-- Os links das demos são de exemplo (/vagas, /inscricao): o clique
              não pode tirar o leitor da documentação. O mesmo vale para o
              envio do formulário de exemplo no lado HTML, que não tem script. -->
-        <div class="lados" (click)="naoNavega($event)" (submit)="$event.preventDefault()">
+        <div class="lados" [class.empilhados]="empilhado()" (click)="naoNavega($event)" (submit)="$event.preventDefault()">
           <div class="lado">
             <p class="rotulo">HTML</p>
             <div class="ucam-site" data-paridade="html" [innerHTML]="d.html"></div>
@@ -55,9 +55,20 @@ import { prefixarIds } from './prefixar-ids';
       gap: 0.75rem;
     }
     @media (min-width: 48rem) {
-      .lados {
+      .lados:not(.empilhados) {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+    }
+    /* Peça de moldura (hero, cabeçalho, rodapé) responde à largura da JANELA,
+       não à do palco: em meia coluna, o hero achava que estava no desktop e
+       punha a foto ao lado de um texto sem espaço. Um lado sobre o outro dá a
+       cada um a largura inteira do conteúdo. */
+    .lados.empilhados .lado {
+      padding-inline: 0;
+      overflow: hidden;
+    }
+    .lados.empilhados .rotulo {
+      padding-inline: 1rem;
     }
     .lado {
       min-inline-size: 0;
@@ -76,6 +87,8 @@ import { prefixarIds } from './prefixar-ids';
 export class SitesParidadeComponent {
   /** O id da peça no catálogo dos sites. */
   readonly peca = input.required<string>();
+  /** Um lado sobre o outro, para peça que precisa da largura inteira. */
+  readonly empilhado = input(false);
 
   private readonly sanitizer = inject(DomSanitizer);
 

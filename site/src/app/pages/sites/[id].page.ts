@@ -113,7 +113,7 @@ import { SitesParidadeComponent, temFormaAngular } from '../../docs/sites-parida
           <section id="angular">
             <h2>Em Angular</h2>
             <p>A mesma peça por <code>&#64;ucam/site-ui</code>, ao lado do HTML. As duas têm de sair iguais.</p>
-            <ucam-sites-paridade [peca]="c.id" />
+            <ucam-sites-paridade [peca]="c.id" [empilhado]="c.category === 'layout'" />
           </section>
         }
 
@@ -331,6 +331,34 @@ import { SitesParidadeComponent, temFormaAngular } from '../../docs/sites-parida
           </div>
 
         </section>
+
+        <!-- As saídas da peça na lib Angular. Sem esta tabela a página mostrava
+             metade da API: as entradas, e nenhum dos eventos que elas emitem. -->
+        @if (c.eventos?.length) {
+          <section id="eventos">
+            <h2>Eventos</h2>
+            <div class="scroller">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Evento</th>
+                    <th scope="col">Emite</th>
+                    <th scope="col">Descrição</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (ev of c.eventos; track ev.nome) {
+                    <tr>
+                      <td><code>{{ ev.nome }}</code></td>
+                      <td><code>{{ ev.payload }}</code></td>
+                      <td><ucam-t [t]="ev.descricao" /></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+        }
 
 
         <section id="uso">
@@ -1078,6 +1106,7 @@ export default class SiteComponentePage {
     area('construir', 'Construir');
     põe(c.demo?.instalacao, 'instalacao', 'Instalação');
     itens.push({ id: 'props', rotulo: 'Props' });
+    põe(c.eventos?.length, 'eventos', 'Eventos');
     itens.push({ id: 'uso', rotulo: 'Uso em código' });
     itens.push({ id: 'composicao', rotulo: 'Composição' });
 

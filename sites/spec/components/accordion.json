@@ -191,5 +191,12 @@
       "nota": "Não entrega animação de altura do painel."
     },
     "trilho_b": "sites/ui/projects/site-ui/src/lib/accordion/accordion.ts — [ucamSiteAccordion], details[ucamSiteAccordionItem]. Entradas: name, open, heading."
-  }
+  },
+  "eventos": [
+    {
+      "nome": "openChange",
+      "payload": "boolean",
+      "descricao": "O item abriu ou fechou, pelo usuário ou pelo grupo ao fechar os vizinhos. Com a entrada open, permite [(open)]."
+    }
+  ]
 }

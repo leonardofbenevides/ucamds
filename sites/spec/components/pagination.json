@@ -183,5 +183,12 @@
       ]
     },
     "trilho_b": "sites/ui/projects/site-ui/src/lib/pagination/pagination.ts — nav[ucamSitePagination]. Entradas: page, total, ariaLabel, hrefDe, emMemoria."
-  }
+  },
+  "eventos": [
+    {
+      "nome": "pageChange",
+      "payload": "number",
+      "descricao": "A página escolhida. Só emite com emMemoria: no modo de link quem troca de página é o navegador."
+    }
+  ]
 }
