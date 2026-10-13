@@ -19,6 +19,7 @@ import { UcamSiteField, UcamSiteInput } from './lib/input/input';
 import { UcamSitePagination } from './lib/pagination/pagination';
 import { UcamSiteNewsletter } from './lib/newsletter-form/newsletter-form';
 import { UcamSiteHeader } from './lib/site-header/site-header';
+import { UcamSiteFooter, UcamSiteFooterMarca } from './lib/site-footer/site-footer';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -34,6 +35,7 @@ export * from './lib/input/input';
 export * from './lib/pagination/pagination';
 export * from './lib/newsletter-form/newsletter-form';
 export * from './lib/site-header/site-header';
+export * from './lib/site-footer/site-footer';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -57,4 +59,6 @@ export const UCAM_SITE = [
   UcamSitePagination,
   UcamSiteNewsletter,
   UcamSiteHeader,
+  UcamSiteFooter,
+  UcamSiteFooterMarca,
 ] as const;

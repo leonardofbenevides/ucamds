@@ -3,7 +3,7 @@
   "id": "site-footer",
   "name": "SiteFooter",
   "selector": "ucam-site-site-footer",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -123,6 +123,18 @@
       "tipo": "{ label: string; href: string }[]",
       "default": "[]",
       "descricao": "As redes sociais que têm endereço."
+    },
+    {
+      "nome": "brand",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O nome da instituição, no bloco da marca. O que mais for ali (o botão do portal, um endereço) é conteúdo marcado com ucamSiteFooterMarca."
+    },
+    {
+      "nome": "contact",
+      "tipo": "{ title: string; items: { label: string; href?: string }[] } | null",
+      "default": "null",
+      "descricao": "A coluna de contato. Item com href é link (e-mail, mapa); sem href é texto (telefone, endereço)."
     }
   ],
   "estados": [
@@ -224,6 +236,7 @@
         "--ucam-site-color-border-on-inverse"
       ],
       "nota": "Não entrega ícone de rede social."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/site-footer/site-footer.ts — footer[ucamSiteFooter], [ucamSiteFooterMarca]. Entradas: brand, legal, columns, contact, social."
   }
 }
