@@ -31,14 +31,19 @@ da spec.
     pnpm run test:sites-ui   roda os testes da lib Angular (vitest)
     pnpm run lib:sites       constrói @ucam/site-ui em sites/ui/dist
 
-## A lib Angular (`sites/ui`, fatia 3a-1, 10/10/2026)
+## A lib Angular (`sites/ui`, fatias 3a-1 e 3a-2, 13/10/2026)
 
 `@ucam/site-ui` é uma casca fina sobre a folha: nenhuma peça tem estilo próprio. Cada uma é uma diretiva ou um componente de seletor de ATRIBUTO sobre o elemento nativo do contrato, e só aplica as classes de `@ucam/site-css`.
 
     <a ucamSiteButton variant="secondary" href="/vagas">Ver todas</a>
     <header ucamSiteSectionHeading eyebrow="Carreiras" heading="Vagas e oportunidades"></header>
 
-- Cinco peças até aqui: button, tag, icon-chip, avatar e section-heading, mais `<svg ucamSiteIcon="nome">` e `provideUcamSite({ sprite })`.
+- Treze peças até aqui. Base: button, tag, icon-chip, avatar e section-heading. Moldura e formulário: breadcrumb, page-shell, accordion, input (o campo), pagination, newsletter-form, site-header e site-footer. Mais `<svg ucamSiteIcon="nome">` e `provideUcamSite({ sprite })`.
+- O que a lib faz além do CSS: o menu do cabeçalho fecha por Esc (devolvendo o foco), ao clicar fora e ao seguir um link; o acordeão tem `[(open)]`; o campo liga rótulo, apoio e erro por id; a paginação calcula a janela de páginas; a newsletter confere o e-mail, avisa por `submitted` e mostra o estado que recebe.
+- **Sem `@angular/forms`.** O erro do campo tem uma fonte só, a entrada `error`. Com formulário reativo: `[error]="c.touched && c.invalid ? 'Informe o e-mail.' : null"`.
+- **Contrato e lib falam os mesmos nomes.** O `trilho_b` diz o destino de cada prop: `Entradas` (as `input()`), `Nativos` (atributo do próprio elemento, como `href`) e `Conteúdo` (o que vai dentro). O validador cruza nos dois sentidos, e reprova entrada com nome de atributo nativo.
+- **Ids pela ligação.** A demo aparece três vezes na página da peça; a forma Angular usa ids com `-ng`, o lado HTML do par ganha `h-`, e o portão compara para onde cada `for` e `aria-describedby` aponta, não o nome.
+- A lib declara Angular 22, que é o que ela testa.
 - O consumidor importa a folha uma vez (`@ucam/site-css/ucam-site.css`); a lib pede a folha na mesma versão.
 - **Portão de paridade**, em três camadas. O teste compara a árvore de DOM da peça com a demo em HTML. O validador confere que `implementacao.trilho_b` aponta para arquivo, seletor e entradas que existem. A página `/sites/<id>` mostra as duas formas lado a lado, e uma sonda por CDP mede caixa e estilo.
 - A forma Angular de cada demo vive em `sites/spec/demos.json`, no campo `angular`. Um gerador (`tools/build-sites-ui-demos.mjs`) a transforma nos componentes que o teste e o site usam: o código documentado é o código testado.
@@ -49,8 +54,8 @@ da spec.
 
 ## Pendências
 
-- Antes da 3a-2, do que a revisão da 3a-1 deixou: cruzar as props do contrato com as entradas da lib (hoje `href`, `disabled`, `icon` e `src` são props do contrato e não são entradas; `heading`, `eyebrow` e `lede` são entradas e não são props); decidir se a entrada escrita como atributo pode ficar no HTML servido (`size="lg"` num `<input>` tem outro sentido); a lib promete Angular 21 e só é construída e testada na 22.
-- Fatias 3a-2 e 3a-3 da lib: as vinte peças que faltam. A 3a-2 traz o que o CSS puro não entrega: fechar o menu por Esc, animar o acordeão, ligar o campo ao formulário.
+- Fatia 3a-3 da lib: as doze peças que faltam (hero, seções, cartões e prosa).
+- Do que a 3a-2 deixou: a marca do cabeçalho e do rodapé é texto (falta a imagem, quando houver arquivo de marca dos sites); as saídas das peças (`openChange`, `pageChange`, `submitted`) não estão no campo `eventos` dos contratos, que o validador ainda barra; a página de cada peça repete ids entre o preview, a anatomia e a grade de estados, fora do par de paridade.
 - 3b: o MCP servindo os sites. 3c: a prova no CENPRE, em spec própria.
 - A página de componente dos sites é cópia da do catálogo; extrair o que é comum é dívida registrada na spec.
 - Só foi provado no Chrome. Falta conferir no Safari o campo de busca, o `<summary>` em flex e se a lista de passos (`role="list"`) é anunciada como lista no VoiceOver.

@@ -4,6 +4,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { DEMOS } from '@ucam/site-ui/demos';
 
+import { prefixarIds } from './prefixar-ids';
+
 /**
  * A peça dos sites duas vezes: o HTML do catálogo e a peça de @ucam/site-ui,
  * lado a lado, com o mesmo conteúdo.
@@ -25,8 +27,9 @@ import { DEMOS } from '@ucam/site-ui/demos';
       <figure class="par">
         <figcaption class="par-titulo">{{ d.titulo === 'principal' ? 'Exemplo' : d.titulo }}</figcaption>
         <!-- Os links das demos são de exemplo (/vagas, /inscricao): o clique
-             não pode tirar o leitor da documentação. -->
-        <div class="lados" (click)="naoNavega($event)">
+             não pode tirar o leitor da documentação. O mesmo vale para o
+             envio do formulário de exemplo no lado HTML, que não tem script. -->
+        <div class="lados" (click)="naoNavega($event)" (submit)="$event.preventDefault()">
           <div class="lado">
             <p class="rotulo">HTML</p>
             <div class="ucam-site" data-paridade="html" [innerHTML]="d.html"></div>
@@ -81,7 +84,9 @@ export class SitesParidadeComponent {
   }
 
   protected readonly pares = computed(() =>
-    (DEMOS[this.peca()] ?? []).map((d) => ({ ...d, html: this.sanitizer.bypassSecurityTrustHtml(d.html) })),
+    // O lado HTML ganha ids próprios (h-): a demo aparece três vezes na página, e
+    // ids iguais cruzariam o rótulo de uma cópia com o campo de outra.
+    (DEMOS[this.peca()] ?? []).map((d) => ({ ...d, html: this.sanitizer.bypassSecurityTrustHtml(prefixarIds(d.html, 'h-')) })),
   );
 }
 

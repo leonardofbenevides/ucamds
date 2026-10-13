@@ -55,8 +55,9 @@ proíbe.
 
 - **Lugar:** `sites/ui/`, um workspace Angular como `ui/`, com ng-packagr.
   Entra em `pnpm-workspace.yaml` pelo mesmo motivo do `ui/`.
-- **Pacote:** `@ucam/site-ui`. Dependências de par: `@angular/core`,
-  `@angular/common` e `@angular/forms`, de 21 a 22. Sem CDK, sem Tailwind, sem
+- **Pacote:** `@ucam/site-ui`. Dependências de par: `@angular/core` e
+  `@angular/common`, na 22 (corrigido na fatia 3a-2: sem `@angular/forms`, e a
+  lib declara a versão que testa). Sem CDK, sem Tailwind, sem
   biblioteca de ícones, sem `@angular/router`.
 - **Estilo:** nenhum arquivo de estilo na lib. O consumidor importa
   `@ucam/site-css/css/ucam-site.css` uma vez. A lib declara `@ucam/site-css`
@@ -101,8 +102,8 @@ Só o que os contratos já listam como "não entrega" ou "limite":
 | Peça | Comportamento |
 |---|---|
 | site-header | Esc fecha o menu e devolve o foco ao botão; fecha ao navegar e ao clicar fora |
-| accordion | `opened` e `openedChange` por item; abertura animada, desligada com movimento reduzido |
-| field e input | Liga rótulo, apoio e erro por `id` e `aria-describedby`; `aria-invalid` vem do estado do controle de formulário (`NgControl`), sem `ControlValueAccessor` |
+| accordion | `open` e `openChange` por item (`[(open)]`). **Corrigido na fatia 3a-2:** a animação de altura é da folha, por `interpolate-size`, onde o navegador entrega; vale também para o HTML puro |
+| field e input | Liga rótulo, apoio e erro por `id` e `aria-describedby`. **Corrigido na fatia 3a-2:** sem `@angular/forms`. Importar `NgControl` obrigaria todo consumidor a instalar o pacote; o erro tem uma fonte só, a entrada `error`, e com texto o campo fica inválido |
 | newsletter-form | Estados enviando, sucesso e erro, anunciados em região viva |
 | logo-marquee | Recebe a lista uma vez e duplica sozinho, com a segunda cópia inerte; pausa por `<button aria-pressed>` no lugar da caixa |
 | pagination | Calcula a janela de páginas com reticências; `hrefDe(pagina)` para link real e `pageChange` para quem pagina em memória |
