@@ -102,10 +102,10 @@ describe('hidratação das peças de moldura e formulário', () => {
         return ev;
       };
 
-      // Cabeçalho: Esc fecha o menu aberto.
+      // Cabeçalho: Esc, com o foco dentro do menu aberto, fecha.
       const menu = raiz.querySelector<HTMLDetailsElement>('.ucam-site-header__menu')!;
       menu.open = true;
-      raiz.ownerDocument.body.dispatchEvent(evento('keydown', { key: 'Escape' }));
+      menu.querySelector('a')!.dispatchEvent(evento('keydown', { key: 'Escape' }));
       expect(menu.open).toBe(false);
 
       // Acordeão: fechar o item que nasceu aberto avisa.

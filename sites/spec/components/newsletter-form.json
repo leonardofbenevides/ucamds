@@ -105,7 +105,7 @@
       "nome": "state",
       "tipo": "'idle' | 'sending' | 'success' | 'error'",
       "default": "'idle'",
-      "descricao": "O estado do envio, que quem usa a peça devolve: enviando desabilita o botão; sucesso mostra a mensagem na região de status; erro a põe no campo e leva o foco para ele."
+      "descricao": "O estado do envio, que quem usa a peça devolve: enviando desabilita o botão; sucesso mostra a mensagem na região de status, que o leitor de tela anuncia; erro a põe no campo e, na passagem para erro, leva o foco para ele (o erro é lido pelo foco, não pela região)."
     },
     {
       "nome": "message",
@@ -174,7 +174,7 @@
   "exemplos": [
     {
       "titulo": "No pé da home",
-      "codigo": "<form class=\"ucam-site-newsletter\" action=\"/newsletter\" method=\"post\">\n  <h2 class=\"ucam-site-newsletter__titulo\">Receba as vagas da semana</h2>\n  <div class=\"ucam-site-newsletter__campos\">\n    <div class=\"ucam-site-input\">\n      <label class=\"ucam-site-input__label\" for=\"nl-email\">E-mail</label>\n      <div class=\"ucam-site-input__control\"><input class=\"ucam-site-input__field\" id=\"nl-email\" name=\"email\" type=\"email\" autocomplete=\"email\" aria-describedby=\"nl-nota\" required></div>\n    </div>\n    <button type=\"submit\" class=\"ucam-site-btn ucam-site-btn--primary\">Assinar</button>\n  </div>\n  <p class=\"ucam-site-newsletter__nota\" id=\"nl-nota\">Um e-mail por semana. Você cancela quando quiser.</p>\n</form>"
+      "codigo": "<form class=\"ucam-site-newsletter\" action=\"/newsletter\" method=\"post\">\n  <h2 class=\"ucam-site-newsletter__titulo\">Receba as vagas da semana</h2>\n  <div class=\"ucam-site-newsletter__campos\">\n    <div class=\"ucam-site-input\">\n      <label class=\"ucam-site-input__label\" for=\"nl-email\">E-mail</label>\n      <div class=\"ucam-site-input__control\"><input class=\"ucam-site-input__field\" id=\"nl-email\" name=\"email\" type=\"email\" autocomplete=\"email\" aria-describedby=\"nl-nota\" required></div>\n    </div>\n    <button type=\"submit\" class=\"ucam-site-btn ucam-site-btn--primary\">Assinar</button>\n  </div>\n  <p class=\"ucam-site-newsletter__nota\" id=\"nl-nota\">Um e-mail por semana. Você cancela quando quiser.</p>\n  <p class=\"ucam-site-newsletter__status\" role=\"status\"></p>\n</form>"
     }
   ],
   "boas_praticas": [

@@ -1,4 +1,4 @@
-import { Directive, computed, input } from '@angular/core';
+import { Directive, ElementRef, computed, inject, input } from '@angular/core';
 import { classesDe, umDe } from '../nucleo/classes';
 
 export type UcamSiteContainerWidth = 'miolo' | 'faixa' | 'prosa';
@@ -19,9 +19,31 @@ const TONS = ['default', 'sutil'] as const;
 @Directive({ selector: '[ucamSitePage]', host: { class: 'ucam-site-page' } })
 export class UcamSitePage {}
 
-/** O link de salto, o primeiro foco da página: `<a ucamSiteSkip href="#conteudo">`. */
-@Directive({ selector: 'a[ucamSiteSkip]', host: { class: 'ucam-site-skip' } })
-export class UcamSiteSkip {}
+/**
+ * O link de salto, o primeiro foco da página: `<a ucamSiteSkip href="#conteudo">`.
+ *
+ * A diretiva trata o clique: leva o foco ao alvo e não deixa o navegador
+ * seguir o href. Um href só de âncora resolve contra o <base href> do
+ * documento, e todo app Angular tem <base href="/">: numa página interna,
+ * "ir para o conteúdo" recarregava a home (revisão de 13/10/2026). Sem
+ * script o href continua lá, e funciona onde não há <base>.
+ */
+@Directive({ selector: 'a[ucamSiteSkip]', host: { class: 'ucam-site-skip', '(click)': 'saltar($event)' } })
+export class UcamSiteSkip {
+  private readonly el = inject<ElementRef<HTMLAnchorElement>>(ElementRef);
+
+  protected saltar(evento: Event): void {
+    const link = this.el.nativeElement;
+    const id = (link.getAttribute('href') ?? '').split('#')[1];
+    const alvo = id ? link.ownerDocument.getElementById(decodeURIComponent(id)) : null;
+    if (!alvo) return;
+    evento.preventDefault();
+    // <main> não recebe foco sozinho; -1 o deixa focável sem entrar na ordem do Tab.
+    if (!alvo.hasAttribute('tabindex')) alvo.setAttribute('tabindex', '-1');
+    alvo.focus();
+    alvo.scrollIntoView?.();
+  }
+}
 
 /** O conteúdo principal: `<main ucamSitePageMain id="conteudo">`. */
 @Directive({ selector: 'main[ucamSitePageMain]', host: { class: 'ucam-site-page__main' } })

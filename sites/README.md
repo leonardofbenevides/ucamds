@@ -55,6 +55,8 @@ da spec.
 ## Pendências
 
 - Fatia 3a-3 da lib: as doze peças que faltam (hero, seções, cartões e prosa).
+- **Endereço só de consulta ou só de âncora não serve num app Angular.** `?pagina=2` e `#conteudo` resolvem contra o `<base href>`, e levam para a home. A paginação monta o endereço a partir do atual (ou de `hrefDe`), e o link de salto trata o clique.
+- Do que a revisão da 3a-2 deixou, menor: `<select>` e `<textarea>` dentro do campo ficam com o rótulo apontando para um id que ninguém tem (falta aviso em modo de desenvolvimento); o botão da newsletter fica `disabled` durante o envio e pode perder o foco; a seta sem destino da paginação é um `<a>` sem papel com `aria-disabled` (vem do contrato em HTML); o título das colunas do rodapé é sempre `<h2>`; os exemplos dentro dos contratos não são conferidos contra as demos; o validador só reconhece `selector` entre aspas simples; nada foi rodado em Safari, Firefox nem com leitor de tela.
 - Do que a 3a-2 deixou: a marca do cabeçalho e do rodapé é texto (falta a imagem, quando houver arquivo de marca dos sites); as saídas das peças (`openChange`, `pageChange`, `submitted`) não estão no campo `eventos` dos contratos, que o validador ainda barra; a página de cada peça repete ids entre o preview, a anatomia e a grade de estados, fora do par de paridade.
 - 3b: o MCP servindo os sites. 3c: a prova no CENPRE, em spec própria.
 - A página de componente dos sites é cópia da do catálogo; extrair o que é comum é dívida registrada na spec.

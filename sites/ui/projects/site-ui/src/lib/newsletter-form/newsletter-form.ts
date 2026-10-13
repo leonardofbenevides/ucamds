@@ -18,7 +18,13 @@ const ESTADOS = ['idle', 'sending', 'success', 'error'] as const;
  * mostra o estado que o consumidor devolve:
  *   sending — o botão fica desabilitado e o formulário, ocupado;
  *   success — `message` aparece na região de status, que o leitor de tela anuncia;
- *   error   — `message` vira o erro do campo, e o foco vai para ele.
+ *   error   — `message` vira o erro do campo, e o foco vai para ele (na
+ *             passagem para erro; formulário que já nasce em erro não puxa o foco).
+ *
+ * O campo é `required`: o navegador barra o envio vazio ou malformado antes
+ * do submit e diz por quê, com a mensagem dele. O `submit` é sempre barrado
+ * (a peça não faz envio nativo), e o campo não é limpo depois do sucesso:
+ * as duas coisas são de quem usa.
  *
  * A região de status está SEMPRE no DOM: região que nasce junto com o texto
  * não é anunciada.
@@ -33,7 +39,7 @@ const ESTADOS = ['idle', 'sending', 'success', 'error'] as const;
     '[attr.aria-busy]': 'state() === "sending" ? "true" : null',
     '(submit)': 'enviar($event)',
   },
-  template: `<h2 class="ucam-site-newsletter__titulo">{{ heading() }}</h2><div class="ucam-site-newsletter__campos"><div ucamSiteField [label]="fieldLabel()" [fieldId]="id()" [describedBy]="idDaNota()" [error]="state() === 'error' ? message() : null"><input ucamSiteInput #campo type="email" autocomplete="email"></div><button ucamSiteButton type="submit" [inverse]="inverse()" [disabled]="state() === 'sending'">{{ submitLabel() }}</button></div>@if (nota(); as texto) {<p class="ucam-site-newsletter__nota" [attr.id]="idDaNota()">{{ texto }}</p>}<p class="ucam-site-newsletter__status" role="status">{{ state() === 'success' ? (message() ?? '') : '' }}</p>`,
+  template: `<h2 class="ucam-site-newsletter__titulo">{{ heading() }}</h2><div class="ucam-site-newsletter__campos"><div ucamSiteField [label]="fieldLabel()" [fieldId]="id()" [describedBy]="idDaNota()" [error]="state() === 'error' ? message() : null"><input ucamSiteInput #campo type="email" name="email" autocomplete="email" required></div><button ucamSiteButton type="submit" [inverse]="inverse()" [disabled]="state() === 'sending'">{{ submitLabel() }}</button></div>@if (nota(); as texto) {<p class="ucam-site-newsletter__nota" [attr.id]="idDaNota()">{{ texto }}</p>}<p class="ucam-site-newsletter__status" role="status">{{ state() === 'success' ? (message() ?? '') : '' }}</p>`,
 })
 export class UcamSiteNewsletter {
   readonly heading = input.required<string>();
@@ -60,8 +66,12 @@ export class UcamSiteNewsletter {
   constructor() {
     // O erro não é anunciado sozinho: o foco no campo faz o leitor de tela ler
     // o rótulo e a mensagem que o descreve. Só roda no navegador.
+    let anterior: UcamSiteNewsletterState | null = null;
     afterRenderEffect(() => {
-      if (this.state() === 'error') this.campo().nativeElement.focus();
+      const agora = this.state();
+      // Só na PASSAGEM: quem já nasce em erro (página renderizada no servidor) não tira o foco de onde está.
+      if (agora === 'error' && anterior !== null && anterior !== 'error') this.campo().nativeElement.focus();
+      anterior = agora;
     });
   }
 

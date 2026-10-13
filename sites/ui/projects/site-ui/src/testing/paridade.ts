@@ -50,18 +50,21 @@ const REFERENCIAS = new Set(['for', 'aria-describedby', 'aria-labelledby', 'aria
 interface Ligacoes {
   ids: Map<string, string>;
   grupos: Map<string, string>;
+  repetidos: string[];
 }
 
 function ligacoesDe(raiz: Element): Ligacoes {
   const ids = new Map<string, string>();
   const grupos = new Map<string, string>();
+  const repetidos: string[] = [];
   for (const el of Array.from(raiz.querySelectorAll('*'))) {
     const id = el.getAttribute('id');
+    if (id && ids.has(id)) repetidos.push(id);
     if (id && !ids.has(id)) ids.set(id, `id#${ids.size + 1}`);
     const nome = el.localName === 'details' ? el.getAttribute('name') : null;
     if (nome && !grupos.has(nome)) grupos.set(nome, `grupo#${grupos.size + 1}`);
   }
-  return { ids, grupos };
+  return { ids, grupos, repetidos };
 }
 
 function valorDe(el: Element, nome: string, valor: string, l: Ligacoes): string {
@@ -105,13 +108,18 @@ export function normalizar(raiz: Element | string): string {
     no = raiz;
   }
   const saida: string[] = [];
-  linhas(no, 0, saida, ligacoesDe(no));
+  const l = ligacoesDe(no);
+  // Id repetido é defeito por si: os dois lados podem repetir igual, e a ligação estar errada nos dois.
+  for (const id of l.repetidos) saida.push(`!! id repetido: ${id}`);
+  linhas(no, 0, saida, l);
   return saida.join('\n');
 }
 
 export function mesmaArvore(esperado: Element | string, obtido: Element | string): { igual: boolean; diferenca: string } {
   const a = normalizar(esperado).split('\n');
   const b = normalizar(obtido).split('\n');
+  const repetido = [...a, ...b].find((linha) => linha.startsWith('!! id repetido'));
+  if (repetido) return { igual: false, diferenca: repetido.slice(3) };
   for (let i = 0; i < Math.max(a.length, b.length); i++) {
     if (a[i] !== b[i]) {
       return { igual: false, diferenca: `linha ${i + 1} — esperado: ${a[i] ?? '(nada)'} | obtido: ${b[i] ?? '(nada)'}` };

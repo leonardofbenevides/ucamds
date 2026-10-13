@@ -111,6 +111,7 @@ describe('header[ucamSiteHeader]', () => {
   });
 
   it('Esc com o menu fechado não faz nada e deixa a tecla seguir', () => {
+    // Vale também com o foco no próprio botão do menu: fechado, a tecla não é dele.
     const { el } = monta(Hospede);
     const foco = vi.spyOn(el.querySelector('summary')!, 'focus');
     let chegou = 0;

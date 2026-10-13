@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Directive, ElementRef, ViewEncapsulation, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Directive, ElementRef, Renderer2, ViewEncapsulation, computed, effect, inject, input } from '@angular/core';
 import { UcamSiteIcon } from '../icon/icon';
 import { UcamSiteIds } from '../nucleo/id';
 
@@ -12,7 +12,8 @@ import { UcamSiteIds } from '../nucleo/id';
  * O <input> é do consumidor: type, placeholder, autocomplete, value e disabled
  * são nativos, e é nele que se liga ngModel ou formControl. O campo cuida da
  * LIGAÇÃO — o for do rótulo, o id, e o aria-describedby só com as mensagens
- * que existem.
+ * que existem. Dentro do campo, o id e a descrição do <input> são do campo:
+ * para dar o seu id use `fieldId`, e para somar uma descrição, `describedBy`.
  *
  * O erro tem uma fonte só, a entrada `error`: com texto, o campo fica
  * inválido e descrito por ele. A lib não importa @angular/forms; quem usa
@@ -52,24 +53,28 @@ export class UcamSiteField {
 
 /**
  * O controle do campo: `<input ucamSiteInput>`. Dentro de um ucamSiteField,
- * recebe dele o id, a descrição e o estado de erro. Sozinho, só ganha a
- * classe, e o que o consumidor escreveu fica como está.
+ * recebe dele o id, a descrição e o estado de erro.
+ *
+ * SOZINHO, só ganha a classe e não toca em mais nada. As três ligações eram
+ * de hospedeiro, e sem campo escreviam null por cima do que o consumidor
+ * LIGAVA (`[id]="x"` nascia sem id; revisão de 13/10/2026). Agora só existem
+ * quando há campo, num effect que escreve os atributos pelo Renderer2.
  */
 @Directive({
   selector: 'input[ucamSiteInput]',
-  host: {
-    class: 'ucam-site-input__field',
-    '[attr.id]': 'campo ? campo.id() : proprio.id',
-    '[attr.aria-describedby]': 'campo ? campo.descricao() : proprio.descricao',
-    '[attr.aria-invalid]': 'campo ? (campo.invalido() ? "true" : null) : proprio.invalido',
-  },
+  host: { class: 'ucam-site-input__field' },
 })
 export class UcamSiteInput {
-  protected readonly campo = inject(UcamSiteField, { optional: true });
-
-  /** O que o consumidor escreveu no elemento, guardado para não ser apagado quando não há campo em volta. */
-  protected readonly proprio = (() => {
+  constructor() {
+    const campo = inject(UcamSiteField, { optional: true });
+    if (!campo) return;
     const el = inject<ElementRef<HTMLInputElement>>(ElementRef).nativeElement;
-    return { id: el.getAttribute('id'), descricao: el.getAttribute('aria-describedby'), invalido: el.getAttribute('aria-invalid') };
-  })();
+    const renderer = inject(Renderer2);
+    const poe = (nome: string, valor: string | null) => (valor === null ? renderer.removeAttribute(el, nome) : renderer.setAttribute(el, nome, valor));
+    effect(() => {
+      poe('id', campo.id());
+      poe('aria-describedby', campo.descricao());
+      poe('aria-invalid', campo.invalido() ? 'true' : null);
+    });
+  }
 }

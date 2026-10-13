@@ -73,15 +73,15 @@
     },
     {
       "nome": "hrefDe",
-      "tipo": "(pagina: number) => string",
-      "default": "(p) => '?pagina=' + p",
-      "descricao": "O endereço de cada página. Cada número é um link de verdade, que funciona sem script."
+      "tipo": "string | ((pagina: number) => string) | null",
+      "default": "null",
+      "descricao": "O endereço de cada página: uma função, ou um modelo em texto como \"/vagas?pagina={pagina}\". Sem ele, o endereço atual com o parâmetro pagina trocado. Não escreva só \"?pagina=N\" no HTML de um app com <base href>: resolve contra a base e leva para a home."
     },
     {
       "nome": "emMemoria",
       "tipo": "boolean",
       "default": "false",
-      "descricao": "A lista já está na página: o clique não navega e a peça avisa por pageChange."
+      "descricao": "A lista já está na página: o clique não navega e a peça avisa por pageChange. O link continua no elemento, e clique com Ctrl, Cmd, Shift ou botão do meio segue para o navegador. Quem usa esse modo anuncia a troca de página a quem não vê a tela."
     }
   ],
   "estados": [
@@ -157,7 +157,7 @@
   "exemplos": [
     {
       "titulo": "Vagas, na página 2 de 89",
-      "codigo": "<nav class=\"ucam-site-pagination\" aria-label=\"Paginação das vagas\">\n  <a class=\"ucam-site-pagination__item ucam-site-pagination__item--seta\" href=\"?p=1\" aria-label=\"Página anterior\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-chevronLeft\"/></svg></a>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=1\">1</a>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=2\" aria-current=\"page\">2</a>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=3\">3</a>\n  <span class=\"ucam-site-pagination__reticencias\" aria-hidden=\"true\">…</span>\n  <a class=\"ucam-site-pagination__item\" href=\"?p=89\">89</a>\n  <a class=\"ucam-site-pagination__item ucam-site-pagination__item--seta\" href=\"?p=3\" aria-label=\"Próxima página\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-chevronRight\"/></svg></a>\n</nav>"
+      "codigo": "<nav class=\"ucam-site-pagination\" aria-label=\"Paginação das vagas\">\n  <a class=\"ucam-site-pagination__item ucam-site-pagination__item--seta\" href=\"/vagas?pagina=1\" aria-label=\"Página anterior\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-chevronLeft\"/></svg></a>\n  <a class=\"ucam-site-pagination__item\" href=\"/vagas?pagina=1\">1</a>\n  <a class=\"ucam-site-pagination__item\" href=\"/vagas?pagina=2\" aria-current=\"page\">2</a>\n  <a class=\"ucam-site-pagination__item\" href=\"/vagas?pagina=3\">3</a>\n  <span class=\"ucam-site-pagination__reticencias\" aria-hidden=\"true\">…</span>\n  <a class=\"ucam-site-pagination__item\" href=\"/vagas?pagina=89\">89</a>\n  <a class=\"ucam-site-pagination__item ucam-site-pagination__item--seta\" href=\"/vagas?pagina=3\" aria-label=\"Próxima página\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-chevronRight\"/></svg></a>\n</nav>"
     }
   ],
   "boas_praticas": [

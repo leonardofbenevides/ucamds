@@ -102,7 +102,8 @@
     "regras": [
       "Não escrever margem lateral nem largura máxima na página: é o contêiner que as tem.",
       "Não aninhar contêiner dentro de contêiner.",
-      "Um main por página."
+      "Um main por página.",
+      "Num app com <base href>, o link de salto só de âncora (href=\"#conteudo\") resolve contra a base e recarrega a home. A lib trata o clique e leva o foco ao alvo; no HTML puro, escreva o href com o caminho da página."
     ],
     "motivo": "Margem escrita em cada seção é o que faz a borda do texto pular. Com um contêiner só, alinhar deixa de ser uma decisão."
   },
