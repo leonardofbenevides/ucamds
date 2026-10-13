@@ -1,159 +1,17 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
 import { meta } from '../spec/spec';
 import { sitesMeta } from '../spec/sites';
+import { CENA_CAPA } from '../../generated/cena-capa';
 
-/* ------------------------------------------------------------------------
- * A ILUSTRAÇÃO DA HOME é geometria isométrica CALCULADA, não desenhada à mão.
- *
- * Projeção isométrica clássica (30°): um ponto do mundo (x, y, z) vira
- * (sx, sy) = ((x − y)·cos30, (x + y)·sin30 − z). Cada sólido é uma caixa com
- * três faces visíveis — o topo e as duas faces da frente — e as peças
- * assentam num chão que também é uma caixa. Assim todo objeto tem volume de
- * verdade, as arestas batem umas nas outras e nenhum "rx" precisa fingir
- * perspectiva. A ordem de pintura vai do fundo para a frente.
- *
- * Pedido de 23/09/2026, quarta versão: "algo mais isométrico e menos
- * gratuito". As peças são o que o sistema entrega — a tela (laje com coluna
- * de navegação, indicadores e tabela), o gráfico de barras extrudadas, o
- * indicador, o formulário com interruptor, o cartão de escolha, o selo — e as
- * pessoas para quem tudo isso existe, como esferas. Uma tinta de traço, duas
- * tintas de face, bordô só em três acentos.
- * --------------------------------------------------------------------- */
-const COS = 0.8660254;
-const SEN = 0.5;
-const OX = 452;
-const OY = 36;
-
-type Face = { d: string; classe: string };
-
-function ponto(x: number, y: number, z: number): [number, number] {
-  return [(x - y) * COS + OX, (x + y) * SEN - z + OY];
-}
-function poligono(pontos: [number, number, number][]): string {
-  return pontos.map(([x, y, z], i) => (i ? 'L' : 'M') + ponto(x, y, z).map((n) => n.toFixed(1)).join(' ')).join(' ') + ' Z';
-}
-/** Uma caixa: face esquerda (frente, y + d), face direita (frente, x + w) e topo. */
-function caixa(x: number, y: number, z: number, w: number, d: number, h: number, classe = ''): Face[] {
-  const t = z + h;
-  return [
-    { d: poligono([[x, y + d, z], [x + w, y + d, z], [x + w, y + d, t], [x, y + d, t]]), classe: `face-esq ${classe}` },
-    { d: poligono([[x + w, y, z], [x + w, y + d, z], [x + w, y + d, t], [x + w, y, t]]), classe: `face-dir ${classe}` },
-    { d: poligono([[x, y, t], [x + w, y, t], [x + w, y + d, t], [x, y + d, t]]), classe: `topo ${classe}` },
-  ];
-}
-/** Um retângulo deitado no plano do topo, para o conteúdo das lajes. */
-function plano(x: number, y: number, z: number, w: number, d: number, classe: string): Face {
-  return { d: poligono([[x, y, z], [x + w, y, z], [x + w, y + d, z], [x, y + d, z]]), classe };
-}
-/** Uma esfera assentada em z, com a sombra em crescente das referências. */
-function esfera(x: number, y: number, z: number, r: number): Face[] {
-  const [cx, cy] = ponto(x, y, z + r);
-  const disco = `M ${(cx - r).toFixed(1)} ${cy.toFixed(1)} a ${r} ${r} 0 1 0 ${2 * r} 0 a ${r} ${r} 0 1 0 ${-2 * r} 0 Z`;
-  // O crescente: a metade direita do disco menos um arco de raio maior, que
-  // bojeia menos — o que sobra entre os dois é a sombra das referências.
-  const R = r * 1.7;
-  const crescente = `M ${cx.toFixed(1)} ${(cy - r).toFixed(1)} A ${r} ${r} 0 0 1 ${cx.toFixed(1)} ${(cy + r).toFixed(1)} A ${R} ${R} 0 0 0 ${cx.toFixed(1)} ${(cy - r).toFixed(1)} Z`;
-  return [{ d: disco, classe: 'esfera' }, { d: crescente, classe: 'crescente' }];
-}
-
-function montarCena(): Face[] {
-  const cena: Face[] = [];
-  const Z = 14; // altura do chão
-
-  // A ordem de pintura é do fundo para a frente: quem tem x + y maior está
-  // mais perto de quem olha e entra por último. Em 24/09/2026 o gráfico
-  // entrava ANTES da tela e ficava com a base coberta por ela, e as três
-  // esferas caíam em cima do cartão e do canto da tela. As posições abaixo
-  // foram conferidas por um verificador de silhuetas (casco convexo de cada
-  // peça em espaço de tela, separação por eixos): nenhuma peça toca outra.
-
-  // O CHÃO: a placa das fundações, onde tudo assenta.
-  cena.push(...caixa(0, 0, 0, 500, 380, Z, 'chao'));
-
-  // O INDICADOR: bloco atrás à esquerda, com a variação em bordô.
-  const [ix, iy] = [12, 108];
-  cena.push(...caixa(ix, iy, Z, 92, 64, 26, 'bloco'));
-  const I = Z + 26.5;
-  cena.push(plano(ix + 10, iy + 8, I, 36, 5, 'traco'));
-  cena.push(plano(ix + 10, iy + 22, I, 52, 12, 'traco-forte'));
-  cena.push(plano(ix + 10, iy + 44, I, 60, 5, 'traco'));
-  cena.push(plano(ix + 68, iy + 22, I, 16, 12, 'acento-plano'));
-
-  // A TELA: a laje central com coluna de navegação, indicadores e tabela.
-  // O conteúdo é relativo à laje: coluna de 76, margem de 16, três ladrilhos
-  // com vão 8 e quantas linhas de tabela couberem.
-  const [tx, ty, tw, td] = [130, 56, 260, 204];
-  cena.push(...caixa(tx, ty, Z, tw, td, 10, 'tela'));
-  const T = Z + 10.5;
-  cena.push(plano(tx, ty, T, tw, 24, 'faixa'));
-  cena.push(plano(tx + 10, ty + 6, T, 6, 6, 'ponto'), plano(tx + 20, ty + 6, T, 6, 6, 'ponto'), plano(tx + 30, ty + 6, T, 6, 6, 'ponto'));
-  cena.push(plano(tx, ty + 24, T, 76, td - 24, 'coluna'));
-  cena.push(plano(tx + 10, ty + 36, T, 56, 14, 'realce'));
-  cena.push(plano(tx + 14, ty + 40, T, 30, 5, 'traco-forte'));
-  [62, 82, 102, 122].forEach((y, i) => cena.push(plano(tx + 14, ty + y, T, [28, 40, 22, 34][i], 5, 'traco')));
-  const cx0 = tx + 88;
-  const cw = tw - 88 - 16;
-  const lad = (cw - 2 * 8) / 3;
-  [0, 1, 2].forEach((i) => {
-    const x = cx0 + i * (lad + 8);
-    cena.push(plano(x, ty + 34, T, lad, 38, 'ladrilho'));
-    cena.push(plano(x + 8, ty + 42, T, 24, 4, 'traco'));
-    cena.push(plano(x + 8, ty + 54, T, Math.min(36, lad - 16), 8, 'traco-forte'));
-  });
-  cena.push(plano(cx0, ty + 84, T, cw, 14, 'cabecalho'));
-  const linhas = Math.floor((td - 84 - 14 - 8) / 26);
-  for (let k = 0; k < linhas; k++) {
-    const y = ty + 106 + k * 26;
-    cena.push(plano(cx0 + 8, y + 4, T, 10, 10, 'avatar-mini'));
-    cena.push(plano(cx0 + 24, y + 3, T, 52, 5, 'traco-forte'));
-    cena.push(plano(cx0 + 24, y + 11, T, 78, 4, 'traco'));
-    cena.push(plano(cx0 + cw - 52, y + 3, T, 44, 11, 'selo'));
-    cena.push(plano(cx0, y + 22, T, cw, 1, 'fio'));
-  }
-
-  // O GRÁFICO: cinco barras extrudadas à direita da tela, e à frente dela na
-  // projeção — por isso entra depois. A quarta é o acento.
-  const [gx, gy] = [452, 90];
-  cena.push(plano(gx, gy, Z + 0.5, 38, 156, 'plinto'));
-  [26, 46, 34, 62, 50].forEach((h, i) => cena.push(...caixa(gx + 8, gy + 6 + i * 30, Z, 22, 22, h, i === 3 ? 'acento' : '')));
-
-  // O FORMULÁRIO: rótulo, campo e interruptor ligado.
-  const [fx, fy] = [10, 220];
-  cena.push(...caixa(fx, fy, Z, 100, 74, 8, 'bloco'));
-  const F = Z + 8.5;
-  cena.push(plano(fx + 10, fy + 8, F, 30, 5, 'traco-forte'));
-  cena.push(plano(fx + 10, fy + 20, F, 80, 18, 'campo'));
-  cena.push(plano(fx + 16, fy + 26, F, 40, 5, 'traco'));
-  cena.push(plano(fx + 10, fy + 50, F, 26, 12, 'acento-plano'));
-  cena.push(plano(fx + 26, fy + 52, F, 8, 8, 'knob'));
-  cena.push(plano(fx + 44, fy + 54, F, 40, 5, 'traco'));
-
-  // O SELO, deitado no chão: ponto e palavra.
-  const [sx, sy] = [176, 330];
-  cena.push(...caixa(sx, sy, Z, 88, 22, 5, 'bloco'));
-  cena.push(plano(sx + 8, sy + 6, Z + 5.5, 8, 8, 'acento-plano'));
-  cena.push(plano(sx + 22, sy + 7, Z + 5.5, 50, 6, 'traco'));
-
-  // O CARTÃO DE ESCOLHA, marcado: figura, título, apoio e o check em bordô.
-  const [kx, ky] = [296, 296];
-  cena.push(...caixa(kx, ky, Z, 110, 62, 8, 'bloco escolhido'));
-  const C = Z + 8.5;
-  cena.push(plano(kx + 10, ky + 10, C, 20, 20, 'ladrilho'));
-  cena.push(plano(kx + 38, ky + 12, C, 44, 5, 'traco-forte'));
-  cena.push(plano(kx + 38, ky + 22, C, 60, 4, 'traco'));
-  cena.push(plano(kx + 10, ky + 42, C, 80, 4, 'traco'));
-  cena.push(plano(kx + 94, ky + 8, C, 8, 8, 'acento-plano'));
-
-  // AS PESSOAS: três esferas no canto da frente, à direita do cartão e à
-  // frente do gráfico, para quem tudo isso existe.
-  cena.push(...esfera(474, 290, Z, 17));
-  cena.push(...esfera(492, 334, Z, 12));
-  cena.push(...esfera(460, 346, Z, 10));
-
-  return cena;
-}
+/* A ILUSTRAÇÃO DA CAPA é a mesma cena do login do Portal — a Candido Mendes
+ * na Praça XV, em isométrica calculada — pintada sobre o branco. A geometria
+ * mora em tools/cena-login.mjs, que grava site/src/generated/cena-capa.ts no
+ * passo 'telas' do build; aqui ficam só as tintas. Até 13/10/2026 a capa
+ * tinha geometria própria (uma placa com peças de interface), e as duas
+ * ilustrações do sistema não se pareciam. */
 
 @Component({
   selector: 'ucam-inicio',
@@ -185,39 +43,16 @@ function montarCena(): Face[] {
         </p>
       </div>
 
-      <!-- A geometria da ilustração está no topo deste arquivo; as cores vêm
-           dos tokens, então ela vira sozinha no tema escuro. Decorativa por
-           papel: role=img com um nome que diz o que há nela. -->
-      <figure class="ilustracao">
-        <svg
-          viewBox="0 0 900 500"
-          role="img"
-          aria-label="Ilustração isométrica do design system: sobre uma placa, a tela com coluna de navegação, indicadores e tabela; ao lado, um gráfico de barras, um indicador, um formulário com interruptor, um cartão de escolha marcado, um selo e três pessoas."
-        >
-          <!-- A MALHA isométrica de fundo (pedido de 23/09): losangos na mesma
-               projeção da cena, em filete, esmaecendo para as bordas por uma
-               máscara radial — o chão continua sendo a placa; a malha é o papel
-               quadriculado em que ela foi desenhada. O tile do padrão é UM
-               losango de 24 de altura: 2·cos30·24 por 24. -->
-          <defs>
-            <pattern id="malha-iso" patternUnits="userSpaceOnUse" width="41.57" height="24">
-              <path d="M 0 12 L 20.78 0 L 41.57 12 L 20.78 24 Z" class="malha" />
-            </pattern>
-            <radialGradient id="malha-fade" cx="50%" cy="52%" r="58%">
-              <stop offset="0" stop-color="#fff" stop-opacity="1" />
-              <stop offset="0.7" stop-color="#fff" stop-opacity="0.55" />
-              <stop offset="1" stop-color="#fff" stop-opacity="0" />
-            </radialGradient>
-            <mask id="malha-mascara">
-              <rect x="0" y="0" width="900" height="500" fill="url(#malha-fade)" />
-            </mask>
-          </defs>
-          <rect x="0" y="0" width="900" height="500" fill="url(#malha-iso)" mask="url(#malha-mascara)" class="malha-fundo" />
-          @for (f of cena; track $index) {
-            <path [attr.d]="f.d" [attr.class]="f.classe" />
-          }
-        </svg>
-      </figure>
+      <!-- Decorativa por papel, com um nome que diz o que há nela. O SVG é
+           gerado (ver o topo do arquivo) e entra por innerHTML. -->
+      <figure
+        class="ilustracao"
+        role="img"
+        aria-label="Ilustração isométrica da Universidade Candido Mendes na Praça XV: o chafariz do Mestre Valentim no meio da praça, o casarão colonial de arcos, a torre de vidro atrás dele, o cais e a barca."
+        [innerHTML]="cena"
+        (pointermove)="acompanhar($event)"
+        (pointerleave)="soltar($event)"
+      ></figure>
 
       <!-- Os sete números viraram uma GRADE de células, e não mais uma linha
            corrida de texto. Eram o fato mais forte da home — sete medidas do
@@ -356,75 +191,77 @@ function montarCena(): Face[] {
     }
 
     /* A ILUSTRAÇÃO ocupa a coluna e mede pela largura; o viewBox fixa a
-       proporção e o teto de 32rem segura a 1440px. Sem fundo e sem moldura:
-       ela é o desenho (ADR-040: nenhum fundo cinza no claro). */
+       proporção. Sem fundo e sem moldura: a cena se desfaz na página por uma
+       vinheta (ADR-040: nenhum fundo cinza no claro). */
     .ilustracao {
       margin: 0;
       padding: 0;
       min-inline-size: 0;
+      /* As duas tintas da cena: o papel da página e o bordô da ação. Todo tom
+         é uma mistura das duas, então a cena vira sozinha no tema escuro. */
+      --cena-p: var(--ucam-color-surface-default);
+      --cena-t: var(--ucam-color-action-primary-default);
     }
-    .ilustracao svg {
+    /* O SVG entra por innerHTML (é gerado), e por isso o estilo passa pelo
+       ::ng-deep: o conteúdo não recebe o atributo de escopo do componente. */
+    :host ::ng-deep .ilustracao svg {
       display: block;
       inline-size: 100%;
       block-size: auto;
-      max-block-size: 32rem;
+      max-block-size: 36rem;
       margin-inline: auto;
-      overflow: visible;
     }
-    /* UMA tinta de traço (border.strong), DUAS tintas de face: o topo é
-       branco, a face esquerda é o rebaixo, a direita o degrau sutil — é o que
-       dá volume sem sombra. Bordô só nos acentos. Tudo por token: vira sozinho
-       no tema escuro. */
-    .ilustracao path {
-      stroke: var(--ucam-color-border-strong);
-      stroke-width: 1;
-      stroke-linejoin: round;
-      vector-effect: non-scaling-stroke;
+    /* A PALETA: desenho a traço sobre papel, a das referências. Faces na cor
+       da página, um traço na tinta cheia, sombra e chão em tinta diluída. É a
+       mesma tabela da cena do login (tools/build-css.mjs, .ucam-login__cena),
+       com papel e tinta trocados; mudou lá, muda aqui. */
+    :host ::ng-deep .ilustracao path { fill: none; stroke: var(--cena-t); stroke-width: 1.15; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+    :host ::ng-deep .ilustracao :is(.p0, .p1, .l, .t0, .k0, .k1, .f1, .r0) { fill: var(--cena-p); }
+    :host ::ng-deep .ilustracao :is(.p2, .m) { fill: color-mix(in srgb, var(--cena-t) 10%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao :is(.s, .k2) { fill: color-mix(in srgb, var(--cena-t) 20%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao .t1 { fill: color-mix(in srgb, var(--cena-t) 16%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao .t2 { fill: color-mix(in srgb, var(--cena-t) 32%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao .r1 { fill: color-mix(in srgb, var(--cena-t) 12%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao .r2 { fill: color-mix(in srgb, var(--cena-t) 24%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao :is(.g, .gm, .ag, .sh, .cr, .v, .vd, .lz, .pt, .kc, .kd, .fundo) { stroke: none; }
+    :host ::ng-deep .ilustracao .g { fill: color-mix(in srgb, var(--cena-t) 6%, transparent); }
+    :host ::ng-deep .ilustracao .gm { fill: color-mix(in srgb, var(--cena-t) 11%, transparent); }
+    :host ::ng-deep .ilustracao .ag { fill: color-mix(in srgb, var(--cena-t) 14%, transparent); }
+    :host ::ng-deep .ilustracao .sh { fill: color-mix(in srgb, var(--cena-t) 20%, transparent); }
+    :host ::ng-deep .ilustracao .cr { fill: color-mix(in srgb, var(--cena-t) 22%, transparent); }
+    :host ::ng-deep .ilustracao :is(.v, .vd) { fill: color-mix(in srgb, var(--cena-t) 34%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao .lz { fill: var(--cena-p); }
+    :host ::ng-deep .ilustracao .pt { fill: color-mix(in srgb, var(--cena-t) 50%, transparent); }
+    :host ::ng-deep .ilustracao .kc { fill: color-mix(in srgb, var(--cena-t) 24%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao :is(.kd, .a) { fill: var(--cena-t); }
+    :host ::ng-deep .ilustracao .a2 { fill: color-mix(in srgb, var(--cena-t) 60%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao :is(.pv, .on, .malha, .gr, .ng, .rg, .fc) { stroke-width: 0.75; }
+    :host ::ng-deep .ilustracao .pv { stroke: color-mix(in srgb, var(--cena-t) 10%, transparent); }
+    :host ::ng-deep .ilustracao .malha { stroke: color-mix(in srgb, var(--cena-t) 7%, transparent); }
+    :host ::ng-deep .ilustracao :is(.on, .gr, .ng, .rg) { stroke: color-mix(in srgb, var(--cena-t) 42%, transparent); }
+    :host ::ng-deep .ilustracao :is(.clarao-0, .clarao-1) { stop-color: var(--cena-p); stop-opacity: 0; }
+    :host ::ng-deep .ilustracao :is(.tr, .kk) { stroke-width: 3; }
+    :host ::ng-deep .ilustracao .tr2 { stroke-width: 2.5; }
+    :host ::ng-deep .ilustracao .fo { stroke-width: 1.5; }
+
+    /* O MOVIMENTO, igual ao da cena do login (tools/build-css.mjs): as peças
+       boiam, a barca vai e volta, a água oscila, as janelas piscam; o ponteiro
+       levanta a peça. Só para quem não pediu menos movimento. */
+    .ilustracao { --px: 0; --py: 0; }
+    :host ::ng-deep .ilustracao :is(.base, .barca) { translate: calc(var(--px) * 6px) calc(var(--py) * 4px); transition: translate 320ms ease-out; }
+    :host ::ng-deep .ilustracao .pc { translate: calc(var(--px) * -12px) calc(var(--py) * -8px); transition: transform 200ms ease-out, translate 320ms ease-out; }
+    :host ::ng-deep .ilustracao .pc:hover { transform: translateY(-9px); }
+    :host ::ng-deep .ilustracao .pc:hover .kc { fill: color-mix(in srgb, var(--cena-t) 50%, var(--cena-p)); }
+    @media (prefers-reduced-motion: no-preference) {
+      :host ::ng-deep .ilustracao .pc > g { animation: cena-boiar 5.5s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -1.3s); }
+      :host ::ng-deep .ilustracao .barca > g { animation: cena-navegar 28s ease-in-out infinite alternate; }
+      :host ::ng-deep .ilustracao .on { animation: cena-onda 4.5s ease-in-out infinite alternate; }
+      :host ::ng-deep .ilustracao .lz { animation: cena-piscar 3.2s ease-in-out infinite alternate; }
     }
-    /* A malha: filete de border.subtle, sem preenchimento; o rect que a
-       carrega não tem traço próprio. */
-    .ilustracao .malha { fill: none; stroke: var(--ucam-color-border-subtle); stroke-width: 1; }
-    .ilustracao .malha-fundo { stroke: none; }
-    .ilustracao .topo { fill: var(--ucam-color-surface-default); }
-    .ilustracao .face-esq { fill: var(--ucam-color-surface-sunken); }
-    .ilustracao .face-dir { fill: var(--ucam-color-surface-subtle); }
-    .ilustracao .acento.topo { fill: var(--ucam-color-action-primary-subtle); }
-    .ilustracao .acento.face-esq,
-    .ilustracao .acento.face-dir { fill: var(--ucam-color-action-primary-default); stroke: var(--ucam-color-action-primary-default); }
-    .ilustracao .escolhido { stroke: var(--ucam-color-action-primary-default); }
-    /* Conteúdo deitado nas lajes: sem traço, só tinta. */
-    .ilustracao .plinto,
-    .ilustracao .faixa,
-    .ilustracao .coluna,
-    .ilustracao .realce,
-    .ilustracao .traco,
-    .ilustracao .traco-forte,
-    .ilustracao .ladrilho,
-    .ilustracao .cabecalho,
-    .ilustracao .avatar-mini,
-    .ilustracao .selo,
-    .ilustracao .fio,
-    .ilustracao .knob,
-    .ilustracao .ponto,
-    .ilustracao .acento-plano,
-    .ilustracao .crescente { stroke: none; }
-    .ilustracao .plinto { fill: var(--ucam-color-surface-sunken); }
-    .ilustracao .faixa { fill: var(--ucam-color-surface-subtle); }
-    .ilustracao .coluna { fill: var(--ucam-color-surface-subtle); }
-    .ilustracao .realce { fill: var(--ucam-color-action-primary-subtle); }
-    .ilustracao .traco { fill: var(--ucam-color-border-subtle); }
-    .ilustracao .traco-forte { fill: var(--ucam-color-border-default); }
-    .ilustracao .ladrilho { fill: var(--ucam-color-surface-sunken); }
-    .ilustracao .cabecalho { fill: var(--ucam-color-surface-sunken); }
-    .ilustracao .avatar-mini { fill: var(--ucam-color-border-default); }
-    .ilustracao .selo { fill: var(--ucam-color-surface-sunken); }
-    .ilustracao .fio { fill: var(--ucam-color-border-subtle); }
-    .ilustracao .campo { fill: var(--ucam-color-surface-default); stroke: var(--ucam-color-border-default); }
-    .ilustracao .knob { fill: var(--ucam-color-surface-default); }
-    .ilustracao .ponto { fill: var(--ucam-color-border-default); }
-    .ilustracao .acento-plano { fill: var(--ucam-color-action-primary-default); }
-    .ilustracao .esfera { fill: var(--ucam-color-surface-default); }
-    .ilustracao .crescente { fill: var(--ucam-color-surface-sunken); }
+    @keyframes cena-boiar { from { transform: translateY(3px); } to { transform: translateY(-5px); } }
+    @keyframes cena-navegar { from { transform: translate(52px, -30px); } to { transform: translate(-104px, 60px); } }
+    @keyframes cena-onda { from { transform: translateX(-5px); } to { transform: translateX(5px); } }
+    @keyframes cena-piscar { from { opacity: 1; } to { opacity: 0.25; } }
 
     /* A home lê na mesma coluna das páginas internas. Ela herdava os 80rem
        inteiros do container, então a faixa de números e as grades de cartão
@@ -479,8 +316,25 @@ function montarCena(): Face[] {
 export default class IndexPage {
   protected readonly m = meta;
 
-  /** A cena isométrica, calculada uma vez. Ver o cabeçalho do arquivo. */
-  protected readonly cena = montarCena();
+  /** A cena é SVG gerado no build, de fonte nossa: por isso passa sem o
+   *  saneador, que tiraria os elementos de SVG. */
+  protected readonly cena = inject(DomSanitizer).bypassSecurityTrustHtml(CENA_CAPA);
+
+  /** A cena acompanha o ponteiro: a posição, de -1 a 1 em cada eixo, vai para
+   *  --px e --py e a folha desloca os dois planos. Nada em toque, e nada para
+   *  quem pediu menos movimento. */
+  protected acompanhar(e: PointerEvent): void {
+    if (e.pointerType === 'touch' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = e.currentTarget as HTMLElement;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--px', (((e.clientX - r.left) / r.width) * 2 - 1).toFixed(3));
+    el.style.setProperty('--py', (((e.clientY - r.top) / r.height) * 2 - 1).toFixed(3));
+  }
+  protected soltar(e: PointerEvent): void {
+    const el = e.currentTarget as HTMLElement;
+    el.style.setProperty('--px', '0');
+    el.style.setProperty('--py', '0');
+  }
 
   /** As seis portas da capa: destino, ícone do sprite, nome e uma linha.
    *  O Servidor MCP saiu da capa em 29/09/2026 (pedido do Leonardo); segue

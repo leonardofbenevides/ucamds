@@ -2079,6 +2079,32 @@ const FN_ANUNCIA = `
 
 export const estadoScript = `
 (function () {
+  /* A CENA DO LOGIN ACOMPANHA O PONTEIRO (13/10/2026). O painel institucional
+   * mede onde o ponteiro está, de -1 a 1 em cada eixo, e grava em --px e --py
+   * na cena; a folha desloca as peças que flutuam para um lado e a praça para
+   * o outro, e a distância entre os dois planos é o que dá profundidade. Um
+   * quadro por medida, nada em toque, e nada para quem pediu menos movimento. */
+  var painel = document.querySelector('.ucam-login__institucional');
+  var cena = painel && painel.querySelector('.ucam-login__cena');
+  if (!cena || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var quadro = 0, x = 0, y = 0;
+  painel.addEventListener('pointermove', function (e) {
+    if (e.pointerType === 'touch') return;
+    x = e.clientX; y = e.clientY;
+    if (quadro) return;
+    quadro = requestAnimationFrame(function () {
+      quadro = 0;
+      var r = painel.getBoundingClientRect();
+      cena.style.setProperty('--px', ((x - r.left) / r.width * 2 - 1).toFixed(3));
+      cena.style.setProperty('--py', ((y - r.top) / r.height * 2 - 1).toFixed(3));
+    });
+  });
+  painel.addEventListener('pointerleave', function () {
+    cena.style.setProperty('--px', '0');
+    cena.style.setProperty('--py', '0');
+  });
+})();
+(function () {
   /* REFERÊNCIA OU APLICAÇÃO (ADR-057, 03/10/2026). Este mesmo script sai em
    * dist/css/ucam-comportamento.js para a aplicação do Trilho A. A diferença
    * entre os dois lugares é UMA: a tela de referência carrega data-referencia

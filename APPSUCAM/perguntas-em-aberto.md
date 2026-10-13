@@ -48,7 +48,6 @@ Entre parênteses, no fim de cada item, está a tela em que a regra aparece.
 - Até quando um sistema legado convive com o novo, e quem decide tirá-lo da grade. Falta decidir: O prazo e o responsável. E quem executa a retirada, já que nenhuma tela (nem do Gerencial novo) altera exibicaodashboard, aplicacaoendereco ou aplicacaousuario. *(Grade de módulos)*
 - O que decide se um sistema aparece para a pessoa. Falta decidir: Quem mantém aplicacaousuario. O Gerencial antigo tinha a aba "Aplicações" no cadastro do usuário; o Gerencial novo não implementou esse vínculo (G3/docs/adr/0016-agregado-aplicacao.md:52 — "Aplicacaomantenedora/Aplicacaousuario (vínculos do legado) não implementados"). *(Grade de módulos)*
 - Quais são as seções oficiais da grade. Falta decidir: A tela de referência precisa trocar "Presencial" (seção) por Campos, e prever ICAM. Falta decidir como mostrar duas seções com o mesmo nome (Rio presencial × Rio EAD). *(Grade de módulos)*
-- Como se liga a conta Microsoft ou Google ao CPF: pelo e-mail institucional cadastrado, ou por um vínculo que a pessoa faz uma vez. *(Autenticação)*
 - Quantas tentativas erradas bloqueiam o acesso e por quanto tempo. Falta decidir: Se haverá limite, de quantas tentativas, por quanto tempo, e onde contar (o Portal hoje não escreve nas bases além da senha, e a mesma pessoa tem contas em várias bases). *(Autenticação)*
 - O que "Primeiro acesso" pede para provar quem é a pessoa. Falta decidir: O manual publicado (PV2/frontend/public/assets/docs/manual-primeiro-acesso.pdf, gerado de PV2/docs/manual-primeiro-acesso.html) diz que o código chega por SMS no celular; o servidor manda por e-mail (o envio de SMS é uma classe vazia). Um dos dois precisa ser corrigido. O manual também cita os endereços portal-v2.ucam-campos.br e portal-v2.candidomendes.edu.br. *(Autenticação)*
 - Primeiro acesso e recuperação são o mesmo fluxo. Falta decidir: Se o primeiro acesso deve pedir prova extra. Hoje quem controla o e-mail cadastrado em uma base troca a senha em todas. *(Recuperar senha)*
@@ -321,7 +320,6 @@ Entre parênteses, no fim de cada item, está a tela em que a regra aparece.
 **Portal Universitário**
 
 - Favoritos são por pessoa e valem em qualquer dispositivo: a estrela fixada aqui é a mesma do grupo Favoritos da navegação. *(Grade de módulos)*
-- Entrada também por conta institucional Microsoft ou Google, como segunda via; CPF e senha continuam valendo para todos. *(Autenticação)*
 - O erro de autenticação não diz se o CPF existe ou se a senha está errada. *(Autenticação)*
 - A tela não diz se o CPF tem cadastro: o passo do código abre do mesmo jeito. Hoje o sistema responde "Usuário inválido!". *(Recuperar senha)*
 - Depois de salvar, a pessoa volta para a entrada e digita a senha nova; a troca não abre sessão sozinha. *(Definir nova senha)*

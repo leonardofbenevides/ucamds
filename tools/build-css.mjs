@@ -14059,15 +14059,12 @@ ${acima('nav-fixa')} {
 /* A linha de apoio da frase: uma só, no tom rebaixado do texto sobre marca.
  * É o "Enter your credentials" da referência — diz o que fazer, e não repete
  * o que a frase já afirma. */
-/* A CENA (25/09/2026: "a tela de autenticação tem que ser mais interessante,
- * mais bonita"). É a mesma ilustração isométrica da capa do site — a tela, o
- * gráfico, o indicador, o formulário, o cartão, o selo e as pessoas — só que
- * em TONS DO BORDÔ: traço e faces são o branco da coluna em graus de
- * transparência, o sombreado é o inverso, e os acentos que na capa são bordô
- * aqui são o branco cheio. É o que o acesso abre, desenhado em vez de
- * listado, e é a composição tonal que a faixa dos sistemas já faz com a
- * marquinha. Decorativa (aria-hidden): o argumento continua na frase. A
- * geometria vem de site/src/app/pages/index.page.ts, gerada, não desenhada. */
+/* A CENA. Em 25/09/2026 era a ilustração da capa do site, em tons do bordô;
+ * em 10/10/2026 virou a Candido Mendes na Praça XV, a pedido e com
+ * referências: o chafariz da marca, o casarão de arcos, a torre de vidro, o
+ * cais e a barca. Decorativa (aria-hidden): o argumento continua na frase. A
+ * geometria é calculada por tools/cena-login.mjs, que também a grava nas
+ * telas do Portal (--aplicar); não se edita o SVG à mão. */
 .ucam-login__cena {
   min-inline-size: 0;
   margin-block-start: var(--ucam-space-stack-lg);
@@ -14081,39 +14078,85 @@ ${acima('nav-fixa')} {
   block-size: auto;
   overflow: visible;
 }
-.ucam-login__cena path {
-  fill: none;
-  stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 55%, transparent);
-  stroke-width: 1;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
+/* A PALETA DA CENA (13/10/2026, terceira versão, com a referência do estádio
+ * em azul: 'a ilustra podia ser em outro estilo'). É desenho a TRAÇO sobre
+ * papel: as faces ficam na cor do fundo, o volume vem do contorno, a face de
+ * sombra e o chão levam a tinta diluída, e o cheio aparece em pouca coisa
+ * (bandeiras, gente, troncos, o ladrilho escolhido). Aqui o papel é o bordô
+ * da coluna e a tinta é o branco do texto; na capa do site é o contrário. A
+ * versão de 10/10 pintava cada material com três tons opacos e pesava.
+ * As faces continuam OPACAS (na cor do papel): o que está na frente cobre o
+ * que está atrás. A capa (site/src/app/pages/index.page.ts) repete esta
+ * tabela; mudou aqui, muda lá. */
+.ucam-login__cena {
+  --cena-p: var(--ucam-color-surface-brand);
+  --cena-t: var(--ucam-color-text-on-brand);
 }
-.ucam-login__cena .malha { fill: none; stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 12%, transparent); }
-.ucam-login__cena .malha-fundo { stroke: none; }
-.ucam-login__cena .topo { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 12%, transparent); }
-.ucam-login__cena .face-esq { fill: color-mix(in srgb, var(--ucam-color-surface-inverse) 18%, transparent); }
-.ucam-login__cena .face-dir { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 5%, transparent); }
-.ucam-login__cena .acento.topo { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 45%, transparent); }
-.ucam-login__cena .acento.face-esq,
-.ucam-login__cena .acento.face-dir {
-  fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 30%, transparent);
-  stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 75%, transparent);
+.ucam-login__cena path { fill: none; stroke: var(--cena-t); stroke-width: 1.15; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ucam-login__cena :is(.p0, .p1, .l, .t0, .k0, .k1, .f1, .r0) { fill: var(--cena-p); }
+.ucam-login__cena :is(.p2, .m) { fill: color-mix(in srgb, var(--cena-t) 10%, var(--cena-p)); }
+.ucam-login__cena :is(.s, .k2) { fill: color-mix(in srgb, var(--cena-t) 20%, var(--cena-p)); }
+.ucam-login__cena .t1 { fill: color-mix(in srgb, var(--cena-t) 16%, var(--cena-p)); }
+.ucam-login__cena .t2 { fill: color-mix(in srgb, var(--cena-t) 32%, var(--cena-p)); }
+.ucam-login__cena .r1 { fill: color-mix(in srgb, var(--cena-t) 12%, var(--cena-p)); }
+.ucam-login__cena .r2 { fill: color-mix(in srgb, var(--cena-t) 24%, var(--cena-p)); }
+.ucam-login__cena :is(.g, .gm, .ag, .sh, .cr, .v, .vd, .lz, .pt, .kc, .kd, .fundo) { stroke: none; }
+.ucam-login__cena .g { fill: color-mix(in srgb, var(--cena-t) 6%, transparent); }
+.ucam-login__cena .gm { fill: color-mix(in srgb, var(--cena-t) 11%, transparent); }
+.ucam-login__cena .ag { fill: color-mix(in srgb, var(--cena-t) 14%, transparent); }
+.ucam-login__cena .sh { fill: color-mix(in srgb, var(--cena-t) 20%, transparent); }
+.ucam-login__cena .cr { fill: color-mix(in srgb, var(--cena-t) 22%, transparent); }
+.ucam-login__cena :is(.v, .vd) { fill: color-mix(in srgb, var(--cena-t) 34%, var(--cena-p)); }
+.ucam-login__cena .lz { fill: var(--cena-p); }
+.ucam-login__cena .pt { fill: color-mix(in srgb, var(--cena-t) 50%, transparent); }
+.ucam-login__cena .kc { fill: color-mix(in srgb, var(--cena-t) 24%, var(--cena-p)); }
+.ucam-login__cena :is(.kd, .a) { fill: var(--cena-t); }
+.ucam-login__cena .a2 { fill: color-mix(in srgb, var(--cena-t) 60%, var(--cena-p)); }
+.ucam-login__cena :is(.pv, .on, .malha, .gr, .ng, .rg, .fc) { stroke-width: 0.75; }
+.ucam-login__cena .pv { stroke: color-mix(in srgb, var(--cena-t) 10%, transparent); }
+.ucam-login__cena .malha { stroke: color-mix(in srgb, var(--cena-t) 7%, transparent); }
+.ucam-login__cena :is(.on, .gr, .ng, .rg) { stroke: color-mix(in srgb, var(--cena-t) 42%, transparent); }
+.ucam-login__cena :is(.clarao-0, .clarao-1) { stop-color: var(--cena-p); stop-opacity: 0; }
+.ucam-login__cena :is(.tr, .kk) { stroke-width: 3; }
+.ucam-login__cena .tr2 { stroke-width: 2.5; }
+.ucam-login__cena .fo { stroke-width: 1.5; }
+
+/* A CENA SE MEXE (13/10/2026: "dá pra ter alguma interação, algum
+ * movimento?"). Só CSS, e só para quem não pediu menos movimento: as dez
+ * peças boiam devagar, cada uma no seu tempo; a barca vai e volta ao longo do
+ * cais; a água oscila; as janelas acesas da torre piscam. Passar o ponteiro
+ * numa peça a levanta e carrega a tinta dela. A peça tem dois grupos: o de
+ * fora responde ao ponteiro, o de dentro boia, e assim um transform não
+ * apaga o outro. */
+/* O PONTEIRO: --px e --py vêm do script (estadoScript, em tools/lib/shell.mjs),
+ * de -1 a 1. A praça anda para um lado e as peças para o outro. É a
+ * propriedade translate, e não transform, para não disputar com o boiar nem
+ * com o levantar. */
+.ucam-login__cena { --px: 0; --py: 0; }
+.ucam-login__cena :is(.base, .barca) {
+  translate: calc(var(--px) * 6px) calc(var(--py) * 4px);
+  transition: translate var(--ucam-motion-duration-travel) ease-out;
 }
-.ucam-login__cena .escolhido { stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 90%, transparent); }
-.ucam-login__cena :is(.plinto, .faixa, .coluna, .realce, .traco, .traco-forte, .ladrilho, .cabecalho, .avatar-mini, .selo, .fio, .knob, .ponto, .acento-plano, .crescente) { stroke: none; }
-.ucam-login__cena :is(.plinto, .coluna) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 6%, transparent); }
-.ucam-login__cena :is(.faixa, .ladrilho) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 9%, transparent); }
-.ucam-login__cena :is(.cabecalho, .selo) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 12%, transparent); }
-.ucam-login__cena .realce { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 22%, transparent); }
-.ucam-login__cena :is(.traco, .fio) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 28%, transparent); }
-.ucam-login__cena :is(.traco-forte, .avatar-mini, .ponto) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 55%, transparent); }
-.ucam-login__cena .campo {
-  fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 6%, transparent);
-  stroke: color-mix(in srgb, var(--ucam-color-text-on-brand) 45%, transparent);
+.ucam-login__cena .pc {
+  translate: calc(var(--px) * -12px) calc(var(--py) * -8px);
+  transition: transform var(--ucam-motion-duration-reveal) ease-out, translate var(--ucam-motion-duration-travel) ease-out;
 }
-.ucam-login__cena :is(.knob, .acento-plano) { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 88%, transparent); }
-.ucam-login__cena .esfera { fill: color-mix(in srgb, var(--ucam-color-text-on-brand) 16%, transparent); }
-.ucam-login__cena .crescente { fill: color-mix(in srgb, var(--ucam-color-surface-inverse) 16%, transparent); }
+.ucam-login__cena .pc:hover { transform: translateY(-9px); }
+.ucam-login__cena .pc:hover .kc { fill: color-mix(in srgb, var(--cena-t) 50%, var(--cena-p)); }
+@media (prefers-reduced-motion: no-preference) {
+  .ucam-login__cena .pc > g {
+    animation: ucam-cena-boiar 5.5s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -1.3s);
+  }
+  .ucam-login__cena .barca > g { animation: ucam-cena-navegar 28s ease-in-out infinite alternate; }
+  .ucam-login__cena .on { animation: ucam-cena-onda 4.5s ease-in-out infinite alternate; }
+  .ucam-login__cena .lz { animation: ucam-cena-piscar 3.2s ease-in-out infinite alternate; }
+}
+@keyframes ucam-cena-boiar { from { transform: translateY(3px); } to { transform: translateY(-5px); } }
+/* A barca anda na direção do cais: na projeção, (-0,866; 0,5) por unidade. */
+@keyframes ucam-cena-navegar { from { transform: translate(52px, -30px); } to { transform: translate(-104px, 60px); } }
+@keyframes ucam-cena-onda { from { transform: translateX(-5px); } to { transform: translateX(5px); } }
+@keyframes ucam-cena-piscar { from { opacity: 1; } to { opacity: 0.25; } }
 
 .ucam-login__subfrase {
   margin: 0;
@@ -14149,15 +14192,6 @@ ${acima('nav-fixa')} {
   flex: 1;
   block-size: 1px;
   background: var(--ucam-color-border-subtle);
-}
-
-/* Os dois provedores dividem a linha em partes IGUAIS. Largura por conteúdo
- * daria a "Microsoft" mais área que a "Google" e insinuaria preferência onde
- * não há: as duas contas valem o mesmo acesso. */
-.ucam-login__provedores {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--ucam-space-inline-sm);
 }
 
 /* O shell sem navegação NÃO reserva a coluna dela.
@@ -14402,6 +14436,11 @@ ${acima('nav-fixa')} {
    * barra, para nunca sair do alcance. */
   .ucam-viewbar__fileira--filtros {
     flex-wrap: nowrap;
+  /* MAIS PARA DENTRO (13/10/2026, a pedido): a frase ganha um recuo próprio
+   * além do recuo do painel, e fica a 64px da borda em vez de 40. A cena
+   * abaixo sangra para os lados; a frase, não. */
+  padding-inline: var(--ucam-space-inset-lg);
+  padding-block-start: var(--ucam-space-inset-md);
     min-block-size: var(--ucam-alvo-min);
     padding-block: 0;
     row-gap: 0;
