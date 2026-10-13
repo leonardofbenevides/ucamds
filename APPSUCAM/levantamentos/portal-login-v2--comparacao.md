@@ -35,7 +35,7 @@ No login não existem os estados bloqueado, senha expirada nem primeiro acesso.
 ## Divergências com o DS
 
 **`portal/login`**
-- O DS propõe entrada por Microsoft/Google; o real não tem.
+- O DS propunha entrada por Microsoft/Google, que o real não tem; saiu da tela em 10/10/2026.
 - Botão "Entrar" no DS, "Entrar no Portal" no real, que também tem "Lembrar de mim".
 - "Primeiro acesso" no DS é link de fluxo; no real é um PDF. "Cadastrar senha" é a própria recuperação.
 - No real o painel de marca vem primeiro, com 3 destaques e "Atalhos institucionais" (Webmail, Ouvidoria, Acompanhar inscrição, Central de ajuda), e continua visível empilhado em tela estreita; no DS a coluna institucional fica à direita com a lista de sistemas e some abaixo de 64rem.
