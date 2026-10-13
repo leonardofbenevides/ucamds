@@ -3,7 +3,7 @@
   "id": "course-card",
   "name": "CourseCard",
   "selector": "ucam-site-course-card",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -117,6 +117,12 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "O campus."
+    },
+    {
+      "nome": "image",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O endereço da foto, sempre decorativa."
     }
   ],
   "estados": [
@@ -205,6 +211,7 @@
         "--ucam-site-elevation-card-hover",
         "--ucam-site-typography-title-font-size"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/course-card/course-card.ts — article[ucamSiteCourseCard]. Entradas: name, href, modality, level, duration, shift, campus, image."
   }
 }

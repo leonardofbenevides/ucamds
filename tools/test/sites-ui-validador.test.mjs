@@ -82,14 +82,13 @@ test('peça com trilho B e sem demo Angular reprova', () => {
 
 test('peça em revisão sem trilho B reprova', () => {
   const raiz = repo();
-  const c = le(raiz, 'card'); c.status = 'review'; grava(raiz, 'card', c);
+  // Desde a fatia 3a-3 toda peça tem trilho B: a que não tem é fabricada aqui, tirando o de uma cópia.
+  const c = le(raiz, 'card'); delete c.implementacao.trilho_b; grava(raiz, 'card', c);
   assert.ok(roda(raiz).erros.some((e) => /card: status "review" sem implementacao\.trilho_b/.test(e.msg)), msgs(roda(raiz)));
 });
 
 test('demo Angular sem trilho B reprova: a forma documentada não teria peça', () => {
   const raiz = repo();
-  const d = JSON.parse(readFileSync(join(raiz, 'sites/spec/demos.json'), 'utf8'));
-  d.demos.card.principal.angular = '<article ucamSiteCard></article>';
-  writeFileSync(join(raiz, 'sites/spec/demos.json'), JSON.stringify(d));
+  const c = le(raiz, 'card'); delete c.implementacao.trilho_b; c.status = 'draft'; grava(raiz, 'card', c);
   assert.ok(roda(raiz).erros.some((e) => /card: a demo tem a forma Angular e o contrato não tem trilho_b/.test(e.msg)), msgs(roda(raiz)));
 });

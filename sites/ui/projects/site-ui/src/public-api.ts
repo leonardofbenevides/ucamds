@@ -26,6 +26,8 @@ import { UcamSiteStats } from './lib/stats-band/stats-band';
 import { UcamSiteDocCard } from './lib/doc-card/doc-card';
 import { UcamSiteTestimonial } from './lib/testimonial/testimonial';
 import { UcamSiteSteps, UcamSiteStep } from './lib/step-card/step-card';
+import { UcamSiteCard, UcamSiteCardMeta } from './lib/card/card';
+import { UcamSiteCourseCard } from './lib/course-card/course-card';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -48,6 +50,8 @@ export * from './lib/stats-band/stats-band';
 export * from './lib/doc-card/doc-card';
 export * from './lib/testimonial/testimonial';
 export * from './lib/step-card/step-card';
+export * from './lib/card/card';
+export * from './lib/course-card/course-card';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -80,4 +84,7 @@ export const UCAM_SITE = [
   UcamSiteTestimonial,
   UcamSiteSteps,
   UcamSiteStep,
+  UcamSiteCard,
+  UcamSiteCardMeta,
+  UcamSiteCourseCard,
 ] as const;

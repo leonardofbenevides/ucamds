@@ -3,7 +3,7 @@
   "id": "card",
   "name": "Card",
   "selector": "ucam-site-card",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -76,7 +76,7 @@
   ],
   "props": [
     {
-      "nome": "title",
+      "nome": "heading",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "O título."
@@ -99,6 +99,24 @@
           "classe": ".ucam-site-card--interativo"
         }
       }
+    },
+    {
+      "nome": "image",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O endereço da foto, sempre decorativa."
+    },
+    {
+      "nome": "text",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O resumo, de uma ou duas frases."
+    },
+    {
+      "nome": "level",
+      "tipo": "2 | 3 | 4",
+      "default": "3",
+      "descricao": "O nível do título, conforme a seção em que o cartão está."
     }
   ],
   "estados": [
@@ -206,6 +224,7 @@
         "--ucam-site-elevation-card-hover",
         "--ucam-site-space-inset-card"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/card/card.ts — article[ucamSiteCard], [ucamSiteCardMeta]. Entradas: heading, href, image, text, interactive, level."
   }
 }

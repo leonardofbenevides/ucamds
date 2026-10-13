@@ -22,6 +22,8 @@ import statsBand from '../../../../../spec/components/stats-band.json';
 import docCard from '../../../../../spec/components/doc-card.json';
 import testimonial from '../../../../../spec/components/testimonial.json';
 import stepCard from '../../../../../spec/components/step-card.json';
+import card from '../../../../../spec/components/card.json';
+import courseCard from '../../../../../spec/components/course-card.json';
 
 export interface Prop {
   nome: string;
@@ -50,6 +52,8 @@ const CONTRATOS: Record<string, unknown> = {
   'doc-card': docCard,
   'testimonial': testimonial,
   'step-card': stepCard,
+  'card': card,
+  'course-card': courseCard,
 };
 
 /**
