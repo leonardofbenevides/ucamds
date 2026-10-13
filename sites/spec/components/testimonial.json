@@ -3,7 +3,7 @@
   "id": "testimonial",
   "name": "Testimonial",
   "selector": "ucam-site-testimonial",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -70,13 +70,13 @@
       "descricao": "A fala."
     },
     {
-      "nome": "name",
+      "nome": "author",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "Quem falou."
     },
     {
-      "nome": "role",
+      "nome": "authorRole",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "Curso e ano, ou cargo e empresa."
@@ -92,6 +92,12 @@
           "classe": ".ucam-site-testimonial--inverse"
         }
       }
+    },
+    {
+      "nome": "initials",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "As iniciais do avatar. Sem elas, a primeira letra do primeiro e do último nome de author."
     }
   ],
   "estados": [
@@ -169,6 +175,7 @@
         "--ucam-site-radius-card",
         "--ucam-site-space-inset-card"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/testimonial/testimonial.ts — figure[ucamSiteTestimonial]. Entradas: quote, author, authorRole, initials, inverse."
   }
 }

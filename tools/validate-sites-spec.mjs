@@ -192,7 +192,8 @@ export function validar({ raiz = ROOT, css } = {}) {
       else {
         const lista = (t) => (t ?? '').split(',').map((x) => x.trim()).filter(Boolean);
         const [, arquivo, seletor] = m;
-        const entradas = lista(m[3]);
+        // Peça que é só uma classe (a pílula, a prosa) não tem entrada: "Entradas: nenhuma."
+        const entradas = lista(m[3]).filter((x) => x !== 'nenhuma');
         const nativos = lista(m[4]);
         const conteudo = lista(m[5]);
         const props = new Set((spec.props ?? []).map((x) => x.nome));

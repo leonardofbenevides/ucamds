@@ -3,7 +3,7 @@
   "id": "hero-pill",
   "name": "HeroPill",
   "selector": "ucam-site-hero-pill",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -147,6 +147,7 @@
         "--ucam-site-color-border-on-inverse",
         "--ucam-site-color-interaction-hover-on-inverse"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/hero-pill/hero-pill.ts — [ucamSiteHeroPill]. Entradas: nenhuma. Conteúdo: label, icon."
   }
 }

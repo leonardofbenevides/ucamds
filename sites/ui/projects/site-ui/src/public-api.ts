@@ -20,6 +20,12 @@ import { UcamSitePagination } from './lib/pagination/pagination';
 import { UcamSiteNewsletter } from './lib/newsletter-form/newsletter-form';
 import { UcamSiteHeader } from './lib/site-header/site-header';
 import { UcamSiteFooter, UcamSiteFooterMarca } from './lib/site-footer/site-footer';
+import { UcamSiteHeroPill } from './lib/hero-pill/hero-pill';
+import { UcamSiteProse } from './lib/prose/prose';
+import { UcamSiteStats } from './lib/stats-band/stats-band';
+import { UcamSiteDocCard } from './lib/doc-card/doc-card';
+import { UcamSiteTestimonial } from './lib/testimonial/testimonial';
+import { UcamSiteSteps, UcamSiteStep } from './lib/step-card/step-card';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -36,6 +42,12 @@ export * from './lib/pagination/pagination';
 export * from './lib/newsletter-form/newsletter-form';
 export * from './lib/site-header/site-header';
 export * from './lib/site-footer/site-footer';
+export * from './lib/hero-pill/hero-pill';
+export * from './lib/prose/prose';
+export * from './lib/stats-band/stats-band';
+export * from './lib/doc-card/doc-card';
+export * from './lib/testimonial/testimonial';
+export * from './lib/step-card/step-card';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -61,4 +73,11 @@ export const UCAM_SITE = [
   UcamSiteHeader,
   UcamSiteFooter,
   UcamSiteFooterMarca,
+  UcamSiteHeroPill,
+  UcamSiteProse,
+  UcamSiteStats,
+  UcamSiteDocCard,
+  UcamSiteTestimonial,
+  UcamSiteSteps,
+  UcamSiteStep,
 ] as const;

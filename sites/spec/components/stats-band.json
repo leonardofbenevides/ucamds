@@ -3,7 +3,7 @@
   "id": "stats-band",
   "name": "StatsBand",
   "selector": "ucam-site-stats-band",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
@@ -160,6 +160,7 @@
         "--ucam-site-typography-display-section-sm-font-size",
         "--ucam-site-color-border-default"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/stats-band/stats-band.ts — dl[ucamSiteStats]. Entradas: items, inverse."
   }
 }

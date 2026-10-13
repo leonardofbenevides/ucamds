@@ -3,7 +3,7 @@
   "id": "prose",
   "name": "Prose",
   "selector": "ucam-site-prose",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -160,6 +160,7 @@
         "--ucam-site-color-text-link"
       ],
       "nota": "Não entrega tabela nem bloco de código."
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/prose/prose.ts — [ucamSiteProse]. Entradas: nenhuma. Conteúdo: html."
   }
 }

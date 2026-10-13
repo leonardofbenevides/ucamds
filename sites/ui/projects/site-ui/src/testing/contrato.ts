@@ -16,6 +16,12 @@ import pagination from '../../../../../spec/components/pagination.json';
 import newsletterForm from '../../../../../spec/components/newsletter-form.json';
 import siteHeader from '../../../../../spec/components/site-header.json';
 import siteFooter from '../../../../../spec/components/site-footer.json';
+import heroPill from '../../../../../spec/components/hero-pill.json';
+import prose from '../../../../../spec/components/prose.json';
+import statsBand from '../../../../../spec/components/stats-band.json';
+import docCard from '../../../../../spec/components/doc-card.json';
+import testimonial from '../../../../../spec/components/testimonial.json';
+import stepCard from '../../../../../spec/components/step-card.json';
 
 export interface Prop {
   nome: string;
@@ -38,6 +44,12 @@ const CONTRATOS: Record<string, unknown> = {
   'newsletter-form': newsletterForm,
   'site-header': siteHeader,
   'site-footer': siteFooter,
+  'hero-pill': heroPill,
+  'prose': prose,
+  'stats-band': statsBand,
+  'doc-card': docCard,
+  'testimonial': testimonial,
+  'step-card': stepCard,
 };
 
 /**

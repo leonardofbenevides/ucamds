@@ -3,7 +3,7 @@
   "id": "step-card",
   "name": "StepCard",
   "selector": "ucam-site-step-card",
-  "status": "draft",
+  "status": "review",
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "conteudo",
@@ -77,7 +77,7 @@
       "descricao": "A posição na sequência."
     },
     {
-      "nome": "title",
+      "nome": "heading",
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "O que fazer."
@@ -93,6 +93,12 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "Onde o passo acontece."
+    },
+    {
+      "nome": "linkLabel",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O texto do link, que diz o destino. O link só existe com href e linkLabel."
     }
   ],
   "estados": [
@@ -176,6 +182,7 @@
         "--ucam-site-color-action-primary-default",
         "--ucam-site-radius-card"
       ]
-    }
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/step-card/step-card.ts — ol[ucamSiteSteps], li[ucamSiteStep]. Entradas: number, heading, text, href, linkLabel."
   }
 }
