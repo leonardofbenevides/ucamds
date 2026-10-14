@@ -411,6 +411,23 @@
         "codigo": "<ol class=\"ucam-site-timeline\" role=\"list\">\n  <li class=\"ucam-site-timeline__item\"><span class=\"ucam-site-timeline__year\">1975</span><p class=\"ucam-site-timeline__title\">A Candido Mendes chega a Campos</p><p class=\"ucam-site-timeline__text\">Uma das pioneiras do ensino superior na cidade.</p></li>\n  <li class=\"ucam-site-timeline__item\"><span class=\"ucam-site-timeline__year\">2000</span><p class=\"ucam-site-timeline__title\">Mestrado implantado</p><p class=\"ucam-site-timeline__text\">Reconhecido pela CAPES no mesmo ano.</p></li>\n  <li class=\"ucam-site-timeline__item\"><span class=\"ucam-site-timeline__year\">2001</span><p class=\"ucam-site-timeline__title\">Primeira turma do Mestrado</p></li>\n  <li class=\"ucam-site-timeline__item\"><span class=\"ucam-site-timeline__year\">2007</span><p class=\"ucam-site-timeline__title\">Nota 4 na CAPES</p><p class=\"ucam-site-timeline__text\">O primeiro mestrado profissional da área com essa pontuação.</p></li>\n</ol>",
         "angular": "<ol ucamSiteTimeline [items]=\"[{ year: '1975', title: 'A Candido Mendes chega a Campos', text: 'Uma das pioneiras do ensino superior na cidade.' }, { year: '2000', title: 'Mestrado implantado', text: 'Reconhecido pela CAPES no mesmo ano.' }, { year: '2001', title: 'Primeira turma do Mestrado' }, { year: '2007', title: 'Nota 4 na CAPES', text: 'O primeiro mestrado profissional da área com essa pontuação.' }]\"></ol>"
       }
+    },
+    "contact-card": {
+      "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
+      "principal": {
+        "preview": "<section class='ucam-site-contact-card'><h3 class='ucam-site-contact-card__title'>Campos dos Goytacazes</h3><address class='ucam-site-contact-card__lines'><p class='ucam-site-contact-card__line'><svg class='ic' aria-hidden='true'><use href='#i-mapPin'/></svg><span>Rua Anita Peçanha, 100, Parque São Caetano</span></p><p class='ucam-site-contact-card__line'><svg class='ic' aria-hidden='true'><use href='#i-phone'/></svg><a href='tel:+552227262400'>(22) 2726-2400</a></p></address></section>",
+        "codigo": "<section class=\"ucam-site-contact-card\">\n  <h3 class=\"ucam-site-contact-card__title\">Campos dos Goytacazes</h3>\n  <address class=\"ucam-site-contact-card__lines\">\n    <p class=\"ucam-site-contact-card__line\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-mapPin\"/></svg><span>Rua Anita Peçanha, 100, Parque São Caetano</span></p>\n    <p class=\"ucam-site-contact-card__line\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-phone\"/></svg><a href=\"tel:+552227262400\">(22) 2726-2400</a></p>\n  </address>\n</section>",
+        "angular": "<section ucamSiteContactCard heading=\"Campos dos Goytacazes\" address=\"Rua Anita Peçanha, 100, Parque São Caetano\" phone=\"(22) 2726-2400\"></section>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Só o e-mail",
+          "descricao": "Dado ausente não deixa linha nem ícone.",
+          "preview": "<section class='ucam-site-contact-card'><h3 class='ucam-site-contact-card__title'>Seleção</h3><address class='ucam-site-contact-card__lines'><p class='ucam-site-contact-card__line'><svg class='ic' aria-hidden='true'><use href='#i-mail'/></svg><a href='mailto:selecaoucam@ucam-campos.br'>selecaoucam@ucam-campos.br</a></p></address></section>",
+          "codigo": "<section class=\"ucam-site-contact-card\">\n  <h3 class=\"ucam-site-contact-card__title\">Seleção</h3>\n  <address class=\"ucam-site-contact-card__lines\">\n    <p class=\"ucam-site-contact-card__line\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-mail\"/></svg><a href=\"mailto:selecaoucam@ucam-campos.br\">selecaoucam@ucam-campos.br</a></p>\n  </address>\n</section>",
+          "angular": "<section ucamSiteContactCard heading=\"Seleção\" email=\"selecaoucam@ucam-campos.br\"></section>"
+        }
+      ]
     }
   }
 }

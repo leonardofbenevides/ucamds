@@ -31,6 +31,7 @@ import logoMarquee from '../../../../../spec/components/logo-marquee.json';
 import factSheet from '../../../../../spec/components/fact-sheet.json';
 import sectionTabs from '../../../../../spec/components/section-tabs.json';
 import timeline from '../../../../../spec/components/timeline.json';
+import contactCard from '../../../../../spec/components/contact-card.json';
 
 export interface Prop {
   nome: string;
@@ -68,6 +69,7 @@ const CONTRATOS: Record<string, unknown> = {
   'fact-sheet': factSheet,
   'section-tabs': sectionTabs,
   'timeline': timeline,
+  'contact-card': contactCard,
 };
 
 /**

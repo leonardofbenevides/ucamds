@@ -230,6 +230,11 @@
       "componente": "course-card",
       "diferenca": "O Card serve a qualquer item. O cartão de curso tem a estrutura do curso: modalidade, duração, turno e campus.",
       "escolha": "Para curso, cartão de curso; para o resto, card."
+    },
+    {
+      "componente": "contact-card",
+      "diferenca": "O cartão de conteúdo leva a uma página, inteiro, pelo link do título. O cartão de contato tem um link por dado e nenhum no cartão.",
+      "escolha": "Uma página para ler, cartão de conteúdo. Como falar com alguém, cartão de contato."
     }
   ],
   "implementacao": {

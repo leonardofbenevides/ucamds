@@ -63,3 +63,9 @@ test('números: a coluna é a direta e o valor sobe pela ordem, para a frase fic
   assert.match(regra('.ucam-site-stats__value'), /order: -1;/);
   assert.match(regra('.ucam-site-stats__text'), /color: var\(--ucam-site-color-text-body\);/);
 });
+
+test('cartão de contato: os links se dizem por sublinhado, não só pela cor', () => {
+  const { css } = construirCss({ raiz: ROOT });
+  const regra = css.match(/^\.ucam-site-contact-card__line a \{([^}]*)\}/m)?.[1] ?? '';
+  assert.match(regra, /text-decoration-line: underline;/);
+});

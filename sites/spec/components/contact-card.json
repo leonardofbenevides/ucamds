@@ -1,0 +1,160 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "contact-card",
+  "name": "ContactCard",
+  "selector": "ucam-site-contact-card",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "O contato de uma unidade ou de um setor: o nome, o endereço, o telefone e o e-mail, cada um numa linha com o seu ícone, e telefone e e-mail como links de verdade.",
+  "quando_usar": [
+    "Na seção de contato de um curso ou de um setor, um cartão por unidade.",
+    "No rodapé de uma página de serviço, quando a pessoa precisa ligar ou escrever."
+  ],
+  "evidencia": {
+    "origem": "saber-mais-nu.vercel.app/mestrado e /doutorado, 14/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "saber-mais — /mestrado, Contato",
+        "problema": "o cartão da aplicação (ucam-card) com as linhas montadas à mão, e o balão de mensagem no lugar do ícone de telefone, que o conjunto não tinha"
+      }
+    ],
+    "conclusao": "Um cartão de contato dos Sites, com o telefone em tel: e o e-mail em mailto:, e o ícone de telefone no conjunto compartilhado."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<section> com filete e fundo de cartão, sem sombra: não é clicável."
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "Heading com o nome da unidade ou do setor; h3 por padrão.",
+      "classe": "ucam-site-contact-card__title"
+    },
+    {
+      "parte": "lines",
+      "obrigatorio": false,
+      "descricao": "<address> com as linhas. Sem nenhum dado, não existe.",
+      "classe": "ucam-site-contact-card__lines"
+    },
+    {
+      "parte": "line",
+      "obrigatorio": false,
+      "descricao": "<p> com o ícone decorativo e o dado: o endereço em texto, o telefone e o e-mail em link.",
+      "classe": "ucam-site-contact-card__line"
+    }
+  ],
+  "props": [
+    {
+      "nome": "heading",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "O nome da unidade ou do setor."
+    },
+    {
+      "nome": "address",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O endereço, numa linha."
+    },
+    {
+      "nome": "phone",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O telefone, escrito como se lê. O link leva só dígitos e o +, com o DDI 55 quando faltar; sem nenhum dígito, a linha some."
+    },
+    {
+      "nome": "email",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O e-mail. Sem @, ou com espaço, a linha some."
+    },
+    {
+      "nome": "level",
+      "tipo": "2 | 3 | 4",
+      "default": "3",
+      "descricao": "O nível do título, conforme a seção em que o cartão está."
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não para formulário de contato: este cartão só mostra como chegar a quem atende.",
+      "Não mais de três dados: horário e responsável vão no texto da seção.",
+      "Não envolver o cartão num link: cada dado tem o seu."
+    ],
+    "motivo": "Cada linha leva a um lugar diferente: o mapa de cabeça, o telefone, o e-mail. Um link em volta de tudo apagaria os três."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Os dados estão num <address>, com o nome da unidade no heading logo acima.",
+      "Os ícones são decorativos (aria-hidden): o dado se diz sozinho.",
+      "Telefone em tel: e e-mail em mailto:, que o telefone e o leitor de tela oferecem como ação.",
+      "Texto e links a 4,5:1 sobre o cartão, medidos no build."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "1.3.1",
+      "1.4.3",
+      "2.4.4"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Campos dos Goytacazes",
+        "Secretaria do programa"
+      ],
+      "ruim": [
+        "Fale conosco!",
+        "Contato 1"
+      ]
+    },
+    "regras": [
+      "O título é o nome da unidade ou do setor.",
+      "O telefone sai como se lê, com o DDD entre parênteses."
+    ]
+  },
+  "vs": [
+    {
+      "componente": "card",
+      "diferenca": "O cartão de contato tem um link por dado e nenhum no cartão. O cartão de conteúdo leva a uma página, inteiro, pelo link do título.",
+      "escolha": "Como falar com alguém, cartão de contato. Uma página para ler, cartão de conteúdo."
+    }
+  ],
+  "exemplos": [
+    {
+      "titulo": "Uma unidade",
+      "codigo": "<section class=\"ucam-site-contact-card\">\n  <h3 class=\"ucam-site-contact-card__title\">Campos dos Goytacazes</h3>\n  <address class=\"ucam-site-contact-card__lines\">\n    <p class=\"ucam-site-contact-card__line\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-mapPin\"/></svg><span>Rua Anita Peçanha, 100, Parque São Caetano</span></p>\n    <p class=\"ucam-site-contact-card__line\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-phone\"/></svg><a href=\"tel:+552227262400\">(22) 2726-2400</a></p>\n  </address>\n</section>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Telefone em tel:, com só dígitos no href.",
+      "evite": "O número em texto puro, ou o href com parênteses e traço.",
+      "porque": "No celular, o link liga com um toque; com pontuação no href, alguns discadores não entendem o número."
+    },
+    {
+      "faca": "Um cartão por unidade, lado a lado.",
+      "evite": "Todas as unidades num parágrafo só.",
+      "porque": "No cartão, cada endereço fica junto do telefone dele; no parágrafo, a pessoa liga para a unidade errada."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Cartão com o título e um address de linhas com ícone.",
+      "raiz": ".ucam-site-contact-card",
+      "variaveis": [
+        "--ucam-site-color-border-default",
+        "--ucam-site-radius-card",
+        "--ucam-site-color-text-link"
+      ]
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/contact-card/contact-card.ts — section[ucamSiteContactCard]. Entradas: heading, address, phone, email, level."
+  }
+}

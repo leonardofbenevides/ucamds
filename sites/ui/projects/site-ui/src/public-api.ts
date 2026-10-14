@@ -35,6 +35,7 @@ import { UcamSiteMarquee } from './lib/logo-marquee/logo-marquee';
 import { UcamSiteFactSheet } from './lib/fact-sheet/fact-sheet';
 import { UcamSiteSectionTabs } from './lib/section-tabs/section-tabs';
 import { UcamSiteTimeline } from './lib/timeline/timeline';
+import { UcamSiteContactCard } from './lib/contact-card/contact-card';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -66,6 +67,7 @@ export * from './lib/logo-marquee/logo-marquee';
 export * from './lib/fact-sheet/fact-sheet';
 export * from './lib/section-tabs/section-tabs';
 export * from './lib/timeline/timeline';
+export * from './lib/contact-card/contact-card';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -113,4 +115,5 @@ export const UCAM_SITE = [
   UcamSiteFactSheet,
   UcamSiteSectionTabs,
   UcamSiteTimeline,
+  UcamSiteContactCard,
 ] as const;

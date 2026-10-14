@@ -36,7 +36,7 @@ const PECAS = {
   prose: ['.ucam-site-prose'],
 };
 
-test('a folha passa nos portões com as vinte e oito peças', () => {
+test('a folha passa nos portões com as vinte e nove peças', () => {
   assert.deepEqual(falhas, []);
 });
 
@@ -104,16 +104,16 @@ test('a prosa estiliza títulos, parágrafos, listas, links, citação e imagem,
   assert.match(regrasDe('.ucam-site-prose')[0], /max-inline-size: var\(--ucam-site-container-prosa\)/);
 });
 
-test('a spec real tem vinte e oito contratos válidos', () => {
+test('a spec real tem vinte e nove contratos válidos', () => {
   const r = validar({ raiz: ROOT, css: readFileSync(join(ROOT, 'dist/sites/css/ucam-site.css'), 'utf8') });
   assert.deepEqual(r.erros, [], r.erros.map((e) => `${e.arquivo}: ${e.msg}`).join('\n'));
-  assert.equal(r.total, 28);
+  assert.equal(r.total, 29);
   assert.deepEqual(r.avisos, [], JSON.stringify(r.avisos));
 });
 
-test('o índice traz as vinte e oito peças', () => {
+test('o índice traz as vinte e nove peças', () => {
   const { data } = construirIndice({ raiz: ROOT });
-  assert.equal(data.meta.componentes, 28);
+  assert.equal(data.meta.componentes, 29);
   for (const id of Object.keys(PECAS)) assert.ok(data.componentes.some((c) => c.id === id && c.demo?.principal?.preview), `falta ${id} com demo`);
 });
 

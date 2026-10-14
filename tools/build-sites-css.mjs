@@ -1504,6 +1504,56 @@ ${acima('duas-colunas')} {
   text-wrap: pretty;
 }
 
+/* -------------------------------------------------------- contact-card --- */
+/* Contrato: sites/spec/components/contact-card.json. O contato de uma
+ * unidade: título e um address com uma linha por dado, cada uma com o ícone
+ * dela. Filete e fundo de cartão, sem sombra: o cartão não é clicável, os
+ * links são o telefone e o e-mail. O ícone fica no degrau pequeno e centrado
+ * na primeira linha do texto. */
+.ucam-site-contact-card {
+  display: grid;
+  gap: ${V('space-stack-sm')};
+  align-content: start;
+  padding: ${V('space-inset-card')};
+  border: 1px solid ${V('color-border-default')};
+  border-radius: ${V('radius-card')};
+  background: ${V('color-surface-default')};
+}
+.ucam-site-contact-card__title {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-title-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+}
+.ucam-site-contact-card__lines {
+  display: grid;
+  gap: ${V('space-inline-sm')};
+  font-style: normal;
+}
+.ucam-site-contact-card__line {
+  display: flex;
+  gap: ${V('space-inline-sm')};
+  align-items: flex-start;
+  margin: 0;
+  color: ${V('color-text-body')};
+  overflow-wrap: anywhere;
+}
+.ucam-site-contact-card__line .ic {
+  inline-size: ${V('size-icon-sm')};
+  block-size: ${V('size-icon-sm')};
+  margin-block-start: calc((1lh - ${V('size-icon-sm')}) / 2);
+  color: ${V('color-text-secondary')};
+}
+.ucam-site-contact-card__line a {
+  color: ${V('color-text-link')};
+  text-decoration-line: underline;
+  text-underline-offset: 0.2em;
+}
+.ucam-site-contact-card__line a:hover {
+  color: ${V('color-text-link-hover')};
+}
+
 /* -------------------------------------------------------- logo-marquee --- */
 /* Contrato: sites/spec/components/logo-marquee.json. Os logos desfilam em
  * laço: a trilha tem duas cópias do grupo e anda metade da própria largura.
