@@ -353,8 +353,11 @@ function montar() {
    * Cada peça é posta pelo lugar que ocupa NA TELA (o canto de cima à
    * esquerda da face), e não por coordenada de mundo: a distribuição é um
    * problema de composição no plano do desenho. As dez formam um arco em
-   * volta da torre, da esquerda baixa à direita, com alturas alternadas e
-   * nenhuma sobre telhado, árvore ou cais. O conteúdo de cada uma é medido
+   * volta da torre, com alturas alternadas e nenhuma sobre telhado, árvore
+   * ou cais. Em 14/10/2026 ("um balanço melhor") o arco virou um halo: eram
+   * seis peças à esquerda e três empilhadas à direita; agora são cinco de
+   * cada lado da torre, os livros passaram para cima dela à direita e cada
+   * lado desce até a altura do telhado. O conteúdo de cada uma é medido
    * a partir do canto de baixo à esquerda dela. ---- */
   const KA = { e: 'k1', d: 'k2', t: 'k0' };
   const doChao = (sx, sy, Y) => { const x = (sx - OX) / COS + Y; return [x, (x + Y) / 2 + OY - sy]; };
@@ -368,37 +371,37 @@ function montar() {
     return { f, risco, barras };
   };
   // O protocolo, embaixo à esquerda, no chão vazio antes da praça.
-  const carta = peca(-52, 560, 52, 34);
+  const carta = peca(-50, 420, 52, 34);
   carta.risco([[0, 34], [26, 16], [52, 34]], 'fi');
   carta.f(39, 46, 5, 12, 'kd');
   // O calendário de aulas, à esquerda da ala.
-  const cal = peca(-70, 292, 60, 52);
+  const cal = peca(-86, 250, 60, 52);
   cal.f(0, 60, 42, 52, 'kd');
   [28, 17, 6].forEach((v, l) => [6, 20, 34, 48].forEach((u, c) => cal.f(u, u + 9, v, v + 7, l === 1 && c === 2 ? 'kd' : 'kc')));
   // A tela de sistemas, a maior: cabeçalho e seis ladrilhos, um escolhido.
-  const tela = peca(34, 64, 120, 86);
+  const tela = peca(16, 58, 120, 86);
   tela.f(0, 120, 74, 86, 'kc');
   [8, 16, 24].forEach((u) => tela.f(u, u + 4, 78, 82, 'kd'));
   [40, 8].forEach((v, l) => [8, 45, 82].forEach((u, c) => tela.f(u, u + 30, v, v + 26, l === 0 && c === 1 ? 'kd' : 'kc')));
   // A carteirinha: retrato, nome, duas linhas e o código de barras.
-  const cart = peca(196, 122, 68, 44);
+  const cart = peca(186, 118, 68, 44);
   cart.f(6, 24, 16, 38, 'kc');
   cart.f(30, 62, 32, 36, 'kd');
   cart.f(30, 56, 24, 27, 'kc');
   cart.f(30, 48, 17, 20, 'kc');
   cart.barras(6, 62, 4, 11);
   // A folha de prova: título e quatro questões de quatro alternativas.
-  const prova = peca(318, 8, 48, 64);
+  const prova = peca(300, -6, 48, 64);
   prova.f(7, 34, 53, 57, 'kd');
   [41, 30, 19, 8].forEach((v, l) => [7, 17, 27, 37].forEach((u, c) => prova.f(u, u + 6, v, v + 6, c === [1, 3, 0, 2][l] ? 'kd' : 'kc')));
   // Os livros da biblioteca, sobre o encontro dos dois telhados.
-  const [lx, lz] = doChao(424, 176, 262);
+  const [lx, lz] = doChao(770, 24, 262);
   emGrupo('pc', () => [[0, 0, 50, 36], [6, 3, 44, 32], [-2, -1, 48, 36]].forEach(([dx, dy, w, d], i) => {
     const liv = caixa(lx - 25 + dx, 244 + dy, lz + i * 8, w, d, 8, KA);
     liv.it.push(esq(244 + dy + d, lx - 19 + dx, lx - 15 + dx, lz + i * 8, lz + i * 8 + 8, 'kd'));
   }));
   // O capelo do vestibular, no alto, antes da torre.
-  const [vx, vz] = doChao(452, 84, 262);
+  const [vx, vz] = doChao(452, 60, 262);
   const [bx, by] = P(vx, 262, vz);
   emGrupo('pc', () => {
     caixa(vx - 12, 250, vz - 14, 24, 24, 11, KA);
@@ -406,12 +409,12 @@ function montar() {
     solidos.push({ bb: [vx - 1, vx + 28, 261, 290, vz, vz + 1], it: [{ d: `M${n(bx)} ${n(by)}L${n(bx + 26)} ${n(by + 15)}L${n(bx + 26)} ${n(by + 30)}`, c: 'fi' }, { d: disco(bx + 26, by + 32, 2.6), c: 'a' }] });
   });
   // Do outro lado da torre: o gráfico do gerencial, o aprovado e o boleto.
-  const graf = peca(726, 56, 64, 48, 5);
+  const graf = peca(884, 92, 64, 48, 5);
   [[8, 12], [21, 24], [34, 17], [47, 33]].forEach(([u, h], i) => graf.f(u, u + 9, 6, 6 + h, i === 3 ? 'kd' : 'kc'));
-  const visto = peca(848, 176, 58, 52, 5);
+  const visto = peca(742, 196, 58, 52, 5);
   visto.risco([[13, 29], [24, 17], [45, 41]], 'kk');
   visto.f(13, 45, 6, 9, 'kc');
-  const boleto = peca(722, 262, 72, 40, 5);
+  const boleto = peca(876, 262, 72, 40, 5);
   boleto.f(7, 40, 30, 34, 'kd');
   boleto.f(7, 30, 22, 25, 'kc');
   boleto.f(52, 66, 28, 34, 'kc');
