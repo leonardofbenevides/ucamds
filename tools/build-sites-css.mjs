@@ -1411,6 +1411,55 @@ ${acima('duas-colunas')} {
   .ucam-site-fact-sheet--duas-colunas .ucam-site-fact-sheet__row { grid-template-columns: none; gap: ${V('space-inline-xs')}; break-inside: avoid; }
 }
 
+/* -------------------------------------------------------- section-tabs --- */
+/* Contrato: sites/spec/components/section-tabs.json. A fileira de abas de
+ * uma página longa. Quando as abas não cabem, a NAV rola de lado (e é nela que
+ * a lib centra a atual, por isso é ela o contexto de posição). A atual se
+ * marca por fio de 2px e peso, nunca por fundo; o anel de foco fica para
+ * dentro, porque a rolagem recorta o que passa da borda. */
+.ucam-site-section-tabs {
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  border-block-end: 1px solid ${V('color-border-default')};
+}
+.ucam-site-section-tabs__list {
+  display: flex;
+  gap: ${V('space-inline-md')};
+  inline-size: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-site-section-tabs__item {
+  flex: none;
+  scroll-snap-align: start;
+}
+.ucam-site-section-tabs__tab {
+  display: flex;
+  align-items: center;
+  min-block-size: ${V('size-touch-min')};
+  padding-inline: ${V('space-inline-xs')};
+  border-block-end: 2px solid transparent;
+  color: ${V('color-text-secondary')};
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-section-tabs__tab:hover {
+  color: ${V('color-text-primary')};
+}
+.ucam-site-section-tabs__tab[aria-current="page"] {
+  border-block-end-color: ${V('color-action-primary-default')};
+  color: ${V('color-text-primary')};
+  font-weight: ${V('typography-action-font-weight')};
+}
+.ucam-site-section-tabs__tab:focus-visible {
+  outline-offset: calc(-1 * ${V('focus-ring-width')});
+}
+
 /* -------------------------------------------------------- logo-marquee --- */
 /* Contrato: sites/spec/components/logo-marquee.json. Os logos desfilam em
  * laço: a trilha tem duas cópias do grupo e anda metade da própria largura.

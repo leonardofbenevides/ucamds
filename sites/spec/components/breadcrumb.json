@@ -167,5 +167,12 @@
     "usada_por": [
       "ucam-site-editorial-page-hero"
     ]
-  }
+  },
+  "vs": [
+    {
+      "componente": "section-tabs",
+      "diferenca": "A trilha mostra onde a página está no site. As abas navegam entre as partes de uma mesma página.",
+      "escolha": "Para voltar a um nível acima, trilha. Para ir de uma parte a outra da página, abas."
+    }
+  ]
 }

@@ -1,0 +1,154 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "section-tabs",
+  "name": "SectionTabs",
+  "selector": "ucam-site-section-tabs",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "navegacao",
+  "description": "As abas de uma página longa: uma fileira de links entre as partes dela, com a atual marcada. No telefone a fileira rola de lado.",
+  "quando_usar": [
+    "Numa página longa com quatro a sete partes que a pessoa escolhe ler, como Apresentação, Pesquisa, Docentes e Processo seletivo de um curso.",
+    "Quando cada parte tem endereço próprio, que se pode copiar e mandar."
+  ],
+  "evidencia": {
+    "origem": "saber-mais-nu.vercel.app/mestrado e /doutorado, 14/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "saber-mais — /mestrado, as seis abas do curso",
+        "problema": "as abas da aplicação (ucam-tabs) numa página pública, com a rolagem lateral e a margem do anel de foco escritas à mão"
+      }
+    ],
+    "conclusao": "Uma peça dos Sites para a navegação dentro da página: links com endereço, a atual por aria-current, e a rolagem lateral resolvida na folha."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<nav aria-label>, com um fio embaixo. É ela que rola de lado quando as abas não cabem. Na lib, ao montar, a fileira rola até a aba atual, sem rolar a página; em HTML puro a fileira começa no início."
+    },
+    {
+      "parte": "list",
+      "obrigatorio": true,
+      "descricao": "<ul> em fileira, da largura do conteúdo.",
+      "classe": "ucam-site-section-tabs__list"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<li>, ponto de encaixe da rolagem.",
+      "classe": "ucam-site-section-tabs__item"
+    },
+    {
+      "parte": "tab",
+      "obrigatorio": true,
+      "descricao": "<a href>. A atual leva aria-current=\"page\" e se marca por um fio de 2px embaixo e pelo peso, nunca por fundo.",
+      "classe": "ucam-site-section-tabs__tab"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "{ label: string; href: string }[]",
+      "obrigatorio": true,
+      "descricao": "As abas, na ordem da página. Aba sem rótulo ou sem destino não entra; href repetido fica só na primeira."
+    },
+    {
+      "nome": "current",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O href da aba atual. Sem aba que case, nenhuma é a atual."
+    },
+    {
+      "nome": "ariaLabel",
+      "tipo": "string",
+      "default": "'Seções da página'",
+      "descricao": "O nome da navegação. Vazio volta ao padrão."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus"
+  ],
+  "limites": {
+    "regras": [
+      "Não para trocar conteúdo sem endereço: aba que não muda o endereço é o padrão de abas da aplicação, não esta peça.",
+      "Não mais de sete abas.",
+      "Não é o menu do site: fica abaixo do topo da página, e só navega dentro dela.",
+      "Fixar a fileira no topo ao rolar é decisão da página, não da peça."
+    ],
+    "motivo": "Aba sem endereço não se copia nem volta pelo botão do navegador. E com mais de sete a fileira vira um segundo menu, que no telefone esconde quase tudo."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "É uma <nav> com nome, para não se confundir com a navegação principal.",
+      "A atual tem aria-current=\"page\"; a marca dela é fio e peso, sem depender só de cor.",
+      "Rótulo das abas a 4,5:1 sobre a página, medido no build; o fio da atual na cor da ação primária, a 4,5:1.",
+      "O anel de foco fica para dentro da aba: a fileira rola, e o que passa da borda dela é recortado.",
+      "Toda aba alcança 44px de altura de toque."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.3",
+      "2.4.4",
+      "2.4.7",
+      "2.5.8"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Apresentação",
+        "Processo seletivo"
+      ],
+      "ruim": [
+        "Clique aqui para ver a pesquisa",
+        "Mais"
+      ]
+    },
+    "regras": [
+      "Uma ou duas palavras por aba, o mesmo nome do título da parte.",
+      "A ordem é a da página."
+    ]
+  },
+  "vs": [
+    {
+      "componente": "breadcrumb",
+      "diferenca": "As abas navegam entre as partes de uma mesma página. A trilha mostra onde a página está no site.",
+      "escolha": "Para ir de uma parte a outra da página, abas. Para voltar a um nível acima, trilha."
+    }
+  ],
+  "exemplos": [
+    {
+      "titulo": "As seções de um curso",
+      "codigo": "<nav class=\"ucam-site-section-tabs\" aria-label=\"Seções do curso\">\n  <ul class=\"ucam-site-section-tabs__list\">\n    <li class=\"ucam-site-section-tabs__item\"><a class=\"ucam-site-section-tabs__tab\" href=\"/mestrado#apresentacao\" aria-current=\"page\">Apresentação</a></li>\n    <li class=\"ucam-site-section-tabs__item\"><a class=\"ucam-site-section-tabs__tab\" href=\"/mestrado#pesquisa\">Pesquisa</a></li>\n  </ul>\n</nav>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Cada aba com o endereço da parte, inteiro.",
+      "evite": "Só o hash, como href=\"#pesquisa\".",
+      "porque": "Com <base href>, o hash sozinho resolve contra a base e leva para a home."
+    },
+    {
+      "faca": "Deixar a fileira rolar de lado no telefone.",
+      "evite": "Quebrar as abas em duas linhas, ou esconder as últimas num menu.",
+      "porque": "Em duas linhas a atual deixa de estar sobre o fio; no menu, a pessoa não vê que a parte existe."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Fileira de links que rola de lado; a atual por aria-current, com fio e peso.",
+      "raiz": ".ucam-site-section-tabs",
+      "variaveis": [
+        "--ucam-site-color-border-default",
+        "--ucam-site-color-text-secondary",
+        "--ucam-site-color-action-primary-default"
+      ]
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/section-tabs/section-tabs.ts — nav[ucamSiteSectionTabs]. Entradas: items, current, ariaLabel."
+  }
+}
