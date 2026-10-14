@@ -246,12 +246,10 @@ import { CENA_CAPA } from '../../generated/cena-capa';
 
     /* O MOVIMENTO, igual ao da cena do login (tools/build-css.mjs): as peças
        boiam, a barca vai e volta, a água oscila, as janelas piscam; o ponteiro
-       levanta a peça. Só para quem não pediu menos movimento. */
+       move os dois planos. Só para quem não pediu menos movimento. */
     .ilustracao { --px: 0; --py: 0; }
     :host ::ng-deep .ilustracao :is(.base, .barca) { translate: calc(var(--px) * 6px) calc(var(--py) * 4px); transition: translate 320ms ease-out; }
-    :host ::ng-deep .ilustracao .pc { translate: calc(var(--px) * -12px) calc(var(--py) * -8px); transition: transform 200ms ease-out, translate 320ms ease-out; }
-    :host ::ng-deep .ilustracao .pc:hover { transform: translateY(-9px); }
-    :host ::ng-deep .ilustracao .pc:hover .kc { fill: color-mix(in srgb, var(--cena-t) 50%, var(--cena-p)); }
+    :host ::ng-deep .ilustracao .pc { translate: calc(var(--px) * -12px) calc(var(--py) * -8px); transition: translate 320ms ease-out; }
     @media (prefers-reduced-motion: no-preference) {
       :host ::ng-deep .ilustracao .pc > g { animation: cena-boiar 5.5s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -1.3s); }
       :host ::ng-deep .ilustracao .barca > g { animation: cena-navegar 28s ease-in-out infinite alternate; }

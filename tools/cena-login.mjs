@@ -252,7 +252,7 @@ function montar() {
   semente = 7;
 
   /* ---- A ÁGUA e o cais: a praça dá para a baía. A onda é um til. ---- */
-  chao.push({ d: d3([[512, -500, 0], [1300, -500, 0], [1300, 1100, 0], [512, 1100, 0]]), c: 'ag' });
+  chao.push({ d: d3([[512, -700, 0], [1500, -700, 0], [1500, 1700, 0], [512, 1700, 0]]), c: 'ag' });
   let ondas = '';
   for (let i = 0; i < 90; i++) {
     const [wx, wy] = P(526 + sorte() * 190, -120 + sorte() * 800, 0);
@@ -337,7 +337,7 @@ function montar() {
   solidos.push({ bb: [cx - 3, cx + 3, cy - 3, cy + 3, 118, 140], it: [{ d: `M${n(ex)} ${n(ey)}L${n(ex)} ${n(ey - 15)}M${n(ex - 4)} ${n(ey - 10)}L${n(ex + 4)} ${n(ey - 10)}`, c: 'fi' }, { d: disco(ex, ey, 4.5), c: 'a' }] });
 
   /* ---- O CAIS e a barca. ---- */
-  caixa(498, -500, 0, 14, 1600, 4, { sombra: false });
+  caixa(498, -700, 0, 14, 2400, 4, { sombra: false });
   emGrupo('barca', () => {
     caixa(548, 250, 0, 34, 104, 9, { ...CAL, sombra: false });
     const cabine = caixa(554, 268, 9, 22, 62, 10, CAL);

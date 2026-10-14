@@ -14124,10 +14124,10 @@ ${acima('nav-fixa')} {
 /* A CENA SE MEXE (13/10/2026: "dá pra ter alguma interação, algum
  * movimento?"). Só CSS, e só para quem não pediu menos movimento: as dez
  * peças boiam devagar, cada uma no seu tempo; a barca vai e volta ao longo do
- * cais; a água oscila; as janelas acesas da torre piscam. Passar o ponteiro
- * numa peça a levanta e carrega a tinta dela. A peça tem dois grupos: o de
- * fora responde ao ponteiro, o de dentro boia, e assim um transform não
- * apaga o outro. */
+ * cais; a água oscila; as janelas acesas da torre piscam. A peça tem dois
+ * grupos: o de fora anda com o ponteiro, o de dentro boia. O levantar no
+ * hover saiu em 14/10/2026 ("não ficou legal"): a cena é decorativa e peça
+ * que reage ao ponteiro promete um clique que não existe. */
 /* O PONTEIRO: --px e --py vêm do script (estadoScript, em tools/lib/shell.mjs),
  * de -1 a 1. A praça anda para um lado e as peças para o outro. É a
  * propriedade translate, e não transform, para não disputar com o boiar nem
@@ -14139,10 +14139,8 @@ ${acima('nav-fixa')} {
 }
 .ucam-login__cena .pc {
   translate: calc(var(--px) * -12px) calc(var(--py) * -8px);
-  transition: transform var(--ucam-motion-duration-reveal) ease-out, translate var(--ucam-motion-duration-travel) ease-out;
+  transition: translate var(--ucam-motion-duration-travel) ease-out;
 }
-.ucam-login__cena .pc:hover { transform: translateY(-9px); }
-.ucam-login__cena .pc:hover .kc { fill: color-mix(in srgb, var(--cena-t) 50%, var(--cena-p)); }
 @media (prefers-reduced-motion: no-preference) {
   .ucam-login__cena .pc > g {
     animation: ucam-cena-boiar 5.5s ease-in-out infinite alternate;
