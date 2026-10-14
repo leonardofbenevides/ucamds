@@ -206,8 +206,24 @@ function prova() {
     var corpo = q('[data-prova-resumo]');
     if (!corpo) return;
     var brancas = emBranco(), revs = marcadas();
-    var html = '<p>Depois de entregar você não poderá alterar as respostas.</p>';
-    if (brancas.length) {
+    // Com questão em branco não há entrega: o servidor recusa (legado e módulo
+    // novo), então o diálogo deixa de perguntar e leva à primeira que falta.
+    var falta = brancas.length > 0;
+    qa('[data-prova-entrega-titulo]').forEach(function (el) {
+      el.textContent = falta ? 'Responda todas antes de entregar' : 'Entregar a prova?';
+    });
+    qa('[data-prova-entrega-ok]').forEach(function (b) { b.hidden = falta; });
+    qa('[data-prova-entrega-falta]').forEach(function (a) {
+      a.hidden = !falta;
+      if (falta) {
+        a.setAttribute('data-prova-entrega-falta', brancas[0]);
+        a.firstChild.textContent = 'Ir para ' + nomeDe(brancas[0]) + ' ';
+      }
+    });
+    var html = falta
+      ? '<p>A prova só é entregue com todas as questões respondidas.</p>'
+      : '<p>Depois de entregar você não poderá alterar as respostas.</p>';
+    if (falta) {
       html += '<p><strong>' + plural(brancas.length, 'questão está', 'questões estão') + ' em branco:</strong> ' +
         brancas.map(nomeDe).join(', ') + '.</p>';
     }
@@ -313,16 +329,17 @@ function prova() {
   });
 
   doc.addEventListener('click', function (ev) {
-    var alvo = ev.target.closest && ev.target.closest('[data-prova-ir], [data-prova-revisar], [data-prova-bolha], [data-prova-zera], [data-prova-consulta]');
+    var alvo = ev.target.closest && ev.target.closest('[data-prova-ir], [data-prova-revisar], [data-prova-bolha], [data-prova-entrega-falta], [data-prova-zera], [data-prova-consulta]');
     if (!alvo) return;
 
-    // A consulta à banca. A regra é a do backend de teste (e é proposta, não a
-    // da universidade): passa quem acerta pelo menos a metade da objetiva.
+    // A consulta à banca. A regra é a do sistema para o vestibular (lida em
+    // RegraAvaliacaoCampos e no módulo novo): passa quem soma pelo menos 20%
+    // dos pontos da objetiva. O PAD tem outra, por caderno (ver regras de negócio).
     // Aprovado, o link segue para a página de sucesso; reprovado, a própria
     // tela troca a espera pelo desfecho — no app as duas são a mesma rota.
     if (alvo.hasAttribute('data-prova-consulta')) {
       var certas = ORDEM.filter(function (id) { return estado.respostas[id] === GABARITO[id]; }).length;
-      if (certas * 2 >= ORDEM.length) return;
+      if (certas * 5 >= ORDEM.length) return;
       ev.preventDefault();
       var espera = q('[data-prova-espera]'), rep = q('[data-prova-reprovado]');
       if (espera) espera.hidden = true;
@@ -353,6 +370,11 @@ function prova() {
       anunciar(estado.revisar[id] ? 'Questão marcada para revisar.' : 'Marca de revisão retirada.');
       return;
     }
+    if (alvo.hasAttribute('data-prova-entrega-falta')) {
+      estado.atual = alvo.getAttribute('data-prova-entrega-falta');
+      gravar();
+      return;
+    }
     if (alvo.hasAttribute('data-prova-bolha')) {
       estado.atual = alvo.getAttribute('data-prova-bolha');
       gravar();
@@ -380,7 +402,7 @@ function prova() {
   // Entregar: a hora e o tempo usado ficam para a tela de resultado.
   qa('dialog[data-prova-entrega]').forEach(function (d) {
     d.addEventListener('close', function () {
-      if (d.returnValue !== 'ok') return;
+      if (d.returnValue !== 'ok' || emBranco().length) return;
       estado.entregue = { quando: Date.now(), usado: TOTAL_MIN * 60000 - Math.max(0, estado.fim - Date.now()) };
       gravar();
     });

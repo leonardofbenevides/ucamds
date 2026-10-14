@@ -1247,7 +1247,7 @@
       "status": "aceita",
       "data": "2026-10-06",
       "contexto": "A ADR-009 deixou o contorno de campo e de botão secundário em repouso visual (1,53:1 e 1,27:1 sobre o branco), com o hover e o anel de foco carregando os 3:1 da WCAG 1.4.11; o portão registrava os dois como desvio consciente. O fio de cartão e de linha de tabela estava a 1,40:1. Em 06/10/2026 o pedido foi \"vamos dar mais contraste em todas as telas? revise isso\", e no mesmo dia vieram quatro queixas do mesmo gênero: os selos da sugestão na Isenção \"estão todos iguais\", as opções indicadas por IA mal se viam, o botão do Vestibular estava \"muito escuro\" e a barra de passos tinha uma sombra \"sem querer\".",
-      "decisao": "color.border.default e action.secondary.border sobem para neutral.400 no claro (3,47:1) e para neutral.500 no escuro: campo, select e botão secundário passam a cumprir a 1.4.11 em repouso. color.border.subtle sobe para neutral.300 no claro. No seletor segmentado, a posição sugerida veste a família da ação do sistema enquanto a linha não foi decidida (fundo sutil, contorno e tinta). Na Isenção, o selo da sugestão deixa o contorno e passa a preenchido, cada um no seu tom. No sistema de categoria pessoas, a ação tem altura própria (L 44, croma inteiro), fora da janela do portão da subpaleta, que passa a relatar a quebra como desvio assumido. A barra de ações grudada perde a elevação e fica só com o fio.",
+      "decisao": "REVISTO em 08/10/2026 (ADR-066): a parte do contorno e do fio foi DESFEITA dois dias depois, e os tokens voltaram aos degraus anteriores; o resto desta decisão segue de pé. O que ela dizia: color.border.default e action.secondary.border sobem para neutral.400 no claro (3,47:1) e para neutral.500 no escuro: campo, select e botão secundário passam a cumprir a 1.4.11 em repouso. color.border.subtle sobe para neutral.300 no claro. No seletor segmentado, a posição sugerida veste a família da ação do sistema enquanto a linha não foi decidida (fundo sutil, contorno e tinta). Na Isenção, o selo da sugestão deixa o contorno e passa a preenchido, cada um no seu tom. No sistema de categoria pessoas, a ação tem altura própria (L 44, croma inteiro), fora da janela do portão da subpaleta, que passa a relatar a quebra como desvio assumido. A barra de ações grudada perde a elevação e fica só com o fio.",
       "consequencias": [
         "Revoga a parte da ADR-009 que aceitava contorno de controle abaixo de 3:1: os dois desvios conscientes saem do relato do portão de tokens.",
         "O contorno de campo passa a ser a linha mais forte da tela depois do texto. Selo neutro, chip e segmentado, que leem color.border.default, sobem junto; é o preço de não abrir um terceiro papel de borda.",
@@ -1272,6 +1272,22 @@
         "O menu da conta continua com três opções; a marcada de fábrica passa a ser Claro."
       ],
       "afeta": ["*", "app-shell"]
+    },
+    {
+      "id": "ADR-066",
+      "titulo": "Selo com sete tons e filete próprio; o contorno escuro da ADR-064 sai",
+      "status": "aceita",
+      "data": "2026-10-08",
+      "contexto": "Dois recados de 08/10/2026, vendo as telas. O primeiro: \"as badges de status podiam todas em todas as telas estarem melhores definidas e mais coloridas e diversas semânticas\". O inventário deu razão: 317 selos, 71 rótulos, cinco tons — e estados sem nada em comum saíam da mesma cor (\"Em análise\" e \"Aguardando acesso\" no azul; \"Aguardando candidato\" e \"Bloqueado\" no âmbar). O próprio contrato do selo já dizia que o aviso não é para \"o estado normal de espera\", sem oferecer outro tom para ele. O segundo, sobre a ADR-064: \"esses strokes estão terríveis e muito escuros e marcados\" e \"esses cards estão sem border-radius\".",
+      "decisao": "O selo ganha dois tons de SITUAÇÃO, em grupo próprio de token (color.situacao): espera, violeta, para quando a bola está com outra pessoa ou outro sistema; classe, turquesa, para tipo ou categoria. Todo selo preenchido passa a levar o filete do próprio tom (a tinta saturada a 32%), que é o que define a borda da pastilha sobre o branco. Os rótulos das telas foram redistribuídos: quem espera terceiros vai para espera, tipos e categorias para classe, e Bloqueado e Reprovado para o vermelho. O contorno de controle e o fio de cartão voltam aos degraus de antes da ADR-064 (border.default em neutral.300, border.subtle em neutral.250, botão secundário em neutral.200; no escuro, neutral.700). O indicador posto fora da grade contínua ganha o raio de superfície.",
+      "consequencias": [
+        "Os dois desvios conscientes da ADR-009 (contorno de campo e de botão secundário abaixo de 3:1 em repouso) voltam ao relato do portão de tokens. Foi escolha de quem viu as telas, contra o número.",
+        "Sob deuteranopia o violeta encosta no azul e o turquesa no verde: o significado continua na PALAVRA do selo, nunca só na cor (WCAG 1.4.1). Os dois tons novos ficam fora de color.feedback de propósito — têm a matiz de duas categorias de sistema, e o portão da subpaleta os reprovaria.",
+        "Só o selo lê os tons de situação. Alerta, indicador, linha do tempo e o tom do seletor segmentado continuam nos quatro de feedback.",
+        "Rótulo novo numa tela escolhe entre sete tons pela pergunta \"de quem é a vez?\": de quem lê (aviso), da equipe (informação), de outra pessoa (espera), de ninguém (neutro); e, fechado o caso, deu certo (sucesso) ou não (perigo). Tipo e categoria vão em classe.",
+        "O esboço em Angular de cada tela (campo codigo) foi retonalizado no mesmo dia, nos quatro pontos em que citava o tom antigo."
+      ],
+      "afeta": ["*", "badge", "stat", "data-table", "text-field", "button"]
     },
     {
       "id": "ADR-067",
@@ -1332,6 +1348,57 @@
         "O item disabled + reason do segmentado continua existindo para o bloqueio de UM item; o que muda é que o bloqueio da tela inteira não o usa."
       ],
       "afeta": ["*", "app-shell", "page-header", "pagination", "segmented", "empty-state", "data-table"]
+    },
+    {
+      "id": "ADR-071",
+      "titulo": "Na tabela, o identificador leva a cor do app; e a série 2 de gráfico deixa o laranja",
+      "status": "aceita",
+      "data": "2026-10-11",
+      "contexto": "Dois pedidos de 11/10/2026 sobre as telas. (1) \"Nas tabelas, o id / descrição, pode ser sempre da cor do app e medium\": a ADR-047 deu ao identificador um degrau de peso e mandou herdar a tinta, e na coluna de documento do caixa (REC 4471, SAI 0312) ele continuava da mesma cor de todas as outras células — o peso sozinho não fazia a coluna saltar. (2) \"Essa cor bege do chart, não use essa\": a série 2 era o laranja queimado (orange.600, #B85207), que já tinha substituído o orange.700 recusado em 06/10 por ler marrom. Na barra fina de \"Em caixa\" o 600 lê bege. Laranja com contraste suficiente sobre branco deixa de ler laranja, e mais claro encosta na cor da notificação.",
+      "decisao": "(1) Identificador que é filho direto de uma célula de tabela leva a tinta do app — a do sistema onde ela existe, a da ação primária nos demais, o bordô fora de um app — e mantém o peso 500 da ADR-047. O identificador na linha de apoio da célula de pessoa não muda: ali quem nomeia a linha é o nome, e a linha continua com um portador de cor só (ADR-027). (2) A série 2 passa a rosa: pink.500 (#DE65BB) no claro e pink.400 (#FA8CD7) no escuro, matiz OKLCH 340°. Foi o único matiz fora da família laranja/ocre que manteve as vizinhas (azul e turquesa) a 0,10 nas quatro visões do portão de daltonismo, nos dois temas. O degrau orange.600 sai dos primitivos.",
+      "consequencias": [
+        "A folha ganha uma regra escopada a td > .ucam-id; nenhuma tela muda de marcação, porque as 133 células de identificador já usam a classe. O Trilho B herda pela mesma classe (coluna type=id).",
+        "Identificador colorido não é link: o que navega continua sendo a âncora, com sublinhado no hover. Onde a célula é link, a cor é a mesma e o sinal de clicável é o do link.",
+        "O rosa da série 2 tem 3,14:1 contra branco: passa como objeto gráfico (WCAG 1.4.11) e não serve para texto. Legenda e tabela equivalente seguem carregando o valor.",
+        "Os pares não vizinhos que já eram desvio nomeado (séries 1 e 4 sob deuteranopia) continuam os mesmos; a troca não os piora."
+      ],
+      "afeta": [
+        "data-table",
+        "chart",
+        "segmented"
+      ]
+    },
+    {
+      "id": "ADR-072",
+      "titulo": "A grade de formulário separa fileiras por 16px",
+      "status": "aceita",
+      "data": "2026-10-13",
+      "contexto": "Censo das telas em 13/10/2026: do controle ao rótulo do campo seguinte iam 52 a 58px em doze formulários, porque o vão de 32px da grade se somava à fileira de apoio da subgrade, que existe mesmo vazia. Unidade e Matrícula passavam de 1.600px de página.",
+      "decisao": "O row-gap de .ucam-form-grid passa de space.stack.lg (32px) para space.stack.md (16px). A subgrade de três fileiras fica, porque é ela que alinha controles lado a lado.",
+      "consequencias": [
+        "O vão entre campos sem apoio cai para cerca de 36px.",
+        "O vão entre seções do formulário não muda: é do .ucam-corpo.",
+        "Erro de validação continua na fileira de apoio do próprio campo."
+      ],
+      "afeta": [
+        "field"
+      ]
+    },
+    {
+      "id": "ADR-073",
+      "titulo": "A cor da barra de progresso acompanha a grandeza do comprimento",
+      "status": "aceita",
+      "data": "2026-10-13",
+      "contexto": "Na Carga por setor do Protocolo o comprimento da barra media carga (abertos sobre capacidade) e a cor media atraso: a Secretaria aparecia vermelha com 45% e o CPD azul com 60%, embora o CPD também tivesse atrasados. Em 13/10/2026 o usuário perguntou \"faz sentido essas cores de gráfico, progress bar?\". O censo achou sete tons de preenchimento em uso e nenhuma regra de quando usar qual.",
+      "decisao": "O tom do preenchimento é escolhido pela mesma grandeza que o comprimento mede. Barra de carga: info até 80% da capacidade, warning de 80% a 100%, danger acima. Outra grandeza (atraso, situação) ganha portador próprio, em texto ou selo, e não pinta a barra. Barra segmentada continua com um tom por categoria.",
+      "consequencias": [
+        "Na Carga por setor as seis barras ficam em info e o atraso passa para o texto do cartão, em tinta de perigo.",
+        "Nenhuma outra tela muda: o andamento da prova segue em marca, a meta cumprida em success e as barras segmentadas da Isenção têm um tom por categoria.",
+        "Barra de carga acima de 80% passa a ter cor quando existir."
+      ],
+      "afeta": [
+        "progress"
+      ]
     }
   ]
 }

@@ -187,6 +187,20 @@ for (const d of DESTINOS.map((x) => join(x.dir, '..', 'marca'))) {
   for (const m of MARCAS) copyFileSync(join(ROOT, 'site/src/assets/marca', m), join(d, m));
 }
 
+// A logo da faixa vai EMBUTIDA na página, como data URI (11/10/2026: "tá sem
+// marca da Candido Mendes aqui"). Máscara que vem de outro arquivo passa por
+// CORS, e em file:// toda origem é opaca: aberta do disco, a tela reservava a
+// caixa da logo e não pintava nada — sem erro nenhum. A página já carrega a
+// folha inteira por dentro; os 91 KB do lockup entram na mesma conta.
+const LOGO_FAIXA = `url("data:image/svg+xml,${readFileSync(join(ROOT, 'site/src/assets/marca/ucam-logo-horizontal.svg'), 'utf8')
+  .replace(/\s*\n\s*/g, ' ')
+  .trim()
+  .replace(/"/g, "'")
+  .replace(/%/g, '%25')
+  .replace(/#/g, '%23')
+  .replace(/</g, '%3C')
+  .replace(/>/g, '%3E')}")`;
+
 let n = 0;
 for (const proj of projetos) {
   for (const t of proj.templates) {
@@ -235,6 +249,10 @@ ${fontFaceCss('../fonts')}
      em volta já diz que é template do design system — e ainda roubaria altura
      da viewport que a moldura anuncia. Ver deviceFrame() em build-docs.mjs. */
   html.embed .ucamds-bar{display:none}
+  /* No papel a barra de contexto caía no meio da folha, por cima das linhas:
+     o body é uma coluna de 100dvh e ela assenta no fim da PRIMEIRA altura de
+     tela, não no fim do documento (11/10/2026). */
+  @media print{.ucamds-bar{display:none}body{display:block;min-block-size:0}}
 /* Sem isto o <svg class='ic'> não tem tamanho e estica até o contêiner. */
 ${iconCss}
 ${tokensCss}
@@ -246,7 +264,7 @@ ${ucamCss}
  * esta regra antes da folha, a página apontava a logo e o default a
  * sobrescrevia em silêncio — a faixa reservava o espaço e não pintava nada.
  * É a mesma armadilha de cascata que já mordeu a cópia de tokens em ui/. */
-  .ucam-shell{--ucam-appbar-logo:url('../marca/ucam-logo-horizontal.svg');
+  .ucam-shell{--ucam-appbar-logo:${LOGO_FAIXA};
     /* A ALTURA ÚTIL desta página não é a da janela: a faixa de contexto assenta
        ABAIXO do shell, em fluxo normal, e come 2.125rem. Quem lê --ucam-vh não é
        só o shell — é também o bloco de lista e detalhe, que promete que cada

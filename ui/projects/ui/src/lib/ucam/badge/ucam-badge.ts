@@ -22,7 +22,9 @@ import { UcamIcon, type UcamIconName } from '../icon/ucam-icon';
  * (WCAG 1.4.1). É a regra que protege quem tem daltonismo e a que o SIGFIN
  * viola ao colorir valores em azul, vermelho e verde sem legenda (ADR-008).
  */
-export type UcamBadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger';
+/* 'espera' e 'classe' são os tons de SITUAÇÃO (ADR-066): a bola com outra
+ * pessoa, e tipo ou categoria. Leem color.situacao.*, não color.feedback.*. */
+export type UcamBadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger' | 'espera' | 'classe';
 /**
  * soft e dot vestem o PREENCHIMENTO pastel (ADR-020); a diferença entre os
  * dois é só o indicador — ícone no soft, ponto no dot. outline é a pílula
@@ -50,10 +52,13 @@ export type UcamBadgeVariant = 'soft' | 'dot' | 'outline';
  */
 const TONE_CLASSES: Record<UcamBadgeTone, string> = {
   neutral: 'bg-card text-muted-foreground border-[var(--ucam-color-border-default)]',
-  info: 'border-transparent bg-[var(--ucam-color-feedback-info-background)] text-[var(--ucam-color-feedback-info-foreground)]',
-  success: 'border-transparent bg-[var(--ucam-color-feedback-success-background)] text-[var(--ucam-color-feedback-success-foreground)]',
-  warning: 'border-transparent bg-[var(--ucam-color-feedback-warning-background)] text-[var(--ucam-color-feedback-warning-foreground)]',
-  danger: 'border-transparent bg-[var(--ucam-color-feedback-danger-background)] text-[var(--ucam-color-feedback-danger-foreground)]',
+  // O filete é a tinta saturada do tom a 32%, como na folha do Trilho A (ADR-066).
+  info: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-info-border)_32%,transparent)] bg-[var(--ucam-color-feedback-info-background)] text-[var(--ucam-color-feedback-info-foreground)]',
+  success: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-success-border)_32%,transparent)] bg-[var(--ucam-color-feedback-success-background)] text-[var(--ucam-color-feedback-success-foreground)]',
+  warning: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-warning-border)_32%,transparent)] bg-[var(--ucam-color-feedback-warning-background)] text-[var(--ucam-color-feedback-warning-foreground)]',
+  danger: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-danger-border)_32%,transparent)] bg-[var(--ucam-color-feedback-danger-background)] text-[var(--ucam-color-feedback-danger-foreground)]',
+  espera: 'border-[color-mix(in_srgb,var(--ucam-color-situacao-espera-border)_32%,transparent)] bg-[var(--ucam-color-situacao-espera-background)] text-[var(--ucam-color-situacao-espera-foreground)]',
+  classe: 'border-[color-mix(in_srgb,var(--ucam-color-situacao-classe-border)_32%,transparent)] bg-[var(--ucam-color-situacao-classe-background)] text-[var(--ucam-color-situacao-classe-foreground)]',
 };
 
 /**
@@ -68,6 +73,8 @@ const OUTLINE_CLASSES: Record<UcamBadgeTone, string> = {
   success: 'bg-card text-foreground border-[color-mix(in_srgb,var(--ucam-color-feedback-success-border)_30%,transparent)]',
   warning: 'bg-card text-foreground border-[color-mix(in_srgb,var(--ucam-color-feedback-warning-border)_30%,transparent)]',
   danger: 'bg-card text-foreground border-[color-mix(in_srgb,var(--ucam-color-feedback-danger-border)_30%,transparent)]',
+  espera: 'bg-card text-foreground border-[color-mix(in_srgb,var(--ucam-color-situacao-espera-border)_30%,transparent)]',
+  classe: 'bg-card text-foreground border-[color-mix(in_srgb,var(--ucam-color-situacao-classe-border)_30%,transparent)]',
 };
 
 /**
@@ -84,6 +91,8 @@ const TONE_ICON: Record<UcamBadgeTone, UcamIconName | null> = {
   success: 'circleCheck',
   warning: 'triangleAlert',
   danger: 'circleAlert',
+  espera: 'clock',
+  classe: 'tag',
 };
 
 /** O ícone usa o degrau saturado da matiz; o texto segue no foreground. */
@@ -93,6 +102,8 @@ const ICON_CLASSES: Record<UcamBadgeTone, string> = {
   success: 'text-[var(--ucam-color-feedback-success-border)]',
   warning: 'text-[var(--ucam-color-feedback-warning-border)]',
   danger: 'text-[var(--ucam-color-feedback-danger-border)]',
+  espera: 'text-[var(--ucam-color-situacao-espera-border)]',
+  classe: 'text-[var(--ucam-color-situacao-classe-border)]',
 };
 
 /**

@@ -285,6 +285,11 @@
   ],
   "boas_praticas": [
     {
+      "faca": "Em fila de trabalho (.ucam-inbox), J escolhe o próximo item e K o anterior, só com o foco na fila ou no corpo da página; a lista aponta, por aria-describedby, um texto .ucam-sr-only que diz as duas teclas.",
+      "evite": "Capturar a tecla dentro de campo de texto, com modificador, com o foco fora da fila ou com diálogo, menu ou lista de opções abertos; e usar aria-keyshortcuts numa lista, que não é focável e nunca é lida.",
+      "porque": "Quem tria dezenas de itens por dia anda pela fila sem voltar ao ponteiro; a letra digitada numa resposta tem de continuar sendo letra."
+    },
+    {
       "faca": "Usar lista quando a decisão é 'isto exige ação agora?'.",
       "evite": "Usar lista quando a decisão é comparar valores entre registros.",
       "porque": "Comparação pede colunas alinhadas e ordenação — que é exatamente o que a tabela entrega e a lista não."

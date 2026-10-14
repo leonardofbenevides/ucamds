@@ -76,13 +76,24 @@ export interface UcamSegmentItem {
     /* A opção sugerida se vê, como no Trilho A (06/10/2026): enquanto não há
        decisão, veste a família da ação — fundo sutil, contorno e tinta.
        Escolhida qualquer posição, o destaque sai (08/10/2026): a sugerida
-       disputava com a escolhida. */
-    ucam-segmented .ucam-segmented__sugerido { margin-inline-start: 0.25rem; }
+       disputava com a escolhida. Sem fundo nem peso (09/10/2026): esses
+       dois sinais são só da posição pressionada. Sem cor (11/10/2026):
+       rótulo na tinta primária — na coluna, cor é só decisão tomada. Sem
+       caixa (12/10/2026): o contorno dentro do trilho lia como foco; ficam
+       a tinta primária e o brilho. */
+    /* Estrela cheia da altura do x, como no Trilho A (12/10/2026): o desenho
+       do ícone some e o host é recortado. */
+    ucam-segmented .ucam-segmented__sugerido {
+      display: inline-block;
+      inline-size: 0.55em;
+      block-size: 0.55em;
+      margin-inline-start: 0.3em;
+      background: currentColor;
+      clip-path: polygon(50% 0, 63% 37%, 100% 50%, 63% 63%, 50% 100%, 37% 63%, 0 50%, 37% 37%);
+    }
+    ucam-segmented .ucam-segmented__sugerido > * { display: none; }
     ucam-segmented .ucam-segmented:not(:has(button[aria-pressed='true'])) button:has(.ucam-segmented__sugerido) {
-      background: var(--ucam-color-action-primary-subtle);
-      color: var(--ucam-color-action-primary-default);
-      font-weight: var(--ucam-typography-action-font-weight);
-      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ucam-color-action-primary-default) 45%, transparent);
+      color: var(--ucam-color-text-primary);
     }
     ucam-segmented .ucam-segmented__rotulo {
       display: block;
@@ -172,6 +183,17 @@ export interface UcamSegmentItem {
       color: var(--ucam-color-text-disabled);
     }
     ucam-segmented .ucam-segmented button[aria-disabled='true']:hover { background: none; }
+    /* O grupo inteiro bloqueado tem chão (11/10/2026): ver build-css.mjs.
+       Vale para disabled do grupo e para todas as posições com item.disabled. */
+    ucam-segmented .ucam-segmented:not(:has(button:not(:disabled, [aria-disabled='true']))) {
+      background: var(--ucam-color-action-disabled-background);
+      border-color: transparent;
+    }
+    ucam-segmented .ucam-segmented:not(:has(button:not(:disabled, [aria-disabled='true']))) button,
+    ucam-segmented .ucam-segmented:not(:has(button:not(:disabled, [aria-disabled='true']))):not(:has(button[aria-pressed='true'])) button:has(.ucam-segmented__sugerido) {
+      color: var(--ucam-color-action-disabled-text);
+      box-shadow: none;
+    }
 
     /* O TAMANHO MUDA O TRILHO, não o mínimo do botão.
        Era o contrário, e foi o que quebrou a paridade: --md punha

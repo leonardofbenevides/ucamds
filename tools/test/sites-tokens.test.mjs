@@ -42,7 +42,7 @@ test('a spec real dos sites passa em todos os portões e gera os quatro arquivos
   const nomes = r.arquivos.map(([n]) => n);
   assert.deepEqual(nomes, ['ucam-site-tokens.css', '_ucam-site-tokens.scss', 'ucam-site-tokens.json', 'ucam-site-marca-cenpre.css']);
   const css = r.arquivos[0][1];
-  assert.match(css, /--ucam-site-color-action-primary-default: #8D293A;/);
+  assert.match(css, /--ucam-site-color-action-primary-default: #8E1331;/);
   assert.match(css, /--ucam-site-typography-display-hero-font-size: clamp\(/);
   assert.doesNotMatch(css, /--ucam-color-/);
   const marca = r.arquivos[3][1];

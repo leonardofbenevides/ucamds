@@ -91,7 +91,7 @@ type Fundo = { id: string; nome: string; token: string };
           <p class="small">
             Faixa de marca e ação primária não usam o valor da logo:
             <code>color.surface.brand</code> e <code>color.action.primary.default</code> resolvem
-            para <code>wine.600</code> = <code>#8D293A</code>. Em L* 36 o <code>#6C1E2B</code> tem
+            para <code>wine.600</code> = <code>#8E1331</code>. Em L* 36 o <code>#6C1E2B</code> tem
             altura de um degrau 800, e uma faixa inteira nessa altura lê como marrom escuro — por
             isso o <code>wine.700</code> fica reservado ao hover do primário e à tinta da logo.
           </p>

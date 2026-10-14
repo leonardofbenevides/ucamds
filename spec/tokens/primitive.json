@@ -27,8 +27,8 @@
       "$description": "Anel de foco e superfície elevada da marca. Branco sobre ele dá 5,06:1."
     },
     "600": {
-      "$value": "#8D293A",
-      "$description": "Bordô de aplicação: faixa de marca e ação primária. É o degrau que domina a tela, e por isso ele — não o 700 — é o que define se a interface lê pesada. Branco sobre ele dá 8,36:1."
+      "$value": "#8E1331",
+      "$description": "Bordô de aplicação: faixa de marca e ação primária. É o degrau que domina a tela, e por isso ele — não o 700 — é o que define se a interface lê pesada. Era #8D293A (L 44, C 0,134) até 11/10/2026 (\"por que esse bordô é tão sem graça? melhore o contraste um pouco\"): o croma subiu para 0,155 e a luminosidade desceu a 42, no mesmo matiz 15°. Branco sobre ele dá 9,18:1."
     },
     "700": {
       "$value": "#6C1E2B",
@@ -139,6 +139,10 @@
     "100": {
       "$value": "#FDF0D5"
     },
+    "300": {
+      "$value": "#EAB308",
+      "$description": "Amarelo de GRÁFICO (12/10/2026: \"pode usar um amarelo mesmo ao invés de bege\"). Só preenchimento de barra, fatia e ponto de legenda: a 1,9:1 contra o branco não serve a texto nem a contorno de controle, e quem diz o que a fatia é continua sendo o rótulo ao lado."
+    },
     "400": {
       "$value": "#C28423",
       "$description": "Tinta de NÚMERO de indicador no tema escuro (color.feedback.warning.numeral), criado em 14/09/2026 (ADR-034). Mesma matiz e croma do 500, luminosidade subida até passar de 4,5:1: 4,78:1 sobre neutral.800 (o ladrilho) e 5,67:1 sobre neutral.900. O número tem 22px com peso 560 — não é texto grande pela WCAG, então vale o 4,5 e não o 3. Sem o fundo tinto no ladrilho, o 100 do escuro lia branco e o tom sumia; o 500 dava 3,16 (verde) e 4,03 (âmbar)."
@@ -236,12 +240,20 @@
       "$value": "#EA6A0A",
       "$description": "O laranja da NOTIFICAÇÃO (color.notificacao). Vivo de propósito: é o único ponto de cor que diz \"chegou algo para você\", e precisa saltar tanto da faixa colorida de cada app quanto do branco da navegação. 3,34:1 contra branco, acima do piso de 3:1 de objeto gráfico (WCAG 1.4.11). Número escrito sobre ele usa tinta escura (neutral.900, 5,1:1), porque branco sobre este laranja dá 3,3:1 e o número tem 12px."
     },
-    "600": {
-      "$value": "#B85207",
-      "$description": "Degrau de SÉRIE de gráfico (28/09/2026): gerado em OKLCH no matiz e no croma da rampa, com a luminosidade escolhida pelo validador de paleta (faixa, croma, separação sob daltonismo e piso de visão normal) nos dois temas. Série 2 nos dois temas desde 06/10/2026 — o 700 (#964101), que era o do claro, saiu por ler marrom. Fica a ΔE 11,4 do laranja da notificação — aceito porque a notificação é ponto de interface e nunca entra em gráfico."
+    "$type": "color",
+    "$description": "Laranja VIVO (500) é da notificação e nada mais: não é aviso (amber) nem erro (red). Já teve dois degraus de série de gráfico — o 700, que lia marrom, e o 600, que lia bege — e os dois saíram (06/10 e 11/10/2026): laranja escuro o bastante para dar contraste deixa de ler laranja. Nunca encosta no vinho: o ponto e o selo andam sempre dentro de um anel de 2px da cor do fundo em que pousam."
+  },
+  "pink": {
+    "400": {
+      "$value": "#FA8CD7",
+      "$description": "Série 2 de gráfico no tema escuro. Mesmo matiz do 500 (OKLCH 340°), L 78: abaixo disso o rosa encosta no azul da série 1 sob protanopia. 7,07:1 contra o card escuro."
+    },
+    "500": {
+      "$value": "#DE65BB",
+      "$description": "Série 2 de gráfico no tema claro (11/10/2026). Gerado em OKLCH (L 68, C 0,18, H 340°) e escolhido pelo portão de daltonismo: entre o azul e o turquesa, fora da família laranja/ocre, só este matiz mantém as vizinhas a 0,10 nas quatro visões. 3,14:1 contra branco — acima do piso de objeto gráfico, abaixo do de texto: é cor de marca de gráfico, nunca de letra."
     },
     "$type": "color",
-    "$description": "Laranja VIVO (500) é da notificação e nada mais: não é aviso (amber) nem erro (red). O degrau 600, queimado, é a série 2 de gráfico desde 28/09/2026 — o ocre saiu da série por ser o âmbar de atenção. Nunca encosta no vinho: o ponto e o selo andam sempre dentro de um anel de 2px da cor do fundo em que pousam."
+    "$description": "Rosa. Existe só para a série 2 de gráfico, no lugar do laranja queimado. Não é a marca (wine) nem o destrutivo (red): fica a 0,17 do mais próximo dos dois em OKLab."
   },
   "ochre": {
     "400": {
@@ -254,21 +266,33 @@
     "$description": "Série de gráfico, slot 3. Puxado para o amarelo (matiz OKLCH ~85°) e NÃO para o laranja: no laranja ele colidia com o vinho no tema escuro (ΔE de visão normal 12,5, abaixo do piso 15). Não confundir com a rampa amber, que é feedback de atenção e não pode virar série."
   },
   "teal": {
+    "100": {
+      "$value": "#D1F2EB"
+    },
     "400": {
       "$value": "#17A18F"
     },
     "500": {
       "$value": "#0E8F80"
     },
+    "700": {
+      "$value": "#004840"
+    },
     "$type": "color",
     "$description": "Série de gráfico, slot 4. O croma é o mínimo que passa no piso de 0,1 — abaixo disso a cor lê cinza sobre o branco."
   },
   "violet": {
+    "100": {
+      "$value": "#EBE5FF"
+    },
     "400": {
       "$value": "#9179DC"
     },
     "500": {
       "$value": "#6D46B8"
+    },
+    "700": {
+      "$value": "#45267C"
     },
     "$type": "color",
     "$description": "Série de gráfico, slot 5. Vizinho perigoso do azul: os dois só se separam com folga quando NÃO ficam lado a lado (por isso a ordem dos slots põe ocre e turquesa entre eles)."

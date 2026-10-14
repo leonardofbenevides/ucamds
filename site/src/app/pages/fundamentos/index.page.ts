@@ -49,7 +49,7 @@ import { TextoComponent } from '../../docs/texto.component';
         <tbody>
           <tr>
             <td>Primitiva</td>
-            <td><code>wine.600</code> = <code>#8D293A</code></td>
+            <td><code>wine.600</code> = <code>#8E1331</code></td>
             <td>apenas a camada semântica</td>
           </tr>
           <tr>

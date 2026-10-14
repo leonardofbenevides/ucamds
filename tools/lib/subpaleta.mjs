@@ -116,8 +116,8 @@ export const DEGRAUS = {
  * pergunta se o estado muda alguma coisa. */
 
 /* A SUPERFÍCIE DE MARCA NÃO É O PREENCHIMENTO DA AÇÃO, e isto custou uma
- * rodada do portão para aparecer. No claro as duas coincidem (#8D293A nas
- * duas, 8,36:1 com branco). No ESCURO não: a ação vira clara e carrega texto
+ * rodada do portão para aparecer. No claro as duas coincidem (#8E1331 nas
+ * duas, 9,18:1 com branco). No ESCURO não: a ação vira clara e carrega texto
  * quase-preto (#DB6F7A), enquanto surface-brand continua vinho escuro com
  * texto BRANCO (#52151F, 14,13:1). Derivar uma da outra fazia a superfície de
  * marca do escuro sair a 2,06:1 nos cinco sistemas — um bloco de marca com
