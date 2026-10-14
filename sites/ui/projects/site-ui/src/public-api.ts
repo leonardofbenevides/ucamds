@@ -32,6 +32,7 @@ import { UcamSiteHero, UcamSiteHeroPills, UcamSiteHeroActions } from './lib/hero
 import { UcamSitePageHero, UcamSitePageHeroPills, UcamSitePageHeroActions } from './lib/editorial-page-hero/editorial-page-hero';
 import { UcamSiteCta, UcamSiteCtaActions } from './lib/editorial-cta/editorial-cta';
 import { UcamSiteMarquee } from './lib/logo-marquee/logo-marquee';
+import { UcamSiteFactSheet } from './lib/fact-sheet/fact-sheet';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -60,6 +61,7 @@ export * from './lib/hero/hero';
 export * from './lib/editorial-page-hero/editorial-page-hero';
 export * from './lib/editorial-cta/editorial-cta';
 export * from './lib/logo-marquee/logo-marquee';
+export * from './lib/fact-sheet/fact-sheet';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -104,4 +106,5 @@ export const UCAM_SITE = [
   UcamSiteCta,
   UcamSiteCtaActions,
   UcamSiteMarquee,
+  UcamSiteFactSheet,
 ] as const;

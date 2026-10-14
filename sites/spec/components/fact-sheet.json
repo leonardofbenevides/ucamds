@@ -1,0 +1,152 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "fact-sheet",
+  "name": "FactSheet",
+  "selector": "ucam-site-fact-sheet",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "A ficha de um curso ou de um programa: uma lista de chave e valor, como duração, modalidade e nota da CAPES, em uma ou duas colunas.",
+  "quando_usar": [
+    "Para os dados de referência de um curso, de uma unidade ou de um edital: o que se consulta, não o que se lê corrido.",
+    "Quando cada dado cabe numa chave curta e num valor de uma linha ou duas."
+  ],
+  "evidencia": {
+    "origem": "saber-mais-nu.vercel.app/mestrado e /doutorado, 14/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "saber-mais — /mestrado, Ficha do Mestrado",
+        "problema": "a lista de chave e valor escrita à mão no componente da turma, com cor e medida próprias"
+      },
+      {
+        "tela": "saber-mais — /mestrado, painel da turma",
+        "problema": "uma segunda lista de chave e valor, com outra grade e outro tipo, para os números da seleção"
+      }
+    ],
+    "conclusao": "Uma ficha só, que é uma lista de definição: a chave é o dt, o valor é o dd, e o leitor de tela os anuncia juntos."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<dl>. Uma coluna; com --duas-colunas, duas a partir de duas-colunas."
+    },
+    {
+      "parte": "row",
+      "obrigatorio": true,
+      "descricao": "<div> com um dt e um dd, separado do anterior por um fio.",
+      "classe": "ucam-site-fact-sheet__row"
+    },
+    {
+      "parte": "term",
+      "obrigatorio": true,
+      "descricao": "<dt>: a chave, em tinta de apoio.",
+      "classe": "ucam-site-fact-sheet__term"
+    },
+    {
+      "parte": "value",
+      "obrigatorio": true,
+      "descricao": "<dd>: o valor, em tinta de título.",
+      "classe": "ucam-site-fact-sheet__value"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "{ term: string; value: string }[]",
+      "obrigatorio": true,
+      "descricao": "As linhas da ficha. Linha sem chave ou sem valor não entra."
+    },
+    {
+      "nome": "columns",
+      "tipo": "1 | 2",
+      "default": "1",
+      "descricao": "Em quantas colunas as linhas se arrumam a partir de duas-colunas.",
+      "valores": {
+        "2": {
+          "uso": "Ficha longa, com mais de seis linhas, numa seção de largura cheia.",
+          "limite": "Abaixo de duas-colunas é sempre uma coluna.",
+          "classe": ".ucam-site-fact-sheet--duas-colunas"
+        }
+      }
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não para texto corrido: valor que passa de duas linhas é parágrafo, não ficha.",
+      "Não para números de destaque: esses são a faixa de números.",
+      "Não para links soltos: a ficha é para consulta."
+    ],
+    "motivo": "A ficha funciona porque se lê de relance. Valor longo ou número em display quebra o relance e a hierarquia da página."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "É uma <dl>: cada chave está ligada ao seu valor, e o leitor de tela anuncia os dois juntos.",
+      "Chave e valor a 4,5:1 sobre a página e sobre a seção recuada, medidos no build.",
+      "A ordem do documento é a ordem de leitura: em duas colunas, as linhas descem pela primeira coluna e depois pela segunda."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.3.2",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Duração",
+        "Conceito CAPES",
+        "Modalidade"
+      ],
+      "ruim": [
+        "Qual é a duração do curso?",
+        "Info"
+      ]
+    },
+    "regras": [
+      "A chave é um substantivo curto, sem dois-pontos: a folha já separa.",
+      "O valor diz o dado, sem repetir a chave."
+    ]
+  },
+  "vs": [
+    {
+      "componente": "stats-band",
+      "diferenca": "A ficha é para consultar dados de referência, em texto corrente. A faixa de números põe três ou quatro números em display.",
+      "escolha": "Dado de consulta, ficha. Número que a página quer exibir, faixa de números."
+    }
+  ],
+  "exemplos": [
+    {
+      "titulo": "A ficha do curso",
+      "codigo": "<dl class=\"ucam-site-fact-sheet\">\n  <div class=\"ucam-site-fact-sheet__row\"><dt class=\"ucam-site-fact-sheet__term\">Duração</dt><dd class=\"ucam-site-fact-sheet__value\">24 meses</dd></div>\n  <div class=\"ucam-site-fact-sheet__row\"><dt class=\"ucam-site-fact-sheet__term\">Modalidade</dt><dd class=\"ucam-site-fact-sheet__value\">Presencial</dd></div>\n</dl>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Uma <dl> com chave e valor.",
+      "evite": "Uma tabela de duas colunas, ou parágrafos com a chave em negrito.",
+      "porque": "A tabela anuncia linha e coluna a cada dado; o parágrafo não liga a chave ao valor."
+    },
+    {
+      "faca": "Duas colunas na ficha longa, numa seção de largura cheia.",
+      "evite": "Duas colunas ao lado de outro bloco.",
+      "porque": "Na coluna estreita a chave e o valor quebram em três linhas e o relance se perde."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Lista de definição com linhas separadas por fio; duas colunas pelo modificador.",
+      "raiz": ".ucam-site-fact-sheet",
+      "variaveis": [
+        "--ucam-site-color-border-subtle",
+        "--ucam-site-color-text-secondary",
+        "--ucam-site-color-text-primary"
+      ]
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/fact-sheet/fact-sheet.ts — dl[ucamSiteFactSheet]. Entradas: items, columns."
+  }
+}

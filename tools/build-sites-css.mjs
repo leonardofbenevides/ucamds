@@ -1380,6 +1380,37 @@ ${acima('grade-completa')} {
   .ucam-site-stats { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
 }
 
+/* ---------------------------------------------------------- fact-sheet --- */
+/* Contrato: sites/spec/components/fact-sheet.json. A ficha: uma lista de
+ * definição, uma linha por dado, separadas por fio. A chave fica na tinta de
+ * apoio e o valor na de título; a partir de duas-colunas, lado a lado. Com
+ * --duas-colunas as linhas se arrumam em duas colunas, descendo pela primeira:
+ * a ordem do documento é a de leitura. */
+.ucam-site-fact-sheet {
+  display: grid;
+  margin: 0;
+  border-block-end: 1px solid ${V('color-border-subtle')};
+}
+.ucam-site-fact-sheet__row {
+  display: grid;
+  gap: ${V('space-inline-xs')};
+  padding-block: ${V('space-stack-xs')};
+  border-block-start: 1px solid ${V('color-border-subtle')};
+}
+.ucam-site-fact-sheet__term {
+  color: ${V('color-text-secondary')};
+}
+.ucam-site-fact-sheet__value {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  overflow-wrap: anywhere;
+}
+${acima('duas-colunas')} {
+  .ucam-site-fact-sheet__row { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: ${V('space-inline-md')}; }
+  .ucam-site-fact-sheet--duas-colunas { display: block; columns: 2; column-gap: ${V('space-stack-lg')}; }
+  .ucam-site-fact-sheet--duas-colunas .ucam-site-fact-sheet__row { grid-template-columns: none; gap: ${V('space-inline-xs')}; break-inside: avoid; }
+}
+
 /* -------------------------------------------------------- logo-marquee --- */
 /* Contrato: sites/spec/components/logo-marquee.json. Os logos desfilam em
  * laço: a trilha tem duas cópias do grupo e anda metade da própria largura.

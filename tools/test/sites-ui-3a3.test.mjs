@@ -51,9 +51,9 @@ test('prop do contrato continua precisando de destino mesmo sem entradas', () =>
   assert.ok(tem(r, /hero-pill: a prop "icon" do contrato não é Entrada, Nativo nem Conteúdo/), msgs(r));
 });
 
-test('as 25 peças do catálogo têm forma Angular e estão em revisão', () => {
+test('as 26 peças do catálogo têm forma Angular e estão em revisão', () => {
   const arquivos = readdirSync(join(ROOT, 'sites/spec/components')).filter((f) => f.endsWith('.json'));
-  assert.equal(arquivos.length, 25);
+  assert.equal(arquivos.length, 26);
   for (const f of arquivos) {
     const c = le(ROOT, f.replace(/\.json$/, ''));
     assert.ok(c.implementacao?.trilho_b, `${c.id} sem trilho_b`);

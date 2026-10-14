@@ -173,5 +173,12 @@
       ]
     },
     "trilho_b": "sites/ui/projects/site-ui/src/lib/stats-band/stats-band.ts — dl[ucamSiteStats]. Entradas: items, inverse."
-  }
+  },
+  "vs": [
+    {
+      "componente": "fact-sheet",
+      "diferenca": "A faixa de números põe três ou quatro números em display. A ficha é para consultar dados de referência, em texto corrente.",
+      "escolha": "Número que a página quer exibir, faixa de números. Dado de consulta, ficha."
+    }
+  ]
 }

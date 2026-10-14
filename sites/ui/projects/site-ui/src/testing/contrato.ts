@@ -28,6 +28,7 @@ import hero from '../../../../../spec/components/hero.json';
 import editorialPageHero from '../../../../../spec/components/editorial-page-hero.json';
 import editorialCta from '../../../../../spec/components/editorial-cta.json';
 import logoMarquee from '../../../../../spec/components/logo-marquee.json';
+import factSheet from '../../../../../spec/components/fact-sheet.json';
 
 export interface Prop {
   nome: string;
@@ -62,6 +63,7 @@ const CONTRATOS: Record<string, unknown> = {
   'editorial-page-hero': editorialPageHero,
   'editorial-cta': editorialCta,
   'logo-marquee': logoMarquee,
+  'fact-sheet': factSheet,
 };
 
 /**

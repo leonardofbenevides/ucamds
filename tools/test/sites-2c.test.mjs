@@ -36,7 +36,7 @@ const PECAS = {
   prose: ['.ucam-site-prose'],
 };
 
-test('a folha passa nos portões com as vinte e cinco peças', () => {
+test('a folha passa nos portões com as vinte e seis peças', () => {
   assert.deepEqual(falhas, []);
 });
 
@@ -104,26 +104,28 @@ test('a prosa estiliza títulos, parágrafos, listas, links, citação e imagem,
   assert.match(regrasDe('.ucam-site-prose')[0], /max-inline-size: var\(--ucam-site-container-prosa\)/);
 });
 
-test('a spec real tem vinte e cinco contratos válidos', () => {
+test('a spec real tem vinte e seis contratos válidos', () => {
   const r = validar({ raiz: ROOT, css: readFileSync(join(ROOT, 'dist/sites/css/ucam-site.css'), 'utf8') });
   assert.deepEqual(r.erros, [], r.erros.map((e) => `${e.arquivo}: ${e.msg}`).join('\n'));
-  assert.equal(r.total, 25);
+  assert.equal(r.total, 26);
   assert.deepEqual(r.avisos, [], JSON.stringify(r.avisos));
 });
 
-test('o índice traz as vinte e cinco peças', () => {
+test('o índice traz as vinte e seis peças', () => {
   const { data } = construirIndice({ raiz: ROOT });
-  assert.equal(data.meta.componentes, 25);
+  assert.equal(data.meta.componentes, 26);
   for (const id of Object.keys(PECAS)) assert.ok(data.componentes.some((c) => c.id === id && c.demo?.principal?.preview), `falta ${id} com demo`);
 });
 
 test('os números da faixa alinham pelo topo, mesmo com rótulos de alturas diferentes', () => {
-  // A coluna é invertida (o rótulo vem antes no documento e aparece embaixo),
-  // e coluna invertida empacota no PÉ: com um rótulo de duas linhas, o número
-  // dele subia em relação aos vizinhos (captura de 09/10/2026).
+  // Era coluna invertida, que empacota no PÉ: com um rótulo de duas linhas, o
+  // número dele subia em relação aos vizinhos (captura de 09/10/2026), e foi
+  // preciso empurrar tudo para o fim. Desde a frase nos números (14/10/2026) a
+  // coluna é a direta, que empacota no topo, e o valor sobe pela ordem.
   const item = regrasDe('.ucam-site-stats__item')[0];
-  assert.match(item, /flex-direction: column-reverse;/);
-  assert.match(item, /justify-content: flex-end;/);
+  assert.match(item, /flex-direction: column;/);
+  assert.doesNotMatch(item, /justify-content/);
+  assert.match(regrasDe('.ucam-site-stats__value')[0], /order: -1;/);
 });
 
 // ---- O que a revisão de 09/10/2026 achou -----------------------------------
