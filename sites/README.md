@@ -38,6 +38,7 @@ A primeira prova num site de verdade: as páginas de Mestrado e Doutorado do sab
 - Quatro peças novas, com contrato, folha, demo e forma Angular: `fact-sheet` (a ficha, uma `dl` em uma ou duas colunas), `section-tabs` (as abas de uma página longa, links com `aria-current`, que rolam de lado no telefone), `timeline` (ano, título e frase opcional) e `contact-card` (endereço, telefone em `tel:`, e-mail em `mailto:`).
 - Três variantes: o hero de página sobre foto (`image`), a frase nos números (`items[].text`) e o cartão de destaque (`featured`, só sem link, com os pares de texto sobre a lavagem no portão).
 - O ícone `phone` entrou no conjunto compartilhado.
+- Sobre foto, todo texto do hero usa a tinta cheia (`on-inverse`), que é a que a conta do véu mede: a apagada dava 4,29:1 na base e 3,36:1 na CENPRE sobre foto branca. A pílula ganha o fundo opaco da cor do véu. A frase nos números usa a tinta de corpo, e não a de apoio que o plano dizia: é texto para ler, não legenda.
 - As fotos das demos moram em `sites/spec/fotos/` e o site as serve em `/sites/fotos/`.
 
 ## A lib Angular (`sites/ui`, completa: fatias 3a-1, 3a-2 e 3a-3, 13/10/2026)
@@ -75,5 +76,6 @@ A primeira prova num site de verdade: as páginas de Mestrado e Doutorado do sab
 - Do que a 3a-3 deixou: os logos das demos apontam para arquivos que o site de docs não tem (`/empresas/*.svg`), então o par mostra o quadro vazio (as fotos foram resolvidas na fase A do saber-mais); a pílula do hero não quebra linha e estoura numa coluna estreita; o título dos cartões de curso, de documentos e do passo é sempre `<h3>`.
 - A página de componente dos sites é cópia da do catálogo; extrair o que é comum é dívida registrada na spec.
 - Da fase A do saber-mais: a linha das abas de seção só rola até a atual na lib, o HTML puro começa no início; o peso da aba atual muda a largura dela ao trocar; o fio da linha do tempo é sutil (cor de borda padrão); a sonda mediu o véu com a foto de Campos e com branco puro, não com uma foto de céu claro inteiro.
+- Da revisão da fase A, menor: o hero de página com `width="prosa"` e foto aperta o título a cerca de 21rem na grade completa; palavra longa sem quebra pode passar da metade do texto para a parte em que o véu desvanece; as abas não recusam href só com hash, a regra está só no contrato.
 - Só foi provado no Chrome. Falta conferir no Safari o campo de busca, o `<summary>` em flex e se a lista de passos (`role="list"`) é anunciada como lista no VoiceOver.
 - Menores que a revisão da 2c deixou: a prosa não cobre h4, tabela, código nem lista aninhada; peça do sistema dentro da prosa herda o estilo de link; a foto escondida do hero ainda é baixada no telefone (falta `<picture>` com `media`); o cartão sobre seção escura não troca o anel de foco.

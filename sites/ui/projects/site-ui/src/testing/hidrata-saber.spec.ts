@@ -47,7 +47,7 @@ describe('hidratação da fase A do saber-mais', () => {
     const raiz = document.querySelector('app-raiz')!;
     const doServidor = forma(raiz);
     const foto = raiz.querySelector('.ucam-site-page-hero__media');
-    const aba = raiz.querySelector('[aria-current="page"]');
+    const aba = raiz.querySelector('[aria-current="location"]');
     expect(foto).not.toBeNull();
     expect(aba?.textContent).toBe('Docentes');
     expect(doServidor['use']).toBe(3);
@@ -62,7 +62,7 @@ describe('hidratação da fase A do saber-mais', () => {
       await app.whenStable();
       app.tick();
       expect(raiz.querySelector('.ucam-site-page-hero__media')).toBe(foto);
-      expect(raiz.querySelector('[aria-current="page"]')).toBe(aba);
+      expect(raiz.querySelector('[aria-current="location"]')).toBe(aba);
       expect(forma(raiz)).toEqual(doServidor);
       expect(avisos).toEqual([]);
     } finally {

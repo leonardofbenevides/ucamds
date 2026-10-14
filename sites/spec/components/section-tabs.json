@@ -43,7 +43,7 @@
     {
       "parte": "tab",
       "obrigatorio": true,
-      "descricao": "<a href>. A atual leva aria-current=\"page\" e se marca por um fio de 2px embaixo e pelo peso, nunca por fundo.",
+      "descricao": "<a href>. A atual leva aria-current=\"location\" (a parte atual dentro da página, não outra página) e se marca por um fio de 2px embaixo e pelo peso, nunca por fundo.",
       "classe": "ucam-site-section-tabs__tab"
     }
   ],
@@ -58,7 +58,7 @@
       "nome": "current",
       "tipo": "string | null",
       "default": "null",
-      "descricao": "O href da aba atual. Sem aba que case, nenhuma é a atual."
+      "descricao": "O href da aba atual. Sem aba que case, nenhuma é a atual. Quem usa muda o valor quando a parte muda (clique, hash, rolagem); a peça não observa a rolagem."
     },
     {
       "nome": "ariaLabel",
@@ -84,7 +84,7 @@
   "acessibilidade": {
     "requisitos": [
       "É uma <nav> com nome, para não se confundir com a navegação principal.",
-      "A atual tem aria-current=\"page\"; a marca dela é fio e peso, sem depender só de cor.",
+      "A atual tem aria-current=\"location\"; a marca dela é fio e peso, sem depender só de cor.",
       "Rótulo das abas a 4,5:1 sobre a página, medido no build; o fio da atual na cor da ação primária, a 4,5:1.",
       "O anel de foco fica para dentro da aba: a fileira rola, e o que passa da borda dela é recortado.",
       "Toda aba alcança 44px de altura de toque."
@@ -124,7 +124,7 @@
   "exemplos": [
     {
       "titulo": "As seções de um curso",
-      "codigo": "<nav class=\"ucam-site-section-tabs\" aria-label=\"Seções do curso\">\n  <ul class=\"ucam-site-section-tabs__list\">\n    <li class=\"ucam-site-section-tabs__item\"><a class=\"ucam-site-section-tabs__tab\" href=\"/mestrado#apresentacao\" aria-current=\"page\">Apresentação</a></li>\n    <li class=\"ucam-site-section-tabs__item\"><a class=\"ucam-site-section-tabs__tab\" href=\"/mestrado#pesquisa\">Pesquisa</a></li>\n  </ul>\n</nav>"
+      "codigo": "<nav class=\"ucam-site-section-tabs\" aria-label=\"Seções do curso\">\n  <ul class=\"ucam-site-section-tabs__list\">\n    <li class=\"ucam-site-section-tabs__item\"><a class=\"ucam-site-section-tabs__tab\" href=\"/mestrado#apresentacao\" aria-current=\"location\">Apresentação</a></li>\n    <li class=\"ucam-site-section-tabs__item\"><a class=\"ucam-site-section-tabs__tab\" href=\"/mestrado#pesquisa\">Pesquisa</a></li>\n  </ul>\n</nav>"
     }
   ],
   "boas_praticas": [

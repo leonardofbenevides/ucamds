@@ -56,6 +56,7 @@ const PARES = [
   ['color-text-secondary', 'color-surface-brand-soft', 'apoio sobre o cartão de destaque', 4.5],
   ['color-text-link', 'color-surface-brand-soft', 'link sobre o cartão de destaque', 4.5],
   ['color-action-primary-default', 'color-surface-brand-soft', 'botão primário sobre o cartão de destaque', 3],
+  ['color-text-on-inverse', 'color-surface-photo-scrim', 'pílula sobre foto, no fundo do véu', 4.5],
   ['color-text-link', 'color-surface-canvas', 'link sobre a página', 4.5],
   ['color-text-link', 'color-surface-subtle', 'link sobre seção recuada', 4.5],
   ['color-text-link-hover', 'color-surface-canvas', 'link em hover', 4.5],

@@ -38,6 +38,17 @@ describe('section[ucamSiteContactCard]', () => {
   it('telefone sem dígito e e-mail sem @ não viram link para lugar nenhum', () => {
     expect(linhas(monta(Hospede, { phone: 'a combinar', email: 'secretaria' }).el)).toEqual([]);
     expect(linhas(monta(Hospede, { email: 'a b@c.br' }).el)).toEqual([]);
+    // Num mailto:, ? e # acrescentam destinatário e assunto.
+    for (const email of ['a@b.com?cc=x@y.com', 'a@b.com#x', 'a@b.com,c@d.com', 'a@b.com&bcc=x']) expect(linhas(monta(Hospede, { email }).el)).toEqual([]);
+  });
+  it('o href do telefone: nacional, ramal, longa distância e número curto', () => {
+    expect(hrefDeTelefone('0800 026 2400')).toBe('tel:08000262400');
+    expect(hrefDeTelefone('0xx22 2726-2400')).toBe('tel:+552227262400');
+    expect(hrefDeTelefone('(022) 2726-2400')).toBe('tel:+552227262400');
+    expect(hrefDeTelefone('(22) 2726-2400 ramal 210')).toBe('tel:+552227262400');
+    expect(hrefDeTelefone('(22) 2726-2400 r. 210')).toBe('tel:+552227262400');
+    expect(hrefDeTelefone('190')).toBeNull();
+    expect(hrefDeTelefone('+12')).toBeNull();
   });
   it('o href do telefone: só dígitos e +, com o DDI 55 quando faltar', () => {
     expect(hrefDeTelefone('(22) 2726-2400')).toBe('tel:+552227262400');

@@ -2,16 +2,23 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, input 
 import { UcamSiteIcon } from '../icon/icon';
 
 /**
- * '(22) 2726-2400' vira 'tel:+552227262400': no href só dígitos e o +. O DDI
- * 55 entra quando o número não o tiver (sem + na frente, ou com menos de 12
- * dígitos). Sem nenhum dígito, não há link.
+ * '(22) 2726-2400' vira 'tel:+552227262400': no href só dígitos e o +.
+ * - O ramal não entra: o texto a partir de "ramal", "r." ou "ext" é cortado.
+ * - Com + na frente, o número já é internacional (8 a 15 dígitos).
+ * - 0800, 0300, 0500 e 0900 são nacionais e ficam sem +55.
+ * - O zero de longa distância ("0xx22", "022") sai; 55 com 12 ou 13 dígitos
+ *   já tem o DDI; 10 ou 11 dígitos (DDD e número) ganham o +55.
+ * Fora disso (um 190, um texto), não há link: melhor nenhum que um errado.
  */
 export function hrefDeTelefone(numero: string): string | null {
-  const bruto = numero.trim();
+  const bruto = numero.trim().split(/\s*(?:ramal|r\.|ext\.?)\s*/i)[0];
   const digitos = bruto.replace(/\D/g, '');
-  if (!digitos) return null;
-  const comDdi = bruto.startsWith('+') || (digitos.startsWith('55') && digitos.length >= 12);
-  return `tel:+${comDdi ? digitos : `55${digitos}`}`;
+  if (bruto.startsWith('+')) return digitos.length >= 8 && digitos.length <= 15 ? `tel:+${digitos}` : null;
+  if (/^0[3589]00\d{7}$/.test(digitos)) return `tel:${digitos}`;
+  const semZero = digitos.replace(/^0/, '');
+  if (/^55\d{10,11}$/.test(semZero)) return `tel:+${semZero}`;
+  if (/^\d{10,11}$/.test(semZero)) return `tel:+55${semZero}`;
+  return null;
 }
 
 /**
@@ -46,10 +53,14 @@ export class UcamSiteContactCard {
     const href = t && hrefDeTelefone(t);
     return t && href ? { texto: t, href } : null;
   });
-  /** E-mail sem @, ou com espaço, não vira link para lugar nenhum: some. */
+  /**
+   * E-mail sem @, ou com espaço, não vira link para lugar nenhum: some. Nem
+   * com ?, #, & ou vírgula: num mailto: eles acrescentam destinatário ou
+   * assunto, e o dado vem de um CMS.
+   */
   protected readonly correio = computed(() => {
     const t = texto(this.email());
-    return t && /^[^\s@]+@[^\s@]+$/.test(t) ? t : null;
+    return t && /^[^\s@?#&,]+@[^\s@?#&,]+$/.test(t) ? t : null;
   });
 }
 

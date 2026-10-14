@@ -31,7 +31,7 @@ describe('nav[ucamSiteSectionTabs]', () => {
     expect(monta(Hospede, { ariaLabel: '  ' }).el.getAttribute('aria-label')).toBe('Seções da página');
   });
   it('exatamente uma aba é a atual quando current casa; nenhuma quando não casa', () => {
-    expect(links(monta(Hospede, { current: '/mestrado#pesquisa' }).el)).toEqual(['/mestrado#apresentacao Apresentação', '/mestrado#pesquisa[page] Pesquisa', '/mestrado#docentes Docentes']);
+    expect(links(monta(Hospede, { current: '/mestrado#pesquisa' }).el)).toEqual(['/mestrado#apresentacao Apresentação', '/mestrado#pesquisa[location] Pesquisa', '/mestrado#docentes Docentes']);
     expect(monta(Hospede, { current: '/mestrado#nada' }).el.querySelectorAll('[aria-current]').length).toBe(0);
     expect(monta(Hospede).el.querySelectorAll('[aria-current]').length).toBe(0);
   });
@@ -40,15 +40,17 @@ describe('nav[ucamSiteSectionTabs]', () => {
     expect(links(el)).toEqual(['/c C']);
     expect(monta(Hospede, { items: [] }).el.children.length).toBe(0);
   });
-  it('depois de desenhar, a FILEIRA rola até a atual, e só quando há atual', () => {
+  it('depois de desenhar, a FILEIRA rola até a atual, e só quando há atual', async () => {
     const rolar = vi.fn();
     const original = HTMLElement.prototype.scrollTo;
     HTMLElement.prototype.scrollTo = rolar as never;
     try {
-      monta(Hospede);
+      // Sem zona, detectChanges não garante que o afterRenderEffect já rodou:
+      // a espera pela estabilidade, sim (a revisão viu o teste falhar 2 em 6).
+      await monta(Hospede).f.whenStable();
       expect(rolar).not.toHaveBeenCalled();
       const { f, el } = monta(Hospede, { current: '/mestrado#docentes' });
-      f.detectChanges();
+      await f.whenStable();
       expect(rolar).toHaveBeenCalled();
       expect(rolar.mock.contexts.at(-1)).toBe(el);
       expect(rolar.mock.calls.at(-1)![0]).toMatchObject({ behavior: 'instant' });

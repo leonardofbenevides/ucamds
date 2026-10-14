@@ -31,7 +31,7 @@ export class UcamSiteFactSheet {
   /** Chave e valor viram texto aqui: um número vindo de um CMS não derruba a página. */
   protected readonly linhas = computed(() =>
     this.items()
-      .map((l) => ({ term: typeof l?.term === 'string' ? l.term.trim() : '', value: String(l?.value ?? '').trim() }))
+      .map((l) => ({ term: typeof l?.term === 'string' || typeof l?.term === 'number' ? String(l.term).trim() : '', value: String(l?.value ?? '').trim() }))
       .filter((l) => l.term && l.value),
   );
   protected readonly classes = computed(() => classesDe('ucam-site-fact-sheet', this.columns() === 2 && 'duas-colunas'));

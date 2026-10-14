@@ -57,7 +57,7 @@ test('hero de página sobre foto: a máscara e o teto de 50% só a partir da gra
 
 test('números: a coluna é a direta e o valor sobe pela ordem, para a frase ficar por último', () => {
   const { css } = construirCss({ raiz: ROOT });
-  const regra = (sel) => css.match(new RegExp(`^${sel.replace(/[.]/g, '\.')} \{([^}]*)\}`, 'm'))?.[1] ?? '';
+  const regra = (sel) => css.match(new RegExp(`^${sel.replace(/[.]/g, '\\.')} \\{([^}]*)\\}`, 'm'))?.[1] ?? '';
   assert.doesNotMatch(css, /column-reverse/);
   assert.match(regra('.ucam-site-stats__item'), /flex-direction: column;/);
   assert.match(regra('.ucam-site-stats__value'), /order: -1;/);
@@ -68,4 +68,16 @@ test('cartão de contato: os links se dizem por sublinhado, não só pela cor', 
   const { css } = construirCss({ raiz: ROOT });
   const regra = css.match(/^\.ucam-site-contact-card__line a \{([^}]*)\}/m)?.[1] ?? '';
   assert.match(regra, /text-decoration-line: underline;/);
+});
+
+test('sobre foto, todo texto usa a tinta que a conta do véu mede, e a pílula tem fundo opaco', () => {
+  const { css } = construirCss({ raiz: ROOT });
+  const regra = css.match(/^\.ucam-site-page-hero--sobre-foto \.ucam-site-page-hero__eyebrow,\n([^{]*)\{([^}]*)\}/m);
+  assert.ok(regra, 'falta a regra das tintas sobre foto');
+  for (const sel of ['.ucam-site-page-hero__lede', '.ucam-site-breadcrumb--inverse,', '.ucam-site-breadcrumb__item a']) assert.ok(regra[1].includes(sel), 'falta ' + sel);
+  assert.match(regra[2], /color: var\(--ucam-site-color-text-on-inverse\);/);
+  const pilula = css.match(/^\.ucam-site-page-hero--sobre-foto \.ucam-site-hero-pill \{([^}]*)\}/m)?.[1] ?? '';
+  assert.match(pilula, /background: var\(--ucam-site-color-surface-photo-scrim\);/);
+  // A tag de marca não some no cartão de destaque, que tem a mesma lavagem.
+  assert.match(css, /^\.ucam-site-card--destaque \.ucam-site-tag--brand \{\n  background: var\(--ucam-site-color-surface-default\);/m);
 });

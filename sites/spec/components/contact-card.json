@@ -64,13 +64,13 @@
       "nome": "phone",
       "tipo": "string | null",
       "default": "null",
-      "descricao": "O telefone, escrito como se lê. O link leva só dígitos e o +, com o DDI 55 quando faltar; sem nenhum dígito, a linha some."
+      "descricao": "O telefone, escrito como se lê. O link leva só dígitos e o +: o ramal sai, o zero de longa distância sai, 10 ou 11 dígitos ganham o +55, e 0800 fica nacional. Fora disso (um 190, um texto) a linha some."
     },
     {
       "nome": "email",
       "tipo": "string | null",
       "default": "null",
-      "descricao": "O e-mail. Sem @, ou com espaço, a linha some."
+      "descricao": "O e-mail. Sem @, com espaço, ou com ?, #, & ou vírgula (que num mailto: acrescentam destinatário), a linha some."
     },
     {
       "nome": "level",

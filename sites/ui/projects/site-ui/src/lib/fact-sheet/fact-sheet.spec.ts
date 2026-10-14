@@ -31,8 +31,8 @@ describe('dl[ucamSiteFactSheet]', () => {
     expect(monta(Hospede, { columns: 3 }).el.classList.contains('ucam-site-fact-sheet--duas-colunas')).toBe(false);
   });
   it('linha sem chave, sem valor ou nula não entra; valor numérico vale; lista vazia fica sem filhos', () => {
-    const { el } = monta(Hospede, { items: [{ term: '', value: 'x' }, { term: 'Vagas', value: '  ' }, null, { term: 7, value: 'y' }, { term: 'Créditos', value: 36 }] });
-    expect(linhas(el)).toEqual(['div.ucam-site-fact-sheet__row > dt.__term: Créditos + dd.__value: 36']);
+    const { el } = monta(Hospede, { items: [{ term: '', value: 'x' }, { term: 'Vagas', value: '  ' }, null, { term: {}, value: 'y' }, { term: 'Créditos', value: 36 }, { term: 2026, value: 'Turma nova' }] });
+    expect(linhas(el)).toEqual(['div.ucam-site-fact-sheet__row > dt.__term: Créditos + dd.__value: 36', 'div.ucam-site-fact-sheet__row > dt.__term: 2026 + dd.__value: Turma nova']);
     expect(monta(Hospede, { items: [] }).el.children.length).toBe(0);
     expect(monta(Hospede, { items: 'nada' }).el.children.length).toBe(0);
   });

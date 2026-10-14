@@ -13,7 +13,9 @@ export interface UcamSiteSectionTab {
  *        [items]="[{ label: 'Apresentação', href: '/mestrado#apresentacao' }, …]"></nav>
  *
  * Cada aba é um link de verdade, e a atual é a de `current`, com
- * aria-current="page". O endereço é de quem usa: com <base href>, um href só
+ * aria-current="location": é a parte atual DENTRO da página, não outra
+ * página. Quem usa a peça muda `current` quando a parte muda (clique, hash,
+ * rolagem); a peça não observa a rolagem. O endereço é de quem usa: com <base href>, um href só
  * com o hash apagaria o caminho, e por isso a peça não o monta.
  *
  * No telefone a fileira rola de lado. Depois de desenhar, no navegador, a
@@ -26,7 +28,7 @@ export interface UcamSiteSectionTab {
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { class: 'ucam-site-section-tabs', '[attr.aria-label]': 'rotulo()' },
-  template: `@if (abas().length) {<ul class="ucam-site-section-tabs__list">@for (a of abas(); track a.href) {<li class="ucam-site-section-tabs__item"><a class="ucam-site-section-tabs__tab" [attr.href]="a.href" [attr.aria-current]="a.href === atual() ? 'page' : null">{{ a.label }}</a></li>}</ul>}`,
+  template: `@if (abas().length) {<ul class="ucam-site-section-tabs__list">@for (a of abas(); track a.href) {<li class="ucam-site-section-tabs__item"><a class="ucam-site-section-tabs__tab" [attr.href]="a.href" [attr.aria-current]="a.href === atual() ? 'location' : null">{{ a.label }}</a></li>}</ul>}`,
 })
 export class UcamSiteSectionTabs {
   readonly items = input.required<UcamSiteSectionTab[], UcamSiteSectionTab[] | null | undefined>({ transform: (v) => (Array.isArray(v) ? v : []) });
@@ -52,7 +54,7 @@ export class UcamSiteSectionTabs {
       this.abas();
       if (!this.atual()) return;
       const fileira = this.el.nativeElement;
-      const aba = fileira.querySelector<HTMLElement>('[aria-current="page"]');
+      const aba = fileira.querySelector<HTMLElement>('[aria-current="location"]');
       if (!aba) return;
       // Centrada na fileira; offsetLeft é medido dela, que a folha posiciona.
       fileira.scrollTo?.({ left: aba.offsetLeft - (fileira.clientWidth - aba.offsetWidth) / 2, behavior: 'instant' });

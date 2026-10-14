@@ -1214,6 +1214,22 @@ ${acima('grade-completa')} {
   background: ${V('color-surface-photo-scrim')};
   opacity: ${V('opacity-photo-scrim')};
 }
+/* A conta do véu é feita com a tinta on-inverse, a única que passa no pior
+ * caso: a apagada (on-inverse-muted) dava 4,29:1 na base e 3,36:1 na CENPRE
+ * sobre foto branca (revisão de 14/10/2026). Sobre foto, palavra, frase e
+ * trilha usam a cheia; a pílula troca o fundo translúcido, que clareia sobre
+ * a foto, pelo da cor do véu, opaco, e pode quebrar linha para não sair da
+ * metade do texto. */
+.ucam-site-page-hero--sobre-foto .ucam-site-page-hero__eyebrow,
+.ucam-site-page-hero--sobre-foto .ucam-site-page-hero__lede,
+.ucam-site-page-hero--sobre-foto .ucam-site-breadcrumb--inverse,
+.ucam-site-page-hero--sobre-foto .ucam-site-breadcrumb--inverse .ucam-site-breadcrumb__item a {
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-page-hero--sobre-foto .ucam-site-hero-pill {
+  background: ${V('color-surface-photo-scrim')};
+  white-space: normal;
+}
 ${acima('grade-completa')} {
   .ucam-site-page-hero__inner { padding: ${V('space-section')} ${V('space-gutter')}; }
   .ucam-site-page-hero--sobre-foto { display: flex; align-items: center; min-block-size: ${V('size-hero')}; }
@@ -1451,7 +1467,7 @@ ${acima('duas-colunas')} {
 .ucam-site-section-tabs__tab:hover {
   color: ${V('color-text-primary')};
 }
-.ucam-site-section-tabs__tab[aria-current="page"] {
+.ucam-site-section-tabs__tab[aria-current="location"] {
   border-block-end-color: ${V('color-action-primary-default')};
   color: ${V('color-text-primary')};
   font-weight: ${V('typography-action-font-weight')};
@@ -1788,6 +1804,10 @@ ${acima('duas-colunas')} {
 .ucam-site-card--destaque {
   border-color: ${V('color-surface-brand')};
   background: ${V('color-surface-brand-soft')};
+}
+/* A tag de marca tem a mesma lavagem por fundo: no destaque ela sumiria. */
+.ucam-site-card--destaque .ucam-site-tag--brand {
+  background: ${V('color-surface-default')};
 }
 
 /* ------------------------------------------------------------ doc-card --- */
