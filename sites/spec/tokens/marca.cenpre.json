@@ -7,7 +7,8 @@
   "color": {
     "surface": {
       "brand": { "$value": "{magenta.700}" },
-      "brand-soft": { "$value": "{magenta.100}" }
+      "brand-soft": { "$value": "{magenta.100}" },
+      "photo-scrim": { "$value": "{magenta.900}" }
     },
     "text": {
       "link": { "$value": "{magenta.700}" },

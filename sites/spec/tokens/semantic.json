@@ -14,7 +14,8 @@
       "sunken": { "$value": "{neutral.100}", "$description": "Campo, chip neutro, fundo de código." },
       "inverse": { "$value": "{neutral.700}", "$description": "Seção escura: hero com foto, rodapé, CTA final. O charcoal-500 do CENPRE (L 35,6) cai aqui (L 37,1). Branco em cima dá 10,37:1." },
       "brand": { "$value": "{wine.600}", "$description": "Faixa de marca. A submarca troca." },
-      "brand-soft": { "$value": "{wine.50}", "$description": "Lavagem da marca: fundo de tag, de ícone-chip." }
+      "brand-soft": { "$value": "{wine.50}", "$description": "Lavagem da marca: fundo de tag, de ícone-chip." },
+      "photo-scrim": { "$value": "{wine.900}", "$description": "O véu do hero de página sobre foto, na opacidade de opacity.photo-scrim. A submarca troca." }
     },
     "text": {
       "primary": { "$value": "{neutral.800}", "$description": "Título. 15,16:1 sobre branco." },
@@ -73,6 +74,10 @@
       "hover-on-inverse": { "$value": "{alpha.paper-weak}", "$description": "Hover de botão fantasma e de tag sobre seção escura: lavagem de papel, não de tinta." },
       "active-on-inverse": { "$value": "{alpha.paper-strong}", "$description": "Pressionado sobre seção escura: a lavagem de papel um degrau acima." }
     }
+  },
+  "opacity": {
+    "$type": "number",
+    "photo-scrim": { "$value": 0.7, "$description": "Opacidade do véu onde há texto sobre foto. É o menor múltiplo de 0,05 que deixa o texto a 4,5:1 sobre branco puro, a foto mais clara que existe, nas duas marcas: 6,57:1 na base, 5,15:1 na CENPRE. A conta é do build (piorCasoSobreFoto)." }
   },
   "font": {
     "$type": "fontFamily",

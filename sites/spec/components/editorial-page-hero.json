@@ -7,10 +7,11 @@
   "version": "0.1.0",
   "since": "0.1.5",
   "category": "layout",
-  "description": "O topo de toda página interna: a trilha, a palavra da seção, o título da página e uma frase, sobre a superfície escura e sem foto.",
+  "description": "O topo de toda página interna: a trilha, a palavra da seção, o título da página e uma frase, sobre a superfície escura. Sem foto, salvo a variante sobre foto, com o véu medido no build.",
   "quando_usar": [
     "Em toda página interna, no lugar do hero da home.",
-    "Na largura de prosa, no topo de um artigo."
+    "Na largura de prosa, no topo de um artigo.",
+    "Sobre foto, quando a página tem uma foto do lugar que acrescenta, como o topo de um curso."
   ],
   "evidencia": {
     "origem": "cenpre.candidomendes.edu.br (hero das subpáginas e do artigo) e cenpre-ui-kit (src/lib/layout/editorial-page-hero), 09/10/2026",
@@ -26,6 +27,10 @@
       {
         "tela": "www — páginas de curso",
         "problema": "banner em imagem com o nome do curso dentro do arquivo"
+      },
+      {
+        "tela": "saber-mais — /mestrado e /doutorado (14/10/2026)",
+        "problema": "título sobre a foto de Campos com um véu vinho escrito à mão, sem conta de contraste"
       }
     ],
     "conclusao": "Um hero só para as páginas internas, com a variante de prosa para o artigo, e todo o texto em texto."
@@ -35,6 +40,18 @@
       "parte": "root",
       "obrigatorio": true,
       "descricao": "<header> da página, na superfície inversa."
+    },
+    {
+      "parte": "media",
+      "obrigatorio": false,
+      "descricao": "<img alt=\"\"> decorativa, antes do conteúdo. Só com .ucam-site-page-hero--sobre-foto na raiz: cobre a peça inteira, atrás de tudo.",
+      "classe": "ucam-site-page-hero__media"
+    },
+    {
+      "parte": "scrim",
+      "obrigatorio": false,
+      "descricao": "<div aria-hidden=\"true\">: o véu entre a foto e o texto, na cor color.surface.photo-scrim e na opacidade opacity.photo-scrim. Uniforme no telefone; a partir da grade completa, sólido até 55% da largura e desvanecendo depois.",
+      "classe": "ucam-site-page-hero__scrim"
     },
     {
       "parte": "inner",
@@ -108,6 +125,19 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "A palavra acima do título."
+    },
+    {
+      "nome": "image",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A foto de fundo. Com ela a peça desenha a foto e o véu, e o texto fica na metade inicial a partir da grade completa.",
+      "valores": {
+        "true": {
+          "uso": "No topo de uma página que tem foto do lugar: o curso, o campus.",
+          "limite": "Nunca com texto dentro da imagem, e nunca sem o véu.",
+          "classe": ".ucam-site-page-hero--sobre-foto"
+        }
+      }
     }
   ],
   "estados": [
@@ -116,7 +146,7 @@
   "limites": {
     "regras": [
       "Não na home.",
-      "Sem foto de fundo.",
+      "Sem foto de fundo, salvo a variante sobre foto: a única exceção à regra de foto dos Sites. Nela a opacidade do véu é a mínima que deixa o texto a 4,5:1 sobre uma foto toda branca, e o build falha se não deixar.",
       "Um por página: é onde mora o h1."
     ],
     "motivo": "A página interna precisa dizer onde a pessoa está e o que vai encontrar. Foto e efeito competem com isso."
@@ -126,7 +156,9 @@
       "O título é o h1 da página.",
       "A trilha vem antes do título, na forma inversa.",
       "Título, palavra e frase a 4,5:1 sobre a superfície inversa, medidos no build.",
-      "Título e frase não passam da largura de prosa."
+      "Título e frase não passam da largura de prosa.",
+      "Sobre foto, o contraste é medido no pior caso: o véu sobre branco puro contra o branco do texto, em cada marca (tools/build-sites-tokens.mjs).",
+      "A foto é decorativa: alt vazio."
     ],
     "criterios_wcag": [
       "1.3.1",
@@ -194,12 +226,17 @@
       "faca": "A variante de prosa no artigo.",
       "evite": "Reescrever o hero na folha da página.",
       "porque": "Foi assim que o artigo ganhou largura e respiro próprios."
+    },
+    {
+      "faca": "A variante sobre foto, com a foto que a página já tem.",
+      "evite": "Um véu escrito à mão na folha da página.",
+      "porque": "O véu da variante tem a opacidade da conta; o feito à mão não garante o contraste com a foto seguinte."
     }
   ],
   "vs": [
     {
       "componente": "hero",
-      "diferenca": "O hero editorial é o de cada página interna, sem foto. O Hero é o da home, com foto, uma vez no site.",
+      "diferenca": "O hero editorial é o de cada página interna, sem foto ou sobre foto com véu. O Hero é o da home, com a foto ao lado, uma vez no site.",
       "escolha": "Em qualquer página que não seja a home, hero editorial."
     }
   ],
@@ -210,9 +247,11 @@
       "variaveis": [
         "--ucam-site-typography-display-page-font-size",
         "--ucam-site-container-prosa",
-        "--ucam-site-color-surface-inverse"
+        "--ucam-site-color-surface-inverse",
+        "--ucam-site-color-surface-photo-scrim",
+        "--ucam-site-opacity-photo-scrim"
       ]
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/editorial-page-hero/editorial-page-hero.ts — header[ucamSitePageHero], [ucamSitePageHeroPills], [ucamSitePageHeroActions]. Entradas: heading, eyebrow, lede, width."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/editorial-page-hero/editorial-page-hero.ts — header[ucamSitePageHero], [ucamSitePageHeroPills], [ucamSitePageHeroActions]. Entradas: heading, eyebrow, lede, width, image."
   }
 }

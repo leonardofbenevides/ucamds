@@ -1133,7 +1133,9 @@ ${acima('grade-completa')} {
 /* ------------------------------------------------- editorial-page-hero --- */
 /* Contrato: sites/spec/components/editorial-page-hero.json. O topo das
  * páginas internas: trilha, palavra, título, frase e, se houver, pílulas e
- * ações. Sem foto. */
+ * ações. Sem foto, salvo a variante --sobre-foto, a única exceção à regra de
+ * foto dos Sites: a foto cobre a peça, o véu fica entre ela e o texto, e a
+ * opacidade do véu é a da conta do build (pior caso: véu sobre branco puro). */
 .ucam-site-page-hero {
   background: ${V('color-surface-inverse')};
   color: ${V('color-text-on-inverse')};
@@ -1190,8 +1192,36 @@ ${acima('grade-completa')} {
   flex-wrap: wrap;
   gap: ${V('space-inline-md')};
 }
+.ucam-site-page-hero--sobre-foto {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.ucam-site-page-hero__media,
+.ucam-site-page-hero__scrim {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.ucam-site-page-hero__media {
+  z-index: -2;
+  object-fit: cover;
+}
+/* Abaixo da grade completa o texto ocupa a largura toda, e o véu é uniforme. */
+.ucam-site-page-hero__scrim {
+  z-index: -1;
+  background: ${V('color-surface-photo-scrim')};
+  opacity: ${V('opacity-photo-scrim')};
+}
 ${acima('grade-completa')} {
   .ucam-site-page-hero__inner { padding: ${V('space-section')} ${V('space-gutter')}; }
+  .ucam-site-page-hero--sobre-foto { display: flex; align-items: center; min-block-size: ${V('size-hero')}; }
+  /* O véu é sólido até 55% da largura e some depois, para a foto aparecer.
+   * Cada filho do conteúdo mede até metade da caixa de conteúdo, o que faz o
+   * texto terminar, em qualquer largura, na metade da peça: dentro do sólido. */
+  .ucam-site-page-hero__scrim { mask-image: linear-gradient(to right, black 0 55%, transparent 100%); }
+  .ucam-site-page-hero--sobre-foto .ucam-site-page-hero__inner > * { max-inline-size: 50%; }
 }
 
 /* ----------------------------------------------------------- hero-pill --- */

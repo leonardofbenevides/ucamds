@@ -79,8 +79,12 @@ function principal() {
     mkdirSync(join(assets, sub), { recursive: true });
     cpSync(origem, join(assets, sub), { recursive: true });
   }
+  // As fotos das demos (o hero de página sobre foto) moram na spec, e o site
+  // as serve em /sites/fotos/: um endereço que existe, não um 404 na demo.
+  const fotos = join(ROOT, 'sites', 'spec', 'fotos');
+  if (existsSync(fotos)) cpSync(fotos, join(assets, 'fotos'), { recursive: true });
   console.log(`site/src/generated/sites.data.json · ${data.meta.componentes} componente(s), submarca ${data.meta.submarcas.join(', ') || 'nenhuma'}`);
-  console.log('site/src/generated/sites.css · site/src/assets/sites/{tokens,fonts,css}');
+  console.log('site/src/generated/sites.css · site/src/assets/sites/{tokens,fonts,css,fotos}');
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) principal();

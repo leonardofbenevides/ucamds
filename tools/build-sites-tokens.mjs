@@ -74,6 +74,21 @@ const COEXISTEM_SITES = [
   ['link × tinta de erro', 'text-link', 'feedback-danger-foreground'],
 ];
 
+/* O texto sobre foto do hero de página. A foto pode ser qualquer uma, então o
+ * contraste é medido no pior caso: o véu, na opacidade do token, sobre branco
+ * puro (a foto mais clara que existe), contra a tinta do texto. A mistura é a
+ * do navegador: canal a canal em sRGB, arredondada para o byte. */
+export function piorCasoSobreFoto(tokens) {
+  const get = (n) => tokens.find((t) => t.name === n)?.value;
+  const veu = get('color-surface-photo-scrim');
+  const opacidade = Number(get('opacity-photo-scrim'));
+  const texto = get('color-text-on-inverse');
+  if (!veu || !texto || !Number.isFinite(opacidade)) return null;
+  const canal = (i) => Math.round(opacidade * parseInt(veu.slice(i, i + 2), 16) + (1 - opacidade) * 255);
+  const fundo = '#' + [1, 3, 5].map((i) => canal(i).toString(16).padStart(2, '0')).join('').toUpperCase();
+  return { razao: ratio(texto, fundo), opacidade, fundo };
+}
+
 const banner = (fmt) => `/* @ucam/site-css — gerado de sites/spec/tokens/ por tools/build-sites-tokens.mjs
  * NÃO EDITAR À MÃO. Edite a spec e rode: pnpm sites
  * Formato: ${fmt}
@@ -142,6 +157,9 @@ export function construir({ raiz = ROOT, kits = KITS_PADRAO } = {}) {
       const r = ratio(f, b);
       if (r < min) falhas.push(`[${nome}] ${desc}: ${fg} ${f} sobre ${bg} ${b} dá ${r.toFixed(2)}:1, mínimo ${min}`);
     }
+    const foto = piorCasoSobreFoto(tokens);
+    if (!foto) desvios.push(`[${nome}] texto sobre foto não medido — falta color-surface-photo-scrim, opacity-photo-scrim ou color-text-on-inverse`);
+    else if (foto.razao < 4.5) falhas.push(`[${nome}] texto sobre foto: o véu a ${foto.opacidade} sobre branco puro dá ${foto.fundo}, e o texto fica a ${foto.razao.toFixed(2)}:1, mínimo 4.5`);
     for (const tom of ['success', 'warning', 'danger', 'info']) {
       const f = get(`color-feedback-${tom}-foreground`);
       const b = get(`color-feedback-${tom}-background`);

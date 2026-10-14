@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, cpSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, cpSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -156,4 +156,30 @@ test('adaptador: cada adaptador confere o próprio kit, e a linha de sucesso só
   assert.deepEqual(r.falhas, ['$b2 do kit sem destino no adaptador b']);
   assert.ok(r.relatos.some((l) => /✓ adaptador a: 1 nomes do kit, todos com destino/.test(l)), r.relatos.join('\n'));
   assert.ok(!r.relatos.some((l) => /adaptador b.*todos com destino/.test(l)), r.relatos.join('\n'));
+});
+
+test('texto sobre foto: o véu do token passa no pior caso, nas duas marcas', async () => {
+  const { piorCasoSobreFoto } = await import('../build-sites-tokens.mjs');
+  const r = construir({ raiz: ROOT });
+  assert.deepEqual(r.falhas, []);
+  assert.ok(!r.desvios.some((d) => /sobre foto/.test(d)), r.desvios.join('\n'));
+  const sem = JSON.parse(readFileSync(join(ROOT, 'sites/spec/tokens/semantic.json'), 'utf8'));
+  assert.equal(sem.opacity['photo-scrim'].$value, 0.7);
+  const base = piorCasoSobreFoto([{ name: 'color-surface-photo-scrim', value: '#350D13' }, { name: 'opacity-photo-scrim', value: 0.7 }, { name: 'color-text-on-inverse', value: '#FFFFFF' }]);
+  assert.ok(base.razao >= 4.5 && base.razao < 7, String(base.razao));
+  // O menor múltiplo de 0,05: um degrau abaixo, a CENPRE reprova.
+  const cenpre = (o) => piorCasoSobreFoto([{ name: 'color-surface-photo-scrim', value: '#70132F' }, { name: 'opacity-photo-scrim', value: o }, { name: 'color-text-on-inverse', value: '#FFFFFF' }]);
+  assert.ok(cenpre(0.7).razao >= 4.5);
+  assert.ok(cenpre(0.65).razao < 4.5);
+});
+
+test('véu fraco demais derruba o build nomeando a marca', () => {
+  const raiz = repoMinimo({ semantic: { ...SEMANTICA, color: { ...SEMANTICA.color, surface: { ...SEMANTICA.color.surface, 'photo-scrim': { $value: '{wine.900}' } } }, opacity: { $type: 'number', 'photo-scrim': { $value: 0.3 } } } });
+  const r = construir({ raiz });
+  assert.ok(r.falhas.some((f) => /^\[base\] texto sobre foto: o véu a 0.3/.test(f)), r.falhas.join('\n'));
+});
+
+test('sem os tokens do véu, a conta vira desvio nomeado, não silêncio', () => {
+  const r = construir({ raiz: repoMinimo() });
+  assert.ok(r.desvios.some((d) => /\[base\] texto sobre foto não medido/.test(d)), r.desvios.join('\n'));
 });

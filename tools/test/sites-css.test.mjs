@@ -39,3 +39,18 @@ test('a camada 3 aplica-se também num invólucro, não só no :root', async () 
   const marca = r.arquivos.find(([n]) => n === 'ucam-site-marca-cenpre.css')[1];
   assert.match(marca, /:root\[data-marca="cenpre"\],\n\[data-marca="cenpre"\] \{/);
 });
+
+test('hero de página sobre foto: a máscara e o teto de 50% só a partir da grade completa', () => {
+  const { css } = construirCss({ raiz: ROOT });
+  // Os blocos de @media de nível de topo, com o que cada um contém.
+  const blocos = [...css.matchAll(/^@media ([^{]+)\{\n([\s\S]*?)^\}/gm)].map((m) => ({ cond: m[1].trim(), corpo: m[2] }));
+  const com = (trecho) => blocos.filter((b) => b.corpo.includes(trecho)).map((b) => b.cond);
+  const mascara = '.ucam-site-page-hero__scrim { mask-image: linear-gradient(to right, black 0 55%, transparent 100%); }';
+  const teto = '.ucam-site-page-hero--sobre-foto .ucam-site-page-hero__inner > * { max-inline-size: 50%; }';
+  assert.deepEqual(com(mascara), ['(min-width: 64rem)']);
+  assert.deepEqual(com(teto), ['(min-width: 64rem)']);
+  // Fora de media query, nada de máscara: no telefone o véu é uniforme.
+  const fora = css.replace(/^@media [^{]+\{\n[\s\S]*?^\}/gm, '');
+  assert.ok(!/page-hero__scrim[^}]*mask-image/.test(fora));
+  assert.match(fora, /\.ucam-site-page-hero__scrim \{[^}]*background: var\(--ucam-site-color-surface-photo-scrim\);[^}]*opacity: var\(--ucam-site-opacity-photo-scrim\);/);
+});
