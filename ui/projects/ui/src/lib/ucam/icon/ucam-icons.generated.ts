@@ -1,7 +1,7 @@
 // GERADO por tools/build-icons.mjs a partir de spec/icons.json.
 // NÃO EDITAR À MÃO. Para adicionar um ícone, edite a spec e rode: pnpm run icons
 //
-// 82 ícones em 4 grupos.
+// 83 ícones em 4 grupos.
 
 import { lucideArchive,
   lucideArrowDownRight,
@@ -63,6 +63,7 @@ import { lucideArchive,
   lucideMoon,
   lucidePaperclip,
   lucidePencil,
+  lucidePhone,
   lucidePin,
   lucidePlus,
   lucidePresentation,
@@ -148,6 +149,7 @@ export type UcamIconName =
   | 'moon'
   | 'paperclip'
   | 'pencil'
+  | 'phone'
   | 'pin'
   | 'plus'
   | 'presentation'
@@ -248,6 +250,7 @@ export const UCAM_ICONS: Record<string, string> = {
   lucideMessageSquare,
   lucideTag,
   lucideMapPin,
+  lucidePhone,
   lucidePresentation,
   lucideDoorOpen,
   lucideClipboardCheck,
@@ -334,6 +337,7 @@ export const UCAM_ICON_KEY: Record<UcamIconName, string> = {
   'messageSquare': 'lucideMessageSquare',
   'tag': 'lucideTag',
   'mapPin': 'lucideMapPin',
+  'phone': 'lucidePhone',
   'presentation': 'lucidePresentation',
   'doorOpen': 'lucideDoorOpen',
   'clipboardCheck': 'lucideClipboardCheck',
@@ -420,6 +424,7 @@ export const UCAM_ICON_USO: Record<UcamIconName, string> = {
   'messageSquare': "Mensagem trocada com o requerente. No histórico marca o item que é fala de alguém, não mudança de estado.",
   'tag': "Natureza ou categoria de um registro — a etiqueta que classifica. No painel de dados do requerimento marca o rótulo Natureza.",
   'mapPin': "Lugar: polo, campus, unidade. Rótulo Polo no painel de dados.",
+  'phone': "Telefone de contato de uma unidade. No cartão de contato dos Sites, a linha do telefone: antes dele, o saber-mais usava o balão de mensagem.",
   'presentation': "Professor, docência.",
   'doorOpen': "Sala, recurso físico reservável.",
   'clipboardCheck': "Avaliação, nota lançada.",

@@ -332,6 +332,10 @@
           "uso": "Lugar: polo, campus, unidade. Rótulo Polo no painel de dados."
         },
         {
+          "lucide": "phone",
+          "uso": "Telefone de contato de uma unidade. No cartão de contato dos Sites, a linha do telefone: antes dele, o saber-mais usava o balão de mensagem."
+        },
+        {
           "lucide": "presentation",
           "uso": "Professor, docência."
         },
