@@ -54,3 +54,12 @@ test('hero de página sobre foto: a máscara e o teto de 50% só a partir da gra
   assert.ok(!/page-hero__scrim[^}]*mask-image/.test(fora));
   assert.match(fora, /\.ucam-site-page-hero__scrim \{[^}]*background: var\(--ucam-site-color-surface-photo-scrim\);[^}]*opacity: var\(--ucam-site-opacity-photo-scrim\);/);
 });
+
+test('números: a coluna é a direta e o valor sobe pela ordem, para a frase ficar por último', () => {
+  const { css } = construirCss({ raiz: ROOT });
+  const regra = (sel) => css.match(new RegExp(`^${sel.replace(/[.]/g, '\.')} \{([^}]*)\}`, 'm'))?.[1] ?? '';
+  assert.doesNotMatch(css, /column-reverse/);
+  assert.match(regra('.ucam-site-stats__item'), /flex-direction: column;/);
+  assert.match(regra('.ucam-site-stats__value'), /order: -1;/);
+  assert.match(regra('.ucam-site-stats__text'), /color: var\(--ucam-site-color-text-body\);/);
+});

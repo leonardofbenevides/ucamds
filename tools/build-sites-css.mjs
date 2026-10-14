@@ -1328,7 +1328,9 @@ ${acima('grade-completa')} {
 
 /* ---------------------------------------------------------- stats-band --- */
 /* Contrato: sites/spec/components/stats-band.json. Uma lista de definição: o
- * rótulo vem antes no documento e o número aparece em cima. Duas colunas no
+ * rótulo vem antes no documento e o número aparece em cima; a frase, se houver,
+ * fica por último nos dois. Por isso a coluna é a direta, com o número puxado
+ * para o começo pela ordem: a coluna invertida poria a frase no topo. Duas colunas no
  * telefone; na grade completa, uma coluna por número — com quatro trilhas
  * fixas, três números deixavam um quarto da faixa vazio. */
 .ucam-site-stats {
@@ -1339,13 +1341,13 @@ ${acima('grade-completa')} {
 }
 .ucam-site-stats__item {
   display: flex;
-  flex-direction: column-reverse;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: ${V('space-inline-xs')};
   padding-block-start: ${V('space-stack-sm')};
   border-block-start: 1px solid ${V('color-border-default')};
 }
 .ucam-site-stats__value {
+  order: -1;
   margin: 0;
   color: ${V('color-text-primary')};
   font-family: ${V('typography-display-section-sm-font-family')};
@@ -1357,13 +1359,21 @@ ${acima('grade-completa')} {
 .ucam-site-stats__label {
   color: ${V('color-text-secondary')};
 }
+.ucam-site-stats__text {
+  margin: ${V('space-inline-xs')} 0 0;
+  color: ${V('color-text-body')};
+  font-size: ${V('typography-body-font-size')};
+  line-height: ${V('typography-body-line-height')};
+  text-wrap: pretty;
+}
 .ucam-site-stats--inverse .ucam-site-stats__item {
   border-block-start-color: ${V('color-border-on-inverse')};
 }
 .ucam-site-stats--inverse .ucam-site-stats__value {
   color: ${V('color-text-on-inverse')};
 }
-.ucam-site-stats--inverse .ucam-site-stats__label {
+.ucam-site-stats--inverse .ucam-site-stats__label,
+.ucam-site-stats--inverse .ucam-site-stats__text {
   color: ${V('color-text-on-inverse-muted')};
 }
 ${acima('grade-completa')} {

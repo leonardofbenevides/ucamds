@@ -30,6 +30,16 @@ describe('dl[ucamSiteStats]', () => {
     expect(el.textContent).toBe('vagas800+');
     expect(monta(Hospede, { items: [] }).el.children.length).toBe(0);
   });
+  it('a frase é um segundo dd, depois do valor; vazia ou de outro tipo, não há dd', () => {
+    const { el } = monta(Hospede, { items: [{ value: '5', label: 'Conceito CAPES', text: ' A maior nota da área. ' }, { value: '2001', label: 'Primeira turma', text: '  ' }, { value: '12', label: 'docentes', text: 7 }] });
+    expect([...el.children[0].children].map((c) => `${c.localName}.${c.className}: ${c.textContent}`)).toEqual([
+      'dt.ucam-site-stats__label: Conceito CAPES',
+      'dd.ucam-site-stats__value: 5',
+      'dd.ucam-site-stats__text: A maior nota da área.',
+    ]);
+    expect(el.children[1].querySelector('.ucam-site-stats__text')).toBeNull();
+    expect(el.children[2].querySelector('.ucam-site-stats__text')).toBeNull();
+  });
   it('valor numérico é aceito como veio', () => {
     expect(monta(Hospede, { items: [{ value: 24, label: 'anos' }] }).el.querySelector('dd')!.textContent).toBe('24');
   });

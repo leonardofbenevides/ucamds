@@ -24,6 +24,10 @@
         "tela": "www — destaques",
         "rotulo": "120+ anos · 500+ empresas · 85%",
         "problema": "85% de empregabilidade sem fonte nem ano"
+      },
+      {
+        "tela": "saber-mais — /mestrado, \"Por que fazer o Mestrado\" (14/10/2026)",
+        "problema": "número, rótulo e uma frase, numa lista própria com cor e medida escritas à mão"
       }
     ],
     "conclusao": "Lista de definição, com rótulo ligado ao número, e a regra de que número sem fonte não entra."
@@ -37,7 +41,7 @@
     {
       "parte": "item",
       "obrigatorio": true,
-      "descricao": "<div> com um dt e um dd.",
+      "descricao": "<div> com um dt, o dd do valor e, se houver, o dd da frase.",
       "classe": "ucam-site-stats__item"
     },
     {
@@ -51,14 +55,20 @@
       "obrigatorio": true,
       "descricao": "<dd>: o número, em display.",
       "classe": "ucam-site-stats__value"
+    },
+    {
+      "parte": "text",
+      "obrigatorio": false,
+      "descricao": "<dd>: uma ou duas frases sobre o número. Vem depois do valor no documento e na tela.",
+      "classe": "ucam-site-stats__text"
     }
   ],
   "props": [
     {
       "nome": "items",
-      "tipo": "{ value: string; label: string }[]",
+      "tipo": "{ value: string; label: string; text?: string }[]",
       "obrigatorio": true,
-      "descricao": "Três ou quatro."
+      "descricao": "Três ou quatro; a frase é opcional, e com ela a faixa diz por que o número importa."
     },
     {
       "nome": "inverse",
@@ -113,7 +123,8 @@
     "regras": [
       "O rótulo diz o que o número conta, em minúsculas.",
       "Número arredondado leva o sinal de mais: 5.000+.",
-      "Percentual leva fonte e ano no texto da seção."
+      "Percentual leva fonte e ano no texto da seção.",
+      "A frase diz de onde vem o número ou o que ele quer dizer, numa ou duas frases; não repete o rótulo."
     ]
   },
   "migracao": {
