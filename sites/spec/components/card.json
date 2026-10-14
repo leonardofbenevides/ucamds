@@ -27,6 +27,10 @@
       {
         "tela": "cenpre — cartão interativo",
         "problema": "no hover a borda vai a um rosa claro de 1,4:1"
+      },
+      {
+        "tela": "saber-mais — /mestrado, o painel da Turma 2026.2 (14/10/2026)",
+        "problema": "o único painel tinto da página, com cor e borda escritas à mão"
       }
     ],
     "conclusao": "O link é o do título, esticado sobre o cartão. O nome do link é o título, e não há link dentro de link."
@@ -101,6 +105,19 @@
       }
     },
     {
+      "nome": "featured",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "O cartão de destaque: lavagem e filete da marca. Só vale sem href; com href, o cartão fica como é.",
+      "valores": {
+        "true": {
+          "uso": "Uma vez na página, para a informação que precisa ser vista primeiro: a próxima turma, o prazo da inscrição.",
+          "limite": "Nunca com link: com href o modificador não entra.",
+          "classe": ".ucam-site-card--destaque"
+        }
+      }
+    },
+    {
       "nome": "image",
       "tipo": "string | null",
       "default": "null",
@@ -128,7 +145,8 @@
       "Não pôr botão nem segundo link dentro de um cartão clicável.",
       "Não envolver o cartão inteiro num <a>.",
       "Não mais de três tags.",
-      "Não para curso nem para lista de documentos: há cartões próprios."
+      "Não para curso nem para lista de documentos: há cartões próprios.",
+      "Um cartão de destaque por página, e sempre sem link. As ações dele vão no fim do corpo, como botão ou link de verdade: sem href, não há link esticado para disputar o clique."
     ],
     "motivo": "Link em volta de tudo vira um nome de link de cinquenta palavras. E dois alvos sobrepostos fazem a pessoa errar o clique."
   },
@@ -225,6 +243,6 @@
         "--ucam-site-space-inset-card"
       ]
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/card/card.ts — article[ucamSiteCard], [ucamSiteCardMeta]. Entradas: heading, href, image, text, interactive, level."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/card/card.ts — article[ucamSiteCard], [ucamSiteCardMeta]. Entradas: heading, href, image, text, interactive, featured, level."
   }
 }

@@ -1607,6 +1607,14 @@ ${acima('grade-completa')} {
   .ucam-site-card--interativo:hover { transform: none; }
   .ucam-site-course-card:hover { transform: none; }
 }
+/* O cartão de destaque: a informação que a página quer que se veja primeiro,
+ * como a próxima turma. Lavagem e filete da marca, sem sombra a mais. Só sem
+ * link: um cartão clicável tinto competiria com o botão primário. Os pares de
+ * texto sobre a lavagem são medidos no build, nas duas marcas. */
+.ucam-site-card--destaque {
+  border-color: ${V('color-surface-brand')};
+  background: ${V('color-surface-brand-soft')};
+}
 
 /* ------------------------------------------------------------ doc-card --- */
 /* Contrato: sites/spec/components/doc-card.json. A lista de documentos de um

@@ -6,8 +6,9 @@ import { UcamSiteCard, UcamSiteCardMeta } from './card';
 @Component({
   imports: [UcamSiteCard, UcamSiteCardMeta, UcamSiteTag],
   // `interactive` só vale com href; o hospedeiro dá um por padrão para o bloco do contrato enxergar a classe.
-  template: `<article ucamSiteCard data-peca class="minha" heading="Como montar o primeiro currículo" [href]="$any(e()['href'] === undefined ? '/curriculo' : e()['href'])"
-    [image]="$any(e()['image'])" [text]="$any(e()['text'])" [interactive]="$any(e()['interactive'])" [level]="$any(e()['level'])">
+  // `featured` só vale sem href: com ele ligado, o padrão é não ter href.
+  template: `<article ucamSiteCard data-peca class="minha" heading="Como montar o primeiro currículo" [href]="$any(e()['href'] === undefined ? (e()['featured'] ? null : '/curriculo') : e()['href'])"
+    [image]="$any(e()['image'])" [text]="$any(e()['text'])" [interactive]="$any(e()['interactive'])" [featured]="$any(e()['featured'])" [level]="$any(e()['level'])">
     @if (e()['meta']) { <ul ucamSiteCardMeta><li ucamSiteTag>Currículo</li></ul> }
   </article>`,
 })
@@ -29,6 +30,13 @@ describe('article[ucamSiteCard]', () => {
     expect(links[0].parentElement!.matches(`h3${T}`)).toBe(true);
     expect(links[0].textContent).toBe('Como montar o primeiro currículo');
     expect(el.querySelector('a a')).toBeNull();
+  });
+  it('destaque só sem link: com href o modificador não entra', () => {
+    expect(monta(Hospede, { featured: true }).el.classList.contains('ucam-site-card--destaque')).toBe(true);
+    const comLink = monta(Hospede, { featured: true, href: '/turma' }).el;
+    expect(comLink.classList.contains('ucam-site-card--destaque')).toBe(false);
+    expect(comLink.querySelector('a.ucam-site-card__link')).not.toBeNull();
+    expect(monta(Hospede, { href: null }).el.classList.contains('ucam-site-card--destaque')).toBe(false);
   });
   it('sem href não há link nenhum: o título é texto, e o cartão não se diz interativo', () => {
     for (const href of [null, '', '   ']) {

@@ -14,10 +14,12 @@ import { classesDe } from '../nucleo/classes';
  * folha estica sobre o cartão —, nunca por um link em volta de tudo. Sem
  * `href` não há link: o título é texto, e o cartão não se diz interativo,
  * mesmo que `interactive` venha ligado (realce de clique em algo que não
- * leva a lugar nenhum engana).
+ * leva a lugar nenhum engana). `featured` é o contrário: só vale SEM `href`,
+ * porque um cartão clicável tinto competiria com o botão primário.
  *
  * O que for escrito dentro do cartão sem ser a meta vai para o fim do corpo.
- * Nada de link nem de botão ali: o link do título cobre o cartão inteiro.
+ * Num cartão com link, nada de link nem de botão ali: o link do título cobre o
+ * cartão inteiro. No de destaque, sem link, é ali que vão as ações.
  */
 @Component({
   selector: 'article[ucamSiteCard]',
@@ -35,6 +37,8 @@ export class UcamSiteCard {
   readonly image = input<string | null | undefined>(null);
   readonly text = input<string | null | undefined>(null);
   readonly interactive = input(false, { transform: booleanAttribute });
+  /** O cartão de destaque. Só sem `href`. */
+  readonly featured = input(false, { transform: booleanAttribute });
   /** O nível do título: 3 por padrão; 2 ou 4 conforme a seção em que o cartão está. */
   readonly level = input<2 | 3 | 4, 2 | 3 | 4 | '2' | '3' | '4' | null | undefined>(3, { transform: (v) => ([2, 4].includes(Number(v)) ? (Number(v) as 2 | 4) : 3) });
 
@@ -42,7 +46,7 @@ export class UcamSiteCard {
   protected readonly destino = computed(() => (this.heading()?.trim() ? this.href()?.trim() || null : null));
   protected readonly foto = computed(() => this.image()?.trim() || null);
   protected readonly texto = computed(() => this.text()?.trim() || null);
-  protected readonly classes = computed(() => classesDe('ucam-site-card', this.interactive() && !!this.destino() && 'interativo'));
+  protected readonly classes = computed(() => classesDe('ucam-site-card', this.interactive() && !!this.destino() && 'interativo', this.featured() && !this.destino() && 'destaque'));
 }
 
 /** A fileira de tags do cartão, projetada antes do título: `<ul ucamSiteCardMeta>`. */
