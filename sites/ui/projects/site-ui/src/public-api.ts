@@ -34,6 +34,7 @@ import { UcamSiteCta, UcamSiteCtaActions } from './lib/editorial-cta/editorial-c
 import { UcamSiteMarquee } from './lib/logo-marquee/logo-marquee';
 import { UcamSiteFactSheet } from './lib/fact-sheet/fact-sheet';
 import { UcamSiteSectionTabs } from './lib/section-tabs/section-tabs';
+import { UcamSiteTimeline } from './lib/timeline/timeline';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -64,6 +65,7 @@ export * from './lib/editorial-cta/editorial-cta';
 export * from './lib/logo-marquee/logo-marquee';
 export * from './lib/fact-sheet/fact-sheet';
 export * from './lib/section-tabs/section-tabs';
+export * from './lib/timeline/timeline';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -110,4 +112,5 @@ export const UCAM_SITE = [
   UcamSiteMarquee,
   UcamSiteFactSheet,
   UcamSiteSectionTabs,
+  UcamSiteTimeline,
 ] as const;

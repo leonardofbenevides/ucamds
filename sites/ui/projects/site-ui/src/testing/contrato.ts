@@ -30,6 +30,7 @@ import editorialCta from '../../../../../spec/components/editorial-cta.json';
 import logoMarquee from '../../../../../spec/components/logo-marquee.json';
 import factSheet from '../../../../../spec/components/fact-sheet.json';
 import sectionTabs from '../../../../../spec/components/section-tabs.json';
+import timeline from '../../../../../spec/components/timeline.json';
 
 export interface Prop {
   nome: string;
@@ -66,6 +67,7 @@ const CONTRATOS: Record<string, unknown> = {
   'logo-marquee': logoMarquee,
   'fact-sheet': factSheet,
   'section-tabs': sectionTabs,
+  'timeline': timeline,
 };
 
 /**

@@ -1460,6 +1460,50 @@ ${acima('duas-colunas')} {
   outline-offset: calc(-1 * ${V('focus-ring-width')});
 }
 
+/* ------------------------------------------------------------ timeline --- */
+/* Contrato: sites/spec/components/timeline.json. Uma lista ordenada de
+ * marcos presos a um fio vertical. O fio é a borda inicial da lista e o ponto
+ * de cada marco é um ::before centrado nele, na altura da linha do ano: os
+ * dois são decoração, a ordem já é da lista. */
+.ucam-site-timeline {
+  display: grid;
+  gap: ${V('space-stack-md')};
+  margin: 0 0 0 ${V('space-inline-xs')};
+  padding: 0 0 0 ${V('space-stack-md')};
+  border-inline-start: 1px solid ${V('color-border-default')};
+  list-style: none;
+}
+.ucam-site-timeline__item {
+  position: relative;
+  display: grid;
+  gap: ${V('space-inline-xs')};
+}
+.ucam-site-timeline__item::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc(0.5lh - ${V('space-inline-xs')});
+  inset-inline-start: calc(-1 * (${V('space-stack-md')} + ${V('space-inline-xs')}) - 0.5px);
+  inline-size: ${V('space-inline-sm')};
+  block-size: ${V('space-inline-sm')};
+  border-radius: ${V('radius-pill')};
+  background: ${V('color-surface-brand')};
+}
+.ucam-site-timeline__year {
+  color: ${V('color-text-secondary')};
+  font-weight: ${V('typography-title-font-weight')};
+  font-variant-numeric: tabular-nums;
+}
+.ucam-site-timeline__title {
+  margin: 0;
+  color: ${V('color-text-primary')};
+  font-weight: ${V('typography-title-font-weight')};
+}
+.ucam-site-timeline__text {
+  margin: 0;
+  color: ${V('color-text-body')};
+  text-wrap: pretty;
+}
+
 /* -------------------------------------------------------- logo-marquee --- */
 /* Contrato: sites/spec/components/logo-marquee.json. Os logos desfilam em
  * laço: a trilha tem duas cópias do grupo e anda metade da própria largura.

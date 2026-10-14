@@ -1,0 +1,139 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "timeline",
+  "name": "Timeline",
+  "selector": "ucam-site-timeline",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.5",
+  "category": "conteudo",
+  "description": "A trajetória de um programa ou de uma unidade: marcos em ordem, cada um com o ano, um título curto e, se houver, uma frase, presos a um fio vertical.",
+  "quando_usar": [
+    "Para a história de um curso, de um programa ou de um campus, em cinco a doze marcos.",
+    "Quando o ano é o que organiza a leitura."
+  ],
+  "evidencia": {
+    "origem": "saber-mais-nu.vercel.app/mestrado e /doutorado, 14/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "saber-mais — /mestrado, A trajetória do programa",
+        "problema": "a linha do tempo desenhada no componente da apresentação, com fio, ponto e cores escritos à mão"
+      }
+    ],
+    "conclusao": "Uma lista ordenada de marcos, com o fio e o ponto na folha, decorativos: a ordem já é da lista."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<ol role=\"list\">, com o fio vertical na borda inicial. O role devolve a lista ao Safari, que a esquece sem marcador."
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<li> de um marco. O ponto sobre o fio é um ::before, decorativo.",
+      "classe": "ucam-site-timeline__item"
+    },
+    {
+      "parte": "year",
+      "obrigatorio": true,
+      "descricao": "<span> com o ano, antes do título no documento.",
+      "classe": "ucam-site-timeline__year"
+    },
+    {
+      "parte": "title",
+      "obrigatorio": true,
+      "descricao": "<p> com o que aconteceu, em poucas palavras.",
+      "classe": "ucam-site-timeline__title"
+    },
+    {
+      "parte": "text",
+      "obrigatorio": false,
+      "descricao": "<p> de uma frase.",
+      "classe": "ucam-site-timeline__text"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "{ year: string; title: string; text?: string }[]",
+      "obrigatorio": true,
+      "descricao": "Os marcos, do mais antigo ao mais novo. Marco sem ano ou sem título não entra."
+    }
+  ],
+  "estados": [
+    "default"
+  ],
+  "limites": {
+    "regras": [
+      "Não para passos que a pessoa faz: esses são os passos (step-card).",
+      "Não mais de doze marcos: a trajetória longa pede página própria.",
+      "Não para datas futuras de um edital: essas são o cronograma do processo."
+    ],
+    "motivo": "A linha do tempo conta o que já aconteceu. Passo e cronograma são o que a pessoa ainda vai fazer, e pedem outra leitura."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "É uma lista ordenada, com role=\"list\": quem ouve sabe quantos marcos são e em que ordem.",
+      "Fio e ponto são decoração da folha, sem nada que o leitor de tela leia.",
+      "Ano, título e frase a 4,5:1 sobre a página e sobre a seção recuada, medidos no build."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.3"
+    ]
+  },
+  "conteudo": {
+    "titulo": {
+      "bom": [
+        "Mestrado implantado",
+        "Nota 4 na CAPES"
+      ],
+      "ruim": [
+        "Em 2000, o mestrado foi implantado",
+        "Marco importante"
+      ]
+    },
+    "regras": [
+      "O título diz o que aconteceu, sem repetir o ano.",
+      "A frase acrescenta: um número, uma consequência. Se não acrescenta, fica de fora."
+    ]
+  },
+  "vs": [
+    {
+      "componente": "step-card",
+      "diferenca": "A linha do tempo conta o que já aconteceu, marcado pelo ano. Os passos dizem o que a pessoa vai fazer, em ordem.",
+      "escolha": "História, linha do tempo. Instrução, passos."
+    }
+  ],
+  "exemplos": [
+    {
+      "titulo": "A trajetória do programa",
+      "codigo": "<ol class=\"ucam-site-timeline\" role=\"list\">\n  <li class=\"ucam-site-timeline__item\">\n    <span class=\"ucam-site-timeline__year\">2000</span>\n    <p class=\"ucam-site-timeline__title\">Mestrado implantado</p>\n    <p class=\"ucam-site-timeline__text\">Reconhecido pela CAPES no mesmo ano.</p>\n  </li>\n</ol>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Uma lista ordenada, com o ano em texto.",
+      "evite": "Uma imagem da linha do tempo, ou divs com o ano desenhado.",
+      "porque": "Na imagem o texto não se lê nem se busca; nas divs, quem ouve não sabe a ordem."
+    },
+    {
+      "faca": "Título curto e uma frase só quando acrescenta.",
+      "evite": "Um parágrafo por marco.",
+      "porque": "A linha do tempo se lê de relance; o parágrafo vai para a seção de história."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Lista ordenada com fio vertical na borda e um ponto por marco.",
+      "raiz": ".ucam-site-timeline",
+      "variaveis": [
+        "--ucam-site-color-border-default",
+        "--ucam-site-color-surface-brand",
+        "--ucam-site-color-text-secondary"
+      ]
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/timeline/timeline.ts — ol[ucamSiteTimeline]. Entradas: items."
+  }
+}

@@ -184,5 +184,12 @@
       ]
     },
     "trilho_b": "sites/ui/projects/site-ui/src/lib/step-card/step-card.ts — ol[ucamSiteSteps], li[ucamSiteStep]. Entradas: number, heading, text, href, linkLabel."
-  }
+  },
+  "vs": [
+    {
+      "componente": "timeline",
+      "diferenca": "Os passos dizem o que a pessoa vai fazer, em ordem. A linha do tempo conta o que já aconteceu, marcado pelo ano.",
+      "escolha": "Instrução, passos. História, linha do tempo."
+    }
+  ]
 }
