@@ -2681,6 +2681,21 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * escolha falar num lado só em todo o sistema. Coluna fixa já é sticky, que
  * serve de âncora; só a célula comum ganha position: relative. */
 .ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child:not(.ucam-col--fixa-inicio):not(.ucam-col--fixa-fim) { position: relative; }
+/* A LINHA QUE FALTA (isenção, 14/10/2026): o aviso "Faltam N decisões"
+ * marca cada linha sem decisão com [data-falta] e a frase de erro sob o
+ * seletor; o traço de 4px na entrada, na cor do erro, é o que se acha ao
+ * rolar a tabela — a frase sozinha ficava na terceira coluna. Mesmo lugar e
+ * desenho da linha escolhida, outro papel de cor. */
+.ucam-table tbody tr[data-falta] > :is(th, td):first-child:not(.ucam-col--fixa-inicio):not(.ucam-col--fixa-fim) { position: relative; }
+.ucam-table tbody tr[data-falta] > :is(th, td):first-child::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 0.25rem;
+  background: var(--ucam-color-feedback-danger-border);
+  pointer-events: none;
+}
 .ucam-table tbody tr[aria-selected="true"] > :is(th, td):first-child::after {
   content: "";
   position: absolute;
@@ -13592,6 +13607,28 @@ ${abaixo('controle-deitado')} {
  * com "·", que lê como marcador de lista. CSS não sabe se um item de flex
  * quebrou; o viewbarScript (lib/shell.mjs) mede e marca data-quebrada. */
 .ucam-viewbar__meta[data-quebrada]::before { content: none; }
+/* A META QUE LEVA AO QUE CONTA (14/10/2026, isenção: "quando falta uma
+ * decisão, mostre aonde está"). "8 sem decisão" é botão: cada clique leva à
+ * próxima linha sem decisão. Tem cor de ação e seta para baixo em repouso
+ * (clicável se diz sem hover); sem nada a mostrar ([data-vazio]) volta a ser
+ * a meta de texto, sem seta e sem cor. */
+.ucam-viewbar__meta--ir {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  color: var(--ucam-color-text-link);
+  border-radius: var(--ucam-radius-miudo);
+  cursor: pointer;
+}
+.ucam-viewbar__meta--ir .ic { inline-size: 1rem; block-size: 1rem; flex: none; }
+.ucam-viewbar__meta--ir:hover .ucam-viewbar__meta-texto { text-decoration: underline; text-underline-offset: 0.2em; }
+.ucam-viewbar__meta--ir[data-vazio] { color: var(--ucam-color-text-secondary); cursor: default; }
+.ucam-viewbar__meta--ir[data-vazio] .ic { display: none; }
+.ucam-viewbar__meta--ir[data-vazio]:hover .ucam-viewbar__meta-texto { text-decoration: none; }
 
 /* O FECHO DA TELA DE TRABALHO: a ação que conclui (Finalizar análise) e o
  * resumo que ela confere, embrulhados em .ucam-viewbar__fecho dentro das
