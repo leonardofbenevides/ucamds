@@ -141,12 +141,22 @@ export const TEM_DEMO_VIVA = new Set([
         <div class="palco-vivo">
           @switch (componenteId()) {
             @case ('button') {
-              <div class="linha">
-                <ucam-button variant="primary" [loading]="salvando()" (click)="salvar()">
-                  {{ salvando() ? 'Salvando' : 'Salvar' }}
-                </ucam-button>
-                <ucam-button variant="secondary">Cancelar</ucam-button>
-                <ucam-button variant="ghost" iconStart="scrollText">Ver histórico</ucam-button>
+              <p class="cena">Três pesos</p>
+              <div class="linha amostras">
+                <div class="amostra">
+                  <ucam-button variant="primary" [loading]="salvando()" (click)="salvar()">
+                    {{ salvando() ? 'Salvando' : 'Salvar' }}
+                  </ucam-button>
+                  <span class="amostra__nota amostra__nota--valor">primary</span>
+                </div>
+                <div class="amostra">
+                  <ucam-button variant="secondary">Cancelar</ucam-button>
+                  <span class="amostra__nota amostra__nota--valor">secondary</span>
+                </div>
+                <div class="amostra">
+                  <ucam-button variant="ghost" iconStart="scrollText">Ver histórico</ucam-button>
+                  <span class="amostra__nota amostra__nota--valor">ghost</span>
+                </div>
               </div>
               <p class="small muted retorno resto">
                 Clique em Salvar: o <code>loading</code> troca o ícone por spinner, marca
@@ -154,12 +164,26 @@ export const TEM_DEMO_VIVA = new Set([
                 limite que o contrato impõe.
               </p>
 
-              <div class="linha">
-                <ucam-button variant="primary" tone="danger" iconStart="trash2">
-                  Excluir setor
-                </ucam-button>
-                <ucam-button variant="secondary" tone="danger" size="sm">Excluir</ucam-button>
-                <ucam-button variant="ghost" tone="danger" iconStart="trash2">Excluir</ucam-button>
+              <p class="cena">Destrutivo, e onde cada peso mora</p>
+              <div class="linha amostras">
+                <div class="amostra">
+                  <ucam-button variant="primary" tone="danger" iconStart="trash2">
+                    Excluir setor
+                  </ucam-button>
+                  <span class="amostra__nota">No diálogo que confirma</span>
+                </div>
+                <div class="amostra">
+                  <ucam-button variant="secondary" tone="danger" iconStart="trash2">
+                    Excluir setor
+                  </ucam-button>
+                  <span class="amostra__nota">Na linha da tabela</span>
+                </div>
+                <div class="amostra">
+                  <ucam-button variant="ghost" tone="danger" iconStart="trash2">
+                    Excluir setor
+                  </ucam-button>
+                  <span class="amostra__nota">No menu</span>
+                </div>
               </div>
               <p class="small muted retorno resto">
                 A mesma ação destrutiva em três pesos — é a ADR-015. O <code>tone</code> diz que
@@ -779,16 +803,61 @@ export const TEM_DEMO_VIVA = new Set([
       border-radius: var(--r-superficie);
       background-color: var(--ucam-color-surface-canvas);
     }
+    /* A margem de baixo do último parágrafo somava ao respiro do palco: 28px
+       em cima, 45px embaixo. */
+    .palco-vivo > :last-child {
+      margin-block-end: 0;
+    }
     /* O palco não impõe largura: quem manda é o componente. O page-header
        precisa da linha inteira; o campo de CPF, não. */
     .linha {
       display: flex;
       flex-wrap: wrap;
-      align-items: flex-start;
+      align-items: center;
       gap: 0.5rem;
     }
     .linha + .linha {
       margin-block-start: 0.6rem;
+    }
+    /* O que vem depois de uma explicação é outra cena. O respiro mora em quem
+       chega, e não no parágrafo, porque no modo resumo o .resto some — e sem
+       isto as duas fileiras de botões ficavam coladas, lidas como uma só que
+       quebrou de linha. */
+    .retorno + * {
+      margin-block-start: 1.25rem;
+    }
+    /* O nome da cena. Fica FORA do .resto de propósito: no modo resumo a
+       explicação some, e duas fileiras de botão sem nome nenhum não dizem por
+       que são duas. É a mesma voz do rótulo de seção da página (.eyebrow),
+       escrita aqui porque o estilo do componente é encapsulado. */
+    .cena {
+      margin: 0 0 0.75rem;
+      font-size: 0.6875rem;
+      font-weight: 580;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ucam-color-text-secondary);
+    }
+    /* Amostra: a peça e, embaixo, o que a distingue da vizinha. O vão entre
+       amostras é maior que o de uma fileira de botões de verdade porque aqui
+       cada uma é um espécime com legenda, não um grupo de ações. */
+    .amostras {
+      align-items: flex-start;
+      gap: 1rem 1.5rem;
+    }
+    .amostra {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .amostra__nota {
+      font-size: 0.75rem;
+      line-height: 1.3;
+      color: var(--ucam-color-text-secondary);
+    }
+    .amostra__nota--valor {
+      font-family: var(--f-mono);
     }
     .linha.alinhada {
       align-items: center;
@@ -886,7 +955,7 @@ export class DemoVivaComponent {
       assunto: 'Revisão de nota — divergência entre gabarito e correção',
       quando: 'há 4h',
       iso: '2026-09-03T09:10',
-      tom: 'danger' as UcamBadgeTone,
+      tom: 'danger' as const,
       situacao: 'Urgente',
       naoLido: false,
     },
@@ -896,7 +965,7 @@ export class DemoVivaComponent {
       assunto: 'Carteira do estudante — foto',
       quando: '16/08/2026',
       iso: '2026-08-16',
-      tom: 'danger' as UcamBadgeTone,
+      tom: 'danger' as const,
       situacao: 'Atrasado',
       naoLido: true,
     },
@@ -906,7 +975,7 @@ export class DemoVivaComponent {
       assunto: 'Declaração de matrícula',
       quando: 'há 3 dias',
       iso: '2026-08-31',
-      tom: 'info' as UcamBadgeTone,
+      tom: 'info' as const,
       situacao: 'Em análise',
       naoLido: false,
     },

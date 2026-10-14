@@ -117,7 +117,7 @@
     {
       "parte": "cell-person",
       "obrigatorio": false,
-      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro; <button> quando a linha abre uma gaveta na própria tela, sem endereço) e um apoio — CPF mascarado, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047). CÉLULA COM FIGURA (.td--figura, 06/10/2026): um ladrilho de ícone (.ucam-icon-tile--sm, aria-hidden) antes do nome da linha, com o texto em .td--figura__texto — a disciplina na tabela da isenção. Dá ao olho onde cada linha começa numa tabela em que a primeira coluna é texto e as outras são controle; o ícone é decorativo, o nome é o dado, e a coluna continua ordenando pelo texto."
+      "descricao": "Célula de pessoa (.td--pessoa, type=person): avatar neutro de iniciais, nome (.td--pessoa__nome, link quando há registro; <button> quando a linha abre uma gaveta na própria tela, sem endereço) e um apoio — CPF, e-mail, lotação — na MESMA linha (.td--pessoa__texto); o apoio quebra para baixo só quando a coluna aperta. É o que permite à listagem de pessoas usar density=compact. Avatar decorativo e sem tom (ADR-022, ADR-046). O identificador do registro — matrícula — vai no campo id, impresso em .ucam-id antes do apoio (ADR-047). CÉLULA COM FIGURA (.td--figura, 06/10/2026): um ladrilho de ícone (.ucam-icon-tile--sm, aria-hidden) antes do nome da linha, com o texto em .td--figura__texto — a disciplina na tabela da isenção. Dá ao olho onde cada linha começa numa tabela em que a primeira coluna é texto e as outras são controle; o ícone é decorativo, o nome é o dado, e a coluna continua ordenando pelo texto."
     },
     {
       "parte": "cell-support",
@@ -322,7 +322,7 @@
       "type": {
         "tipo": "'text' | 'id' | 'number' | 'date' | 'currency' | 'status' | 'person' | 'actions'",
         "default": "'text'",
-        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge em pastilha tinta com ponto (ADR-051, revista em 25/09/2026); number e currency recebem tabular-nums e alinham à direita. id é a coluna de identificador — matrícula, número de documento — em .ucam-id: um degrau de peso, sem tabular-nums e alinhada ao início (ADR-047). person é a célula de pessoa com avatar, nome e apoio (ADR-046)."
+        "descricao": "Define alinhamento, formatação e componente de renderização. status renderiza Badge em pastilha tinta com ponto (ADR-051, revista em 25/09/2026); number e currency recebem tabular-nums e alinham à direita. id é a coluna de identificador — matrícula, número de documento — em .ucam-id: um degrau de peso, sem tabular-nums e alinhada ao início (ADR-047), e na tinta do app quando é o conteúdo da célula (ADR-071). person é a célula de pessoa com avatar, nome e apoio (ADR-046)."
       },
       "width": {
         "tipo": "'auto' | 'min' | number",
@@ -509,6 +509,16 @@
     }
   ],
   "boas_praticas": [
+    {
+      "faca": "No gatilho do cabeçalho, a seta diz a ordem: ⇕ coluna ordenável sem ordem, ↑ crescente, ↓ decrescente. Coluna que não ordena e só tem o menu (fixar, ocultar) usa ⋮.",
+      "evite": "Usar ↓ como 'abre o menu' numa coluna que não ordena.",
+      "porque": "Em 13/10/2026 nove colunas só de menu mostravam ↓ ao lado de colunas ordenadas em ordem decrescente com o mesmo desenho; quem varre o cabeçalho lia duas ordens."
+    },
+    {
+      "faca": "Deixar a coluna de ações sem divisa: a classe td--acoes / th--acoes já tira o fio.",
+      "evite": "Dar rótulo visível ou fio à coluna de ações.",
+      "porque": "As ações só aparecem com a linha apontada; com fio, a coluna vazia em repouso parece dado faltando."
+    },
     {
       "faca": "Ordenar pelo cabeçalho da coluna, alcançável por teclado.",
       "evite": "Ordenação num select separado ('Ordenar por mais antigo').",

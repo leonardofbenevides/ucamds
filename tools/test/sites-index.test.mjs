@@ -15,7 +15,7 @@ test('o índice dos sites junta contrato, demo e a folha, sem @import e sem clas
   assert.equal(b.selector, 'ucam-site-button');
   assert.match(b.demo.principal.preview, /ucam-site-btn--primary/);
   assert.equal(b.trilhos, undefined);
-  assert.match(css, /--ucam-site-color-action-primary-default: #8D293A/);
+  assert.match(css, /--ucam-site-color-action-primary-default: #8E1331/);
   assert.match(css, /\[data-marca="cenpre"\]/);
   assert.match(css, /\.ucam-site \.ic \{/);
   assert.match(css, /\.ucam-site-btn \{/);

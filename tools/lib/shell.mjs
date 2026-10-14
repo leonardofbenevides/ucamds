@@ -2704,7 +2704,7 @@ ${FN_ANUNCIA}
 
   // O selo de SITUAÇÃO do registro: o primeiro selo, subindo a partir do
   // botão, cujo texto é uma situação — não o de prioridade nem o de modalidade.
-  var SITUACOES = ['Em análise', 'Encaminhado', 'Concluído', 'Aguardando', 'Aberto'];
+  var SITUACOES = ['Em análise', 'Encaminhado', 'Concluído', 'Deferido', 'Indeferido', 'Aguardando', 'Aberto'];
   function seloSituacao(de) {
     for (var a = de; a && a !== document.body; a = a.parentElement) {
       var achado = Array.prototype.filter.call(a.querySelectorAll('.ucam-badge'), function (b) {
@@ -3120,6 +3120,15 @@ ${FN_ANUNCIA}
       '<div class="ucam-timeline__conteudo"><p class="ucam-timeline__cabecalho"><span class="ucam-timeline__autor">Você</span><span class="ucam-timeline__papel">Coordenação</span><time class="ucam-timeline__tempo">agora, ' + hora() + '</time></p>' +
       '<p class="ucam-timeline__corpo">' + titulo + '</p>' + (corpo ? '<p class="ucam-timeline__corpo ucam-timeline__corpo--mensagem">' + corpo + '</p>' : '') + '</div>';
     lista.insertBefore(li, lista.firstElementChild);
+    // A lista pode morar num diálogo fechado (análise da isenção, 11/10/2026):
+    // quem diz que entrou um registro é a contagem do gatilho, no cabeçalho.
+    var conta = document.querySelector('[data-atividade-conta]');
+    if (conta) {
+      var total = lista.children.length;
+      conta.textContent = total;
+      var gatilho = conta.closest('button');
+      if (gatilho) gatilho.setAttribute('aria-label', 'Atividade da solicitação, ' + total + ' registros');
+    }
     eco(li);
   }
   // Prazo de envio do documento pedido pela coordenação: 15 dias corridos.
@@ -3331,8 +3340,12 @@ ${FN_ANUNCIA}
      * coisas"). Concluir e encaminhar mudavam só o selo do detalhe: o item
      * seguia em "Aguardam você", a contagem ficava em 9 e "Concluídos" e
      * "Encaminhados" não recebiam nada. */
-    if (qual === 'concluir' || qual === 'encaminhar') {
+    if (qual === 'concluir' || qual === 'encaminhar' || qual === 'devolver') {
       var concluindo = qual === 'concluir';
+      // DEVOLVER (14/10/2026, reescrita v3): "Responder" do Protocolo não fala
+      // com o aluno; devolve o pedido ao setor que o encaminhou. Anda como o
+      // encaminhar, com o verbo certo.
+      var devolvendo = qual === 'devolver';
       // O DESTINO é escolhido no diálogo (data-abre-dialogo → data-escolha,
       // dialogoScript): "encaminhado ao setor responsável" mandava o pedido
       // para o setor onde ele já estava (revisão de 28/09/2026).
@@ -3348,23 +3361,24 @@ ${FN_ANUNCIA}
       var campoParecer = concluindo && document.querySelector(botao.getAttribute('data-exige-texto') || '#__nenhum');
       var textoParecer = campoParecer ? campoParecer.value.trim() : '';
       if (campoParecer) campoParecer.value = '';
-      mudarSelo(seloSituacao(botao), concluindo ? parecer : 'Encaminhado', concluindo ? tomParecer : 'info');
-      evento(concluindo ? 'Concluiu o requerimento como ' + parecer.toLowerCase() + (textoParecer ? ': ' + textoParecer : '') : 'Encaminhou o requerimento' + paraOnde, concluindo ? 'check' : 'send');
-      tiraDaFila(botao, concluindo ? 'concluidos' : 'encaminhados', concluindo ? parecer : 'Encaminhado', concluindo ? tomParecer : 'info');
-      anuncia(concluindo ? 'Requerimento ' + parecer.toLowerCase() + '. Ele saiu de Aguardam você e está em Concluídos.' : 'Requerimento encaminhado' + paraOnde + '. Ele saiu de Aguardam você e está em Encaminhados.', botao);
+      // Encaminhar não é situação no Protocolo (13/10/2026, reescrita v3: só
+      // solicitado, em análise, deferido e indeferido): o selo fica como está.
+      if (concluindo) mudarSelo(seloSituacao(botao), parecer, tomParecer);
+      evento(concluindo ? 'Concluiu o requerimento como ' + parecer.toLowerCase() + (textoParecer ? ': ' + textoParecer : '') : devolvendo ? 'Respondeu e devolveu o requerimento' + paraOnde : 'Encaminhou o requerimento' + paraOnde, concluindo ? 'check' : devolvendo ? 'messageSquare' : 'send');
+      tiraDaFila(botao, concluindo ? 'concluidos' : 'encaminhados', concluindo ? parecer : 'Em análise', concluindo ? tomParecer : 'info');
+      anuncia(concluindo ? 'Requerimento ' + parecer.toLowerCase() + '. Ele saiu da Caixa de entrada e está em Concluídos.' : (devolvendo ? 'Resposta enviada e requerimento devolvido' : 'Requerimento encaminhado') + paraOnde + '. Ele saiu da Caixa de entrada e está em Encaminhados.', botao);
       if (concluindo) {
-        // CONCLUÍDO PODE SER REABERTO (06/10/2026). No Protocolo real quem vê
-        // o requerimento em Concluídos pode reabri-lo, com confirmação. O
-        // botão não morre: vira o verbo do próximo clique, como a estrela.
+        // CONCLUÍDO PODE SER REABERTO (06/10/2026). Quem vê o requerimento em
+        // Concluídos pode reabri-lo; na reescrita v3 (13/10/2026) sem
+        // confirmação. O botão não morre: vira o verbo do próximo clique.
         botao.setAttribute('data-dialogo-concluir', botao.getAttribute('data-abre-dialogo') || '');
         botao.removeAttribute('data-abre-dialogo');
         botao.removeAttribute('data-escolha');
         botao.setAttribute('data-acao', 'reabrir-requerimento');
-        botao.setAttribute('data-confirmar', '');
         botao.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-refreshCw"/></svg> Reabrir';
         return;
       }
-      return rotuloTemporario(botao, 'Encaminhado');
+      return rotuloTemporario(botao, devolvendo ? 'Respondido' : 'Encaminhado');
     }
 
     if (qual === 'reabrir-requerimento') {
@@ -3377,7 +3391,7 @@ ${FN_ANUNCIA}
       botao.removeAttribute('data-confirmar');
       botao.setAttribute('data-acao', 'concluir');
       botao.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-check"/></svg> Concluir';
-      anuncia('Requerimento reaberto. Ele voltou para Aguardam você, em análise.', botao);
+      anuncia('Requerimento reaberto. Ele voltou para a Caixa de entrada, em análise.', botao);
       return;
     }
 
@@ -3408,21 +3422,14 @@ ${FN_ANUNCIA}
         return /Ativo|Bloqueado|Aguardando/.test(b.textContent);
       })[0];
       if (seloConta) {
-        mudarSelo(seloConta, bloquear ? 'Bloqueado' : 'Ativo', bloquear ? 'warning' : 'success');
-        // O MOTIVO ao lado do selo: "Bloqueado" sozinho manda perguntar por quê.
-        // Só na célula: na barra de visão o pai do selo é a fileira inteira.
+        // O MOTIVO vai DENTRO do selo, numa linha (13/10/2026): "Bloqueado"
+        // sozinho manda perguntar por quê, e o apoio embaixo do selo é o
+        // arranjo de duas linhas que a listagem deixou de ter. Só na célula:
+        // na barra de visão o selo diz a situação e mais nada.
         var celulaConta = seloConta.closest('td, th');
+        mudarSelo(seloConta, bloquear ? (celulaConta ? 'Bloqueado · por você' : 'Bloqueado') : 'Ativo', bloquear ? 'danger' : 'success');
         var apoio = celulaConta && celulaConta.querySelector('.ucam-card__apoio');
-        if (celulaConta && bloquear) {
-          if (!apoio) {
-            apoio = document.createElement('span');
-            apoio.className = 'ucam-card__apoio';
-            celulaConta.appendChild(apoio);
-          }
-          apoio.textContent = 'bloqueado por você, agora';
-        } else if (apoio) {
-          apoio.remove();
-        }
+        if (apoio) apoio.remove();
       }
       botao.setAttribute('data-acao', bloquear ? 'desbloquear' : 'bloquear');
       // Item de menu tem rótulo visível: troca o texto, e não o nome acessível.
@@ -3846,6 +3853,33 @@ ${FN_ANUNCIA}
       return eco(linhaReg);
     }
 
+    /*
+     * MARCAR UMA LINHA (13/10/2026, Secretaria v3: aprovar um inscrito).
+     *
+     * O passo que vale para uma pessoa por vez e não tem volta pela tela. A
+     * linha troca de situação e de selo, o apoio que dizia o que faltava some,
+     * e o botão sai com ele: o passo foi dado. Selo, situação e aviso vêm da
+     * marcação (data-linha-selo, -tom, -situacao, -msg com {nome}).
+     */
+    if (qual === 'linha-marcar') {
+      var linhaM = botao.closest('tr');
+      if (!linhaM) return;
+      var seloM = linhaM.querySelector('.ucam-badge');
+      if (seloM) {
+        seloM.className = 'ucam-badge ucam-badge--' + (botao.getAttribute('data-linha-tom') || 'success');
+        seloM.innerHTML = '<span class="ucam-badge__ponto" aria-hidden="true"></span>' + (botao.getAttribute('data-linha-selo') || '');
+      }
+      var apoioM = linhaM.querySelector('.td--apoio');
+      if (apoioM) apoioM.remove();
+      if (botao.hasAttribute('data-linha-situacao')) linhaM.setAttribute('data-situacao', botao.getAttribute('data-linha-situacao'));
+      var nomeM = linhaM.querySelector('.td--pessoa__nome');
+      var msgM = (botao.getAttribute('data-linha-msg') || '').replace('{nome}', nomeM ? nomeM.textContent.trim() : '');
+      var celulaM = botao.closest('td');
+      botao.remove();
+      anuncia(msgM, (nomeM && nomeM.closest('a')) || celulaM);
+      return eco(linhaM);
+    }
+
     if (qual === 'etapa-inicio') return andarEtapa(botao, 'inicio');
     if (qual === 'etapa-voltar') return andarEtapa(botao, 'voltar');
     if (qual === 'etapa-continuar') return andarEtapa(botao, 'continuar');
@@ -4256,7 +4290,7 @@ ${FN_ANUNCIA}
       if (!notaIA) {
         notaIA = document.createElement('p');
         notaIA.id = campoIA.id + '-ia';
-        notaIA.className = 'ucam-field__hint ucam-ia-nota';
+        notaIA.className = 'ucam-ia-nota ucam-ia-nota--caixa';
         campoIA.closest('.ucam-field').appendChild(notaIA);
       }
       notaIA.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-sparkles"/></svg> Rascunho da IA a partir das disciplinas com documento pedido. Revise antes de enviar. <button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-fluxo="c" data-acao="ia-desfazer-observacao">Desfazer</button>';
@@ -4377,6 +4411,14 @@ ${FN_ANUNCIA}
       seloIsencao(document.querySelector('[data-selo-situacao]'), 'warning', 'Aguardando candidato');
       registraAtividade(botao, 'Observação enviada ao candidato', campoO.value.trim(), 'send', 'warning');
       anuncia('Observação enviada. A situação passou a Aguardando candidato.', botao);
+      // No diálogo (análise da isenção) o envio FECHA: o rótulo temporário
+      // ficaria atrás do pano de fundo, e quem confirma é o aviso.
+      var dlgO = botao.closest('dialog');
+      if (dlgO) {
+        dlgO.close();
+        if (window.ucamToast) window.ucamToast('Observação enviada ao candidato.');
+        return;
+      }
       return rotuloTemporario(botao, 'Enviada');
     }
 
@@ -5021,6 +5063,10 @@ export const abasScript = `
       if (meu) meu.setAttribute('aria-labelledby', aba.id);
     } else if (paineis.length === 1) {
       recortar(paineis[0], aba.getAttribute('data-valor'));
+      // O filtro da tela (filtroScript) reaplica o que estiver escolhido no
+      // recorte novo: sem isso, trocar de aba devolvia à vista o que o filtro
+      // tinha tirado (14/10/2026, caixa do Protocolo com o recorte de período).
+      document.dispatchEvent(new CustomEvent('ucam-recorte'));
       // O painel é um só e passa a ser rotulado pela aba da vez: aria-labelledby
       // preso na primeira aba faz o leitor anunciar a fila errada.
       paineis[0].setAttribute('aria-labelledby', aba.id);
@@ -5355,6 +5401,10 @@ ${FN_ANUNCIA}
    * que anuncia a contagem para quem ouve. As duas estavam escritas na grade
    * do Portal desde o primeiro desenho, sem nada atrás.
    */
+  document.addEventListener('ucam-recorte', function () {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-filtra]'), function (ctl) { aplicarTudo(ctl); });
+  });
+
   function aplicarTudo(ctl) {
     var vistos = 0, total = 0;
     alvosDe(ctl).forEach(function (a) {
@@ -5377,9 +5427,53 @@ ${FN_ANUNCIA}
     }
   }
 
+  /* O TERMO PESQUISADO APARECE MARCADO (12/10/2026: "sinalizar a palavra chave
+   * pesquisada"). O filtro escondia o que não casava e deixava quem ficou
+   * igual a antes: com "psico" digitado, nada na linha de Psicologia dizia
+   * por que ela ficou. O trecho que casou entra num <mark> — o mesmo realce
+   * da paleta de comando —, comparado sem acento nem caixa, como o filtro.
+   * A marca é só pintura: o textContent da célula não muda, e ordenar,
+   * paginar e ecoar continuam lendo o mesmo texto. Menos de duas letras não
+   * marca nada: uma letra acenderia a tabela inteira. */
+  function marcarTermo(ctl) {
+    var termo = crua(ctl.value);
+    alvosDe(ctl).forEach(function (alvo) {
+      Array.prototype.forEach.call(alvo.querySelectorAll('mark[data-achado]'), function (m) {
+        var p = m.parentNode;
+        p.replaceChild(document.createTextNode(m.textContent), m);
+        p.normalize();
+      });
+      if (termo.length < 2) return;
+      itens(alvo).forEach(function (item) {
+        if (item.hidden) return;
+        var w = document.createTreeWalker(item, NodeFilter.SHOW_TEXT, null);
+        var nos = [], n;
+        while ((n = w.nextNode())) {
+          if (n.parentNode.closest('[hidden], .ucam-sr-only, .ucam-menu, select, textarea, script, style')) continue;
+          nos.push(n);
+        }
+        nos.forEach(function (no) {
+          var t = no.nodeValue, plano = '';
+          for (var i = 0; i < t.length; i++) {
+            var d = t.charAt(i).toLowerCase().normalize('NFD');
+            plano += d.length ? d.charAt(0) : t.charAt(i);
+          }
+          var em = plano.indexOf(termo);
+          if (em < 0) return;
+          var meio = no.splitText(em);
+          meio.splitText(termo.length);
+          var m = document.createElement('mark');
+          m.setAttribute('data-achado', '');
+          meio.parentNode.replaceChild(m, meio);
+          m.appendChild(meio);
+        });
+      });
+    });
+  }
+
   document.addEventListener('input', function (e) {
     var c = e.target.closest && e.target.closest('[data-filtra="texto"]');
-    if (c) aplicarTudo(c);
+    if (c) { aplicarTudo(c); marcarTermo(c); }
   });
 
   /* Nas telas o <select> nativo não existe (ADR-011): o que sobra é o gatilho
@@ -6067,7 +6161,7 @@ export const confirmaScript = `
     },
     'reabrir-requerimento': {
       titulo: 'Reabrir o requerimento?',
-      corpo: 'O requerimento volta para Aguardam você, em análise, e o requerente vê a mudança no portal. O parecer anterior continua na linha do tempo.',
+      corpo: 'O requerimento volta para a Caixa de entrada, em análise, e o requerente vê a mudança no portal. O parecer anterior continua na linha do tempo.',
       rotulo: 'Reabrir',
       tom: 'primary',
     },
@@ -7395,6 +7489,42 @@ export const inboxScript = `
     }
     var voltar = e.target.closest('.ucam-inbox__voltar');
     if (voltar) fecha(voltar.closest('.ucam-inbox'));
+  });
+
+  // J E K ANDAM NA FILA (13/10/2026). Quem tria quarenta requerimentos por
+  // dia não volta ao ponteiro a cada um: J vai ao próximo item visível, K ao
+  // anterior, e o item escolhido recebe o foco. Não vale dentro de campo de
+  // texto (a letra é digitada), nem com Ctrl, Alt ou Meta (atalho de outro
+  // dono), nem com diálogo aberto. No fim e no começo da lista, para.
+  document.addEventListener('keydown', function (e) {
+    if (e.defaultPrevented || e.ctrlKey || e.altKey || e.metaKey) return;
+    var k = e.key && e.key.toLowerCase();
+    if (k !== 'j' && k !== 'k') return;
+    var inbox = document.querySelector('.ucam-inbox');
+    if (!inbox) return;
+    // SÓ COM O FOCO NA FILA OU EM LUGAR NENHUM (revisão de 13/10/2026). Atalho
+    // de uma tecla valendo na página inteira trocava o item por baixo de um
+    // select aberto na faixa, de um menu de ações e de um diálogo cujo foco
+    // tinha caído no corpo (WCAG 2.1.4). Vale com o foco dentro da fila ou no
+    // corpo da página, e nunca com diálogo, gaveta de navegação, menu ou
+    // lista de opções abertos.
+    var t = e.target;
+    var noCorpo = !t || t === document.body || t === document.documentElement;
+    if (!noCorpo && !(t.closest && t.closest('.ucam-inbox'))) return;
+    if (t && t.closest && t.closest('input, textarea, select, [contenteditable], [role="dialog"], [role="menu"], [role="listbox"], [data-listbox]')) return;
+    if (document.querySelector('dialog[open], .ucam-shell[data-nav="open"]')) return;
+    var alvos = Array.prototype.filter.call(inbox.querySelectorAll('.ucam-list-item__alvo'), function (b) {
+      return b.offsetParent !== null;
+    });
+    if (!alvos.length) return;
+    var i = -1;
+    alvos.forEach(function (b, n) { if (b.getAttribute('aria-pressed') === 'true') i = n; });
+    var prox = i < 0 ? 0 : i + (k === 'j' ? 1 : -1);
+    if (prox < 0 || prox >= alvos.length) return;
+    e.preventDefault();
+    alvos[prox].click();
+    alvos[prox].focus({ preventScroll: true });
+    if (alvos[prox].scrollIntoView) alvos[prox].scrollIntoView({ block: 'nearest' });
   });
 
   // Alargou a janela com o detalhe aberto: os dois painéis voltam a conviver.

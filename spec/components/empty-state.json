@@ -212,6 +212,11 @@
   ],
   "boas_praticas": [
     {
+      "faca": "No vazio de filtro, usar uma de duas frases: 'Nada corresponde ao que você pesquisou.' quando a tela só tem busca, e 'Nada corresponde ao que você pesquisou ou aos filtros escolhidos.' quando tem outros filtros.",
+      "evite": "Escrever uma frase por tela nomeando o filtro ('ao grupo escolhido', 'à mantenedora escolhida').",
+      "porque": "Em 13/10/2026 havia 14 redações para o mesmo estado em 25 listagens; a frase não muda o que a pessoa faz em seguida."
+    },
+    {
       "faca": "Distinguir no-data de no-results e mudar a mensagem e a ação junto.",
       "evite": "Uma redação única para nada cadastrado e busca sem resultado.",
       "porque": "São problemas opostos: um pede criar o primeiro registro, o outro pede corrigir o filtro."

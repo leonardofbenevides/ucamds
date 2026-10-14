@@ -248,6 +248,11 @@
   ],
   "boas_praticas": [
     {
+      "faca": "Escolher o tom pela mesma grandeza que o comprimento mede: carga é info até 80% da capacidade, warning de 80% a 100% e danger acima.",
+      "evite": "Pintar a barra por outra grandeza (atraso, situação) enquanto o comprimento mede carga.",
+      "porque": "Na Carga por setor a Secretaria aparecia vermelha com 45% e o CPD azul com 60%: a cor desmentia o comprimento. O atraso passou para o texto, em tinta de perigo."
+    },
+    {
       "faca": "Declarar o total real em max e escrever o par na legenda.",
       "evite": "Converter tudo para porcentagem antes de exibir.",
       "porque": "'24 de 40' é o número que quem distribui requerimento conhece; 60% obriga a refazer a conta de cabeça."
