@@ -215,7 +215,7 @@ import { CENA_CAPA } from '../../generated/cena-capa';
        da página, um traço na tinta cheia, sombra e chão em tinta diluída. É a
        mesma tabela da cena do login (tools/build-css.mjs, .ucam-login__cena),
        com papel e tinta trocados; mudou lá, muda aqui. */
-    :host ::ng-deep .ilustracao path { fill: none; stroke: var(--cena-t); stroke-width: 1.15; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+    :host ::ng-deep .ilustracao path { fill: none; stroke: var(--cena-t); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
     :host ::ng-deep .ilustracao :is(.p0, .p1, .l, .t0, .k0, .k1, .f1, .r0) { fill: var(--cena-p); }
     :host ::ng-deep .ilustracao :is(.p2, .m) { fill: color-mix(in srgb, var(--cena-t) 10%, var(--cena-p)); }
     :host ::ng-deep .ilustracao :is(.s, .k2) { fill: color-mix(in srgb, var(--cena-t) 20%, var(--cena-p)); }
@@ -238,7 +238,7 @@ import { CENA_CAPA } from '../../generated/cena-capa';
     :host ::ng-deep .ilustracao :is(.pv, .on, .malha, .gr, .ng, .rg, .fc) { stroke-width: 0.75; }
     :host ::ng-deep .ilustracao .pv { stroke: color-mix(in srgb, var(--cena-t) 10%, transparent); }
     :host ::ng-deep .ilustracao .malha { stroke: color-mix(in srgb, var(--cena-t) 7%, transparent); }
-    :host ::ng-deep .ilustracao :is(.on, .gr, .ng, .rg) { stroke: color-mix(in srgb, var(--cena-t) 42%, transparent); }
+    :host ::ng-deep .ilustracao :is(.on, .gr, .ng, .rg) { stroke: color-mix(in srgb, var(--cena-t) 28%, transparent); }
     :host ::ng-deep .ilustracao :is(.clarao-0, .clarao-1) { stop-color: var(--cena-p); stop-opacity: 0; }
     :host ::ng-deep .ilustracao :is(.tr, .kk) { stroke-width: 3; }
     :host ::ng-deep .ilustracao .tr2 { stroke-width: 2.5; }

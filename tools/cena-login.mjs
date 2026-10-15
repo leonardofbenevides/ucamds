@@ -41,6 +41,11 @@
  * ordenada pela relação "A está atrás de B" (A termina antes de B começar em
  * x, em y ou em z).
  *
+ * Mais clean (15/10/2026): sem malha no fundo, sem calçamento riscado, sem
+ * pontilhado nos canteiros e nas copas, telha e pele de vidro com metade dos
+ * riscos, um terço das ondas, traço de 1px. As peças ficaram todas: para o
+ * Leonardo "clean" é traço leve e ar, não menos coisa.
+ *
  * Uso:
  *   node tools/cena-login.mjs               imprime o SVG
  *   node tools/cena-login.mjs --aplicar     troca a cena em spec/templates.json
@@ -181,7 +186,7 @@ function telhado(x, y, z, w, d, h, beiral = 4) {
     ? { tras: [c.a, c.b, B, A], ladoT: [c.d, c.a, A], frente: [c.d, c.c, B, A], ladoF: [c.b, c.c, B] }
     : { tras: [c.a, c.d, B, A], ladoT: [c.a, c.b, A], frente: [c.b, c.c, B, A], ladoF: [c.d, c.c, B] };
   const riscos = [];
-  const passo = 9;
+  const passo = 16;
   if (aoLongoDeX) {
     for (let u = x + m; u <= x + w - m; u += passo) riscos.push([[u, y + d, z], [u, y + m, t]]);
     for (let v = y + passo; v < y + d; v += passo) riscos.push([[x + w, v, z], [x + w - (m - Math.abs(v - y - m)) , v, z + (h * (m - Math.abs(v - y - m))) / m]]);
@@ -218,14 +223,12 @@ function arvore(x, y, r = 19, tronco = 13) {
   const [cx, cy] = P(x, y, tronco + r);
   const R = r * 1.55;
   sombras.push({ d: elipse(x + (tronco + r) * SX, y + (tronco + r) * SY, 0, r * 0.72), c: 'sh' });
-  const pontos = [[-0.42, -0.3], [-0.1, 0.42], [-0.5, 0.22], [-0.05, -0.55]].map(([u, v]) => disco(cx + u * r, cy + v * r, 1.1)).join('');
   solidos.push({
     bb: [x - 5, x + 5, y - 5, y + 5, 0, tronco + 2 * r],
     it: [
       { d: `M${n(bx)} ${n(by)}L${n(bx)} ${n(cy)}`, c: 'tr' },
       { d: disco(cx, cy, r), c: 'f1' },
       { d: `M${n(cx + r * 0.35)} ${n(cy - r * 0.937)}A${r} ${r} 0 0 1 ${n(cx + r * 0.35)} ${n(cy + r * 0.937)}A${n(R)} ${n(R)} 0 0 0 ${n(cx + r * 0.35)} ${n(cy - r * 0.937)}Z`, c: 'cr' },
-      { d: pontos, c: 'pt' },
     ],
   });
 }
@@ -254,7 +257,7 @@ function montar() {
   /* ---- A ÁGUA e o cais: a praça dá para a baía. A onda é um til. ---- */
   chao.push({ d: d3([[512, -700, 0], [1500, -700, 0], [1500, 1700, 0], [512, 1700, 0]]), c: 'ag' });
   let ondas = '';
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 30; i++) {
     const [wx, wy] = P(526 + sorte() * 190, -120 + sorte() * 800, 0);
     ondas += `M${n(wx - 7)} ${n(wy)}q3.5 -3 7 0t7 0`;
   }
@@ -262,30 +265,19 @@ function montar() {
 
   /* ---- O CHÃO: a praça calçada, os canteiros pontilhados. ---- */
   chao.push({ d: redondo(150, 204, 346, 268, 40), c: 'g' });
-  const juntas = [];
-  for (let x = 186; x <= 462; x += 23) juntas.push([[x, 222, 0], [x, 454, 0]]);
-  for (let y = 222; y <= 454; y += 23.2) juntas.push([[168, y, 0], [478, y, 0]]);
-  chao.push({ d: linhas3(juntas), c: 'pv' });
   const canteiros = [[8, 150, 44, 250, 22], [160, 482, 300, 44, 22], [120, 30, 100, 62, 26], [352, 34, 130, 58, 26]];
   for (const [x, y, w, d, r] of canteiros) {
     chao.push({ d: redondo(x, y, w, d, r), c: 'gm' });
-    let pts = '';
-    for (let i = 0; i < (w * d) / 260; i++) {
-      const [px, py] = P(x + 8 + sorte() * (w - 16), y + 8 + sorte() * (d - 16), 0);
-      pts += disco(px, py, 0.9);
-    }
-    chao.push({ d: pts, c: 'pt' });
   }
 
   /* ---- A TORRE: vidro escuro, nervura vertical, andares acesos. ---- */
   const torre = caixa(236, 10, 0, 92, 92, 252, VIDRO);
   const nE = [];
   const nD = [];
-  for (let x = 245.2; x < 328; x += 9.2) nE.push([[x, 102, 0], [x, 102, 252]]);
-  for (let y = 19.2; y < 102; y += 9.2) nD.push([[328, y, 0], [328, y, 252]]);
-  for (let z = 42; z < 252; z += 42) { nE.push([[236, 102, z], [328, 102, z]]); nD.push([[328, 10, z], [328, 102, z]]); }
+  for (let x = 254.4; x < 328; x += 18.4) nE.push([[x, 102, 0], [x, 102, 252]]);
+  for (let y = 28.4; y < 102; y += 18.4) nD.push([[328, y, 0], [328, y, 252]]);
   const acesas = [];
-  for (let i = 0; i < 26; i++) {
+  for (let i = 0; i < 10; i++) {
     const col = Math.floor(sorte() * 10);
     const z = 12 + Math.floor(sorte() * 26) * 9;
     acesas.push(sorte() < 0.62 ? esq(102, 236 + col * 9.2 + 1.6, 236 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz') : dir(328, 10 + col * 9.2 + 1.6, 10 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz'));
@@ -459,7 +451,7 @@ const fundo = (id) =>
   `<mask id='${id}-mascara'><rect x='-400' y='-420' width='1700' height='1400' fill='url(#${id}-fade)'/></mask>` +
   `</defs>` +
   `<ellipse cx='450' cy='330' rx='640' ry='470' fill='url(#${id}-clarao)' class='fundo'/>` +
-  `<rect x='-400' y='-420' width='1700' height='1400' fill='url(#${id}-malha)' mask='url(#${id}-mascara)' class='fundo'/>`;
+  '';
 
 function caminhos() {
   chao.length = sombras.length = solidos.length = grupos.length = 0;
