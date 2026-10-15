@@ -29,6 +29,10 @@
       {
         "tela": "saber-mais — /mestrado, Docentes, Estrutura, Pesquisa, Processo (14/10/2026)",
         "problema": "título de seção próprio com a contagem ao lado (\"Corpo docente 12\"), porque o do catálogo não tinha onde pô-la"
+      },
+      {
+        "tela": "saber-mais — /mestrado, abas Estrutura e Pesquisa (15/10/2026)",
+        "problema": "com só os dois tamanhos de seção, h2 e h3 dentro de uma aba saíam com os mesmos 46px"
       }
     ],
     "conclusao": "Um cabeçalho de seção com uma escala só, em Work Sans, e a frase de abertura em Inter. O que varia é o alinhamento e o tamanho, não a fonte."
@@ -119,9 +123,9 @@
     },
     {
       "nome": "size",
-      "tipo": "'section' | 'section-sm'",
+      "tipo": "'section' | 'section-sm' | 'subtitle' | 'title'",
       "default": "'section'",
-      "descricao": "32–52px ou 30–48px, em clamp().",
+      "descricao": "32–52px ou 30–48px em clamp() para as seções da página; 28px (subtítulo) e 20px (título) para as partes de uma página longa.",
       "valores": {
         "section": {
           "uso": "Seção principal da página."
@@ -129,6 +133,14 @@
         "section-sm": {
           "uso": "Seção secundária, ou seção dentro de uma coluna.",
           "classe": ".ucam-site-section-heading--sm"
+        },
+        "subtitle": {
+          "uso": "Uma seção dentro de uma parte da página longa, como as seções de uma aba.",
+          "classe": ".ucam-site-section-heading--subtitulo"
+        },
+        "title": {
+          "uso": "Um grupo dentro de uma seção, com level 3: os grupos de disciplinas, os blocos da estrutura física.",
+          "classe": ".ucam-site-section-heading--titulo"
         }
       }
     },

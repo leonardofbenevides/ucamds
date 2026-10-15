@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, Directive, ViewEncapsulation, boole
 import { classesDe, umDe } from '../nucleo/classes';
 
 export type UcamSiteSectionHeadingAlign = 'start' | 'center';
-export type UcamSiteSectionHeadingSize = 'section' | 'section-sm';
+export type UcamSiteSectionHeadingSize = 'section' | 'section-sm' | 'subtitle' | 'title';
 
 const ALINHAMENTOS = ['start', 'center'] as const;
-const TAMANHOS = ['section', 'section-sm'] as const;
+const TAMANHOS = ['section', 'section-sm', 'subtitle', 'title'] as const;
 
 /**
  * Cabeçalho de seção. Contrato: sites/spec/components/section-heading.json.
@@ -53,6 +53,8 @@ export class UcamSiteSectionHeading {
       'ucam-site-section-heading',
       this.align() === 'center' && 'center',
       this.size() === 'section-sm' && 'sm',
+      this.size() === 'subtitle' && 'subtitulo',
+      this.size() === 'title' && 'titulo',
       this.inverse() && 'inverse',
     ),
   );

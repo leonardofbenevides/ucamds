@@ -357,6 +357,23 @@ export function construirCss({ raiz = ROOT } = {}) {
 .ucam-site-section-heading--inverse .ucam-site-section-heading__count {
   color: ${V('color-text-on-inverse-muted')};
 }
+/* Os dois degraus abaixo das seções, para as partes de uma página longa (as
+ * seções de uma aba, os grupos dentro delas): o subtítulo, ainda na fonte de
+ * display, e o título, no corpo. Sem eles, h2 e h3 de uma aba saíam a 46px. */
+.ucam-site-section-heading--subtitulo .ucam-site-section-heading__title {
+  font-family: ${V('typography-subtitle-font-family')};
+  font-size: ${V('typography-subtitle-font-size')};
+  font-weight: ${V('typography-subtitle-font-weight')};
+  line-height: ${V('typography-subtitle-line-height')};
+  letter-spacing: ${V('typography-subtitle-letter-spacing')};
+}
+.ucam-site-section-heading--titulo .ucam-site-section-heading__title {
+  font-family: ${V('typography-title-font-family')};
+  font-size: ${V('typography-title-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  line-height: ${V('typography-title-line-height')};
+  letter-spacing: normal;
+}
 .ucam-site-section-heading--sm .ucam-site-section-heading__title {
   font-size: ${V('typography-display-section-sm-font-size')};
   letter-spacing: ${V('typography-display-section-sm-letter-spacing')};
