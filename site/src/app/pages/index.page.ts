@@ -6,12 +6,12 @@ import { meta } from '../spec/spec';
 import { sitesMeta } from '../spec/sites';
 import { CENA_CAPA } from '../../generated/cena-capa';
 
-/* A ILUSTRAÇÃO DA CAPA é a mesma cena do login do Portal — a Candido Mendes
- * na Praça XV, em isométrica calculada — pintada sobre o branco. A geometria
- * mora em tools/cena-login.mjs, que grava site/src/generated/cena-capa.ts no
- * passo 'telas' do build; aqui ficam só as tintas. Até 13/10/2026 a capa
- * tinha geometria própria (uma placa com peças de interface), e as duas
- * ilustrações do sistema não se pareciam. */
+/* A ILUSTRAÇÃO DA CAPA são TELAS (15/10/2026: "na tela inicial do site UCAMDS
+ * deixe a ilustra só das interfaces"): a janela de um sistema, a entrada, um
+ * celular, um gráfico, um calendário, um formulário, um aviso e uma
+ * carteirinha, de pé sobre a malha. A geometria mora em tools/cena-login.mjs
+ * (montarCapa), que grava site/src/generated/cena-capa.ts no passo 'telas'
+ * do build; aqui ficam só as tintas, as mesmas da cena do login. */
 
 @Component({
   selector: 'ucam-inicio',
@@ -48,7 +48,7 @@ import { CENA_CAPA } from '../../generated/cena-capa';
       <figure
         class="ilustracao"
         role="img"
-        aria-label="Ilustração isométrica da Universidade Candido Mendes na Praça XV: o chafariz do Mestre Valentim no meio da praça, o casarão colonial de arcos, a torre de vidro atrás dele, o cais e a barca."
+        aria-label="Ilustração isométrica de telas do design system: a janela de um sistema com navegação, indicadores e tabela, a tela de entrada, um celular, um gráfico, um calendário, um formulário, um aviso e uma carteirinha."
         [innerHTML]="cena"
         (pointermove)="acompanhar($event)"
         (pointerleave)="soltar($event)"
@@ -215,7 +215,7 @@ import { CENA_CAPA } from '../../generated/cena-capa';
        da página, um traço na tinta cheia, sombra e chão em tinta diluída. É a
        mesma tabela da cena do login (tools/build-css.mjs, .ucam-login__cena),
        com papel e tinta trocados; mudou lá, muda aqui. */
-    :host ::ng-deep .ilustracao path { fill: none; stroke: var(--cena-t); stroke-width: 1.15; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+    :host ::ng-deep .ilustracao path { fill: none; stroke: var(--cena-t); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
     :host ::ng-deep .ilustracao :is(.p0, .p1, .l, .t0, .k0, .k1, .f1, .r0) { fill: var(--cena-p); }
     :host ::ng-deep .ilustracao :is(.p2, .m) { fill: color-mix(in srgb, var(--cena-t) 10%, var(--cena-p)); }
     :host ::ng-deep .ilustracao :is(.s, .k2) { fill: color-mix(in srgb, var(--cena-t) 20%, var(--cena-p)); }
@@ -227,7 +227,7 @@ import { CENA_CAPA } from '../../generated/cena-capa';
     :host ::ng-deep .ilustracao .g { fill: color-mix(in srgb, var(--cena-t) 6%, transparent); }
     :host ::ng-deep .ilustracao .gm { fill: color-mix(in srgb, var(--cena-t) 11%, transparent); }
     :host ::ng-deep .ilustracao .ag { fill: color-mix(in srgb, var(--cena-t) 14%, transparent); }
-    :host ::ng-deep .ilustracao .sh { fill: color-mix(in srgb, var(--cena-t) 20%, transparent); }
+    :host ::ng-deep .ilustracao .sh { fill: color-mix(in srgb, var(--cena-t) 12%, transparent); }
     :host ::ng-deep .ilustracao .cr { fill: color-mix(in srgb, var(--cena-t) 22%, transparent); }
     :host ::ng-deep .ilustracao :is(.v, .vd) { fill: color-mix(in srgb, var(--cena-t) 34%, var(--cena-p)); }
     :host ::ng-deep .ilustracao .lz { fill: var(--cena-p); }
