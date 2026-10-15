@@ -27,6 +27,10 @@
       {
         "tela": "www — Como ingressar?",
         "problema": "cinco blocos sempre abertos, uma rolagem de três telas no telefone"
+      },
+      {
+        "tela": "saber-mais — /mestrado, Pesquisa, projetos por ano (14/10/2026)",
+        "problema": "o ano no título e \"3 projetos\" à direita, num acordeão próprio porque o do catálogo não tinha onde pôr a contagem"
       }
     ],
     "conclusao": "O acordeão vira details com summary: abre por clique, Enter e Espaço, é achado pela busca do navegador, e continua funcionando sem script."
@@ -48,6 +52,12 @@
       "obrigatorio": true,
       "descricao": "<summary>, com a pergunta e o ícone.",
       "classe": "ucam-site-accordion__trigger"
+    },
+    {
+      "parte": "meta",
+      "obrigatorio": false,
+      "descricao": "<span> com a contagem ou a data, na tinta de apoio e em números tabulares, encostado na seta.",
+      "classe": "ucam-site-accordion__meta"
     },
     {
       "parte": "icon",
@@ -80,6 +90,12 @@
       "tipo": "string",
       "obrigatorio": true,
       "descricao": "A pergunta ou o título do item: o texto do summary."
+    },
+    {
+      "nome": "meta",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Texto curto à direita do título, antes da seta: uma contagem (\"3 projetos\"), uma data. Entra no nome do gatilho."
     }
   ],
   "estados": [
@@ -190,7 +206,7 @@
       ],
       "nota": "Não entrega animação de altura do painel."
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/accordion/accordion.ts — [ucamSiteAccordion], details[ucamSiteAccordionItem]. Entradas: name, open, heading."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/accordion/accordion.ts — [ucamSiteAccordion], details[ucamSiteAccordionItem]. Entradas: name, open, heading, meta."
   },
   "eventos": [
     {

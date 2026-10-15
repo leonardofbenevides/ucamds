@@ -6,7 +6,7 @@ import { UcamSiteAccordion, UcamSiteAccordionItem } from './accordion';
 @Component({
   imports: [UcamSiteAccordion, UcamSiteAccordionItem],
   template: `<div ucamSiteAccordion data-peca class="minha" [name]="$any(e()['name'])">
-    <details ucamSiteAccordionItem heading="Primeira" [open]="$any(e()['open'])" (openChange)="avisos.push($event)"><p>Resposta um.</p></details>
+    <details ucamSiteAccordionItem heading="Primeira" [meta]="$any(e()['meta'])" [open]="$any(e()['open'])" (openChange)="avisos.push($event)"><p>Resposta um.</p></details>
     <details ucamSiteAccordionItem heading="Segunda"><p>Resposta dois.</p></details>
   </div>`,
 })
@@ -94,5 +94,12 @@ describe('[ucamSiteAccordion]', () => {
     f.componentInstance.aberto.set(false);
     f.detectChanges();
     expect(d.open).toBe(false);
+  });
+  it('a contagem fica à direita do título, antes da seta; vazia ou de outro tipo, não há', () => {
+    const gatilho = (meta: unknown) => [...monta(Hospede, { meta }).el.querySelector('summary')!.children].map((c) => c.className);
+    expect(gatilho('3 projetos')).toEqual(['ucam-site-accordion__meta', 'ucam-site-accordion__icon']);
+    expect(monta(Hospede, { meta: 3 }).el.querySelector('.ucam-site-accordion__meta')!.textContent).toBe('3');
+    expect(monta(Hospede, { meta: ' 1 projeto ' }).el.querySelector('summary')!.textContent!.trim()).toBe('Primeira 1 projeto');
+    for (const meta of [null, '', '  ', {}]) expect(gatilho(meta)).toEqual(['ucam-site-accordion__icon']);
   });
 });

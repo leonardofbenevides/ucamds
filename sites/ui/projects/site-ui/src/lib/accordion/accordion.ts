@@ -39,13 +39,19 @@ export class UcamSiteAccordion {
     '[open]': 'aberto()',
     '(toggle)': 'aoAlternar($event)',
   },
-  template: `<summary class="ucam-site-accordion__trigger">{{ heading() }} <span class="ucam-site-accordion__icon" aria-hidden="true"><svg ucamSiteIcon="chevronDown"></svg></span></summary><div class="ucam-site-accordion__panel"><ng-content /></div>`,
+  template: `<summary class="ucam-site-accordion__trigger">{{ heading() }} @if (nota(); as m) {<span class="ucam-site-accordion__meta">{{ m }}</span>}<span class="ucam-site-accordion__icon" aria-hidden="true"><svg ucamSiteIcon="chevronDown"></svg></span></summary><div class="ucam-site-accordion__panel"><ng-content /></div>`,
 })
 export class UcamSiteAccordionItem {
   readonly heading = input.required<string>();
+  /** Texto curto à direita do título: uma contagem, uma data. Faz parte do nome do gatilho. */
+  readonly meta = input<string | number | null | undefined>(null);
   readonly open = input(false, { transform: booleanAttribute });
   readonly openChange = output<boolean>();
 
+  protected readonly nota = computed(() => {
+    const m = this.meta();
+    return typeof m === 'number' || typeof m === 'string' ? String(m).trim() || null : null;
+  });
   protected readonly acordeao = inject(UcamSiteAccordion, { optional: true });
   /** O estado atual: nasce de `open` e acompanha o <details>. */
   protected readonly aberto = linkedSignal(() => this.open());

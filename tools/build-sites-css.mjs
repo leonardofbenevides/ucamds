@@ -454,6 +454,17 @@ ${acima('nav-aberta')} {
 .ucam-site-accordion__trigger::-webkit-details-marker {
   display: none;
 }
+/* A contagem ou a data à direita do título, antes da seta: a margem automática
+ * a encosta na seta, por cima do space-between. */
+.ucam-site-accordion__meta {
+  flex: none;
+  margin-inline-start: auto;
+  color: ${V('color-text-secondary')};
+  font-size: ${V('typography-body-font-size')};
+  font-weight: ${V('typography-body-font-weight')};
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 .ucam-site-accordion__trigger:hover {
   color: ${V('color-action-primary-default')};
 }
