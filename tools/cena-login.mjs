@@ -181,7 +181,7 @@ function telhado(x, y, z, w, d, h, beiral = 4) {
     ? { tras: [c.a, c.b, B, A], ladoT: [c.d, c.a, A], frente: [c.d, c.c, B, A], ladoF: [c.b, c.c, B] }
     : { tras: [c.a, c.d, B, A], ladoT: [c.a, c.b, A], frente: [c.b, c.c, B, A], ladoF: [c.d, c.c, B] };
   const riscos = [];
-  const passo = 9;
+  const passo = 18;
   if (aoLongoDeX) {
     for (let u = x + m; u <= x + w - m; u += passo) riscos.push([[u, y + d, z], [u, y + m, t]]);
     for (let v = y + passo; v < y + d; v += passo) riscos.push([[x + w, v, z], [x + w - (m - Math.abs(v - y - m)) , v, z + (h * (m - Math.abs(v - y - m))) / m]]);
@@ -217,15 +217,11 @@ function arvore(x, y, r = 19, tronco = 13) {
   const [bx, by] = P(x, y, 0);
   const [cx, cy] = P(x, y, tronco + r);
   const R = r * 1.55;
-  sombras.push({ d: elipse(x + (tronco + r) * SX, y + (tronco + r) * SY, 0, r * 0.72), c: 'sh' });
-  const pontos = [[-0.42, -0.3], [-0.1, 0.42], [-0.5, 0.22], [-0.05, -0.55]].map(([u, v]) => disco(cx + u * r, cy + v * r, 1.1)).join('');
   solidos.push({
     bb: [x - 5, x + 5, y - 5, y + 5, 0, tronco + 2 * r],
     it: [
       { d: `M${n(bx)} ${n(by)}L${n(bx)} ${n(cy)}`, c: 'tr' },
       { d: disco(cx, cy, r), c: 'f1' },
-      { d: `M${n(cx + r * 0.35)} ${n(cy - r * 0.937)}A${r} ${r} 0 0 1 ${n(cx + r * 0.35)} ${n(cy + r * 0.937)}A${n(R)} ${n(R)} 0 0 0 ${n(cx + r * 0.35)} ${n(cy - r * 0.937)}Z`, c: 'cr' },
-      { d: pontos, c: 'pt' },
     ],
   });
 }
@@ -233,7 +229,6 @@ function arvore(x, y, r = 19, tronco = 13) {
 function palmeira(x, y, h = 78) {
   const [bx, by] = P(x, y, 0);
   const ty = by - h;
-  sombras.push({ d: elipse(x + h * SX, y + h * SY, 0, 9), c: 'sh' });
   const folhas = [[-20, -4], [-15, -15], [-5, -21], [7, -20], [17, -12], [20, 0], [-12, 8], [12, 9]]
     .map(([u, v]) => `M${n(bx)} ${n(ty)}Q${n(bx + u * 0.55)} ${n(ty + v - 7)} ${n(bx + u)} ${n(ty + v + 3)}`).join('');
   solidos.push({ bb: [x - 3, x + 3, y - 3, y + 3, 0, h + 20], it: [{ d: `M${n(bx)} ${n(by)}L${n(bx)} ${n(ty)}`, c: 'tr2' }, { d: folhas, c: 'fo' }] });
@@ -254,7 +249,7 @@ function montar() {
   /* ---- A ÁGUA e o cais: a praça dá para a baía. A onda é um til. ---- */
   chao.push({ d: d3([[512, -700, 0], [1500, -700, 0], [1500, 1700, 0], [512, 1700, 0]]), c: 'ag' });
   let ondas = '';
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 45; i++) {
     const [wx, wy] = P(526 + sorte() * 190, -120 + sorte() * 800, 0);
     ondas += `M${n(wx - 7)} ${n(wy)}q3.5 -3 7 0t7 0`;
   }
@@ -269,12 +264,6 @@ function montar() {
   const canteiros = [[8, 150, 44, 250, 22], [160, 482, 300, 44, 22], [120, 30, 100, 62, 26], [352, 34, 130, 58, 26]];
   for (const [x, y, w, d, r] of canteiros) {
     chao.push({ d: redondo(x, y, w, d, r), c: 'gm' });
-    let pts = '';
-    for (let i = 0; i < (w * d) / 260; i++) {
-      const [px, py] = P(x + 8 + sorte() * (w - 16), y + 8 + sorte() * (d - 16), 0);
-      pts += disco(px, py, 0.9);
-    }
-    chao.push({ d: pts, c: 'pt' });
   }
 
   /* ---- A TORRE: vidro escuro, nervura vertical, andares acesos. ---- */
@@ -283,9 +272,8 @@ function montar() {
   const nD = [];
   for (let x = 245.2; x < 328; x += 9.2) nE.push([[x, 102, 0], [x, 102, 252]]);
   for (let y = 19.2; y < 102; y += 9.2) nD.push([[328, y, 0], [328, y, 252]]);
-  for (let z = 42; z < 252; z += 42) { nE.push([[236, 102, z], [328, 102, z]]); nD.push([[328, 10, z], [328, 102, z]]); }
   const acesas = [];
-  for (let i = 0; i < 26; i++) {
+  for (let i = 0; i < 10; i++) {
     const col = Math.floor(sorte() * 10);
     const z = 12 + Math.floor(sorte() * 26) * 9;
     acesas.push(sorte() < 0.62 ? esq(102, 236 + col * 9.2 + 1.6, 236 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz') : dir(328, 10 + col * 9.2 + 1.6, 10 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz'));
@@ -301,10 +289,7 @@ function montar() {
   casa.it.push(...fila(11, 158, 454, 0.42, (a, b) => arco('e', 192, a, b, 35, 55, 'vd')));
   casa.it.push(...fila(3, 118, 186, 0.46, (a, b) => arco('d', 462, a, b, 4, 27, 'vd')));
   casa.it.push(...fila(3, 118, 186, 0.46, (a, b) => arco('d', 462, a, b, 35, 55, 'vd')));
-  casa.it.push({ d: linhas3([[[150, 192, 31], [462, 192, 31]], [[462, 112, 31], [462, 192, 31]]]), c: 'fc' });
   telhado(150, 112, 62, 312, 80, 24);
-  bandeira(282, 198);
-  bandeira(330, 198);
 
   /* ---- A ALA: o mesmo casarão, de lado para a praça. ---- */
   const ala = caixa(60, 150, 0, 78, 236, 54, CAL);
@@ -312,7 +297,6 @@ function montar() {
   ala.it.push(...fila(8, 158, 378, 0.42, (a, b) => arco('d', 138, a, b, 31, 48, 'vd')));
   ala.it.push(...fila(3, 66, 132, 0.46, (a, b) => arco('e', 386, a, b, 4, 24, 'vd')));
   ala.it.push(...fila(3, 66, 132, 0.46, (a, b) => arco('e', 386, a, b, 31, 48, 'vd')));
-  ala.it.push({ d: linhas3([[[138, 150, 27.5], [138, 386, 27.5]], [[60, 386, 27.5], [138, 386, 27.5]]]), c: 'fc' });
   telhado(60, 150, 54, 78, 236, 22);
 
   /* ---- O ANEXO: concreto e fita de vidro, os tons médios da cena. ---- */
@@ -420,18 +404,117 @@ function montar() {
   boleto.f(52, 66, 28, 34, 'kc');
   boleto.barras(7, 66, 5, 16);
 
-  /* ---- Árvores, palmeiras e postes. A gente saiu em 13/10/2026, a pedido. ---- */
+  /* ---- Árvores e palmeiras. A gente saiu em 13/10/2026; os postes, as
+   * bandeiras e as árvores de trás do casarão em 15/10 ("mais clean nas
+   * sombras, detalhes e elementos"; a malha do fundo fica, ele gosta). ---- */
   [176, 232, 288, 344].forEach((y) => arvore(30, y));
   [190, 250, 310, 370, 430].forEach((x) => arvore(x, 504, 16, 11));
-  arvore(150, 62, 17, 12);
-  arvore(192, 58, 17, 12);
-  arvore(384, 62, 17, 12);
-  arvore(432, 66, 17, 12);
   [224, 292, 360, 428].forEach((y) => palmeira(478, y));
-  poste(172, 226);
-  poste(172, 446);
-  poste(456, 226, 30);
-  poste(456, 446, 30);
+}
+
+/* ---------------------------------------------------------------------
+ * A CENA DA CAPA DO SITE: só telas (15/10/2026: "na tela inicial do site
+ * UCAMDS deixe a ilustra só das interfaces, de telas"). A capa é a porta do
+ * design system, e o que ele entrega são interfaces: a janela de um sistema
+ * com navegação, indicadores e tabela; a entrada; um celular; um gráfico; um
+ * calendário; um formulário com interruptor; um aviso; uma carteirinha. São
+ * painéis de pé, todos voltados para o mesmo lado, empilhados em
+ * profundidade (quem tem y maior está mais perto e é pintado depois), cada
+ * um com uma sombra chapada no chão, sobre a malha.
+ * --------------------------------------------------------------------- */
+function montarCapa() {
+  const KA = { e: 'k1', d: 'k2', t: 'k0', sombra: false };
+  const piso = (x, y, w, d) => d3([[x, y, 0], [x + w, y, 0], [x + w, y + d, 0], [x, y + d, 0]]);
+  /* Um painel é posto pelo canto de cima à esquerda NA TELA e pela altura em
+   * que voa sobre o chão: daí saem o x e o y do mundo, e a sombra cai logo
+   * abaixo dele. O conteúdo é medido a partir do canto de baixo à esquerda da
+   * face. Os painéis são pintados do fundo para a frente (y crescente), seja
+   * qual for a ordem em que aparecem aqui. */
+  const paineis = [];
+  const painel = (sx, sy, w, h, alt) => {
+    const dif = (sx - OX) / COS;
+    const soma = 2 * (sy + h + alt - OY);
+    const p = { x: (soma + dif) / 2, Y: (soma - dif) / 2, z: alt, w, h, itens: [] };
+    paineis.push(p);
+    const { x, Y, z } = p;
+    const f = (u1, u2, v1, v2, c) => p.itens.push(esq(Y, x + u1, x + u2, z + v1, z + v2, c));
+    const contorno = (u1, u2, v1, v2) => p.itens.push({ d: d3([[x + u1, Y, z + v1], [x + u2, Y, z + v1], [x + u2, Y, z + v2], [x + u1, Y, z + v2]]), c: 'fi' });
+    const risco = (pts, c = 'fi') => p.itens.push({ d: linhas3(pts.slice(1).map((q, i) => [[x + pts[i][0], Y, z + pts[i][1]], [x + q[0], Y, z + q[1]]])), c });
+    return { f, contorno, risco };
+  };
+
+  // A janela de um sistema: faixa, navegação, três indicadores e a tabela.
+  const jan = painel(330, 70, 330, 214, 40);
+  jan.f(0, 330, 198, 214, 'kc');
+  [8, 16, 24].forEach((u) => jan.f(u, u + 4, 204, 208, 'kd'));
+  jan.f(0, 70, 0, 198, 'kc');
+  [178, 162, 146, 130, 114].forEach((v, i) => jan.f(10, i === 0 ? 58 : 46, v, v + 6, i === 1 ? 'kd' : 'k0'));
+  jan.f(84, 170, 178, 186, 'kd');
+  [84, 166, 248].forEach((u, i) => { jan.contorno(u, u + 72, 128, 166); jan.f(u + 8, u + 30, 154, 158, 'kc'); jan.f(u + 8, u + (i === 1 ? 52 : 42), 136, 146, i === 1 ? 'kd' : 'kc'); });
+  jan.f(84, 320, 102, 114, 'kc');
+  [80, 58, 36, 14].forEach((v, i) => {
+    jan.f(90, 100, v + 4, v + 14, 'kc');
+    jan.f(108, 170, v + 10, v + 14, 'kc');
+    jan.f(108, 150, v + 3, v + 6, 'kc');
+    jan.f(270, 306, v + 5, v + 13, i === 2 ? 'kd' : 'kc');
+    jan.risco([[84, v], [320, v]], 'gr');
+  });
+
+  // A entrada, à esquerda da janela: marca, dois campos e o botão.
+  const ent = painel(196, 150, 112, 136, 30);
+  ent.f(14, 50, 112, 120, 'kd');
+  ent.f(14, 40, 92, 96, 'kc');
+  ent.contorno(14, 98, 74, 86);
+  ent.f(14, 34, 64, 67, 'kc');
+  ent.contorno(14, 98, 46, 58);
+  ent.f(14, 98, 18, 32, 'kd');
+
+  // O celular, atrás à esquerda: barra, lista e a barra de abas.
+  const cel = painel(100, 50, 70, 140, 60);
+  cel.f(0, 70, 122, 140, 'kc');
+  [98, 76, 54, 32].forEach((v, i) => { cel.f(8, 20, v, v + 12, i === 0 ? 'kd' : 'kc'); cel.f(26, 60, v + 6, v + 10, 'kc'); cel.f(26, 48, v, v + 3, 'kc'); });
+  cel.f(0, 70, 0, 14, 'kc');
+  cel.f(30, 40, 4, 10, 'kd');
+
+  // O calendário, no alto à direita.
+  const cal = painel(670, 10, 92, 84, 70);
+  cal.f(0, 92, 68, 84, 'kd');
+  [52, 38, 24, 10].forEach((v, l) => [8, 28, 48, 68].forEach((u, c) => cal.f(u, u + 14, v, v + 10, l === 2 && c === 1 ? 'kd' : 'kc')));
+
+  // O gráfico, à direita da janela: título, a linha e as barras.
+  const gra = painel(690, 160, 176, 116, 40);
+  gra.f(12, 70, 98, 104, 'kd');
+  gra.risco([[12, 30], [44, 54], [76, 42], [108, 70], [140, 62], [164, 86]], 'kk');
+  [[12, 14], [44, 22], [76, 18], [108, 30], [140, 26]].forEach(([u, h]) => gra.f(u, u + 18, 8, 8 + h, 'kc'));
+
+  // O formulário, à frente: dois campos e o interruptor ligado.
+  const frm = painel(360, 340, 150, 88, 22);
+  frm.f(12, 46, 70, 74, 'kc');
+  frm.contorno(12, 138, 50, 62);
+  frm.f(12, 40, 36, 39, 'kc');
+  frm.contorno(12, 138, 16, 28);
+  frm.f(104, 138, 34, 44, 'kd');
+
+  // O aviso, à frente da quina da janela: ícone, duas linhas e o selo.
+  const avi = painel(570, 420, 146, 46, 26);
+  avi.f(10, 26, 15, 31, 'kd');
+  avi.f(34, 100, 27, 31, 'kc');
+  avi.f(34, 84, 17, 20, 'kc');
+  avi.f(108, 136, 16, 26, 'kc');
+
+  // A carteirinha, embaixo à esquerda.
+  const car = painel(80, 310, 96, 60, 22);
+  car.f(8, 32, 14, 46, 'kc');
+  car.f(40, 86, 40, 45, 'kd');
+  car.f(40, 76, 30, 33, 'kc');
+  car.f(40, 66, 22, 25, 'kc');
+  for (let u = 40; u < 88; u += 4.5) car.f(u, u + (Math.round(u) % 2 ? 2.6 : 1.3), 6, 14, 'kd');
+
+  paineis.sort((a, b) => a.Y - b.Y).forEach((p) => {
+    chao.push({ d: piso(p.x + 4, p.Y - 16, p.w, 12), c: 'sh' });
+    const s = emGrupo('pc', () => caixa(p.x, p.Y - 6, p.z, p.w, 6, p.h, KA));
+    s.it.push(...p.itens);
+  });
 }
 
 /* A ordem de pintura: A vem antes de B se termina antes de B começar em algum
@@ -461,9 +544,9 @@ const fundo = (id) =>
   `<ellipse cx='450' cy='330' rx='640' ry='470' fill='url(#${id}-clarao)' class='fundo'/>` +
   `<rect x='-400' y='-420' width='1700' height='1400' fill='url(#${id}-malha)' mask='url(#${id}-mascara)' class='fundo'/>`;
 
-function caminhos() {
+function caminhos(montador = montar) {
   chao.length = sombras.length = solidos.length = grupos.length = 0;
-  montar();
+  montador();
   const itens = [...chao, ...sombras, ...ordenar(solidos).flatMap((s) => s.it)];
   /* Vizinhos da mesma classe sem contorno viram um caminho só: a cena pesa
    * menos e o resultado é o mesmo. */
@@ -484,15 +567,14 @@ export function cenaLogin() {
   return `<svg class='ucam-login__cena-svg' viewBox='-110 -76 1120 812' aria-hidden='true' focusable='false'>${fundo('lg')}${caminhos()}</svg>`;
 }
 
-/* A MESMA cena para a capa do site, sobre o branco. Lá não há painel de raio
- * para recortar a água que vaza: a cena inteira passa por uma vinheta e se
- * desfaz na página. O viewBox é mais largo que o do login para a torre e o
- * chafariz ficarem dentro da parte cheia da vinheta. */
+/* A capa do site, sobre o branco: a cena de telas (montarCapa), com a mesma
+ * malha. Lá não há painel de raio para recortar o fundo: a cena inteira
+ * passa por uma vinheta e se desfaz na página. */
 export function cenaCapa() {
   const vinheta =
     `<defs><radialGradient id='cp-vinheta' cx='50%' cy='50%' r='60%'><stop offset='0.74' stop-color='#fff'/><stop offset='0.98' stop-color='#fff' stop-opacity='0'/></radialGradient>` +
-    `<mask id='cp-recorte'><rect x='-150' y='-120' width='1200' height='920' fill='url(#cp-vinheta)'/></mask></defs>`;
-  return `<svg viewBox='-150 -120 1200 920' aria-hidden='true' focusable='false'>${vinheta}<g mask='url(#cp-recorte)'>${fundo('cp')}${caminhos()}</g></svg>`;
+    `<mask id='cp-recorte'><rect x='-40' y='-70' width='1000' height='700' fill='url(#cp-vinheta)'/></mask></defs>`;
+  return `<svg viewBox='-40 -70 1000 700' aria-hidden='true' focusable='false'>${vinheta}<g mask='url(#cp-recorte)'>${fundo('cp')}${caminhos(montarCapa)}</g></svg>`;
 }
 
 const eu = fileURLToPath(import.meta.url);
