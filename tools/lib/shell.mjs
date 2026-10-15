@@ -8090,3 +8090,99 @@ export const contadorScript = `
   });
 })();
 `;
+
+/**
+ * RECOLHER SEM PULAR (14/10/2026: "quando se collapsa algo, ele não dê um
+ * flickering na tela e pule pra outro lugar; deixe sempre o collapse abrir e
+ * fechar sem se mover").
+ *
+ * O que fazia pular, medido por CDP: com a página rolada até o fim, fechar uma
+ * seção encolhe o documento, o navegador puxa a rolagem para caber, e o gatilho
+ * que a pessoa acabou de clicar sai do lugar (grade do Portal a 1280: de 286px
+ * para 680px; a 390, mais de 1.400px). Também uma seção que fecha ACIMA do
+ * gatilho, e a contagem que muda de largura, empurravam o botão 16px.
+ *
+ * A regra é uma só: o gatilho fica onde estava. Antes do clique mede-se a
+ * posição dele na tela; depois que o comportamento da peça abriu ou fechou, e
+ * ANTES do próximo quadro (requestAnimationFrame), a rolagem é corrigida pela
+ * diferença. Quando o conteúdo ficou curto demais para a rolagem ficar onde
+ * estava, a folga que falta entra como padding no fim do rolo, e vai embora
+ * sozinha à medida que a pessoa rola de volta para cima. Escuta na fase de
+ * captura: corre antes de qualquer outro script, e não depende da ordem deles.
+ */
+export const semPularScript = `
+(function () {
+  var GATILHOS = [
+    '.ucam-section__gatilho[aria-controls]',
+    '[data-recolher-todas]',
+    '[data-ramo]',
+    '.ucam-table__expansor[aria-controls]',
+    '[data-mostrar-todos]',
+    '[data-recolhe]',
+    'summary',
+  ].join(', ');
+
+  function rolo(el) {
+    for (var a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+      var oy = getComputedStyle(a).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && a.scrollHeight > a.clientHeight) return a;
+    }
+    return document.scrollingElement || document.documentElement;
+  }
+
+  var folgas = [];
+  function folgaDe(r) {
+    for (var i = 0; i < folgas.length; i++) if (folgas[i].r === r) return folgas[i];
+    return null;
+  }
+  function alvoDaFolga(r) { return r === document.scrollingElement ? document.documentElement : r; }
+  function poeFolga(r, px) {
+    var f = folgaDe(r);
+    var el = alvoDaFolga(r);
+    if (!f) {
+      f = { r: r, el: el, original: el.style.paddingBottom, base: parseFloat(getComputedStyle(el).paddingBottom) || 0, px: 0 };
+      folgas.push(f);
+    }
+    f.px = Math.max(0, px);
+    if (f.px <= 0.5) {
+      el.style.paddingBottom = f.original;
+      folgas.splice(folgas.indexOf(f), 1);
+    } else {
+      el.style.paddingBottom = (f.base + f.px) + 'px';
+    }
+  }
+  // A folga só existe para a rolagem não ser puxada; quem rola para cima não
+  // precisa mais dela, e ela encolhe junto até sumir.
+  function apara(r) {
+    var f = folgaDe(r);
+    if (!f) return;
+    var fundo = r.scrollTop + r.clientHeight;
+    var semFolga = r.scrollHeight - f.px;
+    poeFolga(r, Math.min(f.px, fundo - semFolga));
+  }
+  document.addEventListener('scroll', function (e) {
+    var r = e.target === document ? (document.scrollingElement || document.documentElement) : e.target;
+    if (folgas.length) apara(r);
+  }, true);
+
+  document.addEventListener('click', function (e) {
+    var g = e.target.closest && e.target.closest(GATILHOS);
+    if (!g || g.getClientRects().length === 0) return;
+    var r = rolo(g);
+    var antes = g.getBoundingClientRect().top;
+    requestAnimationFrame(function () {
+      if (!g.isConnected || g.getClientRects().length === 0) return;
+      var delta = g.getBoundingClientRect().top - antes;
+      if (Math.abs(delta) < 0.5) return;
+      var quer = r.scrollTop + delta;
+      var max = r.scrollHeight - r.clientHeight;
+      if (quer > max) poeFolga(r, (folgaDe(r) ? folgaDe(r).px : 0) + (quer - max));
+      r.scrollTop = quer;
+      // A folga pode engolir uma margem que vazava pelo fim (a do body, 40px
+      // nas telas): o que ainda faltar entra numa segunda medida.
+      var falta = quer - r.scrollTop;
+      if (falta > 0.5) { poeFolga(r, (folgaDe(r) ? folgaDe(r).px : 0) + falta); r.scrollTop = quer; }
+    });
+  }, true);
+})();
+`.trim();

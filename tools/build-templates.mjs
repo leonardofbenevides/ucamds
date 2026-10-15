@@ -40,6 +40,7 @@ import {
   tabelaScript,
   roloScript,
   toastScript,
+  semPularScript,
   copiarScript,
   motivoScript,
   dataScript,
@@ -338,6 +339,7 @@ ${sprite}
   <span style="margin-inline-start:auto">Template do design system — não é o sistema em produção.</span>
   <a href="__DOC__">Ver documentação</a>
 </div>
+<script>${semPularScript}</script>
 <script>${toastScript}</script>
 <script>${propagaConsultaScript}</script>
 <script>${listboxScript}</script>
