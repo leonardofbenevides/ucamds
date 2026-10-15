@@ -343,6 +343,20 @@ export function construirCss({ raiz = ROOT } = {}) {
   letter-spacing: ${V('typography-display-section-letter-spacing')};
   text-wrap: balance;
 }
+/* A contagem dentro do título: no corpo de texto, na tinta de apoio e em
+ * números tabulares, para não competir com o nome da seção. */
+.ucam-site-section-heading__count {
+  color: ${V('color-text-secondary')};
+  font-family: ${V('font-body')};
+  font-size: ${V('typography-body-font-size')};
+  font-weight: ${V('typography-body-font-weight')};
+  letter-spacing: normal;
+  font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+.ucam-site-section-heading--inverse .ucam-site-section-heading__count {
+  color: ${V('color-text-on-inverse-muted')};
+}
 .ucam-site-section-heading--sm .ucam-site-section-heading__title {
   font-size: ${V('typography-display-section-sm-font-size')};
   letter-spacing: ${V('typography-display-section-sm-letter-spacing')};

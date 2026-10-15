@@ -6,7 +6,7 @@ import { UcamSiteSectionHeading, UcamSiteSectionHeadingAcoes } from './section-h
   imports: [UcamSiteSectionHeading, UcamSiteSectionHeadingAcoes],
   template: `<header ucamSiteSectionHeading data-peca class="minha"
     [eyebrow]="$any(e()['eyebrow'])" [heading]="$any(e()['heading']) ?? 'Título'" [lede]="$any(e()['lede'])"
-    [align]="$any(e()['align'])" [size]="$any(e()['size'])" [inverse]="$any(e()['inverse'])" [level]="$any(e()['level'])">
+    [align]="$any(e()['align'])" [size]="$any(e()['size'])" [inverse]="$any(e()['inverse'])" [level]="$any(e()['level'])" [count]="$any(e()['count'])" [headingId]="$any(e()['headingId'])">
     @if (e()['acoes']) { <div ucamSiteSectionHeadingAcoes><a href="/x">Ver todas</a></div> }
   </header>`,
 })
@@ -38,5 +38,17 @@ describe('[ucamSiteSectionHeading]', () => {
     const ultimo = el.lastElementChild!;
     expect(ultimo.className).toBe(`${R}__acoes`);
     expect(ultimo.querySelector('a')!.getAttribute('href')).toBe('/x');
+  });
+  it('a contagem fica dentro do título, depois de um espaço de verdade; vazia ou de outro tipo, não há', () => {
+    const h = (e: Record<string, unknown>) => monta(Hospede, e).el.querySelector('h2, h3')!;
+    expect(h({ heading: 'Disciplinas eletivas', count: 12 }).textContent).toBe('Disciplinas eletivas 12');
+    expect(h({ heading: 'Disciplinas eletivas', count: 12 }).querySelector(`.${R}__count`)!.textContent).toBe('12');
+    expect(h({ heading: 'Grupo', count: '3', level: 3 }).localName).toBe('h3');
+    expect(h({ heading: 'Grupo', count: '3', level: 3 }).textContent).toBe('Grupo 3');
+    for (const count of [null, '', '  ', {}]) expect(h({ heading: 'Sem', count }).textContent).toBe('Sem');
+  });
+  it('headingId vai no próprio heading; vazio, sem id', () => {
+    expect(monta(Hospede, { headingId: 't-docentes' }).el.querySelector('h2')!.id).toBe('t-docentes');
+    expect(monta(Hospede, { headingId: '  ' }).el.querySelector('h2')!.hasAttribute('id')).toBe(false);
   });
 });

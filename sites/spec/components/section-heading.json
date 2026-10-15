@@ -25,6 +25,10 @@
         "tela": "cenpre — home",
         "rotulo": "O CENPRE em números",
         "problema": "nenhum: o section-heading do kit é o ponto de partida, com eyebrow, título e lede"
+      },
+      {
+        "tela": "saber-mais — /mestrado, Docentes, Estrutura, Pesquisa, Processo (14/10/2026)",
+        "problema": "título de seção próprio com a contagem ao lado (\"Corpo docente 12\"), porque o do catálogo não tinha onde pô-la"
       }
     ],
     "conclusao": "Um cabeçalho de seção com uma escala só, em Work Sans, e a frase de abertura em Inter. O que varia é o alinhamento e o tamanho, não a fonte."
@@ -46,6 +50,12 @@
       "obrigatorio": true,
       "descricao": "<h2> (ou o nível que a página pede) em display.",
       "classe": "ucam-site-section-heading__title"
+    },
+    {
+      "parte": "count",
+      "obrigatorio": false,
+      "descricao": "<span> dentro do título, depois de um espaço: a contagem no corpo de texto, na tinta de apoio, em números tabulares.",
+      "classe": "ucam-site-section-heading__count"
     },
     {
       "parte": "lede",
@@ -78,6 +88,18 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "A frase de abertura, de uma ou duas frases."
+    },
+    {
+      "nome": "count",
+      "tipo": "number | string | null",
+      "default": "null",
+      "descricao": "A contagem ao lado do título: quantos itens a seção lista. Fica dentro do heading, depois de um espaço, e entra no nome dele."
+    },
+    {
+      "nome": "headingId",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O id do heading, para a seção se nomear com aria-labelledby."
     },
     {
       "nome": "align",
@@ -240,6 +262,6 @@
         "--ucam-site-container-prosa"
       ]
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/section-heading/section-heading.ts — header[ucamSiteSectionHeading], div[ucamSiteSectionHeading]. Entradas: heading, eyebrow, lede, align, size, inverse, level."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/section-heading/section-heading.ts — header[ucamSiteSectionHeading], div[ucamSiteSectionHeading]. Entradas: heading, eyebrow, lede, align, size, inverse, level, count, headingId."
   }
 }

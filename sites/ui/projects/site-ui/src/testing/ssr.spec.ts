@@ -42,7 +42,8 @@ describe('render no servidor', () => {
     expect(html).toContain('href="/icons/sprite.svg#i-briefcase"');
     expect(html).toMatch(/<span[^>]*role="img"[^>]*>AS<\/span>/);
     expect(html).toContain('aria-label="Ana de Souza"');
-    expect(html).toContain('<h3 class="ucam-site-section-heading__title">Vagas</h3>');
+    // O <!--container--> é a âncora do @if da contagem: o servidor a deixa para a hidratação.
+    expect(html).toMatch(/<h3 class="ucam-site-section-heading__title">Vagas(<!--container-->)?<\/h3>/);
     expect(html).toContain('class="ucam-site-section-heading__acoes"');
   });
 });

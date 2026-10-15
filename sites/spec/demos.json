@@ -91,6 +91,13 @@
           "preview": "<div class='ucam-site-inverso' style='padding:1.5rem;border-radius:.5rem'><header class='ucam-site-section-heading ucam-site-section-heading--inverse'><p class='ucam-site-section-heading__eyebrow'>Ingresso</p><h2 class='ucam-site-section-heading__title'>Como ingressar</h2><p class='ucam-site-section-heading__lede'>Vestibular, ENEM, transferência, segunda graduação e ENCCEJA.</p></header></div>",
           "codigo": "<div class=\"ucam-site-inverso\">\n  <header class=\"ucam-site-section-heading ucam-site-section-heading--inverse\">\n    <p class=\"ucam-site-section-heading__eyebrow\">Ingresso</p>\n    <h2 class=\"ucam-site-section-heading__title\">Como ingressar</h2>\n  </header>\n</div>",
           "angular": "<div class=\"ucam-site-inverso\">\n  <header ucamSiteSectionHeading inverse eyebrow=\"Ingresso\" heading=\"Como ingressar\"></header>\n</div>"
+        },
+        {
+          "titulo": "Com a contagem",
+          "descricao": "Quantos itens a seção lista, ao lado do título e dentro dele.",
+          "preview": "<header class='ucam-site-section-heading ucam-site-section-heading--sm'><p class='ucam-site-section-heading__eyebrow'>Estrutura curricular</p><h2 class='ucam-site-section-heading__title' id='t-eletivas'>Disciplinas eletivas <span class='ucam-site-section-heading__count'>12</span></h2></header>",
+          "codigo": "<header class=\"ucam-site-section-heading ucam-site-section-heading--sm\">\n  <p class=\"ucam-site-section-heading__eyebrow\">Estrutura curricular</p>\n  <h2 class=\"ucam-site-section-heading__title\" id=\"t-eletivas\">Disciplinas eletivas <span class=\"ucam-site-section-heading__count\">12</span></h2>\n</header>",
+          "angular": "<header ucamSiteSectionHeading size=\"section-sm\" eyebrow=\"Estrutura curricular\" heading=\"Disciplinas eletivas\" [count]=\"12\" headingId=\"t-eletivas-ng\"></header>"
         }
       ]
     },
