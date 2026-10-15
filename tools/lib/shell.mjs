@@ -3022,6 +3022,9 @@ ${FN_ANUNCIA}
     // que a ficha logo abaixo já diz. É o número que se lê de relance.
     var ecoPend = document.querySelector('[data-pendentes-eco]');
     if (ecoPend) ecoPend.textContent = t.pendentes ? t.pendentes + ' sem decisão' : t.documento ? t.documento + ' aguardando documento' : 'Todas decididas';
+    // A meta é o botão que leva à próxima sem decisão; sem nenhuma, volta a
+    // ser só o número (sem seta, sem alvo).
+    paraIrFalta(!t.pendentes);
     // A BARRA das decisões, acima da tabela (06/10/2026): cada segmento e cada
     // número da legenda seguem a mesma conta do rodapé.
     var barraTot = document.querySelector('[data-totais-barra]');
@@ -3165,6 +3168,55 @@ ${FN_ANUNCIA}
       p.textContent = p.getAttribute('data-dica-' + estado);
     });
   }
+  /* ONDE FALTA (14/10/2026: "quando falta uma decisão, mostre aonde está").
+   * O "8 sem decisão" do cabeçalho dizia QUANTAS e não QUAIS: com 9 linhas e
+   * o filtro de período, achar a que faltava era rolar e ler o seletor de
+   * cada uma. A meta virou botão (data-acao="ir-falta"): cada clique leva à
+   * PRÓXIMA sem decisão, na ordem da tabela, e volta à primeira no fim. Se o
+   * filtro de período esconde a linha, ele volta a "Todos" — levar a uma
+   * linha escondida era o defeito do "Ir para a primeira" do aviso, que agora
+   * usa esta mesma função (window.ucamIrFalta). A linha pisca (eco) e o foco
+   * vai para o seletor dela, que é onde a decisão se toma. */
+  var ultimaFalta = null;
+  function paraIrFalta(vazio) {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-acao="ir-falta"]'), function (b) {
+      if (vazio) { b.setAttribute('data-vazio', ''); b.setAttribute('aria-disabled', 'true'); }
+      else { b.removeAttribute('data-vazio'); b.removeAttribute('aria-disabled'); }
+      var dica = b.querySelector('.ucam-sr-only');
+      if (dica) dica.hidden = !!vazio;
+    });
+  }
+  function irFalta(de, primeira) {
+    var tabela = document.querySelector('[data-decisoes]');
+    if (!tabela) return null;
+    var faltam = Array.prototype.filter.call(tabela.querySelectorAll('tr[data-disciplina]'), function (tr) {
+      return !tr.getAttribute('data-decidida') && tr.querySelector('[data-decisao]');
+    });
+    if (!faltam.length) { ultimaFalta = null; return null; }
+    var alvo = faltam[0];
+    if (!primeira && ultimaFalta && ultimaFalta.isConnected) {
+      alvo = faltam.filter(function (tr) {
+        return ultimaFalta.compareDocumentPosition(tr) & Node.DOCUMENT_POSITION_FOLLOWING;
+      })[0] || faltam[0];
+    }
+    ultimaFalta = alvo;
+    var botaoF = alvo.querySelector('[data-decisao] button');
+    function mostra() {
+      alvo.scrollIntoView({ block: 'center' });
+      if (botaoF) botaoF.focus({ preventScroll: true });
+      eco(alvo);
+      anuncia(alvo.getAttribute('data-disciplina') + ': sem decisão (' + (faltam.indexOf(alvo) + 1) + ' de ' + faltam.length + ').', de || botaoF);
+    }
+    // O filtro aplica num setTimeout 0 depois do clique (filtroScript): o
+    // foco espera a linha voltar, senão cai num botão escondido e some.
+    var todos = alvo.hidden && tabela.id ? document.querySelectorAll('[data-filtra][aria-controls="' + tabela.id + '"] button[data-valor=""][aria-pressed="false"]') : [];
+    if (todos.length) {
+      Array.prototype.forEach.call(todos, function (b) { b.click(); });
+      setTimeout(mostra, 0);
+    } else mostra();
+    return alvo;
+  }
+  window.ucamIrFalta = irFalta;
   function seloIsencao(el, tom, texto) {
     if (!el) return;
     el.className = 'ucam-badge ucam-badge--' + tom;
@@ -3173,6 +3225,10 @@ ${FN_ANUNCIA}
 
   function agir(botao, qual) {
     if (qual === 'imprimir') return window.print();
+    if (qual === 'ir-falta') {
+      if (!irFalta(botao)) anuncia('Todas as disciplinas têm decisão.', botao);
+      return;
+    }
 
     /* NOTIFICAÇÕES LIDAS. O selo some, o nome acessível do sino passa a dizer
      * "nenhuma não lida", o título do painel perde a contagem — e o próprio
@@ -4356,7 +4412,7 @@ ${FN_ANUNCIA}
       // o candidato, com prazo, e as decisões tomadas ficam como estão.
       if (tot.documento) {
         var obsP = document.querySelector('textarea[data-observacao]');
-        seloIsencao(seloS, 'warning', 'Aguardando candidato');
+        seloIsencao(seloS, 'espera', 'Aguardando candidato');
         registraAtividade(botao, 'Documento pedido ao candidato, prazo até ' + prazoIsencao(),
           (obsP && obsP.value.trim()) || ('Falta documento para ' + juntaNomes(tot.aguardam) + '.'), 'send', 'warning');
         /* O PEDIDO MUDA A TELA (28/09/2026: "o botão retorna pro mesmo
@@ -4376,6 +4432,7 @@ ${FN_ANUNCIA}
         trocaDicas('pedido');
         var ecoPed = document.querySelector('[data-pendentes-eco]');
         if (ecoPed) ecoPed.textContent = 'Espera o documento até ' + prazoIsencao();
+        paraIrFalta(true);
         var tituloP = document.querySelector('.ucam-viewbar__titulo');
         if (tituloP) { tituloP.setAttribute('tabindex', '-1'); tituloP.focus(); }
         anuncia(textoP, botao);
@@ -4399,6 +4456,7 @@ ${FN_ANUNCIA}
       trocaDicas('concluida');
       var ecoFim = document.querySelector('[data-pendentes-eco]');
       if (ecoFim) ecoFim.textContent = tot.isentas + ' de ' + tot.total + ' isentas';
+      paraIrFalta(true);
       var tituloTela = document.querySelector('.ucam-viewbar__titulo');
       if (tituloTela) { tituloTela.setAttribute('tabindex', '-1'); tituloTela.focus(); }
       anuncia(textoFim, botao);
@@ -4408,7 +4466,7 @@ ${FN_ANUNCIA}
     if (qual === 'enviar-observacao') {
       var campoO = document.querySelector('textarea[data-observacao]');
       if (!campoO || !campoO.value.trim()) { anuncia('Escreva a observação antes de enviar.', botao); if (campoO) campoO.focus(); return; }
-      seloIsencao(document.querySelector('[data-selo-situacao]'), 'warning', 'Aguardando candidato');
+      seloIsencao(document.querySelector('[data-selo-situacao]'), 'espera', 'Aguardando candidato');
       registraAtividade(botao, 'Observação enviada ao candidato', campoO.value.trim(), 'send', 'warning');
       anuncia('Observação enviada. A situação passou a Aguardando candidato.', botao);
       // No diálogo (análise da isenção) o envio FECHA: o rótulo temporário
@@ -6315,6 +6373,9 @@ export const confirmaScript = `
       var canc = da.querySelector('[data-cancelar]'); canc.textContent = 'Ir para a primeira';
       da.onclose = function () {
         da.onclose = null; okA.hidden = false; canc.textContent = 'Cancelar';
+        // window.ucamIrFalta (estadoScript) também tira o filtro de período
+        // que escondia a linha; o caminho de baixo fica para tela sem ele.
+        if (window.ucamIrFalta && window.ucamIrFalta(null, true)) return;
         var alvoF = faltam[0] && faltam[0].querySelector('[data-decisao] button');
         if (alvoF) { alvoF.scrollIntoView({ block: 'center' }); alvoF.focus(); }
         else devolveFoco(retorno, botao.closest('section') || botao.closest('main'));
