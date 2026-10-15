@@ -29,6 +29,7 @@ import { listboxScript } from './select-listbox.mjs';
 
 /** Na ordem em que as telas autônomas os carregam; a ordem importa (toast antes de quem o chama). */
 export const COMPONENTE = [
+  'semPularScript',
   'toastScript',
   'navScript',
   'buscaGlobalScript',

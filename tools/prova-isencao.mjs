@@ -40,6 +40,15 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   prova('análise: a meta do cabeçalho é o pendente ("8 sem decisão"), trilha curta, sem Voltar', cab.meta === '8 sem decisão' && cab.trilha === 'Fila de análise / João Cutrim' && !cab.voltar, cab);
   prova('coluna: grupo de um item sem título e rodapé sem itens mortos (ADR-070)', cab.grupos.join(',') === 'Favoritos,Cadastros' && !cab.rodape, cab);
 
+  // ONDE FALTA (14/10/2026): a meta leva à próxima sem decisão, tira o filtro
+  // de período que a escondia e devolve o foco à linha.
+  const ir = await p.js(`${AJUDA} q("[data-filtra='dado:periodo'] button[data-valor='3']").click(); await w(100);
+    const meta = q('[data-acao="ir-falta"]'); meta.click(); await w(150);
+    const r = { botao: meta.tagName, um: document.activeElement.closest('tr') && document.activeElement.closest('tr').getAttribute('data-disciplina'), filtro: q("[data-filtra='dado:periodo'] [aria-pressed='true']").getAttribute('data-valor') };
+    meta.click(); await w(150); r.dois = document.activeElement.closest('tr') && document.activeElement.closest('tr').getAttribute('data-disciplina'); r.anuncio = (q('[data-anuncio]') || {}).textContent || ''; return r;`);
+  prova('a meta "8 sem decisão" é botão: leva à 1ª sem decisão e tira o filtro que a escondia', ir.botao === 'BUTTON' && ir.um === 'Introdução ao Estudo do Direito' && ir.filtro === '', ir);
+  prova('o segundo clique leva à próxima e anuncia qual é ("2 de 8")', ir.dois === 'História do Direito' && ir.anuncio.includes('História do Direito: sem decisão (2 de 8)'), ir);
+
   const d1 = await p.js(`${AJUDA} decide('Introdução ao Estudo do Direito', 'isentar'); decide('História do Direito', 'nao'); await w(250);
     return { pe: pe(), legenda: legenda(), barra: barra(), campos: !linha('Introdução ao Estudo do Direito').querySelector('[data-campos="isentar"]').hidden };`);
   prova('decidir: rodapé e legenda andam juntos', d1.pe.includes('1 isenta · 1 não isenta') && d1.legenda === '1 1 1 6', d1);
@@ -55,6 +64,8 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
     if (d) { const ir = [...d.querySelectorAll('button')].find((b) => /primeira/i.test(b.textContent)); if (ir) ir.click(); await w(300); } r.fechou = !q('dialog[open]'); r.foco = !!document.activeElement.closest('tr[data-disciplina]'); return r;`);
   prova('finalizar com sem-decisão é barrado: diz quantas faltam, nomeia e marca as linhas', blq.titulo === 'Faltam ' + blq.pend + ' decisões' && /Sociologia Jurídica/.test(blq.texto) && blq.marcadas === Number(blq.pend) && /Aguardando análise/.test(blq.selo), blq);
   prova('"Ir para a primeira" fecha o aviso e leva o foco à linha', blq.fechou && blq.foco, blq);
+  const traco = await p.js(`${AJUDA} const tr = q('tr[data-falta]'); return tr ? getComputedStyle(tr.querySelector('td'), '::after').inlineSize + ' ' + qa('tr[data-falta]').length : 'nenhuma';`);
+  prova('depois do aviso, cada linha que falta tem o traço de 4px na entrada', /^4px 7$/.test(traco), traco);
 
   const ap = await p.js(`${AJUDA} q('[data-acao="aplicar-sugestoes"]').click(); await w(400); return { legenda: legenda(), rotulo: q('[data-aplicar-rotulo]').textContent, marcadas: qa('[data-decisao][aria-invalid="true"]').length, anuncio: (q('[data-anuncio]') || {}).textContent || '' };`);
   prova('aplicar sugestões preenche só as firmes e não toca o que já foi decidido', ap.legenda === '4 3 1 1', ap);
@@ -74,6 +85,8 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   prova('confirmada, a situação vira Concluída', /Conclu/.test(fin.selo), fin.selo);
   const ecoFim = await p.js(`${AJUDA} return q('[data-pendentes-eco]').textContent;`);
   prova('concluída: a meta vira o resultado ("5 de 9 isentas")', ecoFim === '5 de 9 isentas', ecoFim);
+  const metaFim = await p.js(`${AJUDA} const b = q('[data-acao="ir-falta"]'); return b.hasAttribute('data-vazio') && b.getAttribute('aria-disabled') === 'true' && b.querySelector('.ucam-sr-only').hidden;`);
+  prova('sem pendentes, a meta deixa de levar (sem seta, sem "mostrar a próxima")', metaFim === true, metaFim);
   prova('análise: nenhum erro de script no percurso', p.erros.length === 0, p.erros.join(' | '));
   await p.fecha();
 }
