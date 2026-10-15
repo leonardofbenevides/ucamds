@@ -81,3 +81,9 @@ test('sobre foto, todo texto usa a tinta que a conta do véu mede, e a pílula t
   // A tag de marca não some no cartão de destaque, que tem a mesma lavagem.
   assert.match(css, /^\.ucam-site-card--destaque \.ucam-site-tag--brand \{\n  background: var\(--ucam-site-color-surface-default\);/m);
 });
+
+test('prosa: o marcador das listas é declarado, para resistir ao reset do site que a hospeda', () => {
+  const { css } = construirCss({ raiz: ROOT });
+  assert.match(css, /^\.ucam-site-prose ul \{\n  list-style: disc;/m);
+  assert.match(css, /^\.ucam-site-prose ol \{\n  list-style: decimal;/m);
+});

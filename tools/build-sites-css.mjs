@@ -2095,6 +2095,15 @@ ${acima('duas-colunas')} {
 .ucam-site-prose ol {
   padding-inline-start: ${V('space-stack-md')};
 }
+/* O marcador é declarado, não herdado do navegador: o site que hospeda a
+ * prosa pode ter um reset (o do Tailwind tira o list-style de toda lista), e
+ * no saber-mais os tópicos saíram sem marcador (15/10/2026). */
+.ucam-site-prose ul {
+  list-style: disc;
+}
+.ucam-site-prose ol {
+  list-style: decimal;
+}
 .ucam-site-prose li + li {
   margin-block-start: ${V('space-inline-xs')};
 }
