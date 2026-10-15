@@ -1,4 +1,5 @@
 import { Component, signal } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
 import { blocosComuns, monta } from '../../testing/peca';
 import { UcamSiteSectionTabs, type UcamSiteSectionTab } from './section-tabs';
 
@@ -45,13 +46,16 @@ describe('nav[ucamSiteSectionTabs]', () => {
     const original = HTMLElement.prototype.scrollTo;
     HTMLElement.prototype.scrollTo = rolar as never;
     try {
-      // Sem zona, detectChanges não garante que o afterRenderEffect já rodou:
-      // a espera pela estabilidade, sim (a revisão viu o teste falhar 2 em 6).
-      await monta(Hospede).f.whenStable();
+      // Sem zona, detectChanges não garante que o afterRenderEffect já rodou, e
+      // whenStable também falhou com a máquina carregada: TestBed.tick() roda o
+      // ciclo inteiro da aplicação, com os ganchos de depois do desenho.
+      monta(Hospede);
+      TestBed.tick();
       expect(rolar).not.toHaveBeenCalled();
-      const { f, el } = monta(Hospede, { current: '/mestrado#docentes' });
-      await f.whenStable();
-      expect(rolar).toHaveBeenCalled();
+      const { el } = monta(Hospede, { current: '/mestrado#docentes' });
+      TestBed.tick();
+      // Com a máquina carregada o gancho chegou a rodar depois do tick: espera por ele, com prazo.
+      await vi.waitFor(() => expect(rolar).toHaveBeenCalled());
       expect(rolar.mock.contexts.at(-1)).toBe(el);
       expect(rolar.mock.calls.at(-1)![0]).toMatchObject({ behavior: 'instant' });
     } finally {
