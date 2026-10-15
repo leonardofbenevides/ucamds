@@ -28,6 +28,10 @@
       {
         "tela": "www e cenpre",
         "problema": "a página atual não é marcada na navegação"
+      },
+      {
+        "tela": "saber-mais — /mestrado, cabeçalho (14/10/2026)",
+        "problema": "a logo da UCAM e o nome do programa num cabeçalho próprio, porque o do catálogo só tinha a marca em texto"
       }
     ],
     "conclusao": "Uma faixa só, a página atual dita por aria-current, e o menu do telefone num details. O mega-menu do site institucional fica fora desta fatia."
@@ -55,6 +59,12 @@
       "obrigatorio": false,
       "descricao": "<img> da marca, com 32px de altura.",
       "classe": "ucam-site-header__logo"
+    },
+    {
+      "parte": "brand-name",
+      "obrigatorio": false,
+      "descricao": "<span> com o nome do site ao lado da logo, depois de um filete. Só a partir de duas-colunas: no telefone não cabe ao lado da logo e do menu, e o topo da página diz o nome.",
+      "classe": "ucam-site-header__brand-name"
     },
     {
       "parte": "nav",
@@ -114,9 +124,16 @@
     },
     {
       "nome": "brand",
-      "tipo": "string",
-      "obrigatorio": true,
-      "descricao": "O nome do site, no link da marca. Nesta versão a marca é texto; a imagem entra quando houver arquivo de marca dos sites."
+      "tipo": "string | null",
+      "obrigatorio": false,
+      "descricao": "O nome do site, no link da marca. Com logo, o texto ao lado dela, depois de um filete; opcional.",
+      "default": "null"
+    },
+    {
+      "nome": "logo",
+      "tipo": "{ src: string; alt: string; width?: number; height?: number } | null",
+      "default": "null",
+      "descricao": "A logo da marca, com 32px de altura. O alt é o nome do link; logo sem alt ou sem src não entra, e a marca volta ao texto."
     },
     {
       "nome": "brandLabel",
@@ -263,6 +280,6 @@
       ],
       "nota": "Não entrega mega-menu, nem o fechamento do menu por Esc, por clique fora ou ao seguir uma âncora."
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/site-header/site-header.ts — header[ucamSiteHeader]. Entradas: items, current, homeHref, brand, brandLabel, action, secondaryAction, menuLabel."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/site-header/site-header.ts — header[ucamSiteHeader]. Entradas: items, current, homeHref, brand, logo, brandLabel, action, secondaryAction, menuLabel."
   }
 }

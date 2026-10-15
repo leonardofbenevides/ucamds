@@ -10,7 +10,7 @@ const ITENS: UcamSiteHeaderLink[] = [
 
 @Component({
   imports: [UcamSiteHeader],
-  template: `<header ucamSiteHeader data-peca class="minha" brand="CENPRE" [brandLabel]="$any(e()['brandLabel'])" [items]="$any(e()['items']) ?? itens"
+  template: `<header ucamSiteHeader data-peca class="minha" [brand]="$any(e()['brand'] === undefined ? 'CENPRE' : e()['brand'])" [logo]="$any(e()['logo'])" [brandLabel]="$any(e()['brandLabel'])" [items]="$any(e()['items']) ?? itens"
     [current]="$any(e()['current'])" [homeHref]="$any(e()['homeHref']) ?? '/'" [action]="$any(e()['action'])" [secondaryAction]="$any(e()['secondaryAction'])"
     [menuLabel]="$any(e()['menuLabel'])"></header><button id="fora" type="button">fora</button>`,
 })
@@ -157,5 +157,28 @@ describe('header[ucamSiteHeader]', () => {
     link.addEventListener('click', (e) => e.preventDefault(), { once: true });
     link.dispatchEvent(ev);
     expect(el.querySelector('details')!.open).toBe(false);
+  });
+
+  const LOGO = { src: '/logo.svg', alt: 'Universidade Candido Mendes', width: 213, height: 40 };
+  const marca = (el: HTMLElement) => el.querySelector('.ucam-site-header__brand')!;
+  it('com logo, a marca é a imagem, com o alt como nome, e o nome do site ao lado', () => {
+    const { el } = monta(Hospede, { logo: LOGO, brand: 'Planejamento Regional' });
+    expect([...marca(el).children].map((c) => `${c.localName}.${c.className}`)).toEqual(['img.ucam-site-header__logo', 'span.ucam-site-header__brand-name']);
+    const img = marca(el).querySelector('img')!;
+    expect([img.getAttribute('src'), img.getAttribute('alt'), img.getAttribute('width'), img.getAttribute('height')]).toEqual(['/logo.svg', 'Universidade Candido Mendes', '213', '40']);
+    expect(marca(el).querySelector('span')!.textContent).toBe('Planejamento Regional');
+  });
+  it('com logo e sem nome, só a imagem; medida torta não vira atributo', () => {
+    const { el } = monta(Hospede, { logo: { ...LOGO, width: -1, height: 'x' }, brand: null });
+    expect([...marca(el).children].map((c) => c.localName)).toEqual(['img']);
+    expect(marca(el).querySelector('img')!.hasAttribute('width')).toBe(false);
+    expect(marca(el).querySelector('img')!.hasAttribute('height')).toBe(false);
+  });
+  it('logo sem alt ou sem src não entra: a marca volta ao texto, e o link não fica sem nome', () => {
+    for (const logo of [{ src: '/logo.svg', alt: ' ' }, { src: '', alt: 'UCAM' }, 'logo']) {
+      const { el } = monta(Hospede, { logo });
+      expect(marca(el).querySelector('img')).toBeNull();
+      expect(marca(el).textContent).toBe('CENPRE');
+    }
   });
 });

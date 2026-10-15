@@ -832,10 +832,32 @@ ${acima('grade-completa')} {
   font-weight: ${V('typography-title-font-weight')};
   text-decoration: none;
 }
+.ucam-site-header__brand:has(.ucam-site-header__logo) {
+  gap: ${V('space-inline-md')};
+}
 .ucam-site-header__logo {
   display: block;
   inline-size: auto;
   block-size: ${V('size-logo')};
+}
+/* O nome do site ao lado da logo: depois de um filete, no tamanho de apoio.
+ * Abaixo de duas-colunas ele não cabe ao lado da logo e do menu (quebrava em
+ * seis linhas a 390): sai da faixa, e o topo da página diz o nome. */
+.ucam-site-header__brand-name {
+  display: none;
+  min-inline-size: 0;
+  padding-inline-start: ${V('space-inline-md')};
+  border-inline-start: 1px solid ${V('color-border-default')};
+  font-family: ${V('font-body')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-title-font-weight')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-header__brand:has(.ucam-site-header__brand-name) {
+  flex: 0 1 auto;
+}
+${acima('duas-colunas')} {
+  .ucam-site-header__brand-name { display: block; }
 }
 .ucam-site-header__nav {
   display: none;

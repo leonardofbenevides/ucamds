@@ -7,6 +7,14 @@ export interface UcamSiteHeaderLink {
   href: string;
 }
 
+/** A logo da marca. O alt é o nome do link: sem ele, a logo não entra. */
+export interface UcamSiteHeaderLogo {
+  src: string;
+  alt: string;
+  width?: number | null;
+  height?: number | null;
+}
+
 /**
  * Cabeçalho do site. Contrato: sites/spec/components/site-header.json.
  *
@@ -26,6 +34,10 @@ export interface UcamSiteHeaderLink {
  *  - clicar fora fecha; seguir um link fecha.
  * A escuta em `document:` não liga nada no servidor.
  *
+ * Com `logo`, a marca é a imagem, e `brand`, se houver, é o nome do site ao
+ * lado dela, depois de um filete (UCAM | CENPRE). Logo sem alt ou sem src não
+ * entra: o link da marca ficaria sem nome, e a marca volta ao texto.
+ *
  * `current` é comparado ao href do item por igualdade exata: passe o mesmo
  * texto que está em `items` (com ou sem barra final, com ou sem consulta).
  */
@@ -38,7 +50,7 @@ export interface UcamSiteHeaderLink {
     class: 'ucam-site-header',
     '(document:click)': 'aoClicar($event)',
   },
-  template: `<div class="ucam-site-header__bar"><a class="ucam-site-header__brand" [attr.href]="homeHref()" [attr.aria-label]="brandLabel()?.trim() || null">{{ brand() }}</a>@if (links().length) {<nav class="ucam-site-header__nav" aria-label="Principal">@for (item of links(); track $index) {<a class="ucam-site-header__link" [attr.href]="item.href" [attr.aria-current]="item.href === current() ? 'page' : null">{{ item.label }}</a>}</nav>}@if (acoes().length) {<div class="ucam-site-header__actions">@for (acao of acoes(); track $index) {<a ucamSiteButton [variant]="acao.variante" [attr.href]="acao.href">{{ acao.label }}</a>}</div>}@if (links().length || acoes().length) {<details #menu class="ucam-site-header__menu" (keydown.escape)="aoEsc($event)" (focusout)="aoSairOFoco($event)"><summary class="ucam-site-header__toggle" [attr.aria-label]="rotuloDoMenu()"><svg ucamSiteIcon="menu"></svg></summary><nav class="ucam-site-header__mobile" [attr.aria-label]="rotuloDoMenu()">@for (item of links(); track $index) {<a class="ucam-site-header__link" [attr.href]="item.href" [attr.aria-current]="item.href === current() ? 'page' : null">{{ item.label }}</a>}@for (acao of acoes(); track $index) {<a ucamSiteButton [variant]="acao.variante" [attr.href]="acao.href">{{ acao.label }}</a>}</nav></details>}</div>`,
+  template: `<div class="ucam-site-header__bar"><a class="ucam-site-header__brand" [attr.href]="homeHref()" [attr.aria-label]="brandLabel()?.trim() || null">@if (logoDaMarca(); as l) {<img class="ucam-site-header__logo" [attr.src]="l.src" [attr.alt]="l.alt" [attr.width]="l.width" [attr.height]="l.height">@if (nome(); as n) {<span class="ucam-site-header__brand-name">{{ n }}</span>}} @else {{{ nome() }}}</a>@if (links().length) {<nav class="ucam-site-header__nav" aria-label="Principal">@for (item of links(); track $index) {<a class="ucam-site-header__link" [attr.href]="item.href" [attr.aria-current]="item.href === current() ? 'page' : null">{{ item.label }}</a>}</nav>}@if (acoes().length) {<div class="ucam-site-header__actions">@for (acao of acoes(); track $index) {<a ucamSiteButton [variant]="acao.variante" [attr.href]="acao.href">{{ acao.label }}</a>}</div>}@if (links().length || acoes().length) {<details #menu class="ucam-site-header__menu" (keydown.escape)="aoEsc($event)" (focusout)="aoSairOFoco($event)"><summary class="ucam-site-header__toggle" [attr.aria-label]="rotuloDoMenu()"><svg ucamSiteIcon="menu"></svg></summary><nav class="ucam-site-header__mobile" [attr.aria-label]="rotuloDoMenu()">@for (item of links(); track $index) {<a class="ucam-site-header__link" [attr.href]="item.href" [attr.aria-current]="item.href === current() ? 'page' : null">{{ item.label }}</a>}@for (acao of acoes(); track $index) {<a ucamSiteButton [variant]="acao.variante" [attr.href]="acao.href">{{ acao.label }}</a>}</nav></details>}</div>`,
 })
 export class UcamSiteHeader {
   /** A navegação principal. Até cinco: o sexto vai para o rodapé. */
@@ -46,8 +58,9 @@ export class UcamSiteHeader {
   /** O href da página atual: marca o mesmo link na faixa e no menu. */
   readonly current = input<string | null | undefined>(null);
   readonly homeHref = input('/');
-  /** O nome do site, no link da marca. */
-  readonly brand = input.required<string>();
+  /** O nome do site, no link da marca. Com logo, o texto ao lado dela, opcional. */
+  readonly brand = input<string | null | undefined>(null);
+  readonly logo = input<UcamSiteHeaderLogo | null | undefined>(null);
   /** O nome acessível do link da marca, que diz o destino: "CENPRE, página inicial". */
   readonly brandLabel = input<string | null | undefined>(null);
   /** A ação primária, à direita da navegação e no fim do menu. */
@@ -58,6 +71,15 @@ export class UcamSiteHeader {
 
   private readonly menu = viewChild<ElementRef<HTMLDetailsElement>>('menu');
 
+  protected readonly nome = computed(() => (typeof this.brand() === 'string' && this.brand()!.trim()) || null);
+  protected readonly logoDaMarca = computed(() => {
+    const l = this.logo();
+    const src = typeof l?.src === 'string' ? l.src.trim() : '';
+    const alt = typeof l?.alt === 'string' ? l.alt.trim() : '';
+    if (!src || !alt) return null;
+    const medida = (v: unknown) => (typeof v === 'number' && v > 0 ? v : null);
+    return { src, alt, width: medida(l?.width), height: medida(l?.height) };
+  });
   protected readonly links = computed(() => this.items().filter((i) => i?.label && i?.href));
   protected readonly acoes = computed(() => {
     const lista: (UcamSiteHeaderLink & { variante: 'primary' | 'secondary' })[] = [];
