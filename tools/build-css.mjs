@@ -14492,7 +14492,7 @@ ${acima('nav-fixa')} {
   --cena-p: var(--ucam-color-surface-brand);
   --cena-t: var(--ucam-color-text-on-brand);
 }
-.ucam-login__cena path { fill: none; stroke: var(--cena-t); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ucam-login__cena path { fill: none; stroke: var(--cena-t); stroke-width: 1.15; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .ucam-login__cena :is(.p0, .p1, .l, .t0, .k0, .k1, .f1, .r0) { fill: var(--cena-p); }
 .ucam-login__cena :is(.p2, .m) { fill: color-mix(in srgb, var(--cena-t) 10%, var(--cena-p)); }
 .ucam-login__cena :is(.s, .k2) { fill: color-mix(in srgb, var(--cena-t) 20%, var(--cena-p)); }
@@ -14515,7 +14515,7 @@ ${acima('nav-fixa')} {
 .ucam-login__cena :is(.pv, .on, .malha, .gr, .ng, .rg, .fc) { stroke-width: 0.75; }
 .ucam-login__cena .pv { stroke: color-mix(in srgb, var(--cena-t) 10%, transparent); }
 .ucam-login__cena .malha { stroke: color-mix(in srgb, var(--cena-t) 7%, transparent); }
-.ucam-login__cena :is(.on, .gr, .ng, .rg) { stroke: color-mix(in srgb, var(--cena-t) 28%, transparent); }
+.ucam-login__cena :is(.on, .gr, .ng, .rg) { stroke: color-mix(in srgb, var(--cena-t) 42%, transparent); }
 .ucam-login__cena :is(.clarao-0, .clarao-1) { stop-color: var(--cena-p); stop-opacity: 0; }
 .ucam-login__cena :is(.tr, .kk) { stroke-width: 3; }
 .ucam-login__cena .tr2 { stroke-width: 2.5; }
