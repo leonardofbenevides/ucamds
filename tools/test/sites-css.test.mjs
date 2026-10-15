@@ -87,3 +87,13 @@ test('prosa: o marcador das listas é declarado, para resistir ao reset do site 
   assert.match(css, /^\.ucam-site-prose ul \{\n  list-style: disc;/m);
   assert.match(css, /^\.ucam-site-prose ol \{\n  list-style: decimal;/m);
 });
+
+test('link sem classe num parágrafo sobre o escuro leva a tinta do inverso; o utilitário só-para-leitor existe', () => {
+  const { css } = construirCss({ raiz: ROOT });
+  const regra = css.match(/^\.ucam-site-inverso p a:not\(\[class\]\),\n\.ucam-site-hero p a:not\(\[class\]\),\n\.ucam-site-page-hero p a:not\(\[class\]\),\n\.ucam-site-cta p a:not\(\[class\]\) \{([^}]*)\}/m);
+  assert.ok(regra, 'falta a regra do link no escuro');
+  assert.match(regra[1], /color: var\(--ucam-site-color-text-on-inverse\);/);
+  assert.match(regra[1], /text-decoration-line: underline;/);
+  assert.match(css, /^\.ucam-site-sr-only \{[^}]*clip-path: inset\(50%\);/m);
+  assert.match(css, /^\.ucam-site-page-hero--sobre-foto \.ucam-site-breadcrumb--inverse \.ucam-site-breadcrumb__item \+ \.ucam-site-breadcrumb__item::before \{\n  color: var\(--ucam-site-color-text-on-inverse\);/m);
+});

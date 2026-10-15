@@ -155,6 +155,36 @@ export function construirCss({ raiz = ROOT } = {}) {
   color: ${V('color-text-on-inverse')};
 }
 
+/* ------------------------------------------- link no texto, no escuro --- */
+/* Link sem classe num parágrafo escrito por quem usa, sobre superfície
+ * escura (seção inversa, hero, hero de página, chamada): a tinta cheia do
+ * inverso e o sublinhado. Sem esta regra ele herdava a cor de link da
+ * página, vinho sobre o escuro (o saber-mais, 15/10/2026). Só em <p>: as
+ * peças que têm link próprio (a trilha, os botões) seguem com o delas. */
+.ucam-site-inverso p a:not([class]),
+.ucam-site-hero p a:not([class]),
+.ucam-site-page-hero p a:not([class]),
+.ucam-site-cta p a:not([class]) {
+  color: ${V('color-text-on-inverse')};
+  text-decoration-line: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ------------------------------------------- só para leitor de tela --- */
+/* O texto que completa o nome de um link ou botão sem aparecer: "(abre em
+ * nova aba)". O padrão de recorte que não tira o texto da árvore. */
+.ucam-site-sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ------------------------------------------------------------- fileira --- */
 /* Peças em linha lado a lado: botões, tags, pastilhas, avatar e nome. Quem
  * separa é o gap, não o espaço em branco do HTML: um template Angular tira
@@ -1293,6 +1323,11 @@ ${acima('grade-completa')} {
 .ucam-site-page-hero--sobre-foto .ucam-site-hero-pill {
   background: ${V('color-surface-photo-scrim')};
   white-space: normal;
+}
+/* O separador da trilha é decorativo, mas na tinta das bordas sumia sobre a
+ * foto, e a trilha que quebrava linha parecia recuada sem motivo. */
+.ucam-site-page-hero--sobre-foto .ucam-site-breadcrumb--inverse .ucam-site-breadcrumb__item + .ucam-site-breadcrumb__item::before {
+  color: ${V('color-text-on-inverse')};
 }
 ${acima('grade-completa')} {
   .ucam-site-page-hero__inner { padding: ${V('space-section')} ${V('space-gutter')}; }
