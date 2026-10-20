@@ -278,6 +278,10 @@
       "componente": "segmented",
       "diferenca": "Tabs troca o conteúdo abaixo dela; segmented escolhe um VALOR que continua valendo — uma ordenação, um recorte, um Sim/Não.",
       "escolha": "Se cada opção tem um painel próprio associado, é tabs."
+    },
+    {
+      "componente": "accordion",
+      "diferenca": "Tabs troca o conteúdo de um mesmo lugar e mostra só uma seção; Accordion empilha as seções e deixa ver o título de todas, abrindo uma (ou várias) no lugar."
     }
   ],
   "implementacao": {

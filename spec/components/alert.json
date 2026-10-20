@@ -90,7 +90,7 @@
         },
         "success": {
           "uso": "Confirmação de algo que já terminou e continua visível: requerimento registrado sob o número 2026/00841.",
-          "limite": "Confirmação de ação rápida NÃO vira alerta persistente empilhado no topo da página. E também não vira toast: toast está fora do catálogo por decisão (ver limites). O caminho é o próprio controle dizer que terminou — o botão sai de loading, a linha salva pisca o realce, o contador do cabeçalho muda. Alerta só entra quando a confirmação carrega informação que a pessoa vai precisar depois, como o número do protocolo gerado. Nas telas de referência isso é o que o comportamento faz desde 21/09/2026: as ações cuja confirmação carrega um fato que não está em lugar nenhum da tela — o e-mail de redefinição (\"o link vale por uma hora\") e a reemissão do cartão (\"o anterior deixou de valer agora\") — montam um alerta na região, um por região, com o X que dispensa. As demais seguem no eco do próprio controle. O alerta não leva role=status: quem fala é a região de anúncio, que já recebeu a mesma frase, e dois anúncios da mesma coisa é pior que um.",
+          "limite": "Confirmação de ação rápida NÃO vira alerta persistente empilhado no topo da página. O toast (toast.json, ADR-052) confirma a ação de sistema e some; ele não carrega o que a pessoa vai precisar depois. O caminho é o próprio controle dizer que terminou — o botão sai de loading, a linha salva pisca o realce, o contador do cabeçalho muda. Alerta só entra quando a confirmação carrega informação que a pessoa vai precisar depois, como o número do protocolo gerado. Nas telas de referência isso é o que o comportamento faz desde 21/09/2026: as ações cuja confirmação carrega um fato que não está em lugar nenhum da tela — o e-mail de redefinição (\"o link vale por uma hora\") e a reemissão do cartão (\"o anterior deixou de valer agora\") — montam um alerta na região, um por região, com o X que dispensa. As demais seguem no eco do próprio controle. O alerta não leva role=status: quem fala é a região de anúncio, que já recebeu a mesma frase, e dois anúncios da mesma coisa é pior que um.",
           "tokens": {
             "fundo": "color.feedback.success.background",
             "texto": "color.feedback.success.foreground",
@@ -249,7 +249,7 @@
       {
         "legado": "$mdToast.show()",
         "novo": "alerta persistente, ou nada",
-        "nota": "Toast não entrou no catálogo. Se a mensagem é necessária, ela não pode sumir sozinha; se pode sumir, provavelmente não era necessária."
+        "nota": "Se a mensagem é necessária depois, ela não pode sumir sozinha: é este alerta. Se é só a confirmação de que a ação terminou, é o Toast (toast.json)."
       },
       {
         "legado": "modal de erro após submit listando campos inválidos",
@@ -318,6 +318,11 @@
       "componente": "empty-state",
       "diferenca": "Alert é uma mensagem ao lado do conteúdo que existe; empty-state ocupa a área inteira porque não há conteúdo nenhum.",
       "escolha": "Se há dado na tela e algo precisa ser dito sobre ele, é alert."
+    },
+    {
+      "componente": "toast",
+      "diferenca": "Alert fica na página, ancorado ao que trata, até a pessoa resolver ou fechar; Toast flutua no canto e some sozinho. Informação que a pessoa vai usar depois mora no Alert.",
+      "escolha": "Perder a mensagem custa algo? Alert. Não custa? Toast."
     }
   ],
   "implementacao": {

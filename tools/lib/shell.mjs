@@ -4879,6 +4879,18 @@ ${FN_ANUNCIA}
       return;
     }
 
+    // ALTERNÂNCIA (toggle-group.json, ADR-074): cada botão liga e desliga
+    // sozinho — vários podem estar ligados. O change sai no GRUPO, para quem
+    // filtra ouvir um lugar só.
+    // Dentro de <ucam-toggle-group> quem alterna é o Angular, não este script.
+    var alterna = t.closest('.ucam-toggle-group > button[aria-pressed]');
+    if (alterna && !alterna.closest('ucam-toggle-group')) {
+      if (alterna.disabled || alterna.getAttribute('aria-disabled') === 'true') return;
+      alterna.setAttribute('aria-pressed', alterna.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      alterna.parentElement.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
+    }
+
     // SEGMENTED: um escolhido por grupo, e o seletor é o aria-pressed.
     var segmento = t.closest('.ucam-segmented > button[aria-pressed]');
     if (segmento) {
@@ -6885,6 +6897,13 @@ export const toastScript = `
     arma(el);
     return el;
   };
+  // DECLARATIVO (ADR-074): um botão com data-toast confirma sem script da
+  // tela — data-toast-tom escolhe o tom. É o que a demo do catálogo usa, e o
+  // que uma tela legada usa quando a ação não passa pelo data-fluxo.
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-toast]');
+    if (b) window.ucamToast(b.getAttribute('data-toast'), b.getAttribute('data-toast-tom'));
+  });
 })();
 `.trim();
 
@@ -6900,6 +6919,412 @@ export const toastScript = `
  * O botão é IRMÃO do texto, não filho: dentro do título ele entraria no nome
  * do cabeçalho. Some e aparece por opacidade, e nunca some do teclado.
  */
+/**
+ * A GRADE DO CALENDÁRIO, UMA SÓ (ADR-074). O popover do campo de data
+ * (dataScript) e o calendário solto e a agenda (calendarioScript) desenham o
+ * mês por esta função: duas grades teriam dois teclados, dois desenhos de
+ * hoje e dois nomes de dia — e o primeiro defeito corrigido numa delas não
+ * chegaria à outra.
+ *
+ * desenharGrade(cal, o) escreve o nome do mês e o tbody. o = { foco: Date,
+ * escolhido, de, ate, min, max: ISO ou '', eventos: { iso: [{ titulo, tom }] } }.
+ */
+const FN_CALENDARIO = `
+  var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  var SEMANA = [['D', 'domingo'], ['S', 'segunda'], ['T', 'terça'], ['Q', 'quarta'], ['Q', 'quinta'], ['S', 'sexta'], ['S', 'sábado']];
+  function doisD(n) { return (n < 10 ? '0' : '') + n; }
+  function isoDe(d) { return d.getFullYear() + '-' + doisD(d.getMonth() + 1) + '-' + doisD(d.getDate()); }
+  function deIso(i) { return new Date(i + 'T00:00:00'); }
+  function hoje() { var h = new Date(); return new Date(h.getFullYear(), h.getMonth(), h.getDate()); }
+  function cabecaCal() {
+    return '<div class="ucam-calendario__cabeca">' +
+      '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm" data-cal-mes="-1" aria-label="Mês anterior"><svg class="ic" aria-hidden="true"><use href="#i-chevronLeft"/></svg></button>' +
+      '<span class="ucam-calendario__mes" aria-live="polite"></span>' +
+      '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm" data-cal-mes="1" aria-label="Próximo mês"><svg class="ic" aria-hidden="true"><use href="#i-chevronRight"/></svg></button></div>';
+  }
+  function tabelaCal() {
+    var th = SEMANA.map(function (s) { return '<th scope="col" abbr="' + s[1] + '">' + s[0] + '</th>'; }).join('');
+    return '<table class="ucam-calendario__grade"><thead><tr>' + th + '</tr></thead><tbody></tbody></table>';
+  }
+  function desenharGrade(cal, o) {
+    var ano = o.foco.getFullYear(), mes = o.foco.getMonth(), hj = isoDe(hoje()), fi = isoDe(o.foco);
+    var de = o.de || '', ate = o.ate || '';
+    cal.querySelector('.ucam-calendario__mes').textContent = MESES[mes] + ' de ' + ano;
+    var corpo = cal.querySelector('tbody');
+    corpo.innerHTML = '';
+    var primeiro = new Date(ano, mes, 1), dias = new Date(ano, mes + 1, 0).getDate();
+    var tr = document.createElement('tr');
+    for (var v = 0; v < primeiro.getDay(); v++) tr.appendChild(document.createElement('td'));
+    for (var dia = 1; dia <= dias; dia++) {
+      var d = new Date(ano, mes, dia), i = isoDe(d);
+      var td = document.createElement('td');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ucam-calendario__dia';
+      b.textContent = String(dia);
+      b.setAttribute('data-dia', i);
+      b.tabIndex = i === fi ? 0 : -1;
+      var nome = dia + ' de ' + MESES[mes] + ' de ' + ano + ', ' + SEMANA[d.getDay()][1];
+      if (i === o.escolhido || (de && i === de) || (ate && i === ate)) {
+        b.setAttribute('aria-pressed', 'true');
+        if (de && ate) b.setAttribute('data-ponta', '');
+      } else if (de && ate && i > de && i < ate) {
+        b.setAttribute('data-intervalo', '');
+        nome += ', no período';
+      }
+      if (i === hj) b.setAttribute('aria-current', 'date');
+      if ((o.min && i < o.min) || (o.max && i > o.max)) b.setAttribute('aria-disabled', 'true');
+      var ev = o.eventos && o.eventos[i];
+      td.appendChild(b);
+      if (ev && ev.length) {
+        nome += ', ' + ev.length + (ev.length > 1 ? ' eventos: ' : ' evento: ') + ev.map(function (x) { return x.titulo; }).join(', ');
+        var ul = document.createElement('ul');
+        ul.className = 'ucam-calendario__eventos';
+        ul.setAttribute('aria-hidden', 'true');
+        ev.slice(0, ev.length > 2 ? 1 : 2).forEach(function (x) {
+          var li = document.createElement('li');
+          li.className = 'ucam-calendario__evento';
+          if (x.tom) li.setAttribute('data-tom', x.tom);
+          var s = document.createElement('span');
+          s.textContent = x.titulo;
+          li.appendChild(s);
+          ul.appendChild(li);
+        });
+        if (ev.length > 2) {
+          var mais = document.createElement('li');
+          mais.className = 'ucam-calendario__evento ucam-calendario__evento--mais';
+          mais.textContent = '+' + (ev.length - 1);
+          ul.appendChild(mais);
+        }
+        td.appendChild(ul);
+      }
+      b.setAttribute('aria-label', nome);
+      tr.appendChild(td);
+      if (d.getDay() === 6 || dia === dias) { corpo.appendChild(tr); tr = document.createElement('tr'); }
+    }
+  }
+  /* Andar pela grade: um dia, uma semana ou um mês. Mês mantém o dia, ou
+   * cai no último quando o mês seguinte é mais curto. */
+  function passoCal(foco, dias, meses) {
+    var d = new Date(foco.getFullYear(), foco.getMonth() + (meses || 0), foco.getDate() + (dias || 0));
+    if (meses && d.getDate() !== foco.getDate()) d = new Date(foco.getFullYear(), foco.getMonth() + meses + 1, 0);
+    return d;
+  }
+  var TECLAS_CAL = { ArrowLeft: [-1], ArrowRight: [1], ArrowUp: [-7], ArrowDown: [7], PageUp: [0, -1], PageDown: [0, 1] };
+`;
+
+/**
+ * O CALENDÁRIO SOLTO E A AGENDA (calendar.json, ADR-074). Cada
+ * [data-calendario] é montado quando aparece na página — inclusive o que
+ * chega depois, por innerHTML, como as demos do catálogo.
+ *
+ *   data-calendario="single"  escolhe um dia; grava o ISO no input #data-alvo
+ *   data-calendario="range"   dois toques: início e fim; #data-alvo e #data-alvo-ate
+ *   data-calendario="agenda"  lê os eventos da ol.ucam-calendario__lista (a
+ *                             fonte, que funciona sem script), monta o mês por
+ *                             cima e mostra na lista só os do mês visível
+ *
+ * Escolher dispara input e change no alvo e ucam:calendario no calendário;
+ * na agenda, ativar um dia marca os eventos dele na lista
+ * (ucam:calendario-dia) e trocar de mês sai como ucam:calendario-mes.
+ */
+export const calendarioScript = `
+(function () {
+${FN_CALENDARIO}
+  function estado(el) { return el._cal; }
+  function avisaAlvo(id, valor) {
+    var a = id && document.getElementById(id);
+    if (!a) return;
+    a.value = valor;
+    a.dispatchEvent(new Event('input', { bubbles: true }));
+    a.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  function eventosDe(el) {
+    var mapa = {}, lista = el.querySelector('.ucam-calendario__lista');
+    if (!lista) return mapa;
+    Array.prototype.forEach.call(lista.querySelectorAll('li[data-data]'), function (li) {
+      var t = li.cloneNode(true), tempo = t.querySelector('time');
+      if (tempo) tempo.remove();
+      var i = li.getAttribute('data-data');
+      (mapa[i] = mapa[i] || []).push({ titulo: t.textContent.trim(), tom: li.getAttribute('data-tom') || '' });
+    });
+    return mapa;
+  }
+  function filtraLista(el) {
+    var s = estado(el), lista = el.querySelector('.ucam-calendario__lista');
+    if (!lista) return;
+    var pre = isoDe(s.foco).slice(0, 7), algum = false;
+    Array.prototype.forEach.call(lista.querySelectorAll('li[data-data]'), function (li) {
+      var dentro = li.getAttribute('data-data').slice(0, 7) === pre;
+      li.hidden = !dentro;
+      if (dentro) algum = true;
+      if (!dentro) li.removeAttribute('data-destaque');
+    });
+    var vazio = lista.querySelector('li[data-vazio]');
+    if (!algum && !vazio) {
+      vazio = document.createElement('li');
+      vazio.setAttribute('data-vazio', '');
+      vazio.textContent = 'Nenhum evento em ' + MESES[s.foco.getMonth()] + '.';
+      lista.appendChild(vazio);
+    } else if (vazio) {
+      if (algum) vazio.remove();
+      else vazio.textContent = 'Nenhum evento em ' + MESES[s.foco.getMonth()] + '.';
+    }
+  }
+  function desenha(el) {
+    var s = estado(el);
+    desenharGrade(el, { foco: s.foco, escolhido: s.valor, de: s.de, ate: s.ate, min: s.min, max: s.max, eventos: s.eventos });
+    if (s.modo === 'agenda') filtraLista(el);
+  }
+  function monta(el) {
+    if (el._cal) return;
+    var modo = el.getAttribute('data-calendario') || 'single';
+    var s = el._cal = {
+      modo: modo,
+      valor: modo === 'single' ? el.getAttribute('data-valor') || '' : '',
+      de: modo === 'range' ? el.getAttribute('data-valor') || '' : '',
+      ate: modo === 'range' ? el.getAttribute('data-ate') || '' : '',
+      min: el.getAttribute('data-min') || '',
+      max: el.getAttribute('data-max') || '',
+      eventos: modo === 'agenda' ? eventosDe(el) : null,
+    };
+    var mes = el.getAttribute('data-mes');
+    var inicio = s.valor || s.de || (mes ? mes + '-01' : '');
+    s.foco = inicio ? deIso(inicio) : hoje();
+    var miolo = cabecaCal() + tabelaCal();
+    if (modo === 'single') miolo += '<div class="ucam-calendario__pe"><button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-cal-hoje>Hoje</button></div>';
+    var lista = el.querySelector('.ucam-calendario__lista');
+    var caixa = document.createElement('div');
+    caixa.setAttribute('data-cal-grade', '');
+    caixa.innerHTML = miolo;
+    if (lista) el.insertBefore(caixa, lista); else el.appendChild(caixa);
+    desenha(el);
+  }
+  function montaTodos(raiz) {
+    if (!raiz || !raiz.querySelectorAll) return;
+    if (raiz.matches && raiz.matches('[data-calendario]')) monta(raiz);
+    Array.prototype.forEach.call(raiz.querySelectorAll('[data-calendario]'), monta);
+  }
+  function escolhe(el, i) {
+    var s = estado(el);
+    if (s.modo === 'agenda') {
+      Array.prototype.forEach.call(el.querySelectorAll('.ucam-calendario__dia[aria-pressed]'), function (b) { b.removeAttribute('aria-pressed'); });
+      var b = el.querySelector('[data-dia="' + i + '"]');
+      if (b) b.setAttribute('aria-pressed', 'true');
+      var primeiro = null;
+      Array.prototype.forEach.call(el.querySelectorAll('.ucam-calendario__lista li[data-data]'), function (li) {
+        var e = li.getAttribute('data-data') === i;
+        if (e) { li.setAttribute('data-destaque', ''); primeiro = primeiro || li; } else li.removeAttribute('data-destaque');
+      });
+      if (primeiro && primeiro.scrollIntoView) primeiro.scrollIntoView({ block: 'nearest' });
+      el.dispatchEvent(new CustomEvent('ucam:calendario-dia', { bubbles: true, detail: { dia: i } }));
+      return;
+    }
+    if (s.modo === 'range') {
+      if (!s.de || s.ate) { s.de = i; s.ate = ''; }
+      else if (i < s.de) { s.de = i; }
+      else { s.ate = i; }
+      el.setAttribute('data-valor', s.de);
+      if (s.ate) el.setAttribute('data-ate', s.ate); else el.removeAttribute('data-ate');
+      avisaAlvo(el.getAttribute('data-alvo'), s.de);
+      avisaAlvo(el.getAttribute('data-alvo-ate'), s.ate);
+    } else {
+      s.valor = i;
+      el.setAttribute('data-valor', i);
+      avisaAlvo(el.getAttribute('data-alvo'), i);
+    }
+    s.foco = deIso(i);
+    desenha(el);
+    var f = el.querySelector('[data-dia="' + i + '"]');
+    if (f) f.focus();
+    el.dispatchEvent(new CustomEvent('ucam:calendario', { bubbles: true, detail: { valor: s.valor, de: s.de, ate: s.ate } }));
+  }
+  function trocaMes(el, d) {
+    var s = estado(el);
+    s.foco = d;
+    desenha(el);
+    el.dispatchEvent(new CustomEvent('ucam:calendario-mes', { bubbles: true, detail: { mes: isoDe(d).slice(0, 7) } }));
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target, el = t.closest && t.closest('[data-calendario]');
+    if (!el || !el._cal) return;
+    var s = estado(el);
+    var m = t.closest('[data-cal-mes]');
+    if (m) return trocaMes(el, new Date(s.foco.getFullYear(), s.foco.getMonth() + Number(m.getAttribute('data-cal-mes')), 1));
+    if (t.closest('[data-cal-hoje]')) return escolhe(el, isoDe(hoje()));
+    var dia = t.closest('[data-dia]');
+    if (dia && dia.getAttribute('aria-disabled') !== 'true') escolhe(el, dia.getAttribute('data-dia'));
+  });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target;
+    if (!t.hasAttribute || !t.hasAttribute('data-dia')) return;
+    var el = t.closest('[data-calendario]');
+    if (!el || !el._cal) return;
+    var s = estado(el);
+    var mapa = TECLAS_CAL[e.key];
+    var alvo = null;
+    if (mapa) alvo = passoCal(s.foco, mapa[0], mapa[1]);
+    else if (e.key === 'Home') alvo = passoCal(s.foco, -s.foco.getDay());
+    else if (e.key === 'End') alvo = passoCal(s.foco, 6 - s.foco.getDay());
+    else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (t.getAttribute('aria-disabled') !== 'true') escolhe(el, t.getAttribute('data-dia'));
+      return;
+    }
+    if (!alvo) return;
+    e.preventDefault();
+    var trocou = alvo.getMonth() !== s.foco.getMonth() || alvo.getFullYear() !== s.foco.getFullYear();
+    s.foco = alvo;
+    if (trocou) trocaMes(el, alvo);
+    else Array.prototype.forEach.call(el.querySelectorAll('.ucam-calendario__dia'), function (b) { b.tabIndex = b.getAttribute('data-dia') === isoDe(alvo) ? 0 : -1; });
+    var f = el.querySelector('[data-dia="' + isoDe(alvo) + '"]');
+    if (f) f.focus();
+  });
+  montaTodos(document);
+  new MutationObserver(function (lista) {
+    lista.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) montaTodos(n); }); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+`.trim();
+
+/**
+ * O INTERVALO DE DATAS (date-range-field.json, ADR-074). Dentro de
+ * [data-intervalo], o primeiro input[data-data] é o começo e o segundo o
+ * fim. Ao mudar qualquer um: o fim ganha data-min igual ao começo (o
+ * calendário dele bloqueia os dias de antes) e, se ele já estiver antes, o
+ * erro sai no fim, dito com a data. O id do erro é PRÓPRIO, e não o "-erro"
+ * do campo: o dataScript limpa o dele quando a data é real, e com o mesmo id
+ * a regra de ordem nasceria e morreria no mesmo toque (a lição de
+ * 28/09/2026 no periodoScript).
+ */
+export const intervaloScript = `
+(function () {
+  function iso(v) { var p = String(v || '').split('/'); return p.length === 3 && p[2].length === 4 ? p[2] + '-' + p[1] + '-' + p[0] : ''; }
+  function erroFim(c, frase) {
+    var id = c.id + '-intervalo-erro', e = document.getElementById(id);
+    var resto = (c.getAttribute('aria-describedby') || '').split(' ').filter(function (x) { return x && x !== id; });
+    if (!frase) {
+      if (e) e.remove();
+      var outro = resto.some(function (x) { var el = document.getElementById(x); return el && el.classList.contains('ucam-field__error'); });
+      if (!outro) c.removeAttribute('aria-invalid');
+      c.setAttribute('aria-describedby', resto.join(' '));
+      return;
+    }
+    if (!e) {
+      e = document.createElement('span');
+      e.className = 'ucam-field__error';
+      e.id = id;
+      c.closest('.ucam-field').appendChild(e);
+    }
+    e.textContent = frase;
+    c.setAttribute('aria-invalid', 'true');
+    c.setAttribute('aria-describedby', [id].concat(resto).join(' '));
+  }
+  function confere(grupo) {
+    var campos = grupo.querySelectorAll('input[data-data]');
+    if (campos.length < 2) return;
+    var de = campos[0], ate = campos[1], i = iso(de.value), f = iso(ate.value);
+    var minimo = grupo.getAttribute('data-min') || '';
+    if (i) ate.setAttribute('data-min', i > minimo ? i : minimo); else if (minimo) ate.setAttribute('data-min', minimo); else ate.removeAttribute('data-min');
+    if (i && f && f < i) erroFim(ate, 'A data final precisa ser igual ou posterior a ' + de.value + '.');
+    else erroFim(ate, '');
+    grupo.dispatchEvent(new CustomEvent('ucam:intervalo', { bubbles: true, detail: { de: i, ate: f } }));
+  }
+  document.addEventListener('change', function (e) {
+    var g = e.target.closest && e.target.closest('[data-intervalo]');
+    if (g && e.target.matches('input[data-data]')) confere(g);
+  });
+})();
+`.trim();
+
+/**
+ * O POPOVER (popover.json, ADR-074). O atributo popover nativo faz o
+ * trabalho pesado — camada de cima, Esc, clique fora, um aberto por vez.
+ * Falta a ele o que este script dá: a POSIÇÃO junto do gatilho (virando para
+ * cima quando não cabe embaixo), o aria-expanded do gatilho em dia, o foco
+ * no primeiro controle de dentro ao abrir e de volta no gatilho ao fechar.
+ * O evento toggle não borbulha: a escuta é na captura.
+ */
+export const popoverScript = `
+(function () {
+  function gatilhoDe(p) { return p.id ? document.querySelector('[popovertarget="' + p.id + '"]') : null; }
+  function posiciona(p) {
+    var g = gatilhoDe(p);
+    if (!g) return;
+    var r = g.getBoundingClientRect(), w = p.offsetWidth, h = p.offsetHeight;
+    var x = p.getAttribute('data-posicao') === 'bottom-end' ? r.right - w : r.left;
+    var y = r.bottom + 4;
+    if (y + h > innerHeight - 8 && r.top - h - 4 > 8) y = r.top - h - 4;
+    x = Math.max(8, Math.min(x, innerWidth - w - 8));
+    p.style.left = x + 'px';
+    p.style.top = y + 'px';
+  }
+  document.addEventListener('toggle', function (e) {
+    var p = e.target;
+    // O <ucam-popover> do Trilho B se posiciona sozinho.
+    if (!p.classList || !p.classList.contains('ucam-popover') || p.closest('ucam-popover')) return;
+    var g = gatilhoDe(p), aberto = e.newState === 'open';
+    if (g) g.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+    if (aberto) {
+      posiciona(p);
+      var primeiro = p.querySelector('input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])');
+      if (primeiro) primeiro.focus();
+    } else if (g && (p.contains(document.activeElement) || document.activeElement === document.body)) {
+      g.focus();
+    }
+  }, true);
+  document.addEventListener('click', function (e) {
+    var f = e.target.closest && e.target.closest('[data-popover-fechar]');
+    var p = f && f.closest('.ucam-popover');
+    if (p && p.hidePopover) p.hidePopover();
+  });
+  addEventListener('scroll', function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-popover:popover-open'), posiciona);
+  }, true);
+  addEventListener('resize', function () {
+    Array.prototype.forEach.call(document.querySelectorAll('.ucam-popover:popover-open'), function (p) { p.hidePopover(); });
+  });
+})();
+`.trim();
+
+/**
+ * O SLIDER (slider.json, ADR-074). O input range já tem teclado e papel;
+ * o que falta é o número sempre à vista: o output ao lado, o trilho pintado
+ * até o valor (--ucam-slider-pct, que o Firefox não precisa e o Chrome sim)
+ * e o aria-valuetext com a unidade ("7,5 pontos"). Montado ao aparecer.
+ */
+export const sliderScript = `
+(function () {
+  function texto(c) {
+    var n = Number(c.value), u = c.getAttribute('data-unidade') || '';
+    return n.toLocaleString('pt-BR') + (u ? (u === '%' ? '%' : ' ' + u) : '');
+  }
+  /* Dentro de <ucam-slider> quem manda é o Angular (Trilho B usa as mesmas
+   * classes): mexer ali regravava o número sem a unidade (20/10/2026). */
+  function atualiza(c) {
+    var raiz = c.closest('.ucam-slider');
+    if (!raiz || c.closest('ucam-slider')) return;
+    var min = Number(c.min || 0), max = Number(c.max || 100), v = Number(c.value);
+    raiz.style.setProperty('--ucam-slider-pct', (max > min ? (v - min) / (max - min) * 100 : 0) + '%');
+    var t = texto(c), out = raiz.querySelector('.ucam-slider__valor');
+    if (out) out.textContent = t;
+    c.setAttribute('aria-valuetext', t);
+  }
+  function montaTodos(raiz) {
+    if (!raiz || !raiz.querySelectorAll) return;
+    Array.prototype.forEach.call(raiz.querySelectorAll('.ucam-slider__controle'), atualiza);
+  }
+  document.addEventListener('input', function (e) {
+    if (e.target.matches && e.target.matches('.ucam-slider__controle')) atualiza(e.target);
+  });
+  montaTodos(document);
+  new MutationObserver(function (lista) {
+    lista.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) montaTodos(n); }); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+`.trim();
+
+
 /**
  * A DATA NO TRILHO A (28/09/2026: "datepicker não funciona?"). O contrato
  * date-field.json pedia máscara, calendário e validação, e o Trilho A só dava
@@ -6968,13 +7393,10 @@ export const dataScript = `
    * tabindex): setas andam um dia ou uma semana, PageUp/PageDown um mês,
    * Home/End o começo e o fim da semana, Enter/Espaço escolhe, Esc fecha e
    * devolve o foco ao campo. O mês visível é anunciado (aria-live). */
-  var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-  var SEMANA = [['D', 'domingo'], ['S', 'segunda'], ['T', 'terça'], ['Q', 'quarta'], ['Q', 'quinta'], ['S', 'sexta'], ['S', 'sábado']];
+  /* A grade é a do calendário solto (FN_CALENDARIO, ADR-074). */
+${FN_CALENDARIO}
   var cal = null, dono = null, foco = null;
-  function doisD(n) { return (n < 10 ? '0' : '') + n; }
-  function isoDe(d) { return d.getFullYear() + '-' + doisD(d.getMonth() + 1) + '-' + doisD(d.getDate()); }
   function textoDe(d) { return doisD(d.getDate()) + '/' + doisD(d.getMonth() + 1) + '/' + d.getFullYear(); }
-  function hoje() { var h = new Date(); return new Date(h.getFullYear(), h.getMonth(), h.getDate()); }
   function rotuloDe(campo) {
     var l = campo.id && document.querySelector('label[for="' + campo.id + '"]');
     return l ? l.textContent.trim() : 'data';
@@ -6988,33 +7410,19 @@ export const dataScript = `
     }
     cal = null; dono = null; foco = null;
   }
+  /* MIN, MAX E PERÍODO (ADR-074). data-min e data-max (ISO) no campo
+   * bloqueiam os dias de fora; dentro de um [data-intervalo], o calendário de
+   * qualquer ponta marca o período inteiro, com as duas pontas escolhidas. */
+  function valorDe(c) { return c && real(iso(c.value)) ? iso(c.value) : ''; }
   function desenhar() {
-    var ano = foco.getFullYear(), mes = foco.getMonth();
-    var escolhido = real(iso(dono.value)) ? iso(dono.value) : '';
-    var hj = isoDe(hoje());
-    cal.querySelector('.ucam-calendario__mes').textContent = MESES[mes] + ' de ' + ano;
-    var corpo = cal.querySelector('tbody');
-    corpo.innerHTML = '';
-    var primeiro = new Date(ano, mes, 1);
-    var dias = new Date(ano, mes + 1, 0).getDate();
-    var tr = document.createElement('tr');
-    for (var v = 0; v < primeiro.getDay(); v++) tr.appendChild(document.createElement('td'));
-    for (var dia = 1; dia <= dias; dia++) {
-      var d = new Date(ano, mes, dia);
-      var td = document.createElement('td');
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'ucam-calendario__dia';
-      b.textContent = String(dia);
-      b.setAttribute('data-dia', isoDe(d));
-      b.setAttribute('aria-label', dia + ' de ' + MESES[mes] + ' de ' + ano + ', ' + SEMANA[d.getDay()][1]);
-      b.tabIndex = isoDe(d) === isoDe(foco) ? 0 : -1;
-      if (isoDe(d) === escolhido) b.setAttribute('aria-pressed', 'true');
-      if (isoDe(d) === hj) b.setAttribute('aria-current', 'date');
-      td.appendChild(b);
-      tr.appendChild(td);
-      if (d.getDay() === 6 || dia === dias) { corpo.appendChild(tr); tr = document.createElement('tr'); }
+    var o = { foco: foco, escolhido: valorDe(dono), min: dono.getAttribute('data-min') || '', max: dono.getAttribute('data-max') || '' };
+    var grupo = dono.closest('[data-intervalo]');
+    if (grupo) {
+      var pontas = grupo.querySelectorAll('input[data-data]');
+      o.de = valorDe(pontas[0]);
+      o.ate = valorDe(pontas[1]);
     }
+    desenharGrade(cal, o);
   }
   function focarDia() {
     var b = cal && cal.querySelector('[data-dia="' + isoDe(foco) + '"]');
@@ -7036,12 +7444,7 @@ export const dataScript = `
     cal.id = campo.id + '-calendario';
     cal.setAttribute('role', 'dialog');
     cal.setAttribute('aria-label', 'Escolher ' + rotuloDe(campo) + ' no calendário');
-    var cab = '<div class="ucam-calendario__cabeca">' +
-      '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm" data-cal-mes="-1" aria-label="Mês anterior"><svg class="ic" aria-hidden="true"><use href="#i-chevronLeft"/></svg></button>' +
-      '<span class="ucam-calendario__mes" aria-live="polite"></span>' +
-      '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm" data-cal-mes="1" aria-label="Próximo mês"><svg class="ic" aria-hidden="true"><use href="#i-chevronRight"/></svg></button></div>';
-    var th = SEMANA.map(function (s) { return '<th scope="col" abbr="' + s[1] + '">' + s[0] + '</th>'; }).join('');
-    cal.innerHTML = cab + '<table class="ucam-calendario__grade"><thead><tr>' + th + '</tr></thead><tbody></tbody></table>' +
+    cal.innerHTML = cabecaCal() + tabelaCal() +
       '<div class="ucam-calendario__pe"><button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-cal-hoje>Hoje</button></div>';
     campo.closest('.ucam-date-field').appendChild(cal);
     campo.setAttribute('aria-expanded', 'true');
@@ -7057,8 +7460,7 @@ export const dataScript = `
     avisa(campo);
   }
   function mover(dias, meses) {
-    var d = new Date(foco.getFullYear(), foco.getMonth() + (meses || 0), foco.getDate() + (dias || 0));
-    if (meses && d.getDate() !== foco.getDate()) d = new Date(foco.getFullYear(), foco.getMonth() + meses + 1, 0);
+    var d = passoCal(foco, dias, meses);
     var trocouMes = d.getMonth() !== foco.getMonth() || d.getFullYear() !== foco.getFullYear();
     foco = d;
     if (trocouMes) desenhar();
@@ -7076,7 +7478,7 @@ export const dataScript = `
     if (m) { foco = new Date(foco.getFullYear(), foco.getMonth() + Number(m.getAttribute('data-cal-mes')), 1); desenhar(); return; }
     if (t.closest('[data-cal-hoje]')) return escolher(hoje());
     var dia = t.closest('[data-dia]');
-    if (dia) escolher(new Date(dia.getAttribute('data-dia') + 'T00:00:00'));
+    if (dia && dia.getAttribute('aria-disabled') !== 'true') escolher(new Date(dia.getAttribute('data-dia') + 'T00:00:00'));
   });
   document.addEventListener('keydown', function (e) {
     var t = e.target;
@@ -7089,9 +7491,9 @@ export const dataScript = `
     if (!cal || !cal.contains(t)) return;
     if (e.key === 'Escape') { e.preventDefault(); return fecharCal(true); }
     if (!t.hasAttribute('data-dia')) return;
-    var mapa = { ArrowLeft: [-1], ArrowRight: [1], ArrowUp: [-7], ArrowDown: [7], PageUp: [0, -1], PageDown: [0, 1] };
-    if (mapa[e.key]) { e.preventDefault(); return mover(mapa[e.key][0], mapa[e.key][1]); }
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); return escolher(new Date(t.getAttribute('data-dia') + 'T00:00:00')); }
+    var mapa = TECLAS_CAL[e.key];
+    if (mapa) { e.preventDefault(); return mover(mapa[0], mapa[1]); }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (t.getAttribute('aria-disabled') !== 'true') escolher(new Date(t.getAttribute('data-dia') + 'T00:00:00')); return; }
     if (e.key === 'Home') { e.preventDefault(); return mover(-foco.getDay()); }
     if (e.key === 'End') { e.preventDefault(); return mover(6 - foco.getDay()); }
   });

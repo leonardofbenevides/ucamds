@@ -205,7 +205,10 @@
       "ucam-file-field",
       "ucam-select",
       "ucam-text-field",
-      "ucam-textarea"
+      "ucam-textarea",
+      "ucam-date-range-field",
+      "ucam-slider",
+      "ucam-number-field"
     ],
     "usa": [
       "ucam-input-group"

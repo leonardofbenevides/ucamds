@@ -1,0 +1,176 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "popover",
+  "name": "Popover",
+  "selector": "ucam-popover",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "sobreposicao",
+  "description": "Uma caixa pequena que abre ancorada num botão e tem coisas que se OPERAM: um filtro de três campos, a explicação com link, a escolha de colunas. Não bloqueia a página — clicar fora ou Esc fecha. Usa o atributo popover nativo do navegador.",
+  "quando_usar": [
+    "Conteúdo operável curto ligado a um botão: filtros avançados, colunas visíveis, detalhes com link.",
+    "O que seria um tooltip, mas tem link ou botão dentro."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/captacao-frontend e as telas de referência",
+    "ocorrencias": [
+      {
+        "tela": "Captação",
+        "problema": "popover de bibliotecas diferentes, um com hover que some antes de a pessoa chegar ao link de dentro"
+      },
+      {
+        "tela": "Telas de referência",
+        "problema": "menu de notificações, calendário do campo de data e menu de coluna eram cada um um popover escrito à parte, com três jeitos de posicionar e fechar"
+      }
+    ],
+    "conclusao": "Uma caixa ancorada com o comportamento do navegador (popover nativo: Esc, clique fora, camada de cima) e um posicionamento só."
+  },
+  "anatomia": [
+    {
+      "parte": "gatilho",
+      "obrigatorio": true,
+      "descricao": "button com popovertarget, aria-expanded e aria-controls."
+    },
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "div popover, role=dialog com nome; superfície, fio e sombra de sobreposição.",
+      "classe": "ucam-popover"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": false,
+      "classe": "ucam-popover__titulo"
+    },
+    {
+      "parte": "corpo",
+      "obrigatorio": true,
+      "classe": "ucam-popover__corpo"
+    },
+    {
+      "parte": "pe",
+      "obrigatorio": false,
+      "descricao": "Ações, à direita.",
+      "classe": "ucam-popover__pe"
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome do diálogo; também vira o título visível se showTitle."
+    },
+    {
+      "nome": "showTitle",
+      "tipo": "boolean",
+      "default": "true"
+    },
+    {
+      "nome": "open",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "placement",
+      "tipo": "'bottom-start' | 'bottom-end'",
+      "default": "'bottom-start'",
+      "descricao": "Vira para cima sozinho quando não cabe embaixo."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "openChange",
+      "payload": "boolean",
+      "descricao": "Abriu ou fechou — pelo gatilho, por Esc ou por clique fora."
+    }
+  ],
+  "estados": [
+    "default",
+    "open"
+  ],
+  "limites": {
+    "regras": [
+      "Lista de comandos é Menu, não Popover.",
+      "Texto curto sem nada operável é Tooltip.",
+      "Formulário longo, ou decisão que precisa de toda a atenção, é Dialog ou Drawer.",
+      "Um popover por vez; abrir outro fecha o primeiro."
+    ],
+    "criterio": "Tem coisa para operar e cabe em 20rem: Popover."
+  },
+  "acessibilidade": {
+    "papel": "dialog não modal",
+    "teclado": [
+      {
+        "tecla": "Enter / Espaço no gatilho",
+        "comportamento": "Abre e põe o foco no primeiro controle de dentro."
+      },
+      {
+        "tecla": "Esc",
+        "comportamento": "Fecha e devolve o foco ao gatilho."
+      },
+      {
+        "tecla": "Tab",
+        "comportamento": "Percorre o conteúdo; sair dele não fecha (o conteúdo segue no fluxo do teclado logo após o gatilho)."
+      }
+    ],
+    "requisitos": [
+      "O gatilho leva aria-expanded e aria-controls; o popover tem role=dialog e nome.",
+      "Não prende o foco: é não modal.",
+      "Esc e clique fora fecham (comportamento nativo do popover=auto)."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.1.2",
+      "2.4.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "titulo": [
+      "Nome do que se ajusta: Filtros, Colunas visíveis."
+    ]
+  },
+  "migracao": {
+    "de": "uib-popover, ngbPopover e popovers por tela",
+    "mapa": [
+      {
+        "legado": "popover aberto por hover com link dentro",
+        "novo": "<ucam-popover>",
+        "nota": "Abre por clique; hover não alcança conteúdo operável."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Filtros",
+      "codigo": "<ucam-popover label=\"Filtros\">\n  <ucam-button popoverTrigger variant=\"secondary\">Filtros</ucam-button>\n  …campos…\n</ucam-popover>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Abrir por clique.",
+      "evite": "Abrir por hover.",
+      "porque": "O ponteiro sai do gatilho para o conteúdo e o hover fecha no caminho."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "tooltip",
+      "diferenca": "Tooltip é texto que aparece no hover e não tem nada operável; Popover abre por clique e tem link, botão ou campo dentro."
+    },
+    {
+      "componente": "menu",
+      "diferenca": "Menu é uma lista de comandos ou destinos, navegada por setas; Popover é conteúdo livre — campos, texto, ações — navegado por Tab."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<button popovertarget=\"id\" aria-expanded=\"false\" aria-controls=\"id\"> + <div id=\"id\" class=\"ucam-popover\" popover role=\"dialog\" aria-labelledby>. O popoverScript ancora no gatilho, vira para cima quando não cabe, mantém aria-expanded e põe o foco dentro.",
+      "raiz": ".ucam-popover"
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/popover/ucam-popover.ts — <ucam-popover> com [popoverTrigger] projetado. Entradas: label, showTitle, open, placement. Usa o mesmo popover nativo."
+  }
+}

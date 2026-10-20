@@ -16,11 +16,16 @@ export * from './lib/ucam/textarea';
 export * from './lib/ucam/input-group';
 export * from './lib/ucam/select';
 export * from './lib/ucam/date-field';
+export * from './lib/ucam/date-range-field';
+export * from './lib/ucam/calendar';
+export * from './lib/ucam/number-field';
+export * from './lib/ucam/slider';
 export * from './lib/ucam/combobox';
 export * from './lib/ucam/compositor';
 export * from './lib/ucam/checkbox';
 export * from './lib/ucam/switch';
 export * from './lib/ucam/segmented';
+export * from './lib/ucam/toggle-group';
 
 export * from './lib/ucam/card';
 export * from './lib/ucam/choice-card';
@@ -38,6 +43,8 @@ export * from './lib/ucam/avatar';
 export * from './lib/ucam/skeleton';
 export * from './lib/ucam/empty-state';
 export * from './lib/ucam/progress';
+export * from './lib/ucam/spinner';
+export * from './lib/ucam/toast';
 
 export * from './lib/ucam/realce';
 
@@ -52,6 +59,8 @@ export * from './lib/ucam/tabs';
 export * from './lib/ucam/pagination';
 
 export * from './lib/ucam/page-header';
+export * from './lib/ucam/breadcrumb';
+export * from './lib/ucam/accordion';
 export * from './lib/ucam/section-bar';
 export * from './lib/ucam/stepper';
 
@@ -59,3 +68,4 @@ export * from './lib/ucam/menu';
 export * from './lib/ucam/dialog';
 export * from './lib/ucam/drawer';
 export * from './lib/ucam/tooltip';
+export * from './lib/ucam/popover';

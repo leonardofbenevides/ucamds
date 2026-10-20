@@ -1,0 +1,141 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "breadcrumb",
+  "name": "Breadcrumb",
+  "selector": "ucam-breadcrumb",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "navegacao",
+  "description": "A trilha: onde esta tela fica dentro do sistema, com cada nível acima dela como link. Desde 19/10/2026 é contrato próprio — até então era só a parte breadcrumb do PageHeader —, porque tela de detalhe, viewbar e gaveta a usam sem cabeçalho de página.",
+  "quando_usar": [
+    "A tela é um nível abaixo de uma lista ou de outra tela: Caixa de entrada › Requerimento 2026/00841.",
+    "A pessoa chegou por link direto e precisa saber como subir."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/captacao-frontend, UCAM-repos/Gerencial-v3.0-2026 e as telas de referência",
+    "ocorrencias": [
+      {
+        "tela": "Captação",
+        "problema": "componente breadcrumb-captacao próprio, que mistura trilha e seletores de modalidade no mesmo bloco"
+      },
+      {
+        "tela": "Gerencial v3.0",
+        "problema": "trilha escrita por tela, cada uma com o próprio separador"
+      },
+      {
+        "tela": "Telas de referência",
+        "problema": "a trilha aparecia em 40 pontos, sempre dentro do cabeçalho ou da viewbar, e só o PageHeader a documentava"
+      }
+    ],
+    "conclusao": "Uma trilha, um separador, link em tudo menos no último nível."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "nav aria-label=\"Trilha\".",
+      "classe": "ucam-trilha"
+    },
+    {
+      "parte": "nivel",
+      "obrigatorio": true,
+      "descricao": "li com um link sublinhado; o último é span aria-current=page, em tinta cheia e sem sublinhado."
+    },
+    {
+      "parte": "separador",
+      "obrigatorio": true,
+      "descricao": "\"/\" tipográfico, aria-hidden.",
+      "classe": "ucam-trilha__sep"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "UcamCrumb[]",
+      "obrigatorio": true,
+      "descricao": "{ label, link? } — o último é a página atual e não tem link. É o mesmo UcamCrumb que o PageHeader recebe."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "default": "'Trilha'"
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "current"
+  ],
+  "limites": {
+    "regras": [
+      "Não começa no Portal: o Portal é o sistema de fora, e a faixa já leva até ele.",
+      "Até quatro níveis. Mais que isso é hierarquia funda demais para a tela, não trilha comprida.",
+      "Não substitui o Voltar do fluxo: trilha é hierarquia, Voltar é histórico."
+    ],
+    "criterio": "Se a tela tem um pai que a pessoa pode querer abrir, há trilha."
+  },
+  "acessibilidade": {
+    "papel": "navigation",
+    "requisitos": [
+      "nav com aria-label=Trilha e ol: a ordem é a hierarquia.",
+      "O nível atual leva aria-current=page e não é link.",
+      "Link se distingue por sublinhado, não só pela tinta (WCAG 1.4.1).",
+      "O separador é aria-hidden."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "2.4.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "O nome que a tela de cima tem no menu: Caixa de entrada, não Início.",
+      "O último nível é o título da tela, encurtado se preciso."
+    ]
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-page-header"
+    ]
+  },
+  "migracao": {
+    "de": "Trilhas escritas por tela",
+    "mapa": [
+      {
+        "legado": "breadcrumb-captacao e trilhas por tela",
+        "novo": "<ucam-breadcrumb [items]>",
+        "nota": "Seletores que moravam junto saem para a barra da tela."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Detalhe",
+      "codigo": "<ucam-breadcrumb [items]=\"[{ label: 'Caixa de entrada', link: '/caixa' }, { label: 'Requerimento 2026/00841' }]\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Último nível sem link.",
+      "evite": "Link para a própria página.",
+      "porque": "Clicar e nada acontecer ensina que a trilha não funciona."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "stepper",
+      "diferenca": "Breadcrumb diz onde a tela fica na HIERARQUIA e cada nível é navegável; Stepper diz em que passo de um FLUXO a pessoa está, e voltar a um passo segue a regra do fluxo."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<nav class=\"ucam-trilha\" aria-label=\"Trilha\"><ol><li><a>…</a><span class=\"ucam-trilha__sep\" aria-hidden=\"true\">/</span></li><li><span aria-current=\"page\">…</span></li></ol></nav>",
+      "raiz": ".ucam-trilha"
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/breadcrumb/ucam-breadcrumb.ts — <ucam-breadcrumb>. Entradas: items, label. O PageHeader passou a usá-lo."
+  }
+}

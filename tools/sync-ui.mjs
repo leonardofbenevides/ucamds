@@ -142,6 +142,17 @@ if (existsSync(zardDir) && existsSync(ucamDir)) {
     // textarea e button soltos, e é deles que ela é composta — não há base
     // para PARTIR.
     'compositor': null,
+    // A leva de 19/10/2026 (ADR-074). Todas são implementação nossa: a
+    // ZardUI tem calendar, toggle-group e slider, mas o calendar não tem
+    // agenda nem período e montaria o mês diferente do DateField (que agora
+    // divide a montagem com o UcamCalendar); o toggle-group dela é de escolha
+    // única ou múltipla na mesma API, e o nosso existe justamente para não
+    // parecer o segmented; o slider dela esconde o valor no balão — o defeito
+    // que o contrato corrige. Popover e accordion usam o elemento nativo
+    // (popover, details), que nenhuma base embrulha melhor do que ele mesmo.
+    'calendar': null, 'date-range-field': null, 'toast': null, 'breadcrumb': null,
+    'spinner': null, 'popover': null, 'accordion': null, 'slider': null,
+    'number-field': null, 'toggle-group': null,
     'card': 'card',
     'alert': 'alert',
     'tabs': 'tabs',

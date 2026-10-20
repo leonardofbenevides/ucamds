@@ -1,0 +1,201 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "slider",
+  "name": "Slider",
+  "selector": "ucam-slider",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "formulario",
+  "description": "Um valor escolhido arrastando numa faixa com mínimo e máximo, com o número sempre visível ao lado. Serve quando a posição na faixa importa mais que o número exato — e por isso o número está ali, para quem precisa dele.",
+  "quando_usar": [
+    "Nota numa escala curta com passo: a nota da redação de 0 a 10, de meio em meio ponto.",
+    "Um limite que se ajusta olhando o efeito: tolerância de dias, percentual de desconto."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/processo-seletivo-frontend e UCAM-repos/diploma-frontend",
+    "ocorrencias": [
+      {
+        "tela": "Processo seletivo — Correção de redação",
+        "campo": "nota",
+        "problema": "mat-slider de 0 a 10 com passo 0,5 e style=\"width: 90%\" na célula; o valor só aparece no thumbLabel durante o arraste"
+      }
+    ],
+    "conclusao": "O valor é sempre visível, e o controle é o input range nativo — que tem teclado e leitor de tela de graça."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "classe": "ucam-slider"
+    },
+    {
+      "parte": "controle",
+      "obrigatorio": true,
+      "descricao": "input type=range: trilho, preenchimento até o valor e polegar.",
+      "classe": "ucam-slider__controle"
+    },
+    {
+      "parte": "valor",
+      "obrigatorio": true,
+      "descricao": "output com o valor formatado, em números tabulares.",
+      "classe": "ucam-slider__valor"
+    },
+    {
+      "parte": "limites",
+      "obrigatorio": false,
+      "descricao": "Mínimo e máximo nas pontas, em tinta de apoio.",
+      "classe": "ucam-slider__limites"
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true
+    },
+    {
+      "nome": "value",
+      "tipo": "number",
+      "default": "0"
+    },
+    {
+      "nome": "min",
+      "tipo": "number",
+      "default": "0"
+    },
+    {
+      "nome": "max",
+      "tipo": "number",
+      "default": "100"
+    },
+    {
+      "nome": "step",
+      "tipo": "number",
+      "default": "1"
+    },
+    {
+      "nome": "unit",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Sufixo do valor: %, dias, pontos."
+    },
+    {
+      "nome": "hint",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "showLimits",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "number",
+      "descricao": "A cada passo do arraste ou da seta."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "active",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Valor exato que a pessoa já sabe (quantidade, ano): NumberField.",
+      "Faixa com mais de uns cem passos não se acerta no dedo: NumberField.",
+      "Nunca sem o valor visível."
+    ],
+    "criterio": "A posição na faixa diz algo, e o passo é grosso: Slider."
+  },
+  "acessibilidade": {
+    "papel": "slider (input range nativo)",
+    "teclado": [
+      {
+        "tecla": "← → ↑ ↓",
+        "comportamento": "Um passo."
+      },
+      {
+        "tecla": "PageUp / PageDown",
+        "comportamento": "Dez passos."
+      },
+      {
+        "tecla": "Home / End",
+        "comportamento": "Mínimo / máximo."
+      }
+    ],
+    "requisitos": [
+      "aria-valuetext com a unidade quando houver: \"7,5 pontos\".",
+      "O valor visível é um output ligado ao input (for).",
+      "Polegar com 20px e alvo de pelo menos 24px; trilho com 3:1 contra o fundo."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.11",
+      "2.1.1",
+      "2.5.7",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "O dado: Nota da redação, Desconto."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-field"
+    ]
+  },
+  "migracao": {
+    "de": "mat-slider, md-slider",
+    "mapa": [
+      {
+        "legado": "mat-slider thumbLabel",
+        "novo": "<ucam-slider>",
+        "nota": "O valor sai do balão e fica sempre visível."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Nota",
+      "codigo": "<ucam-slider label=\"Nota da redação\" [min]=\"0\" [max]=\"10\" [step]=\"0.5\" unit=\"pontos\" [(value)]=\"nota\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Mostrar o valor ao lado, sempre.",
+      "evite": "Valor só no balão do arraste.",
+      "porque": "No teclado e no leitor de tela o balão não existe, e com o dedo em cima ele some."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "number-field",
+      "diferenca": "Slider escolhe pela posição numa faixa curta; NumberField recebe o número exato, digitado ou ajustado de passo em passo.",
+      "escolha": "A pessoa já sabe o número: NumberField."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<div class=\"ucam-field\"><label for>…</label><div class=\"ucam-slider\"><input type=\"range\" class=\"ucam-slider__controle\" id min max step value><output class=\"ucam-slider__valor\" for></output></div></div>. O sliderScript mantém o output, o preenchimento (--ucam-slider-pct) e o aria-valuetext.",
+      "raiz": ".ucam-slider",
+      "variaveis": [
+        "--ucam-slider-pct"
+      ]
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/slider/ucam-slider.ts — <ucam-slider>. Entradas: label, value, min, max, step, unit, hint, showLimits, disabled."
+  }
+}

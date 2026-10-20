@@ -218,6 +218,10 @@
       "componente": "icon-button",
       "diferenca": "O Tooltip torna VISÍVEL o nome que o IconButton já carrega no ariaLabel — ele não cria esse nome. Botão de ícone sem ariaLabel continua mudo para o leitor de tela mesmo com tooltip.",
       "escolha": "Você quer que quem enxerga também leia o nome do botão ao apontar."
+    },
+    {
+      "componente": "popover",
+      "diferenca": "Tooltip é texto que aparece no hover e não tem nada operável; Popover abre por clique e tem link, botão ou campo dentro."
     }
   ]
 }

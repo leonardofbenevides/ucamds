@@ -52,6 +52,10 @@ export const COMPONENTE = [
   'copiarScript',
   'motivoScript',
   'dataScript',
+  'intervaloScript',
+  'calendarioScript',
+  'popoverScript',
+  'sliderScript',
 ];
 
 /** Só a tela de referência: montam o fixture, não um componente. */

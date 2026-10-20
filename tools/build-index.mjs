@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 import { contrast, grade } from './lib/wcag.mjs';
 import { listboxSelects, listboxScript } from './lib/select-listbox.mjs';
-import { menuContaScript, estadoScript, descricaoScript, linhaDoTempoScript, abasScript } from './lib/shell.mjs';
+import { menuContaScript, estadoScript, descricaoScript, linhaDoTempoScript, abasScript, toastScript, dataScript, intervaloScript, calendarioScript, popoverScript, sliderScript } from './lib/shell.mjs';
 import { iconCss } from './lib/icon-css.mjs';
 import { comTelasVivas } from './lib/telas-vivas.mjs';
 import { SISTEMAS, HERDA_MARCA, DESVIO_L, subpaleta } from './lib/subpaleta.mjs';
@@ -1082,6 +1082,21 @@ ${descricaoScript
  */
 export function ligarAbas(): void {
 ${abasScript
+  .split('\n')
+  .map((l) => (l ? '  ' + l : l))
+  .join('\n')}
+}
+
+/**
+ * As peças da leva de 19/10/2026 (ADR-074) e o que elas pedem: o toast, o
+ * calendário do campo de data (que o catálogo nunca tinha ligado — a demo do
+ * DateField desenhava o campo e o clique não abria nada), o intervalo, o
+ * calendário solto e a agenda, o popover e o slider. Mesma fonte, mesma
+ * delegação, mesmo motivo de estar aqui.
+ */
+export function ligarPecas(): void {
+${[toastScript, dataScript, intervaloScript, calendarioScript, popoverScript, sliderScript]
+  .join('\n')
   .split('\n')
   .map((l) => (l ? '  ' + l : l))
   .join('\n')}

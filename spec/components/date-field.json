@@ -124,6 +124,12 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "Token HTML de autopreenchimento. bday em data de nascimento (WCAG 1.3.5) — estava nos requisitos de acessibilidade e faltava na API."
+    },
+    {
+      "nome": "period",
+      "tipo": "UcamDateRange | null",
+      "default": "null",
+      "descricao": "Dentro do DateRangeField, o período que o calendário marca (as duas pontas e o miolo). Não se usa solto. No Trilho A é o [data-intervalo] em volta dos dois campos."
     }
   ],
   "eventos": [
@@ -190,11 +196,13 @@
       "ucam-button",
       "ucam-field",
       "ucam-icon-button",
-      "ucam-text-field"
+      "ucam-text-field",
+      "ucam-calendar"
     ],
     "usada_por": [
       "padrao-consulta-relatorio",
-      "padrao-formulario-entidade"
+      "padrao-formulario-entidade",
+      "ucam-date-range-field"
     ]
   },
   "migracao": {
@@ -257,6 +265,16 @@
       "componente": "text-field",
       "diferenca": "DateField é o TextField com as regras de data por cima: formato indicado, máscara e calendário. Data em TextField cru aceita 31/02 e devolve string que ninguém sabe interpretar.",
       "escolha": "Qualquer data — inclusive a que o legado hoje pede em três selects separados."
+    },
+    {
+      "componente": "calendar",
+      "diferenca": "DateField é o campo onde se DIGITA uma data, com a grade como apoio num popover; Calendar é a grade solta, aberta na página, ou a agenda que mostra o que cai em cada dia.",
+      "escolha": "A pessoa sabe a data: DateField. Precisa ver o mês: Calendar."
+    },
+    {
+      "componente": "date-range-field",
+      "diferenca": "DateField é uma data; DateRangeField são duas que formam um período, com a regra de ordem e o intervalo marcado no calendário.",
+      "escolha": "Fim antes do começo é erro? DateRangeField."
     }
   ],
   "limites": {

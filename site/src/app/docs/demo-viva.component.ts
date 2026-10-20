@@ -1,7 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 
 import {
   UcamAnexo,
+  UcamAccordion,
+  UcamAccordionItem,
+  UcamBreadcrumb,
+  UcamCalendar,
+  UcamDateRangeField,
+  UcamNumberField,
+  UcamPopover,
+  UcamPopoverTrigger,
+  UcamPopoverFooter,
+  UcamSlider,
+  UcamSpinner,
+  UcamToaster,
+  UcamToggleGroup,
+  UcamToastService,
+  type UcamCalendarEvent,
+  type UcamDateRange,
+  type UcamToggleItem,
   UcamAvatar,
   UcamChart,
   UcamCommand,
@@ -54,6 +71,17 @@ import {
  */
 export const TEM_DEMO_VIVA = new Set([
   'anexo',
+  // A leva de 19/10/2026 (ADR-074).
+  'accordion',
+  'breadcrumb',
+  'calendar',
+  'date-range-field',
+  'number-field',
+  'popover',
+  'slider',
+  'spinner',
+  'toast',
+  'toggle-group',
   'app-shell',
   'avatar',
   'chart',
@@ -102,6 +130,19 @@ export const TEM_DEMO_VIVA = new Set([
   selector: 'ucam-demo-viva',
   imports: [
     UcamAnexo,
+    UcamAccordion,
+    UcamAccordionItem,
+    UcamBreadcrumb,
+    UcamCalendar,
+    UcamDateRangeField,
+    UcamNumberField,
+    UcamPopover,
+    UcamPopoverTrigger,
+    UcamPopoverFooter,
+    UcamSlider,
+    UcamSpinner,
+    UcamToaster,
+    UcamToggleGroup,
     UcamAvatar,
     UcamChart,
     UcamCommand,
@@ -781,6 +822,101 @@ export const TEM_DEMO_VIVA = new Set([
                 colapsava os três caminhos numa chamada só.
               </p>
             }
+
+            @case ('calendar') {
+              <p class="cena">Escolher um dia</p>
+              <ucam-calendar label="Data da prova" min="2026-10-05" [(value)]="dataProva" />
+              <p class="small muted retorno resto">Escolhido: {{ dataProva() ?? 'nenhum' }}. Antes de 05/10 os dias ficam bloqueados — focáveis, para a seta não pular buracos, e não escolhíveis.</p>
+
+              <p class="cena">A agenda do mês</p>
+              <ucam-calendar
+                variant="agenda"
+                selection="none"
+                label="Calendário acadêmico de 2026"
+                month="2026-10"
+                [events]="eventosAgenda"
+                (daySelect)="diaAgenda.set($event)"
+              />
+              <p class="small muted retorno resto">Dia ativado: {{ diaAgenda() ?? 'nenhum' }}. A lista embaixo é a mesma informação em texto, e só mostra o mês visível.</p>
+
+              <p class="cena">Um período em dois toques</p>
+              <ucam-calendar label="Semana de provas" selection="range" [(range)]="semana" />
+              <p class="small muted retorno resto">De {{ semana()?.start ?? '—' }} a {{ semana()?.end ?? '—' }}.</p>
+            }
+
+            @case ('date-range-field') {
+              <ucam-date-range-field label="Período" [(value)]="periodo" />
+              <p class="small muted retorno resto">
+                Ponha em Até uma data anterior a De: o erro sai no campo final, com a data. O calendário de
+                qualquer ponta marca o período inteiro. Valor: {{ periodo().start ?? '—' }} a {{ periodo().end ?? '—' }}.
+              </p>
+            }
+
+            @case ('toast') {
+              <div class="linha">
+                <ucam-button variant="secondary" (click)="toast.show('Requerimento 2026/00841 arquivado.')">Arquivar</ucam-button>
+                <ucam-button variant="secondary" (click)="toast.show('3 de 5 arquivos enviados.', { tone: 'warning' })">Enviar cinco arquivos</ucam-button>
+                <ucam-button variant="secondary" (click)="toast.show('grande.pdf tem 11 MB. O limite é 10 MB.', { tone: 'danger' })">Enviar arquivo grande</ucam-button>
+              </div>
+              <ucam-toaster />
+              <p class="small muted retorno resto">
+                O toast nasce no canto de baixo à direita, some em 5 s e para enquanto o ponteiro ou o foco estão nele. Clique quatro vezes: o mais antigo sai, porque cabem três.
+              </p>
+            }
+
+            @case ('breadcrumb') {
+              <ucam-breadcrumb [items]="trilhaDemo" />
+              <p class="small muted retorno resto">O último nível é a página atual: tinta cheia, sem link, com aria-current.</p>
+            }
+
+            @case ('spinner') {
+              <div class="linha">
+                <ucam-spinner label="Abrindo o SIGFIN…" />
+                <ucam-button variant="primary" [loading]="salvando()" (click)="salvar()">{{ salvando() ? 'Salvando' : 'Salvar' }}</ucam-button>
+              </div>
+              <p class="small muted retorno resto">Com frase, o spinner é role=status e anuncia. Dentro do botão é decorativo: quem diz que espera é o aria-busy.</p>
+            }
+
+            @case ('popover') {
+              <ucam-popover label="Filtros" [(open)]="popoverAberto">
+                <ucam-button popoverTrigger variant="secondary" iconStart="listFilter">Filtros</ucam-button>
+                <ucam-segmented ariaLabel="Situação" [items]="modalidades" [(value)]="modalidade" />
+                <ucam-button popoverFooter variant="ghost" size="sm" (click)="popoverAberto.set(false)">Cancelar</ucam-button>
+                <ucam-button popoverFooter variant="primary" size="sm" (click)="popoverAberto.set(false)">Aplicar</ucam-button>
+              </ucam-popover>
+              <p class="small muted retorno resto">Abre por clique, fecha por Esc, por clique fora ou pelas ações. É o popover nativo do navegador, ancorado no gatilho. Aberto: {{ popoverAberto() ? 'sim' : 'não' }}.</p>
+            }
+
+            @case ('accordion') {
+              <ucam-accordion>
+                <details ucamAccordionItem heading="Documentos exigidos" meta="3 itens" open>
+                  <p>Histórico escolar, ementa das disciplinas cursadas e documento de identidade.</p>
+                </details>
+                <details ucamAccordionItem heading="Prazos">
+                  <p>O pedido de isenção vai até 30/10/2026.</p>
+                </details>
+                <details ucamAccordionItem heading="Quem decide">
+                  <p>A coordenação do curso analisa cada disciplina.</p>
+                </details>
+              </ucam-accordion>
+              <p class="small muted retorno resto">Abra um item: o aberto fecha. É o name comum dos details, sem script; com multiple, cada um abre sozinho.</p>
+            }
+
+            @case ('slider') {
+              <ucam-slider label="Nota da redação" [min]="0" [max]="10" [step]="0.5" unit="pontos" showLimits [(value)]="nota" />
+              <p class="small muted retorno resto">O valor está sempre à vista — no teclado e no leitor de tela também ("{{ nota() }} pontos").</p>
+            }
+
+            @case ('number-field') {
+              <ucam-number-field label="Vagas" hint="De 1 a 80." unit="vagas" [min]="1" [max]="80" [(value)]="vagas" />
+              <p class="small muted retorno resto">Chegue a 80: o + desabilita. Digite 90: o erro diz o limite.</p>
+            }
+
+            @case ('toggle-group') {
+              <ucam-toggle-group label="Dias da aula" [items]="diasSemana" [(value)]="diasAula" />
+              <p class="small muted retorno resto">Ligados: {{ diasAula().join(', ') || 'nenhum' }}. Vários de uma vez, em bordô — o segmented, que é escolha única, pinta em grafite.</p>
+            }
+
           }
         </div>
       </section>
@@ -931,6 +1067,41 @@ export const TEM_DEMO_VIVA = new Set([
 })
 export class DemoVivaComponent {
   readonly componenteId = input.required<string>();
+
+  // ---------------------------------------- a leva de 19/10/2026 (ADR-074) ---
+  protected readonly toast = inject(UcamToastService);
+  protected readonly dataProva = signal<string | null>('2026-10-21');
+  protected readonly diaAgenda = signal<string | null>(null);
+  protected readonly semana = signal<UcamDateRange | null>({ start: '2026-10-19', end: '2026-10-23' });
+  protected readonly periodo = signal<UcamDateRange>({ start: '2026-10-01', end: '2026-10-15' });
+  protected readonly eventosAgenda: UcamCalendarEvent[] = [
+    { date: '2026-10-05', title: 'Início das aulas do módulo 2', tone: 'info' },
+    { date: '2026-10-12', title: 'Feriado: Nossa Senhora Aparecida' },
+    { date: '2026-10-15', title: 'Prazo de trancamento', tone: 'warning' },
+    { date: '2026-10-21', title: 'Prova de Estatística I', tone: 'danger' },
+    { date: '2026-10-21', title: 'Prova de Metodologia', tone: 'danger' },
+    { date: '2026-10-21', title: 'Entrega do projeto', tone: 'warning' },
+    { date: '2026-10-28', title: 'Conselho de classe', tone: 'info' },
+    { date: '2026-11-02', title: 'Feriado: Finados' },
+  ];
+  protected readonly trilhaDemo = [
+    { label: 'Caixa de entrada', link: '#' },
+    { label: 'Requerimento 2026/00841', link: '#' },
+    { label: 'Anexos' },
+  ];
+  protected readonly popoverAberto = signal(false);
+  protected readonly nota = signal(7.5);
+  protected readonly vagas = signal<number | null>(40);
+  protected readonly diasSemana: UcamToggleItem[] = [
+    { id: 'dom', label: 'domingo', short: 'D' },
+    { id: 'seg', label: 'segunda', short: 'S' },
+    { id: 'ter', label: 'terça', short: 'T' },
+    { id: 'qua', label: 'quarta', short: 'Q' },
+    { id: 'qui', label: 'quinta', short: 'Q' },
+    { id: 'sex', label: 'sexta', short: 'S' },
+    { id: 'sab', label: 'sábado', short: 'S' },
+  ];
+  protected readonly diasAula = signal<string[]>(['seg', 'qua', 'sex']);
 
   protected readonly registrado = computed(() => TEM_DEMO_VIVA.has(this.componenteId()));
   protected readonly seletor = computed(() => `ucam-${this.componenteId()}`);

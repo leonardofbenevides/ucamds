@@ -161,7 +161,7 @@
       "Carregamento NÃO é diálogo. O overlay CARREGANDO vira estado inline: skeleton na tabela, loading no botão que disparou a ação. Bloquear a tela inteira para carregar uma lista impede o usuário de cancelar, navegar ou entender o que está acontecendo.",
       "Formulário longo NÃO é diálogo. Acima de 5 campos ou com campo de texto livre extenso, use página dedicada. O Novo Requerimento tem 7 campos mais texto livre — é página. Diálogo espremendo formulário produz a rolagem aninhada observada.",
       "Diálogo não abre diálogo. Empilhar modais quebra o retorno de foco e desorienta.",
-      "Mensagem sem decisão NÃO é diálogo. Erro de formulário é mensagem inline no campo; confirmação de sucesso é o próprio controle voltando do estado de carregando, e vira Alert só quando a confirmação carrega informação que sobrevive à tela — o número do protocolo gerado, por exemplo. Toast NÃO é a saída: está fora do catálogo por decisão registrada no contrato do Alert, porque mensagem que some sozinha não pode carregar informação necessária."
+      "Mensagem sem decisão NÃO é diálogo. Erro de formulário é mensagem inline no campo; confirmação de sucesso é o próprio controle voltando do estado de carregando, e vira Alert só quando a confirmação carrega informação que sobrevive à tela — o número do protocolo gerado, por exemplo. O Toast (toast.json) pode confirmar junto, mas nunca sozinho: mensagem que some não pode carregar informação necessária."
     ],
     "criterio": "Diálogo serve para tarefa curta, focada e interruptível, que precisa do contexto de trás. Se a tarefa merece URL própria, é página."
   },

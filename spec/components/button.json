@@ -409,7 +409,8 @@
       "padrao-fluxo-guiado"
     ],
     "usa": [
-      "ucam-icon"
+      "ucam-icon",
+      "ucam-spinner"
     ]
   },
   "implementacao": {

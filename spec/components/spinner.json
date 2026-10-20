@@ -1,0 +1,147 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "spinner",
+  "name": "Spinner",
+  "selector": "ucam-spinner",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "feedback",
+  "description": "O círculo que gira enquanto algo curto termina: dentro do botão que salva, no select que carrega opções, na moldura que abre um sistema. Não diz quanto falta — para isso é Progress — e não segura o lugar do conteúdo — para isso é Skeleton.",
+  "quando_usar": [
+    "Espera curta e de duração desconhecida, presa a um controle: o botão Salvar enquanto o servidor responde.",
+    "Abertura de um sistema ou de um painel, com a frase do que está abrindo ao lado."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/gestaodepolos-frontend, UCAM-repos/sigu_2-0 e UCAM-repos/turmas-compartilhadas-frontend",
+    "ocorrencias": [
+      {
+        "tela": "Gestão de Polos — Ficha financeira",
+        "problema": "mat-spinner no topo do bloco com *ngIf=\"isLoading\", sem texto: o leitor de tela não ouve nada e a tela parece vazia"
+      },
+      {
+        "tela": "SIGU 2.0",
+        "problema": "17 arquivos com spinner, cada um num tamanho"
+      }
+    ],
+    "conclusao": "Um giro, no tamanho do ícone do lugar, com quem informa sendo o aria-busy ou a frase — não o círculo."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "svg.ic com o ícone loaderCircle; gira em 1s linear e para com movimento reduzido.",
+      "classe": "ucam-spinner"
+    },
+    {
+      "parte": "rotulo",
+      "obrigatorio": false,
+      "descricao": "Texto do que está carregando. Visível ao lado, ou só para leitor de tela."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Com rótulo, o spinner é role=status e anuncia; sem, é decorativo e quem informa é o aria-busy do controle."
+    },
+    {
+      "nome": "labelHidden",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Rótulo só para leitor de tela."
+    }
+  ],
+  "estados": [
+    "loading"
+  ],
+  "limites": {
+    "regras": [
+      "Lista, tabela ou cartão carregando: Skeleton, que mostra a forma do que vem.",
+      "Espera longa com quantidade conhecida (importar 1.200 linhas): Progress.",
+      "Nunca um overlay girando sobre a tela inteira: o resto da tela continua utilizável."
+    ],
+    "criterio": "Espera curta presa a um controle: Spinner."
+  },
+  "acessibilidade": {
+    "papel": "status quando tem rótulo; nenhum quando é decorativo",
+    "requisitos": [
+      "Decorativo (aria-hidden) dentro de controle que leva aria-busy=true.",
+      "Com rótulo, role=status: a frase é anunciada uma vez.",
+      "Com prefers-reduced-motion o giro para; o círculo parado ainda lê como espera."
+    ],
+    "criterios_wcag": [
+      "1.1.1",
+      "2.3.3",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Abrindo o SIGFIN…",
+        "Carregando turmas…"
+      ],
+      "ruim": [
+        "Aguarde",
+        "Loading"
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon"
+    ],
+    "usada_por": [
+      "ucam-button",
+      "ucam-combobox",
+      "ucam-select"
+    ]
+  },
+  "migracao": {
+    "de": "mat-spinner, md-progress-circular, fa-spin",
+    "mapa": [
+      {
+        "legado": "<mat-spinner *ngIf=\"isLoading\">",
+        "novo": "<ucam-skeleton> (bloco) ou <ucam-spinner label> (controle)",
+        "nota": "Bloco de conteúdo vira skeleton; spinner fica para controle."
+      },
+      {
+        "legado": "ícone fa-spin",
+        "novo": "<ucam-spinner>"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Com frase",
+      "codigo": "<ucam-spinner label=\"Abrindo o SIGFIN…\" />"
+    },
+    {
+      "titulo": "Decorativo",
+      "codigo": "<ucam-spinner />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Dizer o que está carregando.",
+      "evite": "Círculo sozinho no meio da tela.",
+      "porque": "Sem frase, quem não vê não sabe que espera, e quem vê não sabe pelo quê."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "skeleton",
+      "diferenca": "Skeleton segura o lugar e a forma do conteúdo que vem; Spinner diz que um controle está esperando, sem forma nenhuma.",
+      "escolha": "Bloco de conteúdo: Skeleton. Controle: Spinner."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<svg class=\"ic ucam-spinner\" aria-hidden=\"true\"><use href=\"#i-loaderCircle\"/></svg>, no tamanho do ícone do lugar. Com frase: um span role=status em volta.",
+      "raiz": ".ucam-spinner"
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/spinner/ucam-spinner.ts — <ucam-spinner>. Entradas: label, labelHidden."
+  }
+}

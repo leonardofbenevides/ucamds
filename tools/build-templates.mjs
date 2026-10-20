@@ -44,6 +44,10 @@ import {
   copiarScript,
   motivoScript,
   dataScript,
+  intervaloScript,
+  calendarioScript,
+  popoverScript,
+  sliderScript,
   periodoScript,
   criadoScript,
   navScript,
@@ -366,6 +370,10 @@ ${proj.id === 'vestibular' ? `<script>${provaScript}</script>` : ''}
 <script>${copiarScript}</script>
 <script>${motivoScript}</script>
 <script>${dataScript}</script>
+<script>${intervaloScript}</script>
+<script>${calendarioScript}</script>
+<script>${popoverScript}</script>
+<script>${sliderScript}</script>
 <script>${periodoScript}</script>
 <script>${criadoScript}</script>
 <script>${barraDoQuadroScript}</script>

@@ -1,0 +1,173 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "accordion",
+  "name": "Accordion",
+  "selector": "ucam-accordion",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "layout",
+  "description": "Seções que abrem e fecham uma embaixo da outra: as regras de cada natureza, os parâmetros de um processo seletivo. É details/summary nativo — abre sem script — e, com name, abre uma por vez.",
+  "quando_usar": [
+    "Várias seções longas em que a pessoa lê uma de cada vez: parâmetros por etapa, perguntas frequentes.",
+    "Detalhe que a maioria não precisa, numa página que já é longa."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/processo-seletivo-frontend, UCAM-repos/extensao-frontend e UCAM-repos/financeiro-front-end",
+    "ocorrencias": [
+      {
+        "tela": "Processo seletivo — Cadastro",
+        "problema": "mat-accordion com mat-expansion-panel: o cabeçalho de cada painel tem a altura e a tipografia do Material, não a do sistema"
+      },
+      {
+        "tela": "Extensão — menu",
+        "problema": "collapsible do Materialize usado como menu lateral"
+      }
+    ],
+    "conclusao": "Seção recolhível de conteúdo com details nativo; menu continua sendo navegação, não accordion."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Agrupa os itens; fio em cima e entre eles.",
+      "classe": "ucam-accordion"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "details. O mesmo name nos itens faz o navegador fechar os outros.",
+      "classe": "ucam-accordion__item"
+    },
+    {
+      "parte": "gatilho",
+      "obrigatorio": true,
+      "descricao": "summary com o título, a meta opcional e o chevron que gira.",
+      "classe": "ucam-accordion__gatilho"
+    },
+    {
+      "parte": "meta",
+      "obrigatorio": false,
+      "descricao": "Contagem ou situação, em tinta de apoio, encostada no chevron.",
+      "classe": "ucam-accordion__meta"
+    },
+    {
+      "parte": "painel",
+      "obrigatorio": true,
+      "classe": "ucam-accordion__painel"
+    }
+  ],
+  "props": [
+    {
+      "nome": "multiple",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "false = um aberto por vez (name comum aos itens); true = independentes."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "openChange",
+      "payload": "boolean",
+      "descricao": "No item: abriu ou fechou — pelo clique, pelo teclado ou porque outro item do grupo abriu."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "open"
+  ],
+  "limites": {
+    "regras": [
+      "Navegação lateral não é accordion: é o grupo recolhível do menu.",
+      "Conteúdo que a pessoa compara lado a lado não se esconde em accordion — vira tabela ou abas.",
+      "Formulário obrigatório não fica escondido num item fechado: a pessoa não sabe que falta preencher."
+    ],
+    "criterio": "Uma seção de cada vez, e a maioria não precisa de todas: Accordion."
+  },
+  "acessibilidade": {
+    "papel": "details/summary (disclosure nativo)",
+    "requisitos": [
+      "O summary é o botão: Enter e Espaço abrem, e o estado aberto é anunciado pelo navegador.",
+      "O título do item é o conteúdo do summary; se a página precisa de hierarquia, o título vai num h3 dentro dele.",
+      "O chevron é decorativo e gira; com movimento reduzido, troca sem animação.",
+      "Alvo do summary com pelo menos 44px de altura."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.4.6",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "titulo": [
+      "Diz o que tem dentro: Documentos exigidos, Regras de isenção — não \"Mais informações\"."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon"
+    ]
+  },
+  "migracao": {
+    "de": "mat-accordion, collapsible do Materialize, uib-accordion",
+    "mapa": [
+      {
+        "legado": "mat-accordion + mat-expansion-panel",
+        "novo": "<ucam-accordion>"
+      },
+      {
+        "legado": "collapsible usado como menu",
+        "novo": "grupo recolhível do app-shell",
+        "nota": "Menu não migra para accordion."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Um por vez",
+      "codigo": "<ucam-accordion>\n  <details ucamAccordionItem heading=\"Documentos exigidos\" meta=\"3 itens\" open>…</details>\n  <details ucamAccordionItem heading=\"Prazos\">…</details>\n</ucam-accordion>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Título que diz o conteúdo.",
+      "evite": "\"Clique para expandir\".",
+      "porque": "O chevron já diz que abre; o título diz se vale abrir."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "tabs",
+      "diferenca": "Tabs troca o conteúdo de um mesmo lugar e mostra só uma seção; Accordion empilha as seções e deixa ver o título de todas, abrindo uma (ou várias) no lugar."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<div class=\"ucam-accordion\"><details class=\"ucam-accordion__item\" name=\"grupo\"><summary class=\"ucam-accordion__gatilho\">Título<span class=\"ucam-accordion__meta\">3</span><svg class=\"ic\">chevronDown</svg></summary><div class=\"ucam-accordion__painel\">…</div></details></div>. Sem script.",
+      "raiz": ".ucam-accordion",
+      "estado": "Aberto é o atributo open do details; não há classe de estado."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/accordion/ucam-accordion.ts — <ucam-accordion> e details[ucamAccordionItem], como o accordion dos Sites. Entradas: multiple; no item, heading, meta, open."
+  },
+  "schemas": {
+    "AccordionItem": {
+      "heading": {
+        "tipo": "string",
+        "obrigatorio": true,
+        "descricao": "Título do item, no summary."
+      },
+      "meta": {
+        "tipo": "string | null",
+        "default": "null",
+        "descricao": "Contagem ou situação ao lado do chevron."
+      },
+      "open": {
+        "tipo": "boolean",
+        "default": "false"
+      }
+    }
+  }
+}

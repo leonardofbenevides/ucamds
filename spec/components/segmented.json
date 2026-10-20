@@ -292,6 +292,10 @@
     {
       "componente": "radio-group",
       "diferenca": "segmented é o recorte de duas a quatro opções num trilho, que troca o que a tela MOSTRA e nunca fica vazio; radio-group é a escolha de duas a sete alternativas de um formulário, que é RESPOSTA e pode começar sem resposta."
+    },
+    {
+      "componente": "toggle-group",
+      "diferenca": "Segmented tem exatamente UM escolhido e pinta o escolhido em grafite; ToggleGroup liga vários de forma independente e pinta o ligado em bordô, como a caixa marcada."
     }
   ],
   "implementacao": {

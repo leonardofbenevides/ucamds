@@ -201,6 +201,11 @@
       "componente": "empty-state",
       "diferenca": "Skeleton é ENQUANTO carrega; empty-state é quando não há o que carregar. Um é ignorância temporária do sistema, o outro é um fato sobre os dados.",
       "escolha": "Se a requisição ainda não voltou, skeleton. Trocar por empty-state antes da resposta chegar informa \"não há nada\" sobre algo que talvez exista."
+    },
+    {
+      "componente": "spinner",
+      "diferenca": "Skeleton segura o lugar e a forma do conteúdo que vem; Spinner diz que um controle está esperando, sem forma nenhuma.",
+      "escolha": "Bloco de conteúdo: Skeleton. Controle: Spinner."
     }
   ],
   "implementacao": {

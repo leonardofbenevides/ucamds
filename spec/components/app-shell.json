@@ -66,7 +66,7 @@
     {
       "parte": "regiao-viva",
       "obrigatorio": true,
-      "descricao": "Região de anúncio da tela: um parágrafo vazio, invisível, com role=status, logo depois do skip-link. É onde o resultado de uma ação ganha PALAVRA. Toast está fora do catálogo por decisão (alert.json), então a confirmação de ação vira mudança na própria tela — selo que troca, linha que entra na atividade, botão que muda de nome —, e nada disso existe para quem não vê a tela. Uma por shell, criada com a página: região que nasce junto com o texto não é observada por leitor de tela nenhum.",
+      "descricao": "Região de anúncio da tela: um parágrafo vazio, invisível, com role=status, logo depois do skip-link. É onde o resultado de uma ação ganha PALAVRA. Desde a ADR-052 a ação de sistema também confirma num Toast (toast.json), que o shell emite junto com a frase daqui; além dele, a confirmação vira mudança na própria tela — selo que troca, linha que entra na atividade, botão que muda de nome —, e nada disso existe para quem não vê a tela. Uma por shell, criada com a página: região que nasce junto com o texto não é observada por leitor de tela nenhum.",
       "classe": "ucam-sr-only"
     },
     {
@@ -523,7 +523,8 @@
       "ucam-kbd",
       "ucam-menu",
       "ucam-select",
-      "ucam-text-field"
+      "ucam-text-field",
+      "ucam-toast"
     ],
     "usada_por": [
       "padrao-painel-indicadores",

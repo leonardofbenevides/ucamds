@@ -1,0 +1,158 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "toggle-group",
+  "name": "ToggleGroup",
+  "selector": "ucam-toggle-group",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "formulario",
+  "description": "Botões colados em que cada um liga ou desliga sozinho — mais de um pode estar ligado: os dias da semana de uma aula, negrito e itálico. O ligado é bordô cheio, como a caixa marcada, porque é marcação múltipla.",
+  "quando_usar": [
+    "Marcar vários de um conjunto curto e fixo: S T Q Q S S D.",
+    "Formatação ou opções independentes numa barra: negrito, itálico, lista."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/extensao-frontend e UCAM-repos/captacao-frontend",
+    "ocorrencias": [
+      {
+        "tela": "Extensão — Horário da disciplina oferecida",
+        "problema": "cada horário guarda UM dia da semana; aula em três dias vira três linhas na grade de horário"
+      },
+      {
+        "tela": "Captação — Dashboard",
+        "problema": "mat-button-toggle-group usado para escolha única (Todos, Presencial, EAD) — que é o Segmented; o parque não tem alternância múltipla"
+      }
+    ],
+    "conclusao": "Escolha única em trilho é Segmented; marcação múltipla em botões colados é ToggleGroup, com aparência de marcação."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "role=group com nome; botões colados com um fio entre eles.",
+      "classe": "ucam-toggle-group"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "button type=button com aria-pressed; texto curto ou ícone com nome."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome do grupo: Dias da aula."
+    },
+    {
+      "nome": "items",
+      "tipo": "UcamToggleItem[]",
+      "obrigatorio": true,
+      "descricao": "{ id, label, short?, icon? } — short é o que aparece (S), label é o nome (segunda)."
+    },
+    {
+      "nome": "value",
+      "tipo": "string[]",
+      "default": "[]"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string[]",
+      "descricao": "Os ids ligados, na ordem dos itens."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "pressed",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Exatamente um escolhido: Segmented.",
+      "Opção com descrição, ou mais de sete: Checkbox em lista.",
+      "Não é ação: botão que FAZ algo é Button."
+    ],
+    "criterio": "Vários podem estar ligados e todos cabem numa linha: ToggleGroup."
+  },
+  "acessibilidade": {
+    "papel": "group de buttons com aria-pressed",
+    "requisitos": [
+      "role=group com nome; cada botão com aria-pressed true/false.",
+      "Botão de letra ou ícone tem nome por extenso (aria-label=\"segunda\").",
+      "Ligado não é só cor: preenchimento cheio + aria-pressed + peso.",
+      "Todos tabuláveis, como o Segmented."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "2.1.1",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "O grupo diz o que se marca: Dias da aula."
+    ]
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon"
+    ]
+  },
+  "migracao": {
+    "de": "Grupo de checkboxes em linha, mat-button-toggle multiple",
+    "mapa": [
+      {
+        "legado": "mat-button-toggle-group multiple",
+        "novo": "<ucam-toggle-group>"
+      },
+      {
+        "legado": "mat-button-toggle-group de escolha única",
+        "novo": "<ucam-segmented>",
+        "nota": "Escolha única não é ToggleGroup."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Dias da aula",
+      "codigo": "<ucam-toggle-group label=\"Dias da aula\" [items]=\"dias\" [(value)]=\"diasDaAula\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Nome por extenso em cada letra.",
+      "evite": "S, T, Q sem aria-label.",
+      "porque": "Duas quartas-feiras e três S: o leitor de tela lê \"S, S, S\"."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "segmented",
+      "diferenca": "Segmented tem exatamente UM escolhido e pinta o escolhido em grafite; ToggleGroup liga vários de forma independente e pinta o ligado em bordô, como a caixa marcada."
+    },
+    {
+      "componente": "checkbox",
+      "diferenca": "Checkbox é marcação com rótulo e descrição, em lista; ToggleGroup é a mesma marcação compacta, em botões colados, para opções curtas e fixas."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<div class=\"ucam-toggle-group\" role=\"group\" aria-label><button type=\"button\" aria-pressed=\"false\" aria-label=\"segunda\">S</button>…</div>. O estadoScript alterna o aria-pressed e dispara change no grupo.",
+      "raiz": ".ucam-toggle-group",
+      "estado": "O ligado é lido de aria-pressed=true, não de classe."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/toggle-group/ucam-toggle-group.ts — <ucam-toggle-group>. Entradas: label, items, value, disabled."
+  }
+}

@@ -31,7 +31,7 @@ import {
 } from './spec/spec';
 import { sitesMeta, sitesPorCategoria } from './spec/sites';
 import { SPRITE } from '../generated/sprite';
-import { ligarListbox, ligarMenuConta, ligarEstado, ligarDescricao, ligarLinhaDoTempo, ligarAbas } from '../generated/listbox';
+import { ligarListbox, ligarMenuConta, ligarEstado, ligarDescricao, ligarLinhaDoTempo, ligarAbas, ligarPecas } from '../generated/listbox';
 import { SearchComponent } from './shell/search.component';
 import { noNavegador } from './docs/no-navegador';
 import { ThemeToggleComponent } from './shell/theme-toggle.component';
@@ -1361,6 +1361,7 @@ export class AppComponent {
       ligarDescricao();
       ligarLinhaDoTempo();
       ligarAbas();
+      ligarPecas();
     });
 
     // passive: a escuta só lê a posição e nunca chama preventDefault; sem a

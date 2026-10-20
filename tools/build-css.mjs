@@ -2037,14 +2037,21 @@ ${selectChevronCss}
 }
 .ucam-calendario__mes::first-letter { text-transform: uppercase; }
 .ucam-calendario__grade { inline-size: 100%; border-collapse: collapse; table-layout: fixed; }
+/* Fundo, fio e família declarados: a grade vive dentro de páginas que pintam
+ * th e td por elemento (o site do DS, o Bootstrap do legado), e só o que a
+ * classe declara vence o que o elemento herda (20/10/2026). */
 .ucam-calendario__grade th {
   padding-block: 0.25rem;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  letter-spacing: normal;
   font-size: var(--ucam-typography-caption-font-size);
   font-weight: var(--ucam-typography-label-font-weight);
   color: var(--ucam-color-text-secondary);
   text-align: center;
 }
-.ucam-calendario__grade td { padding: 1px; text-align: center; }
+.ucam-calendario__grade td { padding: 1px; text-align: center; background: none; border: 0; }
 .ucam-calendario__dia {
   inline-size: 100%;
   aspect-ratio: 1;
@@ -2085,6 +2092,418 @@ ${selectChevronCss}
   .ucam-calendario__dia[aria-pressed="true"] { outline: 2px solid CanvasText; }
 }
 .ucam-field--mes   .ucam-input { inline-size: calc(7ch  + 1.5rem); }
+
+/* ------------------------------------- calendário solto e agenda (ADR-074) --- */
+/* A MESMA grade do popover do DateField, fora dele (calendar.json). Solta na
+ * página ela fica no fluxo: sem posição absoluta e sem sombra de
+ * sobreposição, porque não está sobre nada. */
+.ucam-calendario--solto,
+.ucam-calendario--agenda {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  box-shadow: none;
+}
+/* O INTERVALO. As pontas são o escolhido de sempre (aria-pressed); o miolo é
+ * o fundo de ação sutil, sem raio, para os dias lerem como uma faixa só. */
+.ucam-calendario__dia[data-intervalo]:not([aria-pressed="true"]) {
+  background: var(--ucam-color-action-primary-subtle);
+  border-radius: 0;
+}
+.ucam-calendario__dia[aria-disabled="true"] {
+  color: var(--ucam-color-text-disabled);
+  cursor: not-allowed;
+}
+.ucam-calendario__dia[aria-disabled="true"]:hover { background: none; }
+
+/* A AGENDA. O mês ocupa a largura; cada dia é uma célula alta com o número
+ * no canto e até dois eventos. O botão do dia cobre a célula inteira (o alvo
+ * é o dia), e a lista de eventos fica por cima sem receber o ponteiro. */
+.ucam-calendario--agenda {
+  inline-size: 100%;
+  padding: var(--ucam-space-inset-md);
+}
+.ucam-calendario--agenda .ucam-calendario__grade th {
+  padding-inline: 0.5rem;
+  text-align: start;
+}
+.ucam-calendario--agenda .ucam-calendario__grade td {
+  position: relative;
+  block-size: 5.75rem;
+  padding: 0;
+  vertical-align: top;
+  text-align: start;
+  border: 1px solid var(--ucam-color-border-subtle);
+}
+.ucam-calendario--agenda .ucam-calendario__dia {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 0;
+  aspect-ratio: auto;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0;
+}
+/* Escolhido na agenda: contorno de ação por dentro, sem preencher — o
+ * preenchimento cheio apagaria os eventos da célula. */
+.ucam-calendario--agenda .ucam-calendario__dia[aria-pressed="true"] {
+  background: none;
+  color: var(--ucam-color-text-primary);
+  box-shadow: inset 0 0 0 2px var(--ucam-color-action-primary-default);
+}
+.ucam-calendario__eventos {
+  position: absolute;
+  inset: 1.75rem 0.375rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--ucam-typography-caption-font-size);
+  line-height: 1.25rem;
+  pointer-events: none;
+}
+.ucam-calendario__evento {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-inline-size: 0;
+  color: var(--ucam-color-text-primary);
+}
+.ucam-calendario__evento > span {
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* O tom é um ponto, não o fundo do evento: um portador de cor por linha
+ * (ADR-027), e o título continua em tinta de texto. */
+.ucam-calendario__evento::before,
+.ucam-calendario__lista li::before {
+  content: "";
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-cal-tom, var(--ucam-color-text-secondary));
+}
+.ucam-calendario__evento--mais { color: var(--ucam-color-text-secondary); }
+.ucam-calendario__evento--mais::before { content: none; }
+:is(.ucam-calendario__evento, .ucam-calendario__lista li)[data-tom="danger"] { --ucam-cal-tom: var(--ucam-color-feedback-danger-graphic); }
+:is(.ucam-calendario__evento, .ucam-calendario__lista li)[data-tom="warning"] { --ucam-cal-tom: var(--ucam-color-feedback-warning-graphic); }
+:is(.ucam-calendario__evento, .ucam-calendario__lista li)[data-tom="info"] { --ucam-cal-tom: var(--ucam-color-feedback-info-graphic); }
+:is(.ucam-calendario__evento, .ucam-calendario__lista li)[data-tom="success"] { --ucam-cal-tom: var(--ucam-color-feedback-success-graphic); }
+
+/* A LISTA é a fonte da agenda e o que funciona sem script. Uma linha por
+ * evento: ponto do tom, data e título. */
+.ucam-calendario__lista {
+  display: grid;
+  margin: var(--ucam-space-stack-md) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--ucam-typography-body-sm-font-size);
+}
+.ucam-calendario__lista li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+}
+.ucam-calendario__lista li[hidden] { display: none; }
+.ucam-calendario__lista li[data-vazio] { color: var(--ucam-color-text-secondary); }
+.ucam-calendario__lista li[data-vazio]::before { content: none; }
+.ucam-calendario__lista time {
+  flex: none;
+  min-inline-size: 6.5rem;
+  color: var(--ucam-color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+/* O dia ativado na grade aponta os eventos dele na lista: o traço sólido na
+ * borda de início, o mesmo sinal de escolhido das listas (ADR-046). */
+.ucam-calendario__lista li[data-destaque] {
+  box-shadow: inset 4px 0 0 var(--ucam-color-action-primary-default);
+  font-weight: var(--ucam-typography-label-font-weight);
+}
+${abaixo('controle-deitado')} {
+  .ucam-calendario--agenda { padding: var(--ucam-space-inset-sm); }
+  .ucam-calendario--agenda .ucam-calendario__grade td { block-size: 3rem; }
+  /* No telefone a célula não comporta título: fica o ponto de cada evento, e
+   * o texto está na lista logo abaixo. */
+  .ucam-calendario--agenda .ucam-calendario__eventos { inset: auto 0.25rem 0.25rem; flex-direction: row; flex-wrap: wrap; }
+  .ucam-calendario--agenda .ucam-calendario__evento > span,
+  .ucam-calendario--agenda .ucam-calendario__evento--mais { display: none; }
+}
+@media (forced-colors: active) {
+  .ucam-calendario__dia[data-intervalo] { outline: 1px dashed CanvasText; outline-offset: -2px; }
+  .ucam-calendario__evento::before,
+  .ucam-calendario__lista li::before { background: CanvasText; }
+}
+
+/* ------------------------------------------- intervalo de datas (ADR-074) --- */
+/* Contrato: date-range-field.json. Um fieldset com o rótulo do período e as
+ * duas pontas lado a lado, cada uma com o seu rótulo curto. */
+.ucam-date-range {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.ucam-date-range > legend { padding: 0; }
+.ucam-date-range__pontas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--ucam-space-inline-xs) var(--ucam-space-inline-sm);
+}
+.ucam-date-range__ponta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.ucam-date-range__ponta > label {
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-date-range__sep {
+  padding-block-end: 0.5rem;
+  color: var(--ucam-color-text-secondary);
+}
+
+/* ------------------------------------------------------- popover (ADR-074) --- */
+/* Contrato: popover.json. O atributo popover nativo dá a camada de cima, o
+ * Esc e o clique fora; a folha dá a pele (a mesma do listbox e do calendário)
+ * e o popoverScript a posição junto do gatilho. */
+.ucam-popover {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  inline-size: max-content;
+  max-inline-size: min(22rem, calc(100vw - 2rem));
+  padding: var(--ucam-space-inset-md);
+  background: var(--ucam-color-surface-default);
+  color: var(--ucam-color-text-primary);
+  border: 1px solid var(--ucam-color-border-subtle);
+  border-radius: var(--ucam-radius-surface);
+  box-shadow: var(--ucam-elevation-overlay);
+  font-size: var(--ucam-typography-body-sm-font-size);
+}
+.ucam-popover__titulo {
+  margin: 0 0 var(--ucam-space-inline-sm);
+  font-size: var(--ucam-typography-body-font-size);
+  font-weight: var(--ucam-typography-label-font-weight);
+}
+.ucam-popover__corpo {
+  display: grid;
+  gap: var(--ucam-space-inline-sm);
+}
+.ucam-popover__pe {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ucam-space-inline-xs);
+  margin-block-start: var(--ucam-space-inline-sm);
+  padding-block-start: var(--ucam-space-inline-sm);
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+}
+
+/* ----------------------------------------------------- accordion (ADR-074) --- */
+/* Contrato: accordion.json. details/summary nativo: abre sem script, e o
+ * mesmo name nos itens deixa um aberto por vez. Fio em cima do grupo e entre
+ * os itens, sem caixa em volta. */
+.ucam-accordion { border-block-start: 1px solid var(--ucam-color-border-subtle); }
+.ucam-accordion__item { border-block-end: 1px solid var(--ucam-color-border-subtle); }
+.ucam-accordion__gatilho {
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-sm);
+  min-block-size: 2.75rem;
+  padding: 0.5rem 0.25rem;
+  border-radius: var(--ucam-radius-control-sm);
+  list-style: none;
+  color: var(--ucam-color-text-primary);
+  font-weight: var(--ucam-typography-label-font-weight);
+  cursor: pointer;
+}
+.ucam-accordion__gatilho::-webkit-details-marker { display: none; }
+.ucam-accordion__gatilho::marker { content: ""; }
+.ucam-accordion__gatilho:hover { background: var(--ucam-color-interaction-hover); }
+.ucam-accordion__gatilho:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: calc(-1 * var(--ucam-focus-ring-width));
+}
+.ucam-accordion__gatilho :is(h2, h3, h4) { margin: 0; font: inherit; }
+.ucam-accordion__gatilho > .ic {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--ucam-color-text-secondary);
+  transition: rotate var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+.ucam-accordion__meta {
+  margin-inline-start: auto;
+  color: var(--ucam-color-text-secondary);
+  font-weight: var(--ucam-typography-body-font-weight);
+  font-size: var(--ucam-typography-body-sm-font-size);
+  font-variant-numeric: tabular-nums;
+}
+.ucam-accordion__meta + .ic { margin-inline-start: 0; }
+.ucam-accordion__item[open] > .ucam-accordion__gatilho > .ic { rotate: 180deg; }
+.ucam-accordion__painel { padding: 0 0.25rem var(--ucam-space-stack-md); }
+@media (prefers-reduced-motion: reduce) {
+  .ucam-accordion__gatilho > .ic { transition: none; }
+}
+
+/* -------------------------------------------------------- slider (ADR-074) --- */
+/* Contrato: slider.json. O input range nativo, com o trilho pintado até o
+ * valor (--ucam-slider-pct, mantido pelo sliderScript) e o número sempre à
+ * vista no output. O trilho vazio é border.strong: 3:1 contra o fundo, que é
+ * o que identifica o controle (WCAG 1.4.11). */
+.ucam-slider {
+  --ucam-slider-pct: 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--ucam-space-inline-sm);
+  inline-size: 100%;
+  max-inline-size: 30rem;
+}
+.ucam-slider__controle {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  block-size: 1.5rem;
+  margin: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+.ucam-slider__controle::-webkit-slider-runnable-track {
+  block-size: 0.375rem;
+  border-radius: var(--ucam-radius-pill);
+  background: linear-gradient(to right, var(--ucam-color-action-primary-default) var(--ucam-slider-pct), var(--ucam-color-border-strong) var(--ucam-slider-pct));
+}
+.ucam-slider__controle::-moz-range-track {
+  block-size: 0.375rem;
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-border-strong);
+}
+.ucam-slider__controle::-moz-range-progress {
+  block-size: 0.375rem;
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-action-primary-default);
+}
+.ucam-slider__controle::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  margin-block-start: -0.4375rem;
+  border: 2px solid var(--ucam-color-action-primary-default);
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-surface-default);
+  box-shadow: var(--ucam-elevation-raised);
+}
+.ucam-slider__controle::-moz-range-thumb {
+  box-sizing: border-box;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border: 2px solid var(--ucam-color-action-primary-default);
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-color-surface-default);
+  box-shadow: var(--ucam-elevation-raised);
+}
+.ucam-slider__controle:focus-visible { outline: none; }
+.ucam-slider__controle:focus-visible::-webkit-slider-thumb {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: 2px;
+}
+.ucam-slider__controle:focus-visible::-moz-range-thumb {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: 2px;
+}
+.ucam-slider__controle:disabled { cursor: not-allowed; }
+.ucam-slider__controle:disabled::-webkit-slider-runnable-track { background: var(--ucam-color-action-disabled-background); }
+.ucam-slider__controle:disabled::-webkit-slider-thumb { border-color: var(--ucam-color-text-disabled); box-shadow: none; }
+.ucam-slider__controle:disabled::-moz-range-progress { background: var(--ucam-color-text-disabled); }
+.ucam-slider__controle:disabled::-moz-range-thumb { border-color: var(--ucam-color-text-disabled); box-shadow: none; }
+.ucam-slider__valor {
+  flex: none;
+  min-inline-size: 4ch;
+  text-align: end;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  font-weight: var(--ucam-typography-label-font-weight);
+  font-variant-numeric: tabular-nums;
+}
+.ucam-slider__limites {
+  flex: none;
+  color: var(--ucam-color-text-secondary);
+  font-size: var(--ucam-typography-caption-font-size);
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------------------------------------------------- toggle-group (ADR-074) --- */
+/* Contrato: toggle-group.json. Botões colados, cada um liga e desliga
+ * sozinho. O ligado é BORDÔ cheio, como a caixa marcada — é marcação
+ * múltipla —, e não o grafite do segmented, que é escolha única: as duas
+ * peças vivem na mesma barra e não podem parecer a mesma. */
+.ucam-toggle-group {
+  display: inline-flex;
+  align-items: stretch;
+  block-size: var(--ucam-size-control-md);
+  border: 1px solid var(--ucam-color-border-default);
+  border-radius: var(--ucam-radius-control);
+  overflow: hidden;
+}
+.ucam-toggle-group > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-inline-size: var(--ucam-size-control-md);
+  padding: 0 0.625rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  color: var(--ucam-color-text-secondary);
+  cursor: pointer;
+  transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
+              color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+.ucam-toggle-group > button + button { border-inline-start: 1px solid var(--ucam-color-border-subtle); }
+.ucam-toggle-group > button:hover:not([aria-pressed="true"], :disabled, [aria-disabled="true"]) {
+  background: var(--ucam-color-interaction-hover);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-toggle-group > button[aria-pressed="true"] {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+  font-weight: var(--ucam-typography-action-font-weight);
+}
+.ucam-toggle-group > button[aria-pressed="true"]:hover { background: var(--ucam-color-action-primary-hover); }
+/* Dois ligados lado a lado: o fio entre eles clareia sobre o bordô, senão
+ * viram um botão largo. */
+.ucam-toggle-group > button[aria-pressed="true"] + button[aria-pressed="true"] {
+  border-inline-start-color: color-mix(in srgb, var(--ucam-color-text-on-action) 40%, transparent);
+}
+.ucam-toggle-group > button:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: calc(-1 * var(--ucam-focus-ring-width) - 1px);
+}
+.ucam-toggle-group > button:is(:disabled, [aria-disabled="true"]) {
+  color: var(--ucam-color-text-disabled);
+  cursor: not-allowed;
+}
+.ucam-toggle-group > button[aria-pressed="true"]:is(:disabled, [aria-disabled="true"]) {
+  background: var(--ucam-color-action-disabled-background);
+  color: var(--ucam-color-action-disabled-text);
+}
+@media (forced-colors: active) {
+  .ucam-toggle-group > button[aria-pressed="true"] { outline: 2px solid CanvasText; outline-offset: -3px; }
+}
 
 /* ------------------------------------------------------------- tabela --- */
 /* Contrato: data-table.json. ADR-003: cabeçalho em caixa natural. */

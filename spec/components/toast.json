@@ -1,0 +1,218 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "toast",
+  "name": "Toast",
+  "selector": "ucam-toast",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "feedback",
+  "description": "A confirmação que aparece no canto e some: \"Requerimento arquivado.\" Confirma uma ação de sistema para quem não estava olhando a peça que mudou. NÃO carrega informação que a pessoa vai precisar depois — essa vai num Alert ancorado, que fica (ADR-052).",
+  "quando_usar": [
+    "Uma ação de sistema terminou: arquivar, salvar, enviar, copiar.",
+    "Um arquivo foi recusado no envio, e o campo de origem já não está à vista (tom danger)."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/protocolo-frontend-novo, UCAM-repos/secretaria-virtual-frontend e ADR-052",
+    "ocorrencias": [
+      {
+        "tela": "Protocolo — Naturezas de requerimento",
+        "problema": "MatSnackBar.open com texto e duração escolhidos em cada chamada (natureza-dialog.component.ts): cada tela decide quanto tempo a mensagem vive e onde aparece"
+      },
+      {
+        "tela": "Telas de referência, antes de 25/09/2026",
+        "problema": "o retorno de uma ação era só o eco falado e o realce na peça; quem enxergava e não olhava para a peça não tinha confirmação nenhuma"
+      }
+    ],
+    "conclusao": "Toast entra como confirmação, com um lugar, uma duração e no máximo três na pilha. O que precisa ficar continua sendo Alert."
+  },
+  "anatomia": [
+    {
+      "parte": "pilha",
+      "obrigatorio": true,
+      "descricao": "Região fixa no canto inferior direito (no telefone, a largura toda e um de cada vez).",
+      "classe": "ucam-toasts"
+    },
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Superfície invertida no sucesso; fundo e tinta de feedback em danger e warning.",
+      "classe": "ucam-toast"
+    },
+    {
+      "parte": "icone",
+      "obrigatorio": true,
+      "descricao": "Ícone do tom: circleCheck, info, triangleAlert, circleAlert. Decorativo."
+    },
+    {
+      "parte": "texto",
+      "obrigatorio": true,
+      "classe": "ucam-toast__texto"
+    },
+    {
+      "parte": "fechar",
+      "obrigatorio": true,
+      "descricao": "Botão de 36px, \"Fechar confirmação\" ou \"Fechar aviso\".",
+      "classe": "ucam-toast__fechar"
+    }
+  ],
+  "props": [
+    {
+      "nome": "message",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Frase curta no passado: o que aconteceu."
+    },
+    {
+      "nome": "tone",
+      "tipo": "'success' | 'info' | 'warning' | 'danger'",
+      "default": "'success'",
+      "valores": {
+        "success": {
+          "uso": "A ação terminou."
+        },
+        "info": {
+          "uso": "Aconteceu algo que não é resultado direto do clique: sincronização concluída."
+        },
+        "warning": {
+          "uso": "Terminou com ressalva: 3 de 5 arquivos enviados.",
+          "tokens": {
+            "fundo": "color.feedback.warning.background"
+          }
+        },
+        "danger": {
+          "uso": "Recusado: o arquivo grande demais, a ação que falhou.",
+          "tokens": {
+            "fundo": "color.feedback.danger.background"
+          }
+        }
+      }
+    },
+    {
+      "nome": "duration",
+      "tipo": "number",
+      "default": "5000",
+      "descricao": "Milissegundos. Para enquanto o ponteiro ou o foco estão nele (WCAG 2.2.1)."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "dismiss",
+      "payload": "'tempo' | 'fechar'",
+      "descricao": "O toast saiu — pelo tempo ou pelo botão."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Nunca a ÚNICA cópia de algo que a pessoa vai usar depois: o número do protocolo gerado vai num Alert ancorado, e o toast pode sair junto.",
+      "Nunca com ação de desfazer que só existe ali: some em 5 s, e quem usa leitor de tela ou demora não alcança.",
+      "No máximo três na pilha; o quarto tira o mais antigo.",
+      "Ordenar, abrir menu, trocar de aba não viram toast: só ação de sistema (data-fluxo=\"c\")."
+    ],
+    "criterio": "Se perder a mensagem não custa nada, é toast. Se custa, é Alert."
+  },
+  "acessibilidade": {
+    "papel": "nenhum papel vivo próprio: a frase é dita pela região de anúncio do shell, e o toast é a cópia visual",
+    "requisitos": [
+      "Não rouba foco e não é região viva — a região de anúncio do shell já falou a mesma frase, e duas regiões falariam duas vezes.",
+      "Some em 5 s e PARA enquanto o ponteiro ou o foco estão nele (WCAG 2.2.1).",
+      "O botão de fechar tem nome que diz o quê: \"Fechar confirmação\", \"Fechar aviso\".",
+      "Recusa não sai com o visto de sucesso: danger e warning têm superfície e ícone do tom.",
+      "Com movimento reduzido, entra e sai sem animação."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "2.2.1",
+      "4.1.3"
+    ]
+  },
+  "conteudo": {
+    "regras": [
+      "Passado e curto: o que aconteceu, não o que a pessoa fez.",
+      "Nome do objeto quando houver: \"Requerimento 2026/00841 arquivado.\""
+    ],
+    "exemplos": {
+      "bom": [
+        "Requerimento arquivado.",
+        "Copiado: 2026/00841",
+        "grande.pdf tem 11 MB. O limite é 10 MB."
+      ],
+      "ruim": [
+        "Sucesso!",
+        "Operação realizada com sucesso.",
+        "Erro."
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-icon"
+    ],
+    "usada_por": [
+      "ucam-app-shell"
+    ]
+  },
+  "migracao": {
+    "de": "MatSnackBar, $mdToast e toastr",
+    "mapa": [
+      {
+        "legado": "MatSnackBar.open(texto, acao, { duration })",
+        "novo": "UcamToastService.show(texto, { tone })",
+        "nota": "Duração e lugar deixam de ser escolha da tela."
+      },
+      {
+        "legado": "$mdToast.simple()",
+        "novo": "window.ucamToast(texto, tom)"
+      },
+      {
+        "legado": "toast com o número do protocolo",
+        "novo": "Alert ancorado + toast",
+        "nota": "O número precisa ficar; o toast só confirma."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Confirmar",
+      "codigo": "this.toast.show('Requerimento arquivado.');"
+    },
+    {
+      "titulo": "Recusa",
+      "codigo": "this.toast.show('grande.pdf tem 11 MB. O limite é 10 MB.', { tone: 'danger' });"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Confirmar no passado, com o nome do objeto.",
+      "evite": "\"Operação realizada com sucesso.\"",
+      "porque": "A frase genérica não diz qual operação, e a pessoa pode ter disparado duas."
+    },
+    {
+      "faca": "Alert ancorado para o que precisa ficar.",
+      "evite": "Número de protocolo só no toast.",
+      "porque": "Some em 5 s."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "alert",
+      "diferenca": "Alert fica na página, ancorado ao que trata, até a pessoa resolver ou fechar; Toast flutua no canto e some sozinho. Informação que a pessoa vai usar depois mora no Alert.",
+      "escolha": "Perder a mensagem custa algo? Alert. Não custa? Toast."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "window.ucamToast(texto, tom) — do comportamento do Trilho A (toastScript). A pilha .ucam-toasts nasce no primeiro chamado; a folha diz quantos cabem (--ucam-toasts-max).",
+      "raiz": ".ucam-toast",
+      "variaveis": [
+        "--ucam-toasts-max"
+      ]
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/toast/ucam-toast.ts — UcamToastService.show(message, { tone, duration }) e <ucam-toaster /> uma vez na raiz da aplicação. Escrito do zero sobre as classes do Trilho A, que fecha a pendência da ADR-052 (\"o Trilho B ainda não o tem\")."
+  }
+}

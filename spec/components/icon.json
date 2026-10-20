@@ -149,7 +149,11 @@
       "ucam-list-item",
       "ucam-prazo",
       "ucam-segmented",
-      "ucam-stat"
+      "ucam-stat",
+      "ucam-toast",
+      "ucam-spinner",
+      "ucam-accordion",
+      "ucam-toggle-group"
     ]
   },
   "migracao": {

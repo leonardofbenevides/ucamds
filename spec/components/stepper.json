@@ -261,6 +261,10 @@
       "componente": "progress",
       "diferenca": "Stepper conta ETAPAS NOMEADAS e diz em qual delas se está; Progress é uma proporção sem nome — quanto de um todo foi cumprido. Etapa tem título; fração tem só número.",
       "escolha": "As partes têm nome e a pessoa precisa saber o que vem depois."
+    },
+    {
+      "componente": "breadcrumb",
+      "diferenca": "Breadcrumb diz onde a tela fica na HIERARQUIA e cada nível é navegável; Stepper diz em que passo de um FLUXO a pessoa está, e voltar a um passo segue a regra do fluxo."
     }
   ]
 }

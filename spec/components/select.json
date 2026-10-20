@@ -286,7 +286,8 @@
       "ucam-pagination"
     ],
     "usa": [
-      "ucam-field"
+      "ucam-field",
+      "ucam-spinner"
     ]
   },
   "implementacao": {
