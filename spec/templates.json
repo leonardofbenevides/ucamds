@@ -11886,6 +11886,1418 @@
           }
         }
       ]
+    },
+    {
+      "id": "extensao",
+      "nome": "Pós-graduação e extensão",
+      "icone": "bookOpen",
+      "categoria": "academico",
+      "descricao": "O acadêmico da pós-graduação lato sensu e da extensão: cadastros, calendário e oferta, ficha do aluno, inscrição em disciplinas, notas, datas de prova, cálculo acadêmico e comunicação com alunos e interessados. Entrou no design system em 15/10/2026, lido do extensao-frontend e do extensao-backend; na planilha do time consta como MIGRANDO, sem reescrita publicada.",
+      "stack_atual": "Angular 5 com Materialize (angular2-materialize), angular2-datatable e jQuery; back-end Java EE (EJB + JAX-RS, Extensao-WEB) sobre PostgreSQL",
+      "shell": {
+        "sistema": "Pós e extensão",
+        "campus": "Campos",
+        "usuario": "Leonardo F. Benevides",
+        "nav": [
+          {
+            "titulo": "Cadastros",
+            "itens": [
+              {
+                "id": "disciplinas",
+                "rotulo": "Disciplinas",
+                "icone": "bookOpen"
+              },
+              {
+                "id": "tabelas",
+                "rotulo": "Tabelas de apoio",
+                "icone": "listChecks",
+                "$porque": "Os nove cadastros básicos do sistema (1 a 3 campos cada) têm a mesma forma de Disciplinas: lista e formulário. Ficam num ramo fechado porque são consultados por exceção.",
+                "itens": [
+                  {
+                    "id": "atividades",
+                    "rotulo": "Atividades acadêmicas",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "estabelecimentos",
+                    "rotulo": "Estabelecimentos de ensino",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "modalidades",
+                    "rotulo": "Modalidades",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "recursos",
+                    "rotulo": "Recursos",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "situacoes-disciplina",
+                    "rotulo": "Situações de disciplina",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "situacoes-matricula",
+                    "rotulo": "Situações de matrícula",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "tipos-disciplina",
+                    "rotulo": "Tipos de disciplina",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "tipos-documento",
+                    "rotulo": "Tipos de documento",
+                    "ancora": "extensao-disciplinas.html"
+                  },
+                  {
+                    "id": "tipos-prova",
+                    "rotulo": "Tipos de prova",
+                    "ancora": "extensao-disciplinas.html"
+                  }
+                ]
+              },
+              {
+                "id": "horarios",
+                "rotulo": "Horários",
+                "icone": "clock",
+                "ancora": "extensao-disciplinas.html"
+              },
+              {
+                "id": "turmas",
+                "rotulo": "Turmas",
+                "icone": "users",
+                "ancora": "extensao-disciplinas.html"
+              }
+            ]
+          },
+          {
+            "titulo": "Curso e oferta",
+            "itens": [
+              {
+                "id": "calendario",
+                "rotulo": "Calendário acadêmico",
+                "icone": "calendar"
+              },
+              {
+                "id": "cursos",
+                "rotulo": "Cursos",
+                "icone": "graduationCap",
+                "ancora": "extensao-calendario-academico.html"
+              },
+              {
+                "id": "tipos-regime",
+                "rotulo": "Tipos de regime",
+                "icone": "layoutGrid",
+                "ancora": "extensao-calendario-academico.html"
+              },
+              {
+                "id": "predios",
+                "rotulo": "Prédios e salas",
+                "icone": "building2",
+                "ancora": "extensao-calendario-academico.html"
+              },
+              {
+                "id": "disciplinas-curso",
+                "rotulo": "Disciplinas do curso",
+                "icone": "scrollText",
+                "ancora": "extensao-calendario-academico.html"
+              },
+              {
+                "id": "disciplinas-oferecidas",
+                "rotulo": "Disciplinas oferecidas",
+                "icone": "presentation",
+                "ancora": "extensao-calendario-academico.html"
+              }
+            ]
+          },
+          {
+            "titulo": "Pessoas",
+            "itens": [
+              {
+                "id": "alunos",
+                "rotulo": "Alunos",
+                "icone": "user"
+              },
+              {
+                "id": "alunos-especiais",
+                "rotulo": "Alunos especiais",
+                "icone": "user",
+                "ancora": "extensao-aluno.html"
+              },
+              {
+                "id": "professores",
+                "rotulo": "Professores",
+                "icone": "briefcase",
+                "ancora": "extensao-aluno.html"
+              },
+              {
+                "id": "funcionarios",
+                "rotulo": "Funcionários",
+                "icone": "users",
+                "ancora": "extensao-aluno.html"
+              },
+              {
+                "id": "interessados",
+                "rotulo": "Interessados",
+                "icone": "users",
+                "ancora": "extensao-aluno.html"
+              }
+            ]
+          },
+          {
+            "titulo": "Vida acadêmica",
+            "itens": [
+              {
+                "id": "aluno-disciplinas",
+                "rotulo": "Disciplinas do aluno",
+                "icone": "bookOpen"
+              },
+              {
+                "id": "historico",
+                "rotulo": "Histórico de situação",
+                "icone": "scrollText",
+                "ancora": "extensao-aluno-disciplinas.html"
+              },
+              {
+                "id": "estagio",
+                "rotulo": "Estágio supervisionado",
+                "icone": "briefcase",
+                "ancora": "extensao-aluno-disciplinas.html"
+              },
+              {
+                "id": "isencoes",
+                "rotulo": "Isenções",
+                "icone": "clipboardCheck",
+                "ancora": "extensao-aluno-disciplinas.html"
+              },
+              {
+                "id": "troca-turma",
+                "rotulo": "Troca de turma",
+                "icone": "refreshCw",
+                "ancora": "extensao-aluno-disciplinas.html"
+              },
+              {
+                "id": "inscricao-lote",
+                "rotulo": "Alunos da turma × disciplinas",
+                "icone": "listChecks",
+                "ancora": "secretaria-alocacao-alunos.html"
+              }
+            ]
+          },
+          {
+            "titulo": "Avaliação",
+            "itens": [
+              {
+                "id": "notas",
+                "rotulo": "Lançamento de notas",
+                "icone": "clipboardList"
+              },
+              {
+                "id": "faltas",
+                "rotulo": "Lançamento de faltas",
+                "icone": "clipboardCheck",
+                "ancora": "extensao-lancamento-notas.html"
+              },
+              {
+                "id": "datas-prova",
+                "rotulo": "Datas de prova",
+                "icone": "calendar"
+              },
+              {
+                "id": "provas-especiais",
+                "rotulo": "Provas especiais",
+                "icone": "fileText",
+                "ancora": "extensao-datas-de-prova.html"
+              },
+              {
+                "id": "disciplina-alunos",
+                "rotulo": "Disciplina oferecida × alunos",
+                "icone": "users",
+                "ancora": "extensao-datas-de-prova.html"
+              },
+              {
+                "id": "planos-ensino",
+                "rotulo": "Planos de ensino",
+                "icone": "scrollText",
+                "ancora": "extensao-datas-de-prova.html"
+              },
+              {
+                "id": "calculo",
+                "rotulo": "Cálculo acadêmico",
+                "icone": "calculator"
+              }
+            ]
+          },
+          {
+            "titulo": "Interessados e comunicação",
+            "itens": [
+              {
+                "id": "email",
+                "rotulo": "Envio de e-mail",
+                "icone": "mail"
+              },
+              {
+                "id": "sms",
+                "rotulo": "Envio de SMS",
+                "icone": "messageSquare",
+                "ancora": "extensao-envio-email.html"
+              },
+              {
+                "id": "relacionamento",
+                "rotulo": "Relacionamento",
+                "icone": "messageSquare",
+                "ancora": "extensao-envio-email.html"
+              },
+              {
+                "id": "periodos-inscricao",
+                "rotulo": "Períodos de inscrição",
+                "icone": "calendar",
+                "ancora": "extensao-disciplinas.html"
+              },
+              {
+                "id": "matricular",
+                "rotulo": "Matricular interessado",
+                "icone": "graduationCap",
+                "ancora": "secretaria-matricula-extensao.html"
+              }
+            ]
+          }
+        ],
+        "busca": "Buscar aluno, disciplina ou curso",
+        "buscaAtalho": "/",
+        "rail": {
+          "icone": "bookOpen",
+          "itens": [
+            {
+              "rotulo": "Meus sistemas",
+              "icone": "layoutGrid",
+              "projeto": "portal"
+            },
+            {
+              "rotulo": "Protocolo",
+              "icone": "clipboardList",
+              "projeto": "protocolo"
+            },
+            {
+              "rotulo": "Acadêmico",
+              "icone": "graduationCap",
+              "projeto": "secretaria"
+            },
+            {
+              "rotulo": "Pós e extensão",
+              "icone": "bookOpen",
+              "projeto": "extensao",
+              "ativo": true
+            },
+            {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao"
+            },
+            {
+              "rotulo": "Financeiro",
+              "icone": "wallet",
+              "projeto": "sigfin"
+            },
+            {
+              "rotulo": "Relatórios",
+              "icone": "chartColumn",
+              "projeto": "relatorios"
+            },
+            {
+              "rotulo": "Gerencial",
+              "icone": "lock",
+              "projeto": "gerencial"
+            },
+            {
+              "rotulo": "Arquivo permanente",
+              "icone": "archive"
+            }
+          ]
+        },
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
+        "navRodape": [
+          {
+            "rotulo": "Configurações",
+            "icone": "settings"
+          },
+          {
+            "rotulo": "Central de ajuda",
+            "icone": "info"
+          }
+        ],
+        "campusOpcoes": [
+          "Campos",
+          "Rio de Janeiro",
+          "Nova Friburgo"
+        ],
+        "railComoMenu": true,
+        "$porque_railComoMenu": "Faixa em cima E coluna à esquerda — o arranjo que a anatomia do app-shell chama de padrão: header obrigatório, navegação \"fixa em desktop, sobreposta apenas em viewport estreita\". As duas molduras anteriores negavam essa anatomia, cada uma por um lado. A de rail tirava a faixa, e com ela a busca global, o chip de campus e a marca; a de topo tirava a coluna, e deitava a navegação numa fileira onde o título do grupo não cabia e onde um sistema de vinte seções rolaria na horizontal, escondendo item sem dizer que escondeu. O SIGFIN tem mais de cem destinos: a lista deles é vertical porque a varredura vertical é a que aguenta cem linhas. O rail não some — os mesmos módulos são o menu do lançador na faixa, então trocar de sistema continua a um clique sem gastar 72px em toda tela. Custo aceito: 318px de largura permanente numa janela de 1440 (22%), contra os 390 do rail com lateral; a faixa cobra altura (56px), não largura, e a testeira deitada cobrava 96 de altura sem devolver a lista vertical.",
+        "$porque_nav": "O menu do sistema vem inteiro do servidor (GET /usuario/menus/{usuario}/aplic05/{unidade}) e não está no código; os grupos e rótulos aqui são as 40 rotas reais do front, agrupadas por assunto. Cada item leva à tela de referência da FORMA dele: o item que dá nome à forma é o destaque da tela, os demais levam a ela por âncora. Matricular interessado e Alunos da turma × disciplinas levam às telas da Secretaria virtual, que já desenham a mesma função."
+      },
+      "templates": [
+        {
+          "id": "disciplinas",
+          "nome": "Disciplinas",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "listagem-crud",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /disciplina — paginas/cadastros-parametros/disciplina/disciplina.component.ts e sharedservices/tipo-basico-form/; extensao-backend W/CadastroBasicoRest.java e RepositorioAbstract.java (lido em 15/10/2026)",
+          "descricao": "A listagem de um cadastro de apoio, com Disciplinas de exemplo: pesquisar, abrir para editar, inativar e reativar. É a forma das dez tabelas básicas do sistema e da busca de Horários, Turmas e Períodos de inscrição.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-empty-state",
+            "ucam-icon",
+            "ucam-icon-button",
+            "ucam-link",
+            "ucam-page-header",
+            "ucam-segmented",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "A lista e o formulário são dois painéis do mesmo cartão, trocados pelos botões Novo e Pesquisar: abrir um registro esconde a lista, e salvar nem sempre volta a ela.",
+            "Excluir, no ícone da linha ou no botão do formulário, age no clique, sem confirmação.",
+            "O que o servidor faz ao excluir é inativar, mas a tela diz Excluir e o registro some de vez das listas. Cadastrar de novo a mesma sigla reativa o registro antigo com os dados antigos, e o que foi digitado se perde sem aviso.",
+            "A tabela pagina de 10 em 10 no navegador e não ordena por coluna.",
+            "Os erros de preenchimento são avisos flutuantes que somem em 7 segundos, um por campo."
+          ],
+          "notas": [
+            "Lista e formulário viraram duas telas: a lista fica à vista, e o formulário volta para ela com o registro novo no topo.",
+            "Excluir passou a se chamar Inativar, porque é o que o servidor faz, e não é vermelho. A lista mostra as inativas num recorte, com Reativar na linha.",
+            "A disciplina que o servidor recusaria inativar (resposta 406, \"possui dependências\") traz o ícone desabilitado com o motivo. Qual dependência barra é regra do banco e está em aberto.",
+            "As outras nove tabelas de apoio (atividades acadêmicas, estabelecimentos, modalidades, recursos, situações de disciplina e de matrícula, tipos de disciplina, documento e prova) têm de 1 a 3 campos e usam esta forma, mudando só as colunas. Horários, Turmas e Períodos de inscrição também, com o formulário próprio de cada um."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Excluir um cadastro básico é inativar: o servidor grava a situação D, e toda listagem lê só os registros ativos.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O servidor recusa inativar registro que tem dependências (resposta 406). Quais dependências contam é decidido por uma função do banco (valida_exclusao), fora do código.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Cadastrar um registro igual a um inativo reativa o antigo, com os dados antigos, e devolve sucesso; igual a um ativo, devolve 409 \"registro já existente\". O que é \"igual\" é decidido pela função verifica_unique do banco.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Disciplina e atividade acadêmica pertencem à unidade ativa; os demais cadastros básicos valem para todas as unidades.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A busca dispara meio segundo depois da última tecla; o servidor devolve até 50 registros por página, em ordem de criação.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Registro inativo aparece na lista, num recorte próprio, e pode ser reativado pela linha.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o que impede inativar uma disciplina. Hoje é a função valida_exclusao do banco, cujo texto não está no repositório; a tela supõe que disciplina com oferta no período corrente não é inativada.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: a sigla da disciplina é única na unidade? O código não diz; depende da chave que verifica_unique usa para a tabela disciplina.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O servidor não confere o token nesta chamada: a anotação de autenticação está comentada em quase todos os serviços, e quem barra o acesso é só o front.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Disciplinas</h2><span class='ucam-viewbar__meta'>11 na unidade, 10 ativas</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='exportar'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> Exportar</button><a class='ucam-btn ucam-btn--primary' href='#/templates/extensao/disciplina-form' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Nova disciplina</a></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:situacao' role='group' aria-label='Situação'><button type='button' aria-pressed='true' data-valor=''>Todas</button><button type='button' aria-pressed='false' data-valor='ativo'>Ativas</button><button type='button' aria-pressed='false' data-valor='inativo'>Inativas</button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='di-b'>Pesquisar disciplina</label><input class='ucam-input' id='di-b' type='search' data-filtra='texto' placeholder='Sigla ou descrição' aria-controls='di-vazio' aria-describedby='di-eco'></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact ucam-table--linha-clicavel'><caption class='ucam-sr-only'>Disciplinas da unidade Campos, com sigla, créditos, carga horária e situação.</caption><thead><tr><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='di-col-1-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='di-col-1-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-hash'/></svg>Sigla <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='di-col-1-menu' role='menu' aria-labelledby='di-col-1-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar' aria-disabled='true'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' aria-sort='none'><button type='button' class='ucam-table__coluna' id='di-col-2-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='di-col-2-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-bookOpen'/></svg>Disciplina <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='di-col-2-menu' role='menu' aria-labelledby='di-col-2-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--num th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='di-col-3-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='di-col-3-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-hash'/></svg>Créditos <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='di-col-3-menu' role='menu' aria-labelledby='di-col-3-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--num th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='di-col-4-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='di-col-4-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-clock'/></svg>Carga horária <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='di-col-4-menu' role='menu' aria-labelledby='di-col-4-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='di-col-5-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='di-col-5-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-circleDot'/></svg>Situação <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='di-col-5-menu' role='menu' aria-labelledby='di-col-5-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--acoes'><span class='ucam-sr-only'>Ações</span></th></tr></thead><tbody><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA01</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Fundamentos de finanças corporativas</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Fundamentos de finanças corporativas'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Fundamentos de finanças corporativas' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA02</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Contabilidade gerencial</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Contabilidade gerencial'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Contabilidade gerencial' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA03</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Matemática financeira</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Matemática financeira'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Matemática financeira' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA04</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Estatística aplicada a negócios</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Estatística aplicada a negócios'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Estatística aplicada a negócios' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA05</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Análise de investimentos</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Análise de investimentos'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Análise de investimentos' data-fluxo='b' aria-disabled='true' data-motivo='Tem disciplina oferecida no 2º semestre de 2026. Inative depois de encerrar a oferta.' title='Tem disciplina oferecida no 2º semestre de 2026. Inative depois de encerrar a oferta.'><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA06</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Gestão de riscos</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Gestão de riscos'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Gestão de riscos' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA07</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Mercado de capitais</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Mercado de capitais'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Mercado de capitais' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>DIR23</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Contratos empresariais</a></td><td class='td--num'>2</td><td class='td--num'>30 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Contratos empresariais'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Contratos empresariais' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>PSI06</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Dificuldades de aprendizagem</a></td><td class='td--num'>3</td><td class='td--num'>45 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Dificuldades de aprendizagem'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Dificuldades de aprendizagem' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='ativo'><td style='white-space:nowrap'><span class='ucam-id'>EXT02</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Oratória e argumentação</a></td><td class='td--num'>1</td><td class='td--num'>15 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Oratória e argumentação'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Inativar Oratória e argumentação' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='inativar' data-confirmar><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg></button></span></td></tr><tr data-situacao='inativo'><td style='white-space:nowrap'><span class='ucam-id'>MBA00</span></td><td style='white-space:nowrap'><a class='ucam-link td--pessoa__nome' href='#/templates/extensao/disciplina-form' data-fluxo='a'>Introdução à calculadora financeira</a></td><td class='td--num'>1</td><td class='td--num'>15 h</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span>Inativa</span></td><td class='td--acoes'><span class='ucam-cluster'><a class='ucam-btn ucam-btn--icon ucam-btn--ghost' href='#/templates/extensao/disciplina-form' data-fluxo='a' aria-label='Editar Introdução à calculadora financeira'><svg class='ic' aria-hidden='true'><use href='#i-pencil'/></svg></a><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Reativar Introdução à calculadora financeira' data-rotulo-ativo='Ativa' data-rotulo-inativo='Inativa' data-fluxo='c' data-acao='reativar-registro'><svg class='ic' aria-hidden='true'><use href='#i-refreshCw'/></svg></button></span></td></tr></tbody></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>11 disciplinas, 10 ativas</p></div><div class='ucam-empty' id='di-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhuma disciplina encontrada</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou aos filtros escolhidos. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='di-eco' role='status'></p></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Disciplinas\" [count]=\"total()\" [breadcrumb]=\"trilha\">\n    <ucam-button variant=\"secondary\" iconStart=\"download\" (click)=\"exportar()\">Exportar</ucam-button>\n    <ucam-button variant=\"primary\" iconStart=\"plus\" routerLink=\"nova\">Nova disciplina</ucam-button>\n  </ucam-page-header>\n\n  <ucam-segmented ariaLabel=\"Situação\" [items]=\"situacoes\" [(value)]=\"situacao\" />\n  <ucam-text-field label=\"Pesquisar disciplina\" type=\"search\" placeholder=\"Sigla ou descrição\" [(value)]=\"termo\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Disciplinas da unidade\" [columns]=\"colunas\" [rows]=\"linhas()\" emptyReason=\"no-results\" />\n</ucam-app-shell>\n\n// colunas: Sigla, Disciplina, Créditos, Carga horária, Situação; ações da linha: Editar, Inativar ou Reativar\n// As outras tabelas de apoio mudam só as colunas (campos de tipo-basico-form).",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "disciplinas"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Nova disciplina",
+                "classe": "a",
+                "destino": "extensao/disciplina-form",
+                "efeito": "Abre o formulário em branco."
+              },
+              {
+                "rotulo": "Exportar",
+                "classe": "c",
+                "efeito": "Baixa a tabela visível em CSV."
+              },
+              {
+                "rotulo": "Nome da linha · Editar (×11)",
+                "classe": "a",
+                "destino": "extensao/disciplina-form",
+                "efeito": "Abre o formulário do registro."
+              },
+              {
+                "rotulo": "Inativar / Reativar (×11)",
+                "classe": "c",
+                "efeito": "Inativar pede confirmação; os dois trocam o selo e o verbo da linha. Em Análise de investimentos o botão fica indisponível e diz o motivo."
+              },
+              {
+                "rotulo": "Situação (3 recortes)",
+                "classe": "c",
+                "efeito": "Recorta a lista pela situação."
+              },
+              {
+                "rotulo": "Pesquisar disciplina",
+                "classe": "c",
+                "efeito": "Filtra enquanto se digita; sem resultado, mostra o vazio com Limpar busca."
+              },
+              {
+                "rotulo": "Cabeçalho de coluna (×5)",
+                "classe": "c",
+                "efeito": "Abre o menu da coluna: ordenar, fixar numa ponta, ocultar."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Disciplinas, Tabelas de apoio, Horários, Turmas, Períodos de inscrição)",
+              "extensao/disciplina-form"
+            ]
+          }
+        },
+        {
+          "id": "disciplina-form",
+          "nome": "Nova disciplina",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "formulario-entidade",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /disciplina — painel Novo de sharedservices/tipo-basico-form/tipo-basico-form.component.html e paginas/cadastros-parametros/disciplina/disciplina.component.ts:16-37; D/entities/extensao/Disciplina.java (lido em 15/10/2026)",
+          "descricao": "O formulário de um cadastro de apoio, com a disciplina de exemplo: poucos campos, uma ação de salvar e a volta para a lista com o registro novo. Serve aos dez cadastros básicos e, com campos próprios, a Horários, Turmas e Períodos de inscrição.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-card",
+            "ucam-page-header",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "O formulário é gerado de uma lista de campos com largura em colunas de 12; Sigla, Créditos, Carga horária e Ordem saem com a mesma largura de 3 colunas, e nenhum diz em que unidade se mede.",
+            "Todo campo é obrigatório e nenhum tem asterisco: a pessoa descobre ao salvar, por avisos flutuantes que somem.",
+            "Excluir fica ao lado de Salvar, desabilitado até o registro existir, e age sem confirmação.",
+            "Salvar uma sigla que existiu e foi excluída reativa a disciplina antiga, e a descrição digitada é descartada sem aviso."
+          ],
+          "notas": [
+            "Os campos se agrupam pelo que dizem: identificação (sigla e descrição) e carga (créditos, horas e ordem). Os numéricos têm a largura do dado.",
+            "Todos levam asterisco, porque o front exige todos; o servidor não valida nenhum (a entidade não tem anotação de validação).",
+            "Inativar saiu do formulário e foi para a linha da lista, onde está o registro que se quer tirar.",
+            "Horários (dia da semana e duas horas), Turmas (ano, datas, curso) e Períodos de inscrição (curso, datas, sites, boleto e valor) usam esta forma com os próprios campos. O design system não tem campo de hora: no Horário, a hora fica como texto com máscara até a peça existir.",
+            "No Período de inscrição, ligar \"Possui boleto\" torna valor e descrição do recebimento obrigatórios; desligar limpa e bloqueia os dois."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Nos cadastros básicos todo campo é obrigatório no front; o servidor não tem validação nenhuma na disciplina.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Tamanhos da disciplina no front: sigla até 10, créditos até 2 dígitos, carga horária até 3 dígitos, descrição até 120. O banco não declara tamanho na entidade.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A disciplina nova nasce ativa e pertence à unidade selecionada.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Período de inscrição exige curso, início e fim; com \"Possui boleto\" ligado, valor (até 2 casas) e descrição do recebimento passam a ser obrigatórios. Os sites de exibição são UCAM, Central Pós-graduação, CEPEFER ou todos.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Horário exige dia da semana, hora de início e hora de fim; turma exige ano, início, fim, curso e descrição.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Ao salvar uma sigla que pertence a uma disciplina inativa, a tela avisa que vai reativar a antiga em vez de criar outra, e mostra os dados dela.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o que significa \"ordem\" na disciplina e onde ela é usada; o campo é obrigatório e nenhuma tela do front ordena por ele.",
+              "decide": "Secretaria acadêmica"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/extensao/disciplinas'>Disciplinas</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Nova disciplina</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Nova disciplina</h2><span class='ucam-viewbar__meta'>11 disciplinas na unidade</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><section class='ucam-section ucam-section--lateral'><div><h3 class='ucam-section__title'>Identificação</h3></div><div class='ucam-card'><div class='ucam-form-grid'><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='df-sigla'>Sigla <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='df-sigla' maxlength='10' value='MBA08' aria-required='true' aria-describedby='df-sigla-h'><span class='ucam-field__hint' id='df-sigla-h'>Até 10 caracteres.</span></div><div class='ucam-field'><label class='ucam-field__label' for='df-nome'>Descrição <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='df-nome' maxlength='120' value='Finanças comportamentais' aria-required='true' aria-describedby='df-nome-h'><span class='ucam-field__hint' id='df-nome-h'>Até 120 caracteres. É o nome que aparece na grade do curso e no histórico.</span></div></div></div></section><section class='ucam-section ucam-section--lateral'><div><h3 class='ucam-section__title'>Carga e ordem</h3></div><div class='ucam-card'><div class='ucam-form-grid'><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='df-cred'>Créditos <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='df-cred' inputmode='numeric' maxlength='2' value='2' aria-required='true'></div><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='df-ch'>Carga horária <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='df-ch' inputmode='numeric' maxlength='3' value='30' aria-required='true' aria-describedby='df-ch-h'><span class='ucam-field__hint' id='df-ch-h'>Em horas.</span></div><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='df-ordem'>Ordem <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='df-ordem' inputmode='numeric' value='8' aria-required='true' aria-describedby='df-ordem-h'><span class='ucam-field__hint' id='df-ordem-h'>Posição nas listas de disciplinas da unidade.</span></div></div></div></section><div class='ucam-form-actions ucam-form-actions--sticky'><a class='ucam-btn ucam-btn--ghost' href='#/templates/extensao/disciplinas' data-fluxo='a'>Cancelar</a><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-acao='salvar' data-destino='#/templates/extensao/disciplinas' data-criado-nome='#df-nome' data-criado-situacao='Ativa' data-criado-tom='success' data-criado-msg='Disciplina {nome} cadastrada.'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg> Salvar disciplina</button></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Nova disciplina\" [breadcrumb]=\"trilha\" />\n\n  <form [formGroup]=\"form\" (ngSubmit)=\"salvar()\">\n    <ucam-text-field label=\"Sigla\" formControlName=\"sigla\" required [maxLength]=\"10\" hint=\"Até 10 caracteres.\" />\n    <ucam-text-field label=\"Descrição\" formControlName=\"descricao\" required [maxLength]=\"120\" />\n    <ucam-text-field label=\"Créditos\" type=\"number\" formControlName=\"credito\" required />\n    <ucam-text-field label=\"Carga horária\" type=\"number\" formControlName=\"cargahoraria\" required hint=\"Em horas.\" />\n    <ucam-text-field label=\"Ordem\" type=\"number\" formControlName=\"ordem\" required />\n\n    <ucam-button variant=\"ghost\" type=\"button\" routerLink=\"..\">Cancelar</ucam-button>\n    <ucam-button variant=\"primary\" type=\"submit\" iconStart=\"check\" [loading]=\"salvando()\">Salvar disciplina</ucam-button>\n  </form>\n</ucam-app-shell>",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "disciplinas"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Cancelar",
+                "classe": "a",
+                "destino": "extensao/disciplinas",
+                "efeito": "Volta para a lista sem gravar."
+              },
+              {
+                "rotulo": "Salvar disciplina",
+                "classe": "c",
+                "destino": "extensao/disciplinas",
+                "efeito": "Descrição vazia recebe erro no próprio campo; preenchida, volta para a lista com a disciplina nova na primeira linha e o aviso."
+              }
+            ],
+            "chega_de": [
+              "extensao/disciplinas"
+            ]
+          }
+        },
+        {
+          "id": "calendario-academico",
+          "nome": "Calendário acadêmico",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "formulario-entidade",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /calendario_academico — paginas/calendario-academico/ (regime/, atividade-academica/, feriado/); D/entities/extensao/Calendarioacademico.java e repositórios vazios de calendário, regime, atividade e feriado (lido em 15/10/2026)",
+          "descricao": "Um registro com sublistas: os dados do calendário em cima e, em abas, os regimes, as atividades e os feriados, cada um incluído por diálogo. É a forma de Cursos (reconhecimentos), Tipos de regime, Prédios e salas, Disciplinas do curso e Disciplinas oferecidas (horários).",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-date-field",
+            "ucam-dialog",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-tabs",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "A aba Regimes mostra o regime numa coluna chamada \"Atividade\".",
+            "As sublistas só aceitam inclusão depois de o calendário ser salvo, e nada diz isso: o botão Adicionar fica apagado sem motivo.",
+            "Excluir regime, atividade ou feriado age no ícone da linha, sem confirmação.",
+            "A busca de calendários só filtra pelo ano e só quando o texto é número.",
+            "O diálogo do estágio, em outra tela da mesma forma, se chama \"Feriado\"; o do horário da disciplina oferecida se chama \"Nova disciplina oferecida\": os títulos dos diálogos foram copiados de uma tela para outra."
+          ],
+          "notas": [
+            "O registro e as sublistas ficam numa página só: o período em cima, as três partes em abas e uma ação de salvar no pé, fixa.",
+            "Cada sublista inclui por diálogo curto e mostra a linha nova na hora. Regime repetido é recusado no próprio botão.",
+            "A tela mostra um calendário já salvo. Num calendário novo as abas ficam indisponíveis com o motivo escrito (\"salve o calendário para incluir regimes\"), como o front faz hoje, mas dizendo por quê.",
+            "Tirar uma linha da sublista não está desenhado: o design system não tem a ação de remover linha de sublista com confirmação. É pedido de comportamento.",
+            "Cursos (reconhecimentos), Tipos de regime (regimes), Prédios e salas (salas), Disciplinas do curso (uma aba por módulo) e Disciplinas oferecidas (horários com professor e sala) usam esta forma. Abas geradas pelo dado, uma por módulo, precisam de regra de transbordo quando passarem de cinco."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "O calendário pertence à unidade e exige ano e as duas datas. A trava de início antes do fim existe só no front; o servidor aceita qualquer data.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Regimes, atividades e feriados só entram depois de o calendário estar salvo; o regime exige o tipo de regime, e todos exigem as datas.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O servidor não confere se as datas de regime, atividade e feriado ficam dentro do período do calendário.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "As aulas de uma disciplina oferecida são geradas para todo dia do regime que cai num dia de horário dela; os feriados do calendário não são descontados.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Excluir é inativar, e o servidor recusa (406) quando a função valida_exclusao do banco encontra dependências.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O servidor passa a recusar regime, atividade e feriado fora do período do calendário, e início depois do fim.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o feriado deve tirar a aula do dia ao gerar as aulas da disciplina oferecida? Hoje não tira, e a aula do feriado conta para falta.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: pode haver dois calendários no mesmo ano na mesma unidade? O código não impede; depende da chave de verifica_unique.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Calendário acadêmico 2026</h2><span class='ucam-viewbar__meta'>Campos · 02/02/2026 a 18/12/2026</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><section class='ucam-section ucam-section--lateral'><div><h3 class='ucam-section__title'>Período</h3><p class='ucam-section__hint'>O início não pode passar do fim.</p></div><div class='ucam-card'><div class='ucam-form-grid'><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='ca-ano'>Ano <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='ca-ano' inputmode='numeric' maxlength='4' value='2026' aria-required='true'></div><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='ca-ini'>Início <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='ca-ini' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='02/02/2026' aria-required='true' aria-describedby='ca-ini-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='ca-ini-h'>dd/mm/aaaa</span></div><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='ca-fim'>Fim <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='ca-fim' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='18/12/2026' aria-required='true' aria-describedby='ca-fim-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='ca-fim-h'>dd/mm/aaaa</span></div></div></div></section><div class='ucam-stack'><div class='ucam-tabs' role='tablist' aria-label='Partes do calendário'><button class='ucam-tabs__tab' type='button' role='tab' id='ca-aba-regimes' aria-controls='ca-p-regimes' aria-selected='true' tabindex='0'>Regimes</button><button class='ucam-tabs__tab' type='button' role='tab' id='ca-aba-atividades' aria-controls='ca-p-atividades' aria-selected='false' tabindex='-1'>Atividades</button><button class='ucam-tabs__tab' type='button' role='tab' id='ca-aba-feriados' aria-controls='ca-p-feriados' aria-selected='false' tabindex='-1'>Feriados</button></div><div id='ca-p-regimes' role='tabpanel' aria-labelledby='ca-aba-regimes' class='ucam-stack ucam-stack--sm'><p class='ucam-section__hint'>Os períodos letivos deste calendário. Disciplina oferecida, data de prova e cálculo acadêmico escolhem um deles.</p><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='ca-regimes'><caption class='ucam-sr-only'>Regimes do calendário 2026, com tipo, início e fim.</caption><thead><tr><th scope='col'>Regime</th><th scope='col'>Tipo de regime</th><th scope='col'>Início</th><th scope='col'>Fim</th></tr></thead><tbody><tr><td><span class='ucam-card__titulo' data-c='nome'>2º semestre</span></td><td style='white-space:nowrap' data-c='tipo'>Semestral</td><td style='white-space:nowrap' data-c='inicio'>03/08/2026</td><td style='white-space:nowrap' data-c='fim'>18/12/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>1º semestre</span></td><td style='white-space:nowrap' data-c='tipo'>Semestral</td><td style='white-space:nowrap' data-c='inicio'>02/03/2026</td><td style='white-space:nowrap' data-c='fim'>10/07/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Módulo intensivo de fevereiro</span></td><td style='white-space:nowrap' data-c='tipo'>Modular</td><td style='white-space:nowrap' data-c='inicio'>02/02/2026</td><td style='white-space:nowrap' data-c='fim'>27/02/2026</td></tr></tbody></table></div><div><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='ca-d-reg' data-tabela='#ca-regimes' data-linha-msg='Regime {nome} adicionado ao calendário.' data-linha-unica='Este regime já está no calendário'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar regime</button></div></div><div id='ca-p-atividades' role='tabpanel' aria-labelledby='ca-aba-atividades' hidden class='ucam-stack ucam-stack--sm'><p class='ucam-section__hint'>Os prazos do ano: matrícula, lançamento de notas, rematrícula.</p><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='ca-ativ'><caption class='ucam-sr-only'>Atividades acadêmicas do calendário 2026, com início e fim.</caption><thead><tr><th scope='col'>Atividade</th><th scope='col'>Início</th><th scope='col'>Fim</th></tr></thead><tbody><tr><td><span class='ucam-card__titulo' data-c='nome'>Matrícula</span></td><td style='white-space:nowrap' data-c='inicio'>02/02/2026</td><td style='white-space:nowrap' data-c='fim'>27/02/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Lançamento de notas do 1º semestre</span></td><td style='white-space:nowrap' data-c='inicio'>22/06/2026</td><td style='white-space:nowrap' data-c='fim'>17/07/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Rematrícula</span></td><td style='white-space:nowrap' data-c='inicio'>13/07/2026</td><td style='white-space:nowrap' data-c='fim'>31/07/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Lançamento de notas do 2º semestre</span></td><td style='white-space:nowrap' data-c='inicio'>23/11/2026</td><td style='white-space:nowrap' data-c='fim'>18/12/2026</td></tr></tbody></table></div><div><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='ca-d-atv' data-tabela='#ca-ativ' data-linha-msg='Atividade {nome} adicionada ao calendário.'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar atividade</button></div></div><div id='ca-p-feriados' role='tabpanel' aria-labelledby='ca-aba-feriados' hidden class='ucam-stack ucam-stack--sm'><p class='ucam-section__hint'>Os feriados da unidade no ano.</p><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='ca-fer'><caption class='ucam-sr-only'>Feriados da unidade Campos em 2026.</caption><thead><tr><th scope='col'>Feriado</th><th scope='col'>Data</th></tr></thead><tbody><tr><td><span class='ucam-card__titulo' data-c='nome'>Carnaval</span></td><td style='white-space:nowrap' data-c='data'>17/02/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Paixão de Cristo</span></td><td style='white-space:nowrap' data-c='data'>03/04/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Tiradentes</span></td><td style='white-space:nowrap' data-c='data'>21/04/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Dia do Trabalho</span></td><td style='white-space:nowrap' data-c='data'>01/05/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Corpus Christi</span></td><td style='white-space:nowrap' data-c='data'>04/06/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Santíssimo Salvador</span></td><td style='white-space:nowrap' data-c='data'>06/08/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Independência</span></td><td style='white-space:nowrap' data-c='data'>07/09/2026</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Finados</span></td><td style='white-space:nowrap' data-c='data'>02/11/2026</td></tr></tbody></table></div><div><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='ca-d-fer' data-tabela='#ca-fer' data-linha-msg='Feriado {nome} adicionado ao calendário.'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar feriado</button></div></div></div><div class='ucam-form-actions ucam-form-actions--sticky'><button class='ucam-btn ucam-btn--ghost' type='button' data-fluxo='c' data-acao='descartar-form'>Descartar alterações</button><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-acao='salvar'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg> Salvar calendário</button></div><dialog class='ucam-dialog' id='ca-d-reg'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Adicionar regime</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><div class='ucam-field' data-para='tipo'><label class='ucam-field__label' for='ca-d-reg-t'>Tipo de regime</label><select class='ucam-select' id='ca-d-reg-t'><option selected>Modular</option><option>Semestral</option><option>Anual</option></select></div><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='ca-d-reg-n'>Regime <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='ca-d-reg-n' aria-required='true'><option selected>Módulo intensivo de julho</option><option>Módulo intensivo de janeiro</option></select></div><div class='ucam-field ucam-field--data' data-para='inicio'><label class='ucam-field__label' for='ca-d-reg-i'>Início <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='ca-d-reg-i' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' required aria-required='true' aria-describedby='ca-d-reg-i-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='ca-d-reg-i-h'>dd/mm/aaaa</span></div><div class='ucam-field ucam-field--data' data-para='fim'><label class='ucam-field__label' for='ca-d-reg-f'>Fim <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='ca-d-reg-f' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' required aria-required='true' aria-describedby='ca-d-reg-f-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='ca-d-reg-f-h'>dd/mm/aaaa</span></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Adicionar</button></div></form></dialog><dialog class='ucam-dialog' id='ca-d-atv'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Adicionar atividade</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='ca-d-atv-n'>Atividade acadêmica <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='ca-d-atv-n' aria-required='true'><option selected>Inscrição de interessados</option><option>Trancamento</option><option>Entrega de trabalhos de conclusão</option></select></div><div class='ucam-field ucam-field--data' data-para='inicio'><label class='ucam-field__label' for='ca-d-atv-i'>Início <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='ca-d-atv-i' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' required aria-required='true' aria-describedby='ca-d-atv-i-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='ca-d-atv-i-h'>dd/mm/aaaa</span></div><div class='ucam-field ucam-field--data' data-para='fim'><label class='ucam-field__label' for='ca-d-atv-f'>Fim <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='ca-d-atv-f' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' required aria-required='true' aria-describedby='ca-d-atv-f-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='ca-d-atv-f-h'>dd/mm/aaaa</span></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Adicionar</button></div></form></dialog><dialog class='ucam-dialog' id='ca-d-fer'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Adicionar feriado</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='ca-d-fer-n'>Feriado <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='ca-d-fer-n' maxlength='100' value='' required aria-required='true'></div><div class='ucam-field ucam-field--data' data-para='data'><label class='ucam-field__label' for='ca-d-fer-d'>Data <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='ca-d-fer-d' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' required aria-required='true' aria-describedby='ca-d-fer-d-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='ca-d-fer-d-h'>dd/mm/aaaa</span></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Adicionar</button></div></form></dialog></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" [title]=\"'Calendário acadêmico ' + form.value.ano\" />\n\n  <form [formGroup]=\"form\" (ngSubmit)=\"salvar()\">\n    <ucam-text-field label=\"Ano\" formControlName=\"ano\" required [maxLength]=\"4\" />\n    <ucam-date-field label=\"Início\" formControlName=\"datainicio\" required [max]=\"form.value.datafim\" />\n    <ucam-date-field label=\"Fim\" formControlName=\"datafim\" required [min]=\"form.value.datainicio\" />\n\n    <ucam-tabs ariaLabel=\"Partes do calendário\" [items]=\"abas\" [(value)]=\"aba\" />\n    @switch (aba()) {\n      @case ('regimes') {\n        <ucam-data-table density=\"compact\" caption=\"Regimes do calendário\" [columns]=\"colunasRegime\" [rows]=\"regimes()\" />\n        <ucam-button variant=\"secondary\" iconStart=\"plus\" (click)=\"incluindo.set('regime')\">Adicionar regime</ucam-button>\n      }\n      @case ('atividades') { <ucam-data-table density=\"compact\" caption=\"Atividades\" [columns]=\"colunasAtividade\" [rows]=\"atividades()\" /> }\n      @case ('feriados') { <ucam-data-table density=\"compact\" caption=\"Feriados\" [columns]=\"colunasFeriado\" [rows]=\"feriados()\" /> }\n    }\n\n    <ucam-button variant=\"ghost\" type=\"button\" (click)=\"descartar()\">Descartar alterações</ucam-button>\n    <ucam-button variant=\"primary\" type=\"submit\" iconStart=\"check\">Salvar calendário</ucam-button>\n  </form>\n\n  <ucam-dialog title=\"Adicionar regime\" [(open)]=\"dialogoRegime\">\n    <ucam-select label=\"Tipo de regime\" [options]=\"tiposRegime()\" [(value)]=\"tipoRegime\" />\n    <ucam-select label=\"Regime\" [options]=\"regimesDoTipo()\" required [(value)]=\"regime\" />\n    <ucam-date-field label=\"Início\" required [(value)]=\"inicioRegime\" />\n    <ucam-date-field label=\"Fim\" required [(value)]=\"fimRegime\" />\n  </ucam-dialog>\n</ucam-app-shell>",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "calendario"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Abas Regimes, Atividades, Feriados",
+                "classe": "c",
+                "efeito": "Trocam a sublista à vista."
+              },
+              {
+                "rotulo": "Adicionar regime / atividade / feriado",
+                "classe": "c",
+                "efeito": "Abrem o diálogo; com os obrigatórios vazios o diálogo não fecha; preenchido, a linha entra na sublista e o aviso diz qual. Regime repetido é recusado no botão."
+              },
+              {
+                "rotulo": "Descartar alterações",
+                "classe": "c",
+                "efeito": "Volta os campos ao que está salvo e diz quantos voltaram."
+              },
+              {
+                "rotulo": "Salvar calendário",
+                "classe": "c",
+                "efeito": "Grava e diz \"Salvo\"."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Calendário acadêmico, Cursos, Tipos de regime, Prédios e salas, Disciplinas do curso, Disciplinas oferecidas)"
+            ]
+          }
+        },
+        {
+          "id": "aluno",
+          "nome": "Ficha do aluno",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "formulario-entidade",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /aluno — paginas/aluno/aluno.component.html e .ts, paginas/pessoa/ (endereço, telefone, busca por CPF); D/entities/academico/Pessoa.java, Cpf.java, W/PessoaRest.java, W/AlunoRest.java (lido em 15/10/2026)",
+          "descricao": "A ficha de uma pessoa: cabeçalho com foto, matrícula e curso, e o cadastro em abas (dados pessoais, documentos, contatos, escolaridade, documentos digitalizados). É a forma das fichas de aluno, aluno especial, professor, funcionário e interessado.",
+          "usa": [
+            "ucam-anexo",
+            "ucam-app-shell",
+            "ucam-avatar",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-date-field",
+            "ucam-dialog",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-tabs",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "A busca de aluno é uma grade de cartões em duas colunas com 400px de altura e rolagem própria.",
+            "A aba \"turma\" (em minúscula) repete em três campos desabilitados o que o cabeçalho poderia dizer.",
+            "Os obrigatórios (nome, sexo, naturalidade, nascimento) não têm marca; o erro vem em aviso flutuante.",
+            "Endereço e telefone são excluídos no ícone da linha, sem confirmação, e a exclusão vale para todos os sistemas que usam a pessoa.",
+            "O CPF é digitado sem pontuação e não tem os dígitos verificadores conferidos, nem no front nem no servidor.",
+            "Qualquer erro do servidor ao salvar o aluno chega como \"Telefone não cadastrado.\""
+          ],
+          "notas": [
+            "Matrícula, curso e turma subiram para o cabeçalho, que é onde se confere de quem é a ficha; a aba \"turma\" saiu.",
+            "As abas continuam, porque o cadastro tem cerca de quarenta campos; salvar fica no pé, fixo, e vale para todas.",
+            "A foto 3×4 é tirada pela webcam e recortada na origem. O design system não tem captura de foto: o avatar fica com as iniciais até a peça existir.",
+            "Os documentos digitalizados são a fileira de anexos de leitura; enviar e remover documento ficam para a peça de envio (file-field), que esta tela não desenha.",
+            "Aluno especial (com aba de disciplinas), professor (com aba de docência), funcionário e interessado (com cursos de interesse) usam esta forma. Professor, funcionário e interessado novos começam por um diálogo de CPF: se a pessoa existe, a ficha abre preenchida.",
+            "A busca de pessoa vira a busca da faixa (\"Buscar aluno, disciplina ou curso\"), com resultado em lista; a grade de cartões saiu."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "O servidor exige da pessoa nome, sexo, naturalidade e data de nascimento, e o CPF com exatamente 11 dígitos. Estado civil, nacionalidade e raça deixaram de ser obrigatórios (a anotação está comentada).",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Os dígitos verificadores do CPF não são conferidos em lugar nenhum.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Aluno regular não é criado nem excluído nesta ficha: ele nasce na matrícula do interessado. A busca traz só alunos regulares.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Documento sem número não é gravado, e sem estabelecimento de ensino a escolaridade inteira não é gravada.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Telefone exige DDD de 2 dígitos, número de 8 ou 9 e tipo (residencial ou celular); endereço exige logradouro, número, bairro, cidade, UF, CEP e tipo.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A matrícula do aluno regular tem 9 dígitos: os dois do ano, o código do curso completado com zeros até 8 posições, e a sequência do curso no ano.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A matrícula do aluno especial vem de uma sequência anual única para todas as unidades.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A ficha não apaga endereço nem telefone do cadastro da pessoa, que é de todos os sistemas; só acrescenta e corrige.",
+              "decide": "Encarregado de dados (LGPD)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o CPF é único entre as pessoas? O código não diz; depende da chave da função verifica_unique do banco.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Marina Teixeira Lobo</h2><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span>Ativo</span><span class='ucam-viewbar__meta'>Matrícula 260410007 · MBA em Gestão Financeira · turma 2026/1</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><a class='ucam-btn ucam-btn--secondary' href='#/templates/extensao/aluno-disciplinas' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-bookOpen'/></svg> Disciplinas</a></div></div></div><div class='ucam-corpo'><div class='ucam-card'><div class='ucam-card__cabecalho'><span class='ucam-avatar ucam-avatar--lg' aria-hidden='true'>ML</span><div class='ucam-card__cabecalho-texto'><p class='ucam-card__titulo'>Aluna regular</p><p class='ucam-card__apoio'>Campos · ingresso em 2026</p></div></div><dl class='ucam-descricao ucam-descricao--2'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matrícula</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>260410007</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>CPF</dt><dd class='ucam-descricao__valor'><span class='ucam-codigo'>048.392.117-06</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>MBA em Gestão Financeira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Turma</dt><dd class='ucam-descricao__valor'>2026/1 · Noite</dd></div></dl></div><div class='ucam-stack'><div class='ucam-tabs' role='tablist' aria-label='Cadastro da aluna'><button class='ucam-tabs__tab' type='button' role='tab' id='al-aba-pessoais' aria-controls='al-p-pessoais' aria-selected='true' tabindex='0'>Dados pessoais</button><button class='ucam-tabs__tab' type='button' role='tab' id='al-aba-documentos' aria-controls='al-p-documentos' aria-selected='false' tabindex='-1'>Documentos</button><button class='ucam-tabs__tab' type='button' role='tab' id='al-aba-contatos' aria-controls='al-p-contatos' aria-selected='false' tabindex='-1'>Endereço e telefones</button><button class='ucam-tabs__tab' type='button' role='tab' id='al-aba-escolaridade' aria-controls='al-p-escolaridade' aria-selected='false' tabindex='-1'>Escolaridade</button><button class='ucam-tabs__tab' type='button' role='tab' id='al-aba-digitalizados' aria-controls='al-p-digitalizados' aria-selected='false' tabindex='-1'>Documentos digitalizados</button></div><div id='al-p-pessoais' role='tabpanel' aria-labelledby='al-aba-pessoais' class='ucam-stack ucam-stack--sm'><div class='ucam-card'><div class='ucam-form-grid'><div class='ucam-field'><label class='ucam-field__label' for='al-nome'>Nome <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='al-nome' value='Marina Teixeira Lobo' aria-required='true'></div><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='al-nasc'>Nascimento <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='al-nasc' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='11/05/1993' aria-required='true' aria-describedby='al-nasc-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='al-nasc-h'>dd/mm/aaaa</span></div><div class='ucam-field'><label class='ucam-field__label' for='al-nat'>Naturalidade <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='al-nat' value='Campos dos Goytacazes, RJ' aria-required='true'></div><div class='ucam-field'><label class='ucam-field__label' for='al-sexo'>Sexo <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='al-sexo' aria-required='true'><option selected>Feminino</option><option>Masculino</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='al-nac'>Nacionalidade</label><select class='ucam-select' id='al-nac'><option selected>Brasileira</option><option>Estrangeira</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='al-ec'>Estado civil</label><select class='ucam-select' id='al-ec'><option selected>Casada</option><option>Solteira</option><option>Divorciada</option><option>Viúva</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='al-raca'>Cor ou raça</label><select class='ucam-select' id='al-raca'><option selected>Parda</option><option>Branca</option><option>Preta</option><option>Amarela</option><option>Indígena</option><option>Não declarada</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='al-mae'>Nome da mãe</label><input class='ucam-input' id='al-mae' value='Sônia Teixeira Lobo'></div><div class='ucam-field'><label class='ucam-field__label' for='al-pai'>Nome do pai</label><input class='ucam-input' id='al-pai' value='Ricardo Alves Lobo'></div><div class='ucam-field'><label class='ucam-field__label' for='al-email'>E-mail</label><input class='ucam-input' id='al-email' type='email' value='marina.lobo@exemplo.com.br'></div></div></div></div><div id='al-p-documentos' role='tabpanel' aria-labelledby='al-aba-documentos' hidden class='ucam-stack ucam-stack--sm'><div class='ucam-card'><div class='ucam-form-grid'><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='al-cpf'>CPF</label><input class='ucam-input' id='al-cpf' value='048.392.117-06' readonly aria-describedby='al-cpf-h'><span class='ucam-field__hint' id='al-cpf-h'>Não muda depois do cadastro.</span></div><div class='ucam-field'><label class='ucam-field__label' for='al-rg'>Identidade <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='al-rg' maxlength='20' value='21.448.906-3' aria-required='true'></div><div class='ucam-field'><label class='ucam-field__label' for='al-rg-o'>Órgão emissor</label><input class='ucam-input' id='al-rg-o' value='DETRAN RJ'></div><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='al-rg-d'>Emissão da identidade</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='al-rg-d' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='14/02/2011' aria-describedby='al-rg-d-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='al-rg-d-h'>dd/mm/aaaa</span></div><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='al-tit'>Título de eleitor</label><input class='ucam-input' id='al-tit' value='1834 5521 0302'></div><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='al-tit-z'>Zona</label><input class='ucam-input' id='al-tit-z' inputmode='numeric' maxlength='10' value='76'></div><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='al-tit-s'>Seção</label><input class='ucam-input' id='al-tit-s' inputmode='numeric' maxlength='10' value='214'></div><div class='ucam-field'><label class='ucam-field__label' for='al-tit-uf'>UF do título</label><select class='ucam-select' id='al-tit-uf'><option selected>RJ</option><option>ES</option><option>MG</option><option>SP</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='al-tit-m'>Município do título</label><select class='ucam-select' id='al-tit-m' aria-describedby='al-tit-m-h'><option selected>Campos dos Goytacazes</option><option>São João da Barra</option><option>Macaé</option></select><span class='ucam-field__hint' id='al-tit-m-h'>A lista muda com a UF.</span></div></div></div><p class='ucam-section__hint'>Documento sem número não é gravado. O certificado de reservista entra nesta aba para quem tem.</p></div><div id='al-p-contatos' role='tabpanel' aria-labelledby='al-aba-contatos' hidden class='ucam-stack ucam-stack--sm'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='al-contatos'><caption class='ucam-sr-only'>Endereços e telefones de Marina Teixeira Lobo</caption><thead><tr><th scope='col'>Contato</th><th scope='col'>Tipo</th></tr></thead><tbody><tr><td><span class='ucam-card__titulo' data-c='nome'>Rua Conselheiro Otaviano, 177, ap. 204 · Centro · 28010-140</span></td><td style='white-space:nowrap' data-c='tipo'>Residencial, correspondência</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>(22) 99734-5108</span></td><td style='white-space:nowrap' data-c='tipo'>Celular</td></tr></tbody></table></div><div><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='al-d-tel' data-tabela='#al-contatos' data-linha-msg='Telefone {nome} adicionado ao cadastro.'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar telefone</button></div></div><div id='al-p-escolaridade' role='tabpanel' aria-labelledby='al-aba-escolaridade' hidden class='ucam-stack ucam-stack--sm'><div class='ucam-card'><div class='ucam-form-grid'><div class='ucam-field'><label class='ucam-field__label' for='al-niv'>Nível concluído</label><select class='ucam-select' id='al-niv'><option selected>Ensino superior</option><option>Ensino médio</option><option>Ensino fundamental</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='al-est'>Estabelecimento de ensino</label><input class='ucam-input' id='al-est' value='Universidade Estadual do Norte Fluminense' aria-describedby='al-est-h'><span class='ucam-field__hint' id='al-est-h'>Digite ao menos 3 letras para buscar. Sem ele, a escolaridade não é gravada.</span></div><div class='ucam-field ucam-field--codigo'><label class='ucam-field__label' for='al-ano'>Ano de conclusão</label><input class='ucam-input' id='al-ano' inputmode='numeric' maxlength='4' value='2016'></div><div class='ucam-field'><label class='ucam-field__label' for='al-cid'>Cidade</label><input class='ucam-input' id='al-cid' maxlength='50' value='Campos dos Goytacazes'></div><div class='ucam-field'><label class='ucam-field__label' for='al-grau'>Grau obtido em outra instituição</label><input class='ucam-input' id='al-grau' maxlength='300' value='Bacharel em Administração'></div></div></div></div><div id='al-p-digitalizados' role='tabpanel' aria-labelledby='al-aba-digitalizados' hidden class='ucam-stack ucam-stack--sm'><ul class='ucam-anexos'><li class='ucam-anexo' data-estado='enviado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='Identidade' data-fluxo='c' data-acao='baixar-anexo'>Identidade</button><span class='ucam-anexo__apoio'>PDF · 386 KB · enviado em 26/01/2026</span></span></li><li class='ucam-anexo' data-estado='enviado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='CPF' data-fluxo='c' data-acao='baixar-anexo'>CPF</button><span class='ucam-anexo__apoio'>PDF · 142 KB · enviado em 26/01/2026</span></span></li><li class='ucam-anexo' data-estado='enviado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='Diploma de graduação' data-fluxo='c' data-acao='baixar-anexo'>Diploma de graduação</button><span class='ucam-anexo__apoio'>PDF · 1,2 MB · enviado em 26/01/2026</span></span></li><li class='ucam-anexo' data-estado='enviado'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='Comprovante de residência' data-fluxo='c' data-acao='baixar-anexo'>Comprovante de residência</button><span class='ucam-anexo__apoio'>JPG · 640 KB · enviado em 27/01/2026</span></span></li></ul></div></div><div class='ucam-form-actions ucam-form-actions--sticky'><button class='ucam-btn ucam-btn--ghost' type='button' data-fluxo='c' data-acao='descartar-form'>Descartar alterações</button><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-acao='salvar'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg> Salvar alterações</button></div><dialog class='ucam-dialog' id='al-d-tel'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Adicionar telefone</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><div class='ucam-field' data-para='tipo'><label class='ucam-field__label' for='al-d-tel-t'>Tipo</label><select class='ucam-select' id='al-d-tel-t'><option selected>Celular</option><option>Residencial</option></select></div><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='al-d-tel-n'>Número com DDD <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='al-d-tel-n' value='' placeholder='(22) 90000-0000' required aria-required='true'></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Adicionar</button></div></form></dialog></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" [title]=\"aluno().pessoa.nome\">\n    <ucam-button variant=\"secondary\" iconStart=\"bookOpen\" routerLink=\"disciplinas\">Disciplinas</ucam-button>\n  </ucam-page-header>\n  <ucam-avatar [name]=\"aluno().pessoa.nome\" size=\"lg\" />\n\n  <form [formGroup]=\"form\" (ngSubmit)=\"salvar()\">\n    <ucam-tabs ariaLabel=\"Cadastro do aluno\" [items]=\"abas\" [(value)]=\"aba\" />\n    @switch (aba()) {\n      @case ('pessoais') {\n        <ucam-text-field label=\"Nome\" formControlName=\"nome\" required />\n        <ucam-date-field label=\"Nascimento\" formControlName=\"datanascimento\" required />\n        <ucam-text-field label=\"Naturalidade\" formControlName=\"naturalidade\" required />\n        <ucam-select label=\"Sexo\" [options]=\"sexos\" formControlName=\"sexo\" required />\n      }\n      @case ('documentos') {\n        <ucam-text-field label=\"CPF\" formControlName=\"cpf\" [readonly]=\"true\" />\n        <ucam-text-field label=\"Identidade\" formControlName=\"identidade\" required [maxLength]=\"20\" />\n      }\n      @case ('contatos') {\n        <ucam-data-table density=\"compact\" caption=\"Endereços e telefones\" [columns]=\"colunasContato\" [rows]=\"contatos()\" />\n      }\n      @case ('digitalizados') {\n        @for (d of documentos(); track d.oid) { <ucam-anexo [file]=\"d.arquivo\" /> }\n      }\n    }\n    <ucam-button variant=\"primary\" type=\"submit\" iconStart=\"check\">Salvar alterações</ucam-button>\n  </form>\n\n  <ucam-dialog title=\"Adicionar telefone\" [(open)]=\"incluindoTelefone\">\n    <ucam-select label=\"Tipo\" [options]=\"tiposTelefone\" [(value)]=\"tipoTelefone\" />\n    <ucam-text-field label=\"Número com DDD\" type=\"tel\" required [(value)]=\"numero\" />\n  </ucam-dialog>\n</ucam-app-shell>",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "alunos"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Disciplinas",
+                "classe": "a",
+                "destino": "extensao/aluno-disciplinas",
+                "efeito": "Abre as inscrições da aluna em disciplinas."
+              },
+              {
+                "rotulo": "Abas (×5)",
+                "classe": "c",
+                "efeito": "Trocam a parte do cadastro à vista."
+              },
+              {
+                "rotulo": "Adicionar telefone",
+                "classe": "c",
+                "efeito": "Abre o diálogo; sem número o diálogo não fecha; com número, o telefone entra na tabela de contatos."
+              },
+              {
+                "rotulo": "Nome do documento (×4)",
+                "classe": "c",
+                "efeito": "No app, abre o documento digitalizado."
+              },
+              {
+                "rotulo": "Descartar alterações",
+                "classe": "c",
+                "efeito": "Volta os campos ao que está salvo."
+              },
+              {
+                "rotulo": "Salvar alterações",
+                "classe": "c",
+                "efeito": "Grava e diz \"Salvo\"."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Alunos, Alunos especiais, Professores, Funcionários, Interessados)",
+              "busca da faixa",
+              "extensao/aluno-disciplinas"
+            ]
+          }
+        },
+        {
+          "id": "aluno-disciplinas",
+          "nome": "Disciplinas do aluno",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "listagem-crud",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /alunodisciplinaoferecida — paginas/alunodisciplinaoferecida/alunodisciplinaoferecida.component.html e .ts; W/AlunoRest.java:517-597, D/services/AlunoService.java:91-133 (lido em 15/10/2026)",
+          "descricao": "Uma lista que pertence a um aluno: as disciplinas em que ele está inscrito, por regime, com a situação de cada uma e a inclusão por diálogo. É a forma de Histórico de situação, Estágio supervisionado, Isenções e Troca de turma.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-dialog",
+            "ucam-page-header",
+            "ucam-segmented",
+            "ucam-select"
+          ],
+          "problemas": [
+            "Antes de qualquer coisa a pessoa escolhe o aluno numa grade de cartões; depois, cada ano do calendário é uma aba, e cada inscrição é um cartão com regime, módulo e situação empilhados.",
+            "O diálogo de inclusão tem duas abas internas (por disciplina e por módulo), cada uma com o próprio Cancelar e Salvar.",
+            "Inscrever o aluno numa disciplina em que ele já está devolve erro 500 sem mensagem; na inclusão por módulo a repetida é pulada em silêncio.",
+            "Editar a situação grava uma linha no histórico da disciplina a cada salvar, mesmo sem mudança."
+          ],
+          "notas": [
+            "O aluno vem da ficha (trilha) e as inscrições viram uma tabela só, com o regime numa coluna e o recorte por regime no cabeçalho. As abas por ano saíram.",
+            "O selo diz a situação; cursando é neutro e a cor fica para aprovada e reprovada.",
+            "Inscrever pede regime, disciplina oferecida e situação. A inclusão \"por módulo\" (todas as disciplinas de um módulo de uma vez) é uma segunda opção do mesmo diálogo, que esta tela não desenha.",
+            "Alterar a situação de uma inscrição e tirar uma inscrição não estão desenhados: o design system não tem edição de linha nem remoção com confirmação em sublista.",
+            "Histórico de situação (uma linha do tempo, peça timeline), Estágio supervisionado, Isenções e Troca de turma usam esta forma: o aluno no cabeçalho e a lista dele embaixo.",
+            "\"Alunos da turma × disciplinas\", a inscrição em lote, leva à Alocação de alunos da Secretaria virtual (secretaria/alocacao-alunos), que desenha a mesma função."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "A inscrição sem situação nasce Cursando; a data é a do dia, e cada gravação acrescenta uma linha ao histórico da situação da disciplina.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A inscrição por módulo grava, uma a uma, as disciplinas oferecidas que o front escolheu; as repetidas são puladas sem aviso.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Tirar uma inscrição é inativá-la; o servidor recusa (406) quando a função valida_exclusao do banco encontra dependências.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A disciplina oferecida é procurada só entre as do curso do aluno, no regime escolhido.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Trocar de turma muda só a turma do aluno e grava duas linhas no histórico. Na troca dentro do mesmo curso, as disciplinas em curso passam a \"cancelamento por troca de curso\"; entre cursos diferentes, não mudam. A escolha parece invertida no código.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Registrar trancamento ou cancelamento no histórico passa as disciplinas em curso a \"trancamento/cancelamento\"; a situação de matrícula do aluno não é atualizada pelo código.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Inscrever o aluno numa disciplina em que ele já está é recusado com a frase \"A aluna já está nesta disciplina\", antes de ir ao servidor.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: qual a diferença de uso entre esta tela, \"Disciplina oferecida × alunos\" e \"Alunos da turma × disciplinas\", três caminhos para a mesma inscrição.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: troca de turma dentro do mesmo curso deve cancelar as disciplinas em curso? Hoje cancela, e a troca entre cursos não cancela.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/extensao/aluno'>Marina Teixeira Lobo</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Disciplinas</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Disciplinas</h2><span class='ucam-viewbar__meta'>Marina Teixeira Lobo · matrícula 260410007 · 7 inscrições, 3 em curso</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='ad-d' data-tabela='#ad-tab' data-linha-msg='Marina inscrita em {nome}.' data-linha-unica='A aluna já está nesta disciplina'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar disciplina</button></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:regime' role='group' aria-label='Regime'><button type='button' aria-pressed='true' data-valor=''>Todos</button><button type='button' aria-pressed='false' data-valor='2'>2026 · 2º semestre</button><button type='button' aria-pressed='false' data-valor='1'>2026 · 1º semestre</button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='ad-tab'><caption class='ucam-sr-only'>Disciplinas em que Marina Teixeira Lobo está inscrita, com regime, módulo e situação.</caption><thead><tr><th scope='col' aria-sort='none'><button type='button' class='ucam-table__coluna' id='ad-col-1-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='ad-col-1-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-bookOpen'/></svg>Disciplina <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='ad-col-1-menu' role='menu' aria-labelledby='ad-col-1-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar' aria-disabled='true'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='ad-col-2-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='ad-col-2-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-calendar'/></svg>Regime <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='ad-col-2-menu' role='menu' aria-labelledby='ad-col-2-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='ad-col-3-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='ad-col-3-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-layoutGrid'/></svg>Módulo <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='ad-col-3-menu' role='menu' aria-labelledby='ad-col-3-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th><th scope='col' class='th--min' aria-sort='none'><button type='button' class='ucam-table__coluna' id='ad-col-4-gatilho' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='ad-col-4-menu'><svg class='ic ucam-table__icone' aria-hidden='true'><use href='#i-circleDot'/></svg>Situação <svg class='ic' aria-hidden='true'><use href='#i-chevronsUpDown'/></svg></button><div class='ucam-menu ucam-menu--coluna' id='ad-col-4-menu' role='menu' aria-labelledby='ad-col-4-gatilho' hidden><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='asc'><svg class='ic' aria-hidden='true'><use href='#i-arrowUpNarrowWide'/></svg>Crescente</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='desc'><svg class='ic' aria-hidden='true'><use href='#i-arrowDownWideNarrow'/></svg>Decrescente</button><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='limpar'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg>Remover ordenação</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-inicio'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à esquerda</button><button type='button' class='ucam-menu__item' role='menuitemradio' aria-checked='false' tabindex='-1' data-coluna='fixar-fim'><svg class='ic' aria-hidden='true'><use href='#i-pin'/></svg>Fixar à direita</button><div class='ucam-menu__sep' role='separator'></div><button type='button' class='ucam-menu__item' role='menuitem' tabindex='-1' data-coluna='ocultar'><svg class='ic' aria-hidden='true'><use href='#i-eyeOff'/></svg>Ocultar coluna</button></div></th></tr></thead><tbody><tr data-regime='2'><td><span class='ucam-card__titulo' data-c='nome'>MBA05 · Análise de investimentos</span></td><td style='white-space:nowrap' data-c='regime'>2026 · 2º semestre</td><td style='white-space:nowrap'>Módulo II</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span><span data-c='situacao'>Cursando</span></span></td></tr><tr data-regime='2'><td><span class='ucam-card__titulo' data-c='nome'>MBA06 · Gestão de riscos</span></td><td style='white-space:nowrap' data-c='regime'>2026 · 2º semestre</td><td style='white-space:nowrap'>Módulo II</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span><span data-c='situacao'>Cursando</span></span></td></tr><tr data-regime='2'><td><span class='ucam-card__titulo' data-c='nome'>MBA07 · Mercado de capitais</span></td><td style='white-space:nowrap' data-c='regime'>2026 · 2º semestre</td><td style='white-space:nowrap'>Módulo II</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span><span data-c='situacao'>Cursando</span></span></td></tr><tr data-regime='1'><td><span class='ucam-card__titulo' data-c='nome'>MBA01 · Fundamentos de finanças corporativas</span></td><td style='white-space:nowrap' data-c='regime'>2026 · 1º semestre</td><td style='white-space:nowrap'>Módulo I</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span><span data-c='situacao'>Aprovada</span></span></td></tr><tr data-regime='1'><td><span class='ucam-card__titulo' data-c='nome'>MBA02 · Contabilidade gerencial</span></td><td style='white-space:nowrap' data-c='regime'>2026 · 1º semestre</td><td style='white-space:nowrap'>Módulo I</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span><span data-c='situacao'>Aprovada</span></span></td></tr><tr data-regime='1'><td><span class='ucam-card__titulo' data-c='nome'>MBA03 · Matemática financeira</span></td><td style='white-space:nowrap' data-c='regime'>2026 · 1º semestre</td><td style='white-space:nowrap'>Módulo I</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success'><span class='ucam-badge__ponto' aria-hidden='true'></span><span data-c='situacao'>Aprovada</span></span></td></tr><tr data-regime='1'><td><span class='ucam-card__titulo' data-c='nome'>MBA04 · Estatística aplicada a negócios</span></td><td style='white-space:nowrap' data-c='regime'>2026 · 1º semestre</td><td style='white-space:nowrap'>Módulo I</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--danger'><span class='ucam-badge__ponto' aria-hidden='true'></span><span data-c='situacao'>Reprovada</span></span></td></tr></tbody></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>7 inscrições: 3 aprovadas, 1 reprovada, 3 em curso</p></div><dialog class='ucam-dialog' id='ad-d'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Adicionar disciplina</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><div class='ucam-field' data-para='regime'><label class='ucam-field__label' for='ad-d-r'>Regime</label><select class='ucam-select' id='ad-d-r'><option selected>2026 · 2º semestre</option></select></div><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='ad-d-n'>Disciplina oferecida <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='ad-d-n' aria-required='true' aria-describedby='ad-d-n-h'><option selected>MBA08 · Finanças comportamentais</option><option>MBA09 · Valuation de empresas</option></select><span class='ucam-field__hint' id='ad-d-n-h'>Só as oferecidas para o curso da aluna no regime escolhido.</span></div><div class='ucam-field' data-para='situacao'><label class='ucam-field__label' for='ad-d-s'>Situação <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='ad-d-s' aria-required='true'><option selected>Cursando</option><option>Dispensada</option></select></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Inscrever</button></div></form></dialog></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Disciplinas\" [breadcrumb]=\"trilha\">\n    <ucam-button variant=\"primary\" iconStart=\"plus\" (click)=\"incluindo.set(true)\">Adicionar disciplina</ucam-button>\n  </ucam-page-header>\n  <ucam-segmented ariaLabel=\"Regime\" [items]=\"regimes()\" [(value)]=\"regime\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Disciplinas do aluno\" [columns]=\"colunas\" [rows]=\"inscricoes()\" />\n\n  <ucam-dialog title=\"Adicionar disciplina\" [(open)]=\"incluindo\">\n    <ucam-select label=\"Regime\" [options]=\"regimes()\" [(value)]=\"regime\" />\n    <ucam-select label=\"Disciplina oferecida\" [options]=\"oferecidas()\" required [(value)]=\"oferecida\" />\n    <ucam-select label=\"Situação\" [options]=\"situacoes()\" required [(value)]=\"situacao\" />\n  </ucam-dialog>\n</ucam-app-shell>\n\n// colunas: Disciplina (sigla · nome), Regime, Módulo, Situação",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "aluno-disciplinas"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Adicionar disciplina",
+                "classe": "c",
+                "efeito": "Abre o diálogo; a inscrição entra no topo da tabela e o aviso diz qual. Disciplina repetida é recusada no botão."
+              },
+              {
+                "rotulo": "Regime (3 recortes)",
+                "classe": "c",
+                "efeito": "Recorta a tabela pelo regime."
+              },
+              {
+                "rotulo": "Cabeçalho de coluna (×4)",
+                "classe": "c",
+                "efeito": "Abre o menu da coluna."
+              },
+              {
+                "rotulo": "Trilha: Marina Teixeira Lobo",
+                "classe": "a",
+                "destino": "extensao/aluno",
+                "efeito": "Volta à ficha."
+              }
+            ],
+            "chega_de": [
+              "extensao/aluno",
+              "menu do sistema (Disciplinas do aluno, Histórico de situação, Estágio supervisionado, Isenções, Troca de turma)"
+            ]
+          }
+        },
+        {
+          "id": "lancamento-notas",
+          "nome": "Lançamento de notas",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "formulario-entidade",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /nota — paginas/nota/nota.component.html e .ts:40-150, sharedservices/filters/disciplinaoferecidaturma/; W/AlunoRest.java:640-671, D/services/AlunoService.java:249-269, D/services/formula/ (lido em 15/10/2026)",
+          "descricao": "Uma grade de lançamento: os alunos de uma turma nas linhas, as provas da fórmula nas colunas, e a coluna da prova escolhida editável, com salvar em lote. É a forma do lançamento de faltas, em que as colunas são os horários de aula do dia.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-avatar",
+            "ucam-button",
+            "ucam-data-table",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "Nota zero não é gravada: o front trata o valor 0 como campo apagado e marca a nota como excluída.",
+            "A grade pagina de 10 em 10 alunos; numa turma de 12, os dois últimos ficam na página 2 e o Salvar só grava o que foi mexido.",
+            "A nota acima da máxima vira nota apagada, com um aviso flutuante de 7 segundos, e o servidor não confere o limite.",
+            "O filtro desce em cinco escolhas em cascata, e a grade só aparece depois da quinta; o tipo de prova é uma sexta escolha separada.",
+            "O campo de nota tem 1 caractere de largura.",
+            "A coluna Média mostra a média do último cálculo, que fica velha assim que uma nota muda, sem dizer de quando é."
+          ],
+          "notas": [
+            "A tabela rola quando não cabe, com o aluno fixo à esquerda; aluno é a primeira coluna e a matrícula a segunda.",
+            "O campo de nota tem a largura do dado (4 caracteres, alinhado à direita) e só existe na coluna da prova em lançamento; as outras provas são texto.",
+            "A contagem \"10 de 12 lançadas\" fica no título da seção, para quem lança saber quanto falta sem rolar.",
+            "Nota vazia é nota não lançada e mostra o travessão; zero é nota.",
+            "O design system não tem célula editável na tabela: o campo é o ucam-input dentro da célula, e a tabela não tem navegação por setas entre células. É pedido de contrato (data-table editável).",
+            "Lançamento de faltas usa esta forma: o filtro ganha a data da aula (só dias com conteúdo de aula), as colunas são os horários do dia com caixa de marcar, e a última coluna é o total de faltas com o percentual. Lá cada marcação grava na hora, sem botão de salvar."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "As colunas de nota e a nota máxima de cada prova vêm da fórmula de avaliação: a da disciplina oferecida, ou, sem ela, a do curso na unidade, vigente na data de fim do calendário.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O front descarta a nota acima da máxima com o aviso \"A nota deve ser menor que {máxima}\" e aceita a nota igual à máxima; o servidor não confere limite nenhum.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Gravar uma nota recalcula a média do aluno na disciplina pela expressão da fórmula; a situação (aprovado, reprovado) só muda no cálculo acadêmico.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Nota zero ou apagada é gravada como excluída (situação D).",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Vírgula vira ponto ao digitar; a nota não tem casas decimais definidas.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Falta é marcada por horário de aula; o percentual é o número de faltas sobre a carga horária da disciplina, cada falta contando uma hora.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Zero é nota e é gravado; campo vazio é nota não lançada.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A grade mostra todos os alunos da turma, sem paginar.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem lança nota e falta, a secretaria ou o professor? O front não distingue perfil.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: nota com quantas casas decimais, e se o servidor passa a recusar nota acima da máxima.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Lançamento de notas</h2><span class='ucam-viewbar__meta'>MBA05 · Análise de investimentos · turma 2026/1 · 12 alunos</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field'><label class='ucam-field__label' for='ln-cal'>Calendário</label><select class='ucam-select' id='ln-cal'><option selected>2026</option><option>2025</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='ln-reg'>Regime</label><select class='ucam-select' id='ln-reg'><option selected>2º semestre</option><option>1º semestre</option><option>Módulo intensivo de fevereiro</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='ln-cur'>Curso</label><select class='ucam-select' id='ln-cur'><option selected>MBA em Gestão Financeira</option><option>MBA em Direito Empresarial</option><option>Especialização em Psicopedagogia</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='ln-dis'>Disciplina oferecida</label><select class='ucam-select' id='ln-dis'><option selected>MBA05 · Análise de investimentos · Noite</option><option>MBA06 · Gestão de riscos · Noite</option><option>MBA07 · Mercado de capitais · Noite</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='ln-tur'>Turma</label><select class='ucam-select' id='ln-tur'><option selected>2026/1</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='ln-tp'>Prova em lançamento</label><select class='ucam-select' id='ln-tp'><option selected>Trabalho</option><option>P1</option><option>P2</option><option>Prova final</option></select></div></div><section class='ucam-section' aria-labelledby='ln-t'><div class='ucam-section__cabeca'><h3 class='ucam-section__title' id='ln-t'>Trabalho <span class='ucam-section__contagem'>10 de 12 lançadas</span></h3><p class='ucam-section__hint'>Nota máxima 10,0 em cada prova, pela fórmula da disciplina. Só a coluna da prova em lançamento é editável; a média aparece depois do cálculo acadêmico.</p></div><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='ln-tab'><caption class='ucam-sr-only'>Notas de cada aluno de Análise de investimentos, turma 2026/1, por prova da fórmula, com a média</caption><thead><tr><th scope='col'>Aluno</th><th scope='col' class='th--min'>Matrícula</th><th scope='col' class='th--num'>P1</th><th scope='col' class='th--num'>Trabalho</th><th scope='col' class='th--num'>P2</th><th scope='col' class='th--num'>Prova final</th><th scope='col' class='th--num'>Média</th></tr></thead><tbody><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>AP</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Ana Clara Moura Pinto</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410001</span></td><td class='td--num'>8,0</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Ana Clara Moura Pinto' value='9,0' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>BC</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Bruno Leal Cavalcanti</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410002</span></td><td class='td--num'>6,5</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Bruno Leal Cavalcanti' value='7,5' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>CR</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Carolina Duarte Reis</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410003</span></td><td class='td--num'>9,5</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Carolina Duarte Reis' value='10,0' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>DT</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Diego Sampaio Torres</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410004</span></td><td class='td--num'>5,0</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Diego Sampaio Torres' value='' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>EF</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Eduarda Lins Fontes</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410005</span></td><td class='td--num'>7,0</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Eduarda Lins Fontes' value='8,0' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>FR</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Felipe Andrade Rocha</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410006</span></td><td class='td--num'>4,5</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Felipe Andrade Rocha' value='6,0' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>ML</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Marina Teixeira Lobo</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410007</span></td><td class='td--num'>8,5</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Marina Teixeira Lobo' value='9,0' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>GM</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Gustavo Pires Meirelles</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410008</span></td><td class='td--num'>6,0</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Gustavo Pires Meirelles' value='' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>HP</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Helena Vasconcelos Prado</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410009</span></td><td class='td--num'>9,0</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Helena Vasconcelos Prado' value='8,5' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>IB</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Igor Nogueira Bastos</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410010</span></td><td class='td--num'>7,5</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Igor Nogueira Bastos' value='7,0' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>JB</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Juliana Coelho Barreto</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410011</span></td><td class='td--num'>0,0</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Juliana Coelho Barreto' value='5,0' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr><tr><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>LA</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Lucas Fernandes Aguiar</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410012</span></td><td class='td--num'>8,0</td><td class='td--num'><input class='ucam-input' style='inline-size:4.5rem;text-align:end' inputmode='decimal' maxlength='4' aria-label='Trabalho de Lucas Fernandes Aguiar' value='9,5' placeholder='—'></td><td class='td--num'>—</td><td class='td--num'>—</td><td class='td--num'>—</td></tr></tbody></table></div></section><div class='ucam-form-actions ucam-form-actions--sticky'><button class='ucam-btn ucam-btn--ghost' type='button' data-fluxo='c' data-acao='descartar-form'>Descartar alterações</button><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-acao='salvar'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg> Salvar notas</button></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Lançamento de notas\" />\n\n  <ucam-select label=\"Calendário\" [options]=\"calendarios()\" [(value)]=\"calendario\" />\n  <ucam-select label=\"Regime\" [options]=\"regimes()\" [(value)]=\"regime\" dependsOn=\"o calendário\" [dependencyFilled]=\"!!calendario()\" />\n  <ucam-select label=\"Curso\" [options]=\"cursos()\" [(value)]=\"curso\" />\n  <ucam-select label=\"Disciplina oferecida\" [options]=\"oferecidas()\" [(value)]=\"oferecida\" />\n  <ucam-select label=\"Turma\" [options]=\"turmas()\" [(value)]=\"turma\" />\n  <ucam-select label=\"Prova em lançamento\" [options]=\"provasDaFormula()\" [(value)]=\"prova\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Notas da turma\" [columns]=\"colunasDaFormula()\" [rows]=\"alunos()\" />\n  <!-- célula editável: <ucam-text-field label=\"Trabalho de {aluno}\" labelHidden [(value)]=\"nota\" /> só na coluna da prova escolhida -->\n\n  <ucam-button variant=\"primary\" iconStart=\"check\" (click)=\"salvarNotas()\">Salvar notas</ucam-button>\n</ucam-app-shell>",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "notas"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Filtros (×6)",
+                "classe": "c",
+                "efeito": "Escolhem a turma e a prova em lançamento."
+              },
+              {
+                "rotulo": "Nota do Trabalho (×12)",
+                "classe": "c",
+                "efeito": "Campo editável da linha."
+              },
+              {
+                "rotulo": "Descartar alterações",
+                "classe": "c",
+                "efeito": "Volta as notas ao que está gravado e diz quantas voltaram."
+              },
+              {
+                "rotulo": "Salvar notas",
+                "classe": "c",
+                "efeito": "Grava as notas mexidas e diz \"Salvo\"."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Lançamento de notas, Lançamento de faltas)"
+            ]
+          }
+        },
+        {
+          "id": "calculo-academico",
+          "nome": "Cálculo acadêmico",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "listagem-crud",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /calculoacademico — paginas/calculo-academico/ (calculo-curso/, disciplina, turma, aluno); D/services/calculoacademico/CalculosAcademicosBuilder.java, D/services/AlunoService.java:249-411, W/CalculoAcademicoRest.java (lido em 15/10/2026)",
+          "descricao": "Escolher em massa e disparar um processamento no servidor: as opções do cálculo, o recorte (curso, disciplina oferecida, turma ou aluno) e a seleção em lote. O andamento chega pelas notificações.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-avatar",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-checkbox",
+            "ucam-data-table",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-switch",
+            "ucam-tabs"
+          ],
+          "problemas": [
+            "Cada recorte é uma grade de cartões de 48 a 60px com um interruptor, numa área de 300px com rolagem própria; \"Marcar/Desmarcar todos\" é um botão que não diz em que estado está.",
+            "Depois de enviar, a tela só diz \"Calculo enviado para o servidor\"; o andamento aparece num painel lateral aberto por um ícone de envelope, e o erro chega cortado em 20 caracteres.",
+            "A frequência mínima (75%) está fixa no código e não aparece em lugar nenhum da tela.",
+            "Uma divisão sem fim exato (1 falta em 3 horas, por exemplo) faz o cálculo de frequência falhar em silêncio, e o aluno não é reprovado.",
+            "O CR é gravado numa coluna chamada \"ca\" e a taxa de aprovação usa divisão inteira, saindo quase sempre zero."
+          ],
+          "notas": [
+            "As quatro opções viram interruptores com frase inteira, na ordem em que o servidor roda, e a frequência mínima está escrita na opção.",
+            "Cada recorte é uma aba com uma tabela de seleção e a barra de lote; o botão Calcular pede confirmação e diz que o andamento vai para as notificações.",
+            "Depois do pedido a linha passa a \"Na fila\". O selo final (calculado ou com erro) depende do aviso do servidor, que hoje só existe no WebSocket de notificações.",
+            "A tela de inscrição em lote (\"Alunos da turma × disciplinas\", também seleção em massa e processamento) tem a mesma função da Alocação de alunos da Secretaria virtual e leva a ela."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "O cálculo roda no servidor sem prender a tela (até 120 minutos) e informa o andamento pelo canal de notificações do usuário: aguardando, processando, terminado com sucesso ou com erro, com percentual.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O servidor roda nesta ordem: média, CR, situação pela nota e situação pela frequência. O CR usa a situação de antes do cálculo.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A média é a expressão da fórmula de avaliação, com cada prova como variável; a aprovação compara a média com o valor de aprovação da fórmula (aprovado 001, reprovado 002).",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Faltas acima de 25% da carga horária reprovam por falta (003); a frequência nunca aprova.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O CR soma, nas disciplinas com situação final, a nota ajustada (média abaixo de 6 vale 0, abaixo de 7,5 vale 1, abaixo de 9 vale 2, a partir de 9 vale 3) vezes o crédito (carga horária dividida por 15), sobre a soma dos créditos.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "As quatro opções nascem ligadas, e o cálculo pode ser pedido por curso, disciplina oferecida, turma ou aluno, dentro de um calendário e regime.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: os 25% de faltas e a escala do CR são regra do regimento da pós ou herança do código? Hoje estão fixos no servidor.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem é avisado quando o cálculo termina com erro, e como se refaz só o que falhou.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Cálculo acadêmico</h2><span class='ucam-viewbar__meta'>2026 · 2º semestre · 80 alunos em 5 turmas</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field'><label class='ucam-field__label' for='cc-cal'>Calendário</label><select class='ucam-select' id='cc-cal'><option selected>2026</option><option>2025</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='cc-reg'>Regime</label><select class='ucam-select' id='cc-reg'><option selected>2º semestre</option><option>1º semestre</option><option>Módulo intensivo de fevereiro</option></select></div></div><section class='ucam-section ucam-section--lateral'><div><h3 class='ucam-section__title'>O que calcular</h3><p class='ucam-section__hint'>Na ordem em que o servidor roda: média, CR, situação pela nota e situação pela frequência.</p></div><div class='ucam-card ucam-stack ucam-stack--sm'><label class='ucam-switch'><input type='checkbox' checked><span class='ucam-check__label'>Média de cada disciplina</span></label><label class='ucam-switch'><input type='checkbox' checked><span class='ucam-check__label'>Coeficiente de rendimento (CR)</span></label><label class='ucam-switch'><input type='checkbox' checked><span class='ucam-check__label'>Situação pela nota (aprovado ou reprovado)</span></label><label class='ucam-switch'><input type='checkbox' checked><span class='ucam-check__label'>Situação pela frequência (reprovado por falta acima de 25%)</span></label></div></section><div class='ucam-stack'><div class='ucam-tabs' role='tablist' aria-label='Calcular por'><button class='ucam-tabs__tab' type='button' role='tab' id='cc-aba-curso' aria-controls='cc-p-curso' aria-selected='true' tabindex='0'>Por curso</button><button class='ucam-tabs__tab' type='button' role='tab' id='cc-aba-disciplina' aria-controls='cc-p-disciplina' aria-selected='false' tabindex='-1'>Por disciplina oferecida</button><button class='ucam-tabs__tab' type='button' role='tab' id='cc-aba-turma' aria-controls='cc-p-turma' aria-selected='false' tabindex='-1'>Por turma</button><button class='ucam-tabs__tab' type='button' role='tab' id='cc-aba-aluno' aria-controls='cc-p-aluno' aria-selected='false' tabindex='-1'>Por aluno</button></div><div id='cc-p-curso' role='tabpanel' aria-labelledby='cc-aba-curso' class='ucam-stack ucam-stack--sm'><section aria-label='Cursos com alunos no regime'><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact'><caption class='ucam-sr-only'>Cursos com alunos no regime</caption><thead><tr><th scope='col' class='th--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar todos os cursos'></label></th><th scope='col'>Curso</th><th scope='col' class='th--min'>Tipo de curso</th><th scope='col' class='th--num'>Alunos</th><th scope='col' class='th--min'>Cálculo</th></tr></thead><tbody><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar MBA em Gestão Financeira'></label></td><td style='white-space:nowrap'>MBA em Gestão Financeira</td><td style='white-space:nowrap'>Pós lato sensu</td><td class='td--num'>26</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar MBA em Direito Empresarial'></label></td><td style='white-space:nowrap'>MBA em Direito Empresarial</td><td style='white-space:nowrap'>Pós lato sensu</td><td class='td--num'>18</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar Especialização em Psicopedagogia'></label></td><td style='white-space:nowrap'>Especialização em Psicopedagogia</td><td style='white-space:nowrap'>Pós lato sensu</td><td class='td--num'>21</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar Oratória e argumentação'></label></td><td style='white-space:nowrap'>Oratória e argumentação</td><td style='white-space:nowrap'>Extensão</td><td class='td--num'>15</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr></tbody></table></div><div class='ucam-lote' data-lote-singular='curso' hidden><p class='ucam-lote__contagem' role='status'>0 cursos selecionados</p><div class='ucam-lote__acoes'><button type='button' class='ucam-lote__acao' data-fluxo='c' data-acao='lote-marcar' data-lote-selo='Na fila' data-lote-tom='info' data-lote-um='curso enviado para cálculo.' data-lote-varios='cursos enviados para cálculo.' data-confirmar data-confirmar-corpo='O cálculo roda no servidor com as opções marcadas acima. O andamento aparece nas notificações; não é preciso esperar nesta tela.' data-confirmar-rotulo='Calcular'><svg class='ic' aria-hidden='true'><use href='#i-calculator'/></svg> Calcular</button></div><button type='button' class='ucam-lote__limpar' data-fluxo='c' data-acao='limpar-selecao'>Limpar</button></div></div></section></div><div id='cc-p-disciplina' role='tabpanel' aria-labelledby='cc-aba-disciplina' hidden class='ucam-stack ucam-stack--sm'><section aria-label='Disciplinas oferecidas no regime'><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact'><caption class='ucam-sr-only'>Disciplinas oferecidas no regime</caption><thead><tr><th scope='col' class='th--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar todas as disciplinas'></label></th><th scope='col'>Disciplina oferecida</th><th scope='col' class='th--min'>Turno</th><th scope='col' class='th--num'>Alunos</th><th scope='col' class='th--min'>Cálculo</th></tr></thead><tbody><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar MBA05 · Análise de investimentos'></label></td><td style='white-space:nowrap'>MBA05 · Análise de investimentos</td><td style='white-space:nowrap'>Noite</td><td class='td--num'>12</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar MBA11 · Governança corporativa'></label></td><td style='white-space:nowrap'>MBA11 · Governança corporativa</td><td style='white-space:nowrap'>Noite</td><td class='td--num'>14</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar DIR23 · Contratos empresariais'></label></td><td style='white-space:nowrap'>DIR23 · Contratos empresariais</td><td style='white-space:nowrap'>Noite</td><td class='td--num'>18</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar PSI06 · Dificuldades de aprendizagem'></label></td><td style='white-space:nowrap'>PSI06 · Dificuldades de aprendizagem</td><td style='white-space:nowrap'>Manhã</td><td class='td--num'>21</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar EXT02 · Oratória e argumentação'></label></td><td style='white-space:nowrap'>EXT02 · Oratória e argumentação</td><td style='white-space:nowrap'>Tarde</td><td class='td--num'>15</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr></tbody></table></div><div class='ucam-lote' data-lote-singular='disciplina' hidden><p class='ucam-lote__contagem' role='status'>0 disciplinas selecionadas</p><div class='ucam-lote__acoes'><button type='button' class='ucam-lote__acao' data-fluxo='c' data-acao='lote-marcar' data-lote-selo='Na fila' data-lote-tom='info' data-lote-um='disciplina enviada para cálculo.' data-lote-varios='disciplinas enviadas para cálculo.' data-confirmar data-confirmar-corpo='O cálculo roda no servidor com as opções marcadas acima. O andamento aparece nas notificações; não é preciso esperar nesta tela.' data-confirmar-rotulo='Calcular'><svg class='ic' aria-hidden='true'><use href='#i-calculator'/></svg> Calcular</button></div><button type='button' class='ucam-lote__limpar' data-fluxo='c' data-acao='limpar-selecao'>Limpar</button></div></div></section></div><div id='cc-p-turma' role='tabpanel' aria-labelledby='cc-aba-turma' hidden class='ucam-stack ucam-stack--sm'><section aria-label='Turmas com alunos no regime'><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact'><caption class='ucam-sr-only'>Turmas com alunos no regime</caption><thead><tr><th scope='col' class='th--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar todas as turmas'></label></th><th scope='col'>Turma</th><th scope='col'>Curso</th><th scope='col' class='th--num'>Alunos</th><th scope='col' class='th--min'>Cálculo</th></tr></thead><tbody><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar 2026/1'></label></td><td style='white-space:nowrap'>2026/1</td><td style='white-space:nowrap'>MBA em Gestão Financeira</td><td class='td--num'>12</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar 2025/2'></label></td><td style='white-space:nowrap'>2025/2</td><td style='white-space:nowrap'>MBA em Gestão Financeira</td><td class='td--num'>14</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar 2026/1'></label></td><td style='white-space:nowrap'>2026/1</td><td style='white-space:nowrap'>MBA em Direito Empresarial</td><td class='td--num'>18</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar 2025/2'></label></td><td style='white-space:nowrap'>2025/2</td><td style='white-space:nowrap'>Especialização em Psicopedagogia</td><td class='td--num'>21</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar 2026/2'></label></td><td style='white-space:nowrap'>2026/2</td><td style='white-space:nowrap'>Oratória e argumentação</td><td class='td--num'>15</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr></tbody></table></div><div class='ucam-lote' data-lote-singular='turma' hidden><p class='ucam-lote__contagem' role='status'>0 turmas selecionadas</p><div class='ucam-lote__acoes'><button type='button' class='ucam-lote__acao' data-fluxo='c' data-acao='lote-marcar' data-lote-selo='Na fila' data-lote-tom='info' data-lote-um='turma enviada para cálculo.' data-lote-varios='turmas enviadas para cálculo.' data-confirmar data-confirmar-corpo='O cálculo roda no servidor com as opções marcadas acima. O andamento aparece nas notificações; não é preciso esperar nesta tela.' data-confirmar-rotulo='Calcular'><svg class='ic' aria-hidden='true'><use href='#i-calculator'/></svg> Calcular</button></div><button type='button' class='ucam-lote__limpar' data-fluxo='c' data-acao='limpar-selecao'>Limpar</button></div></div></section></div><div id='cc-p-aluno' role='tabpanel' aria-labelledby='cc-aba-aluno' hidden class='ucam-stack ucam-stack--sm'><section aria-label='Alunos da turma 2026/1 de MBA em Gestão Financeira'><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact'><caption class='ucam-sr-only'>Alunos da turma 2026/1 de MBA em Gestão Financeira</caption><thead><tr><th scope='col' class='th--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar todos os alunos'></label></th><th scope='col'>Aluno</th><th scope='col' class='th--min'>Matrícula</th><th scope='col' class='th--num'>Disciplinas no regime</th><th scope='col' class='th--min'>Cálculo</th></tr></thead><tbody><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar Ana Clara Moura Pinto'></label></td><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>AP</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Ana Clara Moura Pinto</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410001</span></td><td class='td--num'>3</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar Bruno Leal Cavalcanti'></label></td><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>BC</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Bruno Leal Cavalcanti</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410002</span></td><td class='td--num'>3</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar Carolina Duarte Reis'></label></td><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>CR</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Carolina Duarte Reis</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410003</span></td><td class='td--num'>3</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar Diego Sampaio Torres'></label></td><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>DT</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Diego Sampaio Torres</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410004</span></td><td class='td--num'>3</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr><tr><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar Eduarda Lins Fontes'></label></td><td class='td--pessoa'><span class='ucam-avatar ucam-avatar--sm' aria-hidden='true'>EF</span><span class='td--pessoa__texto'><span class='td--pessoa__nome'>Eduarda Lins Fontes</span></span></td><td style='white-space:nowrap'><span class='ucam-id'>260410005</span></td><td class='td--num'>3</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem pedido</span></td></tr></tbody></table></div><div class='ucam-lote' data-lote-singular='aluno' hidden><p class='ucam-lote__contagem' role='status'>0 alunos selecionados</p><div class='ucam-lote__acoes'><button type='button' class='ucam-lote__acao' data-fluxo='c' data-acao='lote-marcar' data-lote-selo='Na fila' data-lote-tom='info' data-lote-um='aluno enviado para cálculo.' data-lote-varios='alunos enviados para cálculo.' data-confirmar data-confirmar-corpo='O cálculo roda no servidor com as opções marcadas acima. O andamento aparece nas notificações; não é preciso esperar nesta tela.' data-confirmar-rotulo='Calcular'><svg class='ic' aria-hidden='true'><use href='#i-calculator'/></svg> Calcular</button></div><button type='button' class='ucam-lote__limpar' data-fluxo='c' data-acao='limpar-selecao'>Limpar</button></div></div></section></div></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Cálculo acadêmico\" />\n\n  <ucam-select label=\"Calendário\" [options]=\"calendarios()\" [(value)]=\"calendario\" />\n  <ucam-select label=\"Regime\" [options]=\"regimes()\" [(value)]=\"regime\" />\n\n  <ucam-switch label=\"Média de cada disciplina\" [(checked)]=\"opcoes.media\" />\n  <ucam-switch label=\"Coeficiente de rendimento (CR)\" [(checked)]=\"opcoes.cr\" />\n  <ucam-switch label=\"Situação pela nota (aprovado ou reprovado)\" [(checked)]=\"opcoes.situacaoMedia\" />\n  <ucam-switch label=\"Situação pela frequência (reprovado por falta acima de 25%)\" [(checked)]=\"opcoes.situacaoFrequencia\" />\n\n  <ucam-tabs ariaLabel=\"Calcular por\" [items]=\"recortes\" [(value)]=\"recorte\" />\n  <ucam-data-table density=\"compact\" caption=\"Cursos com alunos no regime\" [columns]=\"colunas()\" [rows]=\"linhas()\"\n    selectable=\"multiple\" (selectionChange)=\"marcados.set($event)\" />\n  <ucam-button variant=\"secondary\" iconStart=\"calculator\" (click)=\"calcular()\">Calcular</ucam-button>\n</ucam-app-shell>",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "calculo"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Opções do cálculo (×4)",
+                "classe": "c",
+                "efeito": "Ligam e desligam cada parte do cálculo."
+              },
+              {
+                "rotulo": "Abas Por curso, disciplina, turma, aluno",
+                "classe": "c",
+                "efeito": "Trocam o recorte à vista."
+              },
+              {
+                "rotulo": "Seleção de linhas",
+                "classe": "c",
+                "efeito": "Marcar mostra a barra de lote com a contagem."
+              },
+              {
+                "rotulo": "Calcular (barra de lote)",
+                "classe": "c",
+                "efeito": "Pede confirmação; as linhas marcadas passam a \"Na fila\" e o aviso diz quantas foram."
+              },
+              {
+                "rotulo": "Limpar",
+                "classe": "c",
+                "efeito": "Desmarca as linhas."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Cálculo acadêmico)"
+            ]
+          }
+        },
+        {
+          "id": "datas-de-prova",
+          "nome": "Datas de prova",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "listagem-crud",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /dataprova — paginas/dataprova/ (detail/detail.component.ts:40-75), sharedservices/filters/calendarioregimecurso/; D/entities/extensao/Dataprova.java, RepositorioDataprova.java (lido em 15/10/2026)",
+          "descricao": "Uma sublista de uma disciplina oferecida, achada por filtro em cascata (calendário, regime, curso, disciplina): as datas de prova, com inclusão por diálogo. É a forma de Provas especiais, Disciplina oferecida × alunos e Planos de ensino.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-date-field",
+            "ucam-dialog",
+            "ucam-page-header",
+            "ucam-select"
+          ],
+          "problemas": [
+            "A busca é uma grade de cartões em três colunas, cada um com um mini-calendário por tipo de prova; o nome da disciplina sai cortado.",
+            "Para ver as datas de uma disciplina é preciso abrir o cartão, que troca a tela inteira pelo detalhe.",
+            "O servidor não valida nada da data de prova: grava data fora do regime, prova repetida e horário de outro dia.",
+            "Excluir data age no ícone da linha, sem confirmação."
+          ],
+          "notas": [
+            "O filtro desce até a disciplina oferecida e a sublista dela aparece logo abaixo, sem trocar de tela; o mini-calendário por cartão saiu.",
+            "O título da seção diz quantas provas da fórmula já têm data, e a dica diz qual falta.",
+            "Prova repetida é recusada no botão; o diálogo só oferece os horários do dia da semana da data, como o front faz.",
+            "Provas especiais (com a sublista de alunos), Disciplina oferecida × alunos (matrícula, nome, situação) e Planos de ensino (estado do plano, com aprovar e reprovar) usam esta forma: filtro até a disciplina oferecida e a lista dela.",
+            "O plano de ensino na origem tem o editor de conteúdo comentado, e o diálogo do elemento salva sem campo nenhum; não migra como está."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "A data de prova exige prova, data e horário no front; o servidor grava pelo cadastro genérico, sem validar nada.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Os horários oferecidos são os cadastrados para o dia da semana da data (domingo conta como 7).",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "As provas que pedem data são as da fórmula de avaliação da disciplina oferecida.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Prova especial exige prova, data da prova e data de entrega, e os alunos só entram depois de ela estar salva, entre os inscritos na disciplina.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O plano de ensino tem a situação em texto livre (em elaboração, para aprovação, aprovado, reprovado), e o servidor não confere a passagem de uma para outra.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Uma data por prova em cada disciplina oferecida, dentro das datas do regime.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem aprova o plano de ensino, e de que situação ele pode ser aprovado ou reprovado.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Datas de prova</h2><span class='ucam-viewbar__meta'>2026 · 2º semestre · MBA em Gestão Financeira</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field'><label class='ucam-field__label' for='dp-cal'>Calendário</label><select class='ucam-select' id='dp-cal'><option selected>2026</option><option>2025</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='dp-reg'>Regime</label><select class='ucam-select' id='dp-reg'><option selected>2º semestre</option><option>1º semestre</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='dp-cur'>Curso</label><select class='ucam-select' id='dp-cur'><option selected>MBA em Gestão Financeira</option><option>MBA em Direito Empresarial</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='dp-dis'>Disciplina oferecida</label><select class='ucam-select' id='dp-dis'><option selected>MBA05 · Análise de investimentos · Noite</option><option>MBA06 · Gestão de riscos · Noite</option><option>MBA07 · Mercado de capitais · Noite</option></select></div></div><section class='ucam-section' aria-labelledby='dp-t'><div class='ucam-cluster ucam-cluster--entre ucam-cluster--base'><div><h3 class='ucam-section__title' id='dp-t'>MBA05 · Análise de investimentos <span class='ucam-section__contagem'>3 de 4 provas com data</span></h3><p class='ucam-section__hint'>Noite · turma 2026/1 · aulas às terças, 19:00 às 20:40. Falta a data da prova final.</p></div><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='dp-d' data-tabela='#dp-tab' data-linha-msg='Data da {nome} marcada.' data-linha-unica='Esta prova já tem data'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar data</button></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='dp-tab'><caption class='ucam-sr-only'>Datas das provas de Análise de investimentos, turma 2026/1, com horário.</caption><thead><tr><th scope='col'>Prova</th><th scope='col'>Data</th><th scope='col'>Horário</th></tr></thead><tbody><tr><td><span class='ucam-card__titulo' data-c='nome'>P1 · Primeira prova</span></td><td style='white-space:nowrap' data-c='data'>22/09/2026</td><td style='white-space:nowrap' data-c='horario'>19:00 às 20:40</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Trabalho</span></td><td style='white-space:nowrap' data-c='data'>06/10/2026</td><td style='white-space:nowrap' data-c='horario'>19:00 às 20:40</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>P2 · Segunda prova</span></td><td style='white-space:nowrap' data-c='data'>24/11/2026</td><td style='white-space:nowrap' data-c='horario'>19:00 às 20:40</td></tr></tbody></table></div></div></section><dialog class='ucam-dialog' id='dp-d'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Adicionar data de prova</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='dp-d-p'>Prova <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='dp-d-p' aria-required='true' aria-describedby='dp-d-p-h'><option selected>Prova final</option><option>P1 · Primeira prova</option><option>Trabalho</option><option>P2 · Segunda prova</option></select><span class='ucam-field__hint' id='dp-d-p-h'>As provas da fórmula da disciplina.</span></div><div class='ucam-field ucam-field--data' data-para='data'><label class='ucam-field__label' for='dp-d-d'>Data <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='dp-d-d' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' required aria-required='true' aria-describedby='dp-d-d-h' data-data aria-haspopup='dialog' aria-expanded='false'></span><span class='ucam-field__hint' id='dp-d-d-h'>dd/mm/aaaa</span></div><div class='ucam-field' data-para='horario'><label class='ucam-field__label' for='dp-d-h'>Horário <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='dp-d-h' aria-required='true' aria-describedby='dp-d-h-h'><option selected>19:00 às 20:40</option><option>20:50 às 22:30</option></select><span class='ucam-field__hint' id='dp-d-h-h'>Os horários cadastrados para o dia da semana da data.</span></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Adicionar</button></div></form></dialog></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Datas de prova\" />\n\n  <ucam-select label=\"Calendário\" [options]=\"calendarios()\" [(value)]=\"calendario\" />\n  <ucam-select label=\"Regime\" [options]=\"regimes()\" [(value)]=\"regime\" />\n  <ucam-select label=\"Curso\" [options]=\"cursos()\" [(value)]=\"curso\" />\n  <ucam-select label=\"Disciplina oferecida\" [options]=\"oferecidas()\" [(value)]=\"oferecida\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Datas das provas da disciplina oferecida\" [columns]=\"colunas\" [rows]=\"datas()\" />\n  <ucam-button variant=\"secondary\" iconStart=\"plus\" (click)=\"incluindo.set(true)\">Adicionar data</ucam-button>\n\n  <ucam-dialog title=\"Adicionar data de prova\" [(open)]=\"incluindo\">\n    <ucam-select label=\"Prova\" [options]=\"provasSemData()\" required [(value)]=\"prova\" />\n    <ucam-date-field label=\"Data\" required [min]=\"regime().inicio\" [max]=\"regime().fim\" [(value)]=\"dataProva\" />\n    <ucam-select label=\"Horário\" [options]=\"horariosDoDia()\" required [(value)]=\"horario\" />\n  </ucam-dialog>\n</ucam-app-shell>",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "datas-prova"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Filtros (×4)",
+                "classe": "c",
+                "efeito": "Descem até a disciplina oferecida."
+              },
+              {
+                "rotulo": "Adicionar data",
+                "classe": "c",
+                "efeito": "Abre o diálogo; sem data o diálogo não fecha; preenchido, a data entra na tabela. Prova que já tem data é recusada no botão."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Datas de prova, Provas especiais, Disciplina oferecida × alunos, Planos de ensino)"
+            ]
+          }
+        },
+        {
+          "id": "envio-email",
+          "nome": "Envio de e-mail",
+          "perfil": "Secretaria acadêmica",
+          "padrao": "formulario-entidade",
+          "origem": "extensao-frontend (Angular 5 + Materialize), rota /envioemail — paginas/envio-email/ (filtros/), sharedservices/email/email.component.ts; W/MensagemRest.java, D/services/message/ (senders/EmailService.java, SmsService.java, filterhandler/), D/services/LogmensagemService.java (lido em 15/10/2026)",
+          "descricao": "Comunicação em massa: montar os destinatários por grupos (alunos de um curso, de uma turma, entrada manual), escrever a mensagem e enviar. É a forma do Envio de SMS e do Relacionamento com interessados.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-dialog",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-text-field",
+            "ucam-textarea"
+          ],
+          "problemas": [
+            "Os grupos são cartões com o rótulo cortado e \"N Pessoas selecionadas\"; a mensagem se escreve num diálogo de 800×600 que abre por cima de tudo.",
+            "A mesma pessoa em dois grupos recebe dois e-mails: o servidor não tira repetidos.",
+            "Sem escolher situação, o grupo do curso traz alunos em qualquer situação, inclusive os que já saíram.",
+            "Depois de enviar a tela diz \"Sua mensagem foi encaminhada ao servidor\"; o andamento do e-mail aparece nas notificações, e o do SMS não aparece em lugar nenhum.",
+            "No SMS, os 120 caracteres são só um contador: o servidor manda o texto que vier."
+          ],
+          "notas": [
+            "Uma página com três partes: destinatários (tabela de grupos com o total), mensagem e envios recentes. O diálogo de 800×600 saiu.",
+            "O total diz quantas pessoas os grupos somam e a dica avisa que hoje quem está em dois grupos recebe duas vezes; tirar repetidos é proposta.",
+            "Enviar pede confirmação com o número de pessoas, porque não se desfaz, e o envio entra em Envios recentes como \"Na fila\". O servidor já guarda um registro por envio (texto, destinatários, total e usuário); a lista é a vista dele.",
+            "O design system não tem editor de texto rico (negrito, listas, imagem, modelo), que o e-mail usa na origem: a mensagem fica em textarea até a peça existir.",
+            "O Envio de SMS usa esta forma, com a mensagem em textarea com contador. O Relacionamento (interessados de um período com contatos por canal, histórico e registro de ligação) também, com o grupo \"Interessados do período\"; o histórico de contatos por interessado não está desenhado."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Os destinatários são montados por grupos somáveis: alunos do curso, alunos da turma, lista importada de planilha e entrada manual. Escolher um curso específico trava tipo de curso e modalidade em Todos.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O servidor não tira pessoas repetidas entre grupos, e só inclui quem tem e-mail cadastrado, mesmo no SMS.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Sem a situação escolhida, o grupo traz alunos em qualquer situação de matrícula.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O e-mail sai pelo remetente de marketing da unidade, com o rodapé da unidade; endereço inválido é contado como não enviado.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Escolher um modelo troca assunto e corpo. Até 8 destinatários aparecem pelo nome; acima disso, só a contagem.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O envio roda no servidor sem prender a tela, e cada envio grava um registro com texto, destinatários, total e usuário.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O SMS sai pela Zenvia com remetente UCAM; o contador de 120 caracteres é só do front.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Quem está em mais de um grupo recebe uma vez só.",
+              "decide": "Secretaria acadêmica"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o envio em massa precisa respeitar quem pediu para não receber (opt-out), e há limite de destinatários ou horário de envio? O servidor não tem nada disso.",
+              "decide": "Encarregado de dados (LGPD)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: a credencial do provedor de SMS está escrita no código do servidor; onde ela deve ficar.",
+              "decide": "TI (dono do SIGU)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem pode usar esta tela. O sistema só confere se o usuário tem o recurso EXTENSAO-ANGULAR; não há permissão por tela, e o menu de cada pessoa vem do servidor de login.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Envio de e-mail</h2><span class='ucam-viewbar__meta'>Campos · remetente da unidade</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><section class='ucam-section ucam-section--lateral'><div><h3 class='ucam-section__title'>Destinatários</h3><p class='ucam-section__hint'>Os grupos somam pessoas. Quem está em mais de um grupo hoje recebe um e-mail por grupo.</p></div><div class='ucam-stack ucam-stack--sm'><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='ee-grupos'><caption class='ucam-sr-only'>Grupos de destinatários deste envio, com quantas pessoas cada um traz.</caption><thead><tr><th scope='col'>Grupo</th><th scope='col'>Tipo</th><th scope='col'>Situação</th><th scope='col' class='th--num'>Pessoas</th></tr></thead><tbody><tr><td><span class='ucam-card__titulo' data-c='nome'>MBA em Gestão Financeira</span></td><td style='white-space:nowrap' data-c='tipo'>Alunos do curso</td><td style='white-space:nowrap' data-c='situacao'>Cursando</td><td class='td--num' data-c='pessoas'>26</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Oratória e argumentação · 2026/2</span></td><td style='white-space:nowrap' data-c='tipo'>Alunos da turma</td><td style='white-space:nowrap' data-c='situacao'>Cursando</td><td class='td--num' data-c='pessoas'>15</td></tr><tr><td><span class='ucam-card__titulo' data-c='nome'>Renata Couto Siqueira</span></td><td style='white-space:nowrap' data-c='tipo'>Entrada manual</td><td style='white-space:nowrap' data-c='situacao'>—</td><td class='td--num' data-c='pessoas'>1</td></tr></tbody><tfoot><tr><th scope='row' colspan='3'>Total</th><td class='td--num'>42</td></tr></tfoot></table></div></div><div><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='ee-d' data-tabela='#ee-grupos' data-linha-msg='Grupo {nome} adicionado aos destinatários.' data-linha-unica='Este grupo já está nos destinatários'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Adicionar grupo</button></div></div></section><section class='ucam-section ucam-section--lateral'><div><h3 class='ucam-section__title'>Mensagem</h3><p class='ucam-section__hint'>Escolher um modelo troca o assunto e o texto.</p></div><div class='ucam-card'><div class='ucam-form-grid'><div class='ucam-field'><label class='ucam-field__label' for='ee-para'>Para</label><input class='ucam-input' id='ee-para' value='42 pessoas em 3 grupos' readonly></div><div class='ucam-field'><label class='ucam-field__label' for='ee-mod'>Modelo</label><select class='ucam-select' id='ee-mod'><option selected>Sem modelo</option><option>Boas-vindas à pós-graduação</option><option>Aviso de data de prova</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='ee-assunto'>Assunto <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='ee-assunto' maxlength='150' value='Prova final de Análise de investimentos' aria-required='true'></div><div class='ucam-field'><label class='ucam-field__label' for='ee-msg'>Mensagem <span class='ucam-field__required' aria-hidden='true'>*</span></label><textarea class='ucam-textarea' id='ee-msg' rows='6' aria-required='true'>A prova final de Análise de investimentos será no dia 15/12/2026, às 19:00, na sala 204.</textarea></div></div></div></section><section class='ucam-section' aria-labelledby='ee-h'><h3 class='ucam-section__title' id='ee-h'>Envios recentes</h3><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='ee-envios'><caption class='ucam-sr-only'>Últimos e-mails enviados por esta unidade, com destinatários, data e situação.</caption><thead><tr><th scope='col'>Assunto</th><th scope='col' class='th--min'>Para</th><th scope='col' class='th--min'>Enviado em</th><th scope='col' class='th--min'>Situação</th></tr></thead><tbody><tr><td><span class='ucam-card__titulo'>Calendário de provas do 2º semestre</span></td><td style='white-space:nowrap'>41 pessoas</td><td style='white-space:nowrap'>14/10/2026 18:02</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span>Enviado</span></td></tr><tr><td><span class='ucam-card__titulo'>Boas-vindas à turma 2026/2</span></td><td style='white-space:nowrap'>15 pessoas</td><td style='white-space:nowrap'>03/08/2026 09:15</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral'><span class='ucam-badge__ponto' aria-hidden='true'></span>Enviado</span></td></tr></tbody></table></div></div></section><div class='ucam-form-actions ucam-form-actions--sticky'><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-acao='enviar' data-confirmar data-confirmar-corpo='42 pessoas recebem este e-mail. O envio roda no servidor e leva alguns minutos; não dá para cancelar depois.' data-confirmar-rotulo='Enviar e-mail' data-destino='#/templates/extensao/envio-email' data-criado-nome='#ee-assunto' data-criado-alvo='#ee-envios tbody' data-criado-situacao='Na fila' data-criado-tom='info' data-criado-msg='E-mail {nome} na fila de envio para 42 pessoas.'><svg class='ic' aria-hidden='true'><use href='#i-send'/></svg> Enviar e-mail</button></div><dialog class='ucam-dialog' id='ee-d'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title'>Adicionar grupo</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><div class='ucam-field' data-para='tipo'><label class='ucam-field__label' for='ee-d-t'>Tipo</label><select class='ucam-select' id='ee-d-t'><option selected>Alunos do curso</option><option>Alunos da turma</option></select></div><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='ee-d-n'>Curso ou turma <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='ee-d-n' aria-required='true'><option selected>MBA em Direito Empresarial</option><option>Especialização em Psicopedagogia</option><option>MBA em Gestão Financeira · 2025/2</option></select></div><div class='ucam-field' data-para='situacao'><label class='ucam-field__label' for='ee-d-s'>Situação do aluno</label><select class='ucam-select' id='ee-d-s' aria-describedby='ee-d-s-h'><option selected>Cursando</option><option>Todas</option><option>Trancado</option><option>Concluído</option></select><span class='ucam-field__hint' id='ee-d-s-h'>Em Todas entram alunos em qualquer situação, inclusive os que já saíram.</span></div><p class='ucam-field__hint' data-para='pessoas' data-vazio='a contar'>Quantas pessoas o grupo traz aparece na lista depois de adicionar.</p></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Adicionar</button></div></form></dialog></div>",
+          "codigo": "<ucam-app-shell systemName=\"Pós e extensão\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Envio de e-mail\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Grupos de destinatários\" [columns]=\"colunasGrupo\" [rows]=\"grupos()\" />\n  <ucam-button variant=\"secondary\" iconStart=\"plus\" (click)=\"incluindo.set(true)\">Adicionar grupo</ucam-button>\n\n  <form [formGroup]=\"form\" (ngSubmit)=\"confirmando.set(true)\">\n    <ucam-text-field label=\"Para\" [readonly]=\"true\" [value]=\"total() + ' pessoas'\" />\n    <ucam-select label=\"Modelo\" [options]=\"modelos()\" formControlName=\"modelo\" />\n    <ucam-text-field label=\"Assunto\" formControlName=\"assunto\" required [maxLength]=\"150\" />\n    <ucam-textarea label=\"Mensagem\" formControlName=\"mensagem\" required [rows]=\"6\" />\n    <ucam-button variant=\"primary\" type=\"submit\" iconStart=\"send\">Enviar e-mail</ucam-button>\n  </form>\n\n  <ucam-data-table density=\"compact\" caption=\"Envios recentes\" [columns]=\"colunasEnvio\" [rows]=\"envios()\" />\n\n  <ucam-dialog title=\"Adicionar grupo\" [(open)]=\"incluindo\">\n    <ucam-select label=\"Tipo\" [options]=\"tiposGrupo\" [(value)]=\"tipo\" />\n    <ucam-select label=\"Curso ou turma\" [options]=\"alvos()\" required [(value)]=\"alvo\" />\n    <ucam-select label=\"Situação do aluno\" [options]=\"situacoes()\" [(value)]=\"situacao\" />\n  </ucam-dialog>\n</ucam-app-shell>",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "email"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Adicionar grupo",
+                "classe": "c",
+                "efeito": "Abre o diálogo; o grupo entra na tabela de destinatários. Grupo repetido é recusado no botão."
+              },
+              {
+                "rotulo": "Modelo",
+                "classe": "c",
+                "efeito": "Escolhe o modelo da mensagem."
+              },
+              {
+                "rotulo": "Enviar e-mail",
+                "classe": "c",
+                "destino": "extensao/envio-email",
+                "efeito": "Pede confirmação com o número de pessoas. Sem assunto, o erro vai para o campo; com assunto, o envio entra no topo de Envios recentes como \"Na fila\", com o aviso."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Envio de e-mail, Envio de SMS, Relacionamento)"
+            ]
+          }
+        }
+      ]
     }
   ]
 }
