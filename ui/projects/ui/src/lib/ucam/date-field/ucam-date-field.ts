@@ -70,9 +70,10 @@ const REGRA: Record<UcamDatePrecision, Regra> = {
   day: {
     max: 8,
     formato: 'dd/mm/aaaa',
-    // 29/09/2026: a mesma largura do Trilho A (calc(10ch + 3rem)) — o ícone
+    // 20/10/2026 (ADR-075): o campo preenche o lugar, como no Trilho A. Antes
+    // era a medida do dado, calc(10ch + 3rem) — o ícone
     // entrou no campo e come o recuo inicial.
-    largura: 'w-[calc(10ch+3rem)]',
+    largura: 'w-full',
     // Sem nativo: a precisão de dia abre o calendário do DS.
     tipoNativo: '',
     fmt: (d) =>
@@ -84,14 +85,14 @@ const REGRA: Record<UcamDatePrecision, Regra> = {
     formato: 'mm/aaaa',
     // 20/10/2026: era 9ch, e o input é border-box — os 0,75rem de recuo de
     // cada lado e a borda saíam de dentro dos 9ch e cortavam "10/2026".
-    largura: 'w-[calc(7ch+1.5rem+2px)]',
+    largura: 'w-full',
     tipoNativo: 'month',
     fmt: (d) => d.replace(/(\d{2})(\d{1,4})?/, (_, a, b) => [a, b].filter(Boolean).join('/')),
   },
   year: {
     max: 4,
     formato: 'aaaa',
-    largura: 'w-[calc(4ch+1.5rem+2px)]',
+    largura: 'w-full',
     // Não existe <input type="year">: a precisão de ano não tem calendário, e
     // oferecer um seria pedir dois cliques para escolher o que já está escrito.
     tipoNativo: '',
@@ -276,7 +277,7 @@ const porExtenso = (iso: string) => {
   `,
   styles: `
     ucam-date-field .ucam-date-field {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: var(--ucam-space-inline-xs);
       position: relative;

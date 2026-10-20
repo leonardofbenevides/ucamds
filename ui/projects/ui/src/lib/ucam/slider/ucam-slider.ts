@@ -54,7 +54,6 @@ import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
       align-items: center;
       gap: var(--ucam-space-inline-sm);
       inline-size: 100%;
-      max-inline-size: 30rem;
     }
     ucam-slider .ucam-slider__controle {
       flex: 1 1 auto;

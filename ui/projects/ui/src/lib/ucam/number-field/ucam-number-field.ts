@@ -87,7 +87,7 @@ import { UcamIcon } from '../icon/ucam-icon';
     ucam-number-field .ucam-number-field {
       display: inline-flex;
       align-items: stretch;
-      inline-size: calc(8ch + 5rem);
+      inline-size: 100%;
       block-size: var(--ucam-size-control-md);
       border: 1px solid var(--ucam-color-border-default);
       border-radius: var(--ucam-radius-control);

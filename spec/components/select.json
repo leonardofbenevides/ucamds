@@ -131,8 +131,8 @@
     {
       "nome": "width",
       "tipo": "'content' | 'full'",
-      "default": "'content'",
-      "descricao": "Default é content: a largura acompanha a opção mais longa. Corrige as larguras arbitrárias do legado."
+      "default": "'full'",
+      "descricao": "Default é full: o select preenche o campo, como todo controle (ADR-075, 20/10/2026). content fica como saída declarada, para a largura acompanhar a opção mais longa."
     },
     {
       "nome": "dependsOn",

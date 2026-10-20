@@ -1431,6 +1431,46 @@
         "toggle-group",
         "segmented"
       ]
+    },
+    {
+      "id": "ADR-075",
+      "titulo": "Todo campo preenche a largura que tem",
+      "status": "aceita",
+      "data": "2026-10-20",
+      "contexto": "Em 20/10/2026 o usuário pediu: \"avalie a largura dos campos de data, todos os campos de todas as telas têm que ser fill na largura\". A sonda mediu 244 campos em 93 telas a 1440px: 34 tinham o controle mais estreito que o próprio campo. As causas eram duas regras da ADR-055: a medida do dado (sigla e código em 12ch = 143px numa trilha de 371; CPF em 14ch; CEP em 9ch; data em 10ch + ícone, 147px numa barra que dava 482) e o teto de 30rem (o Novo requerimento parava três campos em 480px num cartão de 725). Mais quatro grades declaravam colunas pelo conteúdo (--ucam-cols: max-content).",
+      "decisao": "O controle preenche o campo, e o campo preenche o lugar que a grade, a fileira ou a barra lhe dão. Saem a largura pelo dado e o teto de 30rem do controle; a trilha da .ucam-form-grid continua indo de 17 a 30rem, e é ela que decide quanto cabe. Valor e percentual continuam alinhados ao fim, com dígitos tabulares. As fileiras com colunas pelo conteúdo passam a colunas iguais. .ucam-field--content é a única saída, declarada, para largura pelo conteúdo. No Trilho B o DateField preenche em toda precisão e o Select nasce com width='full'.",
+      "consequencias": [
+        "formats.json > largura-pelo-dado passa a dizer que o lugar decide, não o dado; a tabela de medidas por tipo saiu.",
+        "O curto do dado se lê pela dica de formato e pelo próprio valor, não por um controle encolhido.",
+        "Campo sozinho num cartão largo fica largo: quem não quiser isso põe o campo numa .ucam-form-grid, que limita a trilha.",
+        "Revoga em parte a ADR-055 (medida do dado e teto de 30rem do controle); a grade de 1 a 4 trilhas fica."
+      ],
+      "afeta": [
+        "field",
+        "text-field",
+        "date-field",
+        "select",
+        "input-group",
+        "number-field",
+        "slider",
+        "textarea"
+      ]
+    },
+    {
+      "id": "ADR-076",
+      "titulo": "A legenda do indicador fala em cinza, e o ponto de cor fica só na exceção",
+      "status": "aceita",
+      "data": "2026-10-20",
+      "contexto": "Em 20/10/2026, olhando a faixa de indicadores do Protocolo (\"em 6 setores\" em bordô, \"15% dos em andamento\" em âmbar, \"mais antigo há 4 dias\" em vermelho, \"pela data da conclusão\" em verde), o usuário disse: \"muito colorido isso\". A ADR-035 tinha passado o tom do número para a legenda; com quatro ladrilhos de tons diferentes, a faixa voltou a ser o mosaico que a ADR-034 tirou do fundo, agora em texto.",
+      "decisao": "Nenhum tom pinta texto no indicador: valor, variação e meta ficam nas tintas neutras. warning e danger, os dois tons que pedem uma ação, põem um ponto de 8px na cor gráfica do tom antes da meta (ou da variação). success e marca não pintam nada. A meta em palavra continua obrigatória com qualquer tom, porque é ela que diz o julgamento.",
+      "consequencias": [
+        "Revoga em parte a ADR-035 (a cor na legenda); o ladrilho branco da ADR-034 fica.",
+        "Um painel de quatro indicadores tem, no máximo, os pontos dos que pedem atenção — a regra da cor na exceção (ADR-050) chegando aos indicadores.",
+        "O vocabulário de tom do Stat não muda: success e marca continuam declaráveis, para o dado dizer o que é."
+      ],
+      "afeta": [
+        "stat"
+      ]
     }
   ]
 }

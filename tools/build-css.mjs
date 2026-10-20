@@ -2368,7 +2368,6 @@ ${abaixo('controle-deitado')} {
   align-items: center;
   gap: var(--ucam-space-inline-sm);
   inline-size: 100%;
-  max-inline-size: 30rem;
 }
 .ucam-slider__controle {
   flex: 1 1 auto;
@@ -10263,10 +10262,30 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * linha que diz o julgamento em palavra ("em 6 setores", "+9% sobre agosto"),
  * então a cor mora nela: tinta e palavra no mesmo lugar. Os papéis numeral
  * seguem valendo 4,5:1 sobre a superfície, que é o piso do caption. */
-.ucam-stat--success :is(.ucam-stat__delta, .ucam-stat__meta) { color: var(--ucam-color-feedback-success-numeral); }
-.ucam-stat--warning :is(.ucam-stat__delta, .ucam-stat__meta) { color: var(--ucam-color-feedback-warning-numeral); }
-.ucam-stat--danger  :is(.ucam-stat__delta, .ucam-stat__meta) { color: var(--ucam-color-feedback-danger-numeral); }
-.ucam-stat--marca   :is(.ucam-stat__delta, .ucam-stat__meta) { color: var(--ucam-color-action-primary-default); }
+/* A LEGENDA FALA EM CINZA, E O PONTO SÓ NA EXCEÇÃO (ADR-076, 20/10/2026:
+ * "muito colorido isso"). Quatro legendas em quatro tintas — bordô, âmbar,
+ * vermelho, verde — refaziam o mosaico que a ADR-034 tirou do fundo. A
+ * variação e a meta ficam na tinta de apoio; warning e danger, os dois tons
+ * que pedem uma ação, ganham um ponto antes da palavra. success e marca não
+ * pintam: o bom não precisa chamar, e o título já é o primeiro ladrilho. */
+/* Declarados e sem tinta: o dado continua dizendo que é o título ou o desfecho
+ * bom, e as telas continuam escrevendo a classe. */
+.ucam-stat--marca,
+.ucam-stat--success { --ucam-stat-ponto: transparent; }
+.ucam-stat--warning { --ucam-stat-ponto: var(--ucam-color-feedback-warning-graphic); }
+.ucam-stat--danger  { --ucam-stat-ponto: var(--ucam-color-feedback-danger-graphic); }
+:is(.ucam-stat--warning, .ucam-stat--danger) :is(.ucam-stat__delta, .ucam-stat__meta)::before {
+  content: "";
+  flex: none;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: var(--ucam-radius-pill);
+  background: var(--ucam-stat-ponto);
+}
+:is(.ucam-stat--warning, .ucam-stat--danger) .ucam-stat__delta { display: inline-flex; align-items: center; gap: var(--ucam-space-inline-xs); }
+@media (forced-colors: active) {
+  :is(.ucam-stat--warning, .ucam-stat--danger) :is(.ucam-stat__delta, .ucam-stat__meta)::before { background: CanvasText; }
+}
 
 /* ------------------------------------------------------ filtro rápido --- */
 /* Grupo de segmentos para o recorte mais usado da listagem: Todos / Em aberto
@@ -15429,6 +15448,37 @@ ${acima('nav-fixa')} {
   /* Link vira texto: no papel, azul sublinhado é promessa sem destino. */
   .ucam a { color: inherit; text-decoration: none; }
 }
+
+/* ------------------------------------- todo campo preenche (ADR-075) --- */
+/* 20/10/2026: "todos os campos de todas as telas têm de ser fill na
+ * largura". O controle ocupa o campo inteiro, e o campo, o lugar que a grade
+ * ou a barra lhe dão. Saem as duas medidas da ADR-055 que deixavam o
+ * controle mais curto que o campo: a largura pelo dado (CPF em 14ch, sigla
+ * em 12ch, data em 10ch + ícone — 143px numa trilha de 371) e o teto de
+ * 30rem (o Novo requerimento parava em 480px num cartão de 725). Quem decide
+ * a largura agora é o LUGAR: a trilha da .ucam-form-grid, a coluna da
+ * .ucam-form-row, a barra. Valor e percentual continuam alinhados ao fim.
+ *
+ * Fica no fim da folha de propósito: vence, por ordem, as medidas por tipo
+ * escritas lá em cima com a mesma especificidade. .ucam-field--content é a
+ * única saída, para quem precisar declarar largura pelo conteúdo. */
+.ucam-field:not(.ucam-field--content) :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-select-trigger, .ucam-input-group, .ucam-date-field, [data-listbox], .ucam-textarea) {
+  inline-size: 100%;
+  max-inline-size: none;
+}
+.ucam-field:not(.ucam-field--content) .ucam-date-field { display: block; }
+.ucam-field:not(.ucam-field--content) .ucam-date-field .ucam-input { inline-size: 100%; }
+/* NA BARRA, PREENCHER É DIVIDIR. Com o controle a 100% e o campo no tamanho
+ * do conteúdo, as duas datas das Datas de vencimento saíam com 352 e 390px,
+ * a dica quebrava em três linhas e o botão descia de fileira. As datas da
+ * barra crescem a partir do próprio conteúdo e nunca encolhem abaixo dele
+ * (com base zero o rótulo seguinte era coberto); a dica ao lado tem teto. */
+.ucam-toolbar > .ucam-field--data { flex: 1 0 auto; }
+.ucam-toolbar > .ucam-field--data > .ucam-date-field { flex: 1 1 auto; min-inline-size: 9rem; }
+.ucam-toolbar > .ucam-field--data > .ucam-field__hint { flex: 0 1 auto; max-inline-size: 12rem; }
+/* A busca continua sendo o campo maior da barra: com as datas crescendo, ela
+ * encolhia para 245px na Baixa de mensalidades. Peso 2 contra 1. */
+.ucam-toolbar:has(> .ucam-field--data) > .ucam-field--grow { flex-grow: 2; }
 `;
 
 /* ------------------------------------------------------- portão ADR-007 --- */

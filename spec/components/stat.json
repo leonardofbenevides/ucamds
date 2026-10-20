@@ -113,7 +113,7 @@
       "nome": "tone",
       "tipo": "'neutral' | 'success' | 'warning' | 'danger' | 'marca'",
       "default": "'neutral'",
-      "descricao": "Julgamento sobre o número. Pinta o CONTEXTO — a variação e a meta —, e o número fica na tinta de texto principal (ADR-035). O ladrilho é sempre branco (ADR-034): quatro ladrilhos lado a lado, um bom e três ruins, continuam quatro superfícies iguais com quatro números na mesma tinta, e quem difere é a linha que diz o julgamento em palavra. O tom vem do DADO, nunca da posição, e a meta em palavra continua obrigatória com qualquer tom.",
+      "descricao": "Julgamento sobre o número. Desde a ADR-076 nenhum tom pinta texto: valor, variação e meta ficam nas tintas neutras, e warning e danger põem um ponto colorido antes da meta (ou da variação). success e marca não pintam nada — ficam no vocabulário porque o dado continua dizendo o que é. O ladrilho é sempre branco (ADR-034), e a meta em palavra continua obrigatória com qualquer tom: é ela que diz o julgamento.",
       "valores": {
         "neutral": {
           "uso": "O padrão. Número que não é bom nem ruim por si — contagem, total, base de comparação.",
@@ -122,31 +122,25 @@
           }
         },
         "success": {
-          "uso": "O número é desfecho favorável e há decisão pendurada nele: concluídos no mês, total recebido, prazo médio dentro da meta.",
-          "limite": "Não usar só porque o número subiu. Subir não é bom em contagem de atraso.",
-          "tokens": {
-            "valor": "color.feedback.success.numeral"
-          }
+          "uso": "O número é desfecho favorável e há decisão pendurada nele: concluídos no mês, total recebido, prazo médio dentro da meta. Não pinta (ADR-076): o bom não precisa chamar.",
+          "limite": "Não usar só porque o número subiu. Subir não é bom em contagem de atraso."
         },
         "warning": {
           "uso": "O número pede atenção sem ser desfecho: atrasados, a vencer, prazo curto, trancados.",
           "tokens": {
-            "valor": "color.feedback.warning.numeral"
+            "ponto": "color.feedback.warning.graphic"
           }
         },
         "danger": {
           "uso": "O número é desfecho desfavorável: saldo negativo, vencidos, urgentes sem resposta, fila acima do limite operacional.",
           "limite": "Não é erro de sistema; é leitura ruim de um número correto.",
           "tokens": {
-            "valor": "color.feedback.danger.numeral"
+            "ponto": "color.feedback.danger.graphic"
           }
         },
         "marca": {
-          "uso": "O número-título do painel — o total, os abertos, o saldo do dia. É o que o resto do painel qualifica. Pinta só o número, sem fundo: action.primary.subtle ao lado do fundo de danger lê como o mesmo rosa (ADR-026).",
-          "limite": "Um por painel. Dois ladrilhos de marca no mesmo grupo é dois títulos.",
-          "tokens": {
-            "valor": "color.action.primary.default"
-          }
+          "uso": "O número-título do painel — o total, os abertos, o saldo do dia. Não pinta (ADR-076): é o primeiro ladrilho, e a posição já diz que é o título.",
+          "limite": "Um por painel. Dois ladrilhos de marca no mesmo grupo é dois títulos."
         }
       }
     },

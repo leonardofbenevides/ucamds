@@ -186,10 +186,10 @@
     },
     {
       "id": "largura-pelo-dado",
-      "regra": "A largura do campo sai do tamanho esperado do dado — CPF, CEP e data são campos curtos, nome é campo longo.",
-      "porque": "As larguras arbitrárias do legado ensinam o formato errado: um CPF em campo menor que o do Nome, sem relação com o conteúdo, sugere que cabe menos do que cabe.",
-      "medidas": {"ucam-field--cpf":"14ch","ucam-field--cnpj":"18ch","ucam-field--cep":"9ch","ucam-field--data":"10ch + o ícone de calendário (3rem)","ucam-field--mes":"7ch","ucam-field--valor":"14ch, alinhado ao fim, dígitos tabulares","ucam-field--pct":"6ch, alinhado ao fim","ucam-field--codigo":"12ch (código, matrícula)","ucam-field--tel":"15ch","ucam-field--qtd":"8ch + os botões de passo","texto curto, nome, e-mail, select":"a trilha da grade, com teto de 30rem","texto longo (textarea)":"duas trilhas (~48rem) ou a linha inteira; fora da grade, teto de 48rem"},
-      "desde": "28/09/2026, ADR-055: a tabela completa e o teto de 30rem valendo em todo .ucam-field, não só na fileira."
+      "regra": "O campo preenche o lugar que tem: a trilha da grade, a coluna da fileira, a barra. A largura não sai mais do tamanho do dado (ADR-075).",
+      "porque": "Com a largura pelo dado, CPF, sigla e data ficavam mais curtos que o próprio campo — 143px numa trilha de 371 — e a tela tinha bordas direitas em toda parte. O que diz que o dado é curto é o que está escrito nele e a dica de formato, não um controle encolhido.",
+      "medidas": {"todo campo de uma linha (texto, CPF, CNPJ, CEP, data, mês, código, telefone, valor, percentual, quantidade, select)":"100% do campo, sem teto","texto longo (textarea)":"100% do campo","valor e percentual":"preenchem, e continuam alinhados ao fim, com dígitos tabulares","ucam-field--content":"a única saída: largura pelo conteúdo, declarada"},
+      "desde": "20/10/2026, ADR-075. Até então valia a medida do dado e o teto de 30rem da ADR-055 (28/09/2026)."
     },
     {
       "id": "erro-diz-o-esperado",

@@ -160,7 +160,7 @@ export class UcamSelect implements ControlValueAccessor {
   readonly loading = input(false, { transform: booleanAttribute });
   readonly invalid = input(false, { transform: booleanAttribute });
   readonly errorMessage = input<string | null>(null);
-  readonly width = input<'content' | 'full'>('content');
+  readonly width = input<'content' | 'full'>('full');
 
   /**
    * Nome do campo do qual este depende. Enquanto o pai estiver vazio o

@@ -23,20 +23,12 @@ export type UcamStatLayout = 'stack' | 'row';
 export type UcamStatState = 'idle' | 'loading' | 'empty' | 'error';
 
 /**
- * O tom pinta o CONTEXTO — variação e meta —, e o número fica na tinta de
- * texto principal (ADR-035, 16/09/2026). Antes pintava o valor (ADR-034); o
- * ladrilho continua sempre branco. Entre 13 e
- * 14/09/2026 ele pintava também o fundo (ADR-032) e o painel virou mosaico.
- * O tom vem do dado — quatro contagens neutras ficam neutras — e a meta em
- * palavra continua obrigatória com qualquer tom.
+ * O tom NÃO pinta texto (ADR-076, 20/10/2026): valor, variação e meta ficam
+ * nas tintas neutras, e warning e danger põem um ponto antes da meta. Antes a
+ * meta tomava a cor do tom (ADR-035), e quatro legendas em quatro tintas
+ * refaziam o mosaico que a ADR-034 tirou do fundo. A meta em palavra continua
+ * obrigatória com qualquer tom.
  */
-const TOM: Record<UcamStatTone, string> = {
-  neutral: 'var(--ucam-color-text-primary)',
-  success: 'var(--ucam-color-feedback-success-numeral)',
-  warning: 'var(--ucam-color-feedback-warning-numeral)',
-  danger: 'var(--ucam-color-feedback-danger-numeral)',
-  marca: 'var(--ucam-color-action-primary-default)',
-};
 
 @Component({
   selector: 'ucam-stat',
@@ -79,7 +71,7 @@ const TOM: Record<UcamStatTone, string> = {
           @if (delta(); as d) {
             <!-- Texto, sem pastilha (ADR-034). Neutro sem tom: para cima nem
                  sempre é bom. Com tom, acompanha a tinta do valor. -->
-            <span class="ucam-stat__delta" [style.color]="tone() === 'neutral' ? null : cor()">{{ d }}</span>
+            <span class="ucam-stat__delta" >{{ d }}</span>
           }
         }
 
@@ -92,7 +84,7 @@ const TOM: Record<UcamStatTone, string> = {
             Não foi possível carregar
           </span>
         } @else if (meta(); as m) {
-          <span class="ucam-stat__meta" [style.color]="tone() === 'neutral' ? null : cor()">{{ m }}</span>
+          <span class="ucam-stat__meta" >{{ m }}</span>
         }
       </ng-template>
     </div>
@@ -170,6 +162,22 @@ const TOM: Record<UcamStatTone, string> = {
       font-size: var(--ucam-typography-caption-font-size);
       color: var(--ucam-color-text-secondary);
     }
+    /* ADR-076: a legenda fica em cinza; warning e danger põem um ponto antes. */
+    ucam-stat .ucam-stat--warning { --ucam-stat-ponto: var(--ucam-color-feedback-warning-graphic); }
+    ucam-stat .ucam-stat--danger { --ucam-stat-ponto: var(--ucam-color-feedback-danger-graphic); }
+    ucam-stat :is(.ucam-stat--warning, .ucam-stat--danger) :is(.ucam-stat__delta, .ucam-stat__meta) {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--ucam-space-inline-xs);
+    }
+    ucam-stat :is(.ucam-stat--warning, .ucam-stat--danger) :is(.ucam-stat__delta, .ucam-stat__meta)::before {
+      content: '';
+      flex: none;
+      inline-size: 0.5rem;
+      block-size: 0.5rem;
+      border-radius: var(--ucam-radius-pill);
+      background: var(--ucam-stat-ponto);
+    }
 
     /* O arranjo em linha rende quatro ladrilhos numa faixa de 56px em vez de 96, e essa
        altura volta para a tabela logo abaixo. Só serve a contagem curta. */
@@ -241,7 +249,6 @@ export class UcamStat {
    */
   readonly semDado = input('—');
 
-  protected readonly cor = computed(() => TOM[this.tone()]);
 
   protected readonly carregando = computed(() => this.loading() || this.state() === 'loading');
   /** empty e error mostram o traço: não há número, e zero seria mentir. */
