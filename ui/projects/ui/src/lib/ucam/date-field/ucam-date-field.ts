@@ -82,14 +82,16 @@ const REGRA: Record<UcamDatePrecision, Regra> = {
     // O Mês/Ano do SIGFIN, que hoje é dois selects lado a lado.
     max: 6,
     formato: 'mm/aaaa',
-    largura: 'w-[9ch]',
+    // 20/10/2026: era 9ch, e o input é border-box — os 0,75rem de recuo de
+    // cada lado e a borda saíam de dentro dos 9ch e cortavam "10/2026".
+    largura: 'w-[calc(7ch+1.5rem+2px)]',
     tipoNativo: 'month',
     fmt: (d) => d.replace(/(\d{2})(\d{1,4})?/, (_, a, b) => [a, b].filter(Boolean).join('/')),
   },
   year: {
     max: 4,
     formato: 'aaaa',
-    largura: 'w-[6ch]',
+    largura: 'w-[calc(4ch+1.5rem+2px)]',
     // Não existe <input type="year">: a precisão de ano não tem calendário, e
     // oferecer um seria pedir dois cliques para escolher o que já está escrito.
     tipoNativo: '',
