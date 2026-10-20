@@ -234,6 +234,10 @@
       "componente": "switch",
       "diferenca": "Switch tem efeito IMEDIATO e não espera submissão; Checkbox é um valor que só vale quando o formulário for enviado. A pergunta não é a forma do controle, é quando a mudança acontece.",
       "escolha": "Aceitar o termo, marcar as linhas da tabela, escolher opções independentes de um formulário."
+    },
+    {
+      "componente": "toggle-group",
+      "diferenca": "Checkbox é marcação com rótulo e descrição, em lista; ToggleGroup é a mesma marcação compacta, em botões colados, para opções curtas e fixas."
     }
   ],
   "eventos": [

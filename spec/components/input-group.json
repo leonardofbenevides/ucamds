@@ -164,7 +164,8 @@
     ],
     "usada_por": [
       "ucam-app-shell",
-      "ucam-field"
+      "ucam-field",
+      "ucam-number-field"
     ]
   },
   "migracao": {

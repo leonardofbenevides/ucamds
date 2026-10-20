@@ -206,7 +206,8 @@
       "ucam-link",
       "ucam-segmented",
       "ucam-stat",
-      "ucam-tabs"
+      "ucam-tabs",
+      "ucam-breadcrumb"
     ],
     "usada_por": [
       "padrao-consulta-relatorio",

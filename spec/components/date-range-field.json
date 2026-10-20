@@ -1,0 +1,204 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "date-range-field",
+  "name": "DateRangeField",
+  "selector": "ucam-date-range-field",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "formulario",
+  "description": "Um período com começo e fim: dois DateFields, De e Até, sob um rótulo só. Garante o que o par solto não garantia — o fim nunca antes do começo — e marca o intervalo inteiro no calendário de qualquer uma das pontas.",
+  "quando_usar": [
+    "O filtro de período de uma listagem ou relatório: movimento de caixa de 01/10 a 15/10.",
+    "A vigência de algo que tem começo e fim: inscrição, regime, matrícula de aluno especial."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/extensao-frontend, UCAM-repos/sigfin e o Analytics das telas de referência",
+    "ocorrencias": [
+      {
+        "tela": "Extensão — Aluno especial",
+        "problema": "o regime mostra \"datainicio - datafim\" como texto colado, e o cadastro pede as duas datas em campos independentes"
+      },
+      {
+        "tela": "SIGFIN — relatórios por período",
+        "problema": "De e Até sem ligação: nada impede o fim antes do começo, e o relatório volta vazio sem dizer por quê"
+      },
+      {
+        "tela": "Analytics (tela de referência)",
+        "problema": "o par De/Até só validava a ordem por um script de fixture (periodoScript), fora do comportamento entregue à aplicação"
+      }
+    ],
+    "conclusao": "Período é UM dado com duas pontas. O contrato junta os dois campos sob um rótulo e põe a regra da ordem no componente, não em cada tela."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "fieldset com legend: o rótulo do período inteiro (Período, Vigência).",
+      "classe": "ucam-date-range"
+    },
+    {
+      "parte": "ponta",
+      "obrigatorio": true,
+      "descricao": "Dois DateFields, De e Até, cada um com seu rótulo curto e a dica dd/mm/aaaa.",
+      "classe": "ucam-date-range__ponta"
+    },
+    {
+      "parte": "separador",
+      "obrigatorio": true,
+      "descricao": "\"a\", entre as duas pontas, decorativo.",
+      "classe": "ucam-date-range__sep"
+    },
+    {
+      "parte": "erro",
+      "obrigatorio": false,
+      "descricao": "Erro do período (fim antes do começo) no campo Até."
+    }
+  ],
+  "props": [
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome do período: Período, Vigência da inscrição."
+    },
+    {
+      "nome": "startLabel",
+      "tipo": "string",
+      "default": "'De'"
+    },
+    {
+      "nome": "endLabel",
+      "tipo": "string",
+      "default": "'Até'"
+    },
+    {
+      "nome": "value",
+      "tipo": "UcamDateRange",
+      "default": "{ start: null, end: null }",
+      "descricao": "ISO nas duas pontas."
+    },
+    {
+      "nome": "min",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "max",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "required",
+      "tipo": "boolean",
+      "default": "false"
+    },
+    {
+      "nome": "disabled",
+      "tipo": "boolean",
+      "default": "false"
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "UcamDateRange",
+      "descricao": "O período, em ISO. Sai também com uma ponta só preenchida."
+    }
+  ],
+  "estados": [
+    "default",
+    "focus-visible",
+    "filled",
+    "invalid",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Duas datas que não formam período (nascimento e matrícula) são dois DateFields, não um intervalo.",
+      "Atalhos de período (Este mês, Últimos 30 dias) ficam fora: quando a tela precisa deles, é um Segmented ao lado, não dentro do campo."
+    ],
+    "criterio": "Se o fim antes do começo é erro, é DateRangeField."
+  },
+  "acessibilidade": {
+    "papel": "group (fieldset + legend), com dois campos de data",
+    "requisitos": [
+      "O legend nomeia o período; cada campo tem o próprio label (De, Até) — o leitor ouve \"Período, De, campo de data\".",
+      "Fim antes do começo é erro do campo Até, dito em palavras: \"A data final precisa ser igual ou posterior a 10/10/2026.\"",
+      "Escolher De não muda Até sozinho nem move o foco.",
+      "O calendário de qualquer ponta marca o intervalo inteiro, e o nome dos dias dentro dele diz \"no período\"."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "3.3.1",
+      "3.3.3",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "Período, Vigência, Prazo de inscrição — o dado, não a pergunta."
+    ],
+    "erro": {
+      "bom": [
+        "A data final precisa ser igual ou posterior a 10/10/2026."
+      ],
+      "ruim": [
+        "Intervalo inválido.",
+        "Datas erradas."
+      ]
+    }
+  },
+  "composicao": {
+    "usa": [
+      "ucam-calendar",
+      "ucam-date-field",
+      "ucam-field"
+    ]
+  },
+  "migracao": {
+    "de": "Par de campos de data independentes",
+    "mapa": [
+      {
+        "legado": "dataInicio + dataFim soltos",
+        "novo": "<ucam-date-range-field>",
+        "nota": "O modelo continua com as duas datas; o que muda é a regra da ordem sair da tela."
+      },
+      {
+        "legado": "mat-date-range-input",
+        "novo": "<ucam-date-range-field>"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Filtro de período",
+      "codigo": "<ucam-date-range-field label=\"Período\" [(value)]=\"periodo\" />"
+    },
+    {
+      "titulo": "Vigência com limite",
+      "codigo": "<ucam-date-range-field label=\"Inscrições\" min=\"2026-11-01\" [(value)]=\"inscricoes\" required />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Um rótulo para o período e De/Até para as pontas.",
+      "evite": "\"Data inicial\" e \"Data final\" como dois campos soltos.",
+      "porque": "Solto, nada diz que os dois formam um dado, e a regra da ordem fica com cada tela."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "date-field",
+      "diferenca": "DateField é uma data; DateRangeField são duas que formam um período, com a regra de ordem e o intervalo marcado no calendário.",
+      "escolha": "Fim antes do começo é erro? DateRangeField."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<fieldset class=\"ucam-field ucam-date-range\" data-intervalo> com legend e dois .ucam-date-range__ponta, cada um com o .ucam-date-field de sempre (input[data-data]). O intervaloScript valida a ordem ao mudar e marca o período no calendário aberto por qualquer ponta.",
+      "raiz": ".ucam-date-range"
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/date-range-field/ucam-date-range-field.ts — <ucam-date-range-field>. Entradas: label, startLabel, endLabel, value, min, max, required, disabled."
+  }
+}

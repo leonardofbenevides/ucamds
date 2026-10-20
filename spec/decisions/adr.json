@@ -1399,6 +1399,38 @@
       "afeta": [
         "progress"
       ]
+    },
+    {
+      "id": "ADR-074",
+      "titulo": "Dez peças entram no catálogo, e o calendário do campo de data vira peça própria",
+      "status": "aceita",
+      "data": "2026-10-19",
+      "contexto": "Em 19/10/2026 o usuário apontou que faltavam componentes — o datepicker, o calendário \"e outros que precisamos\". O levantamento achou três situações. O datepicker existia como DateField, com o calendário só dentro dele. Toast, trilha, spinner e o campo de número existiam na folha e nas telas sem contrato nem página no catálogo — o toast por decisão (ADR-052: \"parte do shell, não um componente que a tela instancia\") e a trilha por decisão (parte do PageHeader). Calendário solto, agenda do mês, intervalo de datas, popover, accordion, slider e alternância múltipla não existiam, e o parque os desenha com quatro bibliotecas diferentes (Materialize, Angular Material, uib, ngb).",
+      "decisao": "Entram dez contratos em draft: calendar (grade solta e agenda do mês), date-range-field, toast, breadcrumb, spinner, popover, accordion, slider, number-field e toggle-group. A grade do calendário é UMA função, usada pelo popover do DateField e pelo calendário solto. A agenda tem a lista de eventos em texto como fonte: sem script ela é uma lista legível, com script vira o mês. O toast ganha contrato e serviço no Trilho B sem mudar a regra da ADR-052 — confirma ação de sistema e nunca carrega o que precisa ficar. A trilha vira contrato próprio porque tela de detalhe, viewbar e gaveta a usam sem cabeçalho de página; o PageHeader passa a compô-la. O popover usa o atributo popover nativo do navegador (Esc, clique fora e camada de cima de graça). O ToggleGroup pinta o ligado em bordô, como a caixa marcada, para não se confundir com o Segmented, que é escolha única e pinta em grafite.",
+      "consequencias": [
+        "As frases \"toast está fora do catálogo\" do Alert, do Dialog e do App-shell, que a ADR-052 já tinha revogado no mérito, saem do texto.",
+        "O comportamento do Trilho A ganha calendarioScript, intervaloScript, popoverScript e sliderScript; a alternância entra no estadoScript ao lado do segmented.",
+        "Os dez nascem em draft: nenhuma tela de templates.json os usa ainda pelo seletor do Trilho B, e a escada (4e) só sobe com tela.",
+        "O periodoScript continua sendo fixture do Analytics; a regra de ordem do período agora mora no intervaloScript, que é comportamento entregue."
+      ],
+      "afeta": [
+        "calendar",
+        "date-field",
+        "date-range-field",
+        "toast",
+        "alert",
+        "dialog",
+        "app-shell",
+        "breadcrumb",
+        "page-header",
+        "spinner",
+        "popover",
+        "accordion",
+        "slider",
+        "number-field",
+        "toggle-group",
+        "segmented"
+      ]
     }
   ]
 }

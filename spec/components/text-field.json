@@ -332,6 +332,11 @@
       "componente": "field",
       "diferenca": "Field é a CASCA — rótulo, obrigatoriedade, apoio, erro e a fiação ARIA; TextField é o CONTROLE que a casca veste. Um não substitui o outro: todo TextField já vem dentro de um Field.",
       "escolha": "Você quer uma entrada de texto: use o TextField, que traz a casca junto."
+    },
+    {
+      "componente": "number-field",
+      "diferenca": "NumberField é para quantidade, que se soma; TextField é para identificador com dígitos — CPF, matrícula, telefone —, que não se soma.",
+      "escolha": "Faz sentido somar 1? NumberField."
     }
   ],
   "composicao": {

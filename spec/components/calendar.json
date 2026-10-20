@@ -1,0 +1,315 @@
+{
+  "$schema": "../schema/component.schema.json",
+  "id": "calendar",
+  "name": "Calendar",
+  "selector": "ucam-calendar",
+  "status": "draft",
+  "version": "0.1.0",
+  "since": "0.2.0",
+  "category": "formulario",
+  "description": "O mês inteiro à vista. Tem duas formas: a GRADE, que escolhe um dia ou um intervalo sem campo de texto (a mesma grade que o DateField abre), e a AGENDA, que mostra em cada dia o que acontece nele — prova, feriado, prazo — e repete os eventos numa lista legível por baixo. Não substitui o DateField: data que a pessoa sabe de cor é mais rápida digitada.",
+  "quando_usar": [
+    "A escolha depende de ver o mês: o dia livre entre provas, a semana inteira de um regime.",
+    "O calendário acadêmico, as datas de prova de uma disciplina, os feriados da unidade — o que a tela precisa mostrar é o mês com o que cai em cada dia.",
+    "O intervalo é escolhido olhando o desenho dele: de segunda a sexta da semana de provas."
+  ],
+  "evidencia": {
+    "origem": "UCAM-repos/extensao-frontend e UCAM-repos/rel-contabilidade-frontend",
+    "ocorrencias": [
+      {
+        "tela": "Extensão — Calendário acadêmico",
+        "problema": "o calendário é uma tabela paginada de registros (calendario-academico.component.html, mfDataTable de 10 linhas): atividades, regimes e feriados viram linhas, e ninguém vê o mês — saber se a prova cai num feriado pede cruzar duas abas"
+      },
+      {
+        "tela": "Extensão — Faltas",
+        "campo": "Data",
+        "problema": "datepicker do Materialize preso a um input de texto (falta.component.html): o seletor é do framework antigo, não recebe a marca e não tem teclado de grade"
+      },
+      {
+        "tela": "Extensão — Datas de prova",
+        "problema": "a busca mostra um mini-calendário por tipo de prova em cada cartão, desenhado à mão e sem nome acessível dos dias"
+      }
+    ],
+    "conclusao": "O parque desenha calendário de três jeitos e nenhum diz o que cai em cada dia. O contrato separa a grade de escolher (a mesma do DateField) da agenda de ler, e a agenda nunca fica sem a lista em texto."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "Superfície do calendário. Solto na página leva .ucam-calendario--solto (fica no fluxo, sem sombra de sobreposição); a agenda leva .ucam-calendario--agenda.",
+      "classe": "ucam-calendario"
+    },
+    {
+      "parte": "cabeca",
+      "obrigatorio": true,
+      "descricao": "Mês anterior, nome do mês (aria-live=polite) e próximo mês.",
+      "classe": "ucam-calendario__cabeca"
+    },
+    {
+      "parte": "mes",
+      "obrigatorio": true,
+      "descricao": "Nome do mês e do ano, com a inicial maiúscula desenhada pela folha.",
+      "classe": "ucam-calendario__mes"
+    },
+    {
+      "parte": "grade",
+      "obrigatorio": true,
+      "descricao": "table com os sete dias da semana em th[abbr]; começa no domingo, como o calendário acadêmico impresso.",
+      "classe": "ucam-calendario__grade"
+    },
+    {
+      "parte": "dia",
+      "obrigatorio": true,
+      "descricao": "button por dia. Hoje = aria-current=date (peso e traço); escolhido = aria-pressed=true (bordô cheio); dentro do intervalo = data-intervalo (fundo de ação sutil), com data-ponta nas duas pontas; fora de min/max = aria-disabled.",
+      "classe": "ucam-calendario__dia"
+    },
+    {
+      "parte": "eventos",
+      "obrigatorio": false,
+      "descricao": "Na agenda, a lista curta de eventos do dia, dentro da célula. Mostra até dois e diz \"+N\" do resto.",
+      "classe": "ucam-calendario__eventos"
+    },
+    {
+      "parte": "evento",
+      "obrigatorio": false,
+      "descricao": "Um evento: ponto do tom e o título numa linha, cortado com reticências. O tom vem de data-tom (danger = prova, warning = prazo, neutral = feriado, info = atividade).",
+      "classe": "ucam-calendario__evento"
+    },
+    {
+      "parte": "lista",
+      "obrigatorio": false,
+      "descricao": "Na agenda, os eventos do mês em texto (ol), um por linha, com data e título. É o que funciona sem script e o que o leitor de tela lê de verdade: a grade não é o único lugar da informação.",
+      "classe": "ucam-calendario__lista"
+    },
+    {
+      "parte": "pe",
+      "obrigatorio": false,
+      "descricao": "Rodapé com o botão Hoje.",
+      "classe": "ucam-calendario__pe"
+    }
+  ],
+  "props": [
+    {
+      "nome": "variant",
+      "tipo": "'grade' | 'agenda'",
+      "default": "'grade'",
+      "descricao": "grade escolhe; agenda mostra o que cai em cada dia e repete tudo na lista.",
+      "valores": {
+        "grade": {
+          "uso": "Escolher um dia ou um intervalo vendo o mês."
+        },
+        "agenda": {
+          "uso": "Ler o mês: calendário acadêmico, datas de prova, feriados.",
+          "classe": "ucam-calendario--agenda",
+          "tokens": {
+            "evento": "color.feedback.*.graphic"
+          }
+        }
+      }
+    },
+    {
+      "nome": "selection",
+      "tipo": "'single' | 'range' | 'none'",
+      "default": "'single'",
+      "descricao": "none é a agenda só de leitura; range escolhe início e fim com dois toques."
+    },
+    {
+      "nome": "value",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Dia escolhido, em ISO (aaaa-mm-dd)."
+    },
+    {
+      "nome": "range",
+      "tipo": "UcamDateRange | null",
+      "default": "null",
+      "descricao": "{ start, end } em ISO, quando selection é range."
+    },
+    {
+      "nome": "month",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Mês visível (aaaa-mm). Omitido, abre no mês do valor ou no de hoje."
+    },
+    {
+      "nome": "min",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "ISO. Dia antes dele fica aria-disabled e não é escolhido."
+    },
+    {
+      "nome": "max",
+      "tipo": "string | null",
+      "default": "null"
+    },
+    {
+      "nome": "events",
+      "tipo": "UcamCalendarEvent[]",
+      "default": "[]",
+      "descricao": "Eventos da agenda: { date, title, tone? }."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "obrigatorio": true,
+      "descricao": "Nome do calendário para o leitor de tela: Calendário acadêmico de 2026, Escolher a data da prova."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string | null",
+      "descricao": "Dia escolhido, em ISO."
+    },
+    {
+      "nome": "rangeChange",
+      "payload": "UcamDateRange",
+      "descricao": "Intervalo escolhido. Sai a cada toque: o primeiro traz end nulo."
+    },
+    {
+      "nome": "monthChange",
+      "payload": "string",
+      "descricao": "Mês visível, aaaa-mm — para a aplicação buscar os eventos dele."
+    },
+    {
+      "nome": "daySelect",
+      "payload": "string",
+      "descricao": "Na agenda, o dia ativado (ISO). A lista rola até os eventos dele."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "disabled",
+    "today",
+    "selected",
+    "in-range"
+  ],
+  "limites": {
+    "regras": [
+      "Data de nascimento, vencimento, data conhecida: DateField. Ninguém navega quarenta anos de mês em mês.",
+      "A agenda não é grade de horário: mostra o que cai em cada DIA, não a hora. Aula por horário é tabela.",
+      "Até dois eventos por célula; o resto vira \"+N\" e está na lista. Célula que cresce para caber tudo quebra a grade do mês.",
+      "Cor do evento é apoio, não informação: o título diz o que é, e a lista repete com o tipo por extenso."
+    ],
+    "criterio": "Se a pessoa precisa VER o mês para decidir ou entender, é Calendar. Se ela já sabe a data, é DateField."
+  },
+  "acessibilidade": {
+    "papel": "grid de dias (table com th de semana) e um button por dia; a agenda é region com nome",
+    "teclado": [
+      {
+        "tecla": "Setas",
+        "comportamento": "Andam um dia (← →) ou uma semana (↑ ↓). Um dia focável por vez (roving tabindex)."
+      },
+      {
+        "tecla": "PageUp / PageDown",
+        "comportamento": "Mês anterior / próximo, mantendo o dia."
+      },
+      {
+        "tecla": "Home / End",
+        "comportamento": "Início / fim da semana."
+      },
+      {
+        "tecla": "Enter / Espaço",
+        "comportamento": "Escolhe o dia (grade) ou ativa os eventos dele (agenda)."
+      }
+    ],
+    "requisitos": [
+      "Cada dia tem nome completo: \"21 de outubro de 2026, quarta\" — o número sozinho não diz o mês.",
+      "Na agenda o nome do dia inclui os eventos: \"21 de outubro, quarta, 2 eventos: Prova de Estatística, Entrega de notas\".",
+      "O mês visível é anunciado (aria-live=polite) quando muda.",
+      "Hoje se distingue por peso e traço, não por cor; escolhido por preenchimento E aria-pressed (WCAG 1.4.1).",
+      "A lista de eventos existe sem script e repete toda a informação da grade (WCAG 1.3.1).",
+      "Dia fora de min/max é aria-disabled, continua focável para ser lido e não é escolhido."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.1",
+      "1.4.11",
+      "2.1.1",
+      "2.4.3",
+      "2.4.7",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": [
+      "O nome diz qual calendário: Calendário acadêmico de 2026, Datas de prova de Estatística I."
+    ],
+    "evento": {
+      "bom": [
+        "Prova de Estatística I",
+        "Feriado: Tiradentes",
+        "Prazo de lançamento de notas"
+      ],
+      "ruim": [
+        "P1",
+        "Evento",
+        "Atividade acadêmica"
+      ]
+    }
+  },
+  "composicao": {
+    "usada_por": [
+      "ucam-date-field",
+      "ucam-date-range-field"
+    ]
+  },
+  "migracao": {
+    "de": "Datepicker do Materialize, mat-datepicker solto e tabela de calendário acadêmico",
+    "mapa": [
+      {
+        "legado": "tabela paginada de atividades, regimes e feriados (Extensão)",
+        "novo": "<ucam-calendar variant=\"agenda\">",
+        "nota": "Os mesmos registros viram eventos do mês; a tabela de cadastro continua existindo para editar."
+      },
+      {
+        "legado": "mat-datepicker / datepicker do Materialize usado sem campo",
+        "novo": "<ucam-calendar>"
+      },
+      {
+        "legado": "mini-calendário desenhado à mão no cartão",
+        "novo": "<ucam-calendar variant=\"agenda\" selection=\"none\">"
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Escolher um dia",
+      "codigo": "<ucam-calendar label=\"Data da prova\" [(value)]=\"dataProva\" min=\"2026-10-01\" />"
+    },
+    {
+      "titulo": "Agenda do mês",
+      "codigo": "<ucam-calendar variant=\"agenda\" selection=\"none\" label=\"Calendário acadêmico de 2026\" [events]=\"eventos\" (monthChange)=\"carregar($event)\" />"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Repetir os eventos da agenda na lista em texto.",
+      "evite": "Deixar a informação só na cor e na célula.",
+      "porque": "Célula de 40px corta título, e cor não é lida por quem não vê."
+    },
+    {
+      "faca": "Abrir no mês que importa: o do valor, ou o do evento mais próximo.",
+      "evite": "Abrir sempre em janeiro.",
+      "porque": "O primeiro gesto da pessoa seria navegar até o mês que ela já queria."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "date-field",
+      "diferenca": "DateField é o campo onde se DIGITA uma data, com a grade como apoio num popover; Calendar é a grade solta, aberta na página, ou a agenda que mostra o que cai em cada dia.",
+      "escolha": "A pessoa sabe a data: DateField. Precisa ver o mês: Calendar."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "<div class=\"ucam-calendario ucam-calendario--solto\" data-calendario=\"single|range\" data-valor data-ate data-min data-max data-alvo=\"id-do-input\"> — o comportamento (calendarioScript) desenha a grade e grava o ISO no input apontado por data-alvo, disparando input e change. Agenda: <section class=\"ucam-calendario ucam-calendario--agenda\" data-calendario=\"agenda\" data-mes=\"aaaa-mm\" aria-label> com <ol class=\"ucam-calendario__lista\"> de <li data-data=\"aaaa-mm-dd\" data-tom> — a lista é a fonte; o script monta a grade a partir dela e filtra pelo mês.",
+      "raiz": ".ucam-calendario",
+      "estado": "Sem classe de estado: hoje é aria-current=date, escolhido é aria-pressed, intervalo é data-intervalo e data-ponta, bloqueado é aria-disabled.",
+      "nota": "A grade é desenhada pela MESMA função do popover do DateField (FN_CALENDARIO em tools/lib/shell.mjs) — duas grades teriam dois teclados e dois desenhos de hoje."
+    },
+    "trilho_b": "ui/projects/ui/src/lib/ucam/calendar/ucam-calendar.ts — <ucam-calendar>. Entradas: variant, selection, value, range, month, min, max, events, label. Escrito do zero: a ZardUI tem calendar, mas sem agenda nem intervalo."
+  }
+}

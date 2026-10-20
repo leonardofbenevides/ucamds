@@ -3,6 +3,7 @@ import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input, 
 
 import { UcamIcon } from '../icon/ucam-icon';
 import { UcamIconButton } from '../icon-button/ucam-icon-button';
+import { UcamBreadcrumb, type UcamCrumb } from '../breadcrumb/ucam-breadcrumb';
 
 /**
  * Contrato: spec/components/page-header.json
@@ -11,14 +12,13 @@ import { UcamIconButton } from '../icon-button/ucam-icon-button';
  * no topo, botão acima da tabela, e rodapé do card. Este componente fixa uma:
  * ação da tela no cabeçalho, à direita do título.
  */
-export interface UcamCrumb { label: string; link?: string; }
 
 export type UcamPageHeaderVariante = 'pagina' | 'barra';
 
 @Component({
   selector: 'ucam-page-header',
   exportAs: 'ucamPageHeader',
-  imports: [NgTemplateOutlet, UcamIcon, UcamIconButton],
+  imports: [NgTemplateOutlet, UcamIcon, UcamIconButton, UcamBreadcrumb],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { '[class]': 'hospedeiro()' },
@@ -36,39 +36,9 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
       3. mb-1 colava a trilha no título. Ela é uma faixa própria, acima do
          cabeçalho, e precisa do respiro que a separa dele.
     -->
-    <ng-template #trilha>
-      <nav aria-label="Trilha">
-        <ol class="flex flex-wrap items-center gap-x-2 gap-y-0 text-xs leading-[1.6] m-0 p-0 list-none">
-          @for (c of breadcrumb(); track c.label; let last = $last) {
-            <li class="flex items-center gap-x-2">
-              @if (c.link && !last) {
-                <!--
-                  Sublinhado em repouso, apagado, que acende no hover: cor
-                  sozinha não distingue link de texto corrido (WCAG 1.4.1), e
-                  a trilha é o lugar do sistema em que link e não-link ficam
-                  colados na mesma linha.
-                -->
-                <a
-                  [href]="c.link"
-                  class="text-[var(--ucam-color-text-secondary)] underline decoration-[var(--ucam-color-border-default)] decoration-1 underline-offset-[0.25em] rounded-sm transition-colors hover:text-foreground hover:decoration-current"
-                  >{{ c.label }}</a
-                >
-              } @else {
-                <!-- A página atual não é link e é a única em tinta cheia. -->
-                <span class="font-medium text-foreground" [attr.aria-current]="last ? 'page' : null">{{
-                  c.label
-                }}</span>
-              }
-              <!--
-                aria-hidden no separador: sem isso o leitor de tela lê "barra"
-                entre cada degrau. A estrutura de lista já entrega a hierarquia.
-              -->
-              @if (!last) { <span class="text-[var(--ucam-color-border-strong)] select-none" aria-hidden="true">/</span> }
-            </li>
-          }
-        </ol>
-      </nav>
-    </ng-template>
+    <!-- A trilha é o UcamBreadcrumb desde 19/10/2026 (ADR-074): o mesmo
+         desenho, agora num componente que a tela usa também sem cabeçalho. -->
+    <ng-template #trilha><ucam-breadcrumb [items]="breadcrumb() ?? []" /></ng-template>
 
     <!-- Um <ng-content> só: projeção não se repete entre ramos de @if, e as
          ações vivem na linha do título nas duas variantes. -->

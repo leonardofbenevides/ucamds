@@ -234,6 +234,10 @@
       "componente": "select",
       "diferenca": "Select escolhe um VALOR que fica no formulário; menu dispara uma AÇÃO e não guarda nada.",
       "escolha": "Se cada item faz algo acontecer — Exportar, Duplicar, Excluir —, é menu. Menu que parece campo faz a pessoa esperar um valor que nunca aparece."
+    },
+    {
+      "componente": "popover",
+      "diferenca": "Menu é uma lista de comandos ou destinos, navegada por setas; Popover é conteúdo livre — campos, texto, ações — navegado por Tab."
     }
   ],
   "eventos": [

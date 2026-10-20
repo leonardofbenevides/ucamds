@@ -282,7 +282,7 @@
       "instalacao": "npx ucam-cli add date-field",
       "importacao": "import { UcamDateField } from '@ucam/ui';",
       "principal": {
-        "preview": "<div class='ucam-form-row' style='--ucam-cols:max-content max-content'><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='df1'>Data de nascimento</label><input class='ucam-input' id='df1' value='14/03/1998' aria-describedby='df1-h'><span class='ucam-field__hint' id='df1-h'>dd/mm/aaaa</span></div><div class='ucam-field ucam-field--mes'><label class='ucam-field__label' for='df2'>Referência</label><input class='ucam-input' id='df2' value='08/2026' aria-describedby='df2-h'><span class='ucam-field__hint' id='df2-h'>mm/aaaa</span></div></div>",
+        "preview": "<div class='ucam-form-row' style='--ucam-cols:max-content max-content'><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='df1'>Data de nascimento</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='df1' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='14/03/1998' data-data aria-haspopup='dialog' aria-expanded='false' aria-describedby='df1-h'></span><span class='ucam-field__hint' id='df1-h'>dd/mm/aaaa</span></div><div class='ucam-field ucam-field--mes'><label class='ucam-field__label' for='df2'>Referência</label><input class='ucam-input' id='df2' value='08/2026' aria-describedby='df2-h'><span class='ucam-field__hint' id='df2-h'>mm/aaaa</span></div></div>",
         "codigo": "<ucam-date-field label=\"Data de nascimento\" autocomplete=\"bday\" required />\n<ucam-date-field label=\"Referência\" precision=\"month\" required />"
       },
       "exemplos": [
@@ -918,6 +918,116 @@
         "codigo": "<ucam-salvamento [estado]=\"fila.estado()\" [pendentes]=\"fila.pendentes()\" [mensagem]=\"fila.erro()\" />"
       },
       "exemplos": []
+    },
+    "calendar": {
+      "instalacao": "npx ucam-cli add calendar",
+      "importacao": "import { UcamCalendar } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-calendario ucam-calendario--solto' role='group' aria-label='Data da prova' data-calendario='single' data-valor='2026-10-21' data-min='2026-10-05'></div>",
+        "codigo": "<ucam-calendar label=\"Data da prova\" min=\"2026-10-05\" [(value)]=\"dataProva\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "A agenda do mês",
+          "descricao": "O calendário acadêmico como mês: cada dia mostra o que cai nele, até dois eventos, e a lista embaixo repete tudo em texto. A lista é a fonte — sem script ela continua legível. Ative um dia para ver os eventos dele marcados na lista.",
+          "preview": "<section class='ucam-calendario ucam-calendario--agenda' data-calendario='agenda' data-mes='2026-10' aria-label='Calendário acadêmico de 2026'><ol class='ucam-calendario__lista'><li data-data='2026-10-05' data-tom='info'><time datetime='2026-10-05'>05/10, seg</time>Início das aulas do módulo 2</li><li data-data='2026-10-12'><time datetime='2026-10-12'>12/10, seg</time>Feriado: Nossa Senhora Aparecida</li><li data-data='2026-10-15' data-tom='warning'><time datetime='2026-10-15'>15/10, qui</time>Prazo de trancamento</li><li data-data='2026-10-21' data-tom='danger'><time datetime='2026-10-21'>21/10, qua</time>Prova de Estatística I</li><li data-data='2026-10-21' data-tom='danger'><time datetime='2026-10-21'>21/10, qua</time>Prova de Metodologia</li><li data-data='2026-10-21' data-tom='warning'><time datetime='2026-10-21'>21/10, qua</time>Entrega do projeto</li><li data-data='2026-10-28' data-tom='info'><time datetime='2026-10-28'>28/10, qua</time>Conselho de classe</li><li data-data='2026-11-02'><time datetime='2026-11-02'>02/11, seg</time>Feriado: Finados</li></ol></section>",
+          "codigo": "<ucam-calendar variant=\"agenda\" selection=\"none\" label=\"Calendário acadêmico de 2026\" [events]=\"eventos\" (monthChange)=\"carregar($event)\" (daySelect)=\"abrirDia($event)\" />"
+        },
+        {
+          "titulo": "Um intervalo em dois toques",
+          "descricao": "O primeiro toque marca o início; o segundo, o fim. O miolo pinta em fundo sutil e as pontas em bordô cheio. Um terceiro toque recomeça.",
+          "preview": "<div class='ucam-calendario ucam-calendario--solto' role='group' aria-label='Semana de provas' data-calendario='range' data-valor='2026-10-19' data-ate='2026-10-23'></div>",
+          "codigo": "<ucam-calendar label=\"Semana de provas\" selection=\"range\" [(range)]=\"semana\" />"
+        }
+      ]
+    },
+    "date-range-field": {
+      "instalacao": "npx ucam-cli add date-range-field",
+      "importacao": "import { UcamDateRangeField } from '@ucam/ui';",
+      "principal": {
+        "preview": "<fieldset class='ucam-field ucam-field--data ucam-date-range' data-intervalo aria-describedby='dr1-fmt'><legend class='ucam-field__label'>Período</legend><div class='ucam-date-range__pontas'><div class='ucam-date-range__ponta'><label for='dr1-de'>De</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='dr1-de' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='01/10/2026' data-data aria-haspopup='dialog' aria-expanded='false' aria-describedby='dr1-fmt'></span></div><span class='ucam-date-range__sep' aria-hidden='true'>a</span><div class='ucam-date-range__ponta'><label for='dr1-ate'>Até</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='dr1-ate' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='15/10/2026' data-data aria-haspopup='dialog' aria-expanded='false' aria-describedby='dr1-fmt' data-min='2026-10-01'></span></div></div><span class='ucam-field__hint' id='dr1-fmt'>dd/mm/aaaa</span></fieldset>",
+        "codigo": "<ucam-date-range-field label=\"Período\" [(value)]=\"periodo\" />"
+      },
+      "exemplos": [
+        {
+          "titulo": "O fim nunca antes do começo",
+          "descricao": "Ponha em Até uma data anterior a De: o erro sai no campo final, dizendo a data. O calendário de Até bloqueia os dias antes do começo, e o de qualquer ponta marca o período inteiro.",
+          "preview": "<fieldset class='ucam-field ucam-field--data ucam-date-range' data-intervalo><legend class='ucam-field__label'>Inscrições</legend><div class='ucam-date-range__pontas'><div class='ucam-date-range__ponta'><label for='dr2-de'>De</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='dr2-de' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='10/11/2026' data-data aria-haspopup='dialog' aria-expanded='false'></span></div><span class='ucam-date-range__sep' aria-hidden='true'>a</span><div class='ucam-date-range__ponta'><label for='dr2-ate'>Até</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='dr2-ate' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' data-data aria-haspopup='dialog' aria-expanded='false' data-min='2026-11-10'></span></div></div></fieldset>",
+          "codigo": "<ucam-date-range-field label=\"Inscrições\" min=\"2026-11-01\" [(value)]=\"inscricoes\" required />"
+        }
+      ]
+    },
+    "toast": {
+      "instalacao": "npx ucam-cli add toast",
+      "importacao": "import { UcamToastService } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;flex-direction:column;align-items:flex-start;gap:.5rem'><div class='ucam-toast'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg><span class='ucam-toast__texto'>Requerimento 2026/00841 arquivado.</span><button class='ucam-toast__fechar' type='button' aria-label='Fechar confirmação'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div><div class='ucam-toast ucam-toast--warning'><svg class='ic' aria-hidden='true'><use href='#i-triangleAlert'/></svg><span class='ucam-toast__texto'>3 de 5 arquivos enviados.</span><button class='ucam-toast__fechar' type='button' aria-label='Fechar aviso'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div><div class='ucam-toast ucam-toast--danger'><svg class='ic' aria-hidden='true'><use href='#i-circleAlert'/></svg><span class='ucam-toast__texto'>grande.pdf tem 11 MB. O limite é 10 MB.</span><button class='ucam-toast__fechar' type='button' aria-label='Fechar aviso'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg></button></div></div>",
+        "codigo": "this.toast.show('Requerimento 2026/00841 arquivado.');\nthis.toast.show('3 de 5 arquivos enviados.', { tone: 'warning' });\nthis.toast.show('grande.pdf tem 11 MB. O limite é 10 MB.', { tone: 'danger' });"
+      },
+      "exemplos": [
+        {
+          "titulo": "Disparar de verdade",
+          "descricao": "O toast nasce no canto inferior direito, some em 5 segundos e para enquanto o ponteiro ou o foco estão nele. No máximo três na pilha.",
+          "preview": "<div style='display:flex;gap:.5rem;flex-wrap:wrap'><button class='ucam-btn ucam-btn--secondary' type='button' data-toast='Requerimento arquivado.'>Arquivar</button><button class='ucam-btn ucam-btn--secondary' type='button' data-toast='grande.pdf tem 11 MB. O limite é 10 MB.' data-toast-tom='danger'>Enviar arquivo grande</button></div>",
+          "codigo": "<!-- Trilho A: data-toast no botão, ou window.ucamToast(texto, tom) -->\n<button class=\"ucam-btn ucam-btn--secondary\" type=\"button\" data-toast=\"Requerimento arquivado.\">Arquivar</button>"
+        }
+      ]
+    },
+    "breadcrumb": {
+      "instalacao": "npx ucam-cli add breadcrumb",
+      "importacao": "import { UcamBreadcrumb } from '@ucam/ui';",
+      "principal": {
+        "preview": "<nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/protocolo/analise-requerimento'>Caixa de entrada</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><a href='#/templates/protocolo/analise-requerimento'>Requerimento 2026/00841</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Anexos</span></li></ol></nav>",
+        "codigo": "<ucam-breadcrumb [items]=\"[\n  { label: 'Caixa de entrada', link: '/caixa' },\n  { label: 'Requerimento 2026/00841', link: '/caixa/00841' },\n  { label: 'Anexos' }\n]\" />"
+      }
+    },
+    "spinner": {
+      "instalacao": "npx ucam-cli add spinner",
+      "importacao": "import { UcamSpinner } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div style='display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap'><span role='status' style='display:inline-flex;gap:.5rem;align-items:center'><svg class='ic ucam-spinner' aria-hidden='true'><use href='#i-loaderCircle'/></svg>Abrindo o SIGFIN…</span><button class='ucam-btn ucam-btn--primary' type='button' aria-busy='true' aria-disabled='true'><svg class='ic ucam-spinner' aria-hidden='true'><use href='#i-loaderCircle'/></svg>Salvando…</button></div>",
+        "codigo": "<ucam-spinner label=\"Abrindo o SIGFIN…\" />\n\n<!-- dentro do controle, decorativo: o botão diz aria-busy -->\n<ucam-button [loading]=\"salvando\">Salvar</ucam-button>"
+      }
+    },
+    "popover": {
+      "instalacao": "npx ucam-cli add popover",
+      "importacao": "import { UcamPopover } from '@ucam/ui';",
+      "principal": {
+        "preview": "<button class='ucam-btn ucam-btn--secondary' type='button' popovertarget='dpv1' aria-expanded='false' aria-controls='dpv1'><svg class='ic' aria-hidden='true'><use href='#i-listFilter'/></svg>Filtros</button><div class='ucam-popover' id='dpv1' popover role='dialog' aria-labelledby='dpv1-t'><h2 class='ucam-popover__titulo' id='dpv1-t'>Filtros</h2><div class='ucam-popover__corpo'><div class='ucam-field'><label class='ucam-field__label' for='dpv1-sit'>Situação</label><select class='ucam-select' id='dpv1-sit'><option>Todas</option><option selected>Em análise</option><option>Deferido</option><option>Indeferido</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='dpv1-cam'>Campus</label><select class='ucam-select' id='dpv1-cam'><option selected>Todos</option><option>Centro</option><option>Campos</option></select></div></div><div class='ucam-popover__pe'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-popover-fechar>Cancelar</button><button class='ucam-btn ucam-btn--primary ucam-btn--sm' type='button' data-popover-fechar>Aplicar</button></div></div>",
+        "codigo": "<ucam-popover label=\"Filtros\">\n  <ucam-button popoverTrigger variant=\"secondary\" icon=\"listFilter\">Filtros</ucam-button>\n  <ucam-select label=\"Situação\" [options]=\"situacoes\" [(value)]=\"situacao\" />\n  <ucam-select label=\"Campus\" [options]=\"campi\" [(value)]=\"campus\" />\n</ucam-popover>"
+      }
+    },
+    "accordion": {
+      "instalacao": "npx ucam-cli add accordion",
+      "importacao": "import { UcamAccordion } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-accordion'><details class='ucam-accordion__item' name='dac1' open><summary class='ucam-accordion__gatilho'>Documentos exigidos<span class='ucam-accordion__meta'>3 itens</span><svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></summary><div class='ucam-accordion__painel'><p>Histórico escolar, ementa das disciplinas cursadas e documento de identidade. Cópias digitalizadas em PDF, até 10 MB cada.</p></div></details><details class='ucam-accordion__item' name='dac1'><summary class='ucam-accordion__gatilho'>Prazos<svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></summary><div class='ucam-accordion__painel'><p>O pedido de isenção vai até 30/10/2026. A análise sai em até 15 dias úteis, contados da entrega do último documento.</p></div></details><details class='ucam-accordion__item' name='dac1'><summary class='ucam-accordion__gatilho'>Quem decide<svg class='ic' aria-hidden='true'><use href='#i-chevronDown'/></svg></summary><div class='ucam-accordion__painel'><p>A coordenação do curso analisa cada disciplina; a secretaria só confere os documentos.</p></div></details></div>",
+        "codigo": "<ucam-accordion>\n  <details ucamAccordionItem heading=\"Documentos exigidos\" meta=\"3 itens\" open>…</details>\n  <details ucamAccordionItem heading=\"Prazos\">…</details>\n  <details ucamAccordionItem heading=\"Quem decide\">…</details>\n</ucam-accordion>"
+      }
+    },
+    "slider": {
+      "instalacao": "npx ucam-cli add slider",
+      "importacao": "import { UcamSlider } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-field'><label class='ucam-field__label' for='dsl1'>Nota da redação</label><div class='ucam-slider'><span class='ucam-slider__limites' aria-hidden='true'>0</span><input class='ucam-slider__controle' type='range' id='dsl1' min='0' max='10' step='0.5' value='7.5' data-unidade='pontos'><span class='ucam-slider__limites' aria-hidden='true'>10</span><output class='ucam-slider__valor' for='dsl1'>7,5 pontos</output></div></div>",
+        "codigo": "<ucam-slider label=\"Nota da redação\" [min]=\"0\" [max]=\"10\" [step]=\"0.5\" unit=\"pontos\" showLimits [(value)]=\"nota\" />"
+      }
+    },
+    "number-field": {
+      "instalacao": "npx ucam-cli add number-field",
+      "importacao": "import { UcamNumberField } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-field ucam-field--qtd'><label class='ucam-field__label' for='dnf1'>Vagas</label><div class='ucam-input-group ucam-input-group--numero'><button class='ucam-input-group__acao' type='button' data-passo='-1' aria-controls='dnf1' aria-label='Diminuir vagas'><svg class='ic' aria-hidden='true'><use href='#i-minus'/></svg></button><input class='ucam-input-group__controle' id='dnf1' type='number' min='1' max='80' step='1' value='40' aria-describedby='dnf1-h'><button class='ucam-input-group__acao' type='button' data-passo='1' aria-controls='dnf1' aria-label='Aumentar vagas'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg></button></div><span class='ucam-field__hint' id='dnf1-h'>De 1 a 80.</span></div>",
+        "codigo": "<ucam-number-field label=\"Vagas\" hint=\"De 1 a 80.\" [min]=\"1\" [max]=\"80\" [(value)]=\"vagas\" />"
+      }
+    },
+    "toggle-group": {
+      "instalacao": "npx ucam-cli add toggle-group",
+      "importacao": "import { UcamToggleGroup } from '@ucam/ui';",
+      "principal": {
+        "preview": "<div class='ucam-field'><span class='ucam-field__label' id='dtg1'>Dias da aula</span><div class='ucam-toggle-group' role='group' aria-labelledby='dtg1'><button type='button' aria-pressed='false' aria-label='domingo'>D</button><button type='button' aria-pressed='true' aria-label='segunda'>S</button><button type='button' aria-pressed='false' aria-label='terça'>T</button><button type='button' aria-pressed='true' aria-label='quarta'>Q</button><button type='button' aria-pressed='false' aria-label='quinta'>Q</button><button type='button' aria-pressed='true' aria-label='sexta'>S</button><button type='button' aria-pressed='false' aria-label='sábado'>S</button></div></div>",
+        "codigo": "<ucam-toggle-group label=\"Dias da aula\" [items]=\"dias\" [(value)]=\"diasDaAula\" />"
+      }
     }
   }
 }

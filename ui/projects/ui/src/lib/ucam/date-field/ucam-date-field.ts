@@ -21,6 +21,7 @@ import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
 import { UcamButton } from '../button/ucam-button';
 import { UcamIcon } from '../icon/ucam-icon';
 import { UcamIconButton } from '../icon-button/ucam-icon-button';
+import { type DiaCal, hojeLocal, isoDe, MESES, montarMes, SEMANA, type UcamDateRange } from '../calendar/ucam-calendar-grade';
 
 /**
  * Contrato: spec/components/date-field.json
@@ -123,27 +124,8 @@ function dataReal(iso: string, precisao: UcamDatePrecision): boolean {
   return d.toISOString().slice(0, 10) === iso;
 }
 
-const MESES = [
-  'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
-  'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro',
-];
-const SEMANA: [string, string][] = [
-  ['D', 'domingo'], ['S', 'segunda'], ['T', 'terça'], ['Q', 'quarta'],
-  ['Q', 'quinta'], ['S', 'sexta'], ['S', 'sábado'],
-];
-const doisD = (n: number) => (n < 10 ? '0' : '') + n;
-const isoDe = (d: Date) => `${d.getFullYear()}-${doisD(d.getMonth() + 1)}-${doisD(d.getDate())}`;
-const hojeLocal = () => {
-  const h = new Date();
-  return new Date(h.getFullYear(), h.getMonth(), h.getDate());
-};
-
-interface DiaCal {
-  iso: string;
-  dia: number;
-  rotulo: string;
-  fora: boolean;
-}
+// A grade do mês, os nomes e o teclado vêm de calendar/ucam-calendar-grade.ts
+// desde 19/10/2026 (ADR-074): a mesma montagem do UcamCalendar.
 
 const porExtenso = (iso: string) => {
   const [a, m, d] = iso.split('-');
@@ -240,7 +222,8 @@ const porExtenso = (iso: string) => {
                             class="ucam-calendario__dia"
                             [attr.data-dia]="d.iso"
                             [attr.aria-label]="d.rotulo"
-                            [attr.aria-pressed]="d.iso === escolhido() ? 'true' : null"
+                            [attr.aria-pressed]="d.escolhido ? 'true' : null"
+                            [attr.data-intervalo]="d.noPeriodo ? '' : null"
                             [attr.aria-current]="d.iso === hoje() ? 'date' : null"
                             [attr.aria-disabled]="d.fora ? 'true' : null"
                             [tabIndex]="d.iso === focoIso() ? 0 : -1"
@@ -386,6 +369,11 @@ const porExtenso = (iso: string) => {
     }
     /* Fora de min/max: a tinta do desabilitado (ADR-042) e nada de hover —
        o dia continua na grade para a seta não saltar, mas não se escolhe. */
+    /* O miolo do período, quando o campo é uma ponta de UcamDateRangeField. */
+    ucam-date-field .ucam-calendario__dia[data-intervalo]:not([aria-pressed='true']) {
+      background: var(--ucam-color-action-primary-subtle);
+      border-radius: 0;
+    }
     ucam-date-field .ucam-calendario__dia[aria-disabled='true'] {
       color: var(--ucam-color-text-disabled);
       background: none;
@@ -431,6 +419,8 @@ export class UcamDateField implements ControlValueAccessor {
   readonly showPicker = input(true, { transform: booleanAttribute });
   /** Token HTML de autopreenchimento: `bday` em data de nascimento (WCAG 1.3.5). */
   readonly autocomplete = input<string | null>(null);
+  /** Dentro do UcamDateRangeField, o período que o calendário marca. Não se usa solto. */
+  readonly period = input<UcamDateRange | null>(null);
 
   /** O valor trafega em ISO (aaaa-mm-dd), nunca com máscara. */
   readonly value = model<string>('');
@@ -515,28 +505,14 @@ export class UcamDateField implements ControlValueAccessor {
   protected readonly hojeFora = computed(() => this.fora(this.hoje()));
 
   /** A grade do mês: semanas de domingo a sábado, vazio antes do dia 1. */
-  protected readonly semanas = computed<(DiaCal | null)[][]>(() => {
-    const ano = this.foco().getFullYear();
-    const mes = this.foco().getMonth();
-    const dias = new Date(ano, mes + 1, 0).getDate();
-    const linhas: (DiaCal | null)[][] = [];
-    let linha: (DiaCal | null)[] = Array(new Date(ano, mes, 1).getDay()).fill(null);
-    for (let dia = 1; dia <= dias; dia++) {
-      const d = new Date(ano, mes, dia);
-      const iso = isoDe(d);
-      linha.push({
-        iso,
-        dia,
-        rotulo: `${dia} de ${MESES[mes]} de ${ano}, ${SEMANA[d.getDay()][1]}`,
-        fora: this.fora(iso),
-      });
-      if (d.getDay() === 6 || dia === dias) {
-        linhas.push(linha);
-        linha = [];
-      }
-    }
-    return linhas;
-  });
+  protected readonly semanas = computed<(DiaCal | null)[][]>(() =>
+    montarMes(this.foco(), {
+      escolhido: this.escolhido(),
+      periodo: this.period(),
+      min: this.min(),
+      max: this.max(),
+    }),
+  );
 
   protected readonly display = computed(() => {
     const d = this.rascunho ?? this.digitos();
