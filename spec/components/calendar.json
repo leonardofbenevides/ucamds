@@ -7,11 +7,12 @@
   "version": "0.1.0",
   "since": "0.2.0",
   "category": "formulario",
-  "description": "O mês inteiro à vista. Tem duas formas: a GRADE, que escolhe um dia ou um intervalo sem campo de texto (a mesma grade que o DateField abre), e a AGENDA, que mostra em cada dia o que acontece nele — prova, feriado, prazo — e repete os eventos numa lista legível por baixo. Não substitui o DateField: data que a pessoa sabe de cor é mais rápida digitada.",
+  "description": "O tempo à vista, em quatro tipos — dia, mês, semestre e ano — e duas formas. A GRADE escolhe um dia, um mês, um semestre (2026.1, 2026.2) ou um ano, ou um período de qualquer um deles; o título sobe de nível (dias → meses → anos) para chegar longe sem andar mês a mês. A AGENDA mostra em cada dia o que cai nele e repete os eventos numa lista legível por baixo. Não substitui o DateField: data que a pessoa sabe de cor é mais rápida digitada.",
   "quando_usar": [
     "A escolha depende de ver o mês: o dia livre entre provas, a semana inteira de um regime.",
     "O calendário acadêmico, as datas de prova de uma disciplina, os feriados da unidade — o que a tela precisa mostrar é o mês com o que cai em cada dia.",
-    "O intervalo é escolhido olhando o desenho dele: de segunda a sexta da semana de provas."
+    "O intervalo é escolhido olhando o desenho dele: de segunda a sexta da semana de provas.",
+    "Escolher semestre letivo, competência (mês) ou ano de referência — o que hoje são dois selects lado a lado ou um campo de texto livre."
   ],
   "evidencia": {
     "origem": "UCAM-repos/extensao-frontend e UCAM-repos/rel-contabilidade-frontend",
@@ -44,6 +45,24 @@
       "obrigatorio": true,
       "descricao": "Mês anterior, nome do mês (aria-live=polite) e próximo mês.",
       "classe": "ucam-calendario__cabeca"
+    },
+    {
+      "parte": "titulo",
+      "obrigatorio": false,
+      "descricao": "Botão no lugar do nome do mês quando há nível acima: leva de dias a meses e de meses a anos. Diz que é clicável pelo chevron.",
+      "classe": "ucam-calendario__titulo"
+    },
+    {
+      "parte": "opcoes",
+      "obrigatorio": false,
+      "descricao": "A grade dos níveis acima do dia: 12 meses, 2 semestres ou 12 anos.",
+      "classe": "ucam-calendario__opcoes"
+    },
+    {
+      "parte": "opcao",
+      "obrigatorio": false,
+      "descricao": "Um mês, semestre ou ano. Os mesmos estados do dia: escolhido, no período, atual (o que contém hoje), fora de min/max. O semestre tem duas linhas: \"1º semestre\" e \"2026.1 · jan – jun\".",
+      "classe": "ucam-calendario__opcao"
     },
     {
       "parte": "mes",
@@ -114,16 +133,28 @@
       "descricao": "none é a agenda só de leitura; range escolhe início e fim com dois toques."
     },
     {
+      "nome": "precision",
+      "tipo": "'day' | 'month' | 'semester' | 'year'",
+      "default": "'day'",
+      "descricao": "O que se escolhe, e a chave do valor: dia aaaa-mm-dd, mês aaaa-mm, semestre aaaa.1 (jan–jun) ou aaaa.2 (jul–dez), ano aaaa. É a notação que as telas já usam para semestre. Abre no nível da precisão; o título sobe aos níveis acima, e escolher acima desce. A agenda é sempre de dia."
+    },
+    {
       "nome": "value",
       "tipo": "string | null",
       "default": "null",
-      "descricao": "Dia escolhido, em ISO (aaaa-mm-dd)."
+      "descricao": "O escolhido, na chave da precisão (aaaa-mm-dd, aaaa-mm, aaaa.s ou aaaa)."
     },
     {
       "nome": "range",
       "tipo": "UcamDateRange | null",
       "default": "null",
-      "descricao": "{ start, end } em ISO, quando selection é range."
+      "descricao": "{ start, end } nas chaves da precisão, quando selection é range: de 2026.1 a 2027.2, de 03/2026 a 08/2026."
+    },
+    {
+      "nome": "period",
+      "tipo": "UcamDateRange | null",
+      "default": "null",
+      "descricao": "Marca um período sem escolhê-lo. É como o DateField que é ponta de um DateRangeField mostra o período inteiro no popover."
     },
     {
       "nome": "month",
@@ -191,7 +222,8 @@
       "Data de nascimento, vencimento, data conhecida: DateField. Ninguém navega quarenta anos de mês em mês.",
       "A agenda não é grade de horário: mostra o que cai em cada DIA, não a hora. Aula por horário é tabela.",
       "Até dois eventos por célula; o resto vira \"+N\" e está na lista. Célula que cresce para caber tudo quebra a grade do mês.",
-      "Cor do evento é apoio, não informação: o título diz o que é, e a lista repete com o tipo por extenso."
+      "Cor do evento é apoio, não informação: o título diz o que é, e a lista repete com o tipo por extenso.",
+      "Semestre é calendário civil: 1 = janeiro a junho, 2 = julho a dezembro. O período letivo de cada regime, com datas próprias, é dado do calendário acadêmico, não do componente."
     ],
     "criterio": "Se a pessoa precisa VER o mês para decidir ou entender, é Calendar. Se ela já sabe a data, é DateField."
   },
@@ -213,6 +245,10 @@
       {
         "tecla": "Enter / Espaço",
         "comportamento": "Escolhe o dia (grade) ou ativa os eventos dele (agenda)."
+      },
+      {
+        "tecla": "Setas na grade de meses, semestres ou anos",
+        "comportamento": "Uma opção para os lados, uma fileira para cima e para baixo; PageUp/PageDown, uma página (um ano, ou doze anos)."
       }
     ],
     "requisitos": [
@@ -221,7 +257,9 @@
       "O mês visível é anunciado (aria-live=polite) quando muda.",
       "Hoje se distingue por peso e traço, não por cor; escolhido por preenchimento E aria-pressed (WCAG 1.4.1).",
       "A lista de eventos existe sem script e repete toda a informação da grade (WCAG 1.3.1).",
-      "Dia fora de min/max é aria-disabled, continua focável para ser lido e não é escolhido."
+      "Dia fora de min/max é aria-disabled, continua focável para ser lido e não é escolhido.",
+      "O título que sobe de nível é botão com nome que diz para onde: \"outubro de 2026, escolher o mês e o ano\".",
+      "Mês, semestre e ano têm nome completo: \"março de 2026\", \"1º semestre de 2026, janeiro a junho\"."
     ],
     "criterios_wcag": [
       "1.3.1",
@@ -282,6 +320,18 @@
     {
       "titulo": "Agenda do mês",
       "codigo": "<ucam-calendar variant=\"agenda\" selection=\"none\" label=\"Calendário acadêmico de 2026\" [events]=\"eventos\" (monthChange)=\"carregar($event)\" />"
+    },
+    {
+      "titulo": "Semestre",
+      "codigo": "<ucam-calendar label=\"Semestre de ingresso\" precision=\"semester\" [(value)]=\"semestre\" />"
+    },
+    {
+      "titulo": "Competência (mês)",
+      "codigo": "<ucam-calendar label=\"Competência\" precision=\"month\" [(value)]=\"competencia\" />"
+    },
+    {
+      "titulo": "Ano de conclusão",
+      "codigo": "<ucam-calendar label=\"Ano de conclusão\" precision=\"year\" max=\"2026-12-31\" [(value)]=\"ano\" />"
     }
   ],
   "boas_praticas": [
@@ -305,11 +355,11 @@
   ],
   "implementacao": {
     "trilho_a": {
-      "contrato": "<div class=\"ucam-calendario ucam-calendario--solto\" data-calendario=\"single|range\" data-valor data-ate data-min data-max data-alvo=\"id-do-input\"> — o comportamento (calendarioScript) desenha a grade e grava o ISO no input apontado por data-alvo, disparando input e change. Agenda: <section class=\"ucam-calendario ucam-calendario--agenda\" data-calendario=\"agenda\" data-mes=\"aaaa-mm\" aria-label> com <ol class=\"ucam-calendario__lista\"> de <li data-data=\"aaaa-mm-dd\" data-tom> — a lista é a fonte; o script monta a grade a partir dela e filtra pelo mês.",
+      "contrato": "<div class=\"ucam-calendario ucam-calendario--solto\" data-calendario=\"single|range\" data-valor data-ate data-min data-max data-alvo=\"id-do-input\"> com data-precisao=\"day|month|semester|year\" — o comportamento (calendarioScript) desenha a grade e grava o ISO no input apontado por data-alvo, disparando input e change. Agenda: <section class=\"ucam-calendario ucam-calendario--agenda\" data-calendario=\"agenda\" data-mes=\"aaaa-mm\" aria-label> com <ol class=\"ucam-calendario__lista\"> de <li data-data=\"aaaa-mm-dd\" data-tom> — a lista é a fonte; o script monta a grade a partir dela e filtra pelo mês.",
       "raiz": ".ucam-calendario",
       "estado": "Sem classe de estado: hoje é aria-current=date, escolhido é aria-pressed, intervalo é data-intervalo e data-ponta, bloqueado é aria-disabled.",
-      "nota": "A grade é desenhada pela MESMA função do popover do DateField (FN_CALENDARIO em tools/lib/shell.mjs) — duas grades teriam dois teclados e dois desenhos de hoje."
+      "nota": "A grade é um motor só (Calendario em FN_CALENDARIO, tools/lib/shell.mjs): o popover do DateField e o calendário solto usam o mesmo, com os mesmos níveis e o mesmo teclado. No Trilho B o UcamDateField põe o próprio UcamCalendar no popover (ADR-077)."
     },
-    "trilho_b": "ui/projects/ui/src/lib/ucam/calendar/ucam-calendar.ts — <ucam-calendar>. Entradas: variant, selection, value, range, month, min, max, events, label. Escrito do zero: a ZardUI tem calendar, mas sem agenda nem intervalo."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/calendar/ucam-calendar.ts — <ucam-calendar>. Entradas: variant, selection, precision, value, period, range, month, min, max, events, label. Escrito do zero: a ZardUI tem calendar, mas sem agenda nem intervalo."
   }
 }

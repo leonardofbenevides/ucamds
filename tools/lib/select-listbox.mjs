@@ -87,6 +87,9 @@ export function listboxSelects(html) {
       const dados = (attrs.match(/\sdata-[a-z0-9-]+(?:=(['"])[\s\S]*?\1)?/g) || []).join('');
       const opcoes = lerOpcoes(miolo);
       if (!opcoes.length) return _;
+      // MÚLTIPLO E RECORTE (ADR-078) ficam com o conversor do navegador, que
+      // monta o painel: a marcação do painel mora num lugar só.
+      if (/\bmultiple\b/.test(attrs) || /data-recorte-opcoes=/.test(attrs)) return _;
 
       const iSel = Math.max(0, opcoes.findIndex((o) => o.selecionada));
       const rotulo = opcoes[iSel]?.texto ?? '';
@@ -138,13 +141,45 @@ export const listboxScript = `
   var aberta = null;
 
   function itens(lb) {
-    return Array.prototype.slice.call(lb.querySelectorAll('.ucam-option:not([aria-disabled="true"])'));
+    return Array.prototype.slice.call(lb.querySelectorAll('.ucam-option:not([aria-disabled="true"]):not([hidden])'));
+  }
+  function gatilhoDe(lb) { return document.querySelector('[aria-controls="' + lb.id + '"]'); }
+  function multiplo(lb) { return !!lb.querySelector('[aria-multiselectable="true"]'); }
+  function painel(lb) { return lb.classList.contains('ucam-listbox--painel'); }
+  /* O GATILHO DO MÚLTIPLO diz o que foi marcado: nenhum = o texto de vazio,
+   * um = o nome dele, mais = o primeiro e "+N". Os valores vão em
+   * data-valores, separados por |, e o change borbulha como no simples. */
+  function rotulaMultiplo(g, lb, avisa) {
+    var marcadas = Array.prototype.slice.call(lb.querySelectorAll('.ucam-option[aria-selected="true"]'));
+    var vazio = g.getAttribute('data-texto-vazio') || 'Selecione';
+    g.textContent = marcadas.length === 0 ? vazio : marcadas[0].textContent.trim() + (marcadas.length > 1 ? ' +' + (marcadas.length - 1) : '');
+    if (marcadas.length) g.removeAttribute('data-vazio'); else g.setAttribute('data-vazio', 'true');
+    g.setAttribute('data-valores', marcadas.map(function (o) { return o.getAttribute('data-valor'); }).join('|'));
+    var cont = lb.querySelector('[data-listbox-contagem]');
+    if (cont) cont.textContent = marcadas.length === 0 ? 'Nenhum marcado' : marcadas.length === 1 ? '1 marcado' : marcadas.length + ' marcados';
+    if (avisa) g.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  /* O RECORTE dentro do painel: a fileira de alternância esconde as opções
+   * de outro recorte. "Todos" é o valor vazio. As marcadas que saem de vista
+   * continuam marcadas — recortar não é desmarcar. */
+  function recorta(lb, valor) {
+    Array.prototype.forEach.call(lb.querySelectorAll('[data-recorte-valor]'), function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-recorte-valor') === valor ? 'true' : 'false');
+    });
+    var algum = false;
+    Array.prototype.forEach.call(lb.querySelectorAll('.ucam-option'), function (o) {
+      var fora = !!valor && o.getAttribute('data-recorte') !== valor;
+      o.hidden = fora;
+      if (!fora) algum = true;
+    });
+    var vazio = lb.querySelector('[data-listbox-vazio]');
+    if (vazio) vazio.hidden = algum;
   }
   function destacar(lb, el) {
     itens(lb).forEach(function (o) { o.removeAttribute('data-destacada'); });
     if (!el) return;
     el.setAttribute('data-destacada', 'true');
-    document.getElementById(lb.getAttribute('aria-labelledby')).setAttribute('aria-activedescendant', el.id);
+    gatilhoDe(lb).setAttribute('aria-activedescendant', el.id);
     el.scrollIntoView({ block: 'nearest' });
   }
   // Até onde a lista pode descer: o fundo do ancestral mais próximo que
@@ -224,18 +259,41 @@ export const listboxScript = `
       if (aberta === gatilho) fechar(true); else abrir(gatilho);
       return;
     }
+    var lbAberta = aberta && document.getElementById(aberta.getAttribute('aria-controls'));
     var opcao = e.target.closest('.ucam-option');
-    if (opcao && aberta && !opcao.hasAttribute('aria-disabled')) {
-      escolher(aberta, opcao);
+    if (opcao && aberta && lbAberta.contains(opcao) && !opcao.hasAttribute('aria-disabled')) {
+      if (multiplo(lbAberta)) {
+        opcao.setAttribute('aria-selected', opcao.getAttribute('aria-selected') === 'true' ? 'false' : 'true');
+        destacar(lbAberta, opcao);
+        rotulaMultiplo(aberta, lbAberta, true);
+      } else escolher(aberta, opcao);
+      return;
+    }
+    if (lbAberta && lbAberta.contains(e.target)) {
+      var r = e.target.closest('[data-recorte-valor]');
+      if (r) { recorta(lbAberta, r.getAttribute('data-recorte-valor')); destacar(lbAberta, itens(lbAberta)[0]); return; }
+      if (e.target.closest('[data-listbox-limpar]')) {
+        Array.prototype.forEach.call(lbAberta.querySelectorAll('.ucam-option'), function (o) { o.setAttribute('aria-selected', 'false'); });
+        rotulaMultiplo(aberta, lbAberta, true);
+        aberta.focus();
+      }
       return;
     }
     fechar(false);
+  });
+  // No painel o foco pode entrar (Tab vai do gatilho ao recorte e ao Limpar);
+  // ele fecha quando o foco sai do campo inteiro.
+  document.addEventListener('focusin', function (e) {
+    if (!aberta) return;
+    var wrap = aberta.closest('.ucam-select-wrap');
+    if (wrap && !wrap.contains(e.target)) fechar(false);
   });
 
   document.addEventListener('keydown', function (e) {
     // e.target é o DOCUMENTO quando o foco não está em elemento nenhum — e
     // documento não tem closest. Sem esta guarda, a primeira tecla depois de
     // fechar uma sobreposição lança e mata o resto deste tratador.
+    if (e.key === 'Escape' && aberta && e.target.closest && e.target.closest('.ucam-listbox--painel')) { fechar(true); return; }
     var gatilho = e.target.closest && e.target.closest('[data-listbox]');
     if (!gatilho || gatilho.disabled) return;
     var lb = document.getElementById(gatilho.getAttribute('aria-controls'));
@@ -252,8 +310,15 @@ export const listboxScript = `
     else if (e.key === 'ArrowUp') { e.preventDefault(); destacar(lb, lista[Math.max(i - 1, 0)]); }
     else if (e.key === 'Home') { e.preventDefault(); destacar(lb, lista[0]); }
     else if (e.key === 'End') { e.preventDefault(); destacar(lb, lista[lista.length - 1]); }
-    else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (atual) escolher(gatilho, atual); }
-    else if (e.key === 'Tab') { fechar(false); }
+    else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (!atual) return;
+      if (multiplo(lb)) {
+        atual.setAttribute('aria-selected', atual.getAttribute('aria-selected') === 'true' ? 'false' : 'true');
+        rotulaMultiplo(gatilho, lb, true);
+      } else escolher(gatilho, atual);
+    }
+    else if (e.key === 'Tab' && !painel(lb)) { fechar(false); }
   });
 
   /* O SELECT QUE NASCE DEPOIS (28/09/2026: "os combos que abrem em select
@@ -293,28 +358,75 @@ export const listboxScript = `
       wrap.appendChild(oculto);
       g.setAttribute('aria-labelledby', oculto.id + ' ' + id);
     }
-    var lb = document.createElement('ul');
-    lb.className = 'ucam-listbox';
+    var multi = sel.multiple;
+    var recorteOpcoes = sel.getAttribute('data-recorte-opcoes');
+    var comPainel = multi || !!recorteOpcoes;
+    var lb = document.createElement(comPainel ? 'div' : 'ul');
+    lb.className = 'ucam-listbox' + (comPainel ? ' ucam-listbox--painel' : '');
     lb.id = id + '-lb';
-    lb.setAttribute('role', 'listbox');
-    lb.setAttribute('aria-labelledby', nome ? id + '-nome' : id);
     lb.hidden = true;
-    var escolhida = sel.options[sel.selectedIndex] || sel.options[0];
+    var lista = lb;
+    if (comPainel) {
+      if (recorteOpcoes) {
+        // A FILEIRA DE ALTERNÂNCIA (ADR-078): "Todos" + as opções declaradas em
+        // data-recorte-opcoes (rótulo, ou rótulo:valor), separadas por |.
+        var fila = document.createElement('div');
+        fila.className = 'ucam-segmented ucam-listbox__recorte';
+        fila.setAttribute('role', 'group');
+        fila.setAttribute('aria-label', sel.getAttribute('data-recorte-rotulo') || 'Recorte');
+        [(sel.getAttribute('data-recorte-todos') || 'Todos') + ':'].concat(recorteOpcoes.split('|')).forEach(function (par, i) {
+          var p = par.split(':'), b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = p[0];
+          b.setAttribute('data-recorte-valor', p.length > 1 ? p[1] : p[0]);
+          b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+          fila.appendChild(b);
+        });
+        lb.appendChild(fila);
+      }
+      lista = document.createElement('ul');
+      lista.className = 'ucam-listbox__lista';
+      lb.appendChild(lista);
+    }
+    lista.setAttribute('role', 'listbox');
+    lista.setAttribute('aria-labelledby', nome ? id + '-nome' : id);
+    if (multi) lista.setAttribute('aria-multiselectable', 'true');
+    var escolhida = multi ? null : sel.options[sel.selectedIndex] || sel.options[0];
     Array.prototype.forEach.call(sel.options, function (o, i) {
+      if (multi && !o.value) return; // o "Selecione" não é opção marcável
       var li = document.createElement('li');
       li.className = 'ucam-option';
       li.setAttribute('role', 'option');
       li.id = id + '-o' + i;
-      li.setAttribute('aria-selected', o === escolhida ? 'true' : 'false');
+      li.setAttribute('aria-selected', (multi ? o.selected : o === escolhida) ? 'true' : 'false');
       li.setAttribute('data-valor', o.value);
+      if (o.getAttribute('data-recorte')) li.setAttribute('data-recorte', o.getAttribute('data-recorte'));
       if (o.disabled) li.setAttribute('aria-disabled', 'true');
       li.textContent = o.textContent;
-      lb.appendChild(li);
+      lista.appendChild(li);
     });
-    g.textContent = escolhida ? escolhida.textContent : '';
-    if (escolhida) g.setAttribute('data-valor', escolhida.value);
+    if (recorteOpcoes) {
+      var vz = document.createElement('li');
+      vz.className = 'ucam-listbox__vazio';
+      vz.setAttribute('role', 'presentation');
+      vz.setAttribute('data-listbox-vazio', '');
+      vz.textContent = 'Nenhuma opção neste recorte.';
+      vz.hidden = true;
+      lista.appendChild(vz);
+    }
+    if (multi) {
+      var pe = document.createElement('div');
+      pe.className = 'ucam-listbox__pe';
+      pe.innerHTML = '<span data-listbox-contagem></span><button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-listbox-limpar>Limpar</button>';
+      lb.appendChild(pe);
+      g.setAttribute('data-texto-vazio', sel.getAttribute('data-texto-vazio') || (sel.options[0] && !sel.options[0].value ? sel.options[0].textContent : 'Selecione'));
+    } else {
+      g.textContent = escolhida ? escolhida.textContent : '';
+      if (escolhida) g.setAttribute('data-valor', escolhida.value);
+    }
     wrap.appendChild(g);
     wrap.appendChild(lb);
+    if (multi) rotulaMultiplo(g, lb, false);
     sel.parentNode.replaceChild(wrap, sel);
     return g;
   }

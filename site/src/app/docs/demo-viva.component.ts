@@ -6,6 +6,7 @@ import {
   UcamAccordionItem,
   UcamBreadcrumb,
   UcamCalendar,
+  UcamDateField,
   UcamDateRangeField,
   UcamNumberField,
   UcamPopover,
@@ -72,6 +73,7 @@ import {
 export const TEM_DEMO_VIVA = new Set([
   'anexo',
   // A leva de 19/10/2026 (ADR-074).
+  'date-field',
   'accordion',
   'breadcrumb',
   'calendar',
@@ -134,6 +136,7 @@ export const TEM_DEMO_VIVA = new Set([
     UcamAccordionItem,
     UcamBreadcrumb,
     UcamCalendar,
+    UcamDateField,
     UcamDateRangeField,
     UcamNumberField,
     UcamPopover,
@@ -369,6 +372,10 @@ export const TEM_DEMO_VIVA = new Set([
                 Escolha a Natureza primeiro. Antes disso o segundo campo diz de quem depende, em vez
                 de aparecer vazio e habilitado — que é como o Protocolo falha, em silêncio.
               </p>
+
+              <p class="cena">Vários, com o recorte dentro</p>
+              <ucam-select label="Cursos" placeholder="Todos os cursos" [options]="cursosDemo" multiple [(values)]="cursosMarcados" [filter]="modalidadeDemo" />
+              <p class="small muted retorno resto">Marcados: {{ cursosMarcados().join(', ') || 'nenhum' }}. A fileira de cima recorta por modalidade sem desmarcar; o rodapé conta e limpa.</p>
             }
 
             @case ('combobox') {
@@ -842,6 +849,22 @@ export const TEM_DEMO_VIVA = new Set([
               <p class="cena">Um período em dois toques</p>
               <ucam-calendar label="Semana de provas" selection="range" [(range)]="semana" />
               <p class="small muted retorno resto">De {{ semana()?.start ?? '—' }} a {{ semana()?.end ?? '—' }}.</p>
+
+              <p class="cena">Semestre, mês e ano</p>
+              <div class="linha amostras">
+                <ucam-calendar label="Semestre de ingresso" precision="semester" [(value)]="semestreDemo" />
+                <ucam-calendar label="Competência" precision="month" [(value)]="competenciaDemo" />
+                <ucam-calendar label="Ano de conclusão" precision="year" max="2026-12-31" [(value)]="anoDemo" />
+              </div>
+              <p class="small muted retorno resto">Semestre {{ semestreDemo() ?? '—' }} · competência {{ competenciaDemo() ?? '—' }} · ano {{ anoDemo() ?? '—' }}. Em qualquer um, o título sobe de nível; na grade de dias, "outubro de 2026" leva aos meses e daí aos anos.</p>
+            }
+
+            @case ('date-field') {
+              <ucam-date-field label="Data de nascimento" autocomplete="bday" [(value)]="nascimentoDemo" />
+              <p class="small muted retorno resto">
+                Clique no campo e depois no título do calendário: ele sobe para os meses e daí para os anos.
+                1974 fica a três cliques — e digitar continua sendo o caminho rápido. Valor: {{ nascimentoDemo() || '—' }}.
+              </p>
             }
 
             @case ('date-range-field') {
@@ -1072,6 +1095,20 @@ export class DemoVivaComponent {
   protected readonly toast = inject(UcamToastService);
   protected readonly dataProva = signal<string | null>('2026-10-21');
   protected readonly diaAgenda = signal<string | null>(null);
+  protected readonly cursosDemo: UcamOption[] = [
+    { value: 'adm', label: 'Administração', filter: 'Presencial' },
+    { value: 'dir', label: 'Direito', filter: 'Presencial' },
+    { value: 'ped', label: 'Pedagogia', filter: 'EAD' },
+    { value: 'gp', label: 'Gestão Pública', filter: 'EAD' },
+    { value: 'psi', label: 'Psicologia', filter: 'Presencial' },
+    { value: 'ti', label: 'Análise de Sistemas', filter: 'EAD' },
+  ];
+  protected readonly cursosMarcados = signal<string[]>(['adm', 'ped']);
+  protected readonly modalidadeDemo = { label: 'Modalidade', options: [{ value: 'EAD', label: 'EAD' }, { value: 'Presencial', label: 'Presencial' }] };
+  protected readonly nascimentoDemo = signal('1998-03-14');
+  protected readonly semestreDemo = signal<string | null>('2026.2');
+  protected readonly competenciaDemo = signal<string | null>('2026-10');
+  protected readonly anoDemo = signal<string | null>('2019');
   protected readonly semana = signal<UcamDateRange | null>({ start: '2026-10-19', end: '2026-10-23' });
   protected readonly periodo = signal<UcamDateRange>({ start: '2026-10-01', end: '2026-10-15' });
   protected readonly eventosAgenda: UcamCalendarEvent[] = [

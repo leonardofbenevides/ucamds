@@ -7,11 +7,13 @@
   "version": "0.1.0",
   "since": "0.1.0",
   "category": "formulario",
-  "description": "Escolha de um valor em uma lista fechada, com painel desenhado pelo design system. Até 15 opções não se procura, escolhe-se: acima disso o contrato manda escalar para Combobox, que tem busca por digitação.",
+  "description": "Escolha de um valor em uma lista fechada, com painel desenhado pelo design system. Até 15 opções não se procura, escolhe-se: acima disso o contrato manda escalar para Combobox, que tem busca por digitação. Com multiple, marca várias (caixa de marcar na opção, contagem e Limpar no rodapé). Com filter, o painel ganha no topo uma fileira de alternância — Todos / EAD / Presencial — que recorta as opções; o rótulo e as opções do recorte são de quem usa (ADR-078).",
   "quando_usar": [
     "Uma lista fechada de até 15 opções em que não se procura, escolhe-se: campus, turno, situação.",
     "A opção depende de outro campo já preenchido e a lista muda com ele.",
-    "O valor vem de um domínio do sistema e digitar livremente não é aceitável."
+    "O valor vem de um domínio do sistema e digitar livremente não é aceitável.",
+    "Marcar vários de uma lista fechada que não cabe em caixas soltas: cursos, unidades, situações de um filtro.",
+    "A lista tem um recorte natural que a pessoa usa para achar a opção: modalidade (EAD, Presencial), campus, turno."
   ],
   "evidencia": {
     "origem": "APPSUCAM/Protocolo",
@@ -88,8 +90,9 @@
     },
     {
       "nome": "options",
-      "tipo": "Array<{ value: unknown; label: string; disabled?: boolean; group?: string }>",
-      "obrigatorio": true
+      "tipo": "Array<{ value: unknown; label: string; disabled?: boolean; group?: string; filter?: string }>",
+      "obrigatorio": true,
+      "descricao": "filter diz a que recorte a opção pertence (ver a prop filter)."
     },
     {
       "nome": "placeholder",
@@ -139,6 +142,24 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "Nome do campo do qual este depende. Ativa o comportamento descrito em dependencia."
+    },
+    {
+      "nome": "multiple",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Marca várias. O valor passa a ser values; marcar não fecha a lista; o gatilho diz o primeiro e \"+N\"; o rodapé conta e oferece Limpar."
+    },
+    {
+      "nome": "values",
+      "tipo": "string[]",
+      "default": "[]",
+      "descricao": "Os marcados no modo múltiplo, na ordem das opções. No Trilho A, data-valores no gatilho, separados por |."
+    },
+    {
+      "nome": "filter",
+      "tipo": "UcamSelectFilter | null",
+      "default": "null",
+      "descricao": "{ label, allLabel?, options: { value, label }[], initial? } — a fileira de alternância no topo do painel. Aberta como prop: modalidade, campus, turno, nível. Recortar não desmarca: o marcado fora de vista continua marcado. No Trilho A: data-recorte-rotulo, data-recorte-todos e data-recorte-opcoes=\"EAD|Presencial\" no <select>, e data-recorte em cada <option>."
     }
   ],
   "estados": [
@@ -175,7 +196,9 @@
       "Agrupar com optgroup quando houver categorias — não simular grupo com opções desabilitadas em caixa alta.",
       "aria-busy true durante loading.",
       "Contraste da borda mínimo 3:1 (WCAG 1.4.11).",
-      "Não disparar navegação nem submit na mudança de valor sem ação explícita do usuário (WCAG 3.2.2)."
+      "Não disparar navegação nem submit na mudança de valor sem ação explícita do usuário (WCAG 3.2.2).",
+      "No múltiplo a lista tem aria-multiselectable=true e cada opção diz aria-selected; marcar não fecha, Espaço marca e desmarca, Esc fecha e devolve o foco ao gatilho.",
+      "A fileira de recorte é um Segmented com nome (o label do filter); Tab vai do gatilho a ela e ao Limpar, e o painel fecha quando o foco sai do campo."
     ],
     "criterios_wcag": [
       "1.3.1",
@@ -230,6 +253,10 @@
     {
       "titulo": "Rótulo oculto",
       "codigo": "<ucam-select label=\"Ordenar por\" labelHidden [options]=\"ordenacoes\" />"
+    },
+    {
+      "titulo": "Múltiplo com recorte",
+      "codigo": "<ucam-select label=\"Cursos\" [options]=\"cursos\" multiple [(values)]=\"marcados\" [filter]=\"{ label: 'Modalidade', options: [{ value: 'EAD', label: 'EAD' }, { value: 'Presencial', label: 'Presencial' }] }\" />"
     }
   ],
   "boas_praticas": [
@@ -275,6 +302,11 @@
       "nome": "valueChange",
       "payload": "unknown",
       "descricao": "Valor da opção escolhida. Nunca dispara navegação nem submit por si (WCAG 3.2.2)."
+    },
+    {
+      "nome": "valuesChange",
+      "payload": "string[]",
+      "descricao": "Os marcados, a cada marca e a cada Limpar (modo múltiplo)."
     }
   ],
   "composicao": {

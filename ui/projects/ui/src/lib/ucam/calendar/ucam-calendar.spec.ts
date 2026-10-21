@@ -84,3 +84,59 @@ describe('UcamCalendar — período em dois toques', () => {
     expect(fx.componentInstance.periodo()).toEqual({ start: '2026-10-20', end: null });
   });
 });
+
+@Component({
+  imports: [UcamCalendar],
+  template: `
+    <ucam-calendar id="dia" label="Nascimento" [(value)]="nascimento" />
+    <ucam-calendar id="sem" label="Semestre de ingresso" precision="semester" [(value)]="semestre" />
+  `,
+})
+class Niveis {
+  readonly nascimento = signal<string | null>('2026-10-21');
+  readonly semestre = signal<string | null>(null);
+}
+
+describe('UcamCalendar — tipos e níveis (ADR-077)', () => {
+  async function monta() {
+    await TestBed.configureTestingModule({ imports: [Niveis] }).compileComponents();
+    const fx = TestBed.createComponent(Niveis);
+    fx.detectChanges();
+    await fx.whenStable();
+    const el: HTMLElement = fx.nativeElement;
+    const clica = async (alvo: Element | null) => {
+      (alvo as HTMLElement).click();
+      fx.detectChanges();
+      await fx.whenStable();
+    };
+    return { fx, el, clica };
+  }
+
+  it('o título sobe para meses e anos, e escolher desce de volta aos dias', async () => {
+    const { fx, el, clica } = await monta();
+    const cal = el.querySelector('#dia')!;
+    await clica(cal.querySelector('.ucam-calendario__titulo'));
+    expect(cal.querySelectorAll('[data-chave]').length).toBe(12);
+    expect(cal.querySelector('.ucam-calendario__mes')!.textContent!.trim()).toBe('2026');
+    await clica(cal.querySelector('.ucam-calendario__titulo'));
+    expect(cal.querySelector('.ucam-calendario__mes')!.textContent!.trim()).toBe('2016 – 2027');
+    // "Anos anteriores" de página em página até 1968–1979.
+    while (!cal.querySelector('[data-chave="1974"]')) await clica(cal.querySelectorAll('ucam-icon-button button')[0]);
+    await clica(cal.querySelector('[data-chave="1974"]'));
+    expect(cal.querySelector('.ucam-calendario__mes')!.textContent!.trim()).toBe('1974');
+    await clica(cal.querySelector('[data-chave="1974-03"]'));
+    expect(cal.querySelector('.ucam-calendario__mes')!.textContent!.toLowerCase()).toContain('março de 1974');
+    await clica(cal.querySelector('[data-dia="1974-03-14"]'));
+    expect(fx.componentInstance.nascimento()).toBe('1974-03-14');
+  });
+
+  it('escolhe semestre na notação aaaa.s', async () => {
+    const { fx, el, clica } = await monta();
+    const cal = el.querySelector('#sem')!;
+    const opcoes = [...cal.querySelectorAll('[data-chave]')].map((b) => b.getAttribute('data-chave'));
+    expect(opcoes).toEqual([`${new Date().getFullYear()}.1`, `${new Date().getFullYear()}.2`]);
+    await clica(cal.querySelector('[data-chave$=".2"]'));
+    expect(fx.componentInstance.semestre()).toBe(`${new Date().getFullYear()}.2`);
+    expect(cal.querySelector('[data-chave$=".2"]')!.getAttribute('aria-pressed')).toBe('true');
+  });
+});

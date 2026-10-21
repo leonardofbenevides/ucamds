@@ -1471,6 +1471,42 @@
       "afeta": [
         "stat"
       ]
+    },
+    {
+      "id": "ADR-077",
+      "titulo": "O calendário tem quatro tipos — dia, mês, semestre e ano — e o título sobe de nível",
+      "status": "aceita",
+      "data": "2026-10-21",
+      "contexto": "Em 20/10/2026: \"reveja o componente de calendar para que possa selecionar o ano, que possa ter SEMESTRES também para serem selecionados quando precisar, tipos de calendar\". O calendário da ADR-074 só andava mês a mês: data de nascimento de 1974 eram 600 cliques, e semestre, competência e ano de referência continuavam em selects soltos. As telas escrevem semestre como 2026.1 / 2026.2 (170 ocorrências contra 25 de 2026/1).",
+      "decisao": "O Calendar ganha precision (day, month, semester, year), com a chave do valor em cada tipo: aaaa-mm-dd, aaaa-mm, aaaa.1 ou aaaa.2, aaaa. O título vira botão e sobe de nível (dias → meses → anos); escolher num nível acima da precisão desce. Período em dois toques vale em todos os tipos. Semestre é o civil (1 = jan–jun, 2 = jul–dez); o período letivo com datas próprias é dado do calendário acadêmico. No Trilho A há um motor só (Calendario) para o popover do DateField e o calendário solto; no Trilho B o UcamDateField passa a usar o UcamCalendar no popover, e ganha os níveis junto.",
+      "consequencias": [
+        "Data distante no DateField: título, título, ano, mês, dia — cinco cliques, ou digitar, que continua sendo o caminho rápido.",
+        "Select de semestre ou de mês/ano pode virar Calendar com precision; o select continua valendo para lista curta e fixa.",
+        "O DateField deixa de ter grade própria no Trilho B: o teclado, o nome dos dias e o min/max saem do Calendar."
+      ],
+      "afeta": [
+        "calendar",
+        "date-field",
+        "date-range-field"
+      ]
+    },
+    {
+      "id": "ADR-078",
+      "titulo": "O Select marca vários e recorta por dentro, com a fileira de alternância como prop",
+      "status": "aceita",
+      "data": "2026-10-21",
+      "contexto": "Em 20/10/2026: \"ajuste também o select múltiplo para que possa funcionar e coloque botão toggle dentro de filtro EAD/PRESENCIAL/TODOS, coisas desse tipo, deixe aberto como prop, faça ser customizável\". O Select não tinha modo múltiplo em nenhum trilho — o contrato falava de um valor só, e o filtro das tabelas lia um valor só —, e escolher um curso entre quarenta pedia rolar a lista inteira, quando a primeira coisa que a pessoa sabe é a modalidade.",
+      "decisao": "O Select ganha multiple (valor em values, caixa de marcar na opção, lista que não fecha ao marcar, gatilho com o primeiro e \"+N\", rodapé com contagem e Limpar) e filter: uma fileira de alternância no topo do painel, Todos + as opções do recorte, que esconde as opções de outro recorte sem desmarcá-las. Rótulo, texto do Todos e opções do filter são de quem usa. No Trilho A, o <select multiple> e o data-recorte-opcoes são convertidos pelo navegador num painel (a marcação mora num lugar só) e o filtroScript filtra pela união dos marcados; no Trilho B, o UcamSelect monta o mesmo painel sobre o popover nativo quando multiple ou filter estão ligados, e fica no z-select quando não.",
+      "consequencias": [
+        "Filtro de tabela por vários valores (Cursos: Direito, Pedagogia) passa a ser um Select múltiplo com data-filtra, e a linha aparece se casar com qualquer um.",
+        "O tique do fim da opção é do simples; a caixa do começo é do múltiplo — a forma diz quantos se pode escolher.",
+        "Recortar é navegação, não escolha: o que sai de vista continua marcado e conta no gatilho."
+      ],
+      "afeta": [
+        "select",
+        "segmented",
+        "data-table"
+      ]
     }
   ]
 }

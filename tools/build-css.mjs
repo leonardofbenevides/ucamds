@@ -1844,6 +1844,73 @@ ${selectChevronCss}
 }
 
 /* Rótulo de grupo e separador, iguais aos da base. */
+/* O PAINEL DO SELECT (ADR-078): múltiplo e com recorte. A casca é a da lista;
+ * dentro, a fileira de alternância (Todos / EAD / Presencial) no topo, a lista
+ * que rola e, no múltiplo, o rodapé com a contagem e o Limpar. */
+.ucam-listbox--painel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ucam-space-inline-xs);
+  min-inline-size: max(100%, 16rem);
+  max-block-size: 26rem;
+  overflow: hidden;
+  padding: var(--ucam-space-inline-xs);
+}
+.ucam-listbox--painel[hidden] { display: none; }
+.ucam-listbox__recorte { display: flex; flex: none; }
+.ucam-listbox__recorte > button { flex: 1 1 0; justify-content: center; }
+.ucam-listbox__lista {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ucam-listbox__lista > .ucam-option[hidden],
+.ucam-listbox__vazio[hidden] { display: none; }
+.ucam-listbox__vazio {
+  padding: var(--ucam-space-inline-sm);
+  font-size: var(--ucam-typography-body-sm-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+/* :not(ucam-select *): o UcamSelect do Trilho B desenha a própria caixa, e no
+ * catálogo as duas folhas convivem (a regra do script vale para a folha). */
+/* No múltiplo a marca é a CAIXA no começo, e não o tique no fim: o tique diz
+ * "esta é a escolhida", a caixa diz "marque quantas quiser". */
+[aria-multiselectable="true"]:not(ucam-select *) > .ucam-option { padding-inline-end: var(--ucam-space-inline-sm); }
+[aria-multiselectable="true"]:not(ucam-select *) > .ucam-option::before {
+  content: '';
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border: 1px solid var(--ucam-color-border-strong);
+  border-radius: var(--ucam-radius-control-sm);
+  background: var(--ucam-color-surface-default);
+}
+[aria-multiselectable="true"]:not(ucam-select *) > .ucam-option[aria-selected="true"]::before {
+  border-color: var(--ucam-color-action-primary-default);
+  background: var(--ucam-color-action-primary-default);
+}
+[aria-multiselectable="true"]:not(ucam-select *) > .ucam-option[aria-selected="true"]::after {
+  inset-inline-start: calc(var(--ucam-space-inline-sm) + 0.1875rem);
+  inset-inline-end: auto;
+  inline-size: 0.625rem;
+  block-size: 0.625rem;
+  background: var(--ucam-color-text-on-action);
+}
+.ucam-listbox__pe {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ucam-space-inline-sm);
+  padding: var(--ucam-space-inline-xs) 0 0 var(--ucam-space-inline-sm);
+  border-block-start: 1px solid var(--ucam-color-border-subtle);
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+
 .ucam-listbox__grupo {
   padding: 0.375rem var(--ucam-space-inline-sm);
   font-size: var(--ucam-typography-caption-font-size);
@@ -2036,6 +2103,83 @@ ${selectChevronCss}
   font-size: var(--ucam-typography-body-sm-font-size);
 }
 .ucam-calendario__mes::first-letter { text-transform: uppercase; }
+/* OS NÍVEIS (ADR-077). O título é botão quando há nível acima: dias →
+ * meses → anos. Diz que é clicável em repouso pelo chevron (a seta de
+ * destino de 25/09/2026), sem caixa até o hover. */
+.ucam-calendario__titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-block-size: 2rem;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: var(--ucam-radius-control);
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ucam-calendario__titulo:hover { background: var(--ucam-color-interaction-hover); }
+.ucam-calendario__titulo:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: 1px;
+}
+.ucam-calendario__titulo .ic { inline-size: var(--ucam-size-icon-xs); block-size: var(--ucam-size-icon-xs); color: var(--ucam-color-text-secondary); }
+/* As grades de mês, semestre e ano ocupam a mesma caixa da grade de dias:
+ * trocar de nível não pode fazer o calendário pular de tamanho. */
+.ucam-calendario__opcoes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+  min-block-size: 15.25rem;
+  align-content: start;
+}
+.ucam-calendario__opcoes--semestres { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ucam-calendario__opcao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  min-block-size: 3.5rem;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: var(--ucam-radius-control);
+  background: none;
+  font: inherit;
+  font-size: var(--ucam-typography-body-sm-font-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--ucam-color-text-primary);
+  cursor: pointer;
+}
+.ucam-calendario__opcoes--semestres .ucam-calendario__opcao { min-block-size: 5rem; }
+.ucam-calendario__opcao-texto::first-letter { text-transform: uppercase; }
+.ucam-calendario__opcao-sub {
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-calendario__opcao:hover { background: var(--ucam-color-interaction-hover); }
+.ucam-calendario__opcao:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: 1px;
+}
+.ucam-calendario__opcao[aria-current="date"] {
+  font-weight: var(--ucam-typography-action-font-weight);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+.ucam-calendario__opcao[aria-pressed="true"] {
+  background: var(--ucam-color-action-primary-default);
+  color: var(--ucam-color-text-on-action);
+  font-weight: var(--ucam-typography-action-font-weight);
+}
+.ucam-calendario__opcao[aria-pressed="true"] .ucam-calendario__opcao-sub { color: inherit; }
+.ucam-calendario__opcao[data-intervalo]:not([aria-pressed="true"]) { background: var(--ucam-color-action-primary-subtle); }
+.ucam-calendario__opcao[aria-disabled="true"] { color: var(--ucam-color-text-disabled); cursor: not-allowed; }
+.ucam-calendario__opcao[aria-disabled="true"]:hover { background: none; }
+@media (forced-colors: active) {
+  .ucam-calendario__opcao[aria-pressed="true"] { outline: 2px solid CanvasText; }
+}
 .ucam-calendario__grade { inline-size: 100%; border-collapse: collapse; table-layout: fixed; }
 /* Fundo, fio e família declarados: a grade vive dentro de páginas que pintam
  * th e td por elemento (o site do DS, o Bootstrap do legado), e só o que a

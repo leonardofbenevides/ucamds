@@ -101,6 +101,86 @@ export function montarMes(foco: Date, o: OpcoesMes = {}): (DiaCal | null)[][] {
   return linhas;
 }
 
+/* ------------------------------------------------- os tipos (ADR-077) --- */
+
+/** Dia, mês, semestre ou ano: o que o calendário ESCOLHE. */
+export type UcamCalendarPrecision = 'day' | 'month' | 'semester' | 'year';
+/** O que está à vista: a precisão, ou um nível acima dela enquanto se navega. */
+export type NivelCal = 'dia' | 'mes' | 'semestre' | 'ano';
+
+export const NIVEL_DA: Record<UcamCalendarPrecision, NivelCal> = { day: 'dia', month: 'mes', semester: 'semestre', year: 'ano' };
+export const MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+/**
+ * A chave de cada tipo: dia aaaa-mm-dd, mês aaaa-mm, semestre aaaa.1
+ * (jan–jun) ou aaaa.2 (jul–dez) — a notação que as telas já usam —, ano aaaa.
+ * Dentro de um tipo, comparar as chaves como texto é comparar as datas.
+ */
+export function chaveDe(d: Date, nivel: NivelCal): string {
+  if (nivel === 'mes') return isoDe(d).slice(0, 7);
+  if (nivel === 'semestre') return `${d.getFullYear()}.${d.getMonth() < 6 ? 1 : 2}`;
+  if (nivel === 'ano') return String(d.getFullYear());
+  return isoDe(d);
+}
+
+/** O primeiro e o último dia que a chave cobre, em ISO. */
+export function cobre(chave: string, nivel: NivelCal): [string, string] {
+  if (nivel === 'mes') {
+    const [a, m] = chave.split('-').map(Number);
+    return [`${chave}-01`, isoDe(new Date(a, m, 0))];
+  }
+  if (nivel === 'semestre') {
+    const a = chave.slice(0, 4);
+    return chave.slice(5) === '1' ? [`${a}-01-01`, `${a}-06-30`] : [`${a}-07-01`, `${a}-12-31`];
+  }
+  if (nivel === 'ano') return [`${chave}-01-01`, `${chave}-12-31`];
+  return [chave, chave];
+}
+
+export interface OpcaoCal {
+  chave: string;
+  texto: string;
+  sub?: string;
+  rotulo: string;
+  fora: boolean;
+  escolhido: boolean;
+  noPeriodo: boolean;
+  atual: boolean;
+}
+
+/** As opções de um nível acima do dia: 12 meses, 2 semestres ou 12 anos. */
+export function montarOpcoes(
+  nivel: Exclude<NivelCal, 'dia'>,
+  foco: Date,
+  o: { escolhido?: string | null; periodo?: UcamDateRange | null; min?: string | null; max?: string | null; marca: boolean },
+): OpcaoCal[] {
+  const ano = foco.getFullYear();
+  const b0 = ano - (ano % 12);
+  const base: { chave: string; texto: string; sub?: string; rotulo: string }[] = [];
+  if (nivel === 'mes') for (let m = 0; m < 12; m++) base.push({ chave: `${ano}-${doisD(m + 1)}`, texto: MESES_CURTOS[m], rotulo: `${MESES[m]} de ${ano}` });
+  if (nivel === 'semestre') {
+    base.push({ chave: `${ano}.1`, texto: '1º semestre', sub: `${ano}.1 · jan – jun`, rotulo: `1º semestre de ${ano}, janeiro a junho` });
+    base.push({ chave: `${ano}.2`, texto: '2º semestre', sub: `${ano}.2 · jul – dez`, rotulo: `2º semestre de ${ano}, julho a dezembro` });
+  }
+  if (nivel === 'ano') for (let a = b0; a < b0 + 12; a++) base.push({ chave: String(a), texto: String(a), rotulo: String(a) });
+  const hj = chaveDe(hojeLocal(), nivel);
+  const de = o.marca ? o.periodo?.start || '' : '';
+  const ate = o.marca ? o.periodo?.end || '' : '';
+  return base.map((b) => {
+    const [ini, fim] = cobre(b.chave, nivel);
+    const escolhido = o.marca && (b.chave === o.escolhido || (!!de && b.chave === de) || (!!ate && b.chave === ate));
+    const noPeriodo = !escolhido && !!de && !!ate && b.chave > de && b.chave < ate;
+    return {
+      ...b,
+      rotulo: b.rotulo + (noPeriodo ? ', no período' : ''),
+      fora: (!!o.min && fim < o.min) || (!!o.max && ini > o.max),
+      escolhido,
+      noPeriodo,
+      atual: b.chave === hj,
+    };
+  });
+}
+
 /** Um dia, uma semana ou um mês. Mês mantém o dia, ou para no último quando o seguinte é mais curto. */
 export function passoCal(foco: Date, dias: number, meses = 0): Date {
   let d = new Date(foco.getFullYear(), foco.getMonth() + meses, foco.getDate() + dias);
@@ -193,6 +273,84 @@ export const CSS_GRADE = `
       padding-block-start: var(--ucam-space-inline-xs);
       border-block-start: 1px solid var(--ucam-color-border-subtle);
     }
+    /* OS NÍVEIS (ADR-077). O título é botão quando há nível acima: dias →
+     * meses → anos. Diz que é clicável em repouso pelo chevron (a seta de
+     * destino de 25/09/2026), sem caixa até o hover. */
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__titulo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      min-block-size: 2rem;
+      padding: 0 0.5rem;
+      border: 0;
+      border-radius: var(--ucam-radius-control);
+      background: none;
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__titulo:hover { background: var(--ucam-color-interaction-hover); }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__titulo:focus-visible {
+      outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+      outline-offset: 1px;
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__titulo .ic { inline-size: var(--ucam-size-icon-xs); block-size: var(--ucam-size-icon-xs); color: var(--ucam-color-text-secondary); }
+    /* As grades de mês, semestre e ano ocupam a mesma caixa da grade de dias:
+     * trocar de nível não pode fazer o calendário pular de tamanho. */
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcoes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.25rem;
+      min-block-size: 15.25rem;
+      align-content: start;
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcoes--semestres { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.125rem;
+      min-block-size: 3.5rem;
+      padding: 0.25rem;
+      border: 0;
+      border-radius: var(--ucam-radius-control);
+      background: none;
+      font: inherit;
+      font-size: var(--ucam-typography-body-sm-font-size);
+      font-variant-numeric: tabular-nums;
+      color: var(--ucam-color-text-primary);
+      cursor: pointer;
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcoes--semestres :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao { min-block-size: 5rem; }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao-texto::first-letter { text-transform: uppercase; }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao-sub {
+      font-size: var(--ucam-typography-caption-font-size);
+      color: var(--ucam-color-text-secondary);
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao:hover { background: var(--ucam-color-interaction-hover); }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao:focus-visible {
+      outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+      outline-offset: 1px;
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao[aria-current='date'] {
+      font-weight: var(--ucam-typography-action-font-weight);
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao[aria-pressed='true'] {
+      background: var(--ucam-color-action-primary-default);
+      color: var(--ucam-color-text-on-action);
+      font-weight: var(--ucam-typography-action-font-weight);
+    }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao[aria-pressed='true'] :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao-sub { color: inherit; }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao[data-intervalo]:not([aria-pressed='true']) { background: var(--ucam-color-action-primary-subtle); }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao[aria-disabled='true'] { color: var(--ucam-color-text-disabled); cursor: not-allowed; }
+    :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao[aria-disabled='true']:hover { background: none; }
+    @media (forced-colors: active) {
+      :is(ucam-calendar, ucam-date-field) .ucam-calendario__opcao[aria-pressed='true'] { outline: 2px solid CanvasText; }
+    }
+
     @media (forced-colors: active) {
       :is(ucam-calendar, ucam-date-field) .ucam-calendario__dia[aria-pressed='true'] { outline: 2px solid CanvasText; }
       :is(ucam-calendar, ucam-date-field) .ucam-calendario__dia[data-intervalo] { outline: 1px dashed CanvasText; outline-offset: -2px; }

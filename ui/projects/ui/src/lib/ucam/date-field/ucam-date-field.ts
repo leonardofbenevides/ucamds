@@ -18,10 +18,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ZardInputComponent } from '../../shared/components/input/input.component';
 import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
-import { UcamButton } from '../button/ucam-button';
 import { UcamIcon } from '../icon/ucam-icon';
 import { UcamIconButton } from '../icon-button/ucam-icon-button';
-import { type DiaCal, hojeLocal, isoDe, MESES, montarMes, SEMANA, type UcamDateRange } from '../calendar/ucam-calendar-grade';
+import { UcamCalendar } from '../calendar/ucam-calendar';
+import type { UcamDateRange } from '../calendar/ucam-calendar-grade';
 
 /**
  * Contrato: spec/components/date-field.json
@@ -138,7 +138,7 @@ const porExtenso = (iso: string) => {
 @Component({
   selector: 'ucam-date-field',
   exportAs: 'ucamDateField',
-  imports: [UcamField, ZardInputComponent, UcamIconButton, UcamIcon, UcamButton],
+  imports: [UcamField, ZardInputComponent, UcamIconButton, UcamIcon, UcamCalendar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   providers: [
@@ -201,49 +201,18 @@ const porExtenso = (iso: string) => {
             [attr.aria-label]="'Escolher ' + label() + ' no calendário'"
             (keydown)="aoTeclarNoCalendario($event)"
           >
-            <div class="ucam-calendario__cabeca">
-              <ucam-icon-button icon="chevronLeft" label="Mês anterior" size="sm" (click)="trocarMes(-1)" />
-              <span class="ucam-calendario__mes" aria-live="polite">{{ tituloMes() }}</span>
-              <ucam-icon-button icon="chevronRight" label="Próximo mês" size="sm" (click)="trocarMes(1)" />
-            </div>
-            <table class="ucam-calendario__grade">
-              <thead>
-                <tr>
-                  @for (s of semana; track $index) {
-                    <th scope="col" [attr.abbr]="s[1]">{{ s[0] }}</th>
-                  }
-                </tr>
-              </thead>
-              <tbody>
-                @for (linha of semanas(); track $index) {
-                  <tr>
-                    @for (d of linha; track $index) {
-                      <td>
-                        @if (d) {
-                          <button
-                            type="button"
-                            class="ucam-calendario__dia"
-                            [attr.data-dia]="d.iso"
-                            [attr.aria-label]="d.rotulo"
-                            [attr.aria-pressed]="d.escolhido ? 'true' : null"
-                            [attr.data-intervalo]="d.noPeriodo ? '' : null"
-                            [attr.aria-current]="d.iso === hoje() ? 'date' : null"
-                            [attr.aria-disabled]="d.fora ? 'true' : null"
-                            [tabIndex]="d.iso === focoIso() ? 0 : -1"
-                            (click)="escolherDia(d)"
-                          >
-                            {{ d.dia }}
-                          </button>
-                        }
-                      </td>
-                    }
-                  </tr>
-                }
-              </tbody>
-            </table>
-            <div class="ucam-calendario__pe">
-              <ucam-button variant="ghost" size="sm" [disabled]="hojeFora()" (click)="escolherHoje()">Hoje</ucam-button>
-            </div>
+            <!-- O miolo é o UcamCalendar (ADR-077): a mesma grade, o mesmo teclado e
+                 o título que sobe para meses e anos. O popover, o Esc e a volta do
+                 foco continuam sendo do campo. -->
+            <ucam-calendar
+              class="ucam-calendar--embutido"
+              [label]="'Escolher ' + label() + ' no calendário'"
+              [value]="escolhido() || null"
+              [min]="min()"
+              [max]="max()"
+              [period]="period()"
+              (valueChange)="aoEscolherNoDs($event)"
+            />
           </div>
         }
 
@@ -311,6 +280,13 @@ const porExtenso = (iso: string) => {
       border: 1px solid var(--ucam-color-border-subtle);
       border-radius: var(--ucam-radius-surface);
       box-shadow: var(--ucam-elevation-overlay);
+    }
+    ucam-date-field ucam-calendar.ucam-calendar--embutido .ucam-calendario {
+      position: static;
+      inline-size: auto;
+      padding: 0;
+      border: 0;
+      background: none;
     }
     ucam-date-field .ucam-calendario--acima {
       inset-block-start: auto;
@@ -440,7 +416,6 @@ export class UcamDateField implements ControlValueAccessor {
 
   protected readonly ids = nextFieldIds('ucam-df');
   protected readonly idCalendario = `${this.ids.controlId}-calendario`;
-  protected readonly semana = SEMANA;
   protected readonly regra = computed(() => REGRA[this.precision()]);
 
   /** Os dígitos que a pessoa digitou, antes de virarem data. */
@@ -487,35 +462,10 @@ export class UcamDateField implements ControlValueAccessor {
   // ---------------------------------------------------------- calendário ---
   protected readonly aberto = signal(false);
   protected readonly acima = signal(false);
-  /** O dia que tem o tabindex 0 — e que define o mês desenhado. */
-  private readonly foco = signal<Date>(hojeLocal());
-  protected readonly focoIso = computed(() => isoDe(this.foco()));
-  protected readonly hoje = signal(isoDe(hojeLocal()));
   protected readonly escolhido = computed(() => {
     const v = this.value() ?? '';
     return dataReal(v, 'day') ? v : '';
   });
-  protected readonly tituloMes = computed(
-    () => `${MESES[this.foco().getMonth()]} de ${this.foco().getFullYear()}`,
-  );
-
-  private fora(iso: string): boolean {
-    const min = this.min();
-    const max = this.max();
-    return (!!min && iso < min) || (!!max && iso > max);
-  }
-
-  protected readonly hojeFora = computed(() => this.fora(this.hoje()));
-
-  /** A grade do mês: semanas de domingo a sábado, vazio antes do dia 1. */
-  protected readonly semanas = computed<(DiaCal | null)[][]>(() =>
-    montarMes(this.foco(), {
-      escolhido: this.escolhido(),
-      periodo: this.period(),
-      min: this.min(),
-      max: this.max(),
-    }),
-  );
 
   protected readonly display = computed(() => {
     const d = this.rascunho ?? this.digitos();
@@ -558,9 +508,6 @@ export class UcamDateField implements ControlValueAccessor {
       if (focarDia) this.focarDia();
       return;
     }
-    this.hoje.set(isoDe(hojeLocal()));
-    const base = this.escolhido() ? new Date(this.escolhido() + 'T00:00:00') : hojeLocal();
-    this.foco.set(this.dentroDoIntervalo(base));
     this.acima.set(false);
     this.aberto.set(true);
     afterNextRender(
@@ -572,17 +519,6 @@ export class UcamDateField implements ControlValueAccessor {
       },
       { injector: this.injector },
     );
-  }
-
-  /** Abrir em hoje quando hoje está fora de min/max poria o foco num dia que
-   *  não se escolhe — e às vezes a meses do primeiro que se pode. */
-  private dentroDoIntervalo(d: Date): Date {
-    const iso = isoDe(d);
-    const min = this.min();
-    const max = this.max();
-    if (min && iso < min && dataReal(min, 'day')) return new Date(min + 'T00:00:00');
-    if (max && iso > max && dataReal(max, 'day')) return new Date(max + 'T00:00:00');
-    return d;
   }
 
   /** Abre para CIMA quando falta altura embaixo e sobra em cima — o campo no
@@ -605,34 +541,11 @@ export class UcamDateField implements ControlValueAccessor {
   }
 
   private focarDia(): void {
-    const cal = this.calendario()?.nativeElement;
-    cal?.querySelector<HTMLButtonElement>(`[data-dia="${this.focoIso()}"]`)?.focus();
+    this.calendario()?.nativeElement.querySelector<HTMLElement>('[data-dia][tabindex="0"], [data-chave][tabindex="0"]')?.focus();
   }
 
-  /** Move o dia focado e leva o foco junto, depois que a grade redesenhar —
-   *  trocar de mês troca os botões, e focar antes seria focar o que sai. */
-  private mover(dias: number, meses = 0): void {
-    const f = this.foco();
-    let d = new Date(f.getFullYear(), f.getMonth() + meses, f.getDate() + dias);
-    // 31/01 + um mês não é 03/03: PageDown pára no último dia do mês seguinte.
-    if (meses && d.getDate() !== f.getDate()) d = new Date(f.getFullYear(), f.getMonth() + meses + 1, 0);
-    this.foco.set(d);
-    afterNextRender({ read: () => this.focarDia() }, { injector: this.injector });
-  }
-
-  protected trocarMes(delta: number): void {
-    const f = this.foco();
-    this.foco.set(new Date(f.getFullYear(), f.getMonth() + delta, 1));
-  }
-
-  protected escolherDia(d: DiaCal): void {
-    if (d.fora) return;
-    this.aplicar(d.iso);
-  }
-
-  protected escolherHoje(): void {
-    if (this.hojeFora()) return;
-    this.aplicar(isoDe(hojeLocal()));
+  protected aoEscolherNoDs(iso: string | null): void {
+    if (iso) this.aplicar(iso);
   }
 
   private aplicar(iso: string): void {
@@ -667,24 +580,7 @@ export class UcamDateField implements ControlValueAccessor {
       this.fecharCalendario(true);
       return;
     }
-    const alvo = e.target as HTMLElement;
-    if (!alvo.hasAttribute('data-dia')) return;
-    // Enter e Espaço ficam com o clique nativo do <button>: o mesmo caminho
-    // do ponteiro, e o dia fora do intervalo recusa nos dois.
-    const mapa: Record<string, [number, number?]> = {
-      ArrowLeft: [-1],
-      ArrowRight: [1],
-      ArrowUp: [-7],
-      ArrowDown: [7],
-      PageUp: [0, -1],
-      PageDown: [0, 1],
-      Home: [-this.foco().getDay()],
-      End: [6 - this.foco().getDay()],
-    };
-    const passo = mapa[e.key];
-    if (!passo) return;
-    e.preventDefault();
-    this.mover(passo[0], passo[1] ?? 0);
+    // Setas, PageUp/PageDown e os níveis ficam com o UcamCalendar.
   }
 
   /** Clique fora do campo e do popover fecha, sem roubar o foco de volta. */

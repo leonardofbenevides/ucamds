@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 
 import { UcamButton } from '../button/ucam-button';
+import { UcamIcon } from '../icon/ucam-icon';
 import { UcamIconButton } from '../icon-button/ucam-icon-button';
 import {
   CSS_GRADE,
@@ -26,6 +27,13 @@ import {
   passoCal,
   SEMANA,
   TECLAS_CAL,
+  chaveDe,
+  cobre,
+  montarOpcoes,
+  NIVEL_DA,
+  type NivelCal,
+  type OpcaoCal,
+  type UcamCalendarPrecision,
   type UcamCalendarEvent,
   type UcamDateRange,
 } from './ucam-calendar-grade';
@@ -48,7 +56,7 @@ export type UcamCalendarSelection = 'single' | 'range' | 'none';
 @Component({
   selector: 'ucam-calendar',
   exportAs: 'ucamCalendar',
-  imports: [UcamIconButton, UcamButton],
+  imports: [UcamIcon, UcamIconButton, UcamButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   host: { class: 'block' },
@@ -62,10 +70,52 @@ export type UcamCalendarSelection = 'single' | 'range' | 'none';
       (keydown)="teclar($event)"
     >
       <div class="ucam-calendario__cabeca">
-        <ucam-icon-button icon="chevronLeft" label="Mês anterior" size="sm" (click)="trocarMes(-1)" />
-        <span class="ucam-calendario__mes" aria-live="polite">{{ tituloMes() }}</span>
-        <ucam-icon-button icon="chevronRight" label="Próximo mês" size="sm" (click)="trocarMes(1)" />
+        <ucam-icon-button icon="chevronLeft" [label]="rotuloPasso()[0]" size="sm" (click)="trocarMes(-1)" />
+        @if (sobe(); as acima) {
+          <button
+            type="button"
+            class="ucam-calendario__titulo"
+            [attr.aria-label]="tituloMes() + (acima === 'mes' ? ', escolher o mês e o ano' : ', escolher o ano')"
+            (click)="subir(acima)"
+          >
+            <span class="ucam-calendario__mes" aria-live="polite">{{ tituloMes() }}</span>
+            <ucam-icon name="chevronDown" size="xs" />
+          </button>
+        } @else {
+          <span class="ucam-calendario__mes" aria-live="polite">{{ tituloMes() }}</span>
+        }
+        <ucam-icon-button icon="chevronRight" [label]="rotuloPasso()[1]" size="sm" (click)="trocarMes(1)" />
       </div>
+      @if (nivel() !== 'dia') {
+        <div
+          class="ucam-calendario__opcoes"
+          [class.ucam-calendario__opcoes--meses]="nivel() === 'mes'"
+          [class.ucam-calendario__opcoes--semestres]="nivel() === 'semestre'"
+          [class.ucam-calendario__opcoes--anos]="nivel() === 'ano'"
+          role="group"
+          [attr.aria-label]="tituloMes()"
+        >
+          @for (op of opcoes(); track op.chave) {
+            <button
+              type="button"
+              class="ucam-calendario__opcao"
+              [attr.data-chave]="op.chave"
+              [attr.aria-label]="op.rotulo"
+              [attr.aria-pressed]="op.escolhido ? 'true' : null"
+              [attr.data-intervalo]="op.noPeriodo ? '' : null"
+              [attr.aria-current]="op.atual ? 'date' : null"
+              [attr.aria-disabled]="op.fora ? 'true' : null"
+              [tabIndex]="op.chave === focoChave() ? 0 : -1"
+              (click)="escolherOpcao(op.chave, op.fora)"
+            >
+              <span class="ucam-calendario__opcao-texto">{{ op.texto }}</span>
+              @if (op.sub) {
+                <span class="ucam-calendario__opcao-sub">{{ op.sub }}</span>
+              }
+            </button>
+          }
+        </div>
+      } @else {
       <table class="ucam-calendario__grade">
         <thead>
           <tr>
@@ -110,7 +160,8 @@ export type UcamCalendarSelection = 'single' | 'range' | 'none';
           }
         </tbody>
       </table>
-      @if (variant() === 'grade' && selection() === 'single') {
+      }
+      @if (variant() === 'grade' && selection() === 'single' && precision() === 'day' && nivel() === 'dia') {
         <div class="ucam-calendario__pe">
           <ucam-button variant="ghost" size="sm" [disabled]="hojeFora()" (click)="escolherHoje()">Hoje</ucam-button>
         </div>
@@ -237,12 +288,16 @@ export type UcamCalendarSelection = 'single' | 'range' | 'none';
 export class UcamCalendar {
   readonly variant = input<UcamCalendarVariant>('grade');
   readonly selection = input<UcamCalendarSelection>('single');
+  /** O que se escolhe: dia, mês, semestre (aaaa.1 / aaaa.2) ou ano (ADR-077). */
+  readonly precision = input<UcamCalendarPrecision>('day');
   /** Nome para o leitor de tela: Calendário acadêmico de 2026, Data da prova. */
   readonly label = input.required<string>();
-  /** Dia escolhido, em ISO. */
+  /** O escolhido, na chave da precisão: aaaa-mm-dd, aaaa-mm, aaaa.s ou aaaa. */
   readonly value = model<string | null>(null);
-  /** O período, quando selection é range. */
+  /** O período, quando selection é range — nas chaves da precisão. */
   readonly range = model<UcamDateRange | null>(null);
+  /** Marca um período sem escolhê-lo: o DateField que é ponta de um DateRangeField. */
+  readonly period = input<UcamDateRange | null>(null);
   /** Mês visível, aaaa-mm. Muda com a navegação (monthChange). */
   readonly month = model<string | null>(null);
   readonly min = input<string | null>(null);
@@ -255,20 +310,49 @@ export class UcamCalendar {
   private readonly injector = inject(Injector);
 
   protected readonly semana = SEMANA;
-  /** O dia com tabindex 0. Nulo até a primeira navegação: segue o valor. */
+  /** A data com tabindex 0. Nula até a primeira navegação: segue o valor. */
   private readonly focoManual = signal<Date | null>(null);
+  /** O nível à vista quando a pessoa subiu pelo título; nulo = o da precisão. */
+  private readonly nivelManual = signal<NivelCal | null>(null);
   /** Na agenda, o dia ativado por último. */
   protected readonly ativado = signal<string | null>(null);
+
+  private readonly nivelDaPrecisao = computed(() => NIVEL_DA[this.precision()]);
+  protected readonly nivel = computed<NivelCal>(() => this.nivelManual() ?? this.nivelDaPrecisao());
 
   protected readonly foco = computed(() => {
     const manual = this.focoManual();
     if (manual) return manual;
-    const v = this.value() || this.range()?.start || (this.month() ? `${this.month()}-01` : '');
-    return v ? deIso(v) : hojeLocal();
+    const v = this.value() || this.range()?.start || this.period()?.start;
+    if (v) return this.precision() === 'day' ? deIso(v) : deIso(cobre(v, this.nivelDaPrecisao())[0]);
+    if (this.month()) return deIso(`${this.month()}-01`);
+    // Abrir em hoje quando hoje está fora de min/max poria o foco num dia que não se escolhe.
+    const h = isoDe(hojeLocal());
+    if (this.min() && h < this.min()!) return deIso(this.min()!);
+    if (this.max() && h > this.max()!) return deIso(this.max()!);
+    return hojeLocal();
   });
   protected readonly focoIso = computed(() => isoDe(this.foco()));
+  protected readonly focoChave = computed(() => chaveDe(this.foco(), this.nivel()));
   protected readonly nomeMes = computed(() => MESES[this.foco().getMonth()]);
-  protected readonly tituloMes = computed(() => `${this.nomeMes()} de ${this.foco().getFullYear()}`);
+  protected readonly tituloMes = computed(() => {
+    const ano = this.foco().getFullYear();
+    const n = this.nivel();
+    if (n === 'dia') return `${this.nomeMes()} de ${ano}`;
+    if (n === 'ano') return `${ano - (ano % 12)} – ${ano - (ano % 12) + 11}`;
+    return String(ano);
+  });
+  /** Para onde o título leva: dias → meses → anos; o topo não sobe. */
+  protected readonly sobe = computed<NivelCal | null>(() => {
+    const n = this.nivel();
+    return n === 'dia' ? 'mes' : n === 'ano' ? null : 'ano';
+  });
+  protected readonly rotuloPasso = computed<[string, string]>(() => {
+    const n = this.nivel();
+    if (n === 'dia') return ['Mês anterior', 'Próximo mês'];
+    if (n === 'ano') return ['Anos anteriores', 'Próximos anos'];
+    return ['Ano anterior', 'Próximo ano'];
+  });
   protected readonly periodoCompleto = computed(() => !!this.range()?.start && !!this.range()?.end);
 
   private readonly eventosPorDia = computed(() => {
@@ -277,15 +361,29 @@ export class UcamCalendar {
     return mapa;
   });
 
+  private readonly periodoVisivel = computed(() => (this.selection() === 'range' ? this.range() : this.period()));
+
   protected readonly semanas = computed<(DiaCal | null)[][]>(() =>
     montarMes(this.foco(), {
-      escolhido: this.selection() === 'single' ? this.value() : null,
-      periodo: this.selection() === 'range' ? this.range() : null,
+      escolhido: this.selection() === 'single' && this.precision() === 'day' ? this.value() : null,
+      periodo: this.precision() === 'day' ? this.periodoVisivel() : null,
       min: this.min(),
       max: this.max(),
       eventos: this.variant() === 'agenda' ? this.eventosPorDia() : undefined,
     }),
   );
+
+  protected readonly opcoes = computed<OpcaoCal[]>(() => {
+    const n = this.nivel();
+    if (n === 'dia') return [];
+    return montarOpcoes(n, this.foco(), {
+      escolhido: this.selection() === 'single' ? this.value() : null,
+      periodo: this.periodoVisivel(),
+      min: this.min(),
+      max: this.max(),
+      marca: n === this.nivelDaPrecisao(),
+    });
+  });
 
   protected readonly eventosDoMes = computed(() => {
     const pre = this.focoIso().slice(0, 7);
@@ -304,16 +402,45 @@ export class UcamCalendar {
     return `${iso.slice(8, 10)}/${iso.slice(5, 7)}, ${SEMANA[d.getDay()][1].slice(0, 3)}`;
   }
 
+  /** As setas da cabeça: um mês nos dias, um ano em meses e semestres, doze anos na grade de anos. */
   protected trocarMes(delta: number): void {
     const f = this.foco();
-    this.irPara(new Date(f.getFullYear(), f.getMonth() + delta, 1));
+    const n = this.nivel();
+    if (n === 'dia') this.irPara(new Date(f.getFullYear(), f.getMonth() + delta, 1));
+    else this.irPara(new Date(f.getFullYear() + (n === 'ano' ? 12 : 1) * delta, f.getMonth(), 1));
+  }
+
+  protected subir(n: NivelCal): void {
+    this.nivelManual.set(n);
+    this.focarDepois();
   }
 
   private irPara(d: Date): void {
     const antes = this.focoIso().slice(0, 7);
     this.focoManual.set(d);
     const agora = isoDe(d).slice(0, 7);
-    if (agora !== antes) this.month.set(agora);
+    if (agora !== antes && this.nivel() === 'dia') this.month.set(agora);
+  }
+
+  /** Num nível acima da precisão, escolher DESCE: ano → mês (ou semestre), mês → dias. */
+  protected escolherOpcao(chave: string, fora: boolean): void {
+    if (fora) return;
+    const n = this.nivel();
+    if (n === this.nivelDaPrecisao()) {
+      this.focoManual.set(deIso(cobre(chave, n)[0]));
+      this.aplicar(chave);
+      return;
+    }
+    if (n === 'ano') {
+      this.focoManual.set(new Date(Number(chave), this.foco().getMonth(), 1));
+      this.nivelManual.set(this.precision() === 'semester' ? 'semestre' : 'mes');
+    } else if (n === 'mes') {
+      const [a, m] = chave.split('-').map(Number);
+      this.irPara(new Date(a, m - 1, 1));
+      this.nivelManual.set(null);
+      this.month.set(chave);
+    }
+    this.focarDepois();
   }
 
   protected escolher(d: DiaCal): void {
@@ -324,14 +451,19 @@ export class UcamCalendar {
       this.daySelect.emit(d.iso);
       return;
     }
+    this.aplicar(d.iso);
+  }
+
+  private aplicar(chave: string): void {
     if (this.selection() === 'range') {
       const r = this.range();
-      if (!r?.start || r.end) this.range.set({ start: d.iso, end: null });
-      else if (d.iso < r.start) this.range.set({ start: d.iso, end: null });
-      else this.range.set({ start: r.start, end: d.iso });
+      if (!r?.start || r.end) this.range.set({ start: chave, end: null });
+      else if (chave < r.start) this.range.set({ start: chave, end: null });
+      else this.range.set({ start: r.start, end: chave });
       return;
     }
-    this.value.set(d.iso);
+    if (this.selection() === 'none') return;
+    this.value.set(chave);
   }
 
   protected escolherHoje(): void {
@@ -341,19 +473,41 @@ export class UcamCalendar {
     this.value.set(h);
   }
 
+  /** Põe o foco no item com tabindex 0 depois que a grade redesenhar. */
+  focar(): void {
+    this.host.nativeElement.querySelector<HTMLElement>('[data-dia][tabindex="0"], [data-chave][tabindex="0"]')?.focus();
+  }
+
+  private focarDepois(): void {
+    afterNextRender({ read: () => this.focar() }, { injector: this.injector });
+  }
+
   protected teclar(e: KeyboardEvent): void {
     const alvo = e.target as HTMLElement;
-    if (!alvo.hasAttribute('data-dia')) return;
     const f = this.foco();
-    const passo =
-      TECLAS_CAL[e.key] ??
-      (e.key === 'Home' ? [-f.getDay()] : e.key === 'End' ? [6 - f.getDay()] : null);
-    if (!passo) return;
+    if (alvo.hasAttribute('data-dia')) {
+      const passo =
+        TECLAS_CAL[e.key] ?? (e.key === 'Home' ? [-f.getDay()] : e.key === 'End' ? [6 - f.getDay()] : null);
+      if (!passo) return;
+      e.preventDefault();
+      this.irPara(passoCal(f, passo[0], passo[1] ?? 0));
+      this.focarDepois();
+      return;
+    }
+    if (!alvo.hasAttribute('data-chave')) return;
+    // Grades de mês, semestre e ano: setas andam uma opção (cima e baixo, uma
+    // fileira); PageUp/PageDown, uma página.
+    const n = this.nivel();
+    const cols = n === 'semestre' ? 2 : 3;
+    const passo = ({ ArrowLeft: -1, ArrowRight: 1, ArrowUp: -cols, ArrowDown: cols } as Record<string, number>)[e.key];
+    const pagina = ({ PageUp: -1, PageDown: 1 } as Record<string, number>)[e.key];
+    if (passo === undefined && pagina === undefined) return;
     e.preventDefault();
-    this.irPara(passoCal(f, passo[0], passo[1] ?? 0));
-    afterNextRender(
-      { read: () => this.host.nativeElement.querySelector<HTMLElement>(`[data-dia="${this.focoIso()}"]`)?.focus() },
-      { injector: this.injector },
-    );
+    let novo: Date;
+    if (n === 'mes') novo = new Date(f.getFullYear(), f.getMonth() + (passo ?? 12 * pagina), 1);
+    else if (n === 'semestre') novo = new Date(f.getFullYear(), f.getMonth() + 6 * (passo ?? 2 * pagina), 1);
+    else novo = new Date(f.getFullYear() + (passo ?? 12 * pagina), f.getMonth(), 1);
+    this.focoManual.set(novo);
+    this.focarDepois();
   }
 }

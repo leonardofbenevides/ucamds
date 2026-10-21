@@ -3,6 +3,7 @@ import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   Directive,
   ElementRef,
   inject,
@@ -114,6 +115,12 @@ export class UcamPopover {
       const aberto = this.open();
       this.gatilho?.setAttribute('aria-expanded', aberto ? 'true' : 'false');
     });
+    // Na camada de cima (fixed) o popover não acompanha a rolagem: reposiciona.
+    if (typeof window !== 'undefined') {
+      const rolou = () => { if (this.open()) this.posicionar(); };
+      window.addEventListener('scroll', rolou, { capture: true, passive: true });
+      inject(DestroyRef).onDestroy(() => window.removeEventListener('scroll', rolou, { capture: true }));
+    }
   }
 
   toggle(): void {

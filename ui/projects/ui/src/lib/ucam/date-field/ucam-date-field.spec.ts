@@ -87,3 +87,28 @@ describe('UcamDateField — calendário do DS', () => {
     expect(fx.componentInstance.valor()).toBe('2026-03-10');
   });
 });
+
+describe('UcamDateField — níveis do calendário (ADR-077)', () => {
+  it('o título do popover sobe para meses e anos, e escolher desce até o dia', async () => {
+    await TestBed.configureTestingModule({ imports: [Hospedeiro] }).compileComponents();
+    const fx = TestBed.createComponent(Hospedeiro);
+    fx.detectChanges();
+    await fx.whenStable();
+    const el: HTMLElement = fx.nativeElement;
+    const passo = async (alvo: Element | null) => {
+      (alvo as HTMLElement).click();
+      fx.detectChanges();
+      await fx.whenStable();
+    };
+    await passo(el.querySelector('input[aria-haspopup="dialog"]'));
+    await passo(el.querySelector('.ucam-calendario__titulo'));
+    expect(el.querySelectorAll('[data-chave]').length).toBe(12);
+    await passo(el.querySelector('.ucam-calendario__titulo'));
+    expect(el.querySelector('[data-chave="2020"]')).toBeTruthy();
+    await passo(el.querySelector('[data-chave="2020"]'));
+    await passo(el.querySelector('[data-chave="2020-02"]'));
+    await passo(el.querySelector('[data-dia="2020-02-29"]'));
+    expect(fx.componentInstance.valor()).toBe('2020-02-29');
+    expect(el.querySelector('.ucam-calendario')).toBeNull();
+  });
+});

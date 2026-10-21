@@ -5394,6 +5394,16 @@ ${FN_ANUNCIA}
       var termo = crua(ctl.value);
       return !termo || crua(item.textContent).indexOf(termo) >= 0;
     }
+    // O SELECT MÚLTIPLO (ADR-078) filtra pela UNIÃO: a linha passa se casar
+    // com qualquer um dos marcados; nenhum marcado é filtro nenhum.
+    if (ctl.hasAttribute('data-valores')) {
+      var lista = ctl.getAttribute('data-valores').split('|').filter(Boolean);
+      if (!lista.length) return true;
+      return lista.some(function (v) {
+        var copia = { getAttribute: function (k) { return k === 'data-filtra' ? regra : k === 'data-valor' ? v : null; }, hasAttribute: function (k) { return k === 'data-valor'; }, tagName: 'X' };
+        return passa(copia, item, alvo);
+      });
+    }
     var escolhido = ctl.tagName === 'SELECT' || ctl.hasAttribute('data-valor')
       ? (ctl.hasAttribute('data-valor') ? ctl.getAttribute('data-valor') : ctl.value)
       : (function () {
@@ -6931,25 +6941,38 @@ export const toastScript = `
  */
 const FN_CALENDARIO = `
   var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  var MESES_CURTOS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
   var SEMANA = [['D', 'domingo'], ['S', 'segunda'], ['T', 'terça'], ['Q', 'quarta'], ['Q', 'quinta'], ['S', 'sexta'], ['S', 'sábado']];
   function doisD(n) { return (n < 10 ? '0' : '') + n; }
   function isoDe(d) { return d.getFullYear() + '-' + doisD(d.getMonth() + 1) + '-' + doisD(d.getDate()); }
   function deIso(i) { return new Date(i + 'T00:00:00'); }
   function hoje() { var h = new Date(); return new Date(h.getFullYear(), h.getMonth(), h.getDate()); }
-  function cabecaCal() {
-    return '<div class="ucam-calendario__cabeca">' +
-      '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm" data-cal-mes="-1" aria-label="Mês anterior"><svg class="ic" aria-hidden="true"><use href="#i-chevronLeft"/></svg></button>' +
-      '<span class="ucam-calendario__mes" aria-live="polite"></span>' +
-      '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm" data-cal-mes="1" aria-label="Próximo mês"><svg class="ic" aria-hidden="true"><use href="#i-chevronRight"/></svg></button></div>';
-  }
   function tabelaCal() {
     var th = SEMANA.map(function (s) { return '<th scope="col" abbr="' + s[1] + '">' + s[0] + '</th>'; }).join('');
     return '<table class="ucam-calendario__grade"><thead><tr>' + th + '</tr></thead><tbody></tbody></table>';
   }
+  /* A CHAVE de cada tipo, e o que ela cobre. Dia aaaa-mm-dd, mês aaaa-mm,
+   * semestre aaaa.1 (jan–jun) ou aaaa.2 (jul–dez) — a notação que as telas já
+   * usam —, ano aaaa. Dentro de um mesmo tipo, comparar as chaves como texto
+   * é comparar as datas: é o que o período e o min/max usam. */
+  function chaveDe(d, nivel) {
+    if (nivel === 'mes') return isoDe(d).slice(0, 7);
+    if (nivel === 'semestre') return d.getFullYear() + '.' + (d.getMonth() < 6 ? 1 : 2);
+    if (nivel === 'ano') return String(d.getFullYear());
+    return isoDe(d);
+  }
+  function cobre(chave, nivel) {
+    if (nivel === 'mes') { var p = chave.split('-'); return [chave + '-01', isoDe(new Date(+p[0], +p[1], 0))]; }
+    if (nivel === 'semestre') { var a = chave.slice(0, 4); return chave.slice(5) === '1' ? [a + '-01-01', a + '-06-30'] : [a + '-07-01', a + '-12-31']; }
+    if (nivel === 'ano') return [chave + '-01-01', chave + '-12-31'];
+    return [chave, chave];
+  }
+  function inicioDe(chave, nivel) { return deIso(cobre(chave, nivel)[0]); }
+  /* A GRADE DE DIAS. desenharGrade(cal, o) escreve o tbody: o = { foco: Date,
+   * escolhido, de, ate, min, max: ISO ou '', eventos: { iso: [{ titulo, tom }] } }. */
   function desenharGrade(cal, o) {
     var ano = o.foco.getFullYear(), mes = o.foco.getMonth(), hj = isoDe(hoje()), fi = isoDe(o.foco);
     var de = o.de || '', ate = o.ate || '';
-    cal.querySelector('.ucam-calendario__mes').textContent = MESES[mes] + ' de ' + ano;
     var corpo = cal.querySelector('tbody');
     corpo.innerHTML = '';
     var primeiro = new Date(ano, mes, 1), dias = new Date(ano, mes + 1, 0).getDate();
@@ -7003,14 +7026,199 @@ const FN_CALENDARIO = `
       if (d.getDay() === 6 || dia === dias) { corpo.appendChild(tr); tr = document.createElement('tr'); }
     }
   }
-  /* Andar pela grade: um dia, uma semana ou um mês. Mês mantém o dia, ou
-   * cai no último quando o mês seguinte é mais curto. */
   function passoCal(foco, dias, meses) {
     var d = new Date(foco.getFullYear(), foco.getMonth() + (meses || 0), foco.getDate() + (dias || 0));
     if (meses && d.getDate() !== foco.getDate()) d = new Date(foco.getFullYear(), foco.getMonth() + meses + 1, 0);
     return d;
   }
   var TECLAS_CAL = { ArrowLeft: [-1], ArrowRight: [1], ArrowUp: [-7], ArrowDown: [7], PageUp: [0, -1], PageDown: [0, 1] };
+  var NIVEL_DA = { day: 'dia', month: 'mes', semester: 'semestre', year: 'ano' };
+
+  /* O MOTOR (20/10/2026: "que possa selecionar o ano, que possa ter
+   * SEMESTRES também", "tipos de calendar"). Um calendário é uma PRECISÃO —
+   * dia, mês, semestre ou ano — e um NÍVEL visível. O título é botão e sobe:
+   * dias → meses → anos; escolher num nível acima da precisão desce. Data de
+   * nascimento de 1974 são três cliques: título, título, 1974.
+   *
+   * Calendario(miolo, o) desenha dentro de miolo. o = { precisao, selecao
+   * ('single' | 'range' | 'none'), valor, de, ate, min, max (ISO), eventos,
+   * comHoje, aoEscolher(chave), aoMes(aaaa-mm), aoDia(iso) }. O dono chama
+   * clique(alvo) e tecla(evento) e decide o resto: o popover do campo fecha,
+   * o calendário solto grava no alvo. */
+  function Calendario(miolo, o) {
+    var precisao = NIVEL_DA[o.precisao] || 'dia';
+    var s = { nivel: precisao, foco: null };
+    var ini = o.valor || o.de;
+    s.foco = ini ? inicioDe(ini, precisao) : hoje();
+    if (!ini && o.min && isoDe(s.foco) < o.min) s.foco = deIso(o.min);
+    if (!ini && o.max && isoDe(s.foco) > o.max) s.foco = deIso(o.max);
+    if (precisao === 'dia' && ini) s.foco = deIso(ini.slice(0, 10));
+
+    function fora(chave, nivel) {
+      var c = cobre(chave, nivel);
+      return (o.min && c[1] < o.min) || (o.max && c[0] > o.max);
+    }
+    function marcado(chave, nivel) {
+      if (nivel !== precisao) return { prensado: false, miolo: false };
+      var de = o.de || '', ate = o.ate || '';
+      var p = chave === o.valor || (de && chave === de) || (ate && chave === ate);
+      return { prensado: !!p, ponta: !!(p && de && ate), miolo: !p && de && ate && chave > de && chave < ate };
+    }
+    function botaoPasso(dir) {
+      var n = s.nivel;
+      var rot = n === 'dia' ? (dir < 0 ? 'Mês anterior' : 'Próximo mês') : n === 'ano' ? (dir < 0 ? 'Anos anteriores' : 'Próximos anos') : (dir < 0 ? 'Ano anterior' : 'Próximo ano');
+      return '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm" data-cal-mes="' + dir + '" aria-label="' + rot + '"><svg class="ic" aria-hidden="true"><use href="#i-chevron' + (dir < 0 ? 'Left' : 'Right') + '"/></svg></button>';
+    }
+    function desenhar() {
+      var n = s.nivel, f = s.foco, ano = f.getFullYear(), b0 = ano - (ano % 12);
+      var titulo = n === 'dia' ? MESES[f.getMonth()] + ' de ' + ano : n === 'ano' ? b0 + ' – ' + (b0 + 11) : String(ano);
+      var sobe = n === 'dia' ? 'mes' : n === 'ano' ? '' : 'ano';
+      var meio = '<span class="ucam-calendario__mes" aria-live="polite">' + titulo + '</span>';
+      if (sobe) {
+        meio = '<button type="button" class="ucam-calendario__titulo" data-cal-nivel="' + sobe + '" aria-label="' + titulo + ', escolher ' + (sobe === 'mes' ? 'o mês e o ano' : 'o ano') + '">' + meio +
+          '<svg class="ic" aria-hidden="true"><use href="#i-chevronDown"/></svg></button>';
+      }
+      var corpo = n === 'dia' ? tabelaCal() :
+        '<div class="ucam-calendario__opcoes ucam-calendario__opcoes--' + (n === 'mes' ? 'meses' : n === 'ano' ? 'anos' : 'semestres') + '" role="group" aria-label="' + (n === 'mes' ? 'Meses de ' + ano : n === 'ano' ? 'Anos de ' + b0 + ' a ' + (b0 + 11) : 'Semestres de ' + ano) + '"></div>';
+      var pe = n === 'dia' && o.comHoje ? '<div class="ucam-calendario__pe"><button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-cal-hoje>Hoje</button></div>' : '';
+      miolo.setAttribute('data-nivel', n);
+      miolo.innerHTML = '<div class="ucam-calendario__cabeca">' + botaoPasso(-1) + meio + botaoPasso(1) + '</div>' + corpo + pe;
+      if (n === 'dia') {
+        desenharGrade(miolo, { foco: f, escolhido: precisao === 'dia' ? o.valor : '', de: precisao === 'dia' ? o.de : '', ate: precisao === 'dia' ? o.ate : '', min: o.min, max: o.max, eventos: o.eventos });
+        return;
+      }
+      var itens = [];
+      if (n === 'mes') for (var m = 0; m < 12; m++) itens.push({ chave: ano + '-' + doisD(m + 1), texto: MESES_CURTOS[m], rotulo: MESES[m] + ' de ' + ano });
+      if (n === 'semestre') {
+        itens.push({ chave: ano + '.1', texto: '1º semestre', sub: ano + '.1 · jan – jun', rotulo: '1º semestre de ' + ano + ', janeiro a junho' });
+        itens.push({ chave: ano + '.2', texto: '2º semestre', sub: ano + '.2 · jul – dez', rotulo: '2º semestre de ' + ano + ', julho a dezembro' });
+      }
+      if (n === 'ano') for (var a = b0; a < b0 + 12; a++) itens.push({ chave: String(a), texto: String(a), rotulo: String(a) });
+      var focoChave = chaveDe(f, n), hojeChave = chaveDe(hoje(), n);
+      var caixa = miolo.querySelector('.ucam-calendario__opcoes');
+      itens.forEach(function (it) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ucam-calendario__opcao';
+        b.setAttribute('data-chave', it.chave);
+        b.tabIndex = it.chave === focoChave ? 0 : -1;
+        var mk = marcado(it.chave, n), nome = it.rotulo;
+        if (mk.prensado) b.setAttribute('aria-pressed', 'true');
+        if (mk.ponta) b.setAttribute('data-ponta', '');
+        if (mk.miolo) { b.setAttribute('data-intervalo', ''); nome += ', no período'; }
+        if (it.chave === hojeChave) b.setAttribute('aria-current', 'date');
+        if (fora(it.chave, n)) b.setAttribute('aria-disabled', 'true');
+        b.setAttribute('aria-label', nome);
+        var t = document.createElement('span');
+        t.className = 'ucam-calendario__opcao-texto';
+        t.textContent = it.texto;
+        b.appendChild(t);
+        if (it.sub) {
+          var sb = document.createElement('span');
+          sb.className = 'ucam-calendario__opcao-sub';
+          sb.textContent = it.sub;
+          b.appendChild(sb);
+        }
+        caixa.appendChild(b);
+      });
+    }
+    function focar() {
+      var b = miolo.querySelector('[data-dia][tabindex="0"], [data-chave][tabindex="0"]');
+      if (b) b.focus();
+    }
+    function mudaMes(antes) {
+      if (s.nivel === 'dia' && o.aoMes && isoDe(s.foco).slice(0, 7) !== antes) o.aoMes(isoDe(s.foco).slice(0, 7));
+    }
+    function anda(novo, redesenha) {
+      var antes = isoDe(s.foco).slice(0, 7);
+      s.foco = novo;
+      if (redesenha) desenhar();
+      else Array.prototype.forEach.call(miolo.querySelectorAll('[data-dia], [data-chave]'), function (b) {
+        b.tabIndex = (b.getAttribute('data-dia') || b.getAttribute('data-chave')) === chaveDe(novo, s.nivel) ? 0 : -1;
+      });
+      mudaMes(antes);
+      focar();
+    }
+    function escolhe(chave) {
+      if (o.selecao === 'none') { if (o.aoDia) o.aoDia(chave); return; }
+      if (o.selecao === 'range') {
+        if (!o.de || o.ate) { o.de = chave; o.ate = ''; }
+        else if (chave < o.de) { o.de = chave; }
+        else { o.ate = chave; }
+      } else {
+        o.valor = chave;
+      }
+      s.foco = inicioDe(chave, precisao);
+      if (precisao === 'dia') s.foco = deIso(chave);
+      if (o.aoEscolher) o.aoEscolher(chave);
+    }
+    function opcao(chave) {
+      var n = s.nivel;
+      if (n === precisao) return escolhe(chave);
+      // Num nível acima da precisão, escolher DESCE: ano → mês (ou semestre), mês → dias.
+      if (n === 'ano') { s.foco = new Date(+chave, s.foco.getMonth(), 1); s.nivel = precisao === 'semestre' ? 'semestre' : 'mes'; }
+      else if (n === 'mes') { var p = chave.split('-'); s.foco = new Date(+p[0], +p[1] - 1, 1); s.nivel = 'dia'; }
+      var antes = '';
+      desenhar();
+      mudaMes(antes);
+      focar();
+    }
+    function clique(t) {
+      var p = t.closest('[data-cal-mes]');
+      if (p && miolo.contains(p)) {
+        var dir = Number(p.getAttribute('data-cal-mes')), f = s.foco, n = s.nivel;
+        var novo = n === 'dia' ? new Date(f.getFullYear(), f.getMonth() + dir, 1) : n === 'ano' ? new Date(f.getFullYear() + 12 * dir, f.getMonth(), 1) : new Date(f.getFullYear() + dir, f.getMonth(), 1);
+        var antes = isoDe(f).slice(0, 7);
+        s.foco = novo;
+        desenhar();
+        mudaMes(antes);
+        return true;
+      }
+      var nv = t.closest('[data-cal-nivel]');
+      if (nv && miolo.contains(nv)) { s.nivel = nv.getAttribute('data-cal-nivel'); desenhar(); focar(); return true; }
+      if (t.closest('[data-cal-hoje]')) { escolhe(isoDe(hoje())); return true; }
+      var d = t.closest('[data-dia]');
+      if (d && miolo.contains(d)) { if (d.getAttribute('aria-disabled') !== 'true') escolhe(d.getAttribute('data-dia')); return true; }
+      var op = t.closest('[data-chave]');
+      if (op && miolo.contains(op)) { if (op.getAttribute('aria-disabled') !== 'true') opcao(op.getAttribute('data-chave')); return true; }
+      return false;
+    }
+    function tecla(e) {
+      var t = e.target, n = s.nivel, f = s.foco;
+      if (!t.hasAttribute || !(t.hasAttribute('data-dia') || t.hasAttribute('data-chave'))) return false;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (t.getAttribute('aria-disabled') !== 'true') {
+          if (t.hasAttribute('data-dia')) escolhe(t.getAttribute('data-dia')); else opcao(t.getAttribute('data-chave'));
+        }
+        return true;
+      }
+      var novo = null;
+      if (n === 'dia') {
+        var mapa = TECLAS_CAL[e.key];
+        if (mapa) novo = passoCal(f, mapa[0], mapa[1]);
+        else if (e.key === 'Home') novo = passoCal(f, -f.getDay());
+        else if (e.key === 'End') novo = passoCal(f, 6 - f.getDay());
+        if (!novo) return false;
+        e.preventDefault();
+        anda(novo, novo.getMonth() !== f.getMonth() || novo.getFullYear() !== f.getFullYear());
+        return true;
+      }
+      // Grades de mês, semestre e ano: setas andam uma opção (cima e baixo, uma
+      // fileira); PageUp/PageDown, uma página.
+      var cols = n === 'semestre' ? 2 : 3, passo = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -cols, ArrowDown: cols }[e.key];
+      var pagina = { PageUp: -1, PageDown: 1 }[e.key];
+      if (passo === undefined && pagina === undefined) return false;
+      e.preventDefault();
+      if (n === 'mes') novo = new Date(f.getFullYear(), f.getMonth() + (passo !== undefined ? passo : 12 * pagina), 1);
+      else if (n === 'semestre') novo = new Date(f.getFullYear(), f.getMonth() + 6 * (passo !== undefined ? passo : 2 * pagina), 1);
+      else novo = new Date(f.getFullYear() + (passo !== undefined ? passo : 12 * pagina), f.getMonth(), 1);
+      var pag = function (d) { return n === 'ano' ? d.getFullYear() - (d.getFullYear() % 12) : d.getFullYear(); };
+      anda(novo, pag(novo) !== pag(f));
+      return true;
+    }
+    return { desenhar: desenhar, clique: clique, tecla: tecla, focar: focar, estado: s, opcoes: o };
+  }
 `;
 
 /**
@@ -7031,11 +7239,10 @@ const FN_CALENDARIO = `
 export const calendarioScript = `
 (function () {
 ${FN_CALENDARIO}
-  function estado(el) { return el._cal; }
   function avisaAlvo(id, valor) {
     var a = id && document.getElementById(id);
     if (!a) return;
-    a.value = valor;
+    a.value = valor || '';
     a.dispatchEvent(new Event('input', { bubbles: true }));
     a.dispatchEvent(new Event('change', { bubbles: true }));
   }
@@ -7050,135 +7257,89 @@ ${FN_CALENDARIO}
     });
     return mapa;
   }
-  function filtraLista(el) {
-    var s = estado(el), lista = el.querySelector('.ucam-calendario__lista');
+  function filtraLista(el, mes) {
+    var lista = el.querySelector('.ucam-calendario__lista');
     if (!lista) return;
-    var pre = isoDe(s.foco).slice(0, 7), algum = false;
+    var algum = false, nome = MESES[+mes.slice(5, 7) - 1];
     Array.prototype.forEach.call(lista.querySelectorAll('li[data-data]'), function (li) {
-      var dentro = li.getAttribute('data-data').slice(0, 7) === pre;
+      var dentro = li.getAttribute('data-data').slice(0, 7) === mes;
       li.hidden = !dentro;
-      if (dentro) algum = true;
-      if (!dentro) li.removeAttribute('data-destaque');
+      if (dentro) algum = true; else li.removeAttribute('data-destaque');
     });
     var vazio = lista.querySelector('li[data-vazio]');
-    if (!algum && !vazio) {
-      vazio = document.createElement('li');
-      vazio.setAttribute('data-vazio', '');
-      vazio.textContent = 'Nenhum evento em ' + MESES[s.foco.getMonth()] + '.';
-      lista.appendChild(vazio);
-    } else if (vazio) {
-      if (algum) vazio.remove();
-      else vazio.textContent = 'Nenhum evento em ' + MESES[s.foco.getMonth()] + '.';
-    }
-  }
-  function desenha(el) {
-    var s = estado(el);
-    desenharGrade(el, { foco: s.foco, escolhido: s.valor, de: s.de, ate: s.ate, min: s.min, max: s.max, eventos: s.eventos });
-    if (s.modo === 'agenda') filtraLista(el);
+    if (!algum) {
+      if (!vazio) { vazio = document.createElement('li'); vazio.setAttribute('data-vazio', ''); lista.appendChild(vazio); }
+      vazio.textContent = 'Nenhum evento em ' + nome + '.';
+    } else if (vazio) vazio.remove();
   }
   function monta(el) {
     if (el._cal) return;
     var modo = el.getAttribute('data-calendario') || 'single';
-    var s = el._cal = {
-      modo: modo,
+    var agenda = modo === 'agenda';
+    var mes = el.getAttribute('data-mes');
+    var caixa = document.createElement('div');
+    caixa.setAttribute('data-cal-grade', '');
+    var lista = el.querySelector('.ucam-calendario__lista');
+    if (lista) el.insertBefore(caixa, lista); else el.appendChild(caixa);
+    var o = {
+      precisao: agenda ? 'day' : el.getAttribute('data-precisao') || 'day',
+      selecao: agenda ? 'none' : modo === 'range' ? 'range' : 'single',
       valor: modo === 'single' ? el.getAttribute('data-valor') || '' : '',
       de: modo === 'range' ? el.getAttribute('data-valor') || '' : '',
       ate: modo === 'range' ? el.getAttribute('data-ate') || '' : '',
       min: el.getAttribute('data-min') || '',
       max: el.getAttribute('data-max') || '',
-      eventos: modo === 'agenda' ? eventosDe(el) : null,
+      eventos: agenda ? eventosDe(el) : null,
+      comHoje: modo === 'single' && (el.getAttribute('data-precisao') || 'day') === 'day',
     };
-    var mes = el.getAttribute('data-mes');
-    var inicio = s.valor || s.de || (mes ? mes + '-01' : '');
-    s.foco = inicio ? deIso(inicio) : hoje();
-    var miolo = cabecaCal() + tabelaCal();
-    if (modo === 'single') miolo += '<div class="ucam-calendario__pe"><button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-cal-hoje>Hoje</button></div>';
-    var lista = el.querySelector('.ucam-calendario__lista');
-    var caixa = document.createElement('div');
-    caixa.setAttribute('data-cal-grade', '');
-    caixa.innerHTML = miolo;
-    if (lista) el.insertBefore(caixa, lista); else el.appendChild(caixa);
-    desenha(el);
+    if (agenda && mes && !o.valor) o.valor = '';
+    var cal = Calendario(caixa, o);
+    if (agenda && mes) cal.estado.foco = deIso(mes + '-01');
+    o.aoEscolher = function (chave) {
+      if (o.selecao === 'range') {
+        el.setAttribute('data-valor', o.de);
+        if (o.ate) el.setAttribute('data-ate', o.ate); else el.removeAttribute('data-ate');
+        avisaAlvo(el.getAttribute('data-alvo'), o.de);
+        avisaAlvo(el.getAttribute('data-alvo-ate'), o.ate);
+      } else {
+        el.setAttribute('data-valor', chave);
+        avisaAlvo(el.getAttribute('data-alvo'), chave);
+      }
+      cal.desenhar();
+      cal.focar();
+      el.dispatchEvent(new CustomEvent('ucam:calendario', { bubbles: true, detail: { valor: o.valor, de: o.de, ate: o.ate } }));
+    };
+    o.aoMes = function (m) {
+      if (agenda) filtraLista(el, m);
+      el.dispatchEvent(new CustomEvent('ucam:calendario-mes', { bubbles: true, detail: { mes: m } }));
+    };
+    o.aoDia = function (i) {
+      Array.prototype.forEach.call(caixa.querySelectorAll('.ucam-calendario__dia[aria-pressed]'), function (b) { b.removeAttribute('aria-pressed'); });
+      var b = caixa.querySelector('[data-dia="' + i + '"]');
+      if (b) b.setAttribute('aria-pressed', 'true');
+      var primeiro = null;
+      Array.prototype.forEach.call(el.querySelectorAll('.ucam-calendario__lista li[data-data]'), function (li) {
+        if (li.getAttribute('data-data') === i) { li.setAttribute('data-destaque', ''); primeiro = primeiro || li; } else li.removeAttribute('data-destaque');
+      });
+      if (primeiro && primeiro.scrollIntoView) primeiro.scrollIntoView({ block: 'nearest' });
+      el.dispatchEvent(new CustomEvent('ucam:calendario-dia', { bubbles: true, detail: { dia: i } }));
+    };
+    el._cal = cal;
+    cal.desenhar();
+    if (agenda) filtraLista(el, isoDe(cal.estado.foco).slice(0, 7));
   }
   function montaTodos(raiz) {
     if (!raiz || !raiz.querySelectorAll) return;
     if (raiz.matches && raiz.matches('[data-calendario]')) monta(raiz);
     Array.prototype.forEach.call(raiz.querySelectorAll('[data-calendario]'), monta);
   }
-  function escolhe(el, i) {
-    var s = estado(el);
-    if (s.modo === 'agenda') {
-      Array.prototype.forEach.call(el.querySelectorAll('.ucam-calendario__dia[aria-pressed]'), function (b) { b.removeAttribute('aria-pressed'); });
-      var b = el.querySelector('[data-dia="' + i + '"]');
-      if (b) b.setAttribute('aria-pressed', 'true');
-      var primeiro = null;
-      Array.prototype.forEach.call(el.querySelectorAll('.ucam-calendario__lista li[data-data]'), function (li) {
-        var e = li.getAttribute('data-data') === i;
-        if (e) { li.setAttribute('data-destaque', ''); primeiro = primeiro || li; } else li.removeAttribute('data-destaque');
-      });
-      if (primeiro && primeiro.scrollIntoView) primeiro.scrollIntoView({ block: 'nearest' });
-      el.dispatchEvent(new CustomEvent('ucam:calendario-dia', { bubbles: true, detail: { dia: i } }));
-      return;
-    }
-    if (s.modo === 'range') {
-      if (!s.de || s.ate) { s.de = i; s.ate = ''; }
-      else if (i < s.de) { s.de = i; }
-      else { s.ate = i; }
-      el.setAttribute('data-valor', s.de);
-      if (s.ate) el.setAttribute('data-ate', s.ate); else el.removeAttribute('data-ate');
-      avisaAlvo(el.getAttribute('data-alvo'), s.de);
-      avisaAlvo(el.getAttribute('data-alvo-ate'), s.ate);
-    } else {
-      s.valor = i;
-      el.setAttribute('data-valor', i);
-      avisaAlvo(el.getAttribute('data-alvo'), i);
-    }
-    s.foco = deIso(i);
-    desenha(el);
-    var f = el.querySelector('[data-dia="' + i + '"]');
-    if (f) f.focus();
-    el.dispatchEvent(new CustomEvent('ucam:calendario', { bubbles: true, detail: { valor: s.valor, de: s.de, ate: s.ate } }));
-  }
-  function trocaMes(el, d) {
-    var s = estado(el);
-    s.foco = d;
-    desenha(el);
-    el.dispatchEvent(new CustomEvent('ucam:calendario-mes', { bubbles: true, detail: { mes: isoDe(d).slice(0, 7) } }));
-  }
   document.addEventListener('click', function (e) {
-    var t = e.target, el = t.closest && t.closest('[data-calendario]');
-    if (!el || !el._cal) return;
-    var s = estado(el);
-    var m = t.closest('[data-cal-mes]');
-    if (m) return trocaMes(el, new Date(s.foco.getFullYear(), s.foco.getMonth() + Number(m.getAttribute('data-cal-mes')), 1));
-    if (t.closest('[data-cal-hoje]')) return escolhe(el, isoDe(hoje()));
-    var dia = t.closest('[data-dia]');
-    if (dia && dia.getAttribute('aria-disabled') !== 'true') escolhe(el, dia.getAttribute('data-dia'));
+    var el = e.target.closest && e.target.closest('[data-calendario]');
+    if (el && el._cal) el._cal.clique(e.target);
   });
   document.addEventListener('keydown', function (e) {
-    var t = e.target;
-    if (!t.hasAttribute || !t.hasAttribute('data-dia')) return;
-    var el = t.closest('[data-calendario]');
-    if (!el || !el._cal) return;
-    var s = estado(el);
-    var mapa = TECLAS_CAL[e.key];
-    var alvo = null;
-    if (mapa) alvo = passoCal(s.foco, mapa[0], mapa[1]);
-    else if (e.key === 'Home') alvo = passoCal(s.foco, -s.foco.getDay());
-    else if (e.key === 'End') alvo = passoCal(s.foco, 6 - s.foco.getDay());
-    else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      if (t.getAttribute('aria-disabled') !== 'true') escolhe(el, t.getAttribute('data-dia'));
-      return;
-    }
-    if (!alvo) return;
-    e.preventDefault();
-    var trocou = alvo.getMonth() !== s.foco.getMonth() || alvo.getFullYear() !== s.foco.getFullYear();
-    s.foco = alvo;
-    if (trocou) trocaMes(el, alvo);
-    else Array.prototype.forEach.call(el.querySelectorAll('.ucam-calendario__dia'), function (b) { b.tabIndex = b.getAttribute('data-dia') === isoDe(alvo) ? 0 : -1; });
-    var f = el.querySelector('[data-dia="' + isoDe(alvo) + '"]');
-    if (f) f.focus();
+    var el = e.target.closest && e.target.closest('[data-calendario]');
+    if (el && el._cal) el._cal.tecla(e);
   });
   montaTodos(document);
   new MutationObserver(function (lista) {
@@ -7393,9 +7554,11 @@ export const dataScript = `
    * tabindex): setas andam um dia ou uma semana, PageUp/PageDown um mês,
    * Home/End o começo e o fim da semana, Enter/Espaço escolhe, Esc fecha e
    * devolve o foco ao campo. O mês visível é anunciado (aria-live). */
-  /* A grade é a do calendário solto (FN_CALENDARIO, ADR-074). */
+  /* A grade é o motor do calendário solto (FN_CALENDARIO, ADR-074/077): o
+   * título sobe para meses e anos, e quem nasceu em 1974 chega lá em três
+   * cliques em vez de seiscentos. */
 ${FN_CALENDARIO}
-  var cal = null, dono = null, foco = null;
+  var cal = null, dono = null, motor = null;
   function textoDe(d) { return doisD(d.getDate()) + '/' + doisD(d.getMonth() + 1) + '/' + d.getFullYear(); }
   function rotuloDe(campo) {
     var l = campo.id && document.querySelector('label[for="' + campo.id + '"]');
@@ -7408,26 +7571,12 @@ ${FN_CALENDARIO}
       dono.setAttribute('aria-expanded', 'false');
       if (devolve) dono.focus();
     }
-    cal = null; dono = null; foco = null;
+    cal = null; dono = null; motor = null;
   }
   /* MIN, MAX E PERÍODO (ADR-074). data-min e data-max (ISO) no campo
    * bloqueiam os dias de fora; dentro de um [data-intervalo], o calendário de
    * qualquer ponta marca o período inteiro, com as duas pontas escolhidas. */
   function valorDe(c) { return c && real(iso(c.value)) ? iso(c.value) : ''; }
-  function desenhar() {
-    var o = { foco: foco, escolhido: valorDe(dono), min: dono.getAttribute('data-min') || '', max: dono.getAttribute('data-max') || '' };
-    var grupo = dono.closest('[data-intervalo]');
-    if (grupo) {
-      var pontas = grupo.querySelectorAll('input[data-data]');
-      o.de = valorDe(pontas[0]);
-      o.ate = valorDe(pontas[1]);
-    }
-    desenharGrade(cal, o);
-  }
-  function focarDia() {
-    var b = cal && cal.querySelector('[data-dia="' + isoDe(foco) + '"]');
-    if (b) b.focus();
-  }
   function posicionar() {
     cal.classList.remove('ucam-calendario--acima');
     var c = dono.getBoundingClientRect(), a = cal.getBoundingClientRect().height;
@@ -7438,18 +7587,24 @@ ${FN_CALENDARIO}
     if (cal && dono === campo) return;
     fecharCal(false);
     dono = campo;
-    foco = real(iso(campo.value)) ? new Date(iso(campo.value) + 'T00:00:00') : hoje();
     cal = document.createElement('div');
     cal.className = 'ucam-calendario';
     cal.id = campo.id + '-calendario';
     cal.setAttribute('role', 'dialog');
     cal.setAttribute('aria-label', 'Escolher ' + rotuloDe(campo) + ' no calendário');
-    cal.innerHTML = cabecaCal() + tabelaCal() +
-      '<div class="ucam-calendario__pe"><button type="button" class="ucam-btn ucam-btn--ghost ucam-btn--sm" data-cal-hoje>Hoje</button></div>';
+    var o = { precisao: 'day', selecao: 'single', valor: valorDe(campo), min: campo.getAttribute('data-min') || '', max: campo.getAttribute('data-max') || '', comHoje: true };
+    var grupo = campo.closest('[data-intervalo]');
+    if (grupo) {
+      var pontas = grupo.querySelectorAll('input[data-data]');
+      o.de = valorDe(pontas[0]);
+      o.ate = valorDe(pontas[1]);
+    }
+    o.aoEscolher = function (chave) { escolher(deIso(chave)); };
     campo.closest('.ucam-date-field').appendChild(cal);
+    motor = Calendario(cal, o);
+    motor.desenhar();
     campo.setAttribute('aria-expanded', 'true');
     campo.setAttribute('aria-controls', cal.id);
-    desenhar();
     posicionar();
   }
   function escolher(d) {
@@ -7459,14 +7614,6 @@ ${FN_CALENDARIO}
     fecharCal(true);
     avisa(campo);
   }
-  function mover(dias, meses) {
-    var d = passoCal(foco, dias, meses);
-    var trocouMes = d.getMonth() !== foco.getMonth() || d.getFullYear() !== foco.getFullYear();
-    foco = d;
-    if (trocouMes) desenhar();
-    else Array.prototype.forEach.call(cal.querySelectorAll('.ucam-calendario__dia'), function (b) { b.tabIndex = b.getAttribute('data-dia') === isoDe(foco) ? 0 : -1; });
-    focarDia();
-  }
   // Abre no CLIQUE (ponteiro), não no foco: quem chega pelo Tab vai digitar.
   document.addEventListener('click', function (e) {
     var t = e.target;
@@ -7474,33 +7621,26 @@ ${FN_CALENDARIO}
     if (campo && (t === campo || t.closest('.ucam-date-field__icone'))) { abrirCal(campo); if (t !== campo) campo.focus(); return; }
     if (!cal) return;
     if (!cal.contains(t)) return fecharCal(false);
-    var m = t.closest('[data-cal-mes]');
-    if (m) { foco = new Date(foco.getFullYear(), foco.getMonth() + Number(m.getAttribute('data-cal-mes')), 1); desenhar(); return; }
-    if (t.closest('[data-cal-hoje]')) return escolher(hoje());
-    var dia = t.closest('[data-dia]');
-    if (dia && dia.getAttribute('aria-disabled') !== 'true') escolher(new Date(dia.getAttribute('data-dia') + 'T00:00:00'));
+    motor.clique(t);
   });
   document.addEventListener('keydown', function (e) {
     var t = e.target;
     if (t.matches && t.matches('input[data-data]')) {
-      if (e.altKey && e.key === 'ArrowDown') { e.preventDefault(); abrirCal(t); focarDia(); }
+      if (e.altKey && e.key === 'ArrowDown') { e.preventDefault(); abrirCal(t); motor.focar(); }
       else if (e.key === 'Escape' && cal && dono === t) { e.preventDefault(); fecharCal(true); }
-      else if (e.key === 'ArrowDown' && cal && dono === t) { e.preventDefault(); focarDia(); }
+      else if (e.key === 'ArrowDown' && cal && dono === t) { e.preventDefault(); motor.focar(); }
       return;
     }
     if (!cal || !cal.contains(t)) return;
     if (e.key === 'Escape') { e.preventDefault(); return fecharCal(true); }
-    if (!t.hasAttribute('data-dia')) return;
-    var mapa = TECLAS_CAL[e.key];
-    if (mapa) { e.preventDefault(); return mover(mapa[0], mapa[1]); }
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (t.getAttribute('aria-disabled') !== 'true') escolher(new Date(t.getAttribute('data-dia') + 'T00:00:00')); return; }
-    if (e.key === 'Home') { e.preventDefault(); return mover(-foco.getDay()); }
-    if (e.key === 'End') { e.preventDefault(); return mover(6 - foco.getDay()); }
+    motor.tecla(e);
   });
   // Foco que sai do campo e do calendário fecha o popover (Tab para frente).
+  // O foco que cai no <body> enquanto a grade se redesenha (o botão clicado
+  // some) não é saída.
   document.addEventListener('focusin', function (e) {
     if (!cal) return;
-    if (e.target === dono || cal.contains(e.target)) return;
+    if (e.target === dono || cal.contains(e.target) || e.target === document.body) return;
     fecharCal(false);
   });
   addEventListener('resize', function () { fecharCal(false); });

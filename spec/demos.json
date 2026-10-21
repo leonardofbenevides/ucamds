@@ -653,6 +653,12 @@
           "descricao": "O campo obrigatório que ficou em Selecione. A mensagem diz o que falta, não \"campo inválido\".",
           "preview": "<div class='ucam-field' style='max-inline-size:20rem'><label class='ucam-field__label' for='d-sel-e'>Setor responsável <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='d-sel-e' required aria-invalid='true' aria-describedby='d-sel-e-e'><option>Selecione</option><option>Secretaria Acadêmica</option><option>Coordenação de Curso</option></select><span class='ucam-field__error' id='d-sel-e-e'>Escolha o setor que vai receber o requerimento.</span></div>",
           "codigo": "<ucam-select\n  label=\"Setor responsável\"\n  required\n  [invalid]=\"true\"\n  errorMessage=\"Escolha o setor que vai receber o requerimento.\"\n  [options]=\"setores\" />"
+        },
+        {
+          "titulo": "Vários, com o recorte dentro",
+          "descricao": "Marque cursos; a lista não fecha. A fileira no topo recorta por modalidade — Todos, EAD, Presencial — e recortar não desmarca. O gatilho diz o primeiro e quantos mais; o rodapé conta e limpa.",
+          "preview": "<div class='ucam-field'><label class='ucam-field__label' for='dsm1'>Cursos</label><select class='ucam-select' id='dsm1' multiple data-recorte-rotulo='Modalidade' data-recorte-opcoes='EAD|Presencial'><option value=''>Todos os cursos</option><option value='adm' data-recorte='Presencial' selected>Administração</option><option value='dir' data-recorte='Presencial'>Direito</option><option value='ped' data-recorte='EAD' selected>Pedagogia</option><option value='gp' data-recorte='EAD'>Gestão Pública</option><option value='psi' data-recorte='Presencial'>Psicologia</option><option value='ti' data-recorte='EAD'>Análise de Sistemas</option></select></div>",
+          "codigo": "<ucam-select label=\"Cursos\" placeholder=\"Todos os cursos\" [options]=\"cursos\" multiple [(values)]=\"marcados\" [filter]=\"modalidade\" />\n\n// cursos: { value, label, filter: 'EAD' | 'Presencial' }[]\n// modalidade: { label: 'Modalidade', options: [{ value: 'EAD', label: 'EAD' }, { value: 'Presencial', label: 'Presencial' }] }"
         }
       ]
     },
@@ -938,6 +944,24 @@
           "descricao": "O primeiro toque marca o início; o segundo, o fim. O miolo pinta em fundo sutil e as pontas em bordô cheio. Um terceiro toque recomeça.",
           "preview": "<div class='ucam-calendario ucam-calendario--solto' role='group' aria-label='Semana de provas' data-calendario='range' data-valor='2026-10-19' data-ate='2026-10-23'></div>",
           "codigo": "<ucam-calendar label=\"Semana de provas\" selection=\"range\" [(range)]=\"semana\" />"
+        },
+        {
+          "titulo": "Semestre",
+          "descricao": "Dois semestres por ano, na notação das telas: 2026.1 é janeiro a junho, 2026.2 é julho a dezembro. O título leva à grade de anos.",
+          "preview": "<div class='ucam-calendario ucam-calendario--solto' role='group' aria-label='Semestre de ingresso' data-calendario='single' data-precisao='semester' data-valor='2026.2'></div>",
+          "codigo": "<ucam-calendar label=\"Semestre de ingresso\" precision=\"semester\" [(value)]=\"semestre\" />"
+        },
+        {
+          "titulo": "Mês e período de meses",
+          "descricao": "Competência de um mês, ou de março a agosto em dois toques.",
+          "preview": "<div class='ucam-calendario ucam-calendario--solto' role='group' aria-label='Competências' data-calendario='range' data-precisao='month' data-valor='2026-03' data-ate='2026-08'></div>",
+          "codigo": "<ucam-calendar label=\"Competências\" precision=\"month\" selection=\"range\" [(range)]=\"competencias\" />"
+        },
+        {
+          "titulo": "Ano",
+          "descricao": "Doze anos por página; as setas andam doze de cada vez. Depois de 2026 fica bloqueado (max).",
+          "preview": "<div class='ucam-calendario ucam-calendario--solto' role='group' aria-label='Ano de conclusão' data-calendario='single' data-precisao='year' data-valor='2019' data-max='2026-12-31'></div>",
+          "codigo": "<ucam-calendar label=\"Ano de conclusão\" precision=\"year\" max=\"2026-12-31\" [(value)]=\"ano\" />"
         }
       ]
     },
