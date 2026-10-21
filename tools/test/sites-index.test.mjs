@@ -9,14 +9,14 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 test('o índice dos sites junta contrato, demo e a folha, sem @import e sem classe da aplicação', () => {
   const { data, css } = construirIndice({ raiz: ROOT });
   assert.ok(data.meta.componentes >= 13);
-  assert.deepEqual(data.meta.submarcas, ['cenpre']);
+  assert.deepEqual(data.meta.submarcas, []);
   for (const id of ['button', 'icon-chip', 'section-heading', 'tag']) assert.ok(data.componentes.some((c) => c.id === id), 'falta ' + id);
   const b = data.componentes.find((c) => c.id === 'button');
   assert.equal(b.selector, 'ucam-site-button');
   assert.match(b.demo.principal.preview, /ucam-site-btn--primary/);
   assert.equal(b.trilhos, undefined);
-  assert.match(css, /--ucam-site-color-action-primary-default: #8E1331/);
-  assert.match(css, /\[data-marca="cenpre"\]/);
+  assert.match(css, /--ucam-site-color-action-primary-default: #B4365B/);
+  assert.doesNotMatch(css, /\[data-marca=/);
   assert.match(css, /\.ucam-site \.ic \{/);
   assert.match(css, /\.ucam-site-btn \{/);
   assert.doesNotMatch(css, /@import/);

@@ -13,9 +13,9 @@
       "subtle": { "$value": "{neutral.50}", "$description": "Seção que recua um degrau (faixa de depoimentos, biblioteca)." },
       "sunken": { "$value": "{neutral.100}", "$description": "Campo, chip neutro, fundo de código." },
       "inverse": { "$value": "{neutral.700}", "$description": "Seção escura: hero com foto, rodapé, CTA final. O charcoal-500 do CENPRE (L 35,6) cai aqui (L 37,1). Branco em cima dá 10,37:1." },
-      "brand": { "$value": "{wine.600}", "$description": "Faixa de marca. A submarca troca." },
-      "brand-soft": { "$value": "{wine.50}", "$description": "Lavagem da marca: fundo de tag, de ícone-chip." },
-      "photo-scrim": { "$value": "{wine.900}", "$description": "O véu do hero de página sobre foto, na opacidade de opacity.photo-scrim. A submarca troca." }
+      "brand": { "$value": "{magenta.700}", "$description": "Faixa de marca. O bordô do site da Candido Mendes, a base de todo site (decisão de 16/10/2026)." },
+      "brand-soft": { "$value": "{magenta.100}", "$description": "Lavagem da marca: fundo de tag, de ícone-chip." },
+      "photo-scrim": { "$value": "{magenta.900}", "$description": "O véu do hero de página sobre foto, na opacidade de opacity.photo-scrim." }
     },
     "text": {
       "primary": { "$value": "{neutral.800}", "$description": "Título. 15,16:1 sobre branco." },
@@ -26,15 +26,15 @@
       "on-inverse-muted": { "$value": "{neutral.300}", "$description": "Apoio sobre seção escura. 9,89:1 sobre neutral.800; mais sobre o 700." },
       "on-brand": { "$value": "{neutral.0}" },
       "on-action": { "$value": "{neutral.0}" },
-      "link": { "$value": "{wine.600}", "$description": "Link no corpo. A submarca troca." },
-      "link-hover": { "$value": "{wine.700}" }
+      "link": { "$value": "{magenta.700}", "$description": "Link no corpo, no bordô da marca." },
+      "link-hover": { "$value": "{magenta.800}" }
     },
     "action": {
       "primary": {
-        "default": { "$value": "{wine.600}" },
-        "hover": { "$value": "{wine.700}" },
-        "active": { "$value": "{wine.800}" },
-        "subtle": { "$value": "{wine.50}", "$description": "Fundo do botão terciário em hover e do chip de marca." }
+        "default": { "$value": "{magenta.700}", "$description": "O bordô do site da Candido Mendes, a base de todo site (decisão de 16/10/2026). 5,85:1 com o rótulo branco." },
+        "hover": { "$value": "{magenta.800}" },
+        "active": { "$value": "{magenta.900}" },
+        "subtle": { "$value": "{magenta.100}", "$description": "Fundo do botão terciário em hover e do chip de marca." }
       },
       "secondary": {
         "default": { "$value": "{neutral.0}" },
@@ -43,9 +43,9 @@
         "border": { "$value": "{neutral.400}", "$description": "3,47:1 sobre branco — acima do piso de 3:1 da 1.4.11. Nos sites a borda do secundário NÃO é desvio como na ADR-009: botão de site não tem campo ao lado para herdar repouso." }
       },
       "danger": {
-        "default": { "$value": "{red.600}" },
-        "hover": { "$value": "{red.700}" },
-        "active": { "$value": "{red.800}" },
+        "default": { "$value": "{red.800}", "$description": "Um degrau de luminosidade ABAIXO da ação: o red.600 tem quase a luminosidade do bordô e, sob tritanopia, os dois viravam a mesma cor (d=0,010). Com o 800, d=0,114." },
+        "hover": { "$value": "{red.900}" },
+        "active": { "$value": "{red.700}", "$description": "Pressionado clareia, ao contrário do hover: o red.900 encostava no bordô pressionado (magenta.900, d=0,066). O 700 dá d=0,119." },
         "subtle": { "$value": "{red.100}" }
       },
       "disabled": {
@@ -65,7 +65,7 @@
       "$description": "Os mesmos pares da aplicação. Sempre com ícone e texto (WCAG 1.4.1).",
       "success": { "background": { "$value": "{green.100}" }, "foreground": { "$value": "{green.700}" }, "border": { "$value": "{green.500}" } },
       "warning": { "background": { "$value": "{amber.100}" }, "foreground": { "$value": "{amber.700}" }, "border": { "$value": "{amber.500}" } },
-      "danger": { "background": { "$value": "{red.100}" }, "foreground": { "$value": "{red.700}" }, "border": { "$value": "{red.500}" }, "on-inverse": { "$value": "{red.200}", "$description": "A mensagem de erro sobre seção escura. O foreground (red.700) dava 1,44:1 sobre a superfície inversa; este dá 5,31:1." } },
+      "danger": { "background": { "$value": "{red.100}" }, "foreground": { "$value": "{red.800}", "$description": "A tinta de erro no degrau do botão destrutivo: o red.700 ficava perto demais do link bordô." }, "border": { "$value": "{red.800}" }, "on-inverse": { "$value": "{red.200}", "$description": "A mensagem de erro sobre seção escura. O foreground (red.700) dava 1,44:1 sobre a superfície inversa; este dá 5,31:1." } },
       "info": { "background": { "$value": "{blue.100}" }, "foreground": { "$value": "{blue.700}" }, "border": { "$value": "{blue.500}" } }
     },
     "interaction": {
@@ -77,7 +77,7 @@
   },
   "opacity": {
     "$type": "number",
-    "photo-scrim": { "$value": 0.7, "$description": "Opacidade do véu onde há texto sobre foto. É o menor múltiplo de 0,05 que deixa o texto a 4,5:1 sobre branco puro, a foto mais clara que existe, nas duas marcas: 6,57:1 na base, 5,15:1 na CENPRE. A conta é do build (piorCasoSobreFoto)." }
+    "photo-scrim": { "$value": 0.7, "$description": "Opacidade do véu onde há texto sobre foto. É o menor múltiplo de 0,05 que deixa o texto a 4,5:1 sobre branco puro, a foto mais clara que existe, com o véu bordô (magenta.900): 5,15:1. A conta é do build (piorCasoSobreFoto)." }
   },
   "font": {
     "$type": "fontFamily",

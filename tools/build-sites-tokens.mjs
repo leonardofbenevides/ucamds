@@ -13,7 +13,7 @@
 // ($ucam-site-*, para a constitution do dev do CENPRE), JSON resolvido e um
 // CSS por submarca, aplicado por data-marca="<id>" no elemento raiz.
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -279,6 +279,10 @@ function principal() {
   }
   const out = join(ROOT, 'dist', 'sites', 'tokens');
   if (!existsSync(out)) mkdirSync(out, { recursive: true });
+  // Submarca que saiu da spec sai do dist: o índice e o pacote leem a pasta, e
+  // um CSS velho de marca continuaria valendo (a CENPRE, em 16/10/2026).
+  const geradas = new Set(r.arquivos.map(([n]) => n));
+  for (const f of readdirSync(out)) if (/^ucam-site-marca-.+\.css$/.test(f) && !geradas.has(f)) rmSync(join(out, f));
   for (const [nome, conteudo] of r.arquivos) writeFileSync(join(out, nome), conteudo, 'utf8');
   console.log(`\n✓ @ucam/site-css tokens → dist/sites/tokens/ (${r.arquivos.map(([n]) => n).join(', ')})`);
 }

@@ -34,8 +34,16 @@ test('portão: media query fora dos viewports da semântica derruba', () => {
 });
 
 test('a camada 3 aplica-se também num invólucro, não só no :root', async () => {
+  // Sem submarca na spec real desde que o bordô virou a base (16/10/2026): o
+  // mecanismo é provado com uma marca de exemplo numa cópia da spec.
   const { construir } = await import('../build-sites-tokens.mjs');
-  const r = construir({ raiz: ROOT });
+  const { mkdtempSync, cpSync, writeFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const raiz = mkdtempSync(join(tmpdir(), 'ucamds-marca-'));
+  cpSync(join(ROOT, 'spec/tokens'), join(raiz, 'spec/tokens'), { recursive: true });
+  cpSync(join(ROOT, 'sites/spec/tokens'), join(raiz, 'sites/spec/tokens'), { recursive: true });
+  writeFileSync(join(raiz, 'sites/spec/tokens/marca.cenpre.json'), JSON.stringify({ color: { surface: { 'brand-soft': { $value: '{magenta.200}' } } } }));
+  const r = construir({ raiz, kits: {} });
   const marca = r.arquivos.find(([n]) => n === 'ucam-site-marca-cenpre.css')[1];
   assert.match(marca, /:root\[data-marca="cenpre"\],\n\[data-marca="cenpre"\] \{/);
 });

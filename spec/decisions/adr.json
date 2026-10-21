@@ -1431,6 +1431,23 @@
         "toggle-group",
         "segmented"
       ]
+    },
+    {
+      "id": "ADR-075",
+      "titulo": "A base dos Sites é o bordô do site da Candido Mendes, e o erro desce um degrau",
+      "status": "aceita",
+      "data": "2026-10-16",
+      "contexto": "O candidomendes.edu.br usa o #B4365B (magenta.700) em todo botão, e o saber-mais e o CENPRE usam a mesma cor. Os Sites nasceram com a base no vinho da aplicação (wine.600) e o #B4365B numa submarca CENPRE, com a ação descida para o magenta.800 (ADR-068), porque o magenta.700 contra o red.600 dá d=0,010 sob tritanopia. Na prova do saber-mais, o Leonardo recusou a troca: o bordô do site é a cor da universidade, deve ser a dos Sites e deve funcionar. Medido no portão (ADR-026): o que encosta no #B4365B é o red.600, que tem quase a mesma luminosidade. Movendo o vermelho, e não a ação, o red.800 dá d=0,114 contra o bordô em repouso, o red.900 dá 0,130 contra o hover (magenta.800), e o red.700 dá 0,119 contra o pressionado (magenta.900); o red.900 no pressionado encostava (0,066).",
+      "decisao": "A camada semântica dos Sites passa ao bordô: ação primária magenta.700/800/900, superfície de marca e link no magenta.700, lavagem no magenta.100, véu de foto no magenta.900. O destrutivo dos Sites desce para red.800 em repouso, red.900 sob o ponteiro e red.700 pressionado, e a tinta e o filete de erro vão ao red.800. A submarca CENPRE sai: ficou igual à base, e com o erro novo ela reprovaria. Revoga em parte a ADR-068 (a submarca e a ação no 800); a rampa magenta e o adaptador do kit do CENPRE ficam. A aplicação não muda: o vinho segue sendo a ação dela (ADR-001).",
+      "consequencias": [
+        "Todo site nasce no bordô da universidade, sem data-marca. A camada 3 continua existindo para uma marca que de fato seja outra.",
+        "O botão destrutivo dos Sites é mais escuro que o da aplicação, e o pressionado clareia em vez de escurecer: é a única ordem dos três estados que passa contra o bordô.",
+        "O véu do hero sobre foto fica no magenta.900, a 0,7: 5,15:1 no pior caso, sobre foto branca.",
+        "O build dos tokens apaga do dist a submarca que saiu da spec, e o espelho do site de docs é refeito do zero: um CSS velho de marca não continua valendo."
+      ],
+      "afeta": [
+        "sites"
+      ]
     }
   ]
 }

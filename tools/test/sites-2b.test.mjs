@@ -78,7 +78,7 @@ test('o índice traz as treze peças e as decisões que cada contrato cita', () 
   const { data } = construirIndice({ raiz: ROOT });
   assert.ok(data.meta.componentes >= 13);
   const button = data.componentes.find((c) => c.id === 'button');
-  assert.ok(button.decisoes.includes('ADR-068'), 'o button cita a ADR-068');
+  assert.ok(button.decisoes.includes('ADR-075'), 'o button cita a ADR-075, a da base bordô');
   assert.ok(!button.decisoes.includes('ADR-056'), 'ADR da aplicação não entra');
   const header = data.componentes.find((c) => c.id === 'site-header');
   assert.ok(Array.isArray(header.decisoes));

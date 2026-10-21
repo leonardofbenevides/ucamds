@@ -6,7 +6,7 @@
 //
 //   node tools/build-sites-index.mjs
 
-import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync, cpSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync, cpSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { familiasSites, fontFaceCss } from './lib/fonts-css.mjs';
@@ -76,6 +76,8 @@ function principal() {
   for (const sub of ['tokens', 'fonts', 'css']) {
     const origem = join(ROOT, 'dist', 'sites', sub);
     if (!existsSync(origem)) continue;
+    // O espelho é refeito do zero: arquivo que saiu do dist (uma submarca) não fica servido.
+    rmSync(join(assets, sub), { recursive: true, force: true });
     mkdirSync(join(assets, sub), { recursive: true });
     cpSync(origem, join(assets, sub), { recursive: true });
   }
