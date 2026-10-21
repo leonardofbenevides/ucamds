@@ -2091,7 +2091,7 @@ ${selectChevronCss}
 @media (forced-colors: active) {
   .ucam-calendario__dia[aria-pressed="true"] { outline: 2px solid CanvasText; }
 }
-.ucam-field--mes   .ucam-input { inline-size: calc(7ch  + 1.5rem); }
+.ucam-field--mes   .ucam-input { inline-size: calc(7ch  + 1.5rem + 2px); }
 
 /* ------------------------------------- calendário solto e agenda (ADR-074) --- */
 /* A MESMA grade do popover do DateField, fora dele (calendar.json). Solta na
