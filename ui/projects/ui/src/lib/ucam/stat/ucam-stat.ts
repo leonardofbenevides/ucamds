@@ -23,7 +23,7 @@ export type UcamStatLayout = 'stack' | 'row';
 export type UcamStatState = 'idle' | 'loading' | 'empty' | 'error';
 
 /**
- * O tom NÃO pinta texto (ADR-076, 20/10/2026): valor, variação e meta ficam
+ * O tom NÃO pinta texto (ADR-077, 20/10/2026): valor, variação e meta ficam
  * nas tintas neutras, e warning e danger põem um ponto antes da meta. Antes a
  * meta tomava a cor do tom (ADR-035), e quatro legendas em quatro tintas
  * refaziam o mosaico que a ADR-034 tirou do fundo. A meta em palavra continua
@@ -162,7 +162,7 @@ export type UcamStatState = 'idle' | 'loading' | 'empty' | 'error';
       font-size: var(--ucam-typography-caption-font-size);
       color: var(--ucam-color-text-secondary);
     }
-    /* ADR-076: a legenda fica em cinza; warning e danger põem um ponto antes. */
+    /* ADR-077: a legenda fica em cinza; warning e danger põem um ponto antes. */
     ucam-stat .ucam-stat--warning { --ucam-stat-ponto: var(--ucam-color-feedback-warning-graphic); }
     ucam-stat .ucam-stat--danger { --ucam-stat-ponto: var(--ucam-color-feedback-danger-graphic); }
     ucam-stat :is(.ucam-stat--warning, .ucam-stat--danger) :is(.ucam-stat__delta, .ucam-stat__meta) {

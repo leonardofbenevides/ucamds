@@ -88,7 +88,7 @@ describe('UcamDateField — calendário do DS', () => {
   });
 });
 
-describe('UcamDateField — níveis do calendário (ADR-077)', () => {
+describe('UcamDateField — níveis do calendário (ADR-078)', () => {
   it('o título do popover sobe para meses e anos, e escolher desce até o dia', async () => {
     await TestBed.configureTestingModule({ imports: [Hospedeiro] }).compileComponents();
     const fx = TestBed.createComponent(Hospedeiro);

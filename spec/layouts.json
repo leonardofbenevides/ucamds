@@ -266,7 +266,7 @@
       "classe": "ucam-form-grid",
       "papel": "Campos de formulário numa grade que responde à largura: 1, 2, 3 ou 4 trilhas, contadas sozinhas pela largura do contêiner (a grade é o contêiner \"formulario\").",
       "quando": "Todo formulário de cadastro e de filtros com mais de dois campos. Diálogo, painel de apoio e celular caem sozinhos para uma trilha.",
-      "decisao": "ADR-055. Trilha mínima de 17rem, no máximo quatro, cada trilha até 30rem, e o controle preenche a trilha inteira (ADR-075): 1 trilha até container.formulario-2col (35rem), 2 até formulario-3col (53rem), 3 até formulario-4col (71rem), 4 acima. Cada campo é subgrade de três fileiras (rótulo, controle, apoio): rótulo com rótulo e controle com controle alinham mesmo quando um tem apoio e o vizinho não. Substitui a .ucam-form-row com --ucam-cols no style como jeito normal de montar formulário — a fileira fica para o GRUPO.",
+      "decisao": "ADR-055. Trilha mínima de 17rem, no máximo quatro, cada trilha até 30rem, e o controle preenche a trilha inteira (ADR-076): 1 trilha até container.formulario-2col (35rem), 2 até formulario-3col (53rem), 3 até formulario-4col (71rem), 4 acima. Cada campo é subgrade de três fileiras (rótulo, controle, apoio): rótulo com rótulo e controle com controle alinham mesmo quando um tem apoio e o vizinho não. Substitui a .ucam-form-row com --ucam-cols no style como jeito normal de montar formulário — a fileira fica para o GRUPO.",
       "variantes": [
         {
           "classe": "ucam-field--largo",
@@ -278,7 +278,7 @@
         },
         {
           "classe": "ucam-form-row (dentro da grade)",
-          "quando": "GRUPO de campos curtos que andam juntos — De/Até, Referência + Vencimento + Desconto, CPF + Nome. Linha inteira com uma ou duas trilhas; uma trilha com três ou mais (duas com --largo). Colunas iguais (repeat(n, minmax(0, 1fr))), e cada controle preenche a sua (ADR-075)."
+          "quando": "GRUPO de campos curtos que andam juntos — De/Até, Referência + Vencimento + Desconto, CPF + Nome. Linha inteira com uma ou duas trilhas; uma trilha com três ou mais (duas com --largo). Colunas iguais (repeat(n, minmax(0, 1fr))), e cada controle preenche a sua (ADR-076)."
         },
         {
           "classe": "textarea / compositor",

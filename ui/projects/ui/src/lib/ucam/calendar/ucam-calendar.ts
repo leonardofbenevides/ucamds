@@ -288,7 +288,7 @@ export type UcamCalendarSelection = 'single' | 'range' | 'none';
 export class UcamCalendar {
   readonly variant = input<UcamCalendarVariant>('grade');
   readonly selection = input<UcamCalendarSelection>('single');
-  /** O que se escolhe: dia, mês, semestre (aaaa.1 / aaaa.2) ou ano (ADR-077). */
+  /** O que se escolhe: dia, mês, semestre (aaaa.1 / aaaa.2) ou ano (ADR-078). */
   readonly precision = input<UcamCalendarPrecision>('day');
   /** Nome para o leitor de tela: Calendário acadêmico de 2026, Data da prova. */
   readonly label = input.required<string>();

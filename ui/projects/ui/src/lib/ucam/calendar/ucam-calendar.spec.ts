@@ -97,7 +97,7 @@ class Niveis {
   readonly semestre = signal<string | null>(null);
 }
 
-describe('UcamCalendar — tipos e níveis (ADR-077)', () => {
+describe('UcamCalendar — tipos e níveis (ADR-078)', () => {
   async function monta() {
     await TestBed.configureTestingModule({ imports: [Niveis] }).compileComponents();
     const fx = TestBed.createComponent(Niveis);

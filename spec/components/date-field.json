@@ -150,7 +150,7 @@
   "formatacao": {
     "entrada": "Aceita dd/mm/aaaa e também ddmmaaaa sem separador — a máscara insere as barras.",
     "saida": "O modelo recebe ISO. Converter na borda evita o clássico erro de mês e dia trocados.",
-    "largura": "Preenche o campo (ADR-075), como todo controle. O corte do SIGFIN (\"10/09/202\") vinha de campo estreito arbitrário; o campo que preenche a trilha não corta, e a dica dd/mm/aaaa diz o formato."
+    "largura": "Preenche o campo (ADR-076), como todo controle. O corte do SIGFIN (\"10/09/202\") vinha de campo estreito arbitrário; o campo que preenche a trilha não corta, e a dica dd/mm/aaaa diz o formato."
   },
   "acessibilidade": {
     "requisitos": [

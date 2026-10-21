@@ -358,7 +358,7 @@
       "contrato": "<div class=\"ucam-calendario ucam-calendario--solto\" data-calendario=\"single|range\" data-valor data-ate data-min data-max data-alvo=\"id-do-input\"> com data-precisao=\"day|month|semester|year\" — o comportamento (calendarioScript) desenha a grade e grava o ISO no input apontado por data-alvo, disparando input e change. Agenda: <section class=\"ucam-calendario ucam-calendario--agenda\" data-calendario=\"agenda\" data-mes=\"aaaa-mm\" aria-label> com <ol class=\"ucam-calendario__lista\"> de <li data-data=\"aaaa-mm-dd\" data-tom> — a lista é a fonte; o script monta a grade a partir dela e filtra pelo mês.",
       "raiz": ".ucam-calendario",
       "estado": "Sem classe de estado: hoje é aria-current=date, escolhido é aria-pressed, intervalo é data-intervalo e data-ponta, bloqueado é aria-disabled.",
-      "nota": "A grade é um motor só (Calendario em FN_CALENDARIO, tools/lib/shell.mjs): o popover do DateField e o calendário solto usam o mesmo, com os mesmos níveis e o mesmo teclado. No Trilho B o UcamDateField põe o próprio UcamCalendar no popover (ADR-077)."
+      "nota": "A grade é um motor só (Calendario em FN_CALENDARIO, tools/lib/shell.mjs): o popover do DateField e o calendário solto usam o mesmo, com os mesmos níveis e o mesmo teclado. No Trilho B o UcamDateField põe o próprio UcamCalendar no popover (ADR-078)."
     },
     "trilho_b": "ui/projects/ui/src/lib/ucam/calendar/ucam-calendar.ts — <ucam-calendar>. Entradas: variant, selection, precision, value, period, range, month, min, max, events, label. Escrito do zero: a ZardUI tem calendar, mas sem agenda nem intervalo."
   }
