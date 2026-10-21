@@ -212,7 +212,7 @@
       {
         "legado": "$color-brand no fundo do botão",
         "novo": "color.action.primary.default",
-        "nota": "Um degrau mais escuro no CENPRE (magenta.800, ADR-068)."
+        "nota": "O bordô do site da Candido Mendes (magenta.700, ADR-075)."
       }
     ]
   },

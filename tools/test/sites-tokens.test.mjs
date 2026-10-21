@@ -36,19 +36,17 @@ const SEMANTICA = {
   typography: { $type: 'typography', body: { $value: { fontSize: '{fontSize.md}', fontWeight: '{fontWeight.regular}', lineHeight: '1.5' } } },
 };
 
-test('a spec real dos sites passa em todos os portões e gera os quatro arquivos', () => {
+test('a spec real dos sites passa em todos os portões, na base bordô da Candido Mendes e sem submarca', () => {
   const r = construir({ raiz: ROOT });
   assert.deepEqual(r.falhas, []);
   const nomes = r.arquivos.map(([n]) => n);
-  assert.deepEqual(nomes, ['ucam-site-tokens.css', '_ucam-site-tokens.scss', 'ucam-site-tokens.json', 'ucam-site-marca-cenpre.css']);
+  assert.deepEqual(nomes, ['ucam-site-tokens.css', '_ucam-site-tokens.scss', 'ucam-site-tokens.json']);
   const css = r.arquivos[0][1];
-  assert.match(css, /--ucam-site-color-action-primary-default: #8E1331;/);
+  // A base é o bordô do site da Candido Mendes; o erro desce um degrau de luminosidade para não se confundir com ele.
+  assert.match(css, /--ucam-site-color-action-primary-default: #B4365B;/);
+  assert.match(css, /--ucam-site-color-action-danger-default: #7F2A1F;/);
   assert.match(css, /--ucam-site-typography-display-hero-font-size: clamp\(/);
   assert.doesNotMatch(css, /--ucam-color-/);
-  const marca = r.arquivos[3][1];
-  assert.match(marca, /:root\[data-marca="cenpre"\],\n\[data-marca="cenpre"\] \{/);
-  assert.match(marca, /--ucam-site-color-action-primary-default: #922243;/);
-  assert.doesNotMatch(marca, /--ucam-site-color-text-primary/);
 });
 
 test('o repositório mínimo passa', () => {
@@ -129,10 +127,9 @@ test('submarca com id fora de [a-z0-9-] é falha, não silêncio', () => {
   assert.deepEqual(r.marcas, []);
 });
 
-test('a spec real mede os pares decisivos na base e no CENPRE, sem par pulado', () => {
+test('a spec real mede os pares decisivos na base, sem par pulado', () => {
   const r = construir({ raiz: ROOT });
-  assert.ok(r.relatos.some((l) => /\[base\] preenchimento em repouso/.test(l)));
-  assert.ok(r.relatos.some((l) => /\[cenpre\] preenchimento em repouso/.test(l)));
+  for (const par of ['preenchimento em repouso', 'preenchimento sob o ponteiro', 'preenchimento sob pressão']) assert.ok(r.relatos.some((l) => l.includes('✓ [base] ' + par)), par);
   assert.ok(!r.desvios.some((d) => /não medido/.test(d)), r.desvios.join('\n'));
 });
 
@@ -158,16 +155,14 @@ test('adaptador: cada adaptador confere o próprio kit, e a linha de sucesso só
   assert.ok(!r.relatos.some((l) => /adaptador b.*todos com destino/.test(l)), r.relatos.join('\n'));
 });
 
-test('texto sobre foto: o véu do token passa no pior caso, nas duas marcas', async () => {
+test('texto sobre foto: o véu do token passa no pior caso, e é o menor múltiplo de 0,05 que passa', async () => {
   const { piorCasoSobreFoto } = await import('../build-sites-tokens.mjs');
   const r = construir({ raiz: ROOT });
   assert.deepEqual(r.falhas, []);
   assert.ok(!r.desvios.some((d) => /sobre foto/.test(d)), r.desvios.join('\n'));
   const sem = JSON.parse(readFileSync(join(ROOT, 'sites/spec/tokens/semantic.json'), 'utf8'));
   assert.equal(sem.opacity['photo-scrim'].$value, 0.7);
-  const base = piorCasoSobreFoto([{ name: 'color-surface-photo-scrim', value: '#350D13' }, { name: 'opacity-photo-scrim', value: 0.7 }, { name: 'color-text-on-inverse', value: '#FFFFFF' }]);
-  assert.ok(base.razao >= 4.5 && base.razao < 7, String(base.razao));
-  // O menor múltiplo de 0,05: um degrau abaixo, a CENPRE reprova.
+  // O véu é o bordô escuro (magenta.900). Um degrau abaixo de 0,7, reprova.
   const cenpre = (o) => piorCasoSobreFoto([{ name: 'color-surface-photo-scrim', value: '#70132F' }, { name: 'opacity-photo-scrim', value: o }, { name: 'color-text-on-inverse', value: '#FFFFFF' }]);
   assert.ok(cenpre(0.7).razao >= 4.5);
   assert.ok(cenpre(0.65).razao < 4.5);
