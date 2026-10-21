@@ -186,10 +186,10 @@
     },
     {
       "id": "largura-pelo-dado",
-      "regra": "O campo preenche o lugar que tem: a trilha da grade, a coluna da fileira, a barra. A largura não sai mais do tamanho do dado (ADR-076).",
+      "regra": "O campo preenche o lugar que tem: a trilha da grade, a coluna da fileira, a barra. A largura não sai mais do tamanho do dado (ADR-075).",
       "porque": "Com a largura pelo dado, CPF, sigla e data ficavam mais curtos que o próprio campo — 143px numa trilha de 371 — e a tela tinha bordas direitas em toda parte. O que diz que o dado é curto é o que está escrito nele e a dica de formato, não um controle encolhido.",
       "medidas": {"todo campo de uma linha (texto, CPF, CNPJ, CEP, data, mês, código, telefone, valor, percentual, quantidade, select)":"100% do campo, sem teto","texto longo (textarea)":"100% do campo","valor e percentual":"preenchem, e continuam alinhados ao fim, com dígitos tabulares","ucam-field--content":"a única saída: largura pelo conteúdo, declarada"},
-      "desde": "20/10/2026, ADR-076. Até então valia a medida do dado e o teto de 30rem da ADR-055 (28/09/2026)."
+      "desde": "20/10/2026, ADR-075. Até então valia a medida do dado e o teto de 30rem da ADR-055 (28/09/2026)."
     },
     {
       "id": "erro-diz-o-esperado",

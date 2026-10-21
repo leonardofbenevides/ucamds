@@ -5394,7 +5394,7 @@ ${FN_ANUNCIA}
       var termo = crua(ctl.value);
       return !termo || crua(item.textContent).indexOf(termo) >= 0;
     }
-    // O SELECT MÚLTIPLO (ADR-079) filtra pela UNIÃO: a linha passa se casar
+    // O SELECT MÚLTIPLO (ADR-078) filtra pela UNIÃO: a linha passa se casar
     // com qualquer um dos marcados; nenhum marcado é filtro nenhum.
     if (ctl.hasAttribute('data-valores')) {
       var lista = ctl.getAttribute('data-valores').split('|').filter(Boolean);

@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "since": "0.1.0",
   "category": "formulario",
-  "description": "Escolha de um valor em uma lista fechada, com painel desenhado pelo design system. Até 15 opções não se procura, escolhe-se: acima disso o contrato manda escalar para Combobox, que tem busca por digitação. Com multiple, marca várias (caixa de marcar na opção, contagem e Limpar no rodapé). Com filter, o painel ganha no topo uma fileira de alternância — Todos / EAD / Presencial — que recorta as opções; o rótulo e as opções do recorte são de quem usa (ADR-079).",
+  "description": "Escolha de um valor em uma lista fechada, com painel desenhado pelo design system. Até 15 opções não se procura, escolhe-se: acima disso o contrato manda escalar para Combobox, que tem busca por digitação. Com multiple, marca várias (caixa de marcar na opção, contagem e Limpar no rodapé). Com filter, o painel ganha no topo uma fileira de alternância — Todos / EAD / Presencial — que recorta as opções; o rótulo e as opções do recorte são de quem usa (ADR-078).",
   "quando_usar": [
     "Uma lista fechada de até 15 opções em que não se procura, escolhe-se: campus, turno, situação.",
     "A opção depende de outro campo já preenchido e a lista muda com ele.",
@@ -135,7 +135,7 @@
       "nome": "width",
       "tipo": "'content' | 'full'",
       "default": "'full'",
-      "descricao": "Default é full: o select preenche o campo, como todo controle (ADR-076, 20/10/2026). content fica como saída declarada, para a largura acompanhar a opção mais longa."
+      "descricao": "Default é full: o select preenche o campo, como todo controle (ADR-075, 20/10/2026). content fica como saída declarada, para a largura acompanhar a opção mais longa."
     },
     {
       "nome": "dependsOn",

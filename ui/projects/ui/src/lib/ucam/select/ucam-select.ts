@@ -55,7 +55,7 @@ export interface UcamOption {
 }
 
 /**
- * A fileira de alternância dentro do painel (ADR-079): "Todos" + as opções
+ * A fileira de alternância dentro do painel (ADR-078): "Todos" + as opções
  * do recorte. Aberta como prop: o rótulo, o texto do "Todos" e as opções são
  * de quem usa — modalidade, campus, turno, nível.
  */
@@ -98,7 +98,7 @@ export interface UcamSelectFilter {
       <!-- aria-busy mora aqui: o z-select não o expõe, e o contrato pede que o
            carregamento seja anunciado, não só pintado de cinza. -->
       @if (comPainel()) {
-        <!-- O PAINEL (ADR-079): múltiplo e/ou com a fileira de recorte. A mesma
+        <!-- O PAINEL (ADR-078): múltiplo e/ou com a fileira de recorte. A mesma
              marcação do Trilho A — gatilho, lista com aria-multiselectable,
              fileira de alternância e rodapé —, sobre o popover nativo. O foco
              fica no gatilho (setas, Espaço, Esc); Tab entra no recorte e no
@@ -243,7 +243,7 @@ export interface UcamSelectFilter {
    * Tudo por token, sem depender da camada base de quem consome.
    */
   styles: `
-    /* O PAINEL (ADR-079), com a pele do .ucam-listbox--painel do Trilho A. */
+    /* O PAINEL (ADR-078), com a pele do .ucam-listbox--painel do Trilho A. */
     ucam-select .ucam-select-wrap { position: relative; display: inline-block; }
     ucam-select .ucam-select-wrap.block { display: block; }
     ucam-select .ucam-select-trigger {
@@ -375,11 +375,11 @@ export class UcamSelect implements ControlValueAccessor {
   readonly dependencyFilled = input(true, { transform: booleanAttribute });
 
   readonly value = model<string>('');
-  /** Marcar várias (ADR-079). O valor passa a ser values, e o painel ganha a caixa de marcar e o Limpar. */
+  /** Marcar várias (ADR-078). O valor passa a ser values, e o painel ganha a caixa de marcar e o Limpar. */
   readonly multiple = input(false, { transform: booleanAttribute });
   /** Os marcados, no modo múltiplo, na ordem das opções. */
   readonly values = model<string[]>([]);
-  /** A fileira de alternância dentro do painel: Todos / EAD / Presencial (ADR-079). */
+  /** A fileira de alternância dentro do painel: Todos / EAD / Presencial (ADR-078). */
   readonly filter = input<UcamSelectFilter | null>(null);
   /*
    * O output vem do model() acima — declarar um output homônimo colidia com
@@ -419,7 +419,7 @@ export class UcamSelect implements ControlValueAccessor {
     return out;
   });
 
-  // ------------------------------------------------ o painel (ADR-079) ---
+  // ------------------------------------------------ o painel (ADR-078) ---
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly injector = inject(Injector);
   private readonly gatilho = viewChild<ElementRef<HTMLButtonElement>>('gatilho');

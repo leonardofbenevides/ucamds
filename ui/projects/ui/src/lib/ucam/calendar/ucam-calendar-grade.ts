@@ -101,7 +101,7 @@ export function montarMes(foco: Date, o: OpcoesMes = {}): (DiaCal | null)[][] {
   return linhas;
 }
 
-/* ------------------------------------------------- os tipos (ADR-078) --- */
+/* ------------------------------------------------- os tipos (ADR-077) --- */
 
 /** Dia, mês, semestre ou ano: o que o calendário ESCOLHE. */
 export type UcamCalendarPrecision = 'day' | 'month' | 'semester' | 'year';
@@ -273,7 +273,7 @@ export const CSS_GRADE = `
       padding-block-start: var(--ucam-space-inline-xs);
       border-block-start: 1px solid var(--ucam-color-border-subtle);
     }
-    /* OS NÍVEIS (ADR-078). O título é botão quando há nível acima: dias →
+    /* OS NÍVEIS (ADR-077). O título é botão quando há nível acima: dias →
      * meses → anos. Diz que é clicável em repouso pelo chevron (a seta de
      * destino de 25/09/2026), sem caixa até o hover. */
     :is(ucam-calendar, ucam-date-field) .ucam-calendario__titulo {

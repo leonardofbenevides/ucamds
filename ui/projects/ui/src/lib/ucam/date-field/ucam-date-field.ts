@@ -70,7 +70,7 @@ const REGRA: Record<UcamDatePrecision, Regra> = {
   day: {
     max: 8,
     formato: 'dd/mm/aaaa',
-    // 20/10/2026 (ADR-076): o campo preenche o lugar, como no Trilho A. Antes
+    // 20/10/2026 (ADR-075): o campo preenche o lugar, como no Trilho A. Antes
     // era a medida do dado, calc(10ch + 3rem) — o ícone
     // entrou no campo e come o recuo inicial.
     largura: 'w-full',
@@ -201,7 +201,7 @@ const porExtenso = (iso: string) => {
             [attr.aria-label]="'Escolher ' + label() + ' no calendário'"
             (keydown)="aoTeclarNoCalendario($event)"
           >
-            <!-- O miolo é o UcamCalendar (ADR-078): a mesma grade, o mesmo teclado e
+            <!-- O miolo é o UcamCalendar (ADR-077): a mesma grade, o mesmo teclado e
                  o título que sobe para meses e anos. O popover, o Esc e a volta do
                  foco continuam sendo do campo. -->
             <ucam-calendar

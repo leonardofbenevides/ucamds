@@ -1450,7 +1450,7 @@
       ]
     },
     {
-      "id": "ADR-076",
+      "id": "ADR-075",
       "titulo": "Todo campo preenche a largura que tem",
       "status": "aceita",
       "data": "2026-10-20",
@@ -1474,7 +1474,7 @@
       ]
     },
     {
-      "id": "ADR-077",
+      "id": "ADR-076",
       "titulo": "A legenda do indicador fala em cinza, e o ponto de cor fica só na exceção",
       "status": "aceita",
       "data": "2026-10-20",
@@ -1490,7 +1490,7 @@
       ]
     },
     {
-      "id": "ADR-078",
+      "id": "ADR-077",
       "titulo": "O calendário tem quatro tipos — dia, mês, semestre e ano — e o título sobe de nível",
       "status": "aceita",
       "data": "2026-10-21",
@@ -1508,7 +1508,7 @@
       ]
     },
     {
-      "id": "ADR-079",
+      "id": "ADR-078",
       "titulo": "O Select marca vários e recorta por dentro, com a fileira de alternância como prop",
       "status": "aceita",
       "data": "2026-10-21",

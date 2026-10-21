@@ -1844,7 +1844,7 @@ ${selectChevronCss}
 }
 
 /* Rótulo de grupo e separador, iguais aos da base. */
-/* O PAINEL DO SELECT (ADR-079): múltiplo e com recorte. A casca é a da lista;
+/* O PAINEL DO SELECT (ADR-078): múltiplo e com recorte. A casca é a da lista;
  * dentro, a fileira de alternância (Todos / EAD / Presencial) no topo, a lista
  * que rola e, no múltiplo, o rodapé com a contagem e o Limpar. */
 .ucam-listbox--painel {
@@ -2103,7 +2103,7 @@ ${selectChevronCss}
   font-size: var(--ucam-typography-body-sm-font-size);
 }
 .ucam-calendario__mes::first-letter { text-transform: uppercase; }
-/* OS NÍVEIS (ADR-078). O título é botão quando há nível acima: dias →
+/* OS NÍVEIS (ADR-077). O título é botão quando há nível acima: dias →
  * meses → anos. Diz que é clicável em repouso pelo chevron (a seta de
  * destino de 25/09/2026), sem caixa até o hover. */
 .ucam-calendario__titulo {
@@ -10406,7 +10406,7 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
  * linha que diz o julgamento em palavra ("em 6 setores", "+9% sobre agosto"),
  * então a cor mora nela: tinta e palavra no mesmo lugar. Os papéis numeral
  * seguem valendo 4,5:1 sobre a superfície, que é o piso do caption. */
-/* A LEGENDA FALA EM CINZA, E O PONTO SÓ NA EXCEÇÃO (ADR-077, 20/10/2026:
+/* A LEGENDA FALA EM CINZA, E O PONTO SÓ NA EXCEÇÃO (ADR-076, 20/10/2026:
  * "muito colorido isso"). Quatro legendas em quatro tintas — bordô, âmbar,
  * vermelho, verde — refaziam o mosaico que a ADR-034 tirou do fundo. A
  * variação e a meta ficam na tinta de apoio; warning e danger, os dois tons
@@ -15593,7 +15593,7 @@ ${acima('nav-fixa')} {
   .ucam a { color: inherit; text-decoration: none; }
 }
 
-/* ------------------------------------- todo campo preenche (ADR-076) --- */
+/* ------------------------------------- todo campo preenche (ADR-075) --- */
 /* 20/10/2026: "todos os campos de todas as telas têm de ser fill na
  * largura". O controle ocupa o campo inteiro, e o campo, o lugar que a grade
  * ou a barra lhe dão. Saem as duas medidas da ADR-055 que deixavam o

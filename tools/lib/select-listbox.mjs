@@ -87,7 +87,7 @@ export function listboxSelects(html) {
       const dados = (attrs.match(/\sdata-[a-z0-9-]+(?:=(['"])[\s\S]*?\1)?/g) || []).join('');
       const opcoes = lerOpcoes(miolo);
       if (!opcoes.length) return _;
-      // MÚLTIPLO E RECORTE (ADR-079) ficam com o conversor do navegador, que
+      // MÚLTIPLO E RECORTE (ADR-078) ficam com o conversor do navegador, que
       // monta o painel: a marcação do painel mora num lugar só.
       if (/\bmultiple\b/.test(attrs) || /data-recorte-opcoes=/.test(attrs)) return _;
 
@@ -368,7 +368,7 @@ export const listboxScript = `
     var lista = lb;
     if (comPainel) {
       if (recorteOpcoes) {
-        // A FILEIRA DE ALTERNÂNCIA (ADR-079): "Todos" + as opções declaradas em
+        // A FILEIRA DE ALTERNÂNCIA (ADR-078): "Todos" + as opções declaradas em
         // data-recorte-opcoes (rótulo, ou rótulo:valor), separadas por |.
         var fila = document.createElement('div');
         fila.className = 'ucam-segmented ucam-listbox__recorte';

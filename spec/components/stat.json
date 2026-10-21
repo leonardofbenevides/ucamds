@@ -113,7 +113,7 @@
       "nome": "tone",
       "tipo": "'neutral' | 'success' | 'warning' | 'danger' | 'marca'",
       "default": "'neutral'",
-      "descricao": "Julgamento sobre o número. Desde a ADR-077 nenhum tom pinta texto: valor, variação e meta ficam nas tintas neutras, e warning e danger põem um ponto colorido antes da meta (ou da variação). success e marca não pintam nada — ficam no vocabulário porque o dado continua dizendo o que é. O ladrilho é sempre branco (ADR-034), e a meta em palavra continua obrigatória com qualquer tom: é ela que diz o julgamento.",
+      "descricao": "Julgamento sobre o número. Desde a ADR-076 nenhum tom pinta texto: valor, variação e meta ficam nas tintas neutras, e warning e danger põem um ponto colorido antes da meta (ou da variação). success e marca não pintam nada — ficam no vocabulário porque o dado continua dizendo o que é. O ladrilho é sempre branco (ADR-034), e a meta em palavra continua obrigatória com qualquer tom: é ela que diz o julgamento.",
       "valores": {
         "neutral": {
           "uso": "O padrão. Número que não é bom nem ruim por si — contagem, total, base de comparação.",
@@ -122,7 +122,7 @@
           }
         },
         "success": {
-          "uso": "O número é desfecho favorável e há decisão pendurada nele: concluídos no mês, total recebido, prazo médio dentro da meta. Não pinta (ADR-077): o bom não precisa chamar.",
+          "uso": "O número é desfecho favorável e há decisão pendurada nele: concluídos no mês, total recebido, prazo médio dentro da meta. Não pinta (ADR-076): o bom não precisa chamar.",
           "limite": "Não usar só porque o número subiu. Subir não é bom em contagem de atraso."
         },
         "warning": {
@@ -139,7 +139,7 @@
           }
         },
         "marca": {
-          "uso": "O número-título do painel — o total, os abertos, o saldo do dia. Não pinta (ADR-077): é o primeiro ladrilho, e a posição já diz que é o título.",
+          "uso": "O número-título do painel — o total, os abertos, o saldo do dia. Não pinta (ADR-076): é o primeiro ladrilho, e a posição já diz que é o título.",
           "limite": "Um por painel. Dois ladrilhos de marca no mesmo grupo é dois títulos."
         }
       }
