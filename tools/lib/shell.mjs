@@ -3483,7 +3483,7 @@ ${FN_ANUNCIA}
         // arranjo de duas linhas que a listagem deixou de ter. Só na célula:
         // na barra de visão o selo diz a situação e mais nada.
         var celulaConta = seloConta.closest('td, th');
-        mudarSelo(seloConta, bloquear ? (celulaConta ? 'Bloqueado · por você' : 'Bloqueado') : 'Ativo', bloquear ? 'danger' : 'success');
+        mudarSelo(seloConta, bloquear ? 'Bloqueado' : 'Ativo', bloquear ? 'danger' : 'success');
         var apoio = celulaConta && celulaConta.querySelector('.ucam-card__apoio');
         if (apoio) apoio.remove();
       }
