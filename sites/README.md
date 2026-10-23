@@ -80,3 +80,28 @@ A primeira prova num site de verdade: as páginas de Mestrado e Doutorado do sab
 - Testes que dependem de tempo falham de vez em quando com a máquina carregada: os dois de toggle do acordeão (desde a 3a-1) falharam uma vez em 14/10/2026, sem reproduzir em seis rodadas seguidas.
 - Só foi provado no Chrome. Falta conferir no Safari o campo de busca, o `<summary>` em flex e se a lista de passos (`role="list"`) é anunciada como lista no VoiceOver.
 - Menores que a revisão da 2c deixou: a prosa não cobre h4, tabela, código nem lista aninhada; peça do sistema dentro da prosa herda o estilo de link; a foto escondida do hero ainda é baixada no telefone (falta `<picture>` com `media`); o cartão sobre seção escura não troca o anel de foco.
+
+## O que o candidomendes.edu.br pede (levantamento de 22/10/2026)
+
+Nove páginas capturadas em 15/10 (home, cursos, curso, processo, ingresso, quem somos, unidades,
+validador, biblioteca), cruzadas com as 29 peças. Só componentes: a montagem de cada página é do site.
+
+**Feito:** o campo (`input`) passou a cobrir `<select>` e `<textarea>`: busca de curso (tipo,
+modalidade, polo) e o formulário "Me inscrever". Mesma borda, erro e ligação; chevron desenhado por
+bordas, porque a folha não leva URL.
+
+**Feito também:** peça nova `filter` (30ª): fileira de pílulas com `aria-pressed`, uma escolha por vez, rola de lado no telefone (`contain: inline-size`), clara sobre seção escura; `div[ucamSiteFilter]` com `items`, `value`, `ariaLabel` e `valueChange`.
+
+Peça nova `checkbox` (31ª): `fieldset[ucamSiteCheckGroup]`, `label[ucamSiteCheck]` e `input[ucamSiteCheckBox]`; linha de 44px, caixa de 20px no topo da primeira linha, visto desenhado em bordas, token novo `radius.check` (o control arredondava a caixa até parecer rádio). Sem caixa de "Todas".
+
+**Faltam, em ordem do quanto aparecem:**
+
+| Peça | Onde aparece | Nota |
+|---|---|---|
+| Controles de carrossel | Vale a pena, depoimentos, curso em destaque ("1 DE 6 ‹ ›") | Decidir antes: carrossel ou grade que rola; o desfile já existe |
+| Aviso de cookies | Todas as páginas | Faixa fixa no pé, com uma ação; não pode cobrir o foco |
+| Linha de unidade | Unidades (60 linhas: foto, nome, endereço, telefone, e-mail) | Talvez o `contact-card` em lista; medir antes de criar |
+| Selo e-MEC no rodapé | Todas as páginas | Encaixe de imagem no `site-footer` |
+
+Fora do catálogo de propósito: a busca de curso, a grade de cursos com filtros e o banner de
+destaque são composições de peças que já existem.

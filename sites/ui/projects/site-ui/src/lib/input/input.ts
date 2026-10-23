@@ -52,7 +52,9 @@ export class UcamSiteField {
 }
 
 /**
- * O controle do campo: `<input ucamSiteInput>`. Dentro de um ucamSiteField,
+ * O controle do campo: `<input ucamSiteInput>`, `<select ucamSiteInput>` ou
+ * `<textarea ucamSiteInput>` (os dois últimos desde 22/10/2026, para a busca
+ * de curso e o formulário de inscrição do site). Dentro de um ucamSiteField,
  * recebe dele o id, a descrição e o estado de erro.
  *
  * SOZINHO, só ganha a classe e não toca em mais nada. As três ligações eram
@@ -61,14 +63,14 @@ export class UcamSiteField {
  * quando há campo, num effect que escreve os atributos pelo Renderer2.
  */
 @Directive({
-  selector: 'input[ucamSiteInput]',
+  selector: 'input[ucamSiteInput], select[ucamSiteInput], textarea[ucamSiteInput]',
   host: { class: 'ucam-site-input__field' },
 })
 export class UcamSiteInput {
   constructor() {
     const campo = inject(UcamSiteField, { optional: true });
     if (!campo) return;
-    const el = inject<ElementRef<HTMLInputElement>>(ElementRef).nativeElement;
+    const el = inject<ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>>(ElementRef).nativeElement;
     const renderer = inject(Renderer2);
     const poe = (nome: string, valor: string | null) => (valor === null ? renderer.removeAttribute(el, nome) : renderer.setAttribute(el, nome, valor));
     effect(() => {

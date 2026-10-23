@@ -166,6 +166,11 @@
       "componente": "hero-pill",
       "diferenca": "A Tag é uma CATEGORIA de um item, em qualquer superfície. A pílula do hero é um FATO sobre a seção escura, com contorno.",
       "escolha": "Se classifica um item de uma lista, é tag."
+    },
+    {
+      "componente": "filter",
+      "diferenca": "A Tag classifica um item e não recebe clique; o Filter é a fileira de pílulas que recorta a lista, com aria-pressed.",
+      "escolha": "Se o clique muda o que se vê, é filter."
     }
   ],
   "implementacao": {

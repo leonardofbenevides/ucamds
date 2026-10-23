@@ -1,0 +1,172 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "checkbox",
+  "name": "Checkbox",
+  "selector": "ucam-site-checkbox",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.7",
+  "category": "acao",
+  "description": "Caixa de seleção e o grupo que a nomeia: os filtros avançados da lista de cursos (tipo, modalidade, área), o aceite num formulário. Marca várias ao mesmo tempo.",
+  "quando_usar": [
+    "Filtros avançados em que a pessoa soma escolhas: Presencial e Semipresencial ao mesmo tempo.",
+    "Uma pergunta de sim ou não num formulário: Quero receber novidades por e-mail.",
+    "Grupo de até umas oito opções; mais que isso pede busca dentro do grupo."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br, Cursos (\"Filtros avançados\"), captura de 15/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — cursos, filtros avançados",
+        "rotulo": "Tipo de curso · Modalidade · Área de Conhecimento",
+        "problema": "a caixa é a nativa do Bootstrap, de 13px, e o alvo é só ela: o rótulo ao lado não marca"
+      },
+      {
+        "tela": "www — cursos",
+        "rotulo": "Todas as áreas",
+        "problema": "\"Todas\" é uma caixa como as outras: marcar Tecnologia não desmarca Todas, e as duas valem ao mesmo tempo"
+      }
+    ],
+    "conclusao": "O rótulo inteiro é o alvo, a caixa tem 20px dentro de uma linha de 44, e o grupo é um fieldset com legenda. \"Todas\" não é caixa: grupo sem nada marcado já é todas."
+  },
+  "anatomia": [
+    {
+      "parte": "group",
+      "obrigatorio": false,
+      "descricao": "<fieldset>. Junta as caixas de uma mesma pergunta.",
+      "classe": "ucam-site-checkbox-group"
+    },
+    {
+      "parte": "legend",
+      "obrigatorio": false,
+      "descricao": "<legend>. A pergunta do grupo: Modalidade, Área de conhecimento. O leitor de tela a diz antes de cada caixa.",
+      "classe": "ucam-site-checkbox-group__legend"
+    },
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<label>. A linha inteira é o alvo, com 44px de altura."
+    },
+    {
+      "parte": "box",
+      "obrigatorio": true,
+      "descricao": "<input type=\"checkbox\">. 20px, contorno forte; marcada, a ação primária com o visto desenhado em bordas.",
+      "classe": "ucam-site-checkbox__box"
+    },
+    {
+      "parte": "label",
+      "obrigatorio": true,
+      "descricao": "<span> com o texto da opção.",
+      "classe": "ucam-site-checkbox__label"
+    }
+  ],
+  "props": [
+    {
+      "nome": "legend",
+      "tipo": "string",
+      "default": "''",
+      "descricao": "A pergunta do grupo, no fieldset[ucamSiteCheckGroup]. Grupo sem legenda não diz o que se escolhe."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "default": "''",
+      "descricao": "O texto da opção, no label[ucamSiteCheck]."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "checked",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Sem caixa de \"Todas\": grupo sem nada marcado já mostra tudo, e Limpar desmarca.",
+      "Escolha de uma opção só é rádio ou o filtro em pílulas, não caixa.",
+      "Caixa não dispara navegação nem envio: marca, e quem age é o botão ou a lista que se recorta."
+    ],
+    "motivo": "Uma caixa \"Todas\" ao lado das áreas cria dois estados que dizem a mesma coisa e um terceiro, Todas e Tecnologia marcadas, que não diz nada."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "O rótulo envolve a caixa: clicar no texto marca, e o nome acessível é o texto.",
+      "Alvo da linha a 44px (size.touch-min); a caixa visível tem 20px.",
+      "Contorno da caixa a 3:1 (border.strong); o visto sobre a ação primária a 4,5:1.",
+      "Foco no anel de foco da folha, em volta da caixa."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "1.4.11",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Presencial",
+        "Ciências Sociais",
+        "Quero receber novidades por e-mail"
+      ],
+      "ruim": [
+        "Todas as áreas",
+        "Clique para marcar",
+        "PRESENCIAL"
+      ]
+    },
+    "regras": [
+      "A legenda é substantivo: Modalidade, não \"Escolha a modalidade\".",
+      "A opção diz o que se marca, em caixa normal."
+    ]
+  },
+  "migracao": {
+    "de": "candidomendes.edu.br",
+    "mapa": [
+      {
+        "legado": "<input class=\"form-check-input\"> + <label class=\"form-check-label\">",
+        "novo": "<label class=\"ucam-site-checkbox\"><input class=\"ucam-site-checkbox__box\"> <span class=\"ucam-site-checkbox__label\">",
+        "nota": "O label passa a envolver a caixa: o alvo é a linha inteira."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Grupo de filtros",
+      "codigo": "<fieldset class=\"ucam-site-checkbox-group\">\n  <legend class=\"ucam-site-checkbox-group__legend\">Modalidade</legend>\n  <label class=\"ucam-site-checkbox\"><input type=\"checkbox\" class=\"ucam-site-checkbox__box\"><span class=\"ucam-site-checkbox__label\">Presencial</span></label>\n</fieldset>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Um fieldset por pergunta, com legenda.",
+      "evite": "Caixas soltas sob um título em negrito.",
+      "porque": "O título não chega ao leitor de tela junto com cada opção; a legenda chega."
+    },
+    {
+      "faca": "Deixar o grupo vazio significar todas.",
+      "evite": "Uma caixa \"Todas\".",
+      "porque": "Ela cria estados contraditórios."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "filter",
+      "diferenca": "O Filter escolhe UMA opção por vez, à vista, numa fileira; a Checkbox soma várias, num grupo.",
+      "escolha": "Uma dimensão rápida com uma escolha é filter; filtros avançados que se somam são checkbox."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Classe no label, na caixa e no texto; grupo e legenda opcionais. O estado é o checked e o disabled nativos.",
+      "raiz": ".ucam-site-checkbox",
+      "variaveis": [
+        "--ucam-site-color-border-strong",
+        "--ucam-site-color-action-primary-default",
+        "--ucam-site-color-text-on-brand",
+        "--ucam-site-size-touch-min"
+      ]
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/checkbox/checkbox.ts — fieldset[ucamSiteCheckGroup], label[ucamSiteCheck], input[ucamSiteCheckBox]. Entradas: legend, label."
+  }
+}

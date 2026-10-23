@@ -1,0 +1,179 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "filter",
+  "name": "Filter",
+  "selector": "ucam-site-filter",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.7",
+  "category": "acao",
+  "description": "Uma fileira de pílulas que recorta uma lista da página: a área de conhecimento dos cursos, a modalidade. Uma opção escolhida por vez, e a primeira devolve a lista inteira.",
+  "quando_usar": [
+    "Recortar a grade de cursos por área: Todas, Tecnologia, Saúde, Direito.",
+    "Trocar o recorte de uma lista curta sem sair da página: Presencial, EAD, Semipresencial.",
+    "Até umas oito opções que cabem à vista; no telefone a fileira rola de lado."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br, home (\"As áreas de conhecimento\") e Cursos, capturas de 15/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — home, áreas de conhecimento",
+        "rotulo": "Todos · EAD · Presencial · Semipresencial · Tecnologia · Exatas · Saúde",
+        "problema": "as pílulas são <a> sem estado: a escolhida só se distingue pela cor, e o leitor de tela não sabe qual está valendo"
+      },
+      {
+        "tela": "www — home",
+        "rotulo": "Licenciaturas · Ciências Sociais",
+        "problema": "modalidade e área misturadas na mesma fileira: escolher EAD desmarca Saúde"
+      }
+    ],
+    "conclusao": "O filtro é um grupo de botões com aria-pressed, de uma dimensão só. Modalidade e área são duas fileiras, ou uma fileira e um select."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<div role=\"group\" aria-label>. O nome do grupo diz o que se recorta: \"Área de conhecimento\". No telefone rola de lado, sem quebrar em várias linhas."
+    },
+    {
+      "parte": "opcao",
+      "obrigatorio": true,
+      "descricao": "<button type=\"button\" aria-pressed>. Pílula com contorno; a escolhida ganha a superfície de marca e a tinta de marca, e perde o contorno: um sinal só.",
+      "classe": "ucam-site-filter__opcao"
+    }
+  ],
+  "props": [
+    {
+      "nome": "items",
+      "tipo": "{ label: string; value: string }[]",
+      "default": "[]",
+      "descricao": "As opções, na ordem. A primeira é a que devolve a lista inteira (\"Todas\"), com value vazio."
+    },
+    {
+      "nome": "value",
+      "tipo": "string",
+      "default": "''",
+      "descricao": "O value da opção escolhida. Sem opção que case, a primeira fica escolhida."
+    },
+    {
+      "nome": "ariaLabel",
+      "tipo": "string",
+      "default": "'Filtro'",
+      "descricao": "O nome do grupo. Vazio volta ao padrão: grupo sem nome não diz o que recorta."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "valueChange",
+      "payload": "string",
+      "descricao": "A pessoa escolheu outra opção. Com a entrada value, permite [(value)]. Escolher a que já vale não emite."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "pressed"
+  ],
+  "limites": {
+    "regras": [
+      "Uma escolha por vez. Mais de uma ao mesmo tempo é caixa de seleção num grupo de filtros, não pílula.",
+      "Uma dimensão por fileira: modalidade e área não dividem o mesmo grupo.",
+      "Recorta a lista que está na página; levar a outra página é link, não filtro.",
+      "Não é tag: a tag classifica um item e nunca recebe clique."
+    ],
+    "motivo": "Pílula que acumula escolhas sem dizer que acumula engana: a pessoa clica em Saúde, depois em Direito, e não sabe se vê as duas ou só a última."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "A escolhida é aria-pressed=\"true\"; as outras, \"false\". O estado não está só na cor.",
+      "Alvo de 44px de altura no toque (o mesmo do controle).",
+      "Contorno das opções a 3:1 sobre o fundo (border.strong) e texto da escolhida a 4,5:1 sobre a superfície de marca.",
+      "A lista recortada anuncia quantos itens ficaram, numa região de status da página: é de quem monta a página, não da peça."
+    ],
+    "criterios_wcag": [
+      "1.4.1",
+      "1.4.11",
+      "2.5.8",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Todas",
+        "Tecnologia",
+        "Saúde",
+        "EAD"
+      ],
+      "ruim": [
+        "Clique para ver cursos de Tecnologia",
+        "TECNOLOGIA",
+        "Todos os cursos de todas as áreas"
+      ]
+    },
+    "regras": [
+      "Uma ou duas palavras, substantivo, caixa normal.",
+      "A primeira opção é \"Todas\" ou \"Todos\", concordando com o que se recorta."
+    ]
+  },
+  "migracao": {
+    "de": "candidomendes.edu.br",
+    "mapa": [
+      {
+        "legado": "<a class=\"btn-area active\">",
+        "novo": "<button class=\"ucam-site-filter__opcao\" aria-pressed=\"true\">",
+        "nota": "A classe active vira o atributo que o leitor de tela lê."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Área de conhecimento",
+      "codigo": "<div class=\"ucam-site-filter\" role=\"group\" aria-label=\"Área de conhecimento\">\n  <button type=\"button\" class=\"ucam-site-filter__opcao\" aria-pressed=\"true\">Todas</button>\n  <button type=\"button\" class=\"ucam-site-filter__opcao\" aria-pressed=\"false\">Tecnologia</button>\n</div>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Uma fileira por dimensão, começando por Todas.",
+      "evite": "Modalidade e área na mesma fileira.",
+      "porque": "Com uma escolha por vez, misturar dimensões faz uma escolha apagar a outra."
+    },
+    {
+      "faca": "Dizer quantos itens ficaram depois de recortar.",
+      "evite": "Trocar a lista em silêncio.",
+      "porque": "Quem não vê a grade mudar precisa ouvir o resultado."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "tag",
+      "diferenca": "A Tag classifica um item e não recebe clique; o Filter é controle e muda a lista.",
+      "escolha": "Se o clique muda o que se vê, é filter."
+    },
+    {
+      "componente": "section-tabs",
+      "diferenca": "As abas de seção levam a outra PARTE da página; o filtro recorta a MESMA lista.",
+      "escolha": "Se o conteúdo é o mesmo, só menor, é filter."
+    },
+    {
+      "componente": "checkbox",
+      "diferenca": "O Filter escolhe UMA opção por vez, numa fileira à vista; a Checkbox soma várias, num grupo com legenda.",
+      "escolha": "Recorte rápido com uma escolha é filter; filtros avançados que se somam são checkbox."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz e uma na opção; o estado vem do aria-pressed, sem classe de ativo.",
+      "raiz": ".ucam-site-filter",
+      "variaveis": [
+        "--ucam-site-color-border-strong",
+        "--ucam-site-color-surface-brand-soft",
+        "--ucam-site-color-action-primary-default",
+        "--ucam-site-radius-pill"
+      ],
+      "nota": "A folha não troca o aria-pressed: no Trilho A quem liga o clique é a página."
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/filter/filter.ts — div[ucamSiteFilter]. Entradas: items, value, ariaLabel."
+  }
+}

@@ -128,7 +128,8 @@
     "$type": "dimension",
     "control": { "$value": "{radius.lg}", "$description": "8px: botão, campo, ícone-chip. O $radius-chip do CENPRE." },
     "card": { "$value": "{radius.2xl}", "$description": "16px: cartão e imagem grande." },
-    "pill": { "$value": "{radius.full}", "$description": "Tag, pílula, avatar." }
+    "pill": { "$value": "{radius.full}", "$description": "Tag, pílula, avatar." },
+    "check": { "$value": "{radius.sm}", "$description": "A caixa de seleção: canto pequeno, para não ler como rádio (o control, de 8px, arredonda 20px até quase um círculo)." }
   },
   "elevation": {
     "$type": "shadow",

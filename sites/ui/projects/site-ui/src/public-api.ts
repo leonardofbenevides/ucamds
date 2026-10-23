@@ -36,6 +36,8 @@ import { UcamSiteFactSheet } from './lib/fact-sheet/fact-sheet';
 import { UcamSiteSectionTabs } from './lib/section-tabs/section-tabs';
 import { UcamSiteTimeline } from './lib/timeline/timeline';
 import { UcamSiteContactCard } from './lib/contact-card/contact-card';
+import { UcamSiteFilter } from './lib/filter/filter';
+import { UcamSiteCheckGroup, UcamSiteCheck, UcamSiteCheckBox } from './lib/checkbox/checkbox';
 
 export * from './lib/nucleo/provedor';
 export * from './lib/icon/icon';
@@ -68,6 +70,8 @@ export * from './lib/fact-sheet/fact-sheet';
 export * from './lib/section-tabs/section-tabs';
 export * from './lib/timeline/timeline';
 export * from './lib/contact-card/contact-card';
+export * from './lib/filter/filter';
+export * from './lib/checkbox/checkbox';
 
 /** Todas as peças, para importar de uma vez: `imports: [UCAM_SITE]`. */
 export const UCAM_SITE = [
@@ -116,4 +120,8 @@ export const UCAM_SITE = [
   UcamSiteSectionTabs,
   UcamSiteTimeline,
   UcamSiteContactCard,
+  UcamSiteFilter,
+  UcamSiteCheckGroup,
+  UcamSiteCheck,
+  UcamSiteCheckBox,
 ] as const;

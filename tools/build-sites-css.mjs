@@ -625,6 +625,144 @@ ${acima('nav-aberta')} {
   color: ${V('color-text-muted')};
 }
 
+/* -------------------------------------------------------------- filter --- */
+/* Contrato: sites/spec/components/filter.json. A fileira de pílulas que
+ * recorta a grade de cursos. O estado é o aria-pressed, sem classe de ativo:
+ * a folha pinta o que o leitor de tela lê. A escolhida tem UM sinal, a
+ * superfície de marca no lugar do contorno; nada de fundo cinza nas outras.
+ * No telefone a fileira rola de lado em vez de quebrar em quatro linhas. */
+.ucam-site-filter {
+  display: flex;
+  /* A largura vem do contêiner, nunca das pílulas: sem isto, a 390px, quem
+   * embrulha a fileira (uma seção escura, uma célula de grade) crescia até a
+   * soma das nove pílulas e a página rolava de lado. min-inline-size: 0 não
+   * basta, porque não muda o que a fileira pede ao pai. */
+  contain: inline-size;
+  gap: ${V('space-inline-sm')};
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-block: ${V('space-inline-xs')};
+}
+.ucam-site-filter__opcao {
+  flex: none;
+  min-block-size: ${V('size-control-md')};
+  padding-inline: ${V('space-stack-sm')};
+  border: 1px solid ${V('color-border-strong')};
+  border-radius: ${V('radius-pill')};
+  background: transparent;
+  color: ${V('color-text-primary')};
+  font-family: ${V('font-body')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-caption-line-height')};
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-filter__opcao:hover:not([aria-pressed="true"]) {
+  border-color: ${V('color-border-focus')};
+}
+.ucam-site-filter__opcao[aria-pressed="true"] {
+  border-color: transparent;
+  background: ${V('color-surface-brand-soft')};
+  color: ${V('color-action-primary-default')};
+}
+/* Sobre seção escura: contorno e texto claros; a escolhida segue na pílula
+ * clara, que é o sinal. */
+.ucam-site-inverso .ucam-site-filter__opcao:not([aria-pressed="true"]) {
+  border-color: ${V('color-border-on-inverse')};
+  color: ${V('color-text-on-inverse')};
+}
+.ucam-site-inverso .ucam-site-filter__opcao:hover:not([aria-pressed="true"]) {
+  background: ${V('color-interaction-hover-on-inverse')};
+}
+
+/* ------------------------------------------------------------ checkbox --- */
+/* Contrato: sites/spec/components/checkbox.json. Os filtros avançados da
+ * lista de cursos. O label envolve a caixa: a linha inteira, de 44px, é o
+ * alvo. A caixa é a nativa sem aparência, e o visto é desenhado por duas
+ * bordas, porque a folha não leva URL. */
+.ucam-site-checkbox-group {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.ucam-site-checkbox-group__legend {
+  padding: 0;
+  margin-block-end: ${V('space-inline-xs')};
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-checkbox {
+  display: flex;
+  /* Topo, não centro: a caixa acompanha a primeira linha do texto. O respiro
+   * de cima e de baixo completa os 44px da linha de uma frase só. */
+  align-items: flex-start;
+  padding-block: calc((${V('size-touch-min')} - 1lh) / 2);
+  box-sizing: border-box;
+  gap: ${V('space-inline-sm')};
+  min-block-size: ${V('size-touch-min')};
+  color: ${V('color-text-primary')};
+  font-size: ${V('typography-body-font-size')};
+  line-height: ${V('typography-body-line-height')};
+  cursor: pointer;
+}
+.ucam-site-checkbox__box {
+  appearance: none;
+  flex: none;
+  display: grid;
+  place-content: center;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  /* A fonte do texto, para o 1lh daqui medir a mesma linha que o rótulo. */
+  font: inherit;
+  margin: calc((1lh - 1.25rem) / 2) 0 0;
+  border: 1px solid ${V('color-border-strong')};
+  border-radius: ${V('radius-check')};
+  background: ${V('color-surface-default')};
+  cursor: pointer;
+  transition: background-color ${V('motion-duration-state')} ${V('motion-easing-standard')};
+}
+.ucam-site-checkbox__box::after {
+  content: "";
+  inline-size: 0.375rem;
+  block-size: 0.6875rem;
+  margin-block-start: -0.125rem;
+  border-inline-end: 2px solid ${V('color-text-on-brand')};
+  border-block-end: 2px solid ${V('color-text-on-brand')};
+  transform: rotate(45deg);
+  visibility: hidden;
+}
+/* O texto quebra e a caixa fica no topo da primeira linha, não no meio de
+ * um aceite de três linhas. */
+.ucam-site-checkbox__label {
+  min-inline-size: 0;
+  overflow-wrap: break-word;
+}
+.ucam-site-checkbox__box:checked {
+  border-color: ${V('color-action-primary-default')};
+  background: ${V('color-action-primary-default')};
+}
+.ucam-site-checkbox__box:checked::after {
+  visibility: visible;
+}
+.ucam-site-checkbox:hover .ucam-site-checkbox__box:not(:disabled):not(:checked) {
+  border-color: ${V('color-border-focus')};
+}
+.ucam-site-checkbox:has(.ucam-site-checkbox__box:disabled) {
+  color: ${V('color-action-disabled-text')};
+  cursor: not-allowed;
+}
+.ucam-site-checkbox__box:disabled {
+  background: ${V('color-action-disabled-background')};
+  border-color: ${V('color-action-disabled-background')};
+  cursor: not-allowed;
+}
+
 /* --------------------------------------------------------------- input --- */
 /* Contrato: sites/spec/components/input.json. A borda é a FORTE (3,47:1): é
  * ela que diz onde o campo começa (WCAG 1.4.11); a do kit dava 1,3:1. O texto
@@ -671,6 +809,36 @@ ${acima('nav-aberta')} {
 }
 .ucam-site-input__field[aria-invalid="true"] {
   border-color: ${V('color-feedback-danger-border')};
+}
+/* SELECT E TEXTAREA (22/10/2026): a busca de curso e o "Me inscrever" do
+ * candidomendes.edu.br escolhem curso, modalidade e polo e pedem uma mensagem.
+ * Mesmo campo, mesma borda e mesmo erro; o select troca a seta nativa (cada
+ * navegador desenha uma) pelo chevron na tinta de apoio, e a textarea cresce
+ * só na vertical. */
+.ucam-site-input__field:is(select) {
+  appearance: none;
+  padding-inline-end: calc(${V('space-stack-sm')} * 2 + ${V('size-icon-md')});
+  cursor: pointer;
+}
+/* O chevron é desenhado por duas bordas, sem SVG: a folha dos sites não leva
+ * URL nenhuma, e o data URI de SVG carrega o xmlns. */
+.ucam-site-input__control:has(> .ucam-site-input__field:is(select))::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: calc(${V('space-stack-sm')} + 0.3rem);
+  inset-block-start: 50%;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  margin-block-start: -0.375rem;
+  border-inline-end: 2px solid ${V('color-text-muted')};
+  border-block-end: 2px solid ${V('color-text-muted')};
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.ucam-site-input__field:is(textarea) {
+  min-block-size: calc(${V('size-control-md')} * 3);
+  padding-block: ${V('space-inline-sm')};
+  resize: vertical;
 }
 .ucam-site-input__icon {
   position: absolute;

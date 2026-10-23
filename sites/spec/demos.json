@@ -179,6 +179,20 @@
           "preview": "<div class='ucam-site-input' style='max-width:24rem'><label class='ucam-site-input__label' for='demo-off'>Empresa</label><div class='ucam-site-input__control'><input class='ucam-site-input__field' id='demo-off' type='text' value='Petrobras' disabled></div></div>",
           "codigo": "<div class=\"ucam-site-input\">\n  <label class=\"ucam-site-input__label\" for=\"demo-off\">Empresa</label>\n  <div class=\"ucam-site-input__control\">\n    <input class=\"ucam-site-input__field\" id=\"demo-off\" type=\"text\" value=\"Petrobras\" disabled>\n  </div>\n</div>",
           "angular": "<div ucamSiteField label=\"Empresa\" fieldId=\"demo-off-ng\">\n  <input ucamSiteInput type=\"text\" value=\"Petrobras\" disabled>\n</div>"
+        },
+        {
+          "titulo": "Escolha entre opções",
+          "descricao": "Select com a opção vazia escrita: nada vem marcado por engano.",
+          "preview": "<div class='ucam-site-input' style='max-width:24rem'><label class='ucam-site-input__label' for='demo-curso'>Curso e modalidade</label><div class='ucam-site-input__control'><select class='ucam-site-input__field' id='demo-curso'><option value='' selected>Escolha o curso</option><option>Administração · presencial</option><option>Direito · presencial</option><option>Psicologia · EAD</option></select></div></div>",
+          "codigo": "<div class=\"ucam-site-input\">\n  <label class=\"ucam-site-input__label\" for=\"demo-curso\">Curso e modalidade</label>\n  <div class=\"ucam-site-input__control\">\n    <select class=\"ucam-site-input__field\" id=\"demo-curso\">\n      <option value=\"\" selected>Escolha o curso</option>\n      <option>Administração · presencial</option>\n      <option>Direito · presencial</option>\n      <option>Psicologia · EAD</option>\n    </select>\n  </div>\n</div>",
+          "angular": "<div ucamSiteField label=\"Curso e modalidade\" fieldId=\"demo-curso-ng\">\n  <select ucamSiteInput>\n    <option value=\"\" selected>Escolha o curso</option>\n    <option>Administração · presencial</option>\n    <option>Direito · presencial</option>\n    <option>Psicologia · EAD</option>\n  </select>\n</div>"
+        },
+        {
+          "titulo": "Texto longo",
+          "descricao": "Textarea: três alturas de controle, cresce para baixo.",
+          "preview": "<div class='ucam-site-input' style='max-width:24rem'><label class='ucam-site-input__label' for='demo-msg'>Por que se interessou pela UCAM?</label><div class='ucam-site-input__control'><textarea class='ucam-site-input__field' id='demo-msg' aria-describedby='demo-msg-hint'></textarea></div><p class='ucam-site-input__hint' id='demo-msg-hint'>Opcional. Ajuda quem vai falar com você.</p></div>",
+          "codigo": "<div class=\"ucam-site-input\">\n  <label class=\"ucam-site-input__label\" for=\"demo-msg\">Por que se interessou pela UCAM?</label>\n  <div class=\"ucam-site-input__control\">\n    <textarea class=\"ucam-site-input__field\" id=\"demo-msg\" aria-describedby=\"demo-msg-hint\"></textarea>\n  </div>\n  <p class=\"ucam-site-input__hint\" id=\"demo-msg-hint\">Opcional. Ajuda quem vai falar com você.</p>\n</div>",
+          "angular": "<div ucamSiteField label=\"Por que se interessou pela UCAM?\" hint=\"Opcional. Ajuda quem vai falar com você.\" fieldId=\"demo-msg-ng\">\n  <textarea ucamSiteInput></textarea>\n</div>"
         }
       ]
     },
@@ -458,6 +472,31 @@
           "preview": "<section class='ucam-site-contact-card'><h3 class='ucam-site-contact-card__title'>Seleção</h3><address class='ucam-site-contact-card__lines'><p class='ucam-site-contact-card__line'><svg class='ic' aria-hidden='true'><use href='#i-mail'/></svg><a href='mailto:selecaoucam@ucam-campos.br'>selecaoucam@ucam-campos.br</a></p></address></section>",
           "codigo": "<section class=\"ucam-site-contact-card\">\n  <h3 class=\"ucam-site-contact-card__title\">Seleção</h3>\n  <address class=\"ucam-site-contact-card__lines\">\n    <p class=\"ucam-site-contact-card__line\"><svg class=\"ic\" aria-hidden=\"true\"><use href=\"#i-mail\"/></svg><a href=\"mailto:selecaoucam@ucam-campos.br\">selecaoucam@ucam-campos.br</a></p>\n  </address>\n</section>",
           "angular": "<section ucamSiteContactCard heading=\"Seleção\" email=\"selecaoucam@ucam-campos.br\"></section>"
+        }
+      ]
+    },
+    "filter": {
+      "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
+      "principal": {
+        "preview": "<div class='ucam-site-filter' role='group' aria-label='Área de conhecimento'><button type='button' class='ucam-site-filter__opcao' aria-pressed='true'>Todas</button><button type='button' class='ucam-site-filter__opcao' aria-pressed='false'>Tecnologia</button><button type='button' class='ucam-site-filter__opcao' aria-pressed='false'>Saúde</button><button type='button' class='ucam-site-filter__opcao' aria-pressed='false'>Direito</button></div>",
+        "codigo": "<div class=\"ucam-site-filter\" role=\"group\" aria-label=\"Área de conhecimento\">\n  <button type=\"button\" class=\"ucam-site-filter__opcao\" aria-pressed=\"true\">Todas</button>\n  <button type=\"button\" class=\"ucam-site-filter__opcao\" aria-pressed=\"false\">Tecnologia</button>\n  <button type=\"button\" class=\"ucam-site-filter__opcao\" aria-pressed=\"false\">Saúde</button>\n  <button type=\"button\" class=\"ucam-site-filter__opcao\" aria-pressed=\"false\">Direito</button>\n</div>",
+        "angular": "<div ucamSiteFilter ariaLabel=\"Área de conhecimento\" value=\"\"\n  [items]=\"[{ label: 'Todas', value: '' }, { label: 'Tecnologia', value: 'tecnologia' }, { label: 'Saúde', value: 'saude' }, { label: 'Direito', value: 'direito' }]\"></div>"
+      }
+    },
+    "checkbox": {
+      "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
+      "principal": {
+        "preview": "<fieldset class='ucam-site-checkbox-group' style='max-width:20rem'><legend class='ucam-site-checkbox-group__legend'>Modalidade</legend><label class='ucam-site-checkbox'><input type='checkbox' class='ucam-site-checkbox__box' checked><span class='ucam-site-checkbox__label'>Presencial</span></label><label class='ucam-site-checkbox'><input type='checkbox' class='ucam-site-checkbox__box' checked><span class='ucam-site-checkbox__label'>Semipresencial</span></label><label class='ucam-site-checkbox'><input type='checkbox' class='ucam-site-checkbox__box'><span class='ucam-site-checkbox__label'>EAD</span></label></fieldset>",
+        "codigo": "<fieldset class=\"ucam-site-checkbox-group\">\n  <legend class=\"ucam-site-checkbox-group__legend\">Modalidade</legend>\n  <label class=\"ucam-site-checkbox\"><input type=\"checkbox\" class=\"ucam-site-checkbox__box\" checked><span class=\"ucam-site-checkbox__label\">Presencial</span></label>\n  <label class=\"ucam-site-checkbox\"><input type=\"checkbox\" class=\"ucam-site-checkbox__box\" checked><span class=\"ucam-site-checkbox__label\">Semipresencial</span></label>\n  <label class=\"ucam-site-checkbox\"><input type=\"checkbox\" class=\"ucam-site-checkbox__box\"><span class=\"ucam-site-checkbox__label\">EAD</span></label>\n</fieldset>",
+        "angular": "<fieldset ucamSiteCheckGroup legend=\"Modalidade\">\n  <label ucamSiteCheck label=\"Presencial\"><input ucamSiteCheckBox checked></label>\n  <label ucamSiteCheck label=\"Semipresencial\"><input ucamSiteCheckBox checked></label>\n  <label ucamSiteCheck label=\"EAD\"><input ucamSiteCheckBox></label>\n</fieldset>"
+      },
+      "exemplos": [
+        {
+          "titulo": "Desabilitada",
+          "descricao": "Opção que não se aplica ao recorte atual.",
+          "preview": "<label class='ucam-site-checkbox'><input type='checkbox' class='ucam-site-checkbox__box' disabled><span class='ucam-site-checkbox__label'>Noturno</span></label>",
+          "codigo": "<label class=\"ucam-site-checkbox\"><input type=\"checkbox\" class=\"ucam-site-checkbox__box\" disabled><span class=\"ucam-site-checkbox__label\">Noturno</span></label>",
+          "angular": "<label ucamSiteCheck label=\"Noturno\"><input ucamSiteCheckBox disabled></label>"
         }
       ]
     }

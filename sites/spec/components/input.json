@@ -52,7 +52,7 @@
     {
       "parte": "field",
       "obrigatorio": true,
-      "descricao": "<input>. 44px de altura, texto de 16px.",
+      "descricao": "<input>, <select> ou <textarea>. 44px de altura, texto de 16px. O select troca a seta nativa pelo chevron na tinta de apoio; a textarea começa em três alturas de controle e cresce só na vertical.",
       "classe": "ucam-site-input__field"
     },
     {
@@ -134,7 +134,7 @@
     "regras": [
       "Não usar placeholder como rótulo.",
       "Não validar enquanto a pessoa ainda digita: só ao sair do campo ou ao enviar.",
-      "Não para texto longo nem para escolha entre opções: são outros controles, fora desta fatia.",
+      "Escolha entre poucas opções que cabem à vista (duas a quatro) é rádio, não select: o select esconde as opções atrás de um clique.", "Select só com opção vazia escrita (\"Escolha o curso\") quando a escolha é obrigatória: um primeiro item já marcado passa por resposta da pessoa.",
       "Não entrega validação nem mensagens: o erro é o texto que se passa em error. Com texto, o campo fica inválido e descrito por ele."
     ],
     "motivo": "Placeholder some ao digitar e tem contraste de apoio. Campo que grita erro na primeira letra ensina a pessoa a desconfiar do formulário."
@@ -248,6 +248,6 @@
       ],
       "nota": "Não entrega validação nem máscara."
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/input/input.ts — div[ucamSiteField], input[ucamSiteInput]. Entradas: label, hint, error, icon, fieldId, describedBy. Nativos: type, disabled."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/input/input.ts — div[ucamSiteField], input[ucamSiteInput], select[ucamSiteInput], textarea[ucamSiteInput]. Entradas: label, hint, error, icon, fieldId, describedBy. Nativos: type, disabled."
   }
 }

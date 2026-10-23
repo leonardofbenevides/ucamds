@@ -119,6 +119,11 @@
       "componente": "breadcrumb",
       "diferenca": "As abas navegam entre as partes de uma mesma página. A trilha mostra onde a página está no site.",
       "escolha": "Para ir de uma parte a outra da página, abas. Para voltar a um nível acima, trilha."
+    },
+    {
+      "componente": "filter",
+      "diferenca": "As abas levam a outra PARTE da página; o Filter recorta a MESMA lista sem sair do lugar.",
+      "escolha": "Se o conteúdo é outro, são abas; se é o mesmo, menor, é filter."
     }
   ],
   "exemplos": [
