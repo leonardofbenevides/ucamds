@@ -45,6 +45,12 @@
       "obrigatorio": true,
       "descricao": "Cada opção, sempre um <button type=button>. O escolhido é TINTA CHEIA na cor do texto (surface.inverse com text.on-action, 18:1), e essa é a terceira tentativa: cartão branco sobre trilho afundado trazia uma quarta superfície para barras que já têm chip, campo e botão; action.primary.subtle sobre trilho transparente deu #FFF4F4 no branco, 1,03:1 de diferença de plano — o estado sumia. Não é a marca cheia: bordô aqui roubaria o peso da ação primária da tela (ADR-001), e um filtro não é a ação da tela. O par inverse/on-action troca de lado sozinho no tema escuro, então não há regra de tema para manter.",
       "classe": "ucam-segmented"
+    },
+    {
+      "parte": "contagem",
+      "obrigatorio": false,
+      "descricao": "O número do recorte, depois do rótulo, em caption e tinta secundária; no segmento escolhido herda a tinta dele. Entra quando a tela tem recorte por situação e o número já não aparece em outro lugar: a contagem mora aqui, não num cartão de indicador acima da lista (leva 4, 22/10/2026). Faz parte do nome acessível, porque é texto do botão.",
+      "classe": "ucam-segmented__contagem"
     }
   ],
   "props": [

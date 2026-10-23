@@ -10515,6 +10515,22 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
 /* O hover só existe em quem NÃO está escolhido: passar o ponteiro sobre o
  * segmento já escolhido clareando a tinta cheia leria como um estado a menos,
  * não a mais. */
+/* A contagem do recorte (leva 4, 22/10/2026): o número que antes vivia num
+ * cartão de indicador acima da tabela entra na própria opção, como a contagem
+ * da aba (.ucam-tabs__contagem). Secundária em repouso; no segmento escolhido
+ * herda a tinta do segmento, porque o cinza sobre surface.inverse some. */
+.ucam-segmented__contagem {
+  margin-inline-start: 0.375rem;
+  font-size: var(--ucam-typography-caption-font-size);
+  font-weight: var(--ucam-typography-body-font-weight);
+  color: var(--ucam-color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ucam-segmented button[aria-pressed="true"] .ucam-segmented__contagem {
+  color: inherit;
+}
+
 .ucam-segmented button:hover:not([aria-pressed="true"]) {
   background: var(--ucam-color-surface-subtle);
   color: var(--ucam-color-text-primary);

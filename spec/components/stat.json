@@ -305,6 +305,11 @@
       "faca": "Colocar o rótulo antes do valor na ordem do DOM, mesmo em layout row.",
       "evite": "Posicionar por CSS invertendo a ordem do markup.",
       "porque": "O leitor de tela segue o DOM: valor antes de rótulo anuncia um número sem pergunta."
+    },
+    {
+      "faca": "Mostrar no indicador só o número que não aparece em outro lugar da tela. Com recorte por situação, a contagem vai na opção do recorte (segmented ou aba); com lista de pendências, o número vai na linha da pendência.",
+      "evite": "Uma fileira de cartões que repete as contagens das abas logo abaixo (Sala de matrícula) ou as linhas de \"Precisa de atenção\" ao lado (Início do Gerencial).",
+      "porque": "O mesmo número dito duas vezes custa 120px da primeira dobra e não acrescenta nada (Nielsen 8, estética e design minimalista). Leva 4, 22/10/2026."
     }
   ],
   "implementacao": {

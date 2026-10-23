@@ -16,6 +16,8 @@ import { UcamTooltip } from '../tooltip/ucam-tooltip';
 export interface UcamSegmentItem {
   id: string;
   label: string;
+  /** Contagem do recorte, quando conhecida sem custo. Entra depois do rótulo. */
+  count?: number | null;
   /** Tom do desfecho quando escolhido (decisão por linha). Solto, sem tom. */
   tone?: 'success' | 'danger' | 'warning';
   /** A opção que a máquina sugere: ícone sparkles e ", sugestão" no nome. */
@@ -65,6 +67,9 @@ export interface UcamSegmentItem {
           (click)="escolher(item, $event)"
         >
           {{ item.label }}
+          @if (item.count != null) {
+            <span class="ucam-segmented__contagem">{{ item.count }}</span>
+          }
           @if (item.suggested) {
             <ucam-icon name="sparkles" size="xs" class="ucam-segmented__sugerido" /><span class="sr-only">, sugestão</span>
           }
