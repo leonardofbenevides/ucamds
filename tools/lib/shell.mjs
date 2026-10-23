@@ -1278,20 +1278,28 @@ export function renderShell(cfg = {}, conteudo = '') {
       // O que a classe de modificação abaixo NÃO herda é a moldura flutuante:
       // margem, raio e sombra saem em .ucam-topbar__identidade, porque aqui a
       // testeira atravessa a tela de ponta a ponta.
-      `<div class="ucam-appbar ucam-appbar--${esc(topoCor)} ucam-topbar__identidade">` +
+      `<div class="ucam-appbar ucam-appbar--marca ucam-topbar__identidade">` +
       botaoMenu +
+      // A MESMA MARCA DA FAIXA (leva 4, 23/10/2026). A testeira de topo ficou
+      // parada antes da ADR-060 e abria só com o nome do sistema, sem a logo
+      // da universidade nem a marquinha que diz qual sistema é. Quando os
+      // painéis (Captação, Polos, Turmas) passaram a usar este arranjo, a
+      // diferença apareceu: o mesmo sistema perdia a identidade ao trocar de
+      // forma de navegação.
       linkOuMarca(
         inicio,
-        'ucam-topbar__marca',
+        'ucam-appbar__brand',
         '',
-        (logo
-          ? '<span class="ucam-topbar__logo" aria-hidden="true"></span><span class="ucam-topbar__divisor"></span>'
-          : '') + `<span class="ucam-topbar__sistema">${esc(sistema)}</span>`,
+        `<span class="ucam-appbar__logo" aria-hidden="true"></span><span class="ucam-appbar__divider"></span>` +
+          (!logo && moduloIcone
+            ? `<span class="ucam-icon-tile ucam-appbar__marca${moduloCategoria ? ` ucam-icon-tile--${esc(moduloCategoria)}` : ''}" aria-hidden="true">${ic(moduloIcone)}</span>`
+            : '') + `<span class="ucam-appbar__system">${esc(sistema)}</span>`,
       ) +
       '<span class="ucam-topbar__folga"></span>' +
       campoBusca +
       botaoBusca +
       chipCampus +
+      sinoNotificacoes +
       // Mesmo lado, mesmo motivo que na faixa: a fileira de identidade da
       // testeira É uma .ucam-appbar, e as duas molduras não podem discordar
       // sobre onde mora a grade de sistemas.

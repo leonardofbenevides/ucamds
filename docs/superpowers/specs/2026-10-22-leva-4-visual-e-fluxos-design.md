@@ -80,3 +80,46 @@ Captura antes e depois das telas tocadas nos dois temas, com o servidor servindo
 ## Pendências fora desta spec
 
 A árvore de trabalho da main tem 26 arquivos alterados e sem commit (prazo, data-table, templates, Sites). Esta leva não começa em cima deles: ou entram em commit antes, ou a worktree parte do último commit e os dois se juntam depois.
+
+## 7. Navegação pela necessidade de cada sistema (23/10/2026)
+
+Pedido do Leonardo: "tem vários apps com a mesma cor e muitos similares" e "melhorar diante da necessidade de cada um".
+
+**Diagnóstico.** São 12 sistemas e só 5 cores em uso: acadêmico (Secretaria, Pós e extensão, Relatórios, Isenção, Turmas), gestão (Portal, Gerencial, Captação, Polos), atendimento, financeiro e pessoas. O portão de daltonismo só aceita 8 matizes, então a cor não tem como distinguir 12 sistemas. O que distingue precisa vir da forma da navegação, e a forma tem de vir do trabalho de quem usa o sistema. Hoje quase todos têm o mesmo molde ("Visão geral / Cadastros / Permissões"), e alguns copiam o menu do legado item a item.
+
+**Cor.** As três categorias livres entram: Isenção vai para `pesquisa` (índigo), Turmas para `comunicacao` (fúcsia) e Polos para `acervo`. Fica no máximo dois sistemas por cor, e os que dividem cor têm públicos diferentes. Precisa passar `pnpm run subpaleta` e `check-daltonismo`.
+
+**Forma, por necessidade.** Três formas, escolhidas pelo tipo de trabalho:
+
+| Forma | Para quem | Sistemas |
+|---|---|---|
+| **Fila** | quem processa itens que chegam; abre na fila, e a lateral mostra só filas com contagem | Protocolo, Isenção, Correção do Vestibular |
+| **Painel** | quem acompanha números; sem lateral, com abas no topo e um seletor de recorte | Captação, Polos, Turmas |
+| **Área de trabalho** | quem opera um ciclo; lateral agrupada pelo ciclo, cadastros em Configurações | SigFin, Pós e extensão, Secretaria, Gerencial |
+| **Catálogo** | quem procura um entre muitos; abre na busca | Relatórios, Portal |
+
+Por sistema:
+
+- **Protocolo (fila).** Lateral: Caixa de entrada, Minha pauta, Encaminhados, Aguardando aluno, Concluídos, cada um com contagem; hoje esses recortes são abas, e as abas viram a lateral. "Gerencial" e "Analytics" viram uma só, "Indicadores". Setores e Naturezas vão para Configurações.
+- **Isenção (fila).** Já está perto: Fila de análise, e Matrizes e Cursos em Configurações.
+- **Vestibular.** Dois públicos num menu só. O candidato vê só as etapas (já é assim). A equipe vê a fila de Redações e as Provas. A "Fila de análise" de isenção sai: ela é do sistema de Isenção.
+- **Captação (painel, reitoria, todas as unidades).** Abas: Painel, Captação, Rematrícula, Metas, Financeiro. Bolsa social entra como recorte do Financeiro. Graduação e pós viram um seletor, não dois itens.
+- **Polos (painel, gestor de um polo).** O mesmo dado da Captação, recortado no polo da pessoa. Sem lateral: abas Captação, Financeiro, Acadêmico. A Ficha financeira sai do menu porque é o detalhe de um aluno, aberto da lista.
+- **Turmas (painel).** Abas Análise e Balanço; Cadastro de turma é ação ("Nova turma"), não destino.
+- **SigFin (área de trabalho, tesouraria).** Grupos pelo ciclo: Hoje (Movimento de caixa, Recebimentos), Cobrança do mês (as etapas ficam DENTRO dela, não como seis irmãos), Cobrança individual (Cálculo individual, Inadimplência). Bolsas, convênios, bancos e feriados vão para Configurações.
+- **Pós e extensão (área de trabalho, secretaria da pós).** 42 itens hoje. Grupos pelo semestre: Oferta (Calendário, Cursos, Disciplinas oferecidas, Turmas, Horários), Alunos (Alunos, Especiais, Matricular interessado, Troca de turma), Avaliação (Notas, Faltas, Datas de prova, Cálculo acadêmico), Comunicação (E-mail, SMS). As nove tabelas de apoio, Prédios, Tipos de regime e Funcionários vão para Configurações. Meta: até 16 itens visíveis.
+- **Secretaria (área de trabalho).** Já é curta. Fica igual.
+- **Gerencial (área de trabalho, CPD).** A pergunta do trabalho é "o que esta pessoa acessa". Grupos: Pessoas (Usuários, Grupos), Acesso (uma tela de permissões com o recorte por grupo ou por usuário no lugar de três telas "×"), Segurança (Cartão de segurança, Trilha de auditoria). Aplicações, Menus, Unidades e Mantenedoras vão para Configurações.
+- **Relatórios (catálogo).** Abre na busca do catálogo; a lateral fica com Recentes e Favoritos, e as categorias viram filtro do catálogo. Hoje são 15 itens fixos e o catálogo vai crescer.
+- **Portal (catálogo).** "EAD / Presencial / ITECAM / Rio" saem do menu: são filtro da grade de sistemas.
+
+**O que não é do DS decidir.** Juntar Captação e Polos num sistema só, ou tirar a fila de isenção do Vestibular, mexe em quem tem acesso a quê. Entra como `proposta` em `regras_negocio`, com "TI (dono do SIGU)" decidindo. A tela de referência mostra a navegação proposta.
+
+**Fora daqui.** As telas que não existem (a maior parte dos 42 itens da pós) continuam sem tela; a navegação só muda de lugar.
+
+### Aplicado (23/10/2026)
+
+- Navegação nova em nove sistemas (Pós e extensão, Gerencial, Protocolo, Portal, SigFin, Vestibular, Captação, Polos, Turmas). Isenção e Secretaria ficaram como estavam; Relatórios ficou para quando o catálogo tiver filtro por assunto.
+- Forma de painel com o arranjo `topo` em Captação, Polos e Turmas. A testeira de topo ganhou a mesma marca da faixa (logo, marquinha, sino), que ela tinha perdido desde a ADR-060.
+- Cor: Turmas → `comunicacao`, Polos → `acervo`, Relatórios → `pesquisa`. Desvio da proposta: Isenção fica em `academico` porque a faixa dela usa o #22588D pedido em 25/09; Relatórios ficou com o índigo no lugar dela.
+- Pendente: juntar as três telas "×" do Gerencial numa tela "Acesso" (precisa de tela nova); recorte por assunto no catálogo de Relatórios; filas do Protocolo na lateral.

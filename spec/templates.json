@@ -1247,15 +1247,21 @@
                 "rotulo": "Caixa de entrada",
                 "icone": "inbox",
                 "contagem": 9
-              },
+              }
+            ]
+          },
+          {
+            "titulo": "Indicadores",
+            "$porque": "Leva 4: Gerencial e Analytics eram dois itens com nome de sistema para a mesma pergunta (como vai a fila). Ficam juntos, pelo que cada um mostra.",
+            "itens": [
               {
                 "id": "gerencial",
-                "rotulo": "Gerencial",
+                "rotulo": "Por setor",
                 "icone": "layoutGrid"
               },
               {
                 "id": "analytics",
-                "rotulo": "Analytics",
+                "rotulo": "Tendências",
                 "icone": "chartColumn"
               }
             ]
@@ -2360,6 +2366,7 @@
         "nav": [
           {
             "titulo": "Acesso",
+            "$porque": "Leva 4: EAD, Presencial, ITECAM e Rio saíram do menu: são recorte da grade de sistemas, não destinos.",
             "itens": [
               {
                 "id": "modulos",
@@ -2371,40 +2378,6 @@
                 "rotulo": "Favoritos",
                 "icone": "star",
                 "ancora": "#grupo-frequentes"
-              }
-            ]
-          },
-          {
-            "titulo": "Unidades",
-            "$porque": "A coluna do Portal tinha dois destinos e 570px de nada embaixo deles — a mais fraca das onze telas no arranjo com faixa. O que faltava não era enfeite: a grade tem 58 sistemas em 4 unidades e nenhum filtro por unidade, e o mesmo nome se repete em até quatro delas (é o defeito nº 5 que esta tela registra do legado). As unidades na coluna resolvem os dois de uma vez. Vertical e com contagem, e não em chips no conteúdo como o protótipo do SIGU faz: quatro unidades com número não cabem numa fileira sem virar régua, e a contagem é justamente o que diz onde vale procurar. Cada item é âncora para a seção que já existe na página — não promete tela que não há. \"Todas\" não entra: seria o mesmo destino de \"Meus sistemas\", duas linhas acima, com outro nome.",
-            "itens": [
-              {
-                "id": "u-ead",
-                "rotulo": "EAD",
-                "icone": "bookOpen",
-                "contagem": 17,
-                "ancora": "#grupo-ead"
-              },
-              {
-                "id": "u-presencial",
-                "rotulo": "Presencial",
-                "icone": "building2",
-                "contagem": 20,
-                "ancora": "#grupo-presencial"
-              },
-              {
-                "id": "u-itecam",
-                "rotulo": "ITECAM",
-                "icone": "graduationCap",
-                "contagem": 6,
-                "ancora": "#grupo-itecam"
-              },
-              {
-                "id": "u-rio",
-                "rotulo": "Rio",
-                "icone": "landmark",
-                "contagem": 15,
-                "ancora": "#grupo-rio"
               }
             ]
           }
@@ -4637,7 +4610,7 @@
         "navBusca": true,
         "nav": [
           {
-            "titulo": "Caixa",
+            "titulo": "Hoje",
             "itens": [
               {
                 "id": "movimento",
@@ -4652,7 +4625,51 @@
             ]
           },
           {
-            "titulo": "Mensalidades",
+            "titulo": "Cobrança do mês",
+            "$porque": "Leva 4: as cinco etapas ficam dentro da Cobrança do mês, na ordem da tesouraria, e não como seis irmãs dela.",
+            "itens": [
+              {
+                "id": "competencia",
+                "rotulo": "Cobrança do mês",
+                "icone": "listChecks"
+              },
+              {
+                "id": "etapas",
+                "rotulo": "Etapas",
+                "icone": "listChecks",
+                "$porque": "Cada etapa tem tela própria; a Cobrança do mês diz em qual se está.",
+                "itens": [
+                  {
+                    "id": "vencimentos-lote",
+                    "rotulo": "Datas de vencimento"
+                  },
+                  {
+                    "id": "calculo-lote",
+                    "rotulo": "Cálculo em lote"
+                  },
+                  {
+                    "id": "envio-lote",
+                    "rotulo": "Enviar mensalidades"
+                  },
+                  {
+                    "id": "baixa-lote",
+                    "rotulo": "Baixar mensalidades"
+                  },
+                  {
+                    "id": "sincronizacao",
+                    "rotulo": "Sincronização"
+                  }
+                ]
+              },
+              {
+                "id": "sicoob",
+                "rotulo": "Pagamentos Sicoob",
+                "icone": "landmark"
+              }
+            ]
+          },
+          {
+            "titulo": "Cobrança individual",
             "itens": [
               {
                 "id": "calculo",
@@ -4664,47 +4681,6 @@
                 "rotulo": "Inadimplência",
                 "icone": "triangleAlert",
                 "contagem": 42
-              }
-            ]
-          },
-          {
-            "titulo": "Cobrança em lote",
-            "$porque": "As seis telas do financeiro novo (2026). No sistema elas são o menu inteiro, numa lista só; aqui ficam juntas porque têm a mesma forma: filtrar, marcar e mandar.",
-            "itens": [
-              {
-                "id": "competencia",
-                "rotulo": "Cobrança do mês",
-                "icone": "listChecks"
-              },
-              {
-                "id": "calculo-lote",
-                "rotulo": "Cálculo em lote",
-                "icone": "calculator"
-              },
-              {
-                "id": "vencimentos-lote",
-                "rotulo": "Datas de vencimento",
-                "icone": "calendar"
-              },
-              {
-                "id": "envio-lote",
-                "rotulo": "Enviar mensalidades",
-                "icone": "send"
-              },
-              {
-                "id": "baixa-lote",
-                "rotulo": "Baixar mensalidades",
-                "icone": "download"
-              },
-              {
-                "id": "sincronizacao",
-                "rotulo": "Sincronização",
-                "icone": "refreshCw"
-              },
-              {
-                "id": "sicoob",
-                "rotulo": "Pagamentos Sicoob",
-                "icone": "landmark"
               }
             ]
           },
@@ -4888,7 +4864,7 @@
       "id": "relatorios",
       "nome": "Relatórios Acadêmicos",
       "icone": "chartColumn",
-      "categoria": "academico",
+      "categoria": "pesquisa",
       "descricao": "Consultas e relatórios da vida acadêmica: matrícula, histórico, avaliação, grade, processo seletivo, turma e professor. 37 relatórios, cada um com uma tela de filtros e uma de resultado, com saída em tela, PDF, Excel e Word.",
       "stack_atual": "Spring Boot + Thymeleaf, CSS próprio (main.css, 3.077 linhas) com tema claro e escuro, JS vanilla. Redesenhado por conta própria em 09/2026; entra no UCAMDS por adaptador (ADR-025).",
       "templates": [
@@ -8151,7 +8127,8 @@
             ]
           },
           {
-            "titulo": "Cadastros",
+            "titulo": "Pessoas",
+            "$porque": "Leva 4 (23/10/2026): o trabalho do CPD é responder \"o que esta pessoa acessa\". Pessoas, depois o acesso delas, depois segurança; a estrutura do SIGU (aplicações, menus, unidades) é montada uma vez e fica num ramo fechado.",
             "itens": [
               {
                 "id": "usuarios",
@@ -8163,42 +8140,11 @@
                 "id": "grupos",
                 "rotulo": "Grupos",
                 "icone": "users"
-              },
-              {
-                "id": "aplicacoes",
-                "rotulo": "Aplicações",
-                "icone": "presentation"
-              },
-              {
-                "id": "menus",
-                "rotulo": "Menus",
-                "icone": "menu"
-              },
-              {
-                "id": "estrutura",
-                "rotulo": "Estrutura",
-                "icone": "building2",
-                "$porque": "Unidades e mantenedoras são tabelas de apoio consultadas por exceção. No legado ficam no mesmo nível de Usuários, em ordem alfabética — o que põe \"Mantenedoras\" acima de \"Menus\". O ramo fechado tira as duas da varredura diária sem esconder.",
-                "itens": [
-                  {
-                    "id": "unidades",
-                    "rotulo": "Unidades"
-                  },
-                  {
-                    "id": "mantenedoras",
-                    "rotulo": "Mantenedoras"
-                  }
-                ]
-              },
-              {
-                "id": "cartao",
-                "rotulo": "Cartão de segurança",
-                "icone": "creditCard"
               }
             ]
           },
           {
-            "titulo": "Permissões",
+            "titulo": "Acesso",
             "$porque": "Quatro itens no legado para duas relações. Menu × Usuários é Usuário × Menu lido do outro lado e vira filtro dentro dele. Ver a nota da tela grupo-menu.",
             "itens": [
               {
@@ -8215,6 +8161,51 @@
                 "id": "usuario-menu",
                 "rotulo": "Usuário × Menu",
                 "icone": "lock"
+              }
+            ]
+          },
+          {
+            "titulo": "Segurança",
+            "itens": [
+              {
+                "id": "cartao",
+                "rotulo": "Cartão de segurança",
+                "icone": "creditCard"
+              },
+              {
+                "id": "auditoria",
+                "rotulo": "Trilha de auditoria",
+                "icone": "scrollText",
+                "ancora": "gerencial-auditoria.html"
+              }
+            ]
+          },
+          {
+            "titulo": "Estrutura do SIGU",
+            "itens": [
+              {
+                "id": "estrutura",
+                "rotulo": "Estrutura",
+                "icone": "building2",
+                "$porque": "Aplicações, menus, unidades e mantenedoras: tabelas montadas uma vez e consultadas por exceção.",
+                "itens": [
+                  {
+                    "id": "aplicacoes",
+                    "rotulo": "Aplicações"
+                  },
+                  {
+                    "id": "menus",
+                    "rotulo": "Menus"
+                  },
+                  {
+                    "id": "unidades",
+                    "rotulo": "Unidades"
+                  },
+                  {
+                    "id": "mantenedoras",
+                    "rotulo": "Mantenedoras"
+                  }
+                ]
               }
             ]
           }
@@ -11050,17 +11041,8 @@
             ]
           },
           {
-            "titulo": "Isenção",
-            "itens": [
-              {
-                "id": "fila-isencao",
-                "rotulo": "Fila de análise",
-                "icone": "clipboardCheck"
-              }
-            ]
-          },
-          {
-            "titulo": "Cadastro",
+            "titulo": "Provas",
+            "$porque": "Leva 4: a fila de isenção saiu; ela é do sistema de Isenção.",
             "itens": [
               {
                 "id": "provas",
@@ -12041,12 +12023,231 @@
         "usuario": "Leonardo F. Benevides",
         "nav": [
           {
+            "titulo": "Oferta do semestre",
+            "$porque": "Leva 4 (23/10/2026): a navegação segue o ciclo do semestre da secretaria da pós (montar a oferta, cuidar dos alunos, avaliar, comunicar), e não as tabelas do banco. Eram 42 itens em seis grupos com o mesmo peso.",
+            "itens": [
+              {
+                "id": "calendario",
+                "rotulo": "Calendário acadêmico",
+                "icone": "calendar"
+              },
+              {
+                "id": "cursos",
+                "rotulo": "Cursos",
+                "icone": "graduationCap",
+                "ancora": "extensao-calendario-academico.html"
+              },
+              {
+                "id": "disciplinas-oferecidas",
+                "rotulo": "Disciplinas oferecidas",
+                "icone": "presentation",
+                "ancora": "extensao-calendario-academico.html"
+              },
+              {
+                "id": "turmas",
+                "rotulo": "Turmas",
+                "icone": "users",
+                "ancora": "extensao-disciplinas.html"
+              },
+              {
+                "id": "horarios",
+                "rotulo": "Horários",
+                "icone": "clock",
+                "ancora": "extensao-disciplinas.html"
+              }
+            ]
+          },
+          {
+            "titulo": "Alunos",
+            "itens": [
+              {
+                "id": "alunos",
+                "rotulo": "Alunos",
+                "icone": "user"
+              },
+              {
+                "id": "alunos-especiais",
+                "rotulo": "Alunos especiais",
+                "icone": "user",
+                "ancora": "extensao-aluno.html"
+              },
+              {
+                "id": "matricular",
+                "rotulo": "Matricular interessado",
+                "icone": "graduationCap",
+                "ancora": "secretaria-matricula-extensao.html"
+              },
+              {
+                "id": "troca-turma",
+                "rotulo": "Troca de turma",
+                "icone": "refreshCw",
+                "ancora": "extensao-aluno-disciplinas.html"
+              },
+              {
+                "id": "vida-academica",
+                "rotulo": "Vida acadêmica",
+                "icone": "scrollText",
+                "$porque": "Consultas por aluno, abertas por exceção.",
+                "itens": [
+                  {
+                    "id": "aluno-disciplinas",
+                    "rotulo": "Disciplinas do aluno"
+                  },
+                  {
+                    "id": "historico",
+                    "rotulo": "Histórico de situação",
+                    "ancora": "extensao-aluno-disciplinas.html"
+                  },
+                  {
+                    "id": "estagio",
+                    "rotulo": "Estágio supervisionado",
+                    "ancora": "extensao-aluno-disciplinas.html"
+                  },
+                  {
+                    "id": "isencoes",
+                    "rotulo": "Isenções",
+                    "ancora": "extensao-aluno-disciplinas.html"
+                  },
+                  {
+                    "id": "inscricao-lote",
+                    "rotulo": "Alunos da turma × disciplinas",
+                    "ancora": "secretaria-alocacao-alunos.html"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "titulo": "Avaliação",
+            "itens": [
+              {
+                "id": "notas",
+                "rotulo": "Lançamento de notas",
+                "icone": "clipboardList"
+              },
+              {
+                "id": "faltas",
+                "rotulo": "Lançamento de faltas",
+                "icone": "clipboardCheck",
+                "ancora": "extensao-lancamento-notas.html"
+              },
+              {
+                "id": "datas-prova",
+                "rotulo": "Datas de prova",
+                "icone": "calendar"
+              },
+              {
+                "id": "calculo",
+                "rotulo": "Cálculo acadêmico",
+                "icone": "calculator"
+              },
+              {
+                "id": "avaliacao-apoio",
+                "rotulo": "Provas e planos",
+                "icone": "fileText",
+                "$porque": "Usados uma vez por semestre.",
+                "itens": [
+                  {
+                    "id": "provas-especiais",
+                    "rotulo": "Provas especiais",
+                    "ancora": "extensao-datas-de-prova.html"
+                  },
+                  {
+                    "id": "disciplina-alunos",
+                    "rotulo": "Disciplina oferecida × alunos",
+                    "ancora": "extensao-datas-de-prova.html"
+                  },
+                  {
+                    "id": "planos-ensino",
+                    "rotulo": "Planos de ensino",
+                    "ancora": "extensao-datas-de-prova.html"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "titulo": "Comunicação",
+            "itens": [
+              {
+                "id": "email",
+                "rotulo": "Envio de e-mail",
+                "icone": "mail"
+              },
+              {
+                "id": "sms",
+                "rotulo": "Envio de SMS",
+                "icone": "messageSquare",
+                "ancora": "extensao-envio-email.html"
+              },
+              {
+                "id": "relacionamento",
+                "rotulo": "Relacionamento",
+                "icone": "messageSquare",
+                "ancora": "extensao-envio-email.html"
+              },
+              {
+                "id": "periodos-inscricao",
+                "rotulo": "Períodos de inscrição",
+                "icone": "calendar",
+                "ancora": "extensao-disciplinas.html"
+              }
+            ]
+          },
+          {
             "titulo": "Cadastros",
+            "$porque": "O que se monta uma vez e se consulta por exceção fica em ramos fechados, fora da varredura diária.",
             "itens": [
               {
                 "id": "disciplinas",
                 "rotulo": "Disciplinas",
                 "icone": "bookOpen"
+              },
+              {
+                "id": "estrutura",
+                "rotulo": "Estrutura",
+                "icone": "building2",
+                "$porque": "Grade dos cursos, regimes e salas.",
+                "itens": [
+                  {
+                    "id": "disciplinas-curso",
+                    "rotulo": "Disciplinas do curso",
+                    "ancora": "extensao-calendario-academico.html"
+                  },
+                  {
+                    "id": "tipos-regime",
+                    "rotulo": "Tipos de regime",
+                    "ancora": "extensao-calendario-academico.html"
+                  },
+                  {
+                    "id": "predios",
+                    "rotulo": "Prédios e salas",
+                    "ancora": "extensao-calendario-academico.html"
+                  }
+                ]
+              },
+              {
+                "id": "pessoas-apoio",
+                "rotulo": "Pessoas",
+                "icone": "briefcase",
+                "$porque": "Cadastros de pessoas que não são alunos.",
+                "itens": [
+                  {
+                    "id": "professores",
+                    "rotulo": "Professores",
+                    "ancora": "extensao-aluno.html"
+                  },
+                  {
+                    "id": "funcionarios",
+                    "rotulo": "Funcionários",
+                    "ancora": "extensao-aluno.html"
+                  },
+                  {
+                    "id": "interessados",
+                    "rotulo": "Interessados",
+                    "ancora": "extensao-aluno.html"
+                  }
+                ]
               },
               {
                 "id": "tabelas",
@@ -12100,210 +12301,6 @@
                     "ancora": "extensao-disciplinas.html"
                   }
                 ]
-              },
-              {
-                "id": "horarios",
-                "rotulo": "Horários",
-                "icone": "clock",
-                "ancora": "extensao-disciplinas.html"
-              },
-              {
-                "id": "turmas",
-                "rotulo": "Turmas",
-                "icone": "users",
-                "ancora": "extensao-disciplinas.html"
-              }
-            ]
-          },
-          {
-            "titulo": "Curso e oferta",
-            "itens": [
-              {
-                "id": "calendario",
-                "rotulo": "Calendário acadêmico",
-                "icone": "calendar"
-              },
-              {
-                "id": "cursos",
-                "rotulo": "Cursos",
-                "icone": "graduationCap",
-                "ancora": "extensao-calendario-academico.html"
-              },
-              {
-                "id": "tipos-regime",
-                "rotulo": "Tipos de regime",
-                "icone": "layoutGrid",
-                "ancora": "extensao-calendario-academico.html"
-              },
-              {
-                "id": "predios",
-                "rotulo": "Prédios e salas",
-                "icone": "building2",
-                "ancora": "extensao-calendario-academico.html"
-              },
-              {
-                "id": "disciplinas-curso",
-                "rotulo": "Disciplinas do curso",
-                "icone": "scrollText",
-                "ancora": "extensao-calendario-academico.html"
-              },
-              {
-                "id": "disciplinas-oferecidas",
-                "rotulo": "Disciplinas oferecidas",
-                "icone": "presentation",
-                "ancora": "extensao-calendario-academico.html"
-              }
-            ]
-          },
-          {
-            "titulo": "Pessoas",
-            "itens": [
-              {
-                "id": "alunos",
-                "rotulo": "Alunos",
-                "icone": "user"
-              },
-              {
-                "id": "alunos-especiais",
-                "rotulo": "Alunos especiais",
-                "icone": "user",
-                "ancora": "extensao-aluno.html"
-              },
-              {
-                "id": "professores",
-                "rotulo": "Professores",
-                "icone": "briefcase",
-                "ancora": "extensao-aluno.html"
-              },
-              {
-                "id": "funcionarios",
-                "rotulo": "Funcionários",
-                "icone": "users",
-                "ancora": "extensao-aluno.html"
-              },
-              {
-                "id": "interessados",
-                "rotulo": "Interessados",
-                "icone": "users",
-                "ancora": "extensao-aluno.html"
-              }
-            ]
-          },
-          {
-            "titulo": "Vida acadêmica",
-            "itens": [
-              {
-                "id": "aluno-disciplinas",
-                "rotulo": "Disciplinas do aluno",
-                "icone": "bookOpen"
-              },
-              {
-                "id": "historico",
-                "rotulo": "Histórico de situação",
-                "icone": "scrollText",
-                "ancora": "extensao-aluno-disciplinas.html"
-              },
-              {
-                "id": "estagio",
-                "rotulo": "Estágio supervisionado",
-                "icone": "briefcase",
-                "ancora": "extensao-aluno-disciplinas.html"
-              },
-              {
-                "id": "isencoes",
-                "rotulo": "Isenções",
-                "icone": "clipboardCheck",
-                "ancora": "extensao-aluno-disciplinas.html"
-              },
-              {
-                "id": "troca-turma",
-                "rotulo": "Troca de turma",
-                "icone": "refreshCw",
-                "ancora": "extensao-aluno-disciplinas.html"
-              },
-              {
-                "id": "inscricao-lote",
-                "rotulo": "Alunos da turma × disciplinas",
-                "icone": "listChecks",
-                "ancora": "secretaria-alocacao-alunos.html"
-              }
-            ]
-          },
-          {
-            "titulo": "Avaliação",
-            "itens": [
-              {
-                "id": "notas",
-                "rotulo": "Lançamento de notas",
-                "icone": "clipboardList"
-              },
-              {
-                "id": "faltas",
-                "rotulo": "Lançamento de faltas",
-                "icone": "clipboardCheck",
-                "ancora": "extensao-lancamento-notas.html"
-              },
-              {
-                "id": "datas-prova",
-                "rotulo": "Datas de prova",
-                "icone": "calendar"
-              },
-              {
-                "id": "provas-especiais",
-                "rotulo": "Provas especiais",
-                "icone": "fileText",
-                "ancora": "extensao-datas-de-prova.html"
-              },
-              {
-                "id": "disciplina-alunos",
-                "rotulo": "Disciplina oferecida × alunos",
-                "icone": "users",
-                "ancora": "extensao-datas-de-prova.html"
-              },
-              {
-                "id": "planos-ensino",
-                "rotulo": "Planos de ensino",
-                "icone": "scrollText",
-                "ancora": "extensao-datas-de-prova.html"
-              },
-              {
-                "id": "calculo",
-                "rotulo": "Cálculo acadêmico",
-                "icone": "calculator"
-              }
-            ]
-          },
-          {
-            "titulo": "Interessados e comunicação",
-            "itens": [
-              {
-                "id": "email",
-                "rotulo": "Envio de e-mail",
-                "icone": "mail"
-              },
-              {
-                "id": "sms",
-                "rotulo": "Envio de SMS",
-                "icone": "messageSquare",
-                "ancora": "extensao-envio-email.html"
-              },
-              {
-                "id": "relacionamento",
-                "rotulo": "Relacionamento",
-                "icone": "messageSquare",
-                "ancora": "extensao-envio-email.html"
-              },
-              {
-                "id": "periodos-inscricao",
-                "rotulo": "Períodos de inscrição",
-                "icone": "calendar",
-                "ancora": "extensao-disciplinas.html"
-              },
-              {
-                "id": "matricular",
-                "rotulo": "Matricular interessado",
-                "icone": "graduationCap",
-                "ancora": "secretaria-matricula-extensao.html"
               }
             ]
           }
@@ -13451,19 +13448,16 @@
         "sistema": "Captação",
         "campus": "Campos",
         "usuario": "Leonardo F. Benevides",
+        "topo": true,
         "nav": [
           {
-            "titulo": "Visão geral",
+            "titulo": "Painel",
+            "$porque": "Leva 4: forma de painel. Quem abre a Captação acompanha números de todas as unidades; não opera cadastro. Navegação no topo, conteúdo com a largura inteira.",
             "itens": [
               {
                 "id": "painel",
                 "rotulo": "Painel",
                 "icone": "layoutGrid"
-              },
-              {
-                "id": "financeiro",
-                "rotulo": "Financeiro",
-                "icone": "wallet"
               }
             ]
           },
@@ -13505,8 +13499,13 @@
             ]
           },
           {
-            "titulo": "Bolsas",
+            "titulo": "Financeiro",
             "itens": [
+              {
+                "id": "financeiro",
+                "rotulo": "Financeiro",
+                "icone": "wallet"
+              },
               {
                 "id": "bolsa-social",
                 "rotulo": "Bolsa social",
@@ -14781,16 +14780,18 @@
       "id": "polos",
       "nome": "Gestão de Polos",
       "icone": "mapPin",
-      "categoria": "gestao",
+      "categoria": "acervo",
       "descricao": "O painel dos polos EAD: captação do período por polo, curso, forma de ingresso e semana; repasse do mês a cada polo e inadimplência; e a ficha financeira dos alunos. Entrou no design system em 21/10/2026, lido do gestaodepolos-frontend e do gestaodepolos-backend; não há reescrita publicada, e a referência segue o sistema atual.",
       "stack_atual": "Angular 10 com Angular Material 10, ngrx 10, ucam-material e default-style (moldura), Highcharts 8 pela API direta, exceljs e pdfmake para exportar no navegador; back-end gestaodepolos-backend em Spring Boot com JdbcTemplate sobre views de captação, matrícula e financeiro",
       "shell": {
         "sistema": "Gestão de polos",
         "campus": "EAD",
         "usuario": "Leonardo F. Benevides",
+        "topo": true,
         "nav": [
           {
             "titulo": "Painéis",
+            "$porque": "Leva 4: o gestor de um polo vê os números do próprio polo. Forma de painel no topo. A ficha financeira é o detalhe de um aluno, aberta da lista do Financeiro, e saiu do menu.",
             "itens": [
               {
                 "id": "captacao",
@@ -14808,11 +14809,6 @@
                 "icone": "graduationCap",
                 "ancora": "polos-financeiro.html",
                 "$porque": "Alunos ativos por curso, com total no pé e linha que abre os alunos e as notas: a mesma forma do Financeiro (tabela com linha que abre). A tela de referência é a dele."
-              },
-              {
-                "id": "ficha-financeira",
-                "rotulo": "Ficha financeira",
-                "icone": "receipt"
               }
             ]
           }
@@ -15357,22 +15353,19 @@
       "id": "turmas",
       "nome": "Turmas Compartilhadas",
       "icone": "monitor",
-      "categoria": "academico",
+      "categoria": "comunicacao",
       "descricao": "O controle das turmas do AVA (Moodle): juntar turmas SIGU de unidades e cursos diferentes numa turma AVA só, com as regras de professor, turno e dias, e o balanço das disciplinas do período. Entrou no design system em 21/10/2026, lido do turmas-compartilhadas-frontend e do turmas-compartilhadas-backend nos ramos de modalidade de abril de 2026; não há reescrita publicada, e a referência segue o sistema atual.",
       "stack_atual": "Angular 9 com Angular Material 9, ngrx 9, ucam-material e default-style (moldura) e file-saver; back-end turmas-compartilhadas-backend em Spring Boot com JPA, Envers para auditoria e consultas nativas sobre o esquema ava (turmamoodle, turmascompartilhada_20211, turmasigu, turmamigradamoodle)",
       "shell": {
         "sistema": "Turmas compartilhadas",
         "campus": "Rio de Janeiro",
         "usuario": "Leonardo F. Benevides",
+        "topo": true,
         "nav": [
           {
             "titulo": "Turmas do AVA",
+            "$porque": "Leva 4: forma de painel no topo.",
             "itens": [
-              {
-                "id": "cadastro",
-                "rotulo": "Cadastro de turma",
-                "icone": "pencil"
-              },
               {
                 "id": "analise",
                 "rotulo": "Análise",
@@ -15382,6 +15375,11 @@
                 "id": "balanco",
                 "rotulo": "Balanço",
                 "icone": "listChecks"
+              },
+              {
+                "id": "cadastro",
+                "rotulo": "Cadastro de turma",
+                "icone": "pencil"
               }
             ]
           }
