@@ -5202,6 +5202,27 @@ export const abasScript = `
     if (atual) selecionar(tira, atual);
   });
 })();
+
+/* CONTROLE QUE É DE UMA ABA SÓ (leva 4, 23/10/2026). Na tela Acesso o filtro
+ * de menu, o "Copiar de outro grupo" e o recorte Concedidos ficam no cabeçalho
+ * e só têm sentido na aba Menus. data-so-com="<id do painel>" os esconde
+ * enquanto aquele painel está escondido, para a aba Integrantes não oferecer
+ * filtro que não filtra nada. */
+(function () {
+  function sincroniza() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-so-com]'), function (el) {
+      var p = document.getElementById(el.getAttribute('data-so-com'));
+      if (p) el.hidden = p.hidden;
+    });
+  }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('[role="tab"]')) setTimeout(sincroniza, 0);
+  });
+  document.addEventListener('keyup', function (e) {
+    if (e.target.closest && e.target.closest('[role="tab"]')) setTimeout(sincroniza, 0);
+  });
+  sincroniza();
+})();
 `;
 
 /**
