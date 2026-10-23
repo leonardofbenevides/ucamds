@@ -5901,7 +5901,41 @@ ${FN_ANUNCIA}
       alvo.textContent = n + ' ' + nome + ' ' + participio + (n === 1 ? '' : 's');
     }
     barra.hidden = n === 0;
+    primario(tabela, barra, n);
   }
+
+  /* O PRIMÁRIO DA TELA DE LOTE (leva 4, 23/10/2026; ADR-081).
+   *
+   * Em tela cuja tarefa É a ação em lote (Cálculo acadêmico), a ação mora no
+   * cabeçalho em repouso, desabilitada com o motivo, e não só na barra que
+   * nasce com a seleção. O legado já fazia assim: "Enviar Cálculo" com
+   * [disabled] até haver curso marcado (extensao-frontend, calculo-curso).
+   * Com seleção, o rótulo diz quanto vai ser feito; o clique dispara a mesma
+   * ação da barra da aba visível, com a mesma confirmação. */
+  function primario(tabela, barra, n) {
+    var prim = document.querySelector('[data-lote-primario]');
+    if (!prim || tabela.closest('[hidden]')) return;
+    var rot = prim.querySelector('[data-lote-primario-rotulo]') || prim;
+    if (!prim.hasAttribute('data-rotulo')) prim.setAttribute('data-rotulo', rot.textContent.trim());
+    var base = prim.getAttribute('data-rotulo');
+    var plural = barra.getAttribute('data-lote-nome') || 'itens';
+    var nome = n === 1 ? barra.getAttribute('data-lote-singular') || plural.replace(/s$/, '') : plural;
+    if (n) { prim.removeAttribute('aria-disabled'); rot.textContent = base + ' ' + n + ' ' + nome; }
+    else { prim.setAttribute('aria-disabled', 'true'); rot.textContent = base; }
+  }
+  document.addEventListener('click', function (e) {
+    var prim = e.target.closest('[data-lote-primario]');
+    if (prim && prim.getAttribute('aria-disabled') !== 'true') {
+      var barras = Array.prototype.filter.call(document.querySelectorAll('.ucam-lote'), function (b) { return !b.hidden && !b.closest('[hidden]'); });
+      var acao = barras[0] && barras[0].querySelector('.ucam-lote__acao');
+      if (acao) acao.click();
+      return;
+    }
+    // Trocou de aba: o primário passa a falar da tabela que ficou visível.
+    if (e.target.closest('[role="tab"]')) setTimeout(function () {
+      Array.prototype.forEach.call(document.querySelectorAll('table'), function (t) { if (!t.closest('[hidden]')) lote(t); });
+    }, 0);
+  });
 
   // Na carga, a propriedade passa a valer o que o atributo dizia: sem isto o
   // cabeçalho nasce visualmente misto e ARIA vazio, dizendo duas coisas.
