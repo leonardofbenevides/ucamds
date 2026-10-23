@@ -58,6 +58,7 @@ import {
 } from './lib/shell.mjs';
 // A prova de mentira do Vestibular: fixture, fora de shell.mjs e do ucam-comportamento.js (ADR-057).
 import { provaScript } from './lib/prova-referencia.mjs';
+import { graficoScript } from './lib/grafico.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 // Dois destinos, um gerador. docs/t/ é o "abrir em nova aba" do site
@@ -188,6 +189,11 @@ for (const { dir } of DESTINOS) if (!existsSync(dir)) mkdirSync(dir, { recursive
 // para 404 — que não dá erro nenhum, só não pinta.
 // E os RETRATOS de exemplo (06/10/2026): ilustrações, não fotos de ninguém — a
 // ficha do aluno na isenção mostra onde a foto do cadastro entra.
+// O ECharts ao lado das telas (leva 4, 23/10/2026): o mesmo motor que o
+// Trilho B usa pelo z-chart, agora também nas páginas autônomas. Vai como
+// arquivo e não embutido: 1 MB repetido em 114 páginas seria 114 MB.
+for (const x of DESTINOS) copyFileSync(join(ROOT, 'ui/node_modules/echarts/dist/echarts.min.js'), join(x.dir, 'echarts.min.js'));
+
 const MARCAS = ['ucam-logo-horizontal.svg', 'ucamds-simbolo-inverso.svg', 'retrato-1.svg', 'retrato-2.svg', 'retrato-3.svg'];
 for (const d of DESTINOS.map((x) => join(x.dir, '..', 'marca'))) {
   if (!existsSync(d)) mkdirSync(d, { recursive: true });
@@ -381,6 +387,8 @@ ${proj.id === 'vestibular' ? `<script>${provaScript}</script>` : ''}
 <script>${estadosDaListaScript}</script>
 <script>${sessaoScript}</script>
 <script>${barraDoQuadroScript}</script>
+${t.preview.includes('data-grafico') ? `<script src="echarts.min.js"></script>
+<script>${graficoScript}</script>` : ''}
 </body>
 </html>`;
 

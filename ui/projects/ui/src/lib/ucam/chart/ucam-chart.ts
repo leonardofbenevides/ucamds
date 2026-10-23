@@ -35,7 +35,7 @@ import { UcamSkeleton } from '../skeleton/ucam-skeleton';
  *  - releitura das cores quando o tema muda pelo data-theme do UCAMDS, que é
  *    outro caminho que não o serviço de tema da própria base.
  */
-export type UcamChartType = 'line' | 'area' | 'bar' | 'pie';
+export type UcamChartType = 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'funnel' | 'sparkline';
 
 /** O mesmo vocabulário da DataTable. Ver chart.json, state. */
 export type UcamChartState = 'idle' | 'loading' | 'empty' | 'error';
@@ -111,11 +111,11 @@ const cor = (slot: number) => `var(--ucam-color-chart-series-${slot})`;
           [zData]="data()"
           [zSeries]="seriesBase()"
           [zConfig]="config()"
-          [zXAxisKey]="type() === 'pie' ? undefined : categoryKey()"
-          [zNameKey]="type() === 'pie' ? categoryKey() : undefined"
+          [zXAxisKey]="fatia() ? undefined : categoryKey()"
+          [zNameKey]="fatia() ? categoryKey() : undefined"
           [zStacked]="stacked()"
           [zHorizontal]="horizontal() && type() === 'bar'"
-          [zYAxis]="type() !== 'pie'"
+          [zYAxis]="!fatia() && type() !== 'sparkline'"
           [zYAxisFormatter]="formata"
           [zAnimation]="anima()"
           [zAccessibility]="false"
@@ -123,8 +123,8 @@ const cor = (slot: number) => `var(--ucam-color-chart-series-${slot})`;
           zRenderer="svg"
         >
           <z-chart-tooltip
-            [zTrigger]="type() === 'pie' || type() === 'bar' ? 'item' : 'axis'"
-            [zIndicator]="type() === 'bar' || type() === 'pie' ? 'dot' : 'line'"
+            [zTrigger]="fatia() || type() === 'bar' ? 'item' : 'axis'"
+            [zIndicator]="type() === 'bar' || fatia() ? 'dot' : 'line'"
             [zValueFormatter]="formataDica"
           />
           @if (mostraLegenda()) {
@@ -209,7 +209,7 @@ export class UcamChart {
   readonly categoryLabel = input<string | null>(null);
   readonly stacked = input(false, { transform: booleanAttribute });
   readonly horizontal = input(false, { transform: booleanAttribute });
-  readonly height = input<'sm' | 'md' | 'lg'>('md');
+  readonly height = input<'xs' | 'sm' | 'md' | 'lg'>('md');
   /** Só recolhe a tabela num details — ela nunca deixa de existir no DOM. */
   readonly showTable = input(true, { transform: booleanAttribute });
   readonly valueFormatter = input<((value: number) => string) | null>(null);
@@ -251,7 +251,10 @@ export class UcamChart {
   }
 
   /** Quantos slots esta forma pode gastar. */
-  private readonly teto = computed(() => (this.type() === 'pie' ? SLOTS_TODOS_OS_PARES : SLOTS));
+  /** Rosca e funil são pizza para o ZardUI: cor por fatia, nome por categoria. */
+  protected readonly fatia = computed(() => this.type() === 'pie' || this.type() === 'donut' || this.type() === 'funnel');
+
+  private readonly teto = computed(() => (this.fatia() ? SLOTS_TODOS_OS_PARES : SLOTS));
 
   protected readonly excedentes = computed(() => this.series().slice(this.teto()));
   protected readonly nomesExcedentes = computed(() => this.excedentes().map((s) => s.name).join(', '));
@@ -259,7 +262,9 @@ export class UcamChart {
   /** As que cabem no desenho. */
   private readonly desenhadas = computed(() => this.series().slice(0, this.teto()));
 
-  protected readonly tipoBase = computed(() => this.type());
+  /* As formas da leva 4 (23/10/2026) não existem no ZardUI: saem da base mais
+   * próxima e o resto vem pelo zOption. */
+  protected readonly tipoBase = computed(() => (this.fatia() ? 'pie' : this.type() === 'sparkline' ? 'line' : this.type()) as 'line' | 'area' | 'bar' | 'pie');
 
   protected readonly seriesBase = computed<ZardSeriesDef[]>(() =>
     this.desenhadas().map((s) => ({
@@ -278,7 +283,7 @@ export class UcamChart {
   protected readonly config = computed<ZardChartConfig>(() => {
     this.tema();
 
-    if (this.type() === 'pie') {
+    if (this.fatia()) {
       const chave = this.categoryKey();
       return Object.fromEntries(
         this.data()
@@ -304,15 +309,26 @@ export class UcamChart {
    * grade da borda; a largura do rótulo continua sendo reservada pelo
    * outerBounds, então "R$ 1.234.567" também cabe.
    */
-  protected readonly opcao = computed(() =>
-    this.type() === 'pie' ? {} : { grid: { left: 8, right: 8 } },
-  );
+  protected readonly opcao = computed(() => {
+    switch (this.type()) {
+      case 'pie':
+        return {};
+      case 'donut':
+        return { series: [{ radius: ['58%', '80%'], label: { show: false } }] };
+      case 'funnel':
+        return { series: [{ type: 'funnel' as const, sort: 'none' as const, gap: 2, minSize: '18%', left: '10%', right: '10%' }] };
+      case 'sparkline':
+        return { grid: { left: 0, right: 0, top: 4, bottom: 4 }, xAxis: { show: false }, yAxis: { show: false, scale: true } };
+      default:
+        return { grid: { left: 8, right: 8 } };
+    }
+  });
 
   /** Uma série só é nomeada pelo rótulo do gráfico; a caixa de legenda seria ruído. */
-  protected readonly mostraLegenda = computed(() => this.type() === 'pie' || this.desenhadas().length > 1);
+  protected readonly mostraLegenda = computed(() => this.type() !== 'sparkline' && (this.fatia() || this.desenhadas().length > 1));
 
   protected readonly alturaClasse = computed(
-    () => ({ sm: 'h-32', md: 'h-48', lg: 'h-72' })[this.height()],
+    () => ({ xs: 'h-12', sm: 'h-32', md: 'h-48', lg: 'h-72' })[this.height()],
   );
 
   /** Sem transição de entrada quando o sistema pede movimento reduzido (2.3.3). */

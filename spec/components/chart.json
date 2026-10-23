@@ -63,14 +63,20 @@
       "obrigatorio": true,
       "descricao": "Os mesmos dados em <table>, com <caption>. Aberta por padrão em um <details>; nunca ausente do DOM. A classe estava ausente aqui e nomeada em duas irmãs que não existem — o <details> da tabela é a única parte do gráfico com classe nossa.",
       "classe": "ucam-chart__tabela"
+    },
+    {
+      "parte": "trilho-a",
+      "obrigatorio": false,
+      "descricao": "No Trilho A o gráfico é <figure class=\"ucam-grafico\" aria-label=\"…\" data-grafico='{…}'>, desenhado por ECharts (o mesmo motor do Trilho B) com o script das telas. O JSON leva tipo, unidade, categoria, categorias, series [{nome, dados}] e, opcionais, empilhado, horizontal, moeda, altura (xs, sm, md, lg) e tabela:false quando a tela já traz a tabela equivalente logo abaixo. O plot nasce aria-hidden e a tabela é montada dos mesmos números. As cores são os tokens chart-series-1 a 6, na ordem fixa.",
+      "classe": "ucam-grafico"
     }
   ],
   "props": [
     {
       "nome": "type",
-      "tipo": "'line' | 'area' | 'bar' | 'pie'",
+      "tipo": "'line' | 'area' | 'bar' | 'pie' | 'donut' | 'funnel' | 'sparkline'",
       "default": "'line'",
-      "descricao": "A forma. Escolhida pela pergunta que o dado responde, não por gosto.",
+      "descricao": "A forma. Escolhida pela pergunta que o dado responde, não por gosto. Três formas novas (leva 4, 23/10/2026): donut, a composição de até três partes com o vão no meio para o total; funnel, só quando as etapas são cumulativas e a ordem é regra de negócio confirmada (quem está numa etapa passou por todas as anteriores) — situações exclusivas, como as da captação, são barra empilhada, não funil; sparkline, a tendência sem eixo dentro de um indicador, que não substitui o número.",
       "valores": {
         "line": {
           "uso": "Mudança ao longo do tempo, com o eixo em ordem cronológica.",

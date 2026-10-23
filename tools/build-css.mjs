@@ -10515,6 +10515,33 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
 /* O hover só existe em quem NÃO está escolhido: passar o ponteiro sobre o
  * segmento já escolhido clareando a tinta cheia leria como um estado a menos,
  * não a mais. */
+/* O GRÁFICO (leva 4, 23/10/2026). A figura empilha o plot e a tabela com os
+ * mesmos números; o plot é aria-hidden e a tabela é a fonte acessível
+ * (chart.json). As alturas são as do Trilho B (sm, md, lg) mais xs, a do
+ * minigráfico de tendência dentro de um indicador. */
+.ucam-grafico {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ucam-space-stack-sm);
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.ucam-grafico__plot { inline-size: 100%; }
+.ucam-grafico__plot--xs { block-size: 3rem; }
+.ucam-grafico__plot--sm { block-size: 12.5rem; }
+.ucam-grafico__plot--md { block-size: 17.5rem; }
+.ucam-grafico__plot--lg { block-size: 22.5rem; }
+
+.ucam-grafico__tabela > summary {
+  inline-size: fit-content;
+  font-size: var(--ucam-typography-caption-font-size);
+  color: var(--ucam-color-text-link);
+  cursor: pointer;
+}
+
+.ucam-grafico__tabela[open] > summary { margin-block-end: var(--ucam-space-stack-sm); }
+
 /* A contagem do recorte (leva 4, 22/10/2026): o número que antes vivia num
  * cartão de indicador acima da tabela entra na própria opção, como a contagem
  * da aba (.ucam-tabs__contagem). Secundária em repouso; no segmento escolhido
