@@ -10542,6 +10542,33 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
 
 .ucam-grafico__tabela[open] > summary { margin-block-end: var(--ucam-space-stack-sm); }
 
+/* O NÚMERO DA ETAPA numa lista ordenada de etapas (leva 4, 23/10/2026), no
+ * lugar do ladrilho de ícone: na Cobrança do mês o que a pessoa precisa saber
+ * é a ordem e onde está, e cinco ladrilhos coloridos liam como cadastro.
+ * Etapa feita troca o número por um traço de visto, na tinta secundária: a
+ * única cor da lista fica com a pendência. */
+.ucam-list-item__numero {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border: 1px solid var(--ucam-color-border-default);
+  border-radius: var(--ucam-radius-pill);
+  font-size: var(--ucam-typography-caption-font-size);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ucam-color-text-primary);
+}
+
+.ucam-list-item__numero--feito {
+  border-color: transparent;
+  background: var(--ucam-color-surface-subtle);
+  color: var(--ucam-color-text-secondary);
+}
+
+.ucam-list-item__numero .ic { inline-size: 0.875rem; block-size: 0.875rem; }
+
 /* A contagem do recorte (leva 4, 22/10/2026): o número que antes vivia num
  * cartão de indicador acima da tabela entra na própria opção, como a contagem
  * da aba (.ucam-tabs__contagem). Secundária em repouso; no segmento escolhido
@@ -11604,7 +11631,10 @@ a.ucam-list-item { color: var(--ucam-color-text-primary); }
  * (.ucam-list-item__alvo) pinta o hover no próprio botão. */
 a.ucam-list-item:not([data-sem-tela]):hover,
 .ucam-list-item:has(> a:not([data-sem-tela])):hover,
-.ucam-list-item:has(> .ucam-list-item__corpo > a.ucam-list-item__titulo:not(.ucam-link)):hover {
+/* Descendente, e não filho direto, do corpo (leva 4, 23/10/2026): o título
+ * que divide a linha com um rótulo à direita (__linha) também navega, e com
+ * o filho direto ele caía no ucam-link sublinhado, sem seta nem hover. */
+.ucam-list-item:has(> .ucam-list-item__corpo a.ucam-list-item__titulo:not(.ucam-link)):hover {
   background: var(--ucam-color-interaction-hover);
 }
 
@@ -11613,12 +11643,12 @@ a.ucam-list-item:not([data-sem-tela]):hover,
  * que NAVEGA — a linha que escolhe o que o painel ao lado mostra não sai do
  * lugar, e seta ali prometeria uma viagem que não acontece. */
 a.ucam-list-item:not([data-sem-tela]),
-.ucam-list-item:has(> .ucam-list-item__corpo > a.ucam-list-item__titulo:not(.ucam-link)) {
+.ucam-list-item:has(> .ucam-list-item__corpo a.ucam-list-item__titulo:not(.ucam-link)) {
   padding-inline-end: calc(var(--ucam-space-inset-md) + 1rem + var(--ucam-space-inline-sm));
 }
 
 a.ucam-list-item:not([data-sem-tela])::before,
-.ucam-list-item:has(> .ucam-list-item__corpo > a.ucam-list-item__titulo:not(.ucam-link))::before {
+.ucam-list-item:has(> .ucam-list-item__corpo a.ucam-list-item__titulo:not(.ucam-link))::before {
   content: "";
   position: absolute;
   inset-inline-end: var(--ucam-space-inset-md);
@@ -11636,7 +11666,7 @@ a.ucam-list-item:not([data-sem-tela])::before,
 }
 
 a.ucam-list-item:not([data-sem-tela]):hover::before,
-.ucam-list-item:has(> .ucam-list-item__corpo > a.ucam-list-item__titulo:not(.ucam-link)):hover::before {
+.ucam-list-item:has(> .ucam-list-item__corpo a.ucam-list-item__titulo:not(.ucam-link)):hover::before {
   transform: translateX(2px);
   background-color: var(--ucam-color-text-primary);
 }
@@ -11866,11 +11896,11 @@ a.ucam-list-item__titulo:not(.ucam-link)::after {
   inset: 0;
 }
 a.ucam-list-item__titulo:not(.ucam-link):focus-visible { outline: none; }
-.ucam-list-item:has(> .ucam-list-item__corpo > a.ucam-list-item__titulo:not(.ucam-link):focus-visible) {
+.ucam-list-item:has(> .ucam-list-item__corpo a.ucam-list-item__titulo:not(.ucam-link):focus-visible) {
   outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
   outline-offset: calc(var(--ucam-focus-ring-offset) * -1);
 }
-.ucam-list-item:has(> .ucam-list-item__corpo > a.ucam-list-item__titulo:not(.ucam-link):active) {
+.ucam-list-item:has(> .ucam-list-item__corpo a.ucam-list-item__titulo:not(.ucam-link):active) {
   background: var(--ucam-color-interaction-active);
 }
 
