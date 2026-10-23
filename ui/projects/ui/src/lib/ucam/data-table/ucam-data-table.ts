@@ -48,11 +48,6 @@ export interface UcamColumnDef {
   key: string;
   /** Rótulo em CAIXA NATURAL. O legado usa caixa alta — ver ADR-003. */
   header: string;
-  /**
-   * Ícone do TIPO de dado antes do rótulo (ADR-051): user, calendar, hash,
-   * circleDot, text. Decorativo; numa tabela é tudo ou nada.
-   */
-  icon?: UcamIconName;
   type?: UcamColumnType;
   width?: 'auto' | 'min' | number;
   sortable?: boolean;
@@ -232,25 +227,16 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                        column-menu). O indicador fica sempre visível: é ele que
                        diz qual coluna governa a ordem sem abrir nada. -->
                   <button type="button" class="ucam-table__coluna" [ucamMenuTrigger]="menuCol">
-                    @if (col.icon) {
-                      <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
-                    }
                     {{ col.header }}
                     <ucam-icon [name]="iconeColuna(col)" size="sm" aria-hidden="true" />
                   </button>
                   <ucam-menu #menuCol [items]="itensColuna(col)" align="start" (escolher)="agirColuna(col, $event)" />
                 } @else if (col.sortable) {
                   <button type="button" class="ucam-table__ordem" [attr.aria-label]="rotuloOrdenar(col)" (click)="ordenarPor(col)">
-                    @if (col.icon) {
-                      <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
-                    }
                     {{ col.header }}
                     <ucam-icon [name]="iconeOrdem(col)" size="sm" aria-hidden="true" [style.visibility]="sort()?.column === col.key ? 'visible' : 'hidden'" />
                   </button>
                 } @else {
-                  @if (col.icon) {
-                    <ucam-icon class="ucam-table__icone" [name]="col.icon" size="sm" aria-hidden="true" />
-                  }
                   {{ col.header }}
                 }
               </th>
@@ -448,12 +434,6 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table thead tr > :where(th):where(:not(.ucam-table__sel)) + :where(th) {
       box-shadow: inset 1px 0 0 var(--ucam-color-border-subtle);
     }
-    .ucam-table th .ucam-table__icone { color: var(--ucam-color-text-placeholder); }
-    .ucam-table th > .ucam-table__icone {
-      display: inline-flex;
-      vertical-align: -0.1875rem;
-      margin-inline-end: var(--ucam-space-inline-sm);
-    }
     /* Situação em pastilha tinta com ponto (ADR-051, revista em 25/09:
        "coloque mais cor de estado"), espelho da folha do Trilho A. */
     .ucam-table ucam-badge > z-badge {
@@ -510,11 +490,9 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     .ucam-table__acoes { inline-size: 1%; white-space: nowrap; }
     .ucam-table__acoes > * { flex-wrap: nowrap; }
     /* O ARRANJO APERTADO, como na folha do Trilho A (tabelaScript, 03/10/2026):
-       quando a tabela não cabe no invólucro, antes de rolar ela abre mão do
-       ícone de tipo no cabeçalho e deixa o apoio quebrar. Medido pela prova
-       de paridade: os quatro ícones custavam 80px e eram a diferença entre
-       uma tabela que cabe em 804px e uma que rola a 847. */
-    .ucam-table[data-apertada] thead .ucam-table__icone { display: none; }
+       quando a tabela não cabe no invólucro, antes de rolar ela deixa o apoio
+       quebrar. O ícone de tipo, que também saía aqui, deixou de existir
+       (ADR-080). */
     .ucam-table[data-apertada] .td--apoio { white-space: normal; }
 
     /* O realce da linha sob o ponteiro faz o trabalho da zebra e faz melhor:
@@ -654,13 +632,12 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        (prova de paridade, 03/10/2026). Fora do fluxo, ele não mede nada;
        o th é sticky, logo posicionado, e segura o absoluto. */
     .ucam-table th > ucam-menu { position: absolute; inline-size: 0; block-size: 0; overflow: hidden; }
-    /* Só o ícone da COLUNA é apagado; a seta do gatilho herda a tinta do
-       rótulo, como na folha do Trilho A (prova de paridade, 05/10/2026). */
-    .ucam-table__coluna ucam-icon.ucam-table__icone { color: var(--ucam-color-text-placeholder); }
+    /* A seta do gatilho herda a tinta do rótulo, como na folha do Trilho A
+       (prova de paridade, 05/10/2026). */
     .ucam-table__coluna:hover,
     .ucam-table__coluna[aria-expanded='true'] { color: var(--ucam-color-text-primary); }
-    th[aria-sort='ascending'] .ucam-table__coluna ucam-icon:not(.ucam-table__icone),
-    th[aria-sort='descending'] .ucam-table__coluna ucam-icon:not(.ucam-table__icone) { color: var(--ucam-color-action-primary-default); }
+    th[aria-sort='ascending'] .ucam-table__coluna ucam-icon,
+    th[aria-sort='descending'] .ucam-table__coluna ucam-icon { color: var(--ucam-color-action-primary-default); }
     .ucam-table__coluna:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: 2px;

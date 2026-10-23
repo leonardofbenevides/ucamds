@@ -50,6 +50,8 @@ import {
   sliderScript,
   periodoScript,
   criadoScript,
+  estadosDaListaScript,
+  sessaoScript,
   navScript,
   contadorScript,
   avatarScript,
@@ -376,6 +378,8 @@ ${proj.id === 'vestibular' ? `<script>${provaScript}</script>` : ''}
 <script>${sliderScript}</script>
 <script>${periodoScript}</script>
 <script>${criadoScript}</script>
+<script>${estadosDaListaScript}</script>
+<script>${sessaoScript}</script>
 <script>${barraDoQuadroScript}</script>
 </body>
 </html>`;

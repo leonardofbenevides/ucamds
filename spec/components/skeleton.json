@@ -65,7 +65,7 @@
         },
         "table-row": {
           "uso": "Linha de tabela completa, com células proporcionais às colunas reais.",
-          "limite": "Requer que a DataTable passe a definição de colunas, para as células não ficarem arbitrárias."
+          "limite": "Requer que a DataTable passe a definição de colunas, para as células não ficarem arbitrárias. No Trilho A: tbody.ucam-table__carregando, uma .ucam-skeleton por célula, com a largura variando por coluna para não ler como grade de dado."
         }
       }
     },

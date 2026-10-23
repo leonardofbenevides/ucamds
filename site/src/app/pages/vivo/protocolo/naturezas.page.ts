@@ -260,12 +260,12 @@ export default class VivoProtocoloNaturezasPage {
   protected readonly ativa = (n: Natureza) => !n.selo;
 
   protected readonly colunas: UcamColumnDef[] = [
-    { key: 'nome', header: 'Natureza', icon: 'text', type: 'text' },
-    { key: 'setor', header: 'Setor responsável', icon: 'building2', type: 'text', width: 'min' },
+    { key: 'nome', header: 'Natureza', type: 'text' },
+    { key: 'setor', header: 'Setor responsável', type: 'text', width: 'min' },
     // 'min' no cabeçalho e não na célula: a coluna mede o rótulo e o texto
     // longo das unidades quebra, como o th--min da referência.
-    { key: 'unidades', header: 'Unidades atendidas', icon: 'mapPin', type: 'text', width: 'min' },
-    { key: 'requerimentos', header: 'Requerimentos', icon: 'hash', type: 'number', width: 'min', sortable: true },
+    { key: 'unidades', header: 'Unidades atendidas', type: 'text', width: 'min' },
+    { key: 'requerimentos', header: 'Requerimentos', type: 'number', width: 'min', sortable: true },
     { key: 'acoes', header: 'Ações', type: 'actions' },
   ];
 

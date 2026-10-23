@@ -1524,6 +1524,22 @@
         "segmented",
         "data-table"
       ]
+    },
+    {
+      "id": "ADR-080",
+      "titulo": "O cabeçalho da tabela perde o ícone de tipo",
+      "status": "aceita",
+      "data": "2026-10-22",
+      "contexto": "A ADR-051 pôs um ícone do tipo de dado antes de cada rótulo do cabeçalho (pessoa, data, número, situação). Para não quebrar o rótulo, a tabela apertada escondia esse ícone, e o censo de 13/10/2026 mostrou o efeito: a 1440px o ícone aparecia em Bancos e não em Usuários, o mesmo cabeçalho com dois desenhos conforme a largura dos dados. Eram 196 ícones em 86 telas. Item 7 da spec de equalização (leva 3).",
+      "decisao": "Nenhuma tabela leva ícone de tipo no cabeçalho. Sai a classe ucam-table__icone da folha, a prop icon do ColumnDef no Trilho B e os 196 ícones das telas. O rótulo nomeia a coluna sozinho; a tinta secundária e o fio border.default embaixo seguem dizendo que a fileira não é dado. O indicador de ordem não muda: par de setas apagado em toda coluna ordenável, seta cheia na coluna que governa a ordem, porque a evidência do Protocolo registrou que sem ele o usuário não descobre que pode ordenar. Revoga em parte a ADR-051; o fio vertical, o cabeçalho branco e o ponto + palavra ficam.",
+      "consequencias": [
+        "O cabeçalho é igual em toda largura: o arranjo apertado só deixa o apoio quebrar.",
+        "Cada coluna ganha de 16 a 20px, o que adia o arranjo apertado nas tabelas mais largas.",
+        "Quem usava icon no ColumnDef recebe erro de tipo no build do Trilho B; a correção é apagar a chave."
+      ],
+      "afeta": [
+        "data-table"
+      ]
     }
   ]
 }

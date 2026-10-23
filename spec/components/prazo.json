@@ -65,7 +65,7 @@
     },
     {
       "nome": "tone",
-      "tipo": "'auto' | 'proximo' | 'vencido'",
+      "tipo": "'auto' | 'proximo' | 'vencido' | 'pausado'",
       "default": "'auto'",
       "descricao": "auto deriva o tom da data e é o único valor que deveria aparecer em código de aplicação. Os dois valores explícitos existem para preview de documentação e para teste, onde a data de hoje não pode governar a saída.",
       "valores": {
@@ -76,7 +76,15 @@
             "texto": "color.feedback.warning.foreground"
           }
         },
-        "vencido": {
+        "pausado": {
+            "uso": "O prazo parou porque o pedido espera o requerente (situação Aguardando requerente, proposta do fluxo 11 da leva 3). O texto diz desde quando: \"pausado há 2 dias\". Ícone circlePause.",
+            "limite": "Sem tinta: o selo de situação ao lado é o portador de cor da linha. Não é urgência, e não deve virar vencido enquanto pausado.",
+            "tokens": {
+              "texto": "color.text.secondary",
+              "borda": "color.border.subtle"
+            }
+          },
+          "vencido": {
           "uso": "Data limite já passou.",
           "limite": "Vencido é fato, não desfecho: o requerimento vencido continua podendo ser deferido. O desfecho é do badge.",
           "tokens": {
@@ -91,6 +99,12 @@
       "tipo": "boolean",
       "default": "false",
       "descricao": "Escreve a data absoluta ao lado da palavra, para telas de detalhe onde a data é dado do registro e não só urgência. Em lista fica falso — a data absoluta em cada linha devolve à pessoa o cálculo que o componente existe para fazer."
+    },
+    {
+      "nome": "pausadoDesde",
+      "tipo": "Date | string | null",
+      "default": "null",
+      "descricao": "Desde quando o prazo está pausado porque o pedido espera o requerente. Com ele o marcador sempre aparece, em contorno neutro e circlePause, e diz \"pausado há N dias\"; nunca vira vencido enquanto pausado."
     }
   ],
   "estados": [

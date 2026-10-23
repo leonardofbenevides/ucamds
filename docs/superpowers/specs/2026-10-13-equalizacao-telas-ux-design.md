@@ -81,6 +81,10 @@ Usuários ("Bloqueado" + "5 tentativas de senha"), Sala de matrícula ("Com pend
 
 Caixa de entrada do Protocolo, Fila da isenção e Redações do vestibular. Proposta: J/K para andar na fila, Enter para abrir, e toast com Desfazer no lugar do diálogo de confirmação para decisão reversível (encaminhar, concluir). Confirmação continua para o irreversível. Referências: Linear (triagem), Gmail, NN/g.
 
+**Resultado (22/10/2026).** J/K entrou no plano 2. O desfazer não entra: nas três filas a única confirmação que sobrou é "Enviar pedido ao candidato" (Isenção), que manda mensagem para fora e não volta; encaminhar e concluir no Protocolo já não pedem diálogo. E o contrato do toast proíbe desfazer que só exista nele (some em 5 s; quem usa leitor de tela ou demora não alcança). Se um dia houver decisão reversível com confirmação, o desfazer vai no toast E num lugar fixo (a linha do tempo do registro).
+
+**Item 7 (22/10/2026):** ADR-080, ícone de tipo fora de todas as tabelas; a seta continua em toda coluna ordenável. **Item 4 (22/10/2026):** `?estado=carregando|vazio|erro` em toda listagem de referência (`estadosDaListaScript`).
+
 ### 7. Cabeçalho de tabela: ícone de tipo e seta de ordenação
 
 O ícone de tipo da ADR-051 some quando a tabela aperta, então a 1440px aparece em Bancos e não em Usuários. A seta de ordenação tem três desenhos. Opções para o ícone: manter o comportamento atual, ou tirar o ícone de tipo de todas as tabelas. Para a seta: um desenho só, e a decidir se ela aparece em toda coluna ordenável ou só na ordenada (Carbon). Nada foi mexido aqui.
@@ -162,3 +166,9 @@ Para cada item: censo antes e depois com `censo.mjs` e `censo2.mjs` (cópias em 
 - Largura do campo de busca: fica em preenchimento, por decisão de 13/10.
 - Formulário em uma coluna (Baymard, Carbon): contraria a ADR-055 e não foi pedido.
 - Ações de linha sempre visíveis (Carbon, NN/g): recusado em 25/09.
+
+## Fechamento (22/10/2026)
+
+- **9, sessão:** `sessaoScript` (só referência). `?sessao=expirando` em qualquer tela abre o alertdialog com contagem; o fim leva a `portal/sessao-encerrada?rascunho=<tela>`, que oferece o rascunho de volta. Regras como proposta e aberta em `portal/sessao-encerrada`.
+- **10, competência:** tela nova `sigfin/competencia` ("Cobrança do mês"), primeiro item de Cobrança em lote. Lista de etapas e não stepper: a ordem obrigatória é regra aberta. Ficou para depois a trilha nas cinco telas e a competência que chega pela rota.
+- **11, aguardando requerente:** aba "Aguardando aluno" na Caixa de entrada, selo `espera` e a variante `pausado` do Prazo (contrato, Trilho A e Trilho B com `pausadoDesde`), ícone novo `circlePause`. Desvio da spec: em vez da caixa de marcar ao lado de um envio que não existe, um secundário "Pedir ao aluno" no compositor do parecer; Concluir segue o único primário.

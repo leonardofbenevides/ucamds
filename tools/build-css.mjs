@@ -3098,9 +3098,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * saiu de novo, agora por decisão do Leonardo sobre uma referência de tabela
  * densa (Attio): cabeçalho na superfície do papel, separado das linhas pelo
  * fio de baixo. O que a faixa fazia — dizer que aquela fileira NÃO é dado —
- * passa a ser feito por três sinais que não gastam tonalidade: a tinta
- * secundária do rótulo, o ícone do tipo de dado antes dele
- * (.ucam-table__icone) e o fio mais escuro (border.default) embaixo. É também
+ * passa a ser feito por sinais que não gastam tonalidade: a tinta secundária
+ * do rótulo e o fio mais escuro (border.default) embaixo. O ícone de tipo
+ * que somava a eles saiu pela ADR-080 (22/10/2026). É também
  * a regra da moldura branca: nada de fundo cinza em peça de conteúdo. */
 /* Cabeçalho de LINHA (th scope=row no corpo): o navegador o põe em 700 e
  * centrado, e a coluna de meses do analytics saía em negrito ao lado de
@@ -3486,25 +3486,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table tbody tr > :where(th, td):where(:not(.td--selecao)) + .td--acoes { border-inline-start-color: transparent; }
 .ucam-table thead tr > th:not(.th--selecao) + th.th--acoes { --ucam-table-fio-coluna: transparent; }
 
-/* ÍCONE DE COLUNA (ADR-051): o tipo do dado antes do rótulo — pessoa, data,
- * número, situação —, em tinta de placeholder, decorativo (aria-hidden). É o
- * que faz a fileira do cabeçalho ler como rótulo sem faixa cinza. Não é o
- * indicador de ordem: esse fica depois do rótulo e é o único que acende na
- * coluna ordenada, por isso a regra repete o seletor do aria-sort — com
- * .ic somado, porque a regra do indicador vem DEPOIS na folha com a mesma
- * especificidade e pintava o ícone de tipo de bordô (Naturezas, 25/09). */
-.ucam-table th .ic.ucam-table__icone,
-.ucam-table th[aria-sort]:not([aria-sort="none"]) > button .ic.ucam-table__icone,
-.ucam-table th > button:hover .ic.ucam-table__icone {
-  color: var(--ucam-color-text-placeholder);
-}
-.ucam-table th > .ucam-table__icone {
-  vertical-align: -0.1875rem;
-  margin-inline-end: var(--ucam-space-inline-sm);
-}
-.ucam-table th > button > .ucam-table__icone {
-  margin-inline-end: var(--ucam-space-inline-xs);
-}
+/* ÍCONE DE COLUNA: saiu pela ADR-080 (22/10/2026). O ícone de tipo da
+ * ADR-051 sumia na tabela apertada, então a 1440px aparecia em Bancos e não
+ * em Usuários: o mesmo cabeçalho com dois desenhos. O rótulo já diz o tipo. */
 
 /* SITUAÇÃO EM PONTO + PALAVRA dentro da tabela (ADR-051). Numa coluna de
  * trinta linhas, trinta pastilhas tintas são uma faixa de cor; o ponto
@@ -3666,9 +3650,8 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * "Unidades atendidas" com o ícone de ordenar seguravam 140 e 169px. */
 /* O RÓTULO DA COLUNA NÃO QUEBRA (25/09/2026: "evite deixar o header
  * quebrado"). Quebrado, "Período" caía para baixo do ícone e "Solicitada em"
- * ia a duas linhas — a faixa de rótulo subia para 72px. Apertada, quem sai é o
- * ícone de TIPO (decorativo, ADR-051); o indicador de ordem fica. */
-.ucam-table[data-apertada] thead .ucam-table__icone { display: none; }
+ * ia a duas linhas — a faixa de rótulo subia para 72px. Apertada, o rótulo
+ * fica numa linha e o indicador de ordem fica junto. */
 /* O NOME NÃO QUEBRA NO MEIO: apertada, a inscrição desce para baixo do nome,
  * mas o nome fica numa linha — "Ana / Paula / Rocha" em três linhas a 1024px
  * era o que a coluna fazia para caber. Se nem assim couber, a tabela rola
@@ -4096,6 +4079,16 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-badge--danger  .ic,
 .ucam-prazo--vencido .ic { color: var(--ucam-color-feedback-danger-border); }
 .ucam-badge--espera  .ic { color: var(--ucam-color-situacao-espera-border); }
+/* PRAZO PAUSADO (fluxo 11 da leva 3, 22/10/2026): o pedido espera o aluno e
+ * o prazo não corre. Sem tinta: o selo "Aguardando requerente" ao lado já é o
+ * portador de cor da linha (ADR-022/027), e pausado não é urgência. Contorno
+ * sutil para continuar lendo como marcador, ícone e texto secundários. */
+.ucam-prazo--pausado {
+  background: transparent;
+  color: var(--ucam-color-text-secondary);
+  box-shadow: inset 0 0 0 1px var(--ucam-color-border-subtle);
+}
+.ucam-prazo--pausado .ic { color: var(--ucam-color-text-secondary); }
 .ucam-badge--classe  .ic { color: var(--ucam-color-situacao-classe-border); }
 
 /* PREENCHIMENTO PASTEL, com o rótulo na tinta do próprio tom. ADR-020.
@@ -9745,6 +9738,16 @@ ${acima('duas-colunas')} {
 .ucam-skeleton--circle  { inline-size: 2.5rem; block-size: 2.5rem; border-radius: var(--ucam-radius-pill); }
 /* Última linha mais curta, imitando fim de parágrafo. */
 .ucam-skeleton--last    { inline-size: 60%; }
+
+/* LINHA DE TABELA EM CARREGAMENTO (leva 3, item 4, 22/10/2026): o tbody
+ * .ucam-table__carregando ocupa o lugar do corpo, sob o cabeçalho real. Cada
+ * célula leva uma barra da altura do texto, então a linha mede o mesmo que a
+ * de verdade e nada salta quando o dado chega. A largura muda de coluna para
+ * coluna; barras iguais liam como uma grade de dado, não como espera. */
+.ucam-table__carregando td > .ucam-skeleton { inline-size: 72%; block-size: 0.75rem; }
+.ucam-table__carregando td:nth-child(3n+2) > .ucam-skeleton { inline-size: 48%; }
+.ucam-table__carregando td:nth-child(3n) > .ucam-skeleton { inline-size: 88%; }
+.ucam-table__carregando tr:nth-child(even) td > .ucam-skeleton { inline-size: 60%; }
 
 .ucam-skeleton::after {
   content: "";

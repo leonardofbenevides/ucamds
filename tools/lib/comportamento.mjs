@@ -59,7 +59,7 @@ export const COMPONENTE = [
 ];
 
 /** Só a tela de referência: montam o fixture, não um componente. */
-export const REFERENCIA = ['grupoMenuScript', 'criadoScript', 'periodoScript'];
+export const REFERENCIA = ['grupoMenuScript', 'criadoScript', 'periodoScript', 'estadosDaListaScript', 'sessaoScript'];
 
 export function classificar() {
   const exportados = Object.keys(shell).filter((k) => /Script$/.test(k));

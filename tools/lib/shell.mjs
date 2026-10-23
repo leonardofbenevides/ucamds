@@ -4600,7 +4600,8 @@ ${FN_ANUNCIA}
       seloT.focus({ preventScroll: true });
       eco(seloT);
       setTimeout(function () {
-        seloT.className = 'ucam-badge ucam-badge--success';
+        // Neutro: sugestão pronta é o caminho normal; cor só na falha (ADR-050).
+        seloT.className = 'ucam-badge ucam-badge--neutral';
         seloT.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-circleCheck"/></svg>Disponível';
         if (celulaT) celulaT.removeAttribute('aria-busy');
         var prontaT = 'Sugestão disponível' + (nomeT ? ' para ' + nomeT : '') + '.';
@@ -8726,5 +8727,224 @@ export const semPularScript = `
       if (falta > 0.5) { poeFolga(r, (folgaDe(r) ? folgaDe(r).px : 0) + falta); r.scrollTop = quer; }
     });
   }, true);
+})();
+`.trim();
+
+/* OS TRÊS ESTADOS DA LISTAGEM (leva 3 da equalização, item 4, 22/10/2026).
+ * Das 86 telas, nenhuma mostrava carregando nem erro, e só o vazio de filtro
+ * existia (escondido, data-filtra-vazio). Em vez de uma tela por estado, toda
+ * tabela de listagem responde a ?estado=:
+ *   carregando — o cabeçalho real fica; o corpo vira cinco linhas de skeleton
+ *                na altura da linha de verdade, e a tabela fica aria-busy;
+ *   vazio      — "Nenhum setor ainda", com o substantivo tirado do vazio de
+ *                filtro da mesma tela, e a ação de criar da barra copiada;
+ *   erro       — "Não foi possível carregar a lista" e Tentar de novo.
+ * Só a tela de referência: na aplicação quem decide o estado é o dado. */
+export const estadosDaListaScript = `
+(function () {
+  var estado = new URLSearchParams(location.search).get('estado');
+  if (['carregando', 'vazio', 'erro'].indexOf(estado) < 0) return;
+  var NS = 'http://www.w3.org/2000/svg';
+
+  function icone(nome) {
+    var s = document.createElementNS(NS, 'svg');
+    s.setAttribute('class', 'ic');
+    s.setAttribute('aria-hidden', 'true');
+    var u = document.createElementNS(NS, 'use');
+    u.setAttribute('href', '#i-' + nome);
+    s.appendChild(u);
+    return s;
+  }
+  function p(classe, texto) {
+    var el = document.createElement('p');
+    el.className = classe;
+    el.textContent = texto;
+    return el;
+  }
+  // "Nenhum setor encontrado" vira "Nenhum setor ainda"; "Nenhuma natureza
+  // encontrada", "Nenhuma natureza ainda". Sem vazio de filtro, o genérico.
+  function titulo(escopo) {
+    var t = escopo.querySelector('[data-filtra-vazio] .ucam-empty__title')
+      || document.querySelector('[data-filtra-vazio] .ucam-empty__title');
+    var m = t && /^(Nenhum[a]?\\s+[^\\s]+(?:\\s+de\\s+[^\\s]+)?)\\s/.exec(t.textContent.trim());
+    return m ? m[1] + ' ainda' : 'Nenhum registro ainda';
+  }
+  function criar(escopo) {
+    var b = escopo.querySelector('.ucam-viewbar__acoes .ucam-btn--primary')
+      || document.querySelector('.ucam-viewbar__acoes .ucam-btn--primary');
+    return b && /#i-plus/.test(b.innerHTML) ? b : null;
+  }
+  // "1–12 de 12" sob uma lista que não chegou contradiz o estado.
+  function escondePaginacao(wrap) {
+    Array.prototype.forEach.call(wrap.parentElement.children, function (irmao) {
+      if (irmao.classList.contains('ucam-pagination')) irmao.hidden = true;
+    });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.ucam-table-wrap'), function (wrap) {
+    var tabela = wrap.querySelector('table.ucam-table');
+    if (!tabela || !tabela.tBodies.length || wrap.closest('[hidden], .ucam-table__detalhe')) return;
+    var corpo = tabela.tBodies[0];
+    var escopo = wrap.closest('section, .ucam-corpo, main') || document;
+
+    if (estado === 'carregando') {
+      var primeira = corpo.rows[0];
+      var colunas = primeira ? primeira.cells.length : (tabela.tHead ? tabela.tHead.rows[tabela.tHead.rows.length - 1].cells.length : 1);
+      var falso = document.createElement('tbody');
+      falso.className = 'ucam-table__carregando';
+      falso.setAttribute('aria-hidden', 'true');
+      for (var r = 0; r < 5; r++) {
+        var tr = document.createElement('tr');
+        for (var c = 0; c < colunas; c++) {
+          var td = document.createElement('td');
+          var cel = primeira && primeira.cells[c];
+          if (cel && /td--selecao|td--acoes/.test(cel.className)) td.className = cel.className.match(/td--selecao|td--acoes/)[0];
+          else { var s = document.createElement('span'); s.className = 'ucam-skeleton'; td.appendChild(s); }
+          tr.appendChild(td);
+        }
+        falso.appendChild(tr);
+      }
+      corpo.hidden = true;
+      tabela.insertBefore(falso, corpo);
+      escondePaginacao(wrap);
+      tabela.setAttribute('aria-busy', 'true');
+      var aviso = p('ucam-sr-only', 'Carregando a lista.');
+      aviso.setAttribute('role', 'status');
+      wrap.appendChild(aviso);
+      return;
+    }
+
+    var caixa = document.createElement('div');
+    caixa.className = 'ucam-empty';
+    if (estado === 'vazio') {
+      caixa.appendChild(icone('inbox'));
+      caixa.appendChild(p('ucam-empty__title', titulo(escopo)));
+      var acao = criar(escopo);
+      caixa.appendChild(p('ucam-empty__description', acao
+        ? 'Use ' + acao.textContent.trim() + ' para cadastrar o primeiro.'
+        : 'Os registros aparecem aqui assim que chegarem.'));
+      // Secundário: o primário da barra continua sendo o único da tela (ADR-023).
+      if (acao) {
+        var copia = acao.cloneNode(true);
+        copia.className = copia.className.replace('ucam-btn--primary', 'ucam-btn--secondary');
+        caixa.appendChild(copia);
+      }
+    } else {
+      caixa.setAttribute('role', 'alert');
+      caixa.appendChild(icone('circleAlert'));
+      caixa.appendChild(p('ucam-empty__title', 'Não foi possível carregar a lista'));
+      caixa.appendChild(p('ucam-empty__description', 'A conexão com o servidor falhou. O que já estava salvo não se perdeu.'));
+      var deNovo = document.createElement('button');
+      deNovo.type = 'button';
+      deNovo.className = 'ucam-btn ucam-btn--secondary';
+      deNovo.appendChild(icone('refreshCw'));
+      deNovo.appendChild(document.createTextNode(' Tentar de novo'));
+      deNovo.addEventListener('click', function () {
+        var u = new URL(location.href);
+        u.searchParams.delete('estado');
+        location.href = u.href;
+      });
+      caixa.appendChild(deNovo);
+    }
+    tabela.hidden = true;
+    Array.prototype.forEach.call(wrap.querySelectorAll('[data-filtra-vazio]'), function (v) { v.hidden = true; });
+    escondePaginacao(wrap);
+    wrap.appendChild(caixa);
+  });
+})();
+`.trim();
+
+/* AVISO ANTES DE A SESSÃO TERMINAR (fluxo 9 da leva 3, 22/10/2026; WCAG 2.2.1).
+ * Nenhum sistema avisa hoje: a pessoa cai em portal/sessao-encerrada e perde o
+ * que não salvou. Dois minutos antes do fim, um alertdialog em qualquer tela:
+ * "Sua sessão vai terminar", contagem, primário Continuar conectado e fantasma
+ * Sair agora. Continuar devolve o foco a onde estava. A contagem é dita ao
+ * abrir e de novo aos 30 s, nunca a cada segundo. Se o tempo acaba com o
+ * diálogo aberto, a tela vai para a sessão encerrada; com formulário em
+ * edição, o aviso de lá oferece o rascunho de volta (?rascunho=).
+ *
+ * Só a tela de referência, por ?sessao=expirando: se a sessão pode ser
+ * renovada sem senha, e por quanto tempo, é regra aberta (portal/sessao-encerrada). */
+export const sessaoScript = `
+(function () {
+  var q = new URLSearchParams(location.search);
+  var NS = 'http://www.w3.org/2000/svg';
+  function icone(nome) {
+    var s = document.createElementNS(NS, 'svg');
+    s.setAttribute('class', 'ic'); s.setAttribute('aria-hidden', 'true');
+    var u = document.createElementNS(NS, 'use'); u.setAttribute('href', '#i-' + nome);
+    s.appendChild(u); return s;
+  }
+
+  // A volta do rascunho, do lado da sessão encerrada.
+  var rascunho = q.get('rascunho');
+  if (rascunho && document.querySelector('.ucam-login')) {
+    var miolo = document.querySelector('.ucam-login__miolo');
+    var entrar = miolo && miolo.querySelector('.ucam-btn--primary');
+    if (entrar) {
+      var aviso = document.createElement('div');
+      aviso.className = 'ucam-alert ucam-alert--info';
+      aviso.setAttribute('role', 'status');
+      aviso.appendChild(icone('info'));
+      var corpo = document.createElement('div');
+      corpo.className = 'ucam-alert__corpo';
+      var t = document.createElement('strong');
+      t.textContent = 'Guardamos o que você estava preenchendo em ' + rascunho + '.';
+      corpo.appendChild(t);
+      corpo.appendChild(document.createTextNode(' Ao entrar de novo, ele volta para o formulário. Senha e arquivos anexados não são guardados.'));
+      aviso.appendChild(corpo);
+      entrar.parentNode.insertBefore(aviso, entrar);
+    }
+    return;
+  }
+
+  if (q.get('sessao') !== 'expirando') return;
+  var TOTAL = 120;
+  var resta = TOTAL;
+  var volta = document.activeElement;
+
+  var dlg = document.createElement('dialog');
+  dlg.className = 'ucam-dialog';
+  dlg.setAttribute('role', 'alertdialog');
+  dlg.setAttribute('aria-labelledby', 'sessao-t');
+  dlg.setAttribute('aria-describedby', 'sessao-d');
+  dlg.innerHTML =
+    '<div class="ucam-dialog__form"><div class="ucam-dialog__header"><h2 class="ucam-dialog__title" id="sessao-t">Sua sessão vai terminar</h2></div>' +
+    '<div class="ucam-dialog__body"><p id="sessao-d">Por segurança, a sessão termina depois de 20 minutos sem uso. Termina em <strong data-relogio aria-hidden="true">2:00</strong><span class="ucam-sr-only">2 minutos</span>. O que você não salvou se perde.</p>' +
+    '<p class="ucam-sr-only" role="status" data-anuncio></p></div>' +
+    '<div class="ucam-dialog__footer"><button class="ucam-btn ucam-btn--ghost" type="button" data-sair>Sair agora</button>' +
+    '<button class="ucam-btn ucam-btn--primary" type="button" data-continuar>Continuar conectado</button></div></div>';
+  (document.querySelector('.ucam') || document.body).appendChild(dlg);
+
+  var relogio = dlg.querySelector('[data-relogio]');
+  var anuncio = dlg.querySelector('[data-anuncio]');
+  function encerra(u) { clearInterval(tic); location.href = u; }
+  function paraEncerrada() {
+    // O formulário em edição vira rascunho; o nome vem do título da tela.
+    var form = document.querySelector('.ucam-corpo form, form.ucam-form, .ucam-form-grid');
+    var titulo = document.querySelector('.ucam-viewbar__titulo, h1, h2');
+    var alvo = 'portal-sessao-encerrada.html';
+    if (form && titulo) alvo += '?rascunho=' + encodeURIComponent(titulo.textContent.trim());
+    encerra(alvo);
+  }
+  var tic = setInterval(function () {
+    resta--;
+    relogio.textContent = Math.floor(resta / 60) + ':' + (resta % 60 < 10 ? '0' : '') + (resta % 60);
+    if (resta === 30) anuncio.textContent = 'Faltam 30 segundos para a sessão terminar.';
+    if (resta <= 0) paraEncerrada();
+  }, 1000);
+
+  dlg.querySelector('[data-continuar]').addEventListener('click', function () {
+    clearInterval(tic);
+    dlg.close();
+    dlg.remove();
+    if (volta && volta.focus && volta !== document.body) volta.focus();
+    if (window.ucamToast) window.ucamToast('Sessão renovada por mais 20 minutos.');
+  });
+  dlg.querySelector('[data-sair]').addEventListener('click', function () { encerra('portal-login.html'); });
+  // Esc não é Continuar nem Sair: o aviso fica até a pessoa escolher.
+  dlg.addEventListener('cancel', function (e) { e.preventDefault(); });
+  dlg.showModal();
+  dlg.querySelector('[data-continuar]').focus();
 })();
 `.trim();

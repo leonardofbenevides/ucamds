@@ -89,12 +89,6 @@
       "descricao": "th com scope=col. Com columnMenu, contém um button que ABRE o menu da coluna (aria-haspopup=menu, aria-expanded), nomeado pelo rótulo visível, com o indicador de ordem sempre visível ao lado. Nunca handler de clique no th. Sobre faixa cinza (surface.sunken, ADR-061), com tinta secundária, ícone de coluna e o fio border.default embaixo. Entre colunas, fio border.subtle — no cabeçalho como sombra interna, porque a borda colapsada não acompanha a célula grudada."
     },
     {
-      "parte": "column-icon",
-      "obrigatorio": false,
-      "descricao": "Ícone do tipo de dado antes do rótulo (prop icon do ColumnDef, ADR-051). Tinta de placeholder, aria-hidden, e não acende com a ordenação — quem acende é o indicador de ordem, depois do rótulo.",
-      "classe": "ucam-table__icone"
-    },
-    {
       "parte": "column-menu",
       "obrigatorio": false,
       "descricao": "O menu que o cabeçalho abre. Três grupos, nesta ordem e separados por filete: ordem (Crescente, Decrescente e, só com a coluna ordenada, Remover ordenação), fixação (Fixar à esquerda, Fixar à direita — menuitemradio) e Ocultar coluna. É um .ucam-menu com posição FIXA: a tabela mora num contêiner com overflow-x, que recortaria um menu absoluto na altura do cabeçalho. Fecha ao rolar, e devolve o foco ao gatilho — menos depois de ocultar, quando o foco vai para o \"Mostrar\" da barra de colunas ocultas.",
@@ -137,12 +131,12 @@
     {
       "parte": "empty",
       "obrigatorio": false,
-      "descricao": "Delegado a ucam-empty-state."
+      "descricao": "Delegado a ucam-empty-state, no lugar da tabela e da paginação. Dois textos: sem dado ainda (\"Nenhuma natureza ainda\", com a ação de criar da barra em secundário, porque o primário da barra continua sendo o único da tela) e sem resultado para o filtro (\"Nenhuma natureza encontrada\", com Limpar filtros). Nas telas de referência, ?estado=vazio mostra o primeiro em qualquer listagem."
     },
     {
       "parte": "loading",
       "obrigatorio": false,
-      "descricao": "Skeleton de linhas DENTRO da tabela. Nunca overlay de tela cheia."
+      "descricao": "Skeleton de linhas DENTRO da tabela, sob o cabeçalho real: cinco linhas na altura da linha de verdade, tabela em aria-busy, paginação escondida. Nunca overlay de tela cheia. No Trilho A é um tbody.ucam-table__carregando com uma .ucam-skeleton por célula; as colunas de seleção e de ações ficam vazias. Nas telas de referência, ?estado=carregando e ?estado=erro mostram os dois estados em qualquer listagem."
     },
     {
       "parte": "error",
@@ -314,10 +308,6 @@
         "tipo": "string",
         "obrigatorio": true,
         "descricao": "Rótulo em caixa natural. O legado usa CAIXA ALTA — ver ADR-003."
-      },
-      "icon": {
-        "tipo": "UcamIconName",
-        "descricao": "Ícone do TIPO de dado, antes do rótulo do cabeçalho (ADR-051): user para pessoa, calendar ou clock para data e hora, hash para número e identificador, circleDot para situação, text para o texto que nomeia o registro. Decorativo (aria-hidden) e em tinta de placeholder: quem nomeia a coluna é o rótulo. No Trilho A é <svg class=\"ic ucam-table__icone\"> como primeiro filho do th, ou do botão do cabeçalho quando a coluna tem menu ou ordem. Opcional, mas numa tabela é tudo ou nada: coluna sem ícone ao lado de coluna com ícone lê como esquecimento. A coluna de seleção e a de ações nunca levam."
       },
       "type": {
         "tipo": "'text' | 'id' | 'number' | 'date' | 'currency' | 'status' | 'person' | 'actions'",
@@ -659,6 +649,6 @@
       "raiz": ".ucam-table-wrap mais .ucam-table",
       "nota": "A barra de seleção em lote é .ucam-lote, irmã da tabela e não filha: ela aparece e some conforme a seleção, e dentro do <table> não haveria onde pôr um elemento que não é linha. O menu da coluna é .ucam-table__coluna (o gatilho, dentro do th) mais .ucam-menu.ucam-menu--coluna; quem ordena, fixa e oculta de verdade é o estadoScript de tools/lib/shell.mjs, e as colunas fixas são .ucam-col--fixa-inicio / .ucam-col--fixa-fim."
     },
-    "trilho_b": "ui/projects/ui/src/lib/ucam/data-table/ucam-data-table.ts — pronto. Tabela semântica com menu da coluna (ordenar, fixar, ocultar), seleção (por dentro e por fora, com [selected]), estados, célula de status e de pessoa, moldes por coluna (ng-template ucamCelula), rowClickable + rowClick e a faixa no topo (ucam-table-faixa.ts, componente de atributo [ucamTableFaixa], projetado). Não desenha a barra de lote (.ucam-lote) nem a paginação, que são irmãs da tabela. Em 03/10/2026 a prova de paridade de tela (tools/prova-paridade-tela.mjs, protocolo/naturezas) alinhou a geometria à folha do Trilho A: recuos de 8/13px por 12px, papel table-header inteiro no cabeçalho, caixa de seleção desenhada (24px de alvo, 20 de caixa), coluna de ações sem menu e sem empilhar os botões, e o arranjo apertado ([data-apertada]: ícone de tipo some e o apoio quebra quando a tabela não cabe), medido por ResizeObserver como o tabelaScript faz."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/data-table/ucam-data-table.ts — pronto. Tabela semântica com menu da coluna (ordenar, fixar, ocultar), seleção (por dentro e por fora, com [selected]), estados, célula de status e de pessoa, moldes por coluna (ng-template ucamCelula), rowClickable + rowClick e a faixa no topo (ucam-table-faixa.ts, componente de atributo [ucamTableFaixa], projetado). Não desenha a barra de lote (.ucam-lote) nem a paginação, que são irmãs da tabela. Em 03/10/2026 a prova de paridade de tela (tools/prova-paridade-tela.mjs, protocolo/naturezas) alinhou a geometria à folha do Trilho A: recuos de 8/13px por 12px, papel table-header inteiro no cabeçalho, caixa de seleção desenhada (24px de alvo, 20 de caixa), coluna de ações sem menu e sem empilhar os botões, e o arranjo apertado ([data-apertada]: o apoio quebra quando a tabela não cabe), medido por ResizeObserver como o tabelaScript faz."
   }
 }

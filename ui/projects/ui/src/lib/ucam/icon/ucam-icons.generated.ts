@@ -1,7 +1,7 @@
 // GERADO por tools/build-icons.mjs a partir de spec/icons.json.
 // NÃO EDITAR À MÃO. Para adicionar um ícone, edite a spec e rode: pnpm run icons
 //
-// 83 ícones em 4 grupos.
+// 84 ícones em 4 grupos.
 
 import { lucideArchive,
   lucideArrowDownRight,
@@ -29,6 +29,7 @@ import { lucideArchive,
   lucideCircleAlert,
   lucideCircleCheck,
   lucideCircleDot,
+  lucideCirclePause,
   lucideClipboardCheck,
   lucideClipboardList,
   lucideClock,
@@ -115,6 +116,7 @@ export type UcamIconName =
   | 'circleAlert'
   | 'circleCheck'
   | 'circleDot'
+  | 'circlePause'
   | 'clipboardCheck'
   | 'clipboardList'
   | 'clock'
@@ -222,6 +224,7 @@ export const UCAM_ICONS: Record<string, string> = {
   lucideLoaderCircle,
   lucideInbox,
   lucideClock,
+  lucideCirclePause,
   lucideSparkles,
   lucideFileText,
   lucideImage,
@@ -309,6 +312,7 @@ export const UCAM_ICON_KEY: Record<UcamIconName, string> = {
   'loaderCircle': 'lucideLoaderCircle',
   'inbox': 'lucideInbox',
   'clock': 'lucideClock',
+  'circlePause': 'lucideCirclePause',
   'sparkles': 'lucideSparkles',
   'fileText': 'lucideFileText',
   'image': 'lucideImage',
@@ -396,6 +400,7 @@ export const UCAM_ICON_USO: Record<UcamIconName, string> = {
   'loaderCircle': "Carregando. Sempre com aria-busy no contêiner.",
   'inbox': "Estado vazio.",
   'clock': "Prazo. Acompanha SEMPRE o texto do prazo — o relógio sozinho não diz se falta ou passou (WCAG 1.4.1).",
+  'circlePause': "Prazo PAUSADO (ucam-prazo--pausado) e a ação que pausa, Pedir ao aluno. Acompanha sempre o texto (\"pausado há 2 dias\"): o símbolo sozinho não diz desde quando.",
   'sparkles': "O que a MÁQUINA sugeriu (sugestão automatizada): a opção sugerida no seletor de decisão e o ladrilho da faixa da IA no topo da tabela. Nunca como ação e nunca sozinho: a mesma tela diz em palavras o que ele marca (a legenda da faixa), e o nome acessível da opção leva \", sugestão\".",
   'fileText': "Requerimento, documento.",
   'image': "Anexo de imagem (JPG, PNG) na figura do Anexo. Não é ícone de galeria nem de foto de perfil — pessoa tem avatar.",

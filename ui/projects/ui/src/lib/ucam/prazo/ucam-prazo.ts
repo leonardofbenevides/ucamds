@@ -16,7 +16,7 @@ import { UcamBadge, type UcamBadgeTone } from '../badge/ucam-badge';
  * classificasse o próprio atraso, o mesmo requerimento apareceria "próximo" no
  * Protocolo e "vencido" no Portal.
  */
-export type UcamPrazoTone = 'auto' | 'proximo' | 'vencido';
+export type UcamPrazoTone = 'auto' | 'proximo' | 'vencido' | 'pausado';
 
 /** Meia-noite local: a comparação é de DIA, não de instante. */
 function meiaNoite(d: Date): number {
@@ -47,7 +47,7 @@ const DIA = 86_400_000;
            O relógio SOBRESCREVE o ícone padrão do tom (warning traria um
            triângulo): é ele que distingue prazo de selo de situação quando os
            dois estão colados na mesma linha. -->
-      <ucam-badge [tone]="tomBadge()" icon="clock">
+      <ucam-badge [tone]="tomBadge()" [variant]="pausado() ? 'outline' : 'soft'" [icon]="pausado() ? 'circlePause' : 'clock'">
         <!-- <time> com datetime em ISO, e não só title: o title não é
              alcançável por teclado nem existe em toque, e quando o marcador é
              a única fonte da data absoluta ela precisa estar no DOM. É por
@@ -89,6 +89,15 @@ export class UcamPrazo {
    * documentação mudaria de tom sozinha a cada dia que passasse.
    */
   readonly hoje = input<Date | null>(null);
+  /**
+   * Desde quando o prazo está PAUSADO: o pedido espera o requerente
+   * (situação Aguardando requerente). Com ele, o marcador sempre aparece, sem
+   * tinta — o selo de situação ao lado é o portador de cor da linha — e diz
+   * "pausado há N dias". Nunca vira vencido enquanto pausado.
+   */
+  readonly pausadoDesde = input<Date | string | null>(null);
+
+  protected readonly pausado = computed(() => this.tone() === 'pausado' || this.pausadoDesde() !== null);
 
   private readonly limite = computed(() => {
     const d = this.date();
@@ -100,14 +109,15 @@ export class UcamPrazo {
     Math.round((meiaNoite(this.limite()) - meiaNoite(this.hoje() ?? new Date())) / DIA),
   );
 
-  protected readonly tomEfetivo = computed<'proximo' | 'vencido'>(() => {
+  protected readonly tomEfetivo = computed<'proximo' | 'vencido' | 'pausado'>(() => {
     const t = this.tone();
+    if (this.pausado()) return 'pausado';
     if (t !== 'auto') return t;
     return this.dias() < 0 ? 'vencido' : 'proximo';
   });
 
   protected readonly visivel = computed(() => {
-    if (this.tone() !== 'auto') return true;
+    if (this.tone() !== 'auto' || this.pausado()) return true;
     const d = this.dias();
     return Number.isFinite(d) && d <= this.warnAt();
   });
@@ -117,9 +127,10 @@ export class UcamPrazo {
    * o Trilho A faz com --proximo/--vencido nos seletores do .ucam-badge.
    * Continuam dois, e não cinco: prazo não tem desfecho favorável.
    */
-  protected readonly tomBadge = computed<UcamBadgeTone>(() =>
-    this.tomEfetivo() === 'vencido' ? 'danger' : 'warning',
-  );
+  protected readonly tomBadge = computed<UcamBadgeTone>(() => {
+    const t = this.tomEfetivo();
+    return t === 'pausado' ? 'neutral' : t === 'vencido' ? 'danger' : 'warning';
+  });
 
   /**
    * Por extenso, sem abreviação: "venceu há 3 dias", nunca "-3d". Abreviação é
@@ -128,6 +139,14 @@ export class UcamPrazo {
   protected readonly texto = computed(() => {
     const d = this.dias();
     const absoluta = this.showAbsolute() ? ` · ${this.absoluta()}` : '';
+    if (this.pausado()) {
+      const desde = this.pausadoDesde();
+      if (desde === null) return `pausado${absoluta}`;
+      const inicio = desde instanceof Date ? desde : new Date(desde);
+      const n = Math.round((meiaNoite(this.hoje() ?? new Date()) - meiaNoite(inicio)) / DIA);
+      if (n <= 0) return `pausado hoje${absoluta}`;
+      return `pausado há ${n} ${n === 1 ? 'dia' : 'dias'}${absoluta}`;
+    }
     if (d === 0) return `vence hoje${absoluta}`;
     if (d > 0) return `vence em ${d} ${d === 1 ? 'dia' : 'dias'}${absoluta}`;
     const atraso = Math.abs(d);
