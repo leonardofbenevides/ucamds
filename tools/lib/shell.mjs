@@ -5223,6 +5223,35 @@ export const abasScript = `
   });
   sincroniza();
 })();
+
+/* BUSCA NO CATÁLOGO (leva 4, 24/10/2026). Em [data-catalogo], o campo
+ * [data-busca-catalogo] esconde os itens de lista que não contêm o termo,
+ * sem acento e sem caixa, e o cartão de assunto que ficar sem nenhum. É o que
+ * permite à lateral de Relatórios ficar só com os recentes: procurar um
+ * relatório entre 21 é trabalho do catálogo, não de 15 itens de menu. */
+(function () {
+  var norm = function (x) { return x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); };
+  document.addEventListener('input', function (e) {
+    var campo = e.target.closest && e.target.closest('[data-busca-catalogo]');
+    if (!campo) return;
+    var raiz = document.querySelector('[data-catalogo]');
+    if (!raiz) return;
+    var termo = norm(campo.value.trim()), achados = 0;
+    Array.prototype.forEach.call(raiz.querySelectorAll('.ucam-card'), function (cartao) {
+      var itens = cartao.querySelectorAll('.ucam-list-item'), vistos = 0;
+      Array.prototype.forEach.call(itens, function (li) {
+        var ok = !termo || norm(li.textContent).indexOf(termo) >= 0;
+        li.hidden = !ok; if (ok) vistos++;
+      });
+      if (itens.length) cartao.hidden = vistos === 0;
+      achados += vistos;
+    });
+    var vazio = document.querySelector('[data-catalogo-vazio]');
+    if (vazio) vazio.hidden = achados > 0;
+    var eco = document.querySelector('[data-catalogo-eco]');
+    if (eco) eco.textContent = termo ? achados + (achados === 1 ? ' relatório encontrado' : ' relatórios encontrados') : '';
+  });
+})();
 `;
 
 /**

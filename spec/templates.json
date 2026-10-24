@@ -4915,7 +4915,7 @@
               "decide": "Encarregado de dados (LGPD)"
             }
           ],
-          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Relatórios acadêmicos</h2><span class='ucam-viewbar__contagem'>21 relatórios em 6 assuntos</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><section class='ucam-section' aria-labelledby='rc-freq'><div class='ucam-section__cabeca'><h3 class='ucam-section__title' id='rc-freq'>Acessados com frequência</h3><p class='ucam-section__hint'>Os quatro que você mais gerou nos últimos 30 dias</p></div><div class='ucam-grid' style='--ucam-grid-min:13rem'><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><strong class='ucam-card__titulo'><a class='ucam-card__link' href='#/templates/relatorios/filtros'>Situação de matrícula por curso</a></strong><span class='ucam-card__apoio'>Aluno · gerado ontem</span></div><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-users'/></svg></span><strong class='ucam-card__titulo'><a class='ucam-card__link' href='#/templates/relatorios/diario'>Diário de classe</a></strong><span class='ucam-card__apoio'>Turma · gerado há 3 dias</span></div><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardList'/></svg></span><strong class='ucam-card__titulo'><span class='ucam-card__link' role='link' aria-disabled='true' data-sem-tela title='Sem tela de referência desenhada.'>Notas por disciplina</span></strong><span class='ucam-card__apoio'>Avaliação · gerado há 5 dias</span></div><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-calendar'/></svg></span><strong class='ucam-card__titulo'><span class='ucam-card__link' role='link' aria-disabled='true' data-sem-tela title='Sem tela de referência desenhada.'>Grade horária por sala</span></strong><span class='ucam-card__apoio'>Recurso e sala · gerado há 1 semana</span></div></div></section><section class='ucam-section' aria-labelledby='rc-ass'><div class='ucam-section__cabeca'><h3 class='ucam-section__title' id='rc-ass'>Por assunto</h3></div><div class='ucam-grid' style='--ucam-grid-min:17rem'><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Aluno</strong><span class='ucam-card__apoio'>5 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Aluno'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/filtros'>Situação de matrícula por curso</a></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Histórico escolar</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Alunos por turma</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/matriculados-curso'>Matrículas diárias por curso</a></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/horario-aluno'>Horário do aluno</a></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardList'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Avaliação</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Avaliação'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Notas por disciplina</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Pauta de prova final</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Reprovados por frequência</span></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Curso</strong><span class='ucam-card__apoio'>4 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Curso'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Aptos a colar grau</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Análise curricular</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Vagas por curso</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/evasao-curso'>Trancamento, cancelamento e transferência por curso</a></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-calendar'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Grade curricular</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Grade curricular'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Matriz por curso</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Pré-requisitos</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Equivalências</span></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-scrollText'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Processo seletivo</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Processo seletivo'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Inscritos por curso</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Classificados</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Conversão em matrícula</span></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-users'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Turma e professor</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Turma e professor'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/diario'>Diário de classe</a></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Carga horária docente</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Ocupação de turmas</span></span></li></ul></div></div></section></div></div>",
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Relatórios acadêmicos</h2><span class='ucam-viewbar__contagem'>21 relatórios em 6 assuntos</span><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><section class='ucam-section' aria-labelledby='rc-freq'><div class='ucam-section__cabeca'><h3 class='ucam-section__title' id='rc-freq'>Acessados com frequência</h3><p class='ucam-section__hint'>Os quatro que você mais gerou nos últimos 30 dias</p></div><div class='ucam-grid' style='--ucam-grid-min:13rem'><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><strong class='ucam-card__titulo'><a class='ucam-card__link' href='#/templates/relatorios/filtros'>Situação de matrícula por curso</a></strong><span class='ucam-card__apoio'>Aluno · gerado ontem</span></div><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-users'/></svg></span><strong class='ucam-card__titulo'><a class='ucam-card__link' href='#/templates/relatorios/diario'>Diário de classe</a></strong><span class='ucam-card__apoio'>Turma · gerado há 3 dias</span></div><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardList'/></svg></span><strong class='ucam-card__titulo'><span class='ucam-card__link' role='link' aria-disabled='true' data-sem-tela title='Sem tela de referência desenhada.'>Notas por disciplina</span></strong><span class='ucam-card__apoio'>Avaliação · gerado há 5 dias</span></div><div class='ucam-card ucam-card--acionavel ucam-stack ucam-stack--sm'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-calendar'/></svg></span><strong class='ucam-card__titulo'><span class='ucam-card__link' role='link' aria-disabled='true' data-sem-tela title='Sem tela de referência desenhada.'>Grade horária por sala</span></strong><span class='ucam-card__apoio'>Recurso e sala · gerado há 1 semana</span></div></div></section><section class='ucam-section' aria-labelledby='rc-ass' data-catalogo><div class='ucam-cluster ucam-cluster--entre ucam-cluster--base'><h3 class='ucam-section__title' id='rc-ass'>Por assunto</h3><div class='ucam-input-group' style='max-inline-size:20rem'><label class='ucam-sr-only' for='rc-busca'>Buscar relatório</label><span class='ucam-input-group__adorno' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg></span><input class='ucam-input-group__controle' id='rc-busca' type='search' placeholder='Buscar relatório' data-busca-catalogo aria-describedby='rc-eco'></div></div><p class='ucam-sr-only' id='rc-eco' role='status' data-catalogo-eco></p><div class='ucam-grid' style='--ucam-grid-min:17rem'><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-user'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Aluno</strong><span class='ucam-card__apoio'>5 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Aluno'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/filtros'>Situação de matrícula por curso</a></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Histórico escolar</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Alunos por turma</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/matriculados-curso'>Matrículas diárias por curso</a></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/horario-aluno'>Horário do aluno</a></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clipboardList'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Avaliação</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Avaliação'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Notas por disciplina</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Pauta de prova final</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Reprovados por frequência</span></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-graduationCap'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Curso</strong><span class='ucam-card__apoio'>4 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Curso'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Aptos a colar grau</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Análise curricular</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Vagas por curso</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/evasao-curso'>Trancamento, cancelamento e transferência por curso</a></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-calendar'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Grade curricular</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Grade curricular'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Matriz por curso</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Pré-requisitos</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Equivalências</span></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-scrollText'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Processo seletivo</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Processo seletivo'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Inscritos por curso</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Classificados</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Conversão em matrícula</span></span></li></ul></div><div class='ucam-card ucam-stack ucam-stack--sm'><div class='ucam-card__cabecalho'><span class='ucam-icon-tile' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-users'/></svg></span><div class='ucam-card__cabecalho-texto'><strong class='ucam-card__titulo'>Turma e professor</strong><span class='ucam-card__apoio'>3 relatórios</span></div></div><ul class='ucam-list' aria-label='Relatórios de Turma e professor'><li class='ucam-list-item'><span class='ucam-list-item__corpo'><a class='ucam-list-item__titulo' href='#/templates/relatorios/diario'>Diário de classe</a></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Carga horária docente</span></span></li><li class='ucam-list-item'><span class='ucam-list-item__corpo'><span class='ucam-list-item__titulo'>Ocupação de turmas</span></span></li></ul></div></div><div class='ucam-empty' data-catalogo-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum relatório encontrado</p><p class='ucam-empty__description'>Tente outra palavra, como o nome do curso ou da turma.</p></div></section></div></div>",
           "codigo": "<ucam-app-shell systemName=\"Relatórios Acadêmicos\">\n  <ucam-page-header title=\"Relatórios acadêmicos\" [count]=\"total()\">\n    <ucam-text-field label=\"Buscar relatório\" type=\"search\" [(ngModel)]=\"busca\" />\n  </ucam-page-header>\n\n  <section aria-labelledby=\"freq\">\n    <h3 id=\"freq\">Acessados com frequência</h3>\n    @for (r of frequentes(); track r.id) {\n      <ucam-card acionavel [titulo]=\"r.nome\" [apoio]=\"r.assunto.nome + ' · gerado ' + r.ultimaVez\" [icone]=\"r.assunto.icone\" [routerLink]=\"['/relatorios', r.id]\" />\n    }\n  </section>\n</ucam-app-shell>",
           "shell": {
             "largura": "larga",
@@ -5679,7 +5679,8 @@
             ]
           },
           {
-            "titulo": "Aluno",
+            "titulo": "Usados recentemente",
+            "$porque": "Leva 4 (24/10/2026): forma de catálogo. A lateral listava os 15 relatórios em quatro assuntos e o catálogo vai crescer; procurar é trabalho da busca do catálogo. Ficam os que a pessoa usa; no protótipo, os cinco com tela desenhada.",
             "itens": [
               {
                 "id": "aluno-situacao",
@@ -5687,14 +5688,9 @@
                 "icone": "user"
               },
               {
-                "id": "aluno-historico",
-                "rotulo": "Histórico escolar",
-                "icone": "scrollText"
-              },
-              {
-                "id": "aluno-turma",
-                "rotulo": "Alunos por turma",
-                "icone": "users"
+                "id": "turma-diario",
+                "rotulo": "Diário de classe",
+                "icone": "bookOpen"
               },
               {
                 "id": "aluno-matriculados",
@@ -5705,71 +5701,11 @@
                 "id": "aluno-horario",
                 "rotulo": "Horário do aluno",
                 "icone": "calendar"
-              }
-            ]
-          },
-          {
-            "titulo": "Avaliação e curso",
-            "itens": [
-              {
-                "id": "aval-notas",
-                "rotulo": "Notas por disciplina",
-                "icone": "clipboardList"
-              },
-              {
-                "id": "aval-frequencia",
-                "rotulo": "Reprovados por frequência",
-                "icone": "triangleAlert"
-              },
-              {
-                "id": "curso-aptos",
-                "rotulo": "Aptos a colar grau",
-                "icone": "graduationCap"
-              },
-              {
-                "id": "curso-grade",
-                "rotulo": "Grade curricular",
-                "icone": "calendar"
               },
               {
                 "id": "curso-evasao",
                 "rotulo": "Trancamento e cancelamento",
                 "icone": "doorOpen"
-              }
-            ]
-          },
-          {
-            "titulo": "Turma e professor",
-            "itens": [
-              {
-                "id": "turma-diario",
-                "rotulo": "Diário de classe",
-                "icone": "bookOpen"
-              },
-              {
-                "id": "prof-carga",
-                "rotulo": "Carga horária docente",
-                "icone": "briefcase"
-              },
-              {
-                "id": "sala-grade",
-                "rotulo": "Grade horária por sala",
-                "icone": "building2"
-              }
-            ]
-          },
-          {
-            "titulo": "Processo seletivo",
-            "itens": [
-              {
-                "id": "ps-inscritos",
-                "rotulo": "Inscritos por curso",
-                "icone": "fileText"
-              },
-              {
-                "id": "ps-conversao",
-                "rotulo": "Conversão em matrícula",
-                "icone": "chartColumn"
               }
             ]
           }
