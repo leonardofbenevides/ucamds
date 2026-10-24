@@ -293,6 +293,13 @@
         "$description": "Slot 6 — oliva. Não encosta mais na turquesa: vizinhas, reprovavam o piso de visão normal (ΔE 11,4 < 15)."
       }
     },
+    "chart-status": {
+      "$description": "Escala de estado em gráfico com degrau que o feedback não tem. Fora de color.chart porque não é slot de série categórica.",
+      "serious": {
+        "$value": "{orange.500}",
+        "$description": "O degrau SÉRIO da escala de estado em gráfico (24/10/2026): entre feedback.warning.graphic e feedback.danger.graphic, para quando a situação tem quatro degraus — bom, aviso, sério, crítico (as situações do candidato na Captação). Não é série categórica e não pinta texto; vai sempre com a legenda em palavra. Mesmo hex da notificação, papel diferente."
+      }
+    },
     "situacao": {
       "$type": "color",
       "$description": "TONS DE SITUAÇÃO do selo, além dos quatro de feedback (ADR-066, 08/10/2026: \"as badges de status podiam estar melhor definidas e mais coloridas e diversas semânticas\"). Cinco tons carregavam 71 rótulos, e estados diferentes dividiam a mesma cor. ESPERA é a bola com outra pessoa: o estado não pede nada de quem lê, e por isso não é o âmbar do aviso nem o azul do que a equipe está fazendo. CLASSE é tipo ou categoria: classifica, não julga. Grupo próprio, fora de color.feedback, de propósito: o portão da subpaleta mede a ação de cada sistema contra os tons de feedback, e estes dois têm a matiz de duas categorias de sistema (gestão e pessoas). Só o selo os lê; alerta, indicador e linha do tempo continuam nos quatro de feedback.",

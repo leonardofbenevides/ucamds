@@ -7691,6 +7691,8 @@ ${acima('nav-fixa')} {
  * não ser uma só. */
 
 .ucam-shell--topo {
+  /* Medida pelo script da moldura; ver .ucam-shell--topo .ucam-viewbar. */
+  --ucam-topbar-altura: 0px;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr auto;
   grid-template-areas:
@@ -8109,17 +8111,31 @@ ${abaixo('faixa-minima')} {
  * primeira e devolve de margem a largura que o arranjo foi buscar. */
 .ucam-shell--topo > .ucam-main {
   margin: 0;
-  padding: var(--ucam-space-inset-lg) var(--ucam-space-inset-xl) var(--ucam-space-inset-xl);
+  /* SEM RECUO PRÓPRIO (leva 4, 24/10/2026). Com 24px aqui o subcabeçalho e o
+   * corpo ficavam mais estreitos que a testeira, o fio da barra parava antes
+   * da borda e o título não alinhava com a navegação. A barra e o corpo já
+   * trazem o recuo de dentro, o mesmo do arranjo lateral. */
+  padding: 0;
   background: var(--ucam-color-surface-default);
   border: 0;
   border-radius: 0;
   box-shadow: none;
 }
 
-${abaixo('respiro-completo')} {
-  .ucam-shell--topo > .ucam-main {
-    padding-inline: var(--ucam-space-inset-md);
-  }
+/* A BARRA DO TÍTULO GRUDA SOB A TESTEIRA, não no alto da janela. Aqui quem
+ * rola é o documento (no arranjo lateral é o painel), e com top 0 ela subia
+ * por cima da faixa e da navegação. A altura vem medida pelo script da
+ * moldura (--ucam-topbar-altura), porque a testeira muda de altura com a
+ * escala e com a janela. */
+.ucam-shell--topo .ucam-viewbar {
+  inset-block-start: var(--ucam-topbar-altura, 0px);
+}
+
+/* O ícone do primeiro item da navegação deitada cai na mesma vertical do
+ * título e do conteúdo: o mesmo recuo do corpo; o __scroll já desconta o
+ * recuo interno do item. */
+.ucam-shell--topo .ucam-topnav {
+  padding-inline: var(--ucam-space-inset-lg);
 }
 
 /* A NAVEGAÇÃO LATERAL NUNCA VIRA COLUNA nesta moldura.
@@ -12878,6 +12894,11 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__fill--success { background: var(--ucam-color-feedback-success-graphic); }
 .ucam-progress__fill--warning { background: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__fill--danger  { background: var(--ucam-color-feedback-danger-graphic); }
+/* SÉRIO, o degrau entre aviso e perigo (24/10/2026). A escala de estado de
+ * quatro degraus — bom, aviso, sério, crítico — pedida para as situações do
+ * candidato na Captação: matriculado, confirmado, aprovado, pendente. Sempre
+ * com legenda em palavra ao lado; a cor nunca é o único sinal. */
+.ucam-progress__fill--serious { background: var(--ucam-color-chart-status-serious); }
 /* O NEUTRO declarado (06/10/2026): na segmentada, a parte que ainda não tem
  * julgamento — "sem decisão" na isenção — é segmento desenhado, na mesma
  * tinta do ponto da legenda (.ucam-progress__ponto--neutral). Era o valor de
@@ -13003,6 +13024,7 @@ figure:has(> .ucam-citacao) { margin: 0; }
 .ucam-progress__ponto--success { color: var(--ucam-color-feedback-success-graphic); }
 .ucam-progress__ponto--warning { color: var(--ucam-color-feedback-warning-graphic); }
 .ucam-progress__ponto--danger  { color: var(--ucam-color-feedback-danger-graphic); }
+.ucam-progress__ponto--serious { color: var(--ucam-color-chart-status-serious); }
 .ucam-progress__ponto--neutral { color: var(--ucam-color-border-default); }
 
 /* LEGENDA EM FILEIRA (06/10/2026): a barra na largura inteira da página. A

@@ -2083,6 +2083,17 @@ const FN_ANUNCIA = `
     if (window.ucamToast && !window.ucamEmLote && de && de.closest && de.closest('[data-fluxo="c"]') &&
       !de.closest('[data-acao="decidir"], [data-sem-toast]')) window.ucamToast(texto, tom);
   }
+
+/* A ALTURA DA TESTEIRA DO ARRANJO TOPO (24/10/2026), para a barra do título
+ * grudar logo abaixo dela e não por cima (ver .ucam-shell--topo .ucam-viewbar
+ * no CSS). Medida, e não fixa: muda com a escala da tela e com a janela. */
+(function () {
+  var t = document.querySelector('.ucam-shell--topo > .ucam-topbar');
+  if (!t) return;
+  var mede = function () { t.parentElement.style.setProperty('--ucam-topbar-altura', t.getBoundingClientRect().height + 'px'); };
+  mede();
+  if (window.ResizeObserver) new ResizeObserver(mede).observe(t);
+})();
 `;
 
 export const estadoScript = `
