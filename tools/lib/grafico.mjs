@@ -122,8 +122,27 @@ function grafico() {
     return base;
   }
 
+  /* FONTE NA TABELA DA TELA (24/10/2026). Com "fonte": {"tabela": id,
+   * "colunas": [1, 2]}, os dados de cada série saem das células da tabela
+   * equivalente a cada desenho, na ordem das séries. É o que faz o gráfico
+   * seguir um filtro que troca os números da tabela (data-cenario no
+   * Analytics do Protocolo) sem um segundo conjunto de números para manter. */
+  function lerFonte(cfg) {
+    var t = cfg.fonte && document.getElementById(cfg.fonte.tabela);
+    if (!t) return;
+    var linhas = t.querySelectorAll('tbody tr');
+    cfg.series.forEach(function (s, i) {
+      var col = cfg.fonte.colunas[i];
+      s.dados = Array.prototype.map.call(linhas, function (tr) {
+        var c = tr.children[col];
+        var v = c ? parseFloat(c.textContent.replace(/[^0-9,-]/g, '').replace(',', '.')) : NaN;
+        return isNaN(v) ? null : v;
+      });
+    });
+  }
+
   function desenha() {
-    instancias.forEach(function (x) { x.grafico.setOption(opcao(x.cfg, x.fig), true); });
+    instancias.forEach(function (x) { lerFonte(x.cfg); x.grafico.setOption(opcao(x.cfg, x.fig), true); });
   }
 
   figuras.forEach(function (fig) {
@@ -144,6 +163,9 @@ function grafico() {
   });
   desenha();
 
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('[data-cenario] button[data-valor]')) setTimeout(desenha, 0);
+  });
   new MutationObserver(desenha).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   var escuro = matchMedia('(prefers-color-scheme: dark)');
   if (escuro.addEventListener) escuro.addEventListener('change', desenha);
