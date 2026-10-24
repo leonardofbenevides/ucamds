@@ -189,6 +189,13 @@
       "porque": "A promessa concreta é o que faz a pessoa confiar o e-mail."
     }
   ],
+  "vs": [
+    {
+      "componente": "cookie-banner",
+      "diferenca": "O CookieBanner só avisa e some depois da resposta; a Newsletter pede um dado e envia.",
+      "escolha": "Se há campo, é newsletter; se há só uma frase e uma ação, é cookie-banner."
+    }
+  ],
   "implementacao": {
     "trilho_a": {
       "contrato": "Um form com três partes; o campo e o botão são as peças próprias, compostas dentro de campos.",

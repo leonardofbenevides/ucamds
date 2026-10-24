@@ -1,0 +1,162 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "cookie-banner",
+  "name": "CookieBanner",
+  "selector": "ucam-site-cookie-banner",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.7",
+  "category": "feedback",
+  "description": "O aviso de cookies: uma faixa fixa no pé da página, com a frase, o link da política e uma ação. Avisa sem bloquear: não é diálogo, não toma o foco e não cobre o campo em que a pessoa está.",
+  "quando_usar": [
+    "O site usa cookies de medição ou de terceiros e precisa avisar na primeira visita.",
+    "Uma vez por pessoa: depois de Entendi, o site guarda a resposta e a faixa não volta."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br, todas as páginas, capturas de 15/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — todas as páginas",
+        "rotulo": "Utilizamos cookies para oferecer melhor experiência… / Ok, entendi!",
+        "problema": "a faixa tem 96px e cobre o meio da tela em vez do pé: esconde os cartões de curso e o campo de busca até a pessoa responder"
+      },
+      {
+        "tela": "www — validador de diploma",
+        "rotulo": "Ok, entendi!",
+        "problema": "o botão preto é a ação mais forte da página, acima do Validar"
+      }
+    ],
+    "conclusao": "A faixa vai para o pé, a ação é secundária (o primário da página continua sendo o da página) e o foco ganha margem de rolagem maior que ela, para nunca ficar por baixo."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<section aria-label=\"Aviso de cookies\">. Último filho da página: grudada no pé da janela ao rolar, e no fim ocupa o próprio lugar. Região com nome, não diálogo: não prende o foco e não escurece a página. Por ser a última, o Tab chega a ela depois do conteúdo."
+    },
+    {
+      "parte": "texto",
+      "obrigatorio": true,
+      "descricao": "<p> com a frase e o link da política. Uma ou duas linhas.",
+      "classe": "ucam-site-cookie-banner__texto"
+    },
+    {
+      "parte": "acao",
+      "obrigatorio": true,
+      "descricao": "<button> secundário: Entendi. Uma ação só; aceitar e recusar em separado é o caso de consentimento por finalidade, que é outra peça.",
+      "classe": "ucam-site-cookie-banner__acao"
+    }
+  ],
+  "props": [
+    {
+      "nome": "policyHref",
+      "tipo": "string",
+      "default": "'/politica-de-privacidade'",
+      "descricao": "O endereço da política de privacidade."
+    },
+    {
+      "nome": "actionLabel",
+      "tipo": "string",
+      "default": "'Entendi'",
+      "descricao": "O texto da ação. Vazio volta ao padrão."
+    }
+  ],
+  "eventos": [
+    {
+      "nome": "dismiss",
+      "payload": "void",
+      "descricao": "A pessoa respondeu. Quem usa guarda a resposta e deixa de desenhar a faixa; a peça não lê nem grava cookie."
+    }
+  ],
+  "estados": [
+    "default",
+    "focus-visible"
+  ],
+  "limites": {
+    "regras": [
+      "Não é diálogo: não prende o foco, não escurece a página e não impede a leitura.",
+      "Uma ação, secundária. O primário da tela é o da tela (Validar, Inscreva-se).",
+      "Vai como último filho da página, dentro do elemento com .ucam-site: é o que a deixa grudada no pé e liga a margem de rolagem dos focáveis.",
+      "Não serve para consentimento por finalidade (medição, publicidade, aceitar e recusar): isso pede escolhas e é outra peça."
+    ],
+    "motivo": "Faixa no meio da tela cobre o conteúdo que a pessoa veio ler. Faixa fixa sem reserva cobre o campo focado quando a página rola até ele, e o teclado perde de vista onde está (WCAG 2.4.11)."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Região com nome (aria-label), alcançável pela lista de regiões do leitor de tela.",
+      "Não recebe foco ao aparecer; fica no fim da ordem do Tab.",
+      "O foco em qualquer campo da página nunca fica sob a faixa: enquanto ela existe, todo foco tem 10rem de margem de rolagem embaixo (mais que a faixa mais alta, 135px a 390), e o navegador rola o campo para cima dela.",
+      "Texto a 4,5:1 sobre a superfície da faixa; o link sublinhado."
+    ],
+    "criterios_wcag": [
+      "1.4.3",
+      "2.4.11",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Entendi"
+      ],
+      "ruim": [
+        "Ok, entendi!",
+        "ACEITAR TUDO",
+        "Fechar"
+      ]
+    },
+    "regras": [
+      "Uma frase: o que se usa e para quê. \"Usamos cookies para medir as visitas e melhorar o site.\"",
+      "O link da política diz o destino: \"Política de privacidade\", não \"saiba mais\"."
+    ]
+  },
+  "migracao": {
+    "de": "candidomendes.edu.br",
+    "mapa": [
+      {
+        "legado": "<div class=\"cookie-consent\"> no meio da tela",
+        "novo": "<section class=\"ucam-site-cookie-banner\"> no pé",
+        "nota": "O botão preto vira secundário."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Aviso de cookies",
+      "codigo": "<section class=\"ucam-site-cookie-banner\" aria-label=\"Aviso de cookies\">\n  <p class=\"ucam-site-cookie-banner__texto\">Usamos cookies para medir as visitas e melhorar o site. <a href=\"/politica-de-privacidade\">Política de privacidade</a></p>\n  <button type=\"button\" class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-cookie-banner__acao\">Entendi</button>\n</section>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "A faixa no pé, com a ação secundária.",
+      "evite": "Uma caixa no meio da tela com o botão mais forte da página.",
+      "porque": "O aviso não é a razão da visita; quem chega quer o curso, não o cookie."
+    },
+    {
+      "faca": "A faixa como último filho da página.",
+      "evite": "Faixa fixa por cima do formulário.",
+      "porque": "O campo focado some debaixo dela."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "newsletter-form",
+      "diferenca": "A Newsletter pede um dado e envia; o CookieBanner só avisa e some depois da resposta.",
+      "escolha": "Se há campo, é newsletter; se há só uma frase e uma ação, é cookie-banner."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe na raiz e uma em cada parte. A ação usa as classes do botão secundário.",
+      "raiz": ".ucam-site-cookie-banner",
+      "variaveis": [
+        "--ucam-site-color-surface-default",
+        "--ucam-site-color-border-subtle",
+        "--ucam-site-elevation-popover",
+        "--ucam-site-z-header"
+      ],
+      "nota": "A folha não guarda a resposta nem esconde a faixa: no Trilho A quem liga o clique e grava a escolha é a página. Grudar e proteger o foco é só CSS, igual nos dois trilhos."
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/cookie-banner/cookie-banner.ts — section[ucamSiteCookieBanner]. Entradas: policyHref, actionLabel."
+  }
+}

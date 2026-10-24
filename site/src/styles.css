@@ -17,6 +17,14 @@
 @import './generated/sites.css';
 @import './generated/sites-estados.css';
 
+/* O aviso de cookies é FIXO no pé da janela: na documentação ele grudaria no
+   pé do site de docs, por cima do texto, e cada preview somaria uma faixa.
+   Aqui, e só aqui, ele fica no fluxo do palco. A peça não muda. */
+.prose .ucam-site-cookie-banner,
+[data-paridade] .ucam-site-cookie-banner {
+  position: static;
+}
+
 /* --- ponte para os componentes reais de @ucam/ui ------------------------ */
 /* Os componentes da base escrevem classes no vocabulário shadcn
    (bg-popover, border-input, text-muted-foreground). Duas coisas fazem elas

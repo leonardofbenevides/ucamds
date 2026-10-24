@@ -94,12 +94,13 @@ bordas, porque a folha não leva URL.
 
 Peça nova `checkbox` (31ª): `fieldset[ucamSiteCheckGroup]`, `label[ucamSiteCheck]` e `input[ucamSiteCheckBox]`; linha de 44px, caixa de 20px no topo da primeira linha, visto desenhado em bordas, token novo `radius.check` (o control arredondava a caixa até parecer rádio). Sem caixa de "Todas".
 
+Peça nova `cookie-banner` (32ª): faixa GRUDADA no pé (último filho da página, `position: sticky`), ação secundária, região e não diálogo; enquanto ela existe todo foco tem 10rem de margem de rolagem, porque o navegador não rola até campo que já está na tela debaixo de uma faixa (medido a 390: com scroll-padding o campo ficava coberto). Sem script nos dois trilhos.
+
 **Faltam, em ordem do quanto aparecem:**
 
 | Peça | Onde aparece | Nota |
 |---|---|---|
 | Controles de carrossel | Vale a pena, depoimentos, curso em destaque ("1 DE 6 ‹ ›") | Decidir antes: carrossel ou grade que rola; o desfile já existe |
-| Aviso de cookies | Todas as páginas | Faixa fixa no pé, com uma ação; não pode cobrir o foco |
 | Linha de unidade | Unidades (60 linhas: foto, nome, endereço, telefone, e-mail) | Talvez o `contact-card` em lista; medir antes de criar |
 | Selo e-MEC no rodapé | Todas as páginas | Encaixe de imagem no `site-footer` |
 

@@ -499,6 +499,14 @@
           "angular": "<label ucamSiteCheck label=\"Noturno\"><input ucamSiteCheckBox disabled></label>"
         }
       ]
+    },
+    "cookie-banner": {
+      "instalacao": "<link rel=\"stylesheet\" href=\"node_modules/@ucam/site-css/css/ucam-site.css\">",
+      "principal": {
+        "preview": "<section class='ucam-site-cookie-banner' aria-label='Aviso de cookies'><p class='ucam-site-cookie-banner__texto'>Usamos cookies para medir as visitas e melhorar o site. <a href='/politica-de-privacidade'>Política de privacidade</a></p><button type='button' class='ucam-site-btn ucam-site-btn--secondary ucam-site-cookie-banner__acao'>Entendi</button></section>",
+        "codigo": "<section class=\"ucam-site-cookie-banner\" aria-label=\"Aviso de cookies\">\n  <p class=\"ucam-site-cookie-banner__texto\">Usamos cookies para medir as visitas e melhorar o site. <a href=\"/politica-de-privacidade\">Política de privacidade</a></p>\n  <button type=\"button\" class=\"ucam-site-btn ucam-site-btn--secondary ucam-site-cookie-banner__acao\">Entendi</button>\n</section>",
+        "angular": "<section ucamSiteCookieBanner>Usamos cookies para medir as visitas e melhorar o site.</section>"
+      }
     }
   }
 }

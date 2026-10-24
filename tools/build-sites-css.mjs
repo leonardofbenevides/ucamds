@@ -878,6 +878,53 @@ ${acima('nav-aberta')} {
   color: ${V('color-feedback-danger-on-inverse')};
 }
 
+/* ------------------------------------------------------- cookie-banner --- */
+/* Contrato: sites/spec/components/cookie-banner.json. A faixa fica no PÉ,
+ * não no meio da tela como no site de hoje, e a ação é secundária: o aviso
+ * não é a razão da visita. Região, não diálogo: sem véu e sem prender o foco.
+ *
+ * GRUDADA, não fixa: último filho da página, ela fica no pé da janela ao
+ * rolar e ocupa o próprio lugar no fim, então o fim da página sobe acima
+ * dela. E todo foco ganha margem de rolagem maior que a faixa: o navegador
+ * não rola até um campo que já está na tela, mesmo debaixo de uma faixa, e
+ * com a margem ele passa a rolar (WCAG 2.4.11). A reserva no fim da rolagem
+ * (scroll-padding) não bastava: medido a 390px, o campo ficava coberto. */
+.ucam-site-cookie-banner {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: ${V('z-header')};
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: ${V('space-inline-sm')} ${V('space-stack-md')};
+  padding: ${V('space-stack-sm')} ${V('space-gutter')};
+  border-block-start: 1px solid ${V('color-border-subtle')};
+  background: ${V('color-surface-default')};
+  box-shadow: ${V('elevation-popover')};
+}
+.ucam-site-cookie-banner__texto {
+  margin: 0;
+  max-inline-size: 60ch;
+  color: ${V('color-text-secondary')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+}
+.ucam-site-cookie-banner__texto a {
+  color: ${V('color-text-link')};
+  text-decoration: underline;
+}
+.ucam-site-cookie-banner__texto a:hover {
+  color: ${V('color-text-link-hover')};
+}
+.ucam-site-cookie-banner__acao {
+  flex: none;
+}
+/* 10rem passa da faixa mais alta medida (135px a 390: três linhas de texto e o botão embaixo). */
+.ucam-site:has(.ucam-site-cookie-banner) :focus {
+  scroll-margin-block-end: 10rem;
+}
+
 /* ----------------------------------------------------- newsletter-form --- */
 /* Contrato: sites/spec/components/newsletter-form.json. Campo e botão
  * empilham no telefone e deitam lado a lado a partir de duas colunas. */
