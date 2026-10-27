@@ -13377,7 +13377,7 @@
         "sistema": "Captação",
         "campus": "Campos",
         "usuario": "Leonardo F. Benevides",
-        "topo": true,
+        "$porque_lateral": "27/10/2026: o arranjo topo (leva 4) tirou a lateral e pôs a navegação do sistema em abas na testeira. Pedido do Leonardo: \"não precisa ser um ou outro\". A lateral é a navegação do sistema; as abas de recorte ficam dentro do painel.",
         "nav": [
           {
             "titulo": "Painel",
@@ -14716,7 +14716,7 @@
         "sistema": "Gestão de polos",
         "campus": "EAD",
         "usuario": "Leonardo F. Benevides",
-        "topo": true,
+        "$porque_lateral": "27/10/2026: o arranjo topo (leva 4) tirou a lateral e pôs a navegação do sistema em abas na testeira. Pedido do Leonardo: \"não precisa ser um ou outro\". A lateral é a navegação do sistema; as abas de recorte ficam dentro do painel.",
         "nav": [
           {
             "titulo": "Painéis",
@@ -15289,7 +15289,7 @@
         "sistema": "Turmas compartilhadas",
         "campus": "Rio de Janeiro",
         "usuario": "Leonardo F. Benevides",
-        "topo": true,
+        "$porque_lateral": "27/10/2026: o arranjo topo (leva 4) tirou a lateral e pôs a navegação do sistema em abas na testeira. Pedido do Leonardo: \"não precisa ser um ou outro\". A lateral é a navegação do sistema; as abas de recorte ficam dentro do painel.",
         "nav": [
           {
             "titulo": "Turmas do AVA",
