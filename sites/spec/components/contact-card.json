@@ -45,6 +45,24 @@
       "obrigatorio": false,
       "descricao": "<p> com o ícone decorativo e o dado: o endereço em texto, o telefone e o e-mail em link.",
       "classe": "ucam-site-contact-card__line"
+    },
+    {
+      "parte": "cabeca",
+      "obrigatorio": false,
+      "descricao": "<div> com a foto e o bloco do rótulo e do título. Só existe com foto ou rótulo; sem os dois, o título vem solto.",
+      "classe": "ucam-site-contact-card__cabeca"
+    },
+    {
+      "parte": "foto",
+      "obrigatorio": false,
+      "descricao": "<img alt=\"\">, 48px, recortada no quadrado. Decorativa: o nome ao lado já diz qual unidade é.",
+      "classe": "ucam-site-contact-card__foto"
+    },
+    {
+      "parte": "kicker",
+      "obrigatorio": false,
+      "descricao": "<p> acima do título, na tinta de marca: Institucional, Polo EAD.",
+      "classe": "ucam-site-contact-card__kicker"
     }
   ],
   "props": [
@@ -64,7 +82,7 @@
       "nome": "phone",
       "tipo": "string | null",
       "default": "null",
-      "descricao": "O telefone, escrito como se lê. O link leva só dígitos e o +: o ramal sai, o zero de longa distância sai, 10 ou 11 dígitos ganham o +55, e 0800 fica nacional. Fora disso (um 190, um texto) a linha some."
+      "descricao": "O telefone, escrito como se lê. O link leva só dígitos e o +: o ramal sai, o zero de longa distância sai, 10 ou 11 dígitos ganham o +55, e 0800 fica nacional. Fora disso (um 190, um texto) a linha some. Vários números separados por \"/\" viram um link cada, na mesma linha; o que não for número sai e o repetido fica uma vez só."
     },
     {
       "nome": "email",
@@ -77,6 +95,33 @@
       "tipo": "2 | 3 | 4",
       "default": "3",
       "descricao": "O nível do título, conforme a seção em que o cartão está."
+    },
+    {
+      "nome": "layout",
+      "tipo": "'card' | 'row'",
+      "default": "'card'",
+      "descricao": "Cartão empilhado, ou deitado em linha: o nome à esquerda e os dados em colunas a partir de duas colunas. Linha é para a lista longa (Unidades: sessenta unidades); no telefone ela empilha como o cartão.",
+      "valores": {
+        "card": {
+          "uso": "Um contato numa seção: o da secretaria, o do curso."
+        },
+        "row": {
+          "uso": "A lista de unidades ou de polos.",
+          "classe": ".ucam-site-contact-card--linha"
+        }
+      }
+    },
+    {
+      "nome": "image",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "A foto da unidade, pequena e decorativa (alt vazio)."
+    },
+    {
+      "nome": "kicker",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "O rótulo acima do nome: Institucional, Polo EAD. Uma ou duas palavras."
     }
   ],
   "estados": [
@@ -155,6 +200,6 @@
         "--ucam-site-color-text-link"
       ]
     },
-    "trilho_b": "sites/ui/projects/site-ui/src/lib/contact-card/contact-card.ts — section[ucamSiteContactCard]. Entradas: heading, address, phone, email, level."
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/contact-card/contact-card.ts — section[ucamSiteContactCard]. Entradas: heading, address, phone, email, level, layout, image, kicker."
   }
 }

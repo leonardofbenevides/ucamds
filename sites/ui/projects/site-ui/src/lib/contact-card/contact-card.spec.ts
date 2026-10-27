@@ -4,7 +4,7 @@ import { UcamSiteContactCard, hrefDeTelefone } from './contact-card';
 
 @Component({
   imports: [UcamSiteContactCard],
-  template: `<section ucamSiteContactCard data-peca class="minha" heading="Campos dos Goytacazes" [address]="$any(e()['address'])" [phone]="$any(e()['phone'])" [email]="$any(e()['email'])" [level]="$any(e()['level'])"></section>`,
+  template: `<section ucamSiteContactCard data-peca class="minha" heading="Campos dos Goytacazes" [address]="$any(e()['address'])" [phone]="$any(e()['phone'])" [email]="$any(e()['email'])" [level]="$any(e()['level'])" [layout]="$any(e()['layout'])" [image]="$any(e()['image'])" [kicker]="$any(e()['kicker'])"></section>`,
 })
 class Hospede {
   readonly e = signal<Record<string, unknown>>({});
@@ -63,4 +63,25 @@ describe('section[ucamSiteContactCard]', () => {
     expect(monta(Hospede, { level: '4' }).el.firstElementChild!.localName).toBe('h4');
     expect(monta(Hospede, { level: 9 }).el.firstElementChild!.localName).toBe('h3');
   });
+
+  it('vários telefones separados por barra: um link cada; o que não é número sai', () => {
+    const { el } = monta(Hospede, { phone: '(22) 2103-3000 / 190 / (22) 99620-7919 / (22) 2103-3000' });
+    const links = [...el.querySelectorAll('.ucam-site-contact-card__line a[href^="tel:"]')].map((a) => a.getAttribute('href'));
+    expect(links).toEqual(['tel:+552221033000', 'tel:+5522996207919']);
+    expect(monta(Hospede, { phone: '(22) 2726-2400' }).el.querySelector('.ucam-site-contact-card__line > a')).not.toBeNull();
+  });
+
+  it('foto e rótulo montam a cabeça; sem eles, o título vem solto', () => {
+    const { el } = monta(Hospede, { image: '/u.jpg', kicker: 'Institucional' });
+    const cabeca = el.querySelector('.ucam-site-contact-card__cabeca')!;
+    expect(cabeca.querySelector('img')!.getAttribute('alt')).toBe('');
+    expect(cabeca.querySelector('.ucam-site-contact-card__kicker')!.textContent).toBe('Institucional');
+    expect(cabeca.querySelector('h3')).not.toBeNull();
+    expect(monta(Hospede).el.querySelector('.ucam-site-contact-card__cabeca')).toBeNull();
+  });
+
+  it('layout row liga o modificador da linha', () => {
+    expect(monta(Hospede, { layout: 'row' }).classes.has('ucam-site-contact-card--linha')).toBe(true);
+  });
+
 });

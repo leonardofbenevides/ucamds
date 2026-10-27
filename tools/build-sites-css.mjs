@@ -1883,6 +1883,43 @@ ${acima('duas-colunas')} {
 .ucam-site-contact-card__line a:hover {
   color: ${V('color-text-link-hover')};
 }
+/* CABEÇA COM FOTO E RÓTULO (24/10/2026, página Unidades): a foto é pequena e
+ * decorativa, ao lado do nome; o rótulo fica acima dele, na tinta de marca,
+ * como a tag de destaque. Sem foto nem rótulo, o título vem solto como antes. */
+.ucam-site-contact-card__cabeca {
+  display: flex;
+  align-items: center;
+  gap: ${V('space-inline-md')};
+  min-inline-size: 0;
+}
+.ucam-site-contact-card__foto {
+  flex: none;
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: ${V('radius-control')};
+  object-fit: cover;
+}
+.ucam-site-contact-card__kicker {
+  margin: 0;
+  color: ${V('color-action-primary-default')};
+  font-size: ${V('typography-caption-font-size')};
+  font-weight: ${V('typography-action-font-weight')};
+  line-height: ${V('typography-caption-line-height')};
+}
+/* EM LINHA: sessenta unidades numa página são uma lista, não uma grade de
+ * cartões. A partir de duas colunas o nome fica à esquerda e os três dados
+ * deitam em colunas; no telefone, empilha como o cartão. */
+${acima('duas-colunas')} {
+  .ucam-site-contact-card--linha {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: center;
+    gap: ${V('space-stack-md')};
+  }
+  .ucam-site-contact-card--linha .ucam-site-contact-card__lines {
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: ${V('space-stack-sm')};
+  }
+}
 
 /* -------------------------------------------------------- logo-marquee --- */
 /* Contrato: sites/spec/components/logo-marquee.json. Os logos desfilam em

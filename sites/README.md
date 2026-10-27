@@ -96,12 +96,13 @@ Peça nova `checkbox` (31ª): `fieldset[ucamSiteCheckGroup]`, `label[ucamSiteChe
 
 Peça nova `cookie-banner` (32ª): faixa GRUDADA no pé (último filho da página, `position: sticky`), ação secundária, região e não diálogo; enquanto ela existe todo foco tem 10rem de margem de rolagem, porque o navegador não rola até campo que já está na tela debaixo de uma faixa (medido a 390: com scroll-padding o campo ficava coberto). Sem script nos dois trilhos.
 
+A linha de unidade não virou peça: o `contact-card` ganhou `layout="row"` (nome à esquerda, dados em colunas a partir de duas colunas), `image` (foto pequena e decorativa) e `kicker` (rótulo acima do nome). Vários telefones separados por "/" viram um link cada; antes a linha inteira sumia.
+
 **Faltam, em ordem do quanto aparecem:**
 
 | Peça | Onde aparece | Nota |
 |---|---|---|
 | Controles de carrossel | Vale a pena, depoimentos, curso em destaque ("1 DE 6 ‹ ›") | Decidir antes: carrossel ou grade que rola; o desfile já existe |
-| Linha de unidade | Unidades (60 linhas: foto, nome, endereço, telefone, e-mail) | Talvez o `contact-card` em lista; medir antes de criar |
 | Selo e-MEC no rodapé | Todas as páginas | Encaixe de imagem no `site-footer` |
 
 Fora do catálogo de propósito: a busca de curso, a grade de cursos com filtros e o banner de
