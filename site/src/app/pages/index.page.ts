@@ -235,17 +235,17 @@ import { CENA_CAPA } from '../../generated/cena-capa';
     :host ::ng-deep .ilustracao .kc { fill: color-mix(in srgb, var(--cena-t) 24%, var(--cena-p)); }
     :host ::ng-deep .ilustracao :is(.kd, .a) { fill: var(--cena-t); }
     :host ::ng-deep .ilustracao .a2 { fill: color-mix(in srgb, var(--cena-t) 60%, var(--cena-p)); }
-    :host ::ng-deep .ilustracao :is(.pv, .on, .malha, .gr, .ng, .rg, .fc) { stroke-width: 0.75; }
+    :host ::ng-deep .ilustracao :is(.pv, .malha, .gr, .rg, .fc) { stroke-width: 0.75; }
     :host ::ng-deep .ilustracao .pv { stroke: color-mix(in srgb, var(--cena-t) 10%, transparent); }
     :host ::ng-deep .ilustracao .malha { stroke: color-mix(in srgb, var(--cena-t) 7%, transparent); }
-    :host ::ng-deep .ilustracao :is(.on, .gr, .ng, .rg) { stroke: color-mix(in srgb, var(--cena-t) 42%, transparent); }
+    :host ::ng-deep .ilustracao :is(.gr, .rg) { stroke: color-mix(in srgb, var(--cena-t) 42%, transparent); }
     :host ::ng-deep .ilustracao :is(.clarao-0, .clarao-1) { stop-color: var(--cena-p); stop-opacity: 0; }
     :host ::ng-deep .ilustracao :is(.tr, .kk) { stroke-width: 3; }
     :host ::ng-deep .ilustracao .tr2 { stroke-width: 2.5; }
     :host ::ng-deep .ilustracao .fo { stroke-width: 1.5; }
 
     /* O MOVIMENTO, igual ao da cena do login (tools/build-css.mjs): as peças
-       boiam, a barca vai e volta, a água oscila, as janelas piscam; o ponteiro
+       boiam, a barca vai e volta, as janelas piscam; o ponteiro
        move os dois planos. Só para quem não pediu menos movimento. */
     .ilustracao { --px: 0; --py: 0; }
     :host ::ng-deep .ilustracao :is(.base, .barca) { translate: calc(var(--px) * 6px) calc(var(--py) * 4px); transition: translate 320ms ease-out; }
@@ -253,12 +253,10 @@ import { CENA_CAPA } from '../../generated/cena-capa';
     @media (prefers-reduced-motion: no-preference) {
       :host ::ng-deep .ilustracao .pc > g { animation: cena-boiar 5.5s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -1.3s); }
       :host ::ng-deep .ilustracao .barca > g { animation: cena-navegar 28s ease-in-out infinite alternate; }
-      :host ::ng-deep .ilustracao .on { animation: cena-onda 4.5s ease-in-out infinite alternate; }
       :host ::ng-deep .ilustracao .lz { animation: cena-piscar 3.2s ease-in-out infinite alternate; }
     }
     @keyframes cena-boiar { from { transform: translateY(3px); } to { transform: translateY(-5px); } }
     @keyframes cena-navegar { from { transform: translate(52px, -30px); } to { transform: translate(-104px, 60px); } }
-    @keyframes cena-onda { from { transform: translateX(-5px); } to { transform: translateX(5px); } }
     @keyframes cena-piscar { from { opacity: 1; } to { opacity: 0.25; } }
 
     /* A home lê na mesma coluna das páginas internas. Ela herdava os 80rem

@@ -246,14 +246,12 @@ function bandeira(x, y, h = 56) {
 function montar() {
   semente = 7;
 
-  /* ---- A ÁGUA e o cais: a praça dá para a baía. A onda é um til. ---- */
+  /* ---- A ÁGUA e o cais: a praça dá para a baía. ---- */
   chao.push({ d: d3([[512, -700, 0], [1500, -700, 0], [1500, 1700, 0], [512, 1700, 0]]), c: 'ag' });
-  let ondas = '';
-  for (let i = 0; i < 45; i++) {
-    const [wx, wy] = P(526 + sorte() * 190, -120 + sorte() * 800, 0);
-    ondas += `M${n(wx - 7)} ${n(wy)}q3.5 -3 7 0t7 0`;
-  }
-  chao.push({ d: ondas, c: 'on' });
+  /* As 45 ondas em til saíram em 28/10/2026 ("tá muito poluído"); a água é
+   * só o plano. Os sorteios delas continuam gastos para que as janelas acesas
+   * da torre, sorteadas depois, fiquem onde estavam. */
+  for (let i = 0; i < 90; i++) sorte();
 
   /* ---- O CHÃO: a praça calçada, os canteiros pontilhados. ---- */
   chao.push({ d: redondo(150, 204, 346, 268, 40), c: 'g' });
@@ -266,19 +264,17 @@ function montar() {
     chao.push({ d: redondo(x, y, w, d, r), c: 'gm' });
   }
 
-  /* ---- A TORRE: vidro escuro, nervura vertical, andares acesos. ---- */
+  /* ---- A TORRE: vidro escuro e andares acesos. A nervura vertical (nove
+   * riscos por face) saiu em 28/10/2026 com as ondas: era a textura mais
+   * densa da cena. ---- */
   const torre = caixa(236, 10, 0, 92, 92, 252, VIDRO);
-  const nE = [];
-  const nD = [];
-  for (let x = 245.2; x < 328; x += 9.2) nE.push([[x, 102, 0], [x, 102, 252]]);
-  for (let y = 19.2; y < 102; y += 9.2) nD.push([[328, y, 0], [328, y, 252]]);
   const acesas = [];
   for (let i = 0; i < 10; i++) {
     const col = Math.floor(sorte() * 10);
     const z = 12 + Math.floor(sorte() * 26) * 9;
     acesas.push(sorte() < 0.62 ? esq(102, 236 + col * 9.2 + 1.6, 236 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz') : dir(328, 10 + col * 9.2 + 1.6, 10 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz'));
   }
-  torre.it.splice(2, 0, { d: linhas3(nE), c: 'ng' }, { d: linhas3(nD), c: 'ng' }, ...acesas);
+  torre.it.splice(2, 0, ...acesas);
   caixa(250, 24, 252, 64, 64, 14, VIDRO);
   const [ax, ay] = P(282, 56, 266);
   solidos.push({ bb: [281, 283, 55, 57, 266, 300], it: [{ d: `M${n(ax)} ${n(ay)}L${n(ax)} ${n(ay - 34)}`, c: 'fi' }, { d: disco(ax, ay - 34, 2), c: 'a' }] });
