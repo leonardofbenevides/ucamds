@@ -98,12 +98,13 @@ Peça nova `cookie-banner` (32ª): faixa GRUDADA no pé (último filho da págin
 
 A linha de unidade não virou peça: o `contact-card` ganhou `layout="row"` (nome à esquerda, dados em colunas a partir de duas colunas), `image` (foto pequena e decorativa) e `kicker` (rótulo acima do nome). Vários telefones separados por "/" viram um link cada; antes a linha inteira sumia.
 
+O selo e-MEC também não virou peça: vai no lugar livre do bloco da marca do `site-footer` (`ucamSiteFooterMarca`), com a classe `.ucam-site-footer__selo` (fundo claro, 6rem, link para a consulta, nome no alt). A demo usa um lugar marcado; o site põe a imagem oficial do e-MEC.
+
 **Faltam, em ordem do quanto aparecem:**
 
 | Peça | Onde aparece | Nota |
 |---|---|---|
 | Controles de carrossel | Vale a pena, depoimentos, curso em destaque ("1 DE 6 ‹ ›") | Decidir antes: carrossel ou grade que rola; o desfile já existe |
-| Selo e-MEC no rodapé | Todas as páginas | Encaixe de imagem no `site-footer` |
 
 Fora do catálogo de propósito: a busca de curso, a grade de cursos com filtros e o banner de
 destaque são composições de peças que já existem.

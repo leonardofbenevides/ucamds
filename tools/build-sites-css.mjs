@@ -1269,6 +1269,24 @@ ${acima('desktop-largo')} {
   font-size: ${V('typography-title-font-size')};
   font-weight: ${V('typography-title-font-weight')};
 }
+/* O SELO DE CREDENCIAMENTO (e-MEC), 27/10/2026: o candidomendes.edu.br o
+ * mostra em todo rodapé, e a instituição credenciada é obrigada a exibi-lo.
+ * Vai no lugar livre do bloco da marca (ucamSiteFooterMarca) como link para
+ * a consulta no e-MEC, com a imagem oficial. Sobre o rodapé escuro ele ganha
+ * um fundo claro: o selo é desenhado para fundo branco, e o QR precisa de
+ * contraste para ser lido. O nome do link é o alt da imagem. */
+.ucam-site-footer__selo {
+  display: inline-block;
+  padding: ${V('space-inline-xs')};
+  border-radius: ${V('radius-control')};
+  background: ${V('color-surface-default')};
+  line-height: 0;
+}
+.ucam-site-footer__selo img {
+  display: block;
+  inline-size: 6rem;
+  block-size: auto;
+}
 .ucam-site-footer__logo {
   display: block;
   inline-size: auto;

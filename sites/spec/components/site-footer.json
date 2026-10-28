@@ -103,6 +103,12 @@
       "obrigatorio": false,
       "descricao": "<ul> com as redes, por extenso.",
       "classe": "ucam-site-footer__social"
+    },
+    {
+      "parte": "selo",
+      "obrigatorio": false,
+      "descricao": "<a> para a consulta da instituição no e-MEC, com a imagem oficial do selo (6rem de largura, fundo claro sobre o rodapé escuro). Vai no lugar livre do bloco da marca, com ucamSiteFooterMarca. O nome do link é o alt da imagem: \"e-MEC: consulte o cadastro da Universidade Candido Mendes\".",
+      "classe": "ucam-site-footer__selo"
     }
   ],
   "props": [
