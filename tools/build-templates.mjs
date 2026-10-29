@@ -384,7 +384,7 @@ ${sprite}
   <span>${esc(proj.nome)}</span><span class="sep">/</span>
   <span>${esc(t.nome)}</span>
   ${t.perfil ? `<span class="sep">·</span><span>Quem vê: ${esc(t.perfil)}</span>` : ""}
-  <span style="margin-inline-start:auto">Template do design system — não é o sistema em produção.</span>
+  <span style="margin-inline-start:auto">Template do design system, não o sistema em produção.</span>
   <a href="__DOC__">Ver documentação</a>
 </div>
 <script>${semPularScript}</script>

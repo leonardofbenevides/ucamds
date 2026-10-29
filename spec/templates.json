@@ -8515,51 +8515,51 @@
             "titulo": "Matrizes",
             "itens": [
               {
-                "rotulo": "DIR20222 · Direito · 2022.2",
-                "meta": " · 640h · 9 disciplinas",
+                "rotulo": "Direito 2022.2",
+                "meta": "DIR20222",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "matriz curricular",
                 "recente": true
               },
               {
-                "rotulo": "DIR20201 · Direito · 2020.1",
-                "meta": "Em extinção · 640h · 9 disciplinas",
+                "rotulo": "Direito 2020.1",
+                "meta": "DIR20201 · em extinção",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "matriz curricular"
               },
               {
-                "rotulo": "ADM20231 · Administração · 2023.1",
-                "meta": " · 560h · 8 disciplinas",
+                "rotulo": "Administração 2023.1",
+                "meta": "ADM20231",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "matriz curricular"
               },
               {
-                "rotulo": "ADM20182 · Administração · 2018.2",
-                "meta": "Encerrada · 600h · 8 disciplinas",
+                "rotulo": "Administração 2018.2",
+                "meta": "ADM20182 · encerrada",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "matriz curricular"
               },
               {
-                "rotulo": "CON20241 · Ciências Contábeis · 2024.1",
-                "meta": " · 560h · 8 disciplinas",
+                "rotulo": "Ciências Contábeis 2024.1",
+                "meta": "CON20241",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "matriz curricular"
               },
               {
-                "rotulo": "PSI20231 · Psicologia · 2023.1",
-                "meta": " · 720h · 10 disciplinas",
+                "rotulo": "Psicologia 2023.1",
+                "meta": "PSI20231",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "matriz curricular"
               },
               {
-                "rotulo": "PED20221 · Pedagogia · 2022.1",
-                "meta": " · 560h · 8 disciplinas",
+                "rotulo": "Pedagogia 2022.1",
+                "meta": "PED20221",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "matriz curricular"
@@ -8572,420 +8572,420 @@
             "itens": [
               {
                 "rotulo": "Introdução ao Estudo do Direito",
-                "meta": "DIR20222 · 1º período · 80h",
+                "meta": "DIR20222 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Direito Civil I",
-                "meta": "DIR20222 · 1º período · 80h",
+                "meta": "DIR20222 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "História do Direito",
-                "meta": "DIR20222 · 1º período · 40h",
+                "meta": "DIR20222 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Sociologia Jurídica",
-                "meta": "DIR20222 · 1º período · 40h",
+                "meta": "DIR20222 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Direito Penal I",
-                "meta": "DIR20222 · 2º período · 80h",
+                "meta": "DIR20222 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Direito Constitucional I",
-                "meta": "DIR20222 · 2º período · 80h",
+                "meta": "DIR20222 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Teoria Geral do Processo",
-                "meta": "DIR20222 · 2º período · 80h",
+                "meta": "DIR20222 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Direito Administrativo",
-                "meta": "DIR20222 · 3º período · 80h",
+                "meta": "DIR20222 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Direito Empresarial I",
-                "meta": "DIR20222 · 3º período · 80h",
+                "meta": "DIR20222 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2022.2"
               },
               {
                 "rotulo": "Introdução ao Estudo do Direito",
-                "meta": "DIR20201 · 1º período · 80h",
+                "meta": "DIR20201 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Direito Civil I",
-                "meta": "DIR20201 · 1º período · 80h",
+                "meta": "DIR20201 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Filosofia do Direito",
-                "meta": "DIR20201 · 1º período · 40h",
+                "meta": "DIR20201 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Sociologia Jurídica",
-                "meta": "DIR20201 · 1º período · 40h",
+                "meta": "DIR20201 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Direito Penal I",
-                "meta": "DIR20201 · 2º período · 80h",
+                "meta": "DIR20201 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Direito Constitucional I",
-                "meta": "DIR20201 · 2º período · 80h",
+                "meta": "DIR20201 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Economia Política",
-                "meta": "DIR20201 · 2º período · 80h",
+                "meta": "DIR20201 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Direito Administrativo",
-                "meta": "DIR20201 · 3º período · 80h",
+                "meta": "DIR20201 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Direito Empresarial I",
-                "meta": "DIR20201 · 3º período · 80h",
+                "meta": "DIR20201 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Direito · 2020.1"
               },
               {
                 "rotulo": "Teoria Geral da Administração",
-                "meta": "ADM20231 · 1º período · 80h",
+                "meta": "ADM20231 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Matemática Aplicada",
-                "meta": "ADM20231 · 1º período · 80h",
+                "meta": "ADM20231 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Contabilidade Geral",
-                "meta": "ADM20231 · 1º período · 80h",
+                "meta": "ADM20231 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Economia I",
-                "meta": "ADM20231 · 2º período · 80h",
+                "meta": "ADM20231 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Estatística Aplicada",
-                "meta": "ADM20231 · 2º período · 80h",
+                "meta": "ADM20231 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Direito Empresarial",
-                "meta": "ADM20231 · 2º período · 40h",
+                "meta": "ADM20231 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Marketing I",
-                "meta": "ADM20231 · 3º período · 80h",
+                "meta": "ADM20231 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Gestão de Pessoas I",
-                "meta": "ADM20231 · 3º período · 40h",
+                "meta": "ADM20231 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2023.1"
               },
               {
                 "rotulo": "Teoria Geral da Administração",
-                "meta": "ADM20182 · 1º período · 80h",
+                "meta": "ADM20182 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Matemática Financeira",
-                "meta": "ADM20182 · 1º período · 80h",
+                "meta": "ADM20182 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Contabilidade Geral",
-                "meta": "ADM20182 · 1º período · 80h",
+                "meta": "ADM20182 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Economia I",
-                "meta": "ADM20182 · 2º período · 80h",
+                "meta": "ADM20182 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Estatística",
-                "meta": "ADM20182 · 2º período · 80h",
+                "meta": "ADM20182 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Instituições de Direito",
-                "meta": "ADM20182 · 2º período · 40h",
+                "meta": "ADM20182 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Marketing I",
-                "meta": "ADM20182 · 3º período · 80h",
+                "meta": "ADM20182 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Comportamento Organizacional",
-                "meta": "ADM20182 · 3º período · 80h",
+                "meta": "ADM20182 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Administração · 2018.2"
               },
               {
                 "rotulo": "Contabilidade Introdutória",
-                "meta": "CON20241 · 1º período · 80h",
+                "meta": "CON20241 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "Matemática Aplicada",
-                "meta": "CON20241 · 1º período · 80h",
+                "meta": "CON20241 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "Fundamentos de Administração",
-                "meta": "CON20241 · 1º período · 40h",
+                "meta": "CON20241 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "Contabilidade Intermediária",
-                "meta": "CON20241 · 2º período · 80h",
+                "meta": "CON20241 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "Estatística",
-                "meta": "CON20241 · 2º período · 80h",
+                "meta": "CON20241 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "Direito Tributário I",
-                "meta": "CON20241 · 2º período · 40h",
+                "meta": "CON20241 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "Contabilidade de Custos",
-                "meta": "CON20241 · 3º período · 80h",
+                "meta": "CON20241 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "Legislação Societária",
-                "meta": "CON20241 · 3º período · 80h",
+                "meta": "CON20241 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Ciências Contábeis · 2024.1"
               },
               {
                 "rotulo": "História da Psicologia",
-                "meta": "PSI20231 · 1º período · 80h",
+                "meta": "PSI20231 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Neuroanatomia",
-                "meta": "PSI20231 · 1º período · 80h",
+                "meta": "PSI20231 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Antropologia",
-                "meta": "PSI20231 · 1º período · 40h",
+                "meta": "PSI20231 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Filosofia",
-                "meta": "PSI20231 · 1º período · 40h",
+                "meta": "PSI20231 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Psicologia do Desenvolvimento I",
-                "meta": "PSI20231 · 2º período · 80h",
+                "meta": "PSI20231 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Estatística em Psicologia",
-                "meta": "PSI20231 · 2º período · 80h",
+                "meta": "PSI20231 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Ética Profissional",
-                "meta": "PSI20231 · 2º período · 80h",
+                "meta": "PSI20231 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Teorias da Personalidade",
-                "meta": "PSI20231 · 3º período · 80h",
+                "meta": "PSI20231 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Psicopatologia I",
-                "meta": "PSI20231 · 3º período · 80h",
+                "meta": "PSI20231 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Metodologia da Pesquisa",
-                "meta": "PSI20231 · 3º período · 80h",
+                "meta": "PSI20231 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Psicologia · 2023.1"
               },
               {
                 "rotulo": "Fundamentos da Educação",
-                "meta": "PED20221 · 1º período · 80h",
+                "meta": "PED20221 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"
               },
               {
                 "rotulo": "Psicologia da Educação",
-                "meta": "PED20221 · 1º período · 80h",
+                "meta": "PED20221 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"
               },
               {
                 "rotulo": "Leitura e Produção de Texto",
-                "meta": "PED20221 · 1º período · 40h",
+                "meta": "PED20221 · 1º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"
               },
               {
                 "rotulo": "Didática",
-                "meta": "PED20221 · 2º período · 80h",
+                "meta": "PED20221 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"
               },
               {
                 "rotulo": "Sociologia da Educação",
-                "meta": "PED20221 · 2º período · 80h",
+                "meta": "PED20221 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"
               },
               {
                 "rotulo": "Filosofia da Educação",
-                "meta": "PED20221 · 2º período · 40h",
+                "meta": "PED20221 · 2º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"
               },
               {
                 "rotulo": "Alfabetização e Letramento",
-                "meta": "PED20221 · 3º período · 80h",
+                "meta": "PED20221 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"
               },
               {
                 "rotulo": "Políticas Educacionais",
-                "meta": "PED20221 · 3º período · 80h",
+                "meta": "PED20221 · 3º período",
                 "icone": "bookOpen",
                 "tela": "matrizes",
                 "termos": "disciplina Pedagogia · 2022.1"

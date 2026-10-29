@@ -1069,7 +1069,7 @@ export function renderShell(cfg = {}, conteudo = '') {
         `<button class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-nav__fechar" type="button" aria-label="Fechar navegação" aria-controls="${esc(navId)}">` +
         '<svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>' +
         '</button></div>' +
-        (campus ? `<p class="ucam-nav__gaveta-campus">Campus · ${esc(campus)}</p>` : '')
+        (campus ? `<p class="ucam-nav__gaveta-campus">Campus ${esc(campus)}</p>` : '')
       : '';
 
   /* A BARRA DO TOPO com o botão de recolher, nos arranjos com faixa. O botão
