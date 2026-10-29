@@ -274,6 +274,11 @@
       "faca": "Vestir a casca por um dos componentes de campo.",
       "evite": "Montar um campo novo direto sobre ela numa tela.",
       "porque": "Campo montado à mão não aparece no inventário e diverge do resto no primeiro ajuste de contrato."
+    },
+    {
+      "faca": "Na grade de formulário com número ímpar de campos, dar ucam-field--inteiro ao último campo para ele ocupar a fileira, mantendo rótulo, controle e dica alinhados.",
+      "evite": "Deixar o último campo em meia linha com um buraco ao lado, ou usar ucam-field--linha nele: --linha sai da subgrade e o rótulo some. Código curto (--codigo) não estica.",
+      "porque": "O buraco lia como campo faltando em telas médias (Novo banco a 1180px). 29/10/2026."
     }
   ],
   "implementacao": {

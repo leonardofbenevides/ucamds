@@ -1031,6 +1031,14 @@ ${abaixo('controle-deitado')} {
   grid-row: auto;
 }
 .ucam-form-grid > fieldset.ucam-field--linha { display: flex; }
+/* O CAMPO QUE FECHA A GRADE SOZINHO (29/10/2026). Numa grade de duas trilhas
+ * com número ímpar de campos, o último ficava em meia linha com um buraco ao
+ * lado (Descrição no Novo banco, Site na Unidade). --inteiro ocupa a fileira
+ * e continua na subgrade de rótulo, controle e dica — o --linha não serve:
+ * ele sai da subgrade, e o rótulo sumia. Código curto (--codigo) fica curto:
+ * esticar dois caracteres até a borda é pior que a sobra. */
+.ucam-form-grid > .ucam-field--inteiro { grid-column: 1 / -1; }
+.ucam-form-grid > .ucam-field--inteiro > :is(.ucam-input, .ucam-select, .ucam-select-wrap, .ucam-input-group, [data-listbox]) { inline-size: 100%; max-inline-size: none; }
 /* Texto longo: a linha inteira com uma ou duas trilhas; com três ou mais, as
  * duas primeiras (~48rem, a medida de leitura do corpo). A textarea termina
  * numa borda de trilha, e não em 45rem num lugar e 1205px no outro. */
@@ -3633,7 +3641,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * a frase vai num <span> e o link volta a ser de prosa. */
 .ucam-table tbody :is(th, td:not(.td--num)) > a.ucam-link:only-child {
   font-weight: var(--ucam-typography-label-font-weight);
-  color: var(--ucam-color-text-primary);
+  /* Tinta do sistema, não primária (ADR-082): o nome que abre um registro tem
+   * a cor do app, como o nome de pessoa na mesma tabela (pedido de 12/10). */
+  color: var(--ucam-sistema-tinta, var(--ucam-color-text-link));
   text-decoration: none;
 }
 .ucam-table tbody :is(th, td:not(.td--num)) > a.ucam-link:only-child:is(:hover, :focus-visible) { text-decoration: underline; }
@@ -5059,15 +5069,26 @@ ${SISTEMAS.map((s) => '.ucam-icon-tile--' + s + ' { --ucam-tile-cor: var(--ucam-
  * Sublinhado em REPOUSO, não só no hover: cor sozinha não distingue link de
  * texto corrido (WCAG 1.4.1). O deslocamento tira a linha de cima das hastes
  * descendentes, que é o que faz sublinhado parecer sujeira tipográfica. */
+/* UMA COR DE LINK POR SISTEMA (29/10/2026). O link era o azul genérico de
+ * text.link num app vinho, verde ou roxo, ao lado de nomes de registro na
+ * tinta do sistema: duas cores para a mesma promessa. Passa à tinta do
+ * sistema; fora de um app, text.link. O sublinhado em repouso fica para o
+ * link DENTRO DE TEXTO CORRIDO (regra logo abaixo), que é onde a cor sozinha
+ * não o separa do texto (WCAG 1.4.1). Em lista, cartão, tabela e fileira, o
+ * link é o próprio item: posição e cor bastam, e o sublinhado em pilha pesava
+ * mais que os números ao lado. */
 .ucam-link {
-  color: var(--ucam-color-text-link);
-  text-decoration: underline;
+  color: var(--ucam-sistema-tinta, var(--ucam-color-text-link));
+  text-decoration: none;
   text-underline-offset: 0.2em;
   text-decoration-thickness: 1px;
   border-radius: var(--ucam-radius-miudo);
 }
 
-.ucam-link:hover { text-decoration-thickness: 2px; }
+.ucam-link:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+:is(p, dd, blockquote, .ucam-field__hint, .ucam-section__hint, .ucam-lede) .ucam-link {
+  text-decoration: underline;
+}
 
 /* Link de APOIO: mesma cor e mesmo sublinhado, corpo menor.
  *
@@ -13855,9 +13876,14 @@ ${abaixo('nav-fixa')} and (max-height: 56.25rem) {
  * (matrícula, inscrição, CPF na linha de apoio). O apoio que não identifica
  * — carga horária, e-mail, lotação — continua na tinta secundária. */
 :is(.ucam-table, .ucam-table-moldura) tbody :is(.td--pessoa__nome, .td--figura__texto > .ucam-card__titulo, .ucam-id, .td--apoio.ucam-codigo),
-:is(.ucam-table, .ucam-table-moldura) tbody th[scope="row"] {
+:is(.ucam-table, .ucam-table-moldura) tbody th[scope="row"]:has(a) {
   color: var(--ucam-sistema-tinta, var(--ucam-color-action-primary-default));
 }
+/* SÓ O CABEÇALHO DE LINHA QUE LEVA A ALGUM LUGAR (29/10/2026: "pq esse title
+ * tá no bordô nos meses? Faça ter um padrão"). A regra de 12/10 pintava todo
+ * th de linha, e mês, total e categoria — que não abrem nada — liam como
+ * link. A cor do sistema numa tabela quer dizer "isto identifica um registro
+ * ou abre"; o resto fica na tinta do texto. */
 
 .ucam-sr-only {
   position: absolute;

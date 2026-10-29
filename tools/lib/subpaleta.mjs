@@ -165,9 +165,16 @@ export const DESVIO_L = {
  *
  * Só no claro. No escuro a faixa continua na altura comum (L 30): ali o chão
  * já é escuro, e uma faixa a L 52 seria a peça mais clara da moldura. */
-export const MARCA_PROPRIA = {
-  pessoas: { claro: { L: 52, croma: 1 } },
-};
+/* DE PESSOAS PARA TODOS (29/10/2026). O pedido de "revise a cor dos apps"
+ * veio com a mesma queixa que subiu o Vestibular: faixas escuras demais, que
+ * em L 35 colapsavam em azul-marinho, verde-garrafa e roxo-ameixa quase
+ * iguais, e no acervo davam um oliva barrento. Com a regra só em pessoas, o
+ * teal era a única faixa clara da família. Em L 52 com o croma da categoria
+ * todas seguem com texto branco acima de AA (5,2 a 6,3:1) e voltam a ser
+ * matizes distintos. Atendimento não entra: é a marca (HERDA_MARCA). */
+export const MARCA_PROPRIA = Object.fromEntries(
+  ['academico', 'financeiro', 'gestao', 'pessoas', 'acervo', 'pesquisa', 'comunicacao'].map((s) => [s, { claro: { L: 52, croma: 1 } }]),
+);
 
 /* A AÇÃO PRÓPRIA DE UM SISTEMA — e é um DESVIO ASSUMIDO, não uma janela nova.
  *

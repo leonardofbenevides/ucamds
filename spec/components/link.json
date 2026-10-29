@@ -226,6 +226,11 @@
       "faca": "Avisar no texto quando o destino abre em nova aba.",
       "evite": "target=_blank silencioso.",
       "porque": "Mudança de contexto sem aviso (WCAG 3.2.5), e quem usa ampliação frequentemente não percebe que a janela trocou."
+    },
+    {
+      "faca": "Usar a tinta do sistema no link e sublinhar em repouso só quando ele está dentro de texto corrido (parágrafo, dica, descrição).",
+      "evite": "Link azul sublinhado numa lista de nomes ao lado de nomes de registro na cor do sistema; ou um cabeçalho de linha pintado sem ser link.",
+      "porque": "Duas cores para a mesma promessa confundem, e cor sem link parece clicável. ADR-082, 29/10/2026."
     }
   ],
   "implementacao": {

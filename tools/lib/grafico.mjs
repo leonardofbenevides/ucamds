@@ -85,9 +85,19 @@ function grafico() {
     var fonte = getComputedStyle(fig).fontFamily;
     var rotulo = { color: tinta, fontFamily: fonte, fontSize: 12 };
     var legendaBase = { bottom: 0, icon: 'circle', itemWidth: 8, itemHeight: 8, textStyle: rotulo };
+    /* A COR DO SISTEMA NO FOCO (ADR-082, 29/10/2026). A série que é o
+     * assunto — a principal de uma comparação (tom: "sistema") ou a do
+     * destaque — leva a tinta do sistema, não o slot 1: o azul da paleta num
+     * app vinho ou verde era a pergunta "pq ta azul aqui?". A referência (tom:
+     * "referencia") e o contexto do destaque vão em cinza. Fora de um app,
+     * sem tinta declarada, o foco volta ao slot 1. A tinta mora no
+     * .ucam-shell, por isso é lida da figura. */
+    var foco = getComputedStyle(fig).getPropertyValue('--ucam-sistema-tinta').trim() || cores[0];
     var corDe = function (s, i) {
+      if (s.tom === 'sistema') return foco;
+      if (s.tom === 'referencia') return cinza;
       if (!cfg.destaque) return s.slot ? cores[s.slot - 1] : undefined;
-      return s.nome === cfg.destaque ? cores[(s.slot || 1) - 1] : cinza;
+      return s.nome === cfg.destaque ? (s.slot ? cores[s.slot - 1] : foco) : cinza;
     };
     var base = {
       color: cores,

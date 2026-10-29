@@ -1554,6 +1554,20 @@
         "No Trilho A o par é [data-lote-primario] e [data-lote-primario-rotulo]; o script do lote atualiza os dois."
       ],
       "afeta": ["data-table", "button"]
+    },
+    {
+      "id": "ADR-082",
+      "titulo": "Uma cor de interação por sistema, e cor no dado só na exceção",
+      "status": "aceita",
+      "data": "2026-10-29",
+      "contexto": "Pedido do Leonardo: \"pq esses links ficam sublinhados e com azul? pq esse title tá no bordô nos meses? Faça ter um padrão\", \"pq ta azul aqui?\" e \"reveja cor dos charts\". Na mesma tela do Protocolo havia link azul sublinhado (ucam-link, text.link), nome de registro em vinho (ADR-071), cabeçalho de mês em vinho sem ser link, barras de carga azuis (ADR-073: info até 80%), barras vermelha, azul e preta medindo a mesma coisa, e séries azul e rosa num app vinho.",
+      "decisao": "Interação: o link usa a tinta do sistema (--ucam-sistema-tinta; fora de app, text.link), a mesma dos nomes e identificadores nas tabelas. Sublinhado em repouso só dentro de texto corrido (p, dd, dica, lede); em lista, cartão, tabela e fileira o link é o próprio item e sublinha no hover. Na tabela, o cabeçalho de linha só leva a tinta quando tem link. Dado: magnitude normal é a barra padrão (grafite); warning e danger ficam para a exceção, com o texto ao lado. No gráfico de comparação (atual × anterior, concluído × aberto), a série principal leva a cor do sistema e a de referência vai em cinza; a paleta categórica fica para categorias nominais (bancos). Revoga em parte a ADR-073 (info deixa de ser o tom da carga normal) e a ADR-071 no cabeçalho de linha sem link.",
+      "consequencias": [
+        "Cada sistema tem uma cor de interação; azul passa a dizer só \"informação\" (selo, aviso).",
+        "Lista de nomes com link deixa de ser uma pilha de sublinhados.",
+        "Gráfico com duas séries de comparação deixa de usar azul e rosa em todo app."
+      ],
+      "afeta": ["link", "data-table", "progress", "chart"]
     }
   ]
 }

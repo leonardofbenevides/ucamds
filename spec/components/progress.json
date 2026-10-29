@@ -248,7 +248,7 @@
   ],
   "boas_praticas": [
     {
-      "faca": "Escolher o tom pela mesma grandeza que o comprimento mede: carga é info até 80% da capacidade, warning de 80% a 100% e danger acima.",
+      "faca": "Escolher o tom pela mesma grandeza que o comprimento mede: carga é a barra padrão (grafite, sem tom) até 80% da capacidade, warning de 80% a 100% e danger acima. Magnitude normal não ganha cor (ADR-082, 29/10/2026): o azul de info num app vinho ou verde gastava cor numa situação que não pede atenção, e a cor fica para a exceção, com o texto ao lado dizendo o porquê.",
       "evite": "Pintar a barra por outra grandeza (atraso, situação) enquanto o comprimento mede carga.",
       "porque": "Na Carga por setor a Secretaria aparecia vermelha com 45% e o CPD azul com 60%: a cor desmentia o comprimento. O atraso passou para o texto, em tinta de perigo."
     },
