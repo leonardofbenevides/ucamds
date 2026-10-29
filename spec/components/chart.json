@@ -7,7 +7,7 @@
   "version": "0.1.0",
   "since": "0.1.0",
   "category": "dados",
-  "description": "Gráfico de série: linha, área, barra ou pizza. Serve para ver a FORMA de um conjunto — a tendência, a diferença entre categorias, o pico fora da curva. O número exato nunca vem do desenho: vem da tabela equivalente, que acompanha o gráfico e é a fonte acessível dos mesmos dados.",
+  "description": "Gráfico de série: linha, área, barra, rosca, funil, heatmap, dispersão ou dumbbell. Serve para ver a FORMA de um conjunto — a tendência, a diferença entre categorias, o pico fora da curva. O número exato nunca vem do desenho: vem da tabela equivalente, que acompanha o gráfico e é a fonte acessível dos mesmos dados.",
   "quando_usar": [
     "A pergunta é sobre o comportamento de um conjunto ao longo do tempo: os requerimentos abertos por mês subiram ou caíram?",
     "É preciso comparar categorias de relance: qual campus concentra os indeferimentos.",
@@ -74,9 +74,9 @@
   "props": [
     {
       "nome": "type",
-      "tipo": "'line' | 'area' | 'bar' | 'pie' | 'donut' | 'funnel' | 'sparkline'",
+      "tipo": "'line' | 'area' | 'bar' | 'pie' | 'donut' | 'funnel' | 'sparkline' | 'heatmap' | 'scatter' | 'dumbbell'",
       "default": "'line'",
-      "descricao": "A forma. Escolhida pela pergunta que o dado responde, não por gosto. Três formas novas (leva 4, 23/10/2026): donut, a composição de até três partes com o vão no meio para o total; funnel, só quando as etapas são cumulativas e a ordem é regra de negócio confirmada (quem está numa etapa passou por todas as anteriores) — situações exclusivas, como as da captação, são barra empilhada, não funil; sparkline, a tendência sem eixo dentro de um indicador, que não substitui o número.",
+      "descricao": "A forma. Escolhida pela pergunta que o dado responde, não por gosto. Três formas novas (leva 4, 23/10/2026): donut, a composição de até três partes com o vão no meio para o total; funnel, só quando as etapas são cumulativas e a ordem é regra de negócio confirmada (quem está numa etapa passou por todas as anteriores) — situações exclusivas, como as da captação, são barra empilhada, não funil; sparkline, a tendência sem eixo dentro de um indicador, que não substitui o número. Mais três formas em 29/10/2026, pedidas como \"variedade de gráficos pra usarmos\" e escolhidas pela pergunta, não pelo catálogo da biblioteca: heatmap, scatter e dumbbell. Radar, gauge e treemap ficaram de fora de propósito, porque respondem mal às perguntas das telas.",
       "valores": {
         "line": {
           "uso": "Mudança ao longo do tempo, com o eixo em ordem cronológica.",
@@ -93,6 +93,30 @@
         "pie": {
           "uso": "Parte de um todo, quando as partes somam 100% e são poucas.",
           "limite": "No máximo TRÊS fatias — é o teto da paleta em pareamento de todos-contra-todos. Quatro ou mais, use barra."
+        },
+        "donut": {
+          "uso": "Composição de até três partes, com o vão no meio para o total.",
+          "limite": "O mesmo teto da pizza: três fatias."
+        },
+        "funnel": {
+          "uso": "Etapas cumulativas, em que quem está numa etapa passou por todas as anteriores.",
+          "limite": "Só com a ordem confirmada como regra de negócio. Situações exclusivas são barra empilhada."
+        },
+        "sparkline": {
+          "uso": "A tendência sem eixo dentro de um indicador.",
+          "limite": "Não substitui o número do indicador, só o acompanha."
+        },
+        "heatmap": {
+          "uso": "Magnitude numa grade de duas categorias: dia da semana × hora, curso × semestre. As linhas da tabela são o eixo vertical e as séries, as colunas.",
+          "limite": "Um tom só, da cor do slot 1 por opacidade: mais é mais forte nos dois temas. Nunca arco-íris. Célula sem dado fica vazia, não zero. Não serve para valor com sinal (acima e abaixo de uma meta): isso é divergente, e o DS ainda não tem par divergente."
+        },
+        "scatter": {
+          "uso": "A relação entre duas medidas, um ponto por linha da tabela: frequência × média por turma. A série 1 é o eixo x e a série 2, o y.",
+          "limite": "Duas séries exatamente. Os eixos não começam em zero, porque ali o que se lê é posição e não comprimento. Não é eixo duplo: cada medida tem o seu eixo, um no x e o outro no y. Agrupar pontos por cor cai no teto de três, o das formas em que toda cor se compara com toda."
+        },
+        "dumbbell": {
+          "uso": "Antes › depois por item: a taxa de rematrícula de cada curso no semestre passado e neste. A série 1 é o antes, em cinza de contexto; a série 2 é o depois, na cor do slot 1; um fio liga os dois.",
+          "limite": "Duas séries exatamente, na ordem do tempo. Deitado, porque o nome do item é longo. O eixo não começa em zero (é posição). Com mais de dois momentos, é linha."
         }
       }
     },
@@ -145,6 +169,18 @@
       "descricao": "Barra deitada. É o certo quando os rótulos de categoria são longos: deitado eles cabem sem girar. Ignorado fora de type='bar'."
     },
     {
+      "nome": "proportional",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Barra 100%: empilha e normaliza, e cada barra vai a 100%. Para a FATIA de cada parte quando os totais das categorias variam tanto que a barra empilhada comum esconde a proporção dos pequenos (um campus com 5 mil alunos ao lado de um com 300). A dica dá a porcentagem; a tabela continua com os números. Ignorado fora de type='bar'."
+    },
+    {
+      "nome": "emphasis",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Chave da série que é o ASSUNTO do gráfico. Ela fica com a cor do slot e as outras vão para o cinza de contexto (border.strong): é a forma de ênfase, a resposta honesta a \"este campus subiu\". Em linha, o nome da série em destaque é escrito na ponta. Vale em line, area e bar."
+    },
+    {
       "nome": "height",
       "tipo": "'sm' | 'md' | 'lg'",
       "default": "'md'",
@@ -188,6 +224,14 @@
       "stack": {
         "tipo": "string",
         "descricao": "Nome do grupo de empilhamento, para empilhar só um subconjunto das séries."
+      },
+      "format": {
+        "tipo": "(value: number) => string",
+        "descricao": "Formato desta série quando difere do gráfico. Na dispersão as duas medidas têm grandeza diferente: frequência em %, média de 0 a 10."
+      },
+      "unit": {
+        "tipo": "string",
+        "descricao": "Unidade desta série no cabeçalho da tabela e no nome do eixo da dispersão."
       }
     },
     "ChartRow": {
@@ -308,6 +352,22 @@
     {
       "titulo": "Série com slot fixo, porque o painel filtra",
       "codigo": "<!-- Com o filtro tirando uma natureza, as que ficam NÃO podem trocar de cor. -->\n<ucam-chart\n  type=\"bar\"\n  label=\"Requerimentos por natureza — 2026\"\n  categoryKey=\"mes\"\n  categoryLabel=\"Mês\"\n  [data]=\"porNatureza()\"\n  [series]=\"[\n    { key: 'trancamento', name: 'Trancamento', slot: 1 },\n    { key: 'revisao',     name: 'Revisão de nota', slot: 2 },\n    { key: 'declaracao',  name: 'Declaração', slot: 3 }\n  ]\" />"
+    },
+    {
+      "titulo": "Heatmap: dia da semana × hora",
+      "codigo": "<ucam-chart\n  type=\"heatmap\"\n  label=\"Atendimentos do protocolo por dia e hora — setembro de 2026\"\n  unit=\"atendimentos\"\n  categoryKey=\"dia\"\n  categoryLabel=\"Dia\"\n  [data]=\"porHora()\"\n  [series]=\"horas\" />"
+    },
+    {
+      "titulo": "Dispersão: duas medidas por turma",
+      "codigo": "<ucam-chart\n  type=\"scatter\"\n  label=\"Frequência e média final por turma — 2026.1\"\n  categoryKey=\"turma\"\n  categoryLabel=\"Turma\"\n  [data]=\"turmas()\"\n  [series]=\"[\n    { key: 'frequencia', name: 'Frequência', unit: '%', format: pct },\n    { key: 'media', name: 'Média final' }\n  ]\" />"
+    },
+    {
+      "titulo": "Dumbbell: antes e depois por curso",
+      "codigo": "<ucam-chart\n  type=\"dumbbell\"\n  label=\"Taxa de rematrícula por curso, 2025.2 e 2026.2\"\n  unit=\"%\"\n  categoryKey=\"curso\"\n  [data]=\"taxas()\"\n  [series]=\"[\n    { key: 'antes', name: '2025.2' },\n    { key: 'agora', name: '2026.2' }\n  ]\" />"
+    },
+    {
+      "titulo": "Barra 100% e destaque",
+      "codigo": "<ucam-chart type=\"bar\" horizontal proportional\n  label=\"Situação da matrícula por campus — 2026.2\"\n  unit=\"alunos\" categoryKey=\"campus\" [data]=\"situacao()\"\n  [series]=\"[{ key: 'ativos', name: 'Ativos' }, { key: 'trancados', name: 'Trancados' }, { key: 'evadidos', name: 'Evadidos' }]\" />\n\n<ucam-chart type=\"line\" emphasis=\"niteroi\"\n  label=\"Evasão por campus, em % — 2024.1 a 2026.2\"\n  categoryKey=\"semestre\" [data]=\"evasao()\" [series]=\"campi\" />"
     }
   ],
   "boas_praticas": [
@@ -350,10 +410,10 @@
   "implementacao": {
     "trilho_a": {
       "contrato": "chart.json",
-      "raiz": "não entrega",
-      "nota": "Sem versão em CSS puro. Um gráfico em @ucam/css seria uma casca sem dados — o que existe para o legado continua sendo a tabela e a exportação."
+      "raiz": "<figure class=\"ucam-grafico\" data-grafico='{json}'>",
+      "nota": "Desde 23/10/2026 as telas de referência desenham pelo mesmo ECharts, com tools/lib/grafico.mjs: a figura traz o JSON (tipo, categorias, series com nome e dados, unidade, sufixo ou moeda, e horizontal, empilhado, proporcao e destaque) e o script monta o plot e a tabela equivalente. Os nomes são os do Trilho B em português: proporcao é proportional, destaque é emphasis e recebe o NOME da série, empilhado é stacked. Com fonte: {tabela, colunas} os dados saem das células de uma tabela da tela a cada desenho. Não há versão em CSS puro: um gráfico sem script seria uma casca sem dados."
     },
-    "trilho_b": "Envelope sobre o z-chart do ZardUI (ECharts). O wrapper acrescenta o que o contrato exige e a base não dá: a tabela equivalente sempre no DOM, a paleta por slot em ordem fixa (a base CICLA as cores a partir do quinto item — o wrapper recusa em vez de ciclar), formatação pt-BR por Intl, e animação desligada sob prefers-reduced-motion. Liga o eixo de valor, que a base deixa desligado por seguir o desenho do shadcn — \"gráfico sem eixo rotulado\" é uma das falhas que a evidência registra — e com ele reserva o espaço do rótulo na grade (containLabel), senão o eixo sai cortado na borda. Renderiza em SVG, não em canvas: o volume de dado aqui é pequeno e o SVG imprime e amplia sem borrar. NÃO entrega: zoom por arrasto, pincel de seleção, caixa de ferramentas, radar e radial — a base tem os cinco, e nenhum tem evidência no parque."
+    "trilho_b": "Envelope sobre o z-chart do ZardUI (ECharts). O wrapper acrescenta o que o contrato exige e a base não dá: a tabela equivalente sempre no DOM, a paleta por slot em ordem fixa (a base CICLA as cores a partir do quinto item — o wrapper recusa em vez de ciclar), formatação pt-BR por Intl, e animação desligada sob prefers-reduced-motion. Liga o eixo de valor, que a base deixa desligado por seguir o desenho do shadcn — \"gráfico sem eixo rotulado\" é uma das falhas que a evidência registra — e com ele reserva o espaço do rótulo na grade (containLabel), senão o eixo sai cortado na borda. Renderiza em SVG, não em canvas: o volume de dado aqui é pequeno e o SVG imprime e amplia sem borrar. As formas sem equivalente na base (funil, heatmap, dispersão e dumbbell) passam pelo zOption com dados e séries da base vazios; o registro enxuto do ECharts ganhou FunnelChart, HeatmapChart, ScatterChart e VisualMapComponent em 29/10/2026 (o funil estava no contrato desde 23/10 sem estar registrado, e não desenhava). NÃO entrega: zoom por arrasto, pincel de seleção, caixa de ferramentas, radar e radial — a base tem os cinco, e nenhum tem evidência no parque."
   },
   "vs": [
     {

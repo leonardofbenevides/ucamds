@@ -3621,6 +3621,22 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 .ucam-table .td--pessoa__nome:hover,
 .ucam-table .td--pessoa__nome:focus-visible,
 .ucam-table--linha-clicavel tbody tr:hover .td--pessoa__nome { text-decoration: underline; }
+/* O LINK SOZINHO NA CÉLULA tem a mesma regra do nome (29/10/2026). A coluna
+ * "Turma AVA" da Análise de turmas era uma pilha de sublinhados azuis, cada
+ * nome de turma um a.ucam-link dentro do th da linha, e o mesmo nas colunas
+ * de Naturezas, Matrizes e Cursos: 51 células pelo caminho de link de prosa.
+ * Numa coluna em que toda célula é link, o sublinhado em repouso repete o que
+ * a coluna já diz; o nome fica em tinta primária e peso de rótulo, e o
+ * sublinhado volta no hover e no foco. Número que é link segue a regra dele
+ * (td--num). O :only-child não enxerga nó de texto: uma célula com frase e
+ * link no meio também cairia aqui. Hoje nenhuma tela tem isso; se aparecer,
+ * a frase vai num <span> e o link volta a ser de prosa. */
+.ucam-table tbody :is(th, td:not(.td--num)) > a.ucam-link:only-child {
+  font-weight: var(--ucam-typography-label-font-weight);
+  color: var(--ucam-color-text-primary);
+  text-decoration: none;
+}
+.ucam-table tbody :is(th, td:not(.td--num)) > a.ucam-link:only-child:is(:hover, :focus-visible) { text-decoration: underline; }
 /* APOIO DE CÉLULA, em linha: a continuação de um grupo, o motivo de uma
  * situação, o e-mail ao lado do nome. Era ucam-card__apoio em bloco dentro da
  * célula, e toda linha da tabela ganhava duas alturas por causa de duas. */

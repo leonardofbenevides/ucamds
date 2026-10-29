@@ -1,4 +1,4 @@
-import { BarChart, GaugeChart, LineChart, PieChart, RadarChart } from 'echarts/charts';
+import { BarChart, FunnelChart, GaugeChart, HeatmapChart, LineChart, PieChart, RadarChart, ScatterChart } from 'echarts/charts';
 import {
   AriaComponent,
   BrushComponent,
@@ -15,6 +15,7 @@ import {
   ToolboxComponent,
   TooltipComponent,
   TransformComponent,
+  VisualMapComponent,
 } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
@@ -29,6 +30,9 @@ import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
  *   legend toggles series through `dispatchAction({ type: 'legendToggleSelect' })`.
  * - `SVGRenderer`, because the server renders through `renderToSVGString()`.
  *
+ * Funnel, heatmap, scatter and the visualMap of the heatmap are UCAMDS forms (chart.json).
+ * The funnel was in the contract since 23/10/2026 but not registered here, so it never drew.
+ *
  * This module is kept apart from `provideZardCharts()` so the provider can import it
  * lazily and keep ECharts out of the application's initial bundle.
  */
@@ -38,6 +42,9 @@ echarts.use([
   PieChart,
   RadarChart,
   GaugeChart,
+  FunnelChart,
+  HeatmapChart,
+  ScatterChart,
   GridComponent,
   TooltipComponent,
   LegendComponent,
@@ -53,6 +60,7 @@ echarts.use([
   AriaComponent,
   DatasetComponent,
   TransformComponent,
+  VisualMapComponent,
   LabelLayout,
   UniversalTransition,
   CanvasRenderer,

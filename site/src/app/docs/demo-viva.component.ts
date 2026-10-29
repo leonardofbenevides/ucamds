@@ -51,6 +51,7 @@ import {
   type UcamCommandGroup,
   type UcamCommandItem,
   type UcamChartSeries,
+  type UcamChartType,
   type UcamComboboxOption,
   type UcamDescriptionItem,
   type UcamDrawerCloseReason,
@@ -776,15 +777,31 @@ export const TEM_DEMO_VIVA = new Set([
               </div>
             }
             @case ('chart') {
-              <ucam-chart
-                type="bar"
-                label="Requerimentos abertos e concluídos por mês — primeiro semestre de 2026"
-                unit="requerimentos"
-                categoryKey="mes"
-                categoryLabel="Mês"
-                [data]="volume"
-                [series]="seriesVolume"
-              />
+              <!-- Uma forma por pergunta (29/10/2026). Cada cartão diz a pergunta
+                   que a forma responde, porque é ela que escolhe o tipo. -->
+              <div class="galeria-graficos">
+                @for (g of galeria; track g.titulo) {
+                  <section class="galeria-graficos__item">
+                    <h3 class="galeria-graficos__titulo">{{ g.titulo }}</h3>
+                    <p class="small muted galeria-graficos__pergunta">{{ g.pergunta }}</p>
+                    <ucam-chart
+                      [type]="g.type"
+                      [label]="g.label"
+                      [unit]="g.unit ?? null"
+                      [categoryKey]="g.categoryKey"
+                      [categoryLabel]="g.categoryLabel"
+                      [data]="g.data"
+                      [series]="g.series"
+                      [horizontal]="!!g.horizontal"
+                      [stacked]="!!g.stacked"
+                      [proportional]="!!g.proportional"
+                      [emphasis]="g.emphasis ?? null"
+                      [valueFormatter]="g.valueFormatter ?? null"
+                      [showTable]="false"
+                    />
+                  </section>
+                }
+              </div>
               <p class="small muted retorno resto">
                 A tabela ao pé não é opcional: <code>showTable</code> só a recolhe num
                 <code>&lt;details&gt;</code>, nunca a tira do DOM. Sem equivalente textual o dado
@@ -1071,6 +1088,23 @@ export const TEM_DEMO_VIVA = new Set([
       overflow: hidden;
       background: var(--ucam-color-surface-chrome);
     }
+    .galeria-graficos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+      gap: 1rem;
+      inline-size: 100%;
+    }
+    .galeria-graficos__item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-inline-size: 0;
+      padding: 1rem;
+      border: 1px solid var(--ucam-color-border-subtle);
+      border-radius: var(--ucam-radius-surface);
+    }
+    .galeria-graficos__titulo { margin: 0; font-size: 0.9375rem; font-weight: 600; }
+    .galeria-graficos__pergunta { margin: 0 0 0.5rem; }
     .grade-escolha {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
@@ -1342,6 +1376,72 @@ export class DemoVivaComponent {
   protected readonly seriesVolume: UcamChartSeries[] = [
     { key: 'abertos', name: 'Abertos', slot: 1 },
     { key: 'concluidos', name: 'Concluídos', slot: 2 },
+  ];
+
+  private readonly pct = (v: number) => `${v.toLocaleString('pt-BR')}%`;
+  private readonly horas = ['8h', '9h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h', '20h'];
+  private readonly baseHora = [12, 30, 44, 41, 22, 18, 35, 40, 38, 30, 26, 34, 20];
+
+  /** A galeria do chart: cada forma com a pergunta que ela responde. */
+  protected readonly galeria: {
+    titulo: string; pergunta: string; type: UcamChartType; label: string; unit?: string;
+    categoryKey: string; categoryLabel: string; data: UcamChartRow[]; series: UcamChartSeries[];
+    horizontal?: boolean; stacked?: boolean; proportional?: boolean; emphasis?: string; valueFormatter?: (v: number) => string;
+  }[] = [
+    { titulo: 'Barra', pergunta: 'Quanto, comparando categorias?', type: 'bar', label: 'Requerimentos abertos e concluídos por mês — primeiro semestre de 2026',
+      unit: 'requerimentos', categoryKey: 'mes', categoryLabel: 'Mês', data: this.volume, series: this.seriesVolume },
+    { titulo: 'Linha com destaque', pergunta: 'Qual delas mudou, e contra o quê?', type: 'line', label: 'Evasão por campus, em % — 2024.1 a 2026.2',
+      categoryKey: 'semestre', categoryLabel: 'Semestre', emphasis: 'niteroi', valueFormatter: this.pct,
+      data: [
+        { semestre: '2024.1', centro: 9, tijuca: 10, niteroi: 8, campos: 12 },
+        { semestre: '2024.2', centro: 8.6, tijuca: 9.7, niteroi: 9.2, campos: 11.4 },
+        { semestre: '2025.1', centro: 8.8, tijuca: 9.1, niteroi: 10.4, campos: 11 },
+        { semestre: '2025.2', centro: 8.1, tijuca: 9.3, niteroi: 11.1, campos: 10.6 },
+        { semestre: '2026.1', centro: 7.9, tijuca: 8.8, niteroi: 12.3, campos: 10.9 },
+        { semestre: '2026.2', centro: 7.6, tijuca: 8.5, niteroi: 13, campos: 10.2 },
+      ],
+      series: [{ key: 'centro', name: 'Centro' }, { key: 'tijuca', name: 'Tijuca' }, { key: 'niteroi', name: 'Niterói' }, { key: 'campos', name: 'Campos' }] },
+    { titulo: 'Barra 100%', pergunta: 'Qual a fatia de cada parte, quando os totais são muito diferentes?', type: 'bar', horizontal: true, proportional: true,
+      label: 'Situação da matrícula por campus — 2026.2', unit: 'alunos', categoryKey: 'campus', categoryLabel: 'Campus',
+      data: [
+        { campus: 'Centro', ativos: 4210, trancados: 380, evadidos: 520 },
+        { campus: 'Tijuca', ativos: 2120, trancados: 160, evadidos: 240 },
+        { campus: 'Niterói', ativos: 1830, trancados: 220, evadidos: 190 },
+        { campus: 'Campos', ativos: 640, trancados: 90, evadidos: 120 },
+        { campus: 'Nova Friburgo', ativos: 210, trancados: 18, evadidos: 40 },
+      ],
+      series: [{ key: 'ativos', name: 'Ativos' }, { key: 'trancados', name: 'Trancados' }, { key: 'evadidos', name: 'Evadidos' }] },
+    { titulo: 'Dumbbell', pergunta: 'O que mudou entre dois momentos, item a item?', type: 'dumbbell', label: 'Taxa de rematrícula por curso, 2025.2 e 2026.2',
+      unit: '%', categoryKey: 'curso', categoryLabel: 'Curso', valueFormatter: this.pct,
+      data: [
+        { curso: 'Direito', antes: 81, agora: 86 }, { curso: 'Administração', antes: 74, agora: 72 },
+        { curso: 'Psicologia', antes: 77, agora: 83 }, { curso: 'Contabilidade', antes: 69, agora: 75 },
+        { curso: 'Enfermagem', antes: 72, agora: 70 }, { curso: 'Pedagogia', antes: 66, agora: 74 },
+      ],
+      series: [{ key: 'antes', name: '2025.2' }, { key: 'agora', name: '2026.2' }] },
+    { titulo: 'Dispersão', pergunta: 'Uma medida acompanha a outra?', type: 'scatter', label: 'Frequência e média final por turma — 2026.1',
+      categoryKey: 'turma', categoryLabel: 'Turma',
+      data: [
+        { turma: 'Direito Civil III', freq: 92, media: 7.8 }, { turma: 'Contabilidade Geral', freq: 78, media: 6.2 },
+        { turma: 'Psicologia do Desenvolvimento', freq: 85, media: 7.1 }, { turma: 'Metodologia Científica', freq: 64, media: 5.4 },
+        { turma: 'Cálculo I', freq: 71, media: 5.9 }, { turma: 'Anatomia', freq: 88, media: 8.1 },
+        { turma: 'Estatística', freq: 69, media: 6 }, { turma: 'Teoria Geral do Estado', freq: 95, media: 8.4 },
+        { turma: 'Marketing', freq: 81, media: 7 }, { turma: 'Farmacologia', freq: 74, media: 6.3 },
+      ],
+      series: [{ key: 'freq', name: 'Frequência', unit: '%', format: this.pct }, { key: 'media', name: 'Média final' }] },
+    { titulo: 'Heatmap', pergunta: 'Onde se concentra, numa grade de duas categorias?', type: 'heatmap', label: 'Atendimentos do protocolo por dia e hora — setembro de 2026',
+      unit: 'atendimentos', categoryKey: 'dia', categoryLabel: 'Dia',
+      data: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((dia, i) => {
+        const fator = [1.2, 1, 0.9, 0.95, 0.8, 0.35][i];
+        const linha: UcamChartRow = { dia };
+        this.horas.forEach((h, j) => (linha[h] = i === 5 && j > 6 ? null : Math.round(this.baseHora[j] * fator)));
+        return linha;
+      }),
+      series: this.horas.map((h) => ({ key: h, name: h })) },
+    { titulo: 'Rosca', pergunta: 'Como um todo se divide em poucas partes?', type: 'donut', label: 'Forma de ingresso dos calouros — 2026.2',
+      unit: 'alunos', categoryKey: 'forma', categoryLabel: 'Forma de ingresso',
+      data: [{ forma: 'Vestibular', alunos: 1240 }, { forma: 'ENEM', alunos: 860 }, { forma: 'Transferência', alunos: 310 }],
+      series: [{ key: 'alunos', name: 'Alunos' }] },
   ];
 
   /* ------------------------------------------------------------- drawer --- */
