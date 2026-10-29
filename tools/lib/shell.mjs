@@ -2893,7 +2893,8 @@ ${FN_ANUNCIA}
     nome.title = f.name;
     // Recusado, o apoio é só o motivo: repetir formato e tamanho ao lado de
     // "tem 14,2 MB" seria dizer o mesmo número duas vezes.
-    li.querySelector('.ucam-anexo__apoio').textContent = recusa || ((ext ? ext + ' · ' : '') + tamanhoBr(f.size) + ' · anexado');
+    // Dois fatos, formato e tamanho; "anexado" o tile com o X já diz (anexo.json, conteudo.apoio).
+    li.querySelector('.ucam-anexo__apoio').textContent = recusa || ((ext ? ext + ' · ' : '') + tamanhoBr(f.size));
     li.querySelector('.ucam-anexo__acao').setAttribute('aria-label', 'Remover anexo ' + f.name);
     return li;
   }
@@ -3071,8 +3072,15 @@ ${FN_ANUNCIA}
       else if (v === 'documento') { t.documento++; t.aguardam.push(nome); }
       else { t.pendentes++; t.semDecisao.push(nome); }
     });
-    var linhaTot = t.total + ' disciplinas · ' + t.isentas + (t.isentas === 1 ? ' isenta · ' : ' isentas · ') + t.nao + (t.nao === 1 ? ' não isenta' : ' não isentas') +
-      (t.documento ? ' · ' + t.documento + ' aguardando documento' : '') + (t.pendentes ? ' · ' + t.pendentes + ' sem decisão' : '');
+    // Uma frase, não "A · B · C · D" (29/10/2026): o total, dois-pontos e só
+    // as partes que existem — "0 isentas" ao lado da barra não diz nada.
+    var partesTot = [
+      t.isentas ? t.isentas + (t.isentas === 1 ? ' isenta' : ' isentas') : '',
+      t.nao ? t.nao + (t.nao === 1 ? ' não isenta' : ' não isentas') : '',
+      t.documento ? t.documento + ' aguardando documento' : '',
+      t.pendentes ? t.pendentes + ' sem decisão' : '',
+    ].filter(Boolean);
+    var linhaTot = t.total + ' disciplinas: ' + partesTot.join(', ');
     // O resumo do rodapé da tabela e o eco dele no fecho do telefone
     // (.ucam-viewbar__resumo, aria-hidden: quem ouve já tem o de cima).
     Array.prototype.forEach.call(document.querySelectorAll('[data-totais], [data-totais-eco]'), function (alvo) { alvo.textContent = linhaTot; });
@@ -3094,7 +3102,7 @@ ${FN_ANUNCIA}
         var num = document.querySelector('[data-parte-n="' + par[0] + '"]');
         if (num) num.textContent = String(par[1]);
       });
-      barraTot.setAttribute('aria-label', 'Decisões: ' + linhaTot.replace(/ · /g, ', '));
+      barraTot.setAttribute('aria-label', 'Decisões de ' + linhaTot);
     }
     var fim = document.querySelector('[data-acao="finalizar-analise"]');
     if (fim) {
@@ -4572,7 +4580,8 @@ ${FN_ANUNCIA}
       var nomeE = (tileE.querySelector('.ucam-anexo__nome') || {}).textContent || 'documento';
       var apoioE = (tileE.querySelector('.ucam-anexo__apoio') || {}).textContent || '';
       var descE = dlgE.querySelector('input[type="text"]');
-      var formatoE = apoioE.replace(/ · anexado$/, '') + (descE && descE.value.trim() ? ' · ' + descE.value.trim().toLowerCase() : '');
+      // A descrição que a pessoa escreveu diz mais que o tamanho: toma o lugar dele, não se soma.
+      var formatoE = descE && descE.value.trim() ? apoioE.split(' · ')[0] + ' · ' + descE.value.trim().toLowerCase() : apoioE;
       var hoje = new Date();
       var diaE = ('0' + hoje.getDate()).slice(-2) + '/' + ('0' + (hoje.getMonth() + 1)).slice(-2);
       var listaE = document.querySelector('ul[data-anexos][aria-label="Documentos enviados"]');

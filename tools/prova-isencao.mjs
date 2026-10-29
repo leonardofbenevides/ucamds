@@ -32,7 +32,7 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
 {
   const p = await abre('analise');
   const ini = await p.js(`${AJUDA} return { pe: pe(), legenda: legenda(), botao: fim().textContent.trim(), passos: qa('.ucam-section__passo').map((x) => x.textContent).join(''), ficha: !!q('.ucam-ficha img'), aside: !!q('.ucam-aside') };`);
-  prova('análise: abre com 1 aguardando documento e 8 sem decisão', ini.pe === '9 disciplinas · 0 isentas · 0 não isentas · 1 aguardando documento · 8 sem decisão', ini.pe);
+  prova('análise: abre com 1 aguardando documento e 8 sem decisão', ini.pe === '9 disciplinas: 1 aguardando documento, 8 sem decisão', ini.pe);
   prova('análise: legenda da barra 0 0 1 8', ini.legenda === '0 0 1 8', ini.legenda);
   prova('análise: com documento pedido, o botão é Enviar pedido', ini.botao === 'Enviar pedido ao candidato', ini.botao);
   prova('análise: passos 1, 2, 3 e ficha com retrato, sem coluna de apoio', ini.passos === '123' && ini.ficha && !ini.aside, ini);
@@ -51,7 +51,7 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
 
   const d1 = await p.js(`${AJUDA} decide('Introdução ao Estudo do Direito', 'isentar'); decide('História do Direito', 'nao'); await w(250);
     return { pe: pe(), legenda: legenda(), barra: barra(), campos: !linha('Introdução ao Estudo do Direito').querySelector('[data-campos="isentar"]').hidden };`);
-  prova('decidir: rodapé e legenda andam juntos', d1.pe.includes('1 isenta · 1 não isenta') && d1.legenda === '1 1 1 6', d1);
+  prova('decidir: rodapé e legenda andam juntos', d1.pe.includes('1 isenta, 1 não isenta') && d1.legenda === '1 1 1 6', d1);
   const eco1 = await p.js(`${AJUDA} return q('[data-pendentes-eco]').textContent;`);
   prova('decidir: a meta do cabeçalho acompanha ("6 sem decisão")', eco1 === '6 sem decisão', eco1);
   prova('decidir: a barra tem as quatro partes em nonos', d1.barra === '11.1% 11.1% 11.1% 66.7%', d1.barra);
@@ -98,14 +98,14 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   prova('aluno: etapas feita · atual · pendente · pendente, no cartão preenchido', ini.etapas === 'feita atual pendente pendente' && ini.tinta, ini);
   prova('aluno: a página preenche a janela de 1920px', ini.cheia > 1800, String(ini.cheia));
   const env = await p.js(`${AJUDA} q('[data-abre-dialogo="is-envio"]').click(); await w(300); const d = q('dialog#is-envio'); const ok = d.querySelector('[value="ok"]'); const travado = ok.getAttribute('aria-disabled');
-    const ul = document.createElement('ul'); ul.className = 'ucam-anexos'; ul.innerHTML = '<li class="ucam-anexo"><span class="ucam-anexo__corpo"><span class="ucam-anexo__nome">ementa-civil.pdf</span><span class="ucam-anexo__apoio">PDF · 1,0 MB · anexado</span></span></li>';
+    const ul = document.createElement('ul'); ul.className = 'ucam-anexos'; ul.innerHTML = '<li class="ucam-anexo"><span class="ucam-anexo__corpo"><span class="ucam-anexo__nome">ementa-civil.pdf</span><span class="ucam-anexo__apoio">PDF · 1,0 MB</span></span></li>';
     d.querySelector('.ucam-dialog__body').appendChild(ul); ok.removeAttribute('aria-disabled'); ok.click(); await w(800);
     return { travado, etapas: ${etapas}, docs: qa('ul[data-anexos] li').length, novo: (qa('ul[data-anexos] li .ucam-id').pop() || {}).textContent, barra: qa('[data-valor-enviado]').map((s) => s.style.getPropertyValue('--ucam-progress-valor')).join(' '),
       selo: q('[data-selo-situacao]').textContent.trim(), pe: q('.ucam-pagination__range').textContent, aguardando: qa('[data-aguarda-documento]').length };`);
   prova('enviar: sem arquivo o botão nasce indisponível', env.travado === 'true', env.travado);
   prova('enviado: o arquivo entra na fileira de documentos', env.docs === 3 && env.novo === 'ementa-civil.pdf', env);
   prova('enviado: Documentos fecha e a Análise vira a etapa atual', env.etapas === 'feita feita atual pendente', env.etapas);
-  prova('enviado: barra, selo e rodapé dizem Em análise', env.barra === '100% 0%' && env.selo === 'Em análise' && env.pe === '9 disciplinas · 9 em análise' && env.aguardando === 0, env);
+  prova('enviado: barra, selo e rodapé dizem Em análise', env.barra === '100% 0%' && env.selo === 'Em análise' && env.pe === '9 disciplinas: 9 em análise' && env.aguardando === 0, env);
   const cabA = await p.js(`${AJUDA} return { meta: q('[data-meta-estado]').textContent, marca: q('.ucam-appbar__brand').getAttribute('href') };`);
   prova('aluno: a meta acompanha o envio e a marca da faixa leva ao Portal, não à fila (ADR-070)', cabA.meta === 'Documento enviado · em análise' && cabA.marca === 'portal-grade-modulos.html', cabA);
   prova('acompanhamento: nenhum erro de script', p.erros.length === 0, p.erros.join(' | '));
@@ -133,7 +133,7 @@ const AJUDA = `const w = (n) => new Promise((r) => setTimeout(r, n)); const q = 
   await p.fecha();
 }
 // ── consulta, resultado, sem documentos ────────────────────────────────────
-for (const [tela, espera] of [['consulta', '9 disciplinas · 6 isentas · 3 não isentas'], ['resultado', '9 disciplinas · 6 isentas · 3 não isentas'], ['sem-documentos', null]]) {
+for (const [tela, espera] of [['consulta', '9 disciplinas: 6 isentas, 3 não isentas'], ['resultado', '9 disciplinas: 6 isentas, 3 não isentas'], ['sem-documentos', null]]) {
   const p = await abre(tela);
   const r = await p.js(`${AJUDA} return { pe: (q('.ucam-pagination__range') || {}).textContent, icones: qa('.td--figura .ucam-icon-tile').length, ficha: !!q('.ucam-ficha img'), aside: !!q('.ucam-aside'), decisoes: qa('[data-decisao]').length, aguardam: qa('[data-aguarda-documentos]').length, alerta: !!q('.ucam-alert--info'), meta: (q('.ucam-viewbar__meta') || {}).textContent, trilha: qa('.ucam-trilha li').map((l) => l.textContent.replace('/', '').trim()).join(' / '), voltar: !!q('.ucam-viewbar__voltar') };`);
   prova(`${tela}: ficha com retrato, 9 matérias com ícone, sem coluna de apoio`, r.ficha && r.icones === 9 && !r.aside, r);

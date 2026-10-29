@@ -77,7 +77,7 @@
     {
       "parte": "apoio",
       "obrigatorio": true,
-      "descricao": "Formato e tamanho — 'PDF · 1,1 MB'. No envio acrescenta o estado ('enviando 60%', 'anexado'); na recusa e no erro é o motivo, e só aí pode quebrar linha.",
+      "descricao": "Dois fatos no máximo, o formato e mais um: 'PDF · 1,1 MB'. Enquanto sobe, o progresso toma o lugar do tamanho ('PDF · enviando 60%'); na recusa e no erro é o motivo, e só aí pode quebrar linha.",
       "classe": "ucam-anexo__apoio"
     },
     {
@@ -180,6 +180,8 @@
     "apoio": [
       "Formato em maiúsculas e nome comum — PDF, JPG —, depois o tamanho em pt-BR com uma casa: 'PDF · 1,1 MB'.",
       "Sem tamanho conhecido, só o formato. Nunca '0 KB'.",
+      "Dois fatos, nunca três (29/10/2026). Um fato melhor que o tamanho toma o lugar dele, não se soma: o progresso no envio, a descrição que a pessoa escreveu ('PDF · histórico'), a data numa lista de documentos que chegaram em dias diferentes ('PDF · enviado em 26/01/2026'). 'A · B · C' é pontuação de modelo, não de produto.",
+      "Não se escreve 'anexado'. O tile com o botão de remover já diz que o arquivo está ali, e o anúncio da grade diz o nome.",
       "Na recusa, o número que a pessoa precisa: 'tem 14,2 MB — o limite é 10 MB'. Ruim: 'Arquivo inválido.'"
     ]
   },

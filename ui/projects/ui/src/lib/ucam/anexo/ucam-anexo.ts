@@ -212,14 +212,15 @@ export class UcamAnexo {
     return 'file';
   });
 
-  /** Formato · tamanho · estado; na falha, só o motivo — conteudo.apoio. */
+  /** Formato e mais um fato: o tamanho, ou o progresso enquanto sobe; na falha, só o motivo — conteudo.apoio. */
   protected readonly apoio = computed(() => {
     const f = this.file();
     if (this.falhou()) return f.mensagem ?? '';
-    const partes = [this.ext(), f.tamanho != null ? ucamTamanhoArquivo(f.tamanho) : ''];
-    if (f.estado === 'enviando') partes.push(f.progresso != null ? `enviando ${f.progresso}%` : 'enviando');
-    if (f.estado === 'enviado' && this.removable()) partes.push('anexado');
-    return partes.filter(Boolean).join(' · ');
+    const segundo =
+      f.estado === 'enviando'
+        ? f.progresso != null ? `enviando ${f.progresso}%` : 'enviando'
+        : f.tamanho != null ? ucamTamanhoArquivo(f.tamanho) : '';
+    return [this.ext(), segundo].filter(Boolean).join(' · ');
   });
 
   protected readonly classes = computed(() => {
