@@ -139,7 +139,7 @@ function grafico() {
         splitArea: { show: false }, axisLabel: rotulo };
       base.visualMap = { min: 0, max: teto || 1, calculable: false, orient: 'horizontal', left: 'center', bottom: 0,
         itemWidth: 10, itemHeight: 160, text: [num(teto), '0'], textGap: 8, textStyle: rotulo,
-        inRange: { color: [cores[0]], colorAlpha: [0.1, 1] } };
+        inRange: { color: [foco], colorAlpha: [0.1, 1] } };
       base.series = [{ type: 'heatmap', data: celulas, label: { show: false },
         itemStyle: { borderColor: fundo, borderWidth: 2, borderRadius: 4 },
         emphasis: { itemStyle: { borderColor: texto, borderWidth: 1 } } }];
@@ -167,7 +167,7 @@ function grafico() {
       base.series = [{ type: 'scatter', symbolSize: 12,
         data: cfg.categorias.map(function (c, i) { return { name: c, value: [sx.dados[i], sy.dados[i]] }; })
           .filter(function (d) { return d.value[0] != null && d.value[1] != null; }),
-        itemStyle: { color: cores[0], borderColor: fundo, borderWidth: 2, opacity: 0.9 },
+        itemStyle: { color: foco, borderColor: fundo, borderWidth: 2, opacity: 0.9 },
         // Até oito pontos, cada um leva o nome: sem ele, saber qual curso é
         // qual dependia de passar o mouse. Acima disso o nome vira ruído.
         label: { show: cfg.categorias.length <= 8, position: 'right', distance: 6, formatter: '{b}', color: tinta, fontFamily: fonte, fontSize: 12 },
@@ -200,7 +200,7 @@ function grafico() {
           return antes.dados[i] == null || depois.dados[i] == null ? null
             : [{ coord: [antes.dados[i], c] }, { coord: [depois.dados[i], c] }];
         }).filter(Boolean) };
-      base.series = [fios, ponto(depois, cores[0])];
+      base.series = [fios, ponto(depois, foco)];
       return base;
     }
 
