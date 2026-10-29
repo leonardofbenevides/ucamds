@@ -15176,34 +15176,35 @@ ${acima('nav-fixa')} {
  * cheio e passou a tinta a 60%; riscos de textura (telha, vidro, juntas,
  * onda), janelas em arco e os cheios das peças caíram para perto da metade
  * do que eram, e os traços grossos afinaram. Na mesma leva saíram as ondas
- * da água e a nervura da torre (tools/cena-login.mjs); o resto das peças
- * ficou: "clean" aqui é contraste baixo e ar. */
+ * da água e a nervura da torre (tools/cena-login.mjs). No dia seguinte,
+ * "suavizar e diminuir a quantidade de elementos": saíram árvores, anexo,
+ * telha, calçamento, uma fileira de arcos e quatro das dez peças; as classes
+ * delas (pv, rg, v, f1, tr) saíram daqui junto. */
 .ucam-login__cena path { fill: none; stroke: color-mix(in srgb, var(--cena-t) 60%, transparent); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.ucam-login__cena :is(.p0, .p1, .l, .t0, .k0, .k1, .f1, .r0) { fill: var(--cena-p); }
+.ucam-login__cena :is(.p0, .p1, .l, .t0, .k0, .k1, .r0) { fill: var(--cena-p); }
 .ucam-login__cena :is(.p2, .m) { fill: color-mix(in srgb, var(--cena-t) 7%, var(--cena-p)); }
 .ucam-login__cena :is(.s, .k2) { fill: color-mix(in srgb, var(--cena-t) 13%, var(--cena-p)); }
 .ucam-login__cena .t1 { fill: color-mix(in srgb, var(--cena-t) 11%, var(--cena-p)); }
 .ucam-login__cena .t2 { fill: color-mix(in srgb, var(--cena-t) 20%, var(--cena-p)); }
 .ucam-login__cena .r1 { fill: color-mix(in srgb, var(--cena-t) 8%, var(--cena-p)); }
 .ucam-login__cena .r2 { fill: color-mix(in srgb, var(--cena-t) 15%, var(--cena-p)); }
-.ucam-login__cena :is(.g, .gm, .ag, .sh, .cr, .v, .vd, .lz, .pt, .kc, .kd, .fundo) { stroke: none; }
+.ucam-login__cena :is(.g, .gm, .ag, .sh, .cr, .vd, .lz, .pt, .kc, .kd, .fundo) { stroke: none; }
 .ucam-login__cena .g { fill: color-mix(in srgb, var(--cena-t) 6%, transparent); }
 .ucam-login__cena .gm { fill: color-mix(in srgb, var(--cena-t) 11%, transparent); }
 .ucam-login__cena .ag { fill: color-mix(in srgb, var(--cena-t) 14%, transparent); }
 .ucam-login__cena .sh { fill: color-mix(in srgb, var(--cena-t) 8%, transparent); }
 .ucam-login__cena .cr { fill: color-mix(in srgb, var(--cena-t) 14%, transparent); }
-.ucam-login__cena :is(.v, .vd) { fill: color-mix(in srgb, var(--cena-t) 16%, var(--cena-p)); }
+.ucam-login__cena .vd { fill: color-mix(in srgb, var(--cena-t) 16%, var(--cena-p)); }
 .ucam-login__cena .lz { fill: var(--cena-p); }
 .ucam-login__cena .pt { fill: color-mix(in srgb, var(--cena-t) 28%, transparent); }
 .ucam-login__cena .kc { fill: color-mix(in srgb, var(--cena-t) 14%, var(--cena-p)); }
 .ucam-login__cena :is(.kd, .a) { fill: color-mix(in srgb, var(--cena-t) 55%, var(--cena-p)); }
 .ucam-login__cena .a2 { fill: color-mix(in srgb, var(--cena-t) 35%, var(--cena-p)); }
-.ucam-login__cena :is(.pv, .malha, .gr, .rg, .fc) { stroke-width: 0.75; }
-.ucam-login__cena .pv { stroke: color-mix(in srgb, var(--cena-t) 6%, transparent); }
+.ucam-login__cena :is(.malha, .gr, .fc) { stroke-width: 0.75; }
 .ucam-login__cena .malha { stroke: color-mix(in srgb, var(--cena-t) 5%, transparent); }
-.ucam-login__cena :is(.gr, .rg) { stroke: color-mix(in srgb, var(--cena-t) 18%, transparent); }
+.ucam-login__cena .gr { stroke: color-mix(in srgb, var(--cena-t) 18%, transparent); }
 .ucam-login__cena :is(.clarao-0, .clarao-1) { stop-color: var(--cena-p); stop-opacity: 0; }
-.ucam-login__cena :is(.tr, .kk) { stroke-width: 2; }
+.ucam-login__cena .kk { stroke-width: 2; }
 .ucam-login__cena .tr2 { stroke-width: 1.75; }
 .ucam-login__cena .fo { stroke-width: 1; }
 

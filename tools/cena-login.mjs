@@ -196,7 +196,6 @@ function telhado(x, y, z, w, d, h, beiral = 4) {
       { d: d3(aguas.ladoT), c: 'r0' },
       { d: d3(aoLongoDeX ? aguas.frente : aguas.ladoF), c: 'r1' },
       { d: d3(aoLongoDeX ? aguas.ladoF : aguas.frente), c: 'r2' },
-      { d: linhas3(riscos), c: 'rg' },
     ],
   });
 }
@@ -209,19 +208,6 @@ function piramide(x, y, z, w, d, h, o = CAL) {
       { d: d3([[x, y, z], [x, y + d, z], ap]), c: o.t },
       { d: d3([[x, y + d, z], [x + w, y + d, z], ap]), c: o.e },
       { d: d3([[x + w, y, z], [x + w, y + d, z], ap]), c: o.d },
-    ],
-  });
-}
-/* A árvore das referências: esfera com crescente de sombra e tronco na tinta clara. */
-function arvore(x, y, r = 19, tronco = 13) {
-  const [bx, by] = P(x, y, 0);
-  const [cx, cy] = P(x, y, tronco + r);
-  const R = r * 1.55;
-  solidos.push({
-    bb: [x - 5, x + 5, y - 5, y + 5, 0, tronco + 2 * r],
-    it: [
-      { d: `M${n(bx)} ${n(by)}L${n(bx)} ${n(cy)}`, c: 'tr' },
-      { d: disco(cx, cy, r), c: 'f1' },
     ],
   });
 }
@@ -255,11 +241,9 @@ function montar() {
 
   /* ---- O CHÃO: a praça calçada, os canteiros pontilhados. ---- */
   chao.push({ d: redondo(150, 204, 346, 268, 40), c: 'g' });
-  const juntas = [];
-  for (let x = 186; x <= 462; x += 23) juntas.push([[x, 222, 0], [x, 454, 0]]);
-  for (let y = 222; y <= 454; y += 23.2) juntas.push([[168, y, 0], [478, y, 0]]);
-  chao.push({ d: linhas3(juntas), c: 'pv' });
-  const canteiros = [[8, 150, 44, 250, 22], [160, 482, 300, 44, 22], [120, 30, 100, 62, 26], [352, 34, 130, 58, 26]];
+  /* O calçamento riscado e os canteiros das árvores saíram em 29/10/2026
+   * ("diminuir a quantidade de elementos"). */
+  const canteiros = [[120, 30, 100, 62, 26], [352, 34, 130, 58, 26]];
   for (const [x, y, w, d, r] of canteiros) {
     chao.push({ d: redondo(x, y, w, d, r), c: 'gm' });
   }
@@ -279,28 +263,20 @@ function montar() {
   const [ax, ay] = P(282, 56, 266);
   solidos.push({ bb: [281, 283, 55, 57, 266, 300], it: [{ d: `M${n(ax)} ${n(ay)}L${n(ax)} ${n(ay - 34)}`, c: 'fi' }, { d: disco(ax, ay - 34, 2), c: 'a' }] });
 
-  /* ---- O CASARÃO: dois pavimentos caiados, arcos, telhado de quatro águas. ---- */
+  /* ---- O CASARÃO: caiado, arcos, telhado de quatro águas. Uma fileira de
+   * arcos só desde 29/10/2026; a de baixo e a telha riscada saíram. ---- */
   const casa = caixa(150, 112, 0, 312, 80, 62, CAL);
-  casa.it.push(...fila(11, 158, 454, 0.42, (a, b) => arco('e', 192, a, b, 4, 27, 'vd')));
   casa.it.push(...fila(11, 158, 454, 0.42, (a, b) => arco('e', 192, a, b, 35, 55, 'vd')));
-  casa.it.push(...fila(3, 118, 186, 0.46, (a, b) => arco('d', 462, a, b, 4, 27, 'vd')));
   casa.it.push(...fila(3, 118, 186, 0.46, (a, b) => arco('d', 462, a, b, 35, 55, 'vd')));
   telhado(150, 112, 62, 312, 80, 24);
 
   /* ---- A ALA: o mesmo casarão, de lado para a praça. ---- */
   const ala = caixa(60, 150, 0, 78, 236, 54, CAL);
-  ala.it.push(...fila(8, 158, 378, 0.42, (a, b) => arco('d', 138, a, b, 4, 24, 'vd')));
   ala.it.push(...fila(8, 158, 378, 0.42, (a, b) => arco('d', 138, a, b, 31, 48, 'vd')));
-  ala.it.push(...fila(3, 66, 132, 0.46, (a, b) => arco('e', 386, a, b, 4, 24, 'vd')));
   ala.it.push(...fila(3, 66, 132, 0.46, (a, b) => arco('e', 386, a, b, 31, 48, 'vd')));
   telhado(60, 150, 54, 78, 236, 22);
 
-  /* ---- O ANEXO: concreto e fita de vidro, os tons médios da cena. ---- */
-  const anexo = caixa(64, 412, 0, 84, 66, 40);
-  anexo.it.push(dir(148, 420, 470, 14, 30, 'v'), esq(478, 72, 140, 14, 30, 'v'));
-  anexo.it.push({ d: linhas3([433, 446, 458].map((y) => [[148, y, 14], [148, y, 30]])), c: 'gr' });
-  caixa(82, 428, 40, 26, 26, 7);
-  caixa(148, 430, 0, 14, 28, 3, { sombra: false });
+  /* O ANEXO de concreto saiu em 29/10/2026. */
 
   /* ---- O CHAFARIZ do Mestre Valentim, que é o desenho da marca. ---- */
   const [cx, cy] = [330, 334];
@@ -350,14 +326,6 @@ function montar() {
     const barras = (u1, u2, v1, v2) => { for (let u = u1; u < u2; u += 4.5) f(u, u + (Math.round(u) % 2 ? 2.8 : 1.4), v1, v2, 'kd'); };
     return { f, risco, barras };
   };
-  // O protocolo, embaixo à esquerda, no chão vazio antes da praça.
-  const carta = peca(-50, 420, 52, 34);
-  carta.risco([[0, 34], [26, 16], [52, 34]], 'fi');
-  carta.f(39, 46, 5, 12, 'kd');
-  // O calendário de aulas, à esquerda da ala.
-  const cal = peca(-86, 250, 60, 52);
-  cal.f(0, 60, 42, 52, 'kd');
-  [28, 17, 6].forEach((v, l) => [6, 20, 34, 48].forEach((u, c) => cal.f(u, u + 9, v, v + 7, l === 1 && c === 2 ? 'kd' : 'kc')));
   // A tela de sistemas, a maior: cabeçalho e seis ladrilhos, um escolhido.
   const tela = peca(16, 58, 120, 86);
   tela.f(0, 120, 74, 86, 'kc');
@@ -374,12 +342,6 @@ function montar() {
   const prova = peca(300, -6, 48, 64);
   prova.f(7, 34, 53, 57, 'kd');
   [41, 30, 19, 8].forEach((v, l) => [7, 17, 27, 37].forEach((u, c) => prova.f(u, u + 6, v, v + 6, c === [1, 3, 0, 2][l] ? 'kd' : 'kc')));
-  // Os livros da biblioteca, sobre o encontro dos dois telhados.
-  const [lx, lz] = doChao(770, 24, 262);
-  emGrupo('pc', () => [[0, 0, 50, 36], [6, 3, 44, 32], [-2, -1, 48, 36]].forEach(([dx, dy, w, d], i) => {
-    const liv = caixa(lx - 25 + dx, 244 + dy, lz + i * 8, w, d, 8, KA);
-    liv.it.push(esq(244 + dy + d, lx - 19 + dx, lx - 15 + dx, lz + i * 8, lz + i * 8 + 8, 'kd'));
-  }));
   // O capelo do vestibular, no alto, antes da torre.
   const [vx, vz] = doChao(452, 60, 262);
   const [bx, by] = P(vx, 262, vz);
@@ -388,24 +350,18 @@ function montar() {
     caixa(vx - 28, 234, vz - 3, 56, 56, 3, KA);
     solidos.push({ bb: [vx - 1, vx + 28, 261, 290, vz, vz + 1], it: [{ d: `M${n(bx)} ${n(by)}L${n(bx + 26)} ${n(by + 15)}L${n(bx + 26)} ${n(by + 30)}`, c: 'fi' }, { d: disco(bx + 26, by + 32, 2.6), c: 'a' }] });
   });
-  // Do outro lado da torre: o gráfico do gerencial, o aprovado e o boleto.
+  // Do outro lado da torre: o gráfico do gerencial e o aprovado.
   const graf = peca(884, 92, 64, 48, 5);
   [[8, 12], [21, 24], [34, 17], [47, 33]].forEach(([u, h], i) => graf.f(u, u + 9, 6, 6 + h, i === 3 ? 'kd' : 'kc'));
   const visto = peca(742, 196, 58, 52, 5);
   visto.risco([[13, 29], [24, 17], [45, 41]], 'kk');
   visto.f(13, 45, 6, 9, 'kc');
-  const boleto = peca(876, 262, 72, 40, 5);
-  boleto.f(7, 40, 30, 34, 'kd');
-  boleto.f(7, 30, 22, 25, 'kc');
-  boleto.f(52, 66, 28, 34, 'kc');
-  boleto.barras(7, 66, 5, 16);
-
   /* ---- Árvores e palmeiras. A gente saiu em 13/10/2026; os postes, as
    * bandeiras e as árvores de trás do casarão em 15/10 ("mais clean nas
-   * sombras, detalhes e elementos"; a malha do fundo fica, ele gosta). ---- */
-  [176, 232, 288, 344].forEach((y) => arvore(30, y));
-  [190, 250, 310, 370, 430].forEach((x) => arvore(x, 504, 16, 11));
-  [224, 292, 360, 428].forEach((y) => palmeira(478, y));
+   * sombras, detalhes e elementos"; a malha do fundo fica, ele gosta); as
+   * árvores redondas e uma palmeira em 29/10, junto com quatro das dez peças
+   * (protocolo, calendário, livros, boleto): "diminuir a quantidade". ---- */
+  [224, 326, 428].forEach((y) => palmeira(478, y));
 }
 
 /* ---------------------------------------------------------------------
