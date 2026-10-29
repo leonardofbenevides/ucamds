@@ -4895,7 +4895,8 @@
             "Acessados com frequência vem primeiro e é pessoal — os quatro que a pessoa logada mais gerou. Cartão acionável com ícone do assunto, nome e quando foi gerado pela última vez.",
             "Por assunto repete os nove assuntos da navegação como cartões com os três primeiros relatórios. É a mesma lista, num arranjo que se olha em vez de se ler.",
             "Relatório sem tela desenhada fica como link desabilitado com o título visível — a mesma regra do shell para item de menu sem destino. Fingir link seria pior que não ter.",
-            "A contagem de cada assunto é o que a lista do cartão mostra, e a do cabeçalho é a soma dos cartões. O cartão de Aluno dizia \"7 relatórios\" e listava três, sem caminho para os outros quatro; o cabeçalho dizia \"9 assuntos\" e havia seis. Número que promete mais do que a tela entrega, sem link, é promessa sem caminho."
+            "A contagem de cada assunto é o que a lista do cartão mostra, e a do cabeçalho é a soma dos cartões. O cartão de Aluno dizia \"7 relatórios\" e listava três, sem caminho para os outros quatro; o cabeçalho dizia \"9 assuntos\" e havia seis. Número que promete mais do que a tela entrega, sem link, é promessa sem caminho.",
+            "Diploma (assunto Aluno, relatoriodiploma no relatorios-academicos): a prévia em tela não avisa ninguém, e só exportar o PDF oficial grava no SERD o texto da frente e a linha de local e data (POST /diploma/atualizaconteudo). É esse texto que a consulta pública do diploma mostra (diploma/validacao). Se o SERD não acha o diploma registrado do aluno, nenhum PDF sai. O relatório ainda não está neste catálogo."
           ],
           "regras_negocio": [
             {"situacao":"proposta","regra":"\"Acessados com frequência\" são os quatro relatórios que a pessoa logada mais gerou.","decide":"TI (dono do SIGU)"},
@@ -15867,6 +15868,1351 @@
             ],
             "chega_de": [
               "menu do sistema (Balanço)"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "diploma",
+      "nome": "Registro de diplomas",
+      "icone": "scrollText",
+      "categoria": "acervo",
+      "descricao": "O caminho do diploma na Candido Mendes: a secretaria da unidade abre e expede o processo do formando, a Unidade de Registro de Diplomas (URD) analisa, pede documento, defere e registra no livro, junta os registros em lote, publica no Diário Oficial e envia o diploma digital; e qualquer pessoa confere a autenticidade na consulta pública. Entrou no design system em 27/10/2026, lido do diploma-frontend (SERD), do diploma-backend, do integracao-diploma-digital-backend e do consulta-diploma-frontend; não há reescrita publicada, e a referência segue o sistema atual.",
+      "stack_atual": "SERD: Angular 6 com Angular Material 6, NgRx 6, ucam-material e ucam-frame-model (moldura), ng2-pdf-viewer e ngx-mask; back-end diploma-backend em Spring Boot com Spring Data REST sobre a base da URD e as bases acadêmicas por unidade; integracao-diploma-digital-backend em Spring Boot, que monta o registro e o envia ao serviço de diploma digital. Consulta pública: Angular 9 com ucam-material e Bootstrap 4, duas árvores de componentes (desktop e celular) e o diploma desenhado em canvas no navegador",
+      "shell": {
+        "sistema": "Registro de diplomas",
+        "campus": "Rio de Janeiro",
+        "usuario": "Leonardo F. Benevides",
+        "nav": [
+          {
+            "titulo": "Processos",
+            "itens": [
+              {
+                "id": "processos",
+                "rotulo": "Controle de expedição",
+                "icone": "clipboardList"
+              },
+              {
+                "id": "expedicao",
+                "rotulo": "Expedição",
+                "icone": "send",
+                "ancora": "diploma-processos.html",
+                "$porque": "A mesma fila vista pela secretaria da unidade: só os processos dela, com a aba Sem expedição e o Novo processo. A tela de referência é a do Controle de expedição."
+              },
+              {
+                "id": "prorrogacoes",
+                "rotulo": "Prorrogações",
+                "icone": "clock",
+                "ancora": "diploma-processos.html",
+                "$porque": "Duas filas de pedidos de prazo, solicitados e concluídos, com a decisão no detalhe: a mesma forma de fila com situação. Rota /controledeprorrogacao."
+              },
+              {
+                "id": "dados-aluno",
+                "rotulo": "Dados do aluno",
+                "icone": "user",
+                "ancora": "diploma-processo.html",
+                "$porque": "Completa a colação, a conclusão e a forma de ingresso e, com isso, gera o processo: são os campos da aba Dados do processo. Rota /cadastrodadosaluno."
+              }
+            ]
+          },
+          {
+            "titulo": "Registro",
+            "itens": [
+              {
+                "id": "diploma-digital",
+                "rotulo": "Diploma digital",
+                "icone": "fileText"
+              },
+              {
+                "id": "livro",
+                "rotulo": "Livro de registro",
+                "icone": "bookOpen"
+              }
+            ]
+          },
+          {
+            "titulo": "Lotes e ofícios",
+            "itens": [
+              {
+                "id": "criar-lote",
+                "rotulo": "Criação de lote",
+                "icone": "listChecks"
+              },
+              {
+                "id": "lotes",
+                "rotulo": "Lotes de diploma",
+                "icone": "archive"
+              },
+              {
+                "id": "envio-assinatura",
+                "rotulo": "Envio para assinatura",
+                "icone": "pencil",
+                "ancora": "diploma-criar-lote.html",
+                "$porque": "Marca processos sem diploma e gera um documento com eles (o ofício): a mesma forma da criação de lote. Rota /relatorioenvioassinatura."
+              },
+              {
+                "id": "devolucao",
+                "rotulo": "Devolução de diplomas",
+                "icone": "mail",
+                "ancora": "diploma-criar-lote.html",
+                "$porque": "Marca processos publicados de uma unidade e gera o ofício de devolução: a mesma forma da criação de lote. Rota /relatoriodevolucao."
+              }
+            ]
+          }
+        ],
+        "busca": "Buscar aluno, CPF, processo ou registro",
+        "buscaAtalho": "/",
+        "rail": {
+          "icone": "scrollText",
+          "itens": [
+            {
+              "rotulo": "Meus sistemas",
+              "icone": "layoutGrid",
+              "projeto": "portal"
+            },
+            {
+              "rotulo": "Protocolo",
+              "icone": "clipboardList",
+              "projeto": "protocolo"
+            },
+            {
+              "rotulo": "Acadêmico",
+              "icone": "graduationCap",
+              "projeto": "secretaria"
+            },
+            {
+              "rotulo": "Pós e extensão",
+              "icone": "bookOpen",
+              "projeto": "extensao"
+            },
+            {
+              "rotulo": "Isenção",
+              "icone": "clipboardCheck",
+              "projeto": "isencao"
+            },
+            {
+              "rotulo": "Financeiro",
+              "icone": "wallet",
+              "projeto": "sigfin"
+            },
+            {
+              "rotulo": "Relatórios",
+              "icone": "chartColumn",
+              "projeto": "relatorios"
+            },
+            {
+              "rotulo": "Registro de diplomas",
+              "icone": "scrollText",
+              "projeto": "diploma",
+              "ativo": true
+            },
+            {
+              "rotulo": "Captação",
+              "icone": "users",
+              "projeto": "captacao"
+            },
+            {
+              "rotulo": "Gestão de polos",
+              "icone": "mapPin",
+              "projeto": "polos"
+            },
+            {
+              "rotulo": "Turmas do AVA",
+              "icone": "monitor",
+              "projeto": "turmas"
+            },
+            {
+              "rotulo": "Gerencial",
+              "icone": "lock",
+              "projeto": "gerencial"
+            },
+            {
+              "rotulo": "Arquivo permanente",
+              "icone": "archive"
+            }
+          ]
+        },
+        "railMarca": "../marca/ucamds-simbolo-inverso.svg",
+        "navRodape": [
+          {
+            "rotulo": "Configurações",
+            "icone": "settings"
+          },
+          {
+            "rotulo": "Central de ajuda",
+            "icone": "info"
+          }
+        ],
+        "campusOpcoes": [
+          "Campos",
+          "Rio de Janeiro",
+          "Nova Friburgo"
+        ],
+        "railComoMenu": true,
+        "$porque_railComoMenu": "Faixa em cima E coluna à esquerda — o arranjo que a anatomia do app-shell chama de padrão: header obrigatório, navegação \"fixa em desktop, sobreposta apenas em viewport estreita\". As duas molduras anteriores negavam essa anatomia, cada uma por um lado. A de rail tirava a faixa, e com ela a busca global, o chip de campus e a marca; a de topo tirava a coluna, e deitava a navegação numa fileira onde o título do grupo não cabia e onde um sistema de vinte seções rolaria na horizontal, escondendo item sem dizer que escondeu. O SIGFIN tem mais de cem destinos: a lista deles é vertical porque a varredura vertical é a que aguenta cem linhas. O rail não some — os mesmos módulos são o menu do lançador na faixa, então trocar de sistema continua a um clique sem gastar 72px em toda tela. Custo aceito: 318px de largura permanente numa janela de 1440 (22%), contra os 390 do rail com lateral; a faixa cobra altura (56px), não largura, e a testeira deitada cobrava 96 de altura sem devolver a lista vertical.",
+        "$porque_nav": "O menu vem do servidor por usuário, aplicação e unidade, e os rótulos não estão no front (top-bar/menu/menu.services.ts). Os grupos e rótulos aqui são as rotas reais do diploma-frontend, agrupadas pelo caminho do diploma: processo, registro, lote e ofício. Cada item leva à tela de referência da FORMA dele: Expedição e Prorrogações levam à fila do Controle de expedição, Dados do aluno ao processo, e os dois ofícios à Criação de lote. A entrada por token (/login/:token/:user/:unidade) e o Início vazio (/home) não viram tela: o Portal já desenha a chegada. A consulta pública fica fora deste menu, em moldura própria."
+      },
+      "templates": [
+        {
+          "id": "processos",
+          "nome": "Controle de expedição",
+          "perfil": "URD (Unidade de Registro de Diplomas)",
+          "padrao": "listagem-crud",
+          "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /controledeexpedicao — paginas/controledeexpedicao/ (controledeexpedicao.component), paginas/processo-table/ (processo-table.component), paginas/expedicao/ (expedicao.component, a visão da unidade), paginas/expedicao/processo.service.ts; diploma-backend (Spring Boot) — ResourceProcesso.java (countProcessos), RepositoryProcessovw.java, ProcessoService.java (lidos em 27/10/2026)",
+          "descricao": "A fila dos processos de diploma que as unidades expediram para a URD, recortada pela situação, com o prazo que falta e o nome que abre o processo. É a forma de fila com situação; a Expedição da unidade e as Prorrogações são a mesma forma.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-empty-state",
+            "ucam-icon",
+            "ucam-link",
+            "ucam-page-header",
+            "ucam-prazo",
+            "ucam-segmented",
+            "ucam-select",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "A situação é escolhida num select cujo rótulo traz a contagem na frente (\"(5) Expedido\"), e o filtro de diploma (Sem diploma, Registrado, Publicado) só aparece quando a situação é Deferido.",
+            "O vencimento é um número de dias pintado de verde, amarelo ou vermelho em toda linha; a cor carrega sozinha a urgência, e a faixa confortável compete com a que vence.",
+            "A célula do aluno junta nome em negrito, CPF e \"Processo - nº\", e a linha termina num botão Visualizar que abre um diálogo de 80% da tela.",
+            "Na visão da unidade, cinco abas com contagem repetem acima uma faixa de cinco ícones (stepper) que só acompanha a aba ativa.",
+            "Deferido troca a coluna Vencimento por Diploma na mesma posição: a mesma coluna muda de significado conforme o filtro."
+          ],
+          "notas": [
+            "Parente: Fila da Isenção (fila com situação) e Sala de matrícula da Secretaria (recorte com contagem na barra).",
+            "A situação virou o recorte da barra, com a contagem dentro da opção, no lugar do select com a contagem no rótulo. Os números dos recortes somam o Todos e são as linhas da tabela.",
+            "O prazo só vira marcador quando falta 20 dias ou menos, ou já venceu, como pede o contrato do Prazo; o confortável é número simples. A faixa de 21 a 40 dias, que o sistema pinta de amarelo, deixa de ter cor.",
+            "O número do processo tem coluna própria, e o nome do aluno é o link que abre o processo em página, com trilha de volta: o diálogo de 80% sai. O CPF fica no processo.",
+            "Visão da unidade (Expedição, rota /expedicao): a mesma tabela só com os processos da unidade em uso, o recorte Sem expedição na frente e Novo processo como primário, que abre a aba Dados do processo. Prorrogações (rota /controledeprorrogacao): os recortes são Solicitado e Concluído, e a coluna Prazo diz também os dias pedidos.",
+            "Deferido não tem prazo, e o andamento do diploma (sem diploma, registrado, publicado) fica no processo e na criação de lote, não numa coluna que muda de sentido."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Situações do processo: Sem expedição, Expedido, Em análise, Em exigência, Deferido, Registrado e Anulado. A URD vê os processos de todas as unidades e nunca os Sem expedição; a lista abre em Expedido (estadoprocesso-enum.enum.ts:1-9; controledeexpedicao.component.ts:60, :109-131; processo-table.component.ts:293-299).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A unidade vê só os processos dela, nas cinco primeiras situações, e é quem cria e expede (expedicao.component.ts:27; processo.service.ts:45-47).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O prazo vem calculado do servidor: dias desde a colação na visão da unidade, dias desde a expedição na visão da URD, somados os dias de prorrogação. Sem \"Dias de vencer\" informado, a consulta traz até 120 dias (processo-table.component.html:44-59; processo.service.ts:45-47, :120-122; RepositoryProcessovw.java).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A cor do vencimento é verde acima de 40 dias, amarela acima de 20 e vermelha até 20 (processo-table.component.ts:155-162).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A contagem por situação vem de uma consulta própria, guardada em memória no servidor pelo nome pesquisado e limpa a cada mudança de situação (ResourceProcesso.java contarProcessos).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O filtro Diploma só vale para deferidos: Sem diploma, Registrado (com diploma lançado) e Publicado (com lote publicado) (expedicao.component.ts:33-51; controledeexpedicao.component.ts:33-50).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A busca procura por nome, CPF ou número de registro; a lista pagina 10, 20 ou 50 (controledeexpedicao.component.ts:57-62; processo-table.component.html:194).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O front não distingue a secretaria da unidade da URD: o único guard confere se há sessão, e quem vê cada tela é decidido pelo menu que o servidor devolve por usuário, aplicação e unidade (auth-guard.service.ts:25-28; top-bar/menu/menu.services.ts:15-21).",
+              "decide": "Gestão de acessos"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O prazo vira marcador só a partir de 20 dias para vencer, e o vencido diz há quantos dias venceu.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A situação é o recorte da fila, com a contagem dentro de cada opção, e a visão da unidade usa a mesma tabela.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: qual é o prazo regulamentar de expedição e registro, a partir de que data ele conta e por que as faixas de 40 e 20 dias e a janela padrão de 120.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: Registrado e Anulado não têm aba nem filtro na fila. Onde a URD encontra um processo anulado?",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quais perfis existem (secretaria da unidade, URD, consulta) e o que cada um pode fazer. Hoje a separação depende só do menu.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Controle de expedição</h2><span class='ucam-viewbar__meta'>12 processos de 5 unidades</span><span class='ucam-viewbar__folga'></span></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:situacao' data-filtra-alvo='pc-tabela' role='group' aria-label='Situação do processo'><button type='button' aria-pressed='true' data-valor=''>Todos <span class='ucam-segmented__contagem'>12</span></button><button type='button' aria-pressed='false' data-valor='expedido'>Expedidos <span class='ucam-segmented__contagem'>5</span></button><button type='button' aria-pressed='false' data-valor='analise'>Em análise <span class='ucam-segmented__contagem'>3</span></button><button type='button' aria-pressed='false' data-valor='exigencia'>Em exigência <span class='ucam-segmented__contagem'>2</span></button><button type='button' aria-pressed='false' data-valor='deferido'>Deferidos <span class='ucam-segmented__contagem'>2</span></button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='pc-b'>Pesquisar processo</label><input class='ucam-input' id='pc-b' type='search' data-filtra='texto' data-filtra-alvo='pc-tabela' placeholder='Nome, CPF ou número do processo' aria-controls='pc-vazio' aria-describedby='pc-eco'></div><div class='ucam-field'><label class='ucam-field__label' for='pc-u'>Unidade</label><select class='ucam-select' id='pc-u' data-filtra='coluna:Unidade'><option value='' selected>Todas</option><option value='Centro'>Centro</option><option value='Tijuca'>Tijuca</option><option value='Niterói'>Niterói</option><option value='Campos'>Campos</option><option value='Nova Friburgo'>Nova Friburgo</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='pc-d'>Vence em</label><select class='ucam-select' id='pc-d' aria-describedby='pc-d-h'><option selected>Até 120 dias</option><option>Até 60 dias</option><option>Até 30 dias</option><option>Qualquer prazo</option></select><span class='ucam-field__hint' id='pc-d-h'>O padrão do sistema é 120 dias.</span></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='pc-tabela'><caption class='ucam-sr-only'>Processos de diploma expedidos pelas unidades, com o prazo que falta e a situação na URD. O nome do aluno abre o processo.</caption><thead><tr><th scope='col' class='th--min'>Processo</th><th scope='col'>Aluno</th><th scope='col'>Curso</th><th scope='col' class='th--min'>Unidade</th><th scope='col' class='th--min'>Expedido em</th><th scope='col' class='th--min'>Prazo</th><th scope='col' class='th--min'>Situação</th></tr></thead><tbody><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>047.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Mariana Castro Lopes</a></th><td style='white-space:nowrap'>Direito</td><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>20/10/2026</td><td style='white-space:nowrap'>112 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>052.0511.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Rafael Teixeira Nunes</a></th><td style='white-space:nowrap'>Administração</td><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>19/10/2026</td><td style='white-space:nowrap'>98 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>031.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Juliana Prado Moreira</a></th><td style='white-space:nowrap'>Psicologia</td><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>14/10/2026</td><td style='white-space:nowrap'>63 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>058.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Bruno Henrique Sales</a></th><td style='white-space:nowrap'>Ciências Contábeis</td><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>09/10/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 18 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>019.0111.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Letícia Andrade Faria</a></th><td style='white-space:nowrap'>Engenharia Civil</td><td style='white-space:nowrap'>Campos</td><td style='white-space:nowrap'>02/10/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--vencido'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>venceu há 4 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td></tr><tr data-situacao='analise'><td style='white-space:nowrap'><span class='ucam-id'>044.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Camila Ribeiro Torres</a></th><td style='white-space:nowrap'>Direito</td><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>28/09/2026</td><td style='white-space:nowrap'>71 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td></tr><tr data-situacao='analise'><td style='white-space:nowrap'><span class='ucam-id'>027.0511.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Diego Martins Rocha</a></th><td style='white-space:nowrap'>Pedagogia</td><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>25/09/2026</td><td style='white-space:nowrap'>35 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td></tr><tr data-situacao='analise'><td style='white-space:nowrap'><span class='ucam-id'>036.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Patrícia Gomes Viana</a></th><td style='white-space:nowrap'>Enfermagem</td><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>22/09/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 12 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td></tr><tr data-situacao='exigencia'><td style='white-space:nowrap'><span class='ucam-id'>015.0911.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Thiago Barros Lima</a></th><td style='white-space:nowrap'>Administração</td><td style='white-space:nowrap'>Nova Friburgo</td><td style='white-space:nowrap'>15/09/2026</td><td style='white-space:nowrap'>54 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--warning' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em exigência</span></td></tr><tr data-situacao='exigencia'><td style='white-space:nowrap'><span class='ucam-id'>039.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Aline Ferreira Duarte</a></th><td style='white-space:nowrap'>Psicologia</td><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>11/09/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 9 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--warning' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em exigência</span></td></tr><tr data-situacao='deferido'><td style='white-space:nowrap'><span class='ucam-id'>022.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Gustavo Lemos Pires</a></th><td style='white-space:nowrap'>Direito</td><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>26/08/2026</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Deferido</span></td></tr><tr data-situacao='deferido'><td style='white-space:nowrap'><span class='ucam-id'>011.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Renata Souza Campos</a></th><td style='white-space:nowrap'>Administração</td><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>20/08/2026</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Deferido</span></td></tr></tbody></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>12 processos · 4 vencem em até 20 dias ou já venceram</p></div><div class='ucam-empty' id='pc-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum processo encontrado</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou ao recorte escolhido. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='pc-eco' role='status'></p><p class='ucam-section__hint'>O prazo conta os dias desde a expedição pela unidade, somados os dias de prorrogação deferidos. Até 20 dias o prazo vira marcador; deferido não tem prazo.</p></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Registro de diplomas\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Controle de expedição\" [description]=\"total() + ' processos de ' + unidades() + ' unidades'\" />\n  <ucam-segmented ariaLabel=\"Situação do processo\" [items]=\"situacoes()\" [(value)]=\"situacao\" />\n\n  <ucam-text-field label=\"Pesquisar processo\" type=\"search\" placeholder=\"Nome, CPF ou número do processo\" [(value)]=\"termo\" />\n  <ucam-select label=\"Unidade\" [options]=\"unidadesOpcoes()\" [(value)]=\"unidade\" />\n  <ucam-select label=\"Vence em\" [options]=\"janelas\" [(value)]=\"dias\" hint=\"O padrão do sistema é 120 dias.\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Processos de diploma expedidos\" [columns]=\"colunas\" [rows]=\"processos()\" emptyReason=\"no-results\" />\n</ucam-app-shell>\n\n// situacoes: Todos, Expedidos, Em análise, Em exigência, Deferidos — cada uma com count\n// colunas: Processo (ucam-id), Aluno (link para o processo), Curso, Unidade, Expedido em, Prazo (<ucam-prazo [date]=\"p.vencimento\" [warnAt]=\"20\" />), Situação (ucam-badge)",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "processos"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Nome do aluno (×12)",
+                "classe": "a",
+                "destino": "diploma/processo",
+                "efeito": "Abre o processo do aluno."
+              },
+              {
+                "rotulo": "Situação do processo (5 recortes)",
+                "classe": "c",
+                "efeito": "Recorta a fila pela situação; a contagem de cada recorte é a das linhas."
+              },
+              {
+                "rotulo": "Pesquisar processo",
+                "classe": "c",
+                "efeito": "Filtra por nome, CPF ou número; sem resultado, mostra o vazio com Limpar busca."
+              },
+              {
+                "rotulo": "Unidade",
+                "classe": "c",
+                "efeito": "Filtra a fila pela unidade que expediu."
+              },
+              {
+                "rotulo": "Vence em",
+                "classe": "c",
+                "efeito": "Escolhe a janela de prazo; no sistema, reconsulta a fila."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Controle de expedição, Expedição, Prorrogações)",
+              "diploma/processo (trilha)"
+            ]
+          }
+        },
+        {
+          "id": "processo",
+          "nome": "Processo de diploma",
+          "perfil": "URD (Unidade de Registro de Diplomas)",
+          "padrao": "triagem-lista-detalhe",
+          "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /controledeexpedicao — paginas/controledeexpedicao/dialog-controle/ (dialog-controle.component), paginas/expedicao/dialog-processo/ (a visão da unidade), paginas/exigencia/ e dialog-exigencia, paginas/expedicao/prorrogacao/, paginas/controledeexpedicao/diploma/ e dialog-historico-processo, paginas/cadastro-dados-aluno/ (rota /cadastrodadosaluno); diploma-backend (Spring Boot) — ProcessoService.java (criarNovoProcesso, expedir, atualizarEstadoProcesso, configuraSalvaEstadoCorretoProcesso, anularProcesso), ResourceProcesso.java, ResourceExigencia.java, DiplomaService.java (criarNovoDiploma) (lidos em 27/10/2026)",
+          "descricao": "O processo de diploma de um aluno: o caminho em etapas, o resumo, e em abas os dados do aluno e do curso, os documentos, as exigências, as prorrogações, as equivalências, o diploma e o histórico, com a decisão da URD no cabeçalho. É a forma de detalhe de registro com decisão; o Cadastro de dados do aluno é a aba Dados.",
+          "usa": [
+            "ucam-anexo",
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-breadcrumb",
+            "ucam-button",
+            "ucam-data-table",
+            "ucam-description-list",
+            "ucam-dialog",
+            "ucam-empty-state",
+            "ucam-icon",
+            "ucam-icon-button",
+            "ucam-menu",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-stepper",
+            "ucam-tabs",
+            "ucam-textarea",
+            "ucam-timeline",
+            "ucam-toast"
+          ],
+          "problemas": [
+            "O processo abre num diálogo de 80% × 90% que não fecha por clique fora, com seis abas e o rodapé de decisão (Anular, Cancelar, Em análise, Deferir) longe do que se confere.",
+            "Anular e Deferir agem sem confirmação, e Anular fica ao lado de Cancelar, que só fecha o diálogo.",
+            "A situação aparece como ícone e rótulo no canto do diálogo, e o histórico é outro diálogo, aberto por um botão \"Historico\".",
+            "Os documentos são cartões com o nome do arquivo num campo desabilitado e uma lupa; o alternador \"Filtrar documentos\" troca 12 tipos pela lista inteira sem dizer quantos há.",
+            "Na aba Equivalências a URD chama um download que não existe no componente dela (dialog-controle.component.html:395).",
+            "Do lado da unidade, \"Termo de expedição\" só fecha o diálogo, e o erro de validação diz em que abas estão os campos, sem levar até eles."
+          ],
+          "notas": [
+            "Parente: Análise da Isenção e Requerimento do Protocolo (detalhe com decisão no cabeçalho).",
+            "O diálogo virou página com trilha. O caminho do processo é o stepper do topo: aberto, expedido, em análise, deferido, registrado e publicado, que o sistema só mostrava como ícone.",
+            "Deferir é o único primário e pede confirmação dizendo o que muda. Pedir documento é secundário e acrescenta a exigência na aba; Anular e Marcar como 2ª via ficam no menu ⋮. Anular não é vermelho: o processo fica guardado como Anulado e nada é apagado.",
+            "Visão da unidade (Expedição, rota /expedicao): a mesma página com Expedir para a URD como primário, que só fica disponível com o prazo em dia, e Pedir prorrogação na aba Prorrogações. Na exigência a unidade só marca Cumprida.",
+            "Cadastro de dados do aluno (rota /cadastrodadosaluno): é a aba Dados de um processo que ainda não existe. A colação, a conclusão e a forma de ingresso são os únicos campos editáveis, e salvar com a colação cria o processo.",
+            "O histórico saiu do diálogo e virou aba, em linha do tempo com quem fez e de que lado (URD ou secretaria). Diploma fica vazio até o deferimento, dizendo o que o sistema dá e o que se informa.",
+            "Os números fecham com a fila: Camila Ribeiro Torres está em Em análise, expedida em 28/09/2026, com 71 dias de prazo."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Lançar a colação de grau no cadastro de dados do aluno cria o processo em Sem expedição, numerado por unidade e ano como sequencial.unidade+modalidade+tipo de curso.ano; marcar Segunda via cria um processo novo (cadastro-dados-aluno.component.ts:222-241; ProcessoService.java criarNovoProcesso, getNumeroSequenciaProcesso).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "No cadastro são obrigatórios aluno, data de colação, data de conclusão e forma de ingresso; a colação não pode ser posterior a hoje; os dados pessoais e o curso vêm do acadêmico e não se editam (cadastro-dados-aluno.component.ts:72-88, :268-269).",
+              "decide": "Secretaria da unidade"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Se o aluno já teve um processo anulado, o processo novo nasce marcado como reemissão (ProcessoService.java criarNovoProcesso, isNew).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Expedir exige processo criado, situação Sem expedição e prazo em dia; senão: \"Prazo expirado, solicite uma prorrogação.\" A conferência do prazo é só do front: o servidor expede e grava a data de expedição (dialog-processo.component.ts:341-347; ProcessoService.java expedir).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A URD anula e põe Em análise só se o processo não está deferido, em análise ou anulado, e defere só se está expedido ou em análise; nenhuma das três pede confirmação, e o servidor não confere a situação anterior (dialog-controle.component.html:422-463; ProcessoService.java atualizarEstadoProcesso, anularProcesso).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A situação é recalculada pelo servidor a cada exigência criada, editada ou apagada e a cada diploma lançado: com diploma, Deferido; com exigência não cumprida, Em exigência; se a última situação foi Em exigência, volta a Em análise (ProcessoService.java configuraSalvaEstadoCorretoProcesso; ResourceExigencia.java).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Exigência: documento (um de 30 tipos) e observação obrigatórios; nasce Não cumprida. A URD cria, edita e apaga até deferir; a unidade só marca Cumprida (dialog-exigencia.component.ts:50-64; dialog-processo.component.html:350-352; tipodocumento-enum.enum.ts).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Por padrão o processo mostra 12 tipos de documento digitalizado, e um alternador mostra todos; a lista de documentos é obrigatória para criar ou expedir (dialog-processo.component.ts:59-72, :441-446).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A unidade pede prorrogação com número de dias e motivo, só com o processo fora de análise e não deferido; o pedido nasce Solicitado com protocolo sequencial.ano e só se edita enquanto Solicitado (dialog-prorrogacao.component.ts:34-36; ProcessoService.java criarNovaProrrogacao).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O diploma só se lança depois do deferimento. O livro é o ano menos 2018, a folha e o número de registro (ano.sequencial) são dados pelo servidor; a data de registro e o número do diploma são obrigatórios (diploma.component.ts:51-57; DiplomaService.java criarNovoDiploma; dialog-diploma.component.ts:65-71).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Um processo pode ser marcado como 2ª via enquanto não está deferido (dialog-processo.component.ts:586-594; ProcessoService.java applySegundavia).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Toda mudança de situação grava data, situação e o nome do usuário no histórico do processo (ProcessoService.java salvarHistoricoProcesso; processo.service.ts:236-281).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O front não distingue a secretaria da unidade da URD: o único guard confere se há sessão, e quem vê cada tela é decidido pelo menu que o servidor devolve por usuário, aplicação e unidade (auth-guard.service.ts:25-28; top-bar/menu/menu.services.ts:15-21).",
+              "decide": "Gestão de acessos"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Deferir e Anular pedem confirmação dizendo o que muda; Anular fica no menu, longe do primário.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O processo abre em página com o caminho em etapas no topo, e o histórico é uma aba.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: qual a diferença entre reemissão e 2ª via, e quem marca cada uma. O servidor marca reemissão sozinho quando houve processo anulado; 2ª via é marcada à mão.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: anular é intencionalmente sem volta? Hoje não há como desfazer, e o que se perde (exigências, prorrogações) não é dito.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o \"Termo de expedição\" ainda é necessário? O botão existe e só fecha o diálogo.",
+              "decide": "Secretaria da unidade"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: os 12 tipos mostrados por padrão e os 30 tipos de exigência são a lista oficial?",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: há limite de dias e de pedidos de prorrogação? O front aceita qualquer número.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira ucam-viewbar__fileira--trilha'><nav class='ucam-trilha' aria-label='Trilha'><ol><li><a href='#/templates/diploma/processos'>Controle de expedição</a><span class='ucam-trilha__sep' aria-hidden='true'>/</span></li><li><span aria-current='page'>Camila Ribeiro Torres</span></li></ol></nav></div><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Camila Ribeiro Torres</h2><span class='ucam-viewbar__meta'><span class='ucam-id'>044.0311.2026</span> · Direito · Centro · <span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='adicionar-linha' data-abre-dialogo='pr-exig-dlg' data-tabela='#pr-exig' data-linha-msg='Pedido de {nome} enviado à secretaria do Centro. O processo passa a Em exigência.'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg> Pedir documento</button><div class='ucam-acoes'><button class='ucam-btn ucam-btn--secondary ucam-btn--icon' type='button' aria-label='Mais ações do processo' data-menu aria-haspopup='menu' aria-expanded='false' aria-controls='pr-mais'><svg class='ic' aria-hidden='true'><use href='#i-ellipsisVertical'/></svg></button><div class='ucam-menu' id='pr-mais' role='menu' hidden><button class='ucam-menu__item' role='menuitem' tabindex='-1' type='button' data-fluxo='c' data-confirmar data-confirmar-corpo='O processo 044.0311.2026 fica Anulado e sai da fila. Ele não volta: um processo novo para o mesmo aluno nasce marcado como reemissão.' data-confirmar-rotulo='Anular processo' data-confirmar-tom='primary' data-toast='Processo 044.0311.2026 anulado. O histórico guarda quem anulou e quando.' data-toast-tom='info'><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg><span>Anular processo</span></button><button class='ucam-menu__item' role='menuitem' tabindex='-1' type='button' data-fluxo='c' data-confirmar data-confirmar-corpo='O processo passa a ser de segunda via. O registro da segunda via no diploma digital pede a chancela da primeira.' data-confirmar-rotulo='Marcar como 2ª via' data-confirmar-tom='primary' data-toast='Processo marcado como segunda via.' data-toast-tom='success'><svg class='ic' aria-hidden='true'><use href='#i-copy'/></svg><span>Marcar como 2ª via</span></button></div></div><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-confirmar data-confirmar-corpo='Os 6 documentos foram conferidos e não há exigência aberta. Deferido, o processo sai da análise e o diploma pode ser registrado no livro.' data-confirmar-rotulo='Deferir' data-confirmar-tom='primary' data-toast='Processo 044.0311.2026 deferido. O registro do diploma fica disponível na aba Diploma.' data-toast-tom='success'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg> Deferir</button></div></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><ol class='ucam-stepper' aria-label='Caminho do processo de diploma'><li class='ucam-stepper__passo ucam-stepper__passo--done'><span class='ucam-stepper__marcador'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span>Aberto<span class='ucam-sr-only'>, etapa 1 de 6, concluída</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo ucam-stepper__passo--done'><span class='ucam-stepper__marcador'><svg class='ic' aria-hidden='true'><use href='#i-check'/></svg></span>Expedido<span class='ucam-sr-only'>, etapa 2 de 6, concluída</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo ucam-stepper__passo--current' aria-current='step'><span class='ucam-stepper__marcador'>3</span>Em análise<span class='ucam-sr-only'>, etapa 3 de 6, atual</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo'><span class='ucam-stepper__marcador'>4</span>Deferido<span class='ucam-sr-only'>, etapa 4 de 6, pendente</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo'><span class='ucam-stepper__marcador'>5</span>Registrado<span class='ucam-sr-only'>, etapa 5 de 6, pendente</span></li><li class='ucam-stepper__conector' aria-hidden='true'></li><li class='ucam-stepper__passo'><span class='ucam-stepper__marcador'>6</span>Publicado<span class='ucam-sr-only'>, etapa 6 de 6, pendente</span></li></ol><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>CPF</dt><dd class='ucam-descricao__valor'><span class='ucam-codigo'>418.392.507-61</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Matrícula</dt><dd class='ucam-descricao__valor'>20221034518</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedido em</dt><dd class='ucam-descricao__valor'>28/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Prazo</dt><dd class='ucam-descricao__valor'>71 dias, até 06/01/2027</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Segunda via</dt><dd class='ucam-descricao__valor'>Não</dd></div></dl><div class='ucam-stack'><div class='ucam-tabs' role='tablist' aria-label='Partes do processo'><button class='ucam-tabs__tab' type='button' role='tab' id='pr-aba-dados' aria-controls='pr-p-dados' aria-selected='true' tabindex='0'>Dados</button><button class='ucam-tabs__tab' type='button' role='tab' id='pr-aba-docs' aria-controls='pr-p-docs' aria-selected='false' tabindex='-1'>Documentos<span class='ucam-tabs__contagem' aria-hidden='true'>6</span><span class='ucam-sr-only'>, 6</span></button><button class='ucam-tabs__tab' type='button' role='tab' id='pr-aba-exig' aria-controls='pr-p-exig' aria-selected='false' tabindex='-1'>Exigências<span class='ucam-tabs__contagem' aria-hidden='true'>1</span><span class='ucam-sr-only'>, 1</span></button><button class='ucam-tabs__tab' type='button' role='tab' id='pr-aba-prorr' aria-controls='pr-p-prorr' aria-selected='false' tabindex='-1'>Prorrogações</button><button class='ucam-tabs__tab' type='button' role='tab' id='pr-aba-equiv' aria-controls='pr-p-equiv' aria-selected='false' tabindex='-1'>Equivalências<span class='ucam-tabs__contagem' aria-hidden='true'>2</span><span class='ucam-sr-only'>, 2</span></button><button class='ucam-tabs__tab' type='button' role='tab' id='pr-aba-diploma' aria-controls='pr-p-diploma' aria-selected='false' tabindex='-1'>Diploma</button><button class='ucam-tabs__tab' type='button' role='tab' id='pr-aba-hist' aria-controls='pr-p-hist' aria-selected='false' tabindex='-1'>Histórico</button></div><div id='pr-p-dados' role='tabpanel' aria-labelledby='pr-aba-dados' class='ucam-stack ucam-stack--sm'><div class='ucam-stack ucam-stack--lg'><section class='ucam-section' aria-labelledby='pr-s-aluno'><div class='ucam-section__cabeca'><h3 class='ucam-section__title' id='pr-s-aluno'>Aluno</h3></div><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nome</dt><dd class='ucam-descricao__valor'>Camila Ribeiro Torres</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Data de nascimento</dt><dd class='ucam-descricao__valor'>14/03/2001</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Naturalidade</dt><dd class='ucam-descricao__valor'>Niterói (RJ)</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Identidade</dt><dd class='ucam-descricao__valor'>28.741.903-6</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Órgão expedidor</dt><dd class='ucam-descricao__valor'>Detran-RJ</dd></div></dl><p class='ucam-section__hint'>Vêm do cadastro acadêmico e não se editam aqui: a correção é feita no SIGU e chega ao processo.</p></section><section class='ucam-section' aria-labelledby='pr-s-curso'><div class='ucam-section__cabeca'><h3 class='ucam-section__title' id='pr-s-curso'>Curso</h3></div><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Direito</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Código no e-MEC</dt><dd class='ucam-descricao__valor'>12873</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Credenciamento</dt><dd class='ucam-descricao__valor'>Portaria MEC nº 412, de 2019 (exemplo)</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Forma de ingresso</dt><dd class='ucam-descricao__valor'>Vestibular</dd></div></dl></section></div></div><div id='pr-p-docs' role='tabpanel' aria-labelledby='pr-aba-docs' hidden class='ucam-stack ucam-stack--sm'><ul class='ucam-anexos' aria-label='Documentos digitalizados do aluno'><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='certidao-nascimento.pdf' aria-describedby='pr-ax0' data-fluxo='c' data-acao='baixar-anexo'>Certidão de nascimento ou casamento</button><span class='ucam-anexo__apoio' id='pr-ax0'>PDF · 412 KB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='identidade.pdf' aria-describedby='pr-ax1' data-fluxo='c' data-acao='baixar-anexo'>Identidade</button><span class='ucam-anexo__apoio' id='pr-ax1'>PDF · 388 KB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='cpf.pdf' aria-describedby='pr-ax2' data-fluxo='c' data-acao='baixar-anexo'>CPF</button><span class='ucam-anexo__apoio' id='pr-ax2'>PDF · 96 KB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='diploma-ensino-medio.pdf' aria-describedby='pr-ax3' data-fluxo='c' data-acao='baixar-anexo'>Diploma do ensino médio</button><span class='ucam-anexo__apoio' id='pr-ax3'>PDF · 1,1 MB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='historico-ensino-medio.pdf' aria-describedby='pr-ax4' data-fluxo='c' data-acao='baixar-anexo'>Histórico do ensino médio</button><span class='ucam-anexo__apoio' id='pr-ax4'>PDF · 940 KB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li><li class='ucam-anexo'><span class='ucam-anexo__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-anexo__corpo'><button class='ucam-anexo__nome' type='button' title='historico-para-registro.pdf' aria-describedby='pr-ax5' data-fluxo='c' data-acao='baixar-anexo'>Histórico para registro</button><span class='ucam-anexo__apoio' id='pr-ax5'>PDF · 1,3 MB</span></span><svg class='ic ucam-anexo__indicio' aria-hidden='true'><use href='#i-download'/></svg></li></ul><p class='ucam-section__hint'>Os 6 tipos que a URD confere no registro. Os demais documentos digitalizados do aluno ficam no SIGU.</p></div><div id='pr-p-exig' role='tabpanel' aria-labelledby='pr-aba-exig' hidden class='ucam-stack ucam-stack--sm'><div class='ucam-stack ucam-stack--sm'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='pr-exig'><caption class='ucam-sr-only'>Documentos pedidos pela URD a este processo, com a situação de cada pedido.</caption><thead><tr><th scope='col' class='th--min'>Pedido em</th><th scope='col'>Documento</th><th scope='col'>Observação</th><th scope='col' class='th--min'>Situação</th></tr></thead><tbody><tr><td data-c='data' style='white-space:nowrap'>06/10/2026</td><th scope='row' data-c='nome' style='white-space:nowrap'>Histórico do ensino médio</th><td data-c='obs'>A cópia enviada está sem a página 2, com as notas do 3º ano.</td><td data-c='situacao' style='white-space:nowrap'>Cumprida em 20/10/2026</td></tr></tbody></table></div><p class='ucam-section__hint'>Enquanto houver pedido não cumprido, o processo fica Em exigência e a unidade vê o pedido no processo dela.</p></div></div><div id='pr-p-prorr' role='tabpanel' aria-labelledby='pr-aba-prorr' hidden class='ucam-stack ucam-stack--sm'><div class='ucam-empty'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg><p class='ucam-empty__title'>Nenhum pedido de prorrogação</p><p class='ucam-empty__description'>A unidade pede prazo a mais por aqui quando o processo ainda não foi expedido. Faltam 71 dias para vencer.</p></div></div><div id='pr-p-equiv' role='tabpanel' aria-labelledby='pr-aba-equiv' hidden class='ucam-stack ucam-stack--sm'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='pr-eq'><caption class='ucam-sr-only'>Disciplinas isentas por equivalência, com a disciplina de origem e a instituição.</caption><thead><tr><th scope='col'>Disciplina isenta</th><th scope='col'>Disciplina de origem</th><th scope='col'>Instituição de origem</th><th scope='col' class='th--acoes'><span class=\"ucam-sr-only\">Comprovante</span></th></tr></thead><tbody><tr><th scope='row' style='white-space:nowrap'>Introdução ao Estudo do Direito</th><td style='white-space:nowrap'>Teoria Geral do Direito</td><td style='white-space:nowrap'>Universidade Federal Fluminense (exemplo)</td><td class='td--acoes'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Baixar o comprovante de Introdução ao Estudo do Direito' data-fluxo='c' data-acao='baixar-anexo'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg></button></td></tr><tr><th scope='row' style='white-space:nowrap'>Língua Portuguesa</th><td style='white-space:nowrap'>Leitura e Produção de Textos</td><td style='white-space:nowrap'>Universidade Federal Fluminense (exemplo)</td><td class='td--acoes'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost' type='button' aria-label='Baixar o comprovante de Língua Portuguesa' data-fluxo='c' data-acao='baixar-anexo'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg></button></td></tr></tbody></table></div></div><div id='pr-p-diploma' role='tabpanel' aria-labelledby='pr-aba-diploma' hidden class='ucam-stack ucam-stack--sm'><div class='ucam-empty'><svg class='ic' aria-hidden='true'><use href='#i-scrollText'/></svg><p class='ucam-empty__title'>Diploma disponível ao deferir</p><p class='ucam-empty__description'>Depois do deferimento a URD registra o diploma: o livro, a folha e o número de registro são dados pelo sistema, e a data de registro e o número do diploma são informados aqui.</p></div></div><div id='pr-p-hist' role='tabpanel' aria-labelledby='pr-aba-hist' hidden class='ucam-stack ucam-stack--sm'><ol class='ucam-timeline ucam-timeline--compacta'><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no'></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Em análise</span><span class='ucam-timeline__papel'>Leandro Paiva Moura · URD</span><time class='ucam-timeline__tempo'>20/10/2026 · 15:42</time></p><p class='ucam-timeline__corpo'>A unidade marcou a exigência como cumprida e o processo voltou à análise.</p></div></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no'></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Em exigência</span><span class='ucam-timeline__papel'>Leandro Paiva Moura · URD</span><time class='ucam-timeline__tempo'>06/10/2026 · 10:18</time></p><p class='ucam-timeline__corpo'>Pediu o histórico do ensino médio completo.</p></div></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no'></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Em análise</span><span class='ucam-timeline__papel'>Leandro Paiva Moura · URD</span><time class='ucam-timeline__tempo'>02/10/2026 · 09:05</time></p><p class='ucam-timeline__corpo'>Começou a análise.</p></div></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no'></span><span class='ucam-timeline__linha'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Expedido</span><span class='ucam-timeline__papel'>Sônia Martins Leal · Secretaria do Centro</span><time class='ucam-timeline__tempo'>28/09/2026 · 16:30</time></p><p class='ucam-timeline__corpo'>Expediu para a URD.</p></div></li><li class='ucam-timeline__item'><span class='ucam-timeline__trilho' aria-hidden='true'><span class='ucam-timeline__no'></span></span><div class='ucam-timeline__conteudo'><p class='ucam-timeline__cabecalho'><span class='ucam-timeline__autor'>Sem expedição</span><span class='ucam-timeline__papel'>Sônia Martins Leal · Secretaria do Centro</span><time class='ucam-timeline__tempo'>22/09/2026 · 11:12</time></p><p class='ucam-timeline__corpo'>Abriu o processo ao lançar a colação de grau.</p></div></li></ol></div></div><dialog class='ucam-dialog' id='pr-exig-dlg' aria-labelledby='pr-exig-dlg-t'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title' id='pr-exig-dlg-t'>Pedir documento à unidade</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><p class='ucam-dialog__texto'>O pedido vai para a secretaria do Centro, e o processo passa a Em exigência até ela marcar como cumprido.</p><div class='ucam-field' data-para='nome'><label class='ucam-field__label' for='pr-exig-doc'>Documento <span class='ucam-field__required' aria-hidden='true'>*</span></label><select class='ucam-select' id='pr-exig-doc' required aria-required='true' aria-describedby='pr-exig-doc-h'><option selected>Histórico escolar</option><option>Diploma do ensino médio</option><option>Certidão de nascimento ou casamento</option><option>Identidade</option><option>CPF</option><option>Título de eleitor</option><option>Certificado de reservista</option><option>Quadro de equivalências</option></select><span class='ucam-field__hint' id='pr-exig-doc-h'>Os 30 tipos de documento do SERD; aqui, os mais pedidos primeiro.</span></div><div class='ucam-field' data-para='obs'><label class='ucam-field__label' for='pr-exig-obs'>Observação <span class='ucam-field__required' aria-hidden='true'>*</span></label><textarea class='ucam-textarea' id='pr-exig-obs' rows='3' required aria-required='true' aria-describedby='pr-exig-obs-h'></textarea><span class='ucam-field__hint' id='pr-exig-obs-h'>O que falta ou está errado. A unidade lê isto no processo dela.</span></div><span data-para='data' hidden><input type='hidden' value='27/10/2026'></span><span data-para='situacao' hidden><input type='hidden' value='Não cumprida'></span></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Pedir documento</button></div></form></dialog></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Registro de diplomas\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" [title]=\"processo().nomealuno\" [description]=\"processo().numero + ' · ' + processo().curso + ' · ' + processo().siglaunidade\" [breadcrumb]=\"[{ label: 'Controle de expedição', link: '/controledeexpedicao' }]\">\n    <ucam-button variant=\"secondary\" iconStart=\"fileText\" (click)=\"pedindo = true\">Pedir documento</ucam-button>\n    <ucam-menu [items]=\"maisAcoes()\" ariaLabel=\"Mais ações do processo\" />\n    <ucam-button variant=\"primary\" iconStart=\"circleCheck\" (click)=\"deferir()\">Deferir</ucam-button>\n  </ucam-page-header>\n\n  <ucam-stepper label=\"Caminho do processo de diploma\" [steps]=\"etapas()\" [current]=\"2\" />\n  <ucam-description-list [items]=\"resumo()\" [columns]=\"3\" />\n\n  <ucam-tabs ariaLabel=\"Partes do processo\" [items]=\"abas()\" [(value)]=\"aba\">\n    <!-- Dados: ucam-description-list (aluno, curso) · Documentos: ucam-anexo · Exigências e Equivalências: ucam-data-table · Histórico: ucam-timeline -->\n  </ucam-tabs>\n\n  <ucam-dialog title=\"Pedir documento à unidade\" [(open)]=\"pedindo\">\n    <ucam-select label=\"Documento\" [options]=\"tiposDocumento\" [required]=\"true\" [(value)]=\"documento\" />\n    <ucam-textarea label=\"Observação\" [required]=\"true\" [(value)]=\"observacao\" />\n  </ucam-dialog>\n</ucam-app-shell>\n\n// deferir(): ucamConfirm({ confirmLabel: 'Deferir' }) e PUT /processo/deferir/nomeusuario/{nome}\n// maisAcoes: Anular processo (ucamConfirm, tom neutro), Marcar como 2ª via",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "processos"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Trilha · Controle de expedição",
+                "classe": "a",
+                "destino": "diploma/processos",
+                "efeito": "Volta à fila."
+              },
+              {
+                "rotulo": "Deferir",
+                "classe": "c",
+                "efeito": "Pede confirmação; confirmado, avisa que o processo foi deferido."
+              },
+              {
+                "rotulo": "Pedir documento",
+                "classe": "c",
+                "efeito": "Abre o diálogo; confirmar acrescenta a exigência Não cumprida na aba Exigências."
+              },
+              {
+                "rotulo": "Mais ações · Anular processo",
+                "classe": "c",
+                "efeito": "Pede confirmação dizendo que não há volta; confirmado, avisa que foi anulado."
+              },
+              {
+                "rotulo": "Mais ações · Marcar como 2ª via",
+                "classe": "c",
+                "efeito": "Pede confirmação; confirmado, avisa que o processo é de segunda via."
+              },
+              {
+                "rotulo": "Abas (7)",
+                "classe": "c",
+                "efeito": "Troca a parte do processo à vista."
+              },
+              {
+                "rotulo": "Documento e comprovante (×8)",
+                "classe": "b",
+                "efeito": "No sistema, baixa o arquivo digitalizado."
+              }
+            ],
+            "chega_de": [
+              "diploma/processos (nome do aluno)",
+              "menu do sistema (Dados do aluno)"
+            ]
+          }
+        },
+        {
+          "id": "diploma-digital",
+          "nome": "Diploma digital",
+          "perfil": "URD (Unidade de Registro de Diplomas)",
+          "padrao": "listagem-crud",
+          "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /registro/pesquisa — paginas/registro/registro/ (registro.component, data-table), paginas/registro/shared/modal/confirmation-modal, paginas/registro/informativo/, paginas/registro/services/registro-diploma.service.ts; integracao-diploma-digital-backend (Spring Boot) — IntegracaoEndpoint.java (diploma-aluno, chancela, registrar), DigitalDegreeExceptionHandler.java, ChancelaDTO.java, IntegracaoURDRepositorio.java (lidos em 27/10/2026)",
+          "descricao": "Os diplomas registrados no livro num dia, com a ação de enviar cada um ao serviço de diploma digital e a situação da assinatura. É a forma de lista com ação por linha e confirmação; a segunda via pede a chancela antes de enviar.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-date-field",
+            "ucam-dialog",
+            "ucam-empty-state",
+            "ucam-icon",
+            "ucam-page-header",
+            "ucam-segmented",
+            "ucam-text-field",
+            "ucam-textarea",
+            "ucam-toast"
+          ],
+          "problemas": [
+            "A tela abre com \"Ops... Ainda não foi feita nenhuma pesquisa!\" e, sem data, responde com um alert() do navegador: \"Selecione uma data!\".",
+            "Enviar leva a outra rota (/registro/informativo) com \"Aguarde. Estamos processando sua solicitação.\" e depois uma lista de mensagens numeradas com \"Origem: -\", e só o botão voltar devolve à lista.",
+            "A coluna registrado mistura botão \"registrar\", texto \"Aguarde. Em breve o link estará disponível\" e link \"download\" na mesma posição.",
+            "A lista carrega 10 por vez com \"carregar mais\", sem dizer quantos há."
+          ],
+          "notas": [
+            "Parente: Enviar mensalidades do SigFin (envio a um serviço de fora, com situação por linha).",
+            "A data de registro já vem preenchida com o último dia que tem diploma registrado. As duas abas viraram o recorte da barra, com Todos, e a contagem diz quantos há.",
+            "Registrar pede confirmação com aluno, curso, unidade e registro e, confirmado, marca a linha como Aguardando assinatura sem sair da lista. A segunda via abre o diálogo da chancela, preenchido com o registro da primeira, como o sistema faz.",
+            "O resultado do envio deixa de ser outra página: sucesso marca a linha; recusa por dado faltando (código 540 da integração) vira a lista dos campos a corrigir no próprio diálogo, com o caminho do cadastro.",
+            "Situação e ação ficam em colunas separadas: o selo diz em que pé está, o botão diz o que fazer.",
+            "Os números fecham com a criação de lote: os quatro diplomas de 22/10/2026 estão sem lote lá."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "A pesquisa é por data de registro no livro, 10 por vez com \"carregar mais\", em duas listas: a registrar (sem código do diploma digital) e registrado (com código) (registro.component.ts:13-15, :107-110, :153-164; IntegracaoURDRepositorio.java getAlunoDiplomaListPorData).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Registrar monta o registro com os dados do aluno, do curso, da instituição e do livro e o envia ao serviço de diploma digital; a resposta guarda o código do diploma no registro (IntegracaoEndpoint.java postRegistrarAlunoDiploma; RegistroDiplomaService.java; DiplomaService.java atualizaDiplomaDegreeId).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Segunda via exige a chancela, buscada por CPF e matrícula no modelo \"Registro da 1ª via na URD sob o número … Livro … Folha … em …, Processo ….\" e editável; sem ela, Enviar fica bloqueado (registro.component.ts:174-188; confirmation-modal.component.html:26-36; ChancelaDTO.java).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Resposta 200 diz que o registro foi feito e que o link vem depois; 400 e 540 mostram a origem e a lista de mensagens de validação; 500 e as demais, erro inesperado com \"entre em contato com o administrador\" (informativo.component.ts:49-97; DigitalDegreeExceptionHandler.java).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O PDF só fica disponível depois da assinatura: o serviço de diploma digital avisa a integração com o código e o endereço do arquivo, e só então a linha mostra o download (data-table.component.html:29-33; IntegracaoEndpoint.java patchRegistrarAlunoDiploma).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O front não distingue a secretaria da unidade da URD: o único guard confere se há sessão, e quem vê cada tela é decidido pelo menu que o servidor devolve por usuário, aplicação e unidade (auth-guard.service.ts:25-28; top-bar/menu/menu.services.ts:15-21).",
+              "decide": "Gestão de acessos"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Registrar pede confirmação com os dados do diploma e marca a linha na própria lista; a recusa diz o campo a corrigir e onde.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A data de registro abre preenchida com o último dia que tem diploma registrado.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: em quanto tempo o diploma costuma ser assinado, e o que fazer quando a assinatura não vem.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o que fazer quando a chancela automática não vem (aluno sem registro de primeira via no SERD).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quais perfis existem (secretaria da unidade, URD, consulta) e o que cada um pode fazer. Hoje a separação depende só do menu.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Diploma digital</h2><span class='ucam-viewbar__meta'>Registros de 22/10/2026</span><span class='ucam-viewbar__folga'></span></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:situacao' data-filtra-alvo='dd-tabela' role='group' aria-label='Situação do envio'><button type='button' aria-pressed='true' data-valor=''>Todos <span class='ucam-segmented__contagem'>4</span></button><button type='button' aria-pressed='false' data-valor='registrar'>A registrar <span class='ucam-segmented__contagem'>3</span></button><button type='button' aria-pressed='false' data-valor='registrado'>Registrados <span class='ucam-segmented__contagem'>1</span></button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='dd-data'>Data de registro</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='dd-data' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='22/10/2026' aria-describedby='dd-data-h' data-mascara='data'></span><span class='ucam-field__hint' id='dd-data-h'>O dia em que o diploma foi registrado no livro.</span></div><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='dd-b'>Pesquisar</label><input class='ucam-input' id='dd-b' type='search' data-filtra='texto' data-filtra-alvo='dd-tabela' placeholder='Nome ou CPF' aria-controls='dd-vazio' aria-describedby='dd-eco'></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='dd-tabela'><caption class='ucam-sr-only'>Diplomas registrados no livro em 22/10/2026, com a situação do envio ao serviço de diploma digital e a ação de cada um.</caption><thead><tr><th scope='col' class='th--min'>Registro</th><th scope='col'>Aluno</th><th scope='col' class='th--min'>CPF</th><th scope='col'>Curso</th><th scope='col' class='th--min'>Unidade</th><th scope='col' class='th--min'>2ª via</th><th scope='col' class='th--min'>Situação</th><th scope='col' class='th--acoes'><span class='ucam-sr-only'>Ação</span></th></tr></thead><tbody><tr data-situacao='registrar'><td style='white-space:nowrap'><span class='ucam-id'>2026.0214</span></td><th scope='row' style='white-space:nowrap'>Renata Souza Campos</th><td style='white-space:nowrap'><span class='ucam-codigo'>503.118.274-09</span></td><td style='white-space:nowrap'>Administração</td><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>Não</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>A registrar</span></td><td class='td--acoes'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-confirmar data-confirmar-corpo='Renata Souza Campos, Administração, Niterói, registro 2026.0214 de 22/10/2026. O registro vai ao serviço de diploma digital; o PDF fica disponível depois da assinatura.' data-confirmar-rotulo='Enviar registro' data-confirmar-tom='primary' data-linha-selo='Aguardando assinatura' data-linha-tom='neutral' data-linha-situacao='registrado' data-linha-msg='Registro de Renata Souza Campos enviado. O PDF fica disponível depois da assinatura, no recorte Registrados.' aria-label='Registrar o diploma digital de Renata Souza Campos'>Registrar</button></td></tr><tr data-situacao='registrar'><td style='white-space:nowrap'><span class='ucam-id'>2026.0213</span></td><th scope='row' style='white-space:nowrap'>Gustavo Lemos Pires</th><td style='white-space:nowrap'><span class='ucam-codigo'>271.664.380-15</span></td><td style='white-space:nowrap'>Direito</td><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>Não</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>A registrar</span></td><td class='td--acoes'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-confirmar data-confirmar-corpo='Gustavo Lemos Pires, Direito, Centro, registro 2026.0213 de 22/10/2026. O registro vai ao serviço de diploma digital; o PDF fica disponível depois da assinatura.' data-confirmar-rotulo='Enviar registro' data-confirmar-tom='primary' data-linha-selo='Aguardando assinatura' data-linha-tom='neutral' data-linha-situacao='registrado' data-linha-msg='Registro de Gustavo Lemos Pires enviado. O PDF fica disponível depois da assinatura, no recorte Registrados.' aria-label='Registrar o diploma digital de Gustavo Lemos Pires'>Registrar</button></td></tr><tr data-situacao='registrado'><td style='white-space:nowrap'><span class='ucam-id'>2026.0212</span></td><th scope='row' style='white-space:nowrap'>Vinícius Moraes Rangel</th><td style='white-space:nowrap'><span class='ucam-codigo'>159.803.462-77</span></td><td style='white-space:nowrap'>Engenharia Civil</td><td style='white-space:nowrap'>Campos</td><td style='white-space:nowrap'>Não</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Assinado</span></td><td class='td--acoes'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-fluxo='c' data-acao='baixar-anexo' aria-label='Baixar o PDF do diploma digital de Vinícius Moraes Rangel'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> PDF</button></td></tr><tr data-situacao='registrar'><td style='white-space:nowrap'><span class='ucam-id'>2026.0211</span></td><th scope='row' style='white-space:nowrap'>Larissa Fontes Azevedo</th><td style='white-space:nowrap'><span class='ucam-codigo'>640.227.951-32</span></td><td style='white-space:nowrap'>Pedagogia</td><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>Sim</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>A registrar</span></td><td class='td--acoes'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-abre-dialogo='dd-chancela' data-linha-selo='Aguardando assinatura' data-linha-tom='neutral' data-linha-situacao='registrado' data-linha-msg='Registro de Larissa Fontes Azevedo enviado. O PDF fica disponível depois da assinatura, no recorte Registrados.' aria-label='Registrar a segunda via de Larissa Fontes Azevedo'>Registrar</button></td></tr></tbody></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>4 diplomas registrados em 22/10/2026 · 3 a registrar</p></div><div class='ucam-empty' id='dd-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum diploma encontrado</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou ao recorte escolhido. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='dd-eco' role='status'></p><dialog class='ucam-dialog' id='dd-chancela' aria-labelledby='dd-chancela-t'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title' id='dd-chancela-t'>Registrar a segunda via</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><p class='ucam-dialog__texto'>Larissa Fontes Azevedo, Pedagogia, Tijuca, registro 2026.0211 de 22/10/2026. A segunda via leva a chancela do registro da primeira; o texto abaixo veio do registro e pode ser corrigido.</p><div class='ucam-field'><label class='ucam-field__label' for='dd-ch'>Chancela <span class='ucam-field__required' aria-hidden='true'>*</span></label><textarea class='ucam-textarea' id='dd-ch' rows='4' required aria-required='true' aria-describedby='dd-ch-h'>Registro da 1ª via na URD sob o número 2020.0388 Livro 2 Folha 388 em 20/01/2020, Processo 112.0511.2019.</textarea><span class='ucam-field__hint' id='dd-ch-h'>Sem a chancela, o registro da segunda via não é enviado.</span></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Enviar registro</button></div></form></dialog><p class='ucam-section__hint'>Registrar envia os dados do aluno, do curso e do livro ao serviço de diploma digital. Quando o diploma é assinado, o serviço devolve o endereço do PDF e a linha passa a Assinado.</p></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Registro de diplomas\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Diploma digital\" [description]=\"'Registros de ' + data()\" />\n  <ucam-segmented ariaLabel=\"Situação do envio\" [items]=\"situacoes()\" [(value)]=\"situacao\" />\n\n  <ucam-date-field label=\"Data de registro\" hint=\"O dia em que o diploma foi registrado no livro.\" [(value)]=\"data\" />\n  <ucam-text-field label=\"Pesquisar\" type=\"search\" placeholder=\"Nome ou CPF\" [(value)]=\"termo\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Diplomas registrados no dia\" [columns]=\"colunas\" [rows]=\"registros()\" emptyReason=\"no-results\" />\n\n  <ucam-dialog title=\"Registrar a segunda via\" [(open)]=\"chancelando\">\n    <ucam-textarea label=\"Chancela\" [required]=\"true\" [rows]=\"4\" hint=\"Sem a chancela, o registro da segunda via não é enviado.\" [(value)]=\"chancela\" />\n  </ucam-dialog>\n</ucam-app-shell>\n\n// colunas: Registro, Aluno, CPF, Curso, Unidade, 2ª via, Situação (A registrar | Aguardando assinatura | Assinado), ação (Registrar | PDF)\n// registrar(r): ucamConfirm({ confirmLabel: 'Enviar registro' }); segunda via abre o diálogo com GET /integracao/chancela/cpf/{cpf}/matricula/{matricula}",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "diploma-digital"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Registrar (×2)",
+                "classe": "c",
+                "efeito": "Pede confirmação; confirmado, a linha passa a Aguardando assinatura e vai para Registrados."
+              },
+              {
+                "rotulo": "Registrar a segunda via",
+                "classe": "c",
+                "efeito": "Abre o diálogo da chancela; enviado, a linha passa a Aguardando assinatura."
+              },
+              {
+                "rotulo": "PDF",
+                "classe": "b",
+                "efeito": "No sistema, baixa o PDF do diploma digital assinado."
+              },
+              {
+                "rotulo": "Situação do envio (3 recortes)",
+                "classe": "c",
+                "efeito": "Recorta a lista."
+              },
+              {
+                "rotulo": "Data de registro",
+                "classe": "c",
+                "efeito": "Escolhe o dia; no sistema, reconsulta."
+              },
+              {
+                "rotulo": "Pesquisar",
+                "classe": "c",
+                "efeito": "Filtra por nome ou CPF; sem resultado, mostra o vazio com Limpar busca."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Diploma digital)"
+            ]
+          }
+        },
+        {
+          "id": "criar-lote",
+          "nome": "Criação de lote",
+          "perfil": "URD (Unidade de Registro de Diplomas)",
+          "padrao": "listagem-crud",
+          "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /criacaolote — paginas/lote-diploma/geracao-lote-diploma/ (criacao-lote-diploma.component, criar-lote-diploma-dialog, confirma-criacao-lote-diploma-dialog, criacao-lote-diploma.service.ts); paginas/relatorio/assinatura/ e paginas/relatorio/devolucao/ (rotas /relatorioenvioassinatura e /relatoriodevolucao); diploma-backend (Spring Boot) — DiplomaService.java (criarNovoLote, getSequenciaLoteDiploma), ResourceLoteDiploma.java, RepositoryDiplomavw.java (lidos em 27/10/2026)",
+          "descricao": "Os diplomas registrados, recortados por terem ou não lote, com a seleção que vira um lote novo para publicação. É a forma de lista com seleção e ação em lote, com o primário no cabeçalho; os dois ofícios (envio para assinatura e devolução) são a mesma forma.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-checkbox",
+            "ucam-data-table",
+            "ucam-date-field",
+            "ucam-empty-state",
+            "ucam-icon",
+            "ucam-page-header",
+            "ucam-segmented",
+            "ucam-text-field",
+            "ucam-toast"
+          ],
+          "problemas": [
+            "O filtro de lote é um select com Sem Lote como padrão, e a coluna Número do Lote some e volta conforme ele.",
+            "Criar Lote e Limpar Seleção ficam sempre à vista, e Criar Lote age com a seleção vazia até o servidor responder \"Nenhum diploma foi selecionado.\"",
+            "São dois diálogos em sequência, um para confirmar e outro só para dizer que deu certo, com \"Fechar\".",
+            "O campo \"Dias de vencer\" filtra registros por um prazo que a tela não explica."
+          ],
+          "notas": [
+            "Parente: Cálculo acadêmico da Pós e Enviar mensalidades do SigFin (ADR-081: o primário da tela de lote em repouso no cabeçalho).",
+            "Criar lote é o primário, desabilitado com o motivo até haver diploma marcado; com seleção, diz quantos vão. Confirmado, as linhas mostram o lote novo e o aviso diz quantas entraram e quantas ficaram de fora por já ter lote.",
+            "O lote é um selo neutro na própria linha, e o recorte Sem lote, Com lote e Todos fica na barra com a contagem. A segunda confirmação, que só dizia que deu certo, virou o aviso.",
+            "Envio para assinatura (rota /relatorioenvioassinatura): a mesma lista com os processos sem diploma, os campos do ofício (número, destinatário, cargo) num diálogo, e Gerar ofício como primário. Devolução de diplomas (rota /relatoriodevolucao): os processos publicados de uma unidade, com a data, a edição, a seção e a página do Diário Oficial no diálogo.",
+            "Os números fecham com Lotes de diploma: os três registros com lote estão no lote 0147, Cadastrado, e o lote novo é o 0148. Os seis sem lote incluem os quatro de 22/10/2026 do Diploma digital."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Só diploma sem lote entra em lote novo; o servidor recusa o lote inteiro se algum já estiver em outro: \"Não é possível adicionar um diploma em um lote, quando o diploma já foi adicionado a outro lote anteriormente\" (DiplomaService.java criarNovoLote).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O lote nasce Cadastrado, com a data de criação e um número sequencial de quatro dígitos que continua de um ano para o outro (DiplomaService.java criarNovoLote, getSequenciaLoteDiploma).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A seleção se mantém entre páginas e a criação pede confirmação: \"O lote {data} com {n} diploma(s) será criado, deseja continuar?\" (criacao-lote-diploma.component.ts:41-54, :183-189; criar-lote-diploma-dialog.component.html:5).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O filtro de lote é Todos, Sem Lote (padrão) ou Com Lote; sem \"Dias de vencer\", a consulta usa 120 dias (criacao-lote-diploma.component.ts:73-78, :89; criacao-lote-diploma.service.ts:26-28).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Ofício de envio para assinatura: lista processos sem diploma e traz a quantidade em algarismos e por extenso; remetente, cargo e e-mail de contato estão fixos no template (relatorio-envio-assinatura.component.html:127-178; number.helper.ts:6-47).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Ofício de devolução: lista processos publicados de uma unidade, opcionalmente por data de publicação, cita o Diário Oficial (data, edição, seção, página) e lembra de anexar a cópia do DOU ao diploma; a lista de unidades é fixa, com 25 itens (relatorio-de-devolucao.component.html:117-137; unidades-enum.enum.ts).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O front não distingue a secretaria da unidade da URD: o único guard confere se há sessão, e quem vê cada tela é decidido pelo menu que o servidor devolve por usuário, aplicação e unidade (auth-guard.service.ts:25-28; top-bar/menu/menu.services.ts:15-21).",
+              "decide": "Gestão de acessos"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Criar lote fica no cabeçalho como o único primário, desabilitado com o motivo até haver seleção, e diz quantos diplomas vão (ADR-081).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Diploma que já tem lote fica de fora e o aviso diz quantos, em vez de o servidor recusar o lote inteiro.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o que é o vencimento em dias da criação de lote e de onde ele conta; a tela não diz.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quem mantém o remetente, o cargo, o e-mail e a lista de unidades dos ofícios quando a coordenação muda ou uma unidade abre.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quais perfis existem (secretaria da unidade, URD, consulta) e o que cada um pode fazer. Hoje a separação depende só do menu.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Criação de lote</h2><span class='ucam-viewbar__meta'>Livro 8 · 214 registros em 2026</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><a class='ucam-btn ucam-btn--secondary' href='#/templates/diploma/lotes' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg> Lotes de diploma</a><button class='ucam-btn ucam-btn--primary' type='button' data-lote-primario aria-disabled='true' data-motivo='Marque na lista os diplomas sem lote.'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> <span data-lote-primario-rotulo>Criar lote com</span></button></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:situacao' data-filtra-alvo='cl-tabela' role='group' aria-label='Lote'><button type='button' aria-pressed='true' data-valor=''>Todos <span class='ucam-segmented__contagem'>9</span></button><button type='button' aria-pressed='false' data-valor='semlote'>Sem lote <span class='ucam-segmented__contagem'>6</span></button><button type='button' aria-pressed='false' data-valor='comlote'>Com lote <span class='ucam-segmented__contagem'>3</span></button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='cl-b'>Pesquisar registro</label><input class='ucam-input' id='cl-b' type='search' data-filtra='texto' data-filtra-alvo='cl-tabela' placeholder='Nome, registro ou processo' aria-controls='cl-vazio' aria-describedby='cl-eco'></div><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='cl-data'>Registrado em</label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='cl-data' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' aria-describedby='cl-data-h' data-mascara='data'></span><span class='ucam-field__hint' id='cl-data-h'>Opcional. dd/mm/aaaa</span></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='cl-tabela'><caption class='ucam-sr-only'>Diplomas registrados no livro 8, de 2026, com o lote de publicação de cada um. Só diploma sem lote entra num lote novo.</caption><thead><tr><th scope='col' class='th--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar todos os diplomas'></label></th><th scope='col' class='th--min'>Registro</th><th scope='col'>Aluno</th><th scope='col' class='th--min'>Processo</th><th scope='col' class='th--min'>Registrado em</th><th scope='col' class='th--min'>Lote</th></tr></thead><tbody><tr data-situacao='semlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0214 de Renata Souza Campos'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0214</span></td><th scope='row' style='white-space:nowrap'>Renata Souza Campos</th><td style='white-space:nowrap'><span class='ucam-id'>011.0711.2026</span></td><td style='white-space:nowrap'>22/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem lote</span></td></tr><tr data-situacao='semlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0213 de Gustavo Lemos Pires'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0213</span></td><th scope='row' style='white-space:nowrap'>Gustavo Lemos Pires</th><td style='white-space:nowrap'><span class='ucam-id'>022.0311.2026</span></td><td style='white-space:nowrap'>22/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem lote</span></td></tr><tr data-situacao='semlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0212 de Vinícius Moraes Rangel'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0212</span></td><th scope='row' style='white-space:nowrap'>Vinícius Moraes Rangel</th><td style='white-space:nowrap'><span class='ucam-id'>008.0111.2026</span></td><td style='white-space:nowrap'>22/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem lote</span></td></tr><tr data-situacao='semlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0211 de Larissa Fontes Azevedo'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0211</span></td><th scope='row' style='white-space:nowrap'>Larissa Fontes Azevedo</th><td style='white-space:nowrap'><span class='ucam-id'>013.0511.2026</span></td><td style='white-space:nowrap'>22/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem lote</span></td></tr><tr data-situacao='semlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0210 de Eduardo Siqueira Prado'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0210</span></td><th scope='row' style='white-space:nowrap'>Eduardo Siqueira Prado</th><td style='white-space:nowrap'><span class='ucam-id'>029.0711.2026</span></td><td style='white-space:nowrap'>20/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem lote</span></td></tr><tr data-situacao='semlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0209 de Beatriz Nogueira Alves'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0209</span></td><th scope='row' style='white-space:nowrap'>Beatriz Nogueira Alves</th><td style='white-space:nowrap'><span class='ucam-id'>017.0311.2026</span></td><td style='white-space:nowrap'>20/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem lote</span></td></tr><tr data-situacao='comlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0208 de Felipe Cardoso Mota'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0208</span></td><th scope='row' style='white-space:nowrap'>Felipe Cardoso Mota</th><td style='white-space:nowrap'><span class='ucam-id'>024.0911.2026</span></td><td style='white-space:nowrap'>16/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Lote 0147</span></td></tr><tr data-situacao='comlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0207 de Isabela Rezende Cunha'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0207</span></td><th scope='row' style='white-space:nowrap'>Isabela Rezende Cunha</th><td style='white-space:nowrap'><span class='ucam-id'>006.0511.2026</span></td><td style='white-space:nowrap'>16/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Lote 0147</span></td></tr><tr data-situacao='comlote'><td class='td--selecao'><label class='ucam-check'><input type='checkbox' aria-label='Selecionar o registro 2026.0206 de Marcelo Antunes Reis'></label></td><td style='white-space:nowrap'><span class='ucam-id'>2026.0206</span></td><th scope='row' style='white-space:nowrap'>Marcelo Antunes Reis</th><td style='white-space:nowrap'><span class='ucam-id'>033.0311.2026</span></td><td style='white-space:nowrap'>15/10/2026</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Lote 0147</span></td></tr></tbody></table></div><div class='ucam-lote' data-lote-singular='diploma' data-lote-nome='diplomas'><p class='ucam-lote__contagem' role='status'>0 diplomas selecionados</p><div class='ucam-lote__acoes'><button type='button' class='ucam-lote__acao' data-fluxo='c' data-acao='lote-marcar' data-lote-selo='Lote 0148' data-lote-tom='neutral' data-lote-situacao='comlote' data-lote-so='semlote' data-lote-um='diploma entrou no lote 0148.' data-lote-varios='diplomas entraram no lote 0148.' data-lote-fora='já estavam em outro lote e ficaram de fora.' data-confirmar data-confirmar-corpo='Os diplomas marcados entram no lote 0148, de 27/10/2026. O lote nasce Cadastrado; a expedição e a publicação no Diário Oficial ficam em Lotes de diploma.' data-confirmar-rotulo='Criar lote' data-confirmar-tom='primary'><svg class='ic' aria-hidden='true'><use href='#i-archive'/></svg> Criar lote</button></div><button type='button' class='ucam-lote__limpar' data-fluxo='c' data-acao='limpar-selecao'>Limpar</button></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>9 registros recentes · 6 sem lote · os 205 anteriores já foram publicados</p></div><div class='ucam-empty' id='cl-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum registro encontrado</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou ao recorte escolhido. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='cl-eco' role='status'></p><p class='ucam-section__hint'>Um lote junta os diplomas registrados que vão juntos para o Diário Oficial. A seleção vale entre páginas; diploma que já está num lote fica de fora.</p></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Registro de diplomas\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Criação de lote\" [description]=\"'Livro ' + livro() + ' · ' + total() + ' registros em ' + ano()\">\n    <ucam-button variant=\"secondary\" iconStart=\"archive\" routerLink=\"/listarlote\">Lotes de diploma</ucam-button>\n    <ucam-button variant=\"primary\" iconStart=\"plus\" [disabled]=\"!selecionados().length\" (click)=\"criarLote()\">{{ selecionados().length ? 'Criar lote com ' + selecionados().length + ' diplomas' : 'Criar lote com' }}</ucam-button>\n  </ucam-page-header>\n  <ucam-segmented ariaLabel=\"Lote\" [items]=\"recortes()\" [(value)]=\"recorte\" />\n\n  <ucam-text-field label=\"Pesquisar registro\" type=\"search\" placeholder=\"Nome, registro ou processo\" [(value)]=\"termo\" />\n  <ucam-date-field label=\"Registrado em\" hint=\"Opcional.\" [(value)]=\"dataRegistro\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Diplomas registrados\" [columns]=\"colunas\" [rows]=\"registros()\" selectable=\"multiple\" emptyReason=\"no-results\" />\n</ucam-app-shell>\n\n// colunas: Registro, Aluno, Processo, Registrado em, Lote (ucam-badge neutro)\n// criarLote(): ucamConfirm({ confirmLabel: 'Criar lote' }) e POST /lotediploma/nomeusuario/{nome} com os sem lote",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "criar-lote"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Criar lote com N diplomas",
+                "classe": "c",
+                "efeito": "Desabilitado com o motivo até haver seleção; com seleção, aciona a barra de lote."
+              },
+              {
+                "rotulo": "Criar lote (barra)",
+                "classe": "c",
+                "efeito": "Pede confirmação; as linhas sem lote marcadas passam a Lote 0148 e o aviso diz quantas ficaram de fora."
+              },
+              {
+                "rotulo": "Lotes de diploma",
+                "classe": "a",
+                "destino": "diploma/lotes",
+                "efeito": "Abre a lista dos lotes."
+              },
+              {
+                "rotulo": "Lote (3 recortes)",
+                "classe": "c",
+                "efeito": "Recorta a lista."
+              },
+              {
+                "rotulo": "Pesquisar registro",
+                "classe": "c",
+                "efeito": "Filtra; sem resultado, mostra o vazio com Limpar busca."
+              },
+              {
+                "rotulo": "Registrado em",
+                "classe": "c",
+                "efeito": "Escolhe o dia do registro; no sistema, reconsulta."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Criação de lote, Envio para assinatura, Devolução de diplomas)"
+            ]
+          }
+        },
+        {
+          "id": "lotes",
+          "nome": "Lotes de diploma",
+          "perfil": "URD (Unidade de Registro de Diplomas)",
+          "padrao": "listagem-crud",
+          "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /listarlote — paginas/lote-diploma/controle-lote-diploma/ (listar-lote-diploma.component, view-lote-diploma-dialog, expedir-lote-diploma-dialog, publicar-lote-diploma-dialog, listar-lote-diploma.service.ts); diploma-backend (Spring Boot) — DiplomaService.java (expedirLotediploma, getTextoAvisoRegistro, publicarLotediploma, cancelarLoteDiploma, cancelarDiplomaEmLoteDiploma), ResourceLoteDiploma.java, EstadoLoteDiplomaEnum.java (lidos em 27/10/2026)",
+          "descricao": "Os lotes de diploma com a situação, a faixa de registros e a ação de cada passo (expedir, publicar, baixar o Diário Oficial), e a linha que abre os diplomas, o aviso de registro ou a publicação. É a forma de lista com linha que abre e ação por situação.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-badge",
+            "ucam-button",
+            "ucam-card",
+            "ucam-citacao",
+            "ucam-data-table",
+            "ucam-date-field",
+            "ucam-description-list",
+            "ucam-dialog",
+            "ucam-empty-state",
+            "ucam-file-field",
+            "ucam-icon",
+            "ucam-icon-button",
+            "ucam-page-header",
+            "ucam-segmented",
+            "ucam-text-field",
+            "ucam-toast"
+          ],
+          "problemas": [
+            "O título da tela é \"Listar de lote de diplomas\", e a lista abre filtrada em Cadastrado sem dizer que há outros.",
+            "Cancelar o lote e retirar um diploma dele agem sem confirmação.",
+            "Ver o lote abre um diálogo de 80% com duas abas; Expedir e Publicar ficam no rodapé desse diálogo, e o estado aparece como \"Estado x\" solto.",
+            "O aviso de registro aparece em HTML num diálogo que proíbe copiar pelo teclado (\"Não é permitido copiar essas informações desta forma\") e só copia pelo botão.",
+            "Publicar aceita enviar sem a data, e o arquivo do Diário Oficial é opcional sem que a tela diga."
+          ],
+          "notas": [
+            "Parente: Turmas compartilhadas (linha que abre) e Naturezas do Protocolo (ação por linha).",
+            "Cada situação tem uma ação só, na coluna da direita: Expedir no Cadastrado, Publicar no Expedido e o Diário Oficial no Publicado. Não há primário na tela: a ação depende do lote.",
+            "A linha abre o que importa em cada passo: os diplomas com Retirar e Cancelar lote no Cadastrado, o aviso de registro com Copiar no Expedido e a publicação no Publicado. O bloqueio de copiar pelo teclado saiu; o botão continua.",
+            "Cancelar lote e Retirar pedem confirmação e não são vermelhos: o diploma volta a Sem lote e nada se perde.",
+            "O aviso de registro aqui leva o texto do servidor sem o cabeçalho da mantenedora e sem a assinatura, que o sistema escreve fixos no código.",
+            "Os números fecham: o lote 0147 tem os três registros com lote da Criação de lote, a soma dos diplomas é o pé, e o lote 0145 publicado em 07/10/2026 é o do diploma da consulta pública."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Situações do lote: Cadastrado, Expedido, Publicado e Cancelado; a lista abre em Cadastrado (EstadoLoteDiplomaEnum.java; listar-lote-diploma.component.ts:53-74, :93).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Expedir só lote Cadastrado; expedir monta o aviso de registro com a quantidade em algarismos e por extenso, o período das datas de registro, o número do livro e as faixas de registros, e o servidor recusa expedir de novo (DiplomaService.java expedirLotediploma, getTextoAvisoRegistro, getRegistrosSeparadosPorVirgulaSemSequencia).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Publicar só lote Expedido, com a data da publicação (dd/mm/aaaa, enviada em milissegundos) e o PDF do Diário Oficial; o servidor recusa publicar de novo (publicar-lote-diploma-dialog.component.ts:33, :56-58; DiplomaService.java publicarLotediploma).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Só lote Cadastrado é cancelado ou perde diploma; cancelar devolve todos os diplomas a sem lote, e retirar o último cancela o lote (DiplomaService.java cancelarLoteDiploma, cancelarDiplomaEmLoteDiploma; listar-lote-diploma.component.html:58).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O aviso de registro só se copia pelo botão Copiar; copiar ou recortar pelo teclado mostra uma recusa (expedir-lote-diploma-dialog.component.ts:21-50).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A data de publicação é exibida fixando a hora em 03:00 UTC (listar-lote-diploma.component.ts:148-152).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Toda mudança de situação do lote grava data, situação e usuário no histórico do lote (DiplomaService.java salvarHistoricoLoteDiploma).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O front não distingue a secretaria da unidade da URD: o único guard confere se há sessão, e quem vê cada tela é decidido pelo menu que o servidor devolve por usuário, aplicação e unidade (auth-guard.service.ts:25-28; top-bar/menu/menu.services.ts:15-21).",
+              "decide": "Gestão de acessos"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Cancelar lote e retirar diploma pedem confirmação dizendo que o diploma volta a sem lote.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Publicar exige a data e o PDF do Diário Oficial, e a confirmação diz que os diplomas passam a aparecer na consulta pública.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O aviso de registro pode ser copiado também pelo teclado.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: por que o aviso de registro não pode ser copiado pelo teclado. Se for para evitar edição antes do Diário Oficial, o caminho é outro.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o cabeçalho da mantenedora, o CNPJ e o nome de quem assina o aviso estão escritos no código. Quem os mantém quando mudam?",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quais perfis existem (secretaria da unidade, URD, consulta) e o que cada um pode fazer. Hoje a separação depende só do menu.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Lotes de diploma</h2><span class='ucam-viewbar__meta'>6 lotes · 25 diplomas</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><a class='ucam-btn ucam-btn--secondary' href='#/templates/diploma/criar-lote' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Criação de lote</a></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:situacao' data-filtra-alvo='lt-tabela' role='group' aria-label='Situação do lote'><button type='button' aria-pressed='true' data-valor=''>Todos <span class='ucam-segmented__contagem'>6</span></button><button type='button' aria-pressed='false' data-valor='cadastrado'>Cadastrados <span class='ucam-segmented__contagem'>1</span></button><button type='button' aria-pressed='false' data-valor='expedido'>Expedidos <span class='ucam-segmented__contagem'>1</span></button><button type='button' aria-pressed='false' data-valor='publicado'>Publicados <span class='ucam-segmented__contagem'>3</span></button><button type='button' aria-pressed='false' data-valor='cancelado'>Cancelados <span class='ucam-segmented__contagem'>1</span></button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='lt-b'>Pesquisar lote</label><input class='ucam-input' id='lt-b' type='search' data-filtra='texto' data-filtra-alvo='lt-tabela' placeholder='Número do lote' aria-controls='lt-vazio' aria-describedby='lt-eco'></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='lt-tabela'><caption class='ucam-sr-only'>Lotes de diplomas com a quantidade e a faixa de registros, a situação, a data de publicação no Diário Oficial e a ação de cada situação. Cada linha abre o detalhe do lote.</caption><thead><tr><th scope='col' class='th--expansor'><span class='ucam-sr-only'>Detalhe</span></th><th scope='col' class='th--min'>Lote</th><th scope='col' class='th--min'>Criado em</th><th scope='col' class='th--num th--min'>Diplomas</th><th scope='col'>Registros</th><th scope='col' class='th--min'>Situação</th><th scope='col' class='th--min'>Publicado em</th><th scope='col' class='th--acoes'><span class='ucam-sr-only'>Ação</span></th></tr></thead><tbody><tr data-situacao='cadastrado'><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lt-det-1' aria-label='Mostrar o detalhe do lote 0147'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><th scope='row' style='white-space:nowrap'><span class='ucam-id'>0147</span></th><td style='white-space:nowrap'>23/10/2026</td><td class='td--num'>3</td><td style='white-space:nowrap'>2026.0206 a 2026.0208</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Cadastrado</span></td><td style='white-space:nowrap'>—</td><td class='td--acoes'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-confirmar data-confirmar-corpo='O lote 0147 passa a Expedido e o aviso de registro dos 3 diplomas é montado. Depois de expedido, nenhum diploma sai do lote.' data-confirmar-rotulo='Expedir lote' data-confirmar-tom='primary' data-linha-selo='Expedido' data-linha-tom='neutral' data-linha-situacao='expedido' data-linha-msg='Lote 0147 expedido. O aviso de registro está pronto para copiar.' aria-label='Expedir o lote 0147'>Expedir</button></td></tr><tr class='ucam-table__detalhe' id='lt-det-1' data-fora-do-recorte hidden><td colspan='8'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact'><caption class='ucam-sr-only'>Diplomas do lote 0147</caption><thead><tr><th scope='col' class='th--min'>Registro</th><th scope='col'>Aluno</th><th scope='col' class='th--min'>Processo</th><th scope='col' class='th--acoes'><span class='ucam-sr-only'>Ação</span></th></tr></thead><tbody><tr><td style='white-space:nowrap'><span class='ucam-id'>2026.0208</span></td><th scope='row' style='white-space:nowrap'>Felipe Cardoso Mota</th><td style='white-space:nowrap'><span class='ucam-id'>024.0911.2026</span></td><td class='td--acoes'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-fluxo='c' data-confirmar data-confirmar-corpo='O registro 2026.0208 de Felipe Cardoso Mota sai do lote 0147 e volta a Sem lote, pronto para outro lote. O diploma não muda.' data-confirmar-rotulo='Retirar do lote' data-confirmar-tom='primary' data-toast='O diploma de Felipe Cardoso Mota foi retirado do lote 0147.' data-toast-tom='info' aria-label='Retirar Felipe Cardoso Mota do lote 0147'>Retirar</button></td></tr><tr><td style='white-space:nowrap'><span class='ucam-id'>2026.0207</span></td><th scope='row' style='white-space:nowrap'>Isabela Rezende Cunha</th><td style='white-space:nowrap'><span class='ucam-id'>006.0511.2026</span></td><td class='td--acoes'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-fluxo='c' data-confirmar data-confirmar-corpo='O registro 2026.0207 de Isabela Rezende Cunha sai do lote 0147 e volta a Sem lote, pronto para outro lote. O diploma não muda.' data-confirmar-rotulo='Retirar do lote' data-confirmar-tom='primary' data-toast='O diploma de Isabela Rezende Cunha foi retirado do lote 0147.' data-toast-tom='info' aria-label='Retirar Isabela Rezende Cunha do lote 0147'>Retirar</button></td></tr><tr><td style='white-space:nowrap'><span class='ucam-id'>2026.0206</span></td><th scope='row' style='white-space:nowrap'>Marcelo Antunes Reis</th><td style='white-space:nowrap'><span class='ucam-id'>033.0311.2026</span></td><td class='td--acoes'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-fluxo='c' data-confirmar data-confirmar-corpo='O registro 2026.0206 de Marcelo Antunes Reis sai do lote 0147 e volta a Sem lote, pronto para outro lote. O diploma não muda.' data-confirmar-rotulo='Retirar do lote' data-confirmar-tom='primary' data-toast='O diploma de Marcelo Antunes Reis foi retirado do lote 0147.' data-toast-tom='info' aria-label='Retirar Marcelo Antunes Reis do lote 0147'>Retirar</button></td></tr></tbody></table></div><div class='ucam-cluster'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-confirmar data-confirmar-corpo='O lote 0147 fica Cancelado e os 3 diplomas voltam a Sem lote. Só lote Cadastrado pode ser cancelado.' data-confirmar-rotulo='Cancelar lote' data-confirmar-tom='primary' data-toast='Lote 0147 cancelado. Os 3 diplomas voltaram a Sem lote.' data-toast-tom='info'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Cancelar lote</button></div></td></tr><tr data-situacao='expedido'><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lt-det-2' aria-label='Mostrar o detalhe do lote 0146'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><th scope='row' style='white-space:nowrap'><span class='ucam-id'>0146</span></th><td style='white-space:nowrap'>09/10/2026</td><td class='td--num'>5</td><td style='white-space:nowrap'>2026.0201 a 2026.0205</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td style='white-space:nowrap'>—</td><td class='td--acoes'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-abre-dialogo='lt-publicar' data-linha-selo='Publicado' data-linha-tom='success' data-linha-situacao='publicado' data-linha-msg='Lote 0146 publicado. Os diplomas dele passam a aparecer na consulta pública.' aria-label='Publicar o lote 0146'>Publicar</button></td></tr><tr class='ucam-table__detalhe' id='lt-det-2' data-fora-do-recorte hidden><td colspan='8'><div class='ucam-stack ucam-stack--sm'><p class='ucam-section__hint'>Aviso de registro, montado na expedição. É o texto que vai ao Diário Oficial.</p><blockquote class='ucam-citacao' id='lt-aviso'>Para fins do disposto no art. 21 da Portaria MEC nº 1.095, de 25 de outubro de 2018, esta instituição de ensino superior informa que foram registrados 5 (cinco) diplomas no período de 01/10/2026 a 08/10/2026, conforme consta no livro eletrônico nº 8: registros do nº 2026.0201 ao nº 2026.0205.</blockquote><div class='ucam-cluster'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-toast='Aviso de registro do lote 0146 copiado.' data-toast-tom='success'><svg class='ic' aria-hidden='true'><use href='#i-copy'/></svg> Copiar aviso</button></div></div></td></tr><tr data-situacao='publicado'><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lt-det-3' aria-label='Mostrar o detalhe do lote 0145'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><th scope='row' style='white-space:nowrap'><span class='ucam-id'>0145</span></th><td style='white-space:nowrap'>29/09/2026</td><td class='td--num'>6</td><td style='white-space:nowrap'>2026.0195 a 2026.0200</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Publicado</span></td><td style='white-space:nowrap'>07/10/2026</td><td class='td--acoes'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-fluxo='c' data-acao='baixar-anexo' aria-label='Baixar o Diário Oficial do lote 0145'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> DOU</button></td></tr><tr class='ucam-table__detalhe' id='lt-det-3' data-fora-do-recorte hidden><td colspan='8'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registros</dt><dd class='ucam-descricao__valor'>2026.0195 a 2026.0200</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Publicado no DOU em</dt><dd class='ucam-descricao__valor'>07/10/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Consulta pública</dt><dd class='ucam-descricao__valor'>Os 6 diplomas já podem ser validados</dd></div></dl></td></tr><tr data-situacao='publicado'><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lt-det-4' aria-label='Mostrar o detalhe do lote 0144'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><th scope='row' style='white-space:nowrap'><span class='ucam-id'>0144</span></th><td style='white-space:nowrap'>15/09/2026</td><td class='td--num'>4</td><td style='white-space:nowrap'>2026.0191 a 2026.0194</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Publicado</span></td><td style='white-space:nowrap'>23/09/2026</td><td class='td--acoes'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-fluxo='c' data-acao='baixar-anexo' aria-label='Baixar o Diário Oficial do lote 0144'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> DOU</button></td></tr><tr class='ucam-table__detalhe' id='lt-det-4' data-fora-do-recorte hidden><td colspan='8'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registros</dt><dd class='ucam-descricao__valor'>2026.0191 a 2026.0194</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Publicado no DOU em</dt><dd class='ucam-descricao__valor'>23/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Consulta pública</dt><dd class='ucam-descricao__valor'>Os 4 diplomas já podem ser validados</dd></div></dl></td></tr><tr data-situacao='publicado'><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lt-det-5' aria-label='Mostrar o detalhe do lote 0143'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><th scope='row' style='white-space:nowrap'><span class='ucam-id'>0143</span></th><td style='white-space:nowrap'>01/09/2026</td><td class='td--num'>7</td><td style='white-space:nowrap'>2026.0184 a 2026.0190</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Publicado</span></td><td style='white-space:nowrap'>09/09/2026</td><td class='td--acoes'><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' data-fluxo='c' data-acao='baixar-anexo' aria-label='Baixar o Diário Oficial do lote 0143'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> DOU</button></td></tr><tr class='ucam-table__detalhe' id='lt-det-5' data-fora-do-recorte hidden><td colspan='8'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registros</dt><dd class='ucam-descricao__valor'>2026.0184 a 2026.0190</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Publicado no DOU em</dt><dd class='ucam-descricao__valor'>09/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Consulta pública</dt><dd class='ucam-descricao__valor'>Os 7 diplomas já podem ser validados</dd></div></dl></td></tr><tr data-situacao='cancelado'><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lt-det-6' aria-label='Mostrar o detalhe do lote 0142'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><th scope='row' style='white-space:nowrap'><span class='ucam-id'>0142</span></th><td style='white-space:nowrap'>26/08/2026</td><td class='td--num'>0</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Cancelado</span></td><td style='white-space:nowrap'>—</td><td class='td--acoes'></td></tr><tr class='ucam-table__detalhe' id='lt-det-6' data-fora-do-recorte hidden><td colspan='8'><p class='ucam-section__hint'>Lote cancelado em 27/08/2026, sem diplomas. O número não é reaproveitado.</p></td></tr></tbody><tfoot><tr><td></td><th scope='row' colspan='2'>Total dos 6 lotes</th><td class='td--num'>25</td><td colspan=\"4\"></td></tr></tfoot></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>6 lotes · 25 diplomas · o lote 0147 ainda pode receber ou perder diplomas</p></div><div class='ucam-empty' id='lt-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum lote encontrado</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou ao recorte escolhido. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='lt-eco' role='status'></p><dialog class='ucam-dialog' id='lt-publicar' aria-labelledby='lt-publicar-t'><form method='dialog' class='ucam-dialog__form'><div class='ucam-dialog__header'><h2 class='ucam-dialog__title' id='lt-publicar-t'>Publicar o lote 0146</h2></div><div class='ucam-dialog__body'><div class='ucam-stack'><p class='ucam-dialog__texto'>5 diplomas, registros 2026.0201 a 2026.0205. Publicado, o lote não volta e os diplomas passam a aparecer na consulta pública.</p><div class='ucam-field ucam-field--data'><label class='ucam-field__label' for='lt-pub-data'>Data da publicação no Diário Oficial <span class='ucam-field__required' aria-hidden='true'>*</span></label><span class='ucam-date-field'><svg class='ic ucam-date-field__icone' aria-hidden='true'><use href='#i-calendar'/></svg><input class='ucam-input' id='lt-pub-data' type='text' inputmode='numeric' maxlength='10' autocomplete='off' value='' required aria-required='true' aria-describedby='lt-pub-data-h' data-mascara='data'></span><span class='ucam-field__hint' id='lt-pub-data-h'>dd/mm/aaaa</span></div><div class='ucam-field'><span class='ucam-field__label' id='lt-pub-arq-l'>Página do Diário Oficial</span><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='anexar' data-unico data-accept='.pdf' data-max-size='10485760' style='align-self:flex-start' aria-describedby='lt-pub-arq-l lt-pub-arq-h'><svg class='ic' aria-hidden='true'><use href='#i-upload'/></svg> Escolher PDF</button><span class='ucam-field__hint' id='lt-pub-arq-h'>PDF de até 10 MB.</span></div></div></div><div class='ucam-dialog__footer'><button class='ucam-btn ucam-btn--secondary' type='submit' value='nao' formnovalidate>Cancelar</button><button class='ucam-btn ucam-btn--primary' type='submit' value='ok'>Publicar lote</button></div></form></dialog><p class='ucam-section__hint'>O lote anda em três passos: Cadastrado (ainda muda), Expedido (o aviso de registro é montado) e Publicado (com a data e a página do Diário Oficial). Só lote Cadastrado pode ser cancelado.</p></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Registro de diplomas\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Lotes de diploma\" [description]=\"lotes().length + ' lotes · ' + totalDiplomas() + ' diplomas'\">\n    <ucam-button variant=\"secondary\" iconStart=\"plus\" routerLink=\"/criacaolote\">Criação de lote</ucam-button>\n  </ucam-page-header>\n  <ucam-segmented ariaLabel=\"Situação do lote\" [items]=\"situacoes()\" [(value)]=\"situacao\" />\n  <ucam-text-field label=\"Pesquisar lote\" type=\"search\" placeholder=\"Número do lote\" [(value)]=\"termo\" />\n\n  <!-- linha que abre (row-detail) e ação por situação: classes do Trilho A até chegarem ao ucam-data-table -->\n  <div class=\"ucam-table-wrap\">\n    <table class=\"ucam-table ucam-table--compact\">…lote, criado em, diplomas, registros, situação, publicado em, ação (Expedir | Publicar | DOU)…</table>\n  </div>\n\n  <ucam-dialog title=\"Publicar o lote\" [(open)]=\"publicando\">\n    <ucam-date-field label=\"Data da publicação no Diário Oficial\" [required]=\"true\" [(value)]=\"dataPublicacao\" />\n    <ucam-file-field label=\"Página do Diário Oficial\" accept=\".pdf\" [maxSize]=\"10 * 1024 * 1024\" [required]=\"true\" />\n  </ucam-dialog>\n</ucam-app-shell>\n\n// expedir(l): ucamConfirm e GET /lotediploma/nomeusuario/{nome}/expedir/{oid}\n// cancelar(l) e retirar(l, d): ucamConfirm (tom neutro)",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "lotes"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Expedir",
+                "classe": "c",
+                "efeito": "Pede confirmação; o lote passa a Expedido."
+              },
+              {
+                "rotulo": "Publicar",
+                "classe": "c",
+                "efeito": "Abre o diálogo da data e do PDF; publicado, o lote passa a Publicado."
+              },
+              {
+                "rotulo": "DOU (×3)",
+                "classe": "b",
+                "efeito": "No sistema, baixa a página do Diário Oficial."
+              },
+              {
+                "rotulo": "Chevron da linha (×6)",
+                "classe": "c",
+                "efeito": "Abre os diplomas, o aviso de registro ou a publicação do lote."
+              },
+              {
+                "rotulo": "Retirar (×3) e Cancelar lote",
+                "classe": "c",
+                "efeito": "Pedem confirmação; avisam que o diploma voltou a Sem lote."
+              },
+              {
+                "rotulo": "Copiar aviso",
+                "classe": "c",
+                "efeito": "Avisa que o aviso de registro foi copiado."
+              },
+              {
+                "rotulo": "Criação de lote",
+                "classe": "a",
+                "destino": "diploma/criar-lote",
+                "efeito": "Abre a criação de lote."
+              },
+              {
+                "rotulo": "Situação do lote (5 recortes) e Pesquisar lote",
+                "classe": "c",
+                "efeito": "Recortam e filtram a lista."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Lotes de diploma)",
+              "diploma/criar-lote (Lotes de diploma)"
+            ]
+          }
+        },
+        {
+          "id": "livro",
+          "nome": "Livro de registro",
+          "perfil": "URD (Unidade de Registro de Diplomas)",
+          "padrao": "consulta-relatorio",
+          "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /livroderegistros — paginas/livro-de-registros/ (livro-de-registros.component, page/page.component, print-page/page.component), livro-de-registros.module.ts; diploma-backend (Spring Boot) — ResourceLivroRegistro.java, HelperLivroRegistro.java, RepositoryDiploma.java (buscaDiplomaPorLivro), DiplomaService.java (criarNovoDiploma) (lidos em 27/10/2026)",
+          "descricao": "O livro de registro de diplomas de um ano, uma folha por registro, com a linha que abre a folha inteira e a impressão do livro. É a forma de consulta de registro oficial com documento para impressão.",
+          "usa": [
+            "ucam-app-shell",
+            "ucam-button",
+            "ucam-card",
+            "ucam-data-table",
+            "ucam-description-list",
+            "ucam-empty-state",
+            "ucam-icon",
+            "ucam-icon-button",
+            "ucam-page-header",
+            "ucam-select",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "O livro aparece como duas folhas lado a lado, passadas por setas e por um controle deslizante com o número da folha: achar um aluno exige folhear.",
+            "O campo \"Pesquisa rápida\" não está ligado a nada (livro-de-registros.component.html:12).",
+            "Imprimir é um botão redondo só com ícone, e imprime todas as folhas do ano de uma vez.",
+            "A rota do livro é a única do sistema sem verificação de sessão (livro-de-registros.module.ts:15-19)."
+          ],
+          "notas": [
+            "Parente: Resultado dos Relatórios acadêmicos (consulta com impressão) e Balanço das Turmas (linha que abre).",
+            "O livro virou uma lista de folhas, da mais recente para a mais antiga, com busca por nome, registro ou processo; a linha abre a folha inteira com os campos que o sistema imprime. Folhear saiu.",
+            "Imprimir o livro é secundário e nomeado; a folha de impressão continua sendo uma por página, com livro, UF e assinatura do dirigente.",
+            "O ano diz o número do livro, que é o ano menos 2018.",
+            "Os números fecham: a folha é o sequencial do registro (folha 200 é o registro 2026.0200); as folhas 195 a 200 são o lote 0145, publicado em 07/10/2026, e a 198 é o diploma da consulta pública. Os 14 registros depois da 200 estão nos lotes 0146 e 0147 ou sem lote."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "O livro é consultado por ano, de 2019 até o ano corrente; o número do livro é o ano menos 2018 (livro-de-registros.component.ts:84-93; DiplomaService.java criarNovoDiploma).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Folha e número de registro andam juntos, um por diploma, e recomeçam a cada ano; o número de registro é ano.sequencial de quatro dígitos (DiplomaService.java criarNovoDiploma, getNumeroSequenciaDiploma, getSequenciaFolhaDiploma).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Entram no livro só os diplomas ativos de lotes publicados, em ordem de folha; sem nenhum, a resposta é \"O livro não foi encontrado.\" (ResourceLivroRegistro.java; RepositoryDiploma.java buscaDiplomaPorLivro).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A folha traz aluno, processo, registro, curso, conclusão, colação, título, nacionalidade, naturalidade, nascimento, documento e órgão emissor, instituição, mantenedora e CNPJ, expedição, série, datas de registro, portarias de autorização e reconhecimento e observação; a impressão acrescenta livro, UF e a assinatura do dirigente (page/page.component.html; print-page/page.component.html).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O livro mostra duas folhas por vez e imprime todas as folhas do ano, uma por página (livro-de-registros.component.html:28-40; app.component.css:33-34).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O front não distingue a secretaria da unidade da URD: o único guard confere se há sessão, e quem vê cada tela é decidido pelo menu que o servidor devolve por usuário, aplicação e unidade (auth-guard.service.ts:25-28; top-bar/menu/menu.services.ts:15-21).",
+              "decide": "Gestão de acessos"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O livro é uma lista de folhas com busca, e a folha inteira abre na própria linha.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o livro entra só com lote publicado? Hoje o diploma registrado e ainda não publicado não aparece no livro do ano.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: imprimir o livro inteiro do ano é a única forma? Uma faixa de folhas ou uma folha só serviria à conferência.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quais perfis existem (secretaria da unidade, URD, consulta) e o que cada um pode fazer. Hoje a separação depende só do menu.",
+              "decide": "Gestão de acessos"
+            }
+          ],
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Livro de registro</h2><span class='ucam-viewbar__meta'>Livro 8 · 2026 · 200 folhas</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='imprimir'><svg class='ic' aria-hidden='true'><use href='#i-printer'/></svg> Imprimir o livro</button></div></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field'><label class='ucam-field__label' for='lv-ano'>Ano</label><select class='ucam-select' id='lv-ano'><option selected>2026 · livro 8</option><option>2025 · livro 7</option><option>2024 · livro 6</option><option>2023 · livro 5</option><option>2022 · livro 4</option><option>2021 · livro 3</option><option>2020 · livro 2</option><option>2019 · livro 1</option></select></div><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='lv-b'>Pesquisar no livro</label><input class='ucam-input' id='lv-b' type='search' data-filtra='texto' data-filtra-alvo='lv-tabela' placeholder='Nome, registro ou processo' aria-controls='lv-vazio' aria-describedby='lv-eco'></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='lv-tabela'><caption class='ucam-sr-only'>Folhas do livro 8, de 2026, das mais recentes para as mais antigas: folha, número de registro, aluno, curso e data do registro. Cada linha abre a folha inteira.</caption><thead><tr><th scope='col' class='th--expansor'><span class='ucam-sr-only'>Folha</span></th><th scope='col' class='th--num th--min'>Folha</th><th scope='col' class='th--min'>Registro</th><th scope='col'>Aluno</th><th scope='col'>Curso</th><th scope='col' class='th--min'>Registrado em</th></tr></thead><tbody><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-1' aria-label='Mostrar a folha 200 de Otávio Ramos Peixoto'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>200</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0200</span></td><th scope='row' style='white-space:nowrap'>Otávio Ramos Peixoto</th><td style='white-space:nowrap'>Administração</td><td style='white-space:nowrap'>25/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-1' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>038.0111.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Administração</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Bacharel em Administração</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Campos</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>25/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-2' aria-label='Mostrar a folha 199 de Cláudia Matos Ferraz'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>199</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0199</span></td><th scope='row' style='white-space:nowrap'>Cláudia Matos Ferraz</th><td style='white-space:nowrap'>Direito</td><td style='white-space:nowrap'>25/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-2' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>045.0311.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Direito</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Bacharel em Direito</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Centro</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>25/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-3' aria-label='Mostrar a folha 198 de Fernanda Lima Barcellos'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>198</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0198</span></td><th scope='row' style='white-space:nowrap'>Fernanda Lima Barcellos</th><td style='white-space:nowrap'>Psicologia</td><td style='white-space:nowrap'>25/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-3' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>041.0711.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Psicologia</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Psicólogo</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Niterói</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>25/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-4' aria-label='Mostrar a folha 197 de Henrique Dias Coutinho'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>197</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0197</span></td><th scope='row' style='white-space:nowrap'>Henrique Dias Coutinho</th><td style='white-space:nowrap'>Ciências Contábeis</td><td style='white-space:nowrap'>24/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-4' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>026.0511.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Ciências Contábeis</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Bacharel em Ciências Contábeis</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Tijuca</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>24/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-5' aria-label='Mostrar a folha 196 de Sabrina Costa Meireles'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>196</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0196</span></td><th scope='row' style='white-space:nowrap'>Sabrina Costa Meireles</th><td style='white-space:nowrap'>Enfermagem</td><td style='white-space:nowrap'>24/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-5' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>020.0311.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Enfermagem</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Bacharel em Enfermagem</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Centro</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>24/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-6' aria-label='Mostrar a folha 195 de Rodrigo Vieira Brandão'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>195</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0195</span></td><th scope='row' style='white-space:nowrap'>Rodrigo Vieira Brandão</th><td style='white-space:nowrap'>Direito</td><td style='white-space:nowrap'>23/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-6' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>012.0911.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Direito</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Bacharel em Direito</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Nova Friburgo</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>23/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-7' aria-label='Mostrar a folha 194 de Tatiane Freitas Lobo'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>194</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0194</span></td><th scope='row' style='white-space:nowrap'>Tatiane Freitas Lobo</th><td style='white-space:nowrap'>Pedagogia</td><td style='white-space:nowrap'>12/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-7' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>035.0711.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Pedagogia</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Licenciado em Pedagogia</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Niterói</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>12/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-8' aria-label='Mostrar a folha 193 de André Luiz Pacheco'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>193</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0193</span></td><th scope='row' style='white-space:nowrap'>André Luiz Pacheco</th><td style='white-space:nowrap'>Administração</td><td style='white-space:nowrap'>12/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-8' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>018.0511.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Administração</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Bacharel em Administração</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Tijuca</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>12/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr><tr><td class='td--expansor'><button class='ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor' type='button' aria-expanded='false' aria-controls='lv-det-9' aria-label='Mostrar a folha 192 de Priscila Monteiro Gama'><svg class='ic' aria-hidden='true'><use href='#i-chevronRight'/></svg></button></td><td class='td--num'>192</td><td style='white-space:nowrap'><span class='ucam-id'>2026.0192</span></td><th scope='row' style='white-space:nowrap'>Priscila Monteiro Gama</th><td style='white-space:nowrap'>Psicologia</td><td style='white-space:nowrap'>11/09/2026</td></tr><tr class='ucam-table__detalhe' id='lv-det-9' data-fora-do-recorte hidden><td colspan='6'><div class='ucam-stack ucam-stack--sm'><dl class='ucam-descricao ucam-descricao--3'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>040.0311.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Curso</dt><dd class='ucam-descricao__valor'>Psicologia</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Título conferido</dt><dd class='ucam-descricao__valor'>Psicólogo</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Expedição pela unidade</dt><dd class='ucam-descricao__valor'>24/08/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Nacionalidade</dt><dd class='ucam-descricao__valor'>Brasileira</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Documento de identidade</dt><dd class='ucam-descricao__valor'>RG · Detran-RJ</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Unidade</dt><dd class='ucam-descricao__valor'>Centro</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>11/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Responsável pelo registro</dt><dd class='ucam-descricao__valor'>URD</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Observação</dt><dd class='ucam-descricao__valor'>—</dd></div></dl></div></td></tr></tbody></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>9 de 200 folhas de 2026, as mais recentes primeiro</p></div><div class='ucam-empty' id='lv-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhuma folha encontrada</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou ao recorte escolhido. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='lv-eco' role='status'></p><p class='ucam-section__hint'>Cada registro ocupa uma folha, e entra no livro quando o lote dele é publicado: os registros de ' + reg('0201') + ' a ' + reg('0214') + ' aparecem depois da publicação. Imprimir sai com uma folha por página, com o livro, a UF e a linha de assinatura do dirigente, e sem a moldura do sistema.</p></div></div>",
+          "codigo": "<ucam-app-shell systemName=\"Registro de diplomas\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Livro de registro\" [description]=\"'Livro ' + livro() + ' · ' + ano() + ' · ' + folhas().length + ' folhas'\">\n    <ucam-button variant=\"secondary\" iconStart=\"printer\" (click)=\"imprimir()\">Imprimir o livro</ucam-button>\n  </ucam-page-header>\n\n  <ucam-select label=\"Ano\" [options]=\"anos()\" [(value)]=\"ano\" />\n  <ucam-text-field label=\"Pesquisar no livro\" type=\"search\" placeholder=\"Nome, registro ou processo\" [(value)]=\"termo\" />\n\n  <!-- linha que abre a folha (row-detail): classes do Trilho A até chegarem ao ucam-data-table -->\n  <div class=\"ucam-table-wrap\">\n    <table class=\"ucam-table ucam-table--compact\">…folha, registro, aluno, curso, registrado em; a linha abre a ucam-description-list da folha…</table>\n  </div>\n</ucam-app-shell>\n\n// imprimir(): window.print() com a folha de impressão, uma folha por página",
+          "shell": {
+            "largura": "larga",
+            "navAtivo": "livro"
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Imprimir o livro",
+                "classe": "c",
+                "efeito": "Abre a impressão; a folha de impressão tira a moldura."
+              },
+              {
+                "rotulo": "Chevron da linha (×9)",
+                "classe": "c",
+                "efeito": "Abre a folha inteira do registro."
+              },
+              {
+                "rotulo": "Ano",
+                "classe": "c",
+                "efeito": "Escolhe o livro do ano; no sistema, reconsulta."
+              },
+              {
+                "rotulo": "Pesquisar no livro",
+                "classe": "c",
+                "efeito": "Filtra as folhas; sem resultado, mostra o vazio com Limpar busca."
+              }
+            ],
+            "chega_de": [
+              "menu do sistema (Livro de registro)"
+            ]
+          }
+        },
+        {
+          "id": "consulta",
+          "nome": "Validar diploma",
+          "perfil": "Público (sem login)",
+          "padrao": "formulario-entidade",
+          "origem": "consulta-diploma-frontend (Angular 9 + ucam-material), rota '' e /processo/:numeroprocesso/registro/:numeroregistro — diploma/desktop/ e diploma/mobile/ (header, body, footer), app.service.ts, app.router.ts; diploma-backend (Spring Boot) — ResourceDiploma.java (getDiplomaParaVisualizacao, atualizaConteudoDiploma), RepositoryDiploma.java (buscaDiplomaExterno) (lidos em 27/10/2026)",
+          "descricao": "A porta pública da validação: dois números do verso do diploma e uma ação só, Validar diploma. É a forma de consulta pública curta, sem a moldura do sistema; o link do QR code abre a página já preenchida.",
+          "usa": [
+            "ucam-alert",
+            "ucam-button",
+            "ucam-icon",
+            "ucam-icon-tile",
+            "ucam-text-field"
+          ],
+          "problemas": [
+            "O formulário mora dentro da faixa do cabeçalho, com o botão de pesquisar só com ícone de lupa no computador e \"PESQUISAR\" em caixa alta no celular.",
+            "A tela inicial é uma ilustração com o texto alternativo \"Nenhum documento encontrado\", antes de qualquer pesquisa.",
+            "O sistema tem duas árvores de componentes, escolhidas uma vez pela largura (768px), e recarrega a página ao virar o aparelho.",
+            "Campo vazio, diploma inexistente e erro do servidor viram um aviso flutuante que some sozinho."
+          ],
+          "notas": [
+            "Parente: Entrada do Portal e Conferir os dados do Vestibular (moldura da entrada, sem sessão).",
+            "Os dois campos dizem onde o número está no diploma, e a máscara vem como exemplo no campo. Validar diploma é o único primário e leva ao resultado.",
+            "Uma página só, que se arruma pela largura do contêiner: as duas versões de desktop e celular saem, e virar o aparelho não recarrega.",
+            "Não encontrado vira alerta no lugar, acima dos campos, com os números digitados e o que conferir; não some sozinho.",
+            "Validação de histórico (rota /historico/:validador): a mesma forma com um campo só, o código de validação de 22 dígitos."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "A consulta exige os dois números; sem eles: \"Entre com os dados para realizar a pesquisa.\" (desktop.component.ts:21-24, :63, :87-90).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Número do processo com 11 dígitos em 000.0000.0000 e número do registro com 8 dígitos em 0000.0000; registro com até 5 caracteres vai sem pontuação (header.component.html:37, :49; app.service.ts:56-68).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O link processo/{número}/registro/{número} preenche os campos e já pesquisa (desktop.component.ts:34-48).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Até 768px de largura a página usa a versão de celular; virar o aparelho recarrega (app.service.ts:24-28; app.router.ts:75-83).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O código de validação do histórico tem 22 dígitos, e os dois últimos dizem em qual servidor de unidade o histórico está (app.service.ts:13-19, :51-54).",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Só aparece na consulta o diploma ativo de lote publicado no Diário Oficial; diploma registrado e ainda não publicado responde como não encontrado (RepositoryDiploma.java buscaDiplomaExterno).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Qualquer erro da consulta, inclusive diploma não localizado, mostra a mesma mensagem: \"O diploma não foi encontrado.\" (desktop.component.ts:81-84; ResourceDiploma.java getDiplomaParaVisualizacao).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Não encontrado é alerta no lugar, com os números digitados e o que conferir, em vez de aviso que some.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "Uma página só para computador e celular, arrumada pela largura do contêiner.",
+              "decide": "TI (dono do SERD)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: há limite de tentativas ou desafio contra robô na consulta sem login? Hoje não há nenhum.",
+              "decide": "Encarregado de dados (LGPD)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: o link do QR code impresso no diploma é este (processo/…/registro/…)?",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: a validação de histórico está em uso? O download envia um identificador fixo e o corpo é o do diploma (historico/desktop/desktop.component.ts:67-69, :104).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            }
+          ],
+          "preview": "<div class='ucam-login'><section class='ucam-login__acesso' aria-labelledby='cd-t'><div class='ucam-login__miolo ucam-stack ucam-stack--lg'><div class='ucam-login__marca'><span class='ucam-login__logo' aria-hidden='true'></span><span class='ucam-sr-only'>Universidade Candido Mendes</span></div><div class='ucam-stack ucam-stack--sm'><h2 class='ucam-page-header__title' id='cd-t'>Validar um diploma</h2><p class='ucam-lede'>Confira se um diploma da Candido Mendes foi registrado e publicado.</p></div><form class='ucam-stack' action='#/templates/diploma/validacao'><div class='ucam-field ucam-field--lg'><label class='ucam-field__label' for='cd-proc'>Número do processo <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='cd-proc' type='text' inputmode='numeric' maxlength='13' placeholder='000.0000.0000' value='041.0711.2026' required aria-required='true' autocomplete='off' aria-describedby='cd-proc-h'><span class='ucam-field__hint' id='cd-proc-h'>11 dígitos, no verso do diploma.</span></div><div class='ucam-field ucam-field--lg'><label class='ucam-field__label' for='cd-reg'>Número do registro <span class='ucam-field__required' aria-hidden='true'>*</span></label><input class='ucam-input' id='cd-reg' type='text' inputmode='numeric' maxlength='9' placeholder='0000.0000' value='2026.0198' required aria-required='true' autocomplete='off' aria-describedby='cd-reg-h'><span class='ucam-field__hint' id='cd-reg-h'>8 dígitos, ao lado do livro e da folha.</span></div><button class='ucam-btn ucam-btn--primary ucam-btn--lg' type='submit' style='inline-size:100%' data-fluxo='a' data-acao='enviar' data-destino='#/templates/diploma/validacao'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg> Validar diploma</button></form><p class='ucam-card__rodape'>O QR code do diploma abre esta página já preenchida.</p></div><p class='ucam-login__apoio'><span>Universidade Candido Mendes · Unidade de Registro de Diplomas</span></p></section><aside class='ucam-login__institucional' aria-label='Sobre a validação'><div class='ucam-login__discurso'><p class='ucam-login__frase'>Todo diploma registrado pela Candido Mendes pode ser conferido aqui.</p><ul class='ucam-login__sistemas'><li class='ucam-login__sistema'><span class='ucam-icon-tile ucam-icon-tile--acervo' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-fileText'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Dois números</span><span class='ucam-login__sistema-apoio'>O do processo e o do registro, impressos no verso do diploma.</span></span></li><li class='ucam-login__sistema'><span class='ucam-icon-tile ucam-icon-tile--acervo' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>Registro e publicação</span><span class='ucam-login__sistema-apoio'>A resposta diz o livro, a folha e a data no Diário Oficial.</span></span></li><li class='ucam-login__sistema'><span class='ucam-icon-tile ucam-icon-tile--acervo' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg></span><span class='ucam-login__sistema-texto'><span class='ucam-login__sistema-nome'>A publicação</span><span class='ucam-login__sistema-apoio'>A página do Diário Oficial pode ser baixada.</span></span></li></ul></div></aside></div>",
+          "codigo": "<div class=\"ucam-login\">\n  <section class=\"ucam-login__acesso\" aria-labelledby=\"t-validar\">\n    <div class=\"ucam-login__miolo ucam-stack ucam-stack--lg\">\n      <h1 class=\"ucam-page-header__title\" id=\"t-validar\">Validar um diploma</h1>\n      <p class=\"ucam-lede\">Confira se um diploma da Candido Mendes foi registrado e publicado.</p>\n      @if (naoEncontrado()) {\n        <ucam-alert tone=\"warning\" title=\"Diploma não encontrado\">Confira os dois números no verso do diploma.</ucam-alert>\n      }\n      <form (ngSubmit)=\"validar()\">\n        <ucam-text-field label=\"Número do processo\" mask=\"000.0000.0000\" placeholder=\"000.0000.0000\" hint=\"11 dígitos, no verso do diploma.\" [required]=\"true\" [(value)]=\"processo\" />\n        <ucam-text-field label=\"Número do registro\" mask=\"0000.0000\" placeholder=\"0000.0000\" hint=\"8 dígitos, ao lado do livro e da folha.\" [required]=\"true\" [(value)]=\"registro\" />\n        <ucam-button variant=\"primary\" size=\"lg\" type=\"submit\" iconStart=\"search\">Validar diploma</ucam-button>\n      </form>\n    </div>\n  </section>\n</div>\n\n// validar(): GET /diploma/{numeroprocesso}/{numeroregistro}; encontrado leva ao resultado",
+          "shell": {
+            "sistema": "Validação de diploma",
+            "campus": null,
+            "usuario": null,
+            "semNav": true,
+            "semFaixa": true,
+            "largura": "pleno",
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": [],
+            "$porque": "A consulta é pública: quem confere um diploma não tem sessão, e a moldura do sistema prometeria menu, busca, unidade e conta que não existem. É a moldura da entrada (portal/login, vestibular/conferir-dados), com a marca ao lado."
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Validar diploma",
+                "classe": "a",
+                "destino": "diploma/validacao",
+                "efeito": "Leva ao resultado da validação."
+              }
+            ],
+            "chega_de": [
+              "QR code ou link impresso no diploma",
+              "diploma/validacao (Validar outro diploma)"
+            ]
+          }
+        },
+        {
+          "id": "validacao",
+          "nome": "Diploma validado",
+          "perfil": "Público (sem login)",
+          "padrao": "consulta-relatorio",
+          "origem": "consulta-diploma-frontend (Angular 9 + ucam-material), rota '' (resultado) — diploma/desktop/body/ (body.component), diploma-generator.ts, diploma/mobile/ (botão de visualização); diploma-backend (Spring Boot) — ResourceDiploma.java (getDiplomaParaVisualizacao, atualizaConteudoDiploma), RepositoryDiploma.java (buscaDiplomaExterno) (lidos em 27/10/2026)",
+          "descricao": "O resultado da validação pública: a situação em palavra, o nome e o curso, os números e as datas do registro e da publicação, a frente do diploma em texto e o download da publicação no Diário Oficial. É a forma de ficha de resultado de consulta pública.",
+          "usa": [
+            "ucam-alert",
+            "ucam-button",
+            "ucam-description-list",
+            "ucam-icon"
+          ],
+          "problemas": [
+            "O resultado não diz em palavra se o diploma é válido: aparecem o nome, a unidade em caixa alta e os pares Curso, Conclusão, Colação e Publicação.",
+            "A frente do diploma é desenhada num canvas de 880 × 560 px no navegador, com o texto em Times 15px; no celular ela não aparece e vira o botão \"BAIXAR VERSÃO PARA VISUALIZAÇÃO\", que baixa um diploma.png.",
+            "Leitor de tela não lê o canvas: o texto do diploma só existe como desenho.",
+            "\"BAIXAR PUBLICAÇÃO DO D.O.U\" aparece sempre, e falha em silêncio quando o diploma não tem lote."
+          ],
+          "notas": [
+            "Parente: Resultado da Isenção (ficha de resultado para quem não é da secretaria).",
+            "A situação vem primeiro, em alerta de sucesso com a data do Diário Oficial; depois o nome, os números e as datas do registro. O livro e a folha, que o servidor devolve e a tela não mostrava, entram.",
+            "A frente do diploma sai do canvas e vira texto na coluna ao lado: legível por leitor de tela, selecionável e igual em qualquer largura. O número do documento de identidade, que o texto impresso traz, não aparece na consulta pública.",
+            "Baixar a publicação é o primário; Validar outro diploma volta aos campos.",
+            "Ponta com o Relatórios acadêmicos: o texto da frente e a linha de local e data são gravados no diploma quando a secretaria gera o PDF do diploma no relatório Diploma; a prévia em tela não grava. Sem esse passo, o diploma é validado mas a frente fica vazia.",
+            "Os números fecham com o livro: a folha 198 do livro 8 é o registro 2026.0198, do lote 0145, publicado em 07/10/2026."
+          ],
+          "regras_negocio": [
+            {
+              "situacao": "legado",
+              "regra": "Só aparece na consulta o diploma ativo de lote publicado no Diário Oficial; diploma registrado e ainda não publicado responde como não encontrado (RepositoryDiploma.java buscaDiplomaExterno).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "Qualquer erro da consulta, inclusive diploma não localizado, mostra a mesma mensagem: \"O diploma não foi encontrado.\" (desktop.component.ts:81-84; ResourceDiploma.java getDiplomaParaVisualizacao).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A resposta traz nome, unidade, curso, conclusão, colação, expedição, registro (data, número, livro, folha), número do diploma, publicação no Diário Oficial e o CPF mascarado; a tela usa nome, unidade, curso, conclusão, colação e publicação (ResourceDiploma.java getDiplomaParaVisualizacao; body.component.html).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A frente do diploma só é desenhada se o diploma tiver o texto da frente e o local e data de impressão (body.component.html:72; diploma-generator.ts).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O texto da frente e o local e data chegam ao SERD pelo Relatórios acadêmicos: gerar o PDF oficial do diploma notifica o SERD (POST /diploma/atualizaconteudo) com aluno, CPF, segunda via e os dois textos; a prévia em tela não notifica (relatorios-academicos DiplomaService.java gerarOficialmente; SerdNotificacaoServiceHttp.java; ResourceDiploma.java atualizaConteudoDiploma).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "O SERD responde 404 quando não acha o diploma do aluno e 204 quando acha mais de um; o Relatórios lê o 204 como \"não existe diploma registrado\" (ResourceDiploma.java atualizaConteudoDiploma; SerdNotificacaoServiceHttp.java).",
+              "decide": "TI (dono do Relatórios acadêmicos)"
+            },
+            {
+              "situacao": "legado",
+              "regra": "A publicação no Diário Oficial é baixada pelo lote do diploma e abre em nova janela (desktop.component.ts:110-123; app.service.ts:43-45).",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "O resultado diz a situação em palavra antes dos dados, e a frente do diploma é texto, não desenho.",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "proposta",
+              "regra": "A consulta pública não mostra o número do documento de identidade nem o CPF.",
+              "decide": "Encarregado de dados (LGPD)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: quais dados pessoais podem aparecer numa consulta sem login: nome completo, curso, datas, naturalidade?",
+              "decide": "Encarregado de dados (LGPD)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: diploma cancelado, anulado ou substituído por segunda via deve aparecer com a situação dita, em vez de não encontrado?",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            },
+            {
+              "situacao": "aberta",
+              "regra": "Falta decidir: a frente em texto tem valor de representação do diploma ou é só ilustrativa?",
+              "decide": "Coordenação da URD (registro de diplomas)"
+            }
+          ],
+          "preview": "<div class='ucam-login'><section class='ucam-login__acesso' aria-labelledby='vd-t'><div class='ucam-login__miolo ucam-stack ucam-stack--lg'><div class='ucam-login__marca'><span class='ucam-login__logo' aria-hidden='true'></span><span class='ucam-sr-only'>Universidade Candido Mendes</span></div><div class='ucam-alert ucam-alert--success' role='status'><svg class='ic' aria-hidden='true'><use href='#i-circleCheck'/></svg><div class='ucam-alert__corpo'><p class='ucam-alert__titulo'>Diploma registrado e publicado</p><p>Publicado no Diário Oficial em 07/10/2026.</p></div></div><div class='ucam-stack ucam-stack--sm'><h2 class='ucam-page-header__title' id='vd-t'>Fernanda Lima Barcellos</h2><p class='ucam-lede'>Psicologia · Niterói</p></div><dl class='ucam-descricao ucam-descricao--2'><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Número do processo</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>041.0711.2026</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Número do registro</dt><dd class='ucam-descricao__valor'><span class='ucam-id'>2026.0198</span></dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Livro e folha</dt><dd class='ucam-descricao__valor'>Livro 8, folha 198</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Conclusão do curso</dt><dd class='ucam-descricao__valor'>30/06/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Colação de grau</dt><dd class='ucam-descricao__valor'>17/07/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Registrado em</dt><dd class='ucam-descricao__valor'>25/09/2026</dd></div><div class='ucam-descricao__par'><dt class='ucam-descricao__rotulo'>Publicação no Diário Oficial</dt><dd class='ucam-descricao__valor'>07/10/2026</dd></div></dl><div class='ucam-cluster'><button class='ucam-btn ucam-btn--primary' type='button' data-fluxo='c' data-acao='baixar-anexo'><svg class='ic' aria-hidden='true'><use href='#i-download'/></svg> Baixar a publicação</button><a class='ucam-btn ucam-btn--secondary' href='#/templates/diploma/consulta' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg> Validar outro diploma</a></div></div><p class='ucam-login__apoio'><span>Universidade Candido Mendes · Unidade de Registro de Diplomas</span></p></section><aside class='ucam-login__institucional' aria-label='Frente do diploma'><div class='ucam-login__discurso ucam-stack'><p class='ucam-login__subfrase'>Frente do diploma, como foi impresso</p><blockquote class='ucam-login__subfrase'>A Reitora da mantenedora, no uso de suas atribuições e tendo em vista a conclusão do Curso de Psicologia, na data de 30/06/2026, e a colação de grau na data de 17/07/2026, confere o título de Psicóloga a FERNANDA LIMA BARCELLOS, nacionalidade brasileira, e outorga-lhe o presente Diploma a fim de que possa gozar de todos os direitos e prerrogativas legais.</blockquote><p class='ucam-login__subfrase'>Rio de Janeiro, 25 de setembro de 2026.</p></div></aside></div>",
+          "codigo": "<div class=\"ucam-login\">\n  <section class=\"ucam-login__acesso\" aria-labelledby=\"t-validado\">\n    <div class=\"ucam-login__miolo ucam-stack ucam-stack--lg\">\n      <ucam-alert tone=\"success\" title=\"Diploma registrado e publicado\">Publicado no Diário Oficial em {{ d().dataPublicacao }}.</ucam-alert>\n      <h1 class=\"ucam-page-header__title\" id=\"t-validado\">{{ d().nomeAluno }}</h1>\n      <p class=\"ucam-lede\">{{ d().curso }} · {{ d().nomeUnidade }}</p>\n      <ucam-description-list [items]=\"dados()\" [columns]=\"2\" />\n      <ucam-button variant=\"primary\" iconStart=\"download\" (click)=\"baixarPublicacao()\">Baixar a publicação</ucam-button>\n      <ucam-button variant=\"secondary\" iconStart=\"search\" routerLink=\"/\">Validar outro diploma</ucam-button>\n    </div>\n  </section>\n  <aside class=\"ucam-login__institucional\" aria-label=\"Frente do diploma\">\n    <blockquote class=\"ucam-login__subfrase\">{{ d().conteudoFrente }}</blockquote>\n  </aside>\n</div>\n\n// baixarPublicacao(): GET /lotediploma/imagem/{oidLoteDiploma}/download",
+          "shell": {
+            "sistema": "Validação de diploma",
+            "campus": null,
+            "usuario": null,
+            "semNav": true,
+            "semFaixa": true,
+            "largura": "pleno",
+            "rail": null,
+            "railComoMenu": false,
+            "navAtivo": null,
+            "navAcao": null,
+            "busca": null,
+            "favoritos": [],
+            "notificacoes": null,
+            "notificacoesItens": [],
+            "navRodape": [],
+            "$porque": "A consulta é pública: quem confere um diploma não tem sessão, e a moldura do sistema prometeria menu, busca, unidade e conta que não existem. É a moldura da entrada (portal/login, vestibular/conferir-dados), com a marca ao lado."
+          },
+          "fluxos": {
+            "acoes": [
+              {
+                "rotulo": "Baixar a publicação",
+                "classe": "b",
+                "efeito": "No sistema, baixa a página do Diário Oficial do lote."
+              },
+              {
+                "rotulo": "Validar outro diploma",
+                "classe": "a",
+                "destino": "diploma/consulta",
+                "efeito": "Volta aos campos da validação."
+              }
+            ],
+            "chega_de": [
+              "diploma/consulta (Validar diploma)"
             ]
           }
         }

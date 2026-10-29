@@ -9970,6 +9970,11 @@ dialog.ucam-dialog:not([open]) { display: none; }
    * são recortes da MESMA lista, não destinos diferentes. */
   overflow-x: auto;
   scrollbar-width: none;
+  /* A tira é o contêiner do que ela recorta (29/10/2026). Sem isto, o texto
+   * para leitor de tela da contagem (.ucam-sr-only, posição absoluta) de uma
+   * aba fora da vista escapava da rolagem e alargava a PÁGINA: a 390px a
+   * caixa do Protocolo media 438 e o processo de diploma, 444. */
+  position: relative;
 }
 
 .ucam-tabs::-webkit-scrollbar { display: none; }
