@@ -35,6 +35,7 @@ import contactCard from '../../../../../spec/components/contact-card.json';
 import filter from '../../../../../spec/components/filter.json';
 import checkbox from '../../../../../spec/components/checkbox.json';
 import cookieBanner from '../../../../../spec/components/cookie-banner.json';
+import carousel from '../../../../../spec/components/carousel.json';
 
 export interface Prop {
   nome: string;
@@ -76,6 +77,7 @@ const CONTRATOS: Record<string, unknown> = {
   'filter': filter,
   'checkbox': checkbox,
   'cookie-banner': cookieBanner,
+  'carousel': carousel,
 };
 
 /**

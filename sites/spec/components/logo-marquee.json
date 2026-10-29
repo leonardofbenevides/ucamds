@@ -179,6 +179,13 @@
       "porque": "Com poucos, o laço mostra o mesmo logo a cada instante."
     }
   ],
+  "vs": [
+    {
+      "componente": "carousel",
+      "diferenca": "O Carousel só se mexe quando a pessoa rola ou aperta a seta; o desfile anda sozinho, em laço, com pausa.",
+      "escolha": "Conteúdo que se lê fica numa fileira que rola; logos de parceiros desfilam."
+    }
+  ],
   "implementacao": {
     "trilho_a": {
       "contrato": "A trilha tem duas cópias do grupo e anda metade da própria largura, em laço. A pausa e a forma sem movimento são da folha.",

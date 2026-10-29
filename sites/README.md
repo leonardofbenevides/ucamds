@@ -100,11 +100,7 @@ A linha de unidade não virou peça: o `contact-card` ganhou `layout="row"` (nom
 
 O selo e-MEC também não virou peça: vai no lugar livre do bloco da marca do `site-footer` (`ucamSiteFooterMarca`), com a classe `.ucam-site-footer__selo` (fundo claro, 6rem, link para a consulta, nome no alt). A demo usa um lugar marcado; o site põe a imagem oficial do e-MEC.
 
-**Faltam, em ordem do quanto aparecem:**
-
-| Peça | Onde aparece | Nota |
-|---|---|---|
-| Controles de carrossel | Vale a pena, depoimentos, curso em destaque ("1 DE 6 ‹ ›") | Decidir antes: carrossel ou grade que rola; o desfile já existe |
+Peça nova `carousel` (33ª): fileira que rola com encaixe por item e os controles "1 de 6 ‹ ›", sem rodar sozinha; todos os itens ficam na página. Contagem por item, como no site, para o desenho do servidor ser o mesmo da demo. **O levantamento do candidomendes está fechado.**
 
 Fora do catálogo de propósito: a busca de curso, a grade de cursos com filtros e o banner de
 destaque são composições de peças que já existem.

@@ -1939,6 +1939,94 @@ ${acima('duas-colunas')} {
   }
 }
 
+/* ------------------------------------------------------------ carousel --- */
+/* Contrato: sites/spec/components/carousel.json. A fileira que rola de lado
+ * no lugar do ngb-carousel do candidomendes.edu.br: todos os itens estão na
+ * página, a rolagem encaixa por cartão e as setas só adiantam. Nada se mexe
+ * sozinho. A trilha mede pelo contêiner (contain), senão quem a embrulha
+ * cresce até a soma dos cartões e a página rola de lado. */
+.ucam-site-carousel {
+  display: grid;
+  gap: ${V('space-stack-md')};
+  min-inline-size: 0;
+}
+.ucam-site-carousel__topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${V('space-inline-sm')} ${V('space-stack-md')};
+}
+.ucam-site-carousel__controles {
+  display: flex;
+  align-items: center;
+  gap: ${V('space-inline-sm')};
+  margin-inline-start: auto;
+}
+.ucam-site-carousel__contagem {
+  margin: 0;
+  color: ${V('color-text-secondary')};
+  font-size: ${V('typography-caption-font-size')};
+  line-height: ${V('typography-caption-line-height')};
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ucam-site-carousel__seta {
+  display: grid;
+  place-items: center;
+  inline-size: ${V('size-icon-button')};
+  block-size: ${V('size-icon-button')};
+  padding: 0;
+  border: 1px solid ${V('color-border-strong')};
+  border-radius: ${V('radius-pill')};
+  background: transparent;
+  color: ${V('color-text-primary')};
+  cursor: pointer;
+}
+.ucam-site-carousel__seta .ic {
+  inline-size: ${V('size-icon-sm')};
+  block-size: ${V('size-icon-sm')};
+}
+.ucam-site-carousel__seta:hover:not(:disabled) {
+  background: ${V('color-interaction-hover')};
+}
+.ucam-site-carousel__seta:disabled {
+  border-color: ${V('color-border-subtle')};
+  color: ${V('color-action-disabled-text')};
+  cursor: not-allowed;
+}
+.ucam-site-carousel__trilha {
+  display: grid;
+  grid-auto-flow: column;
+  /* Um cartão e um pedaço do seguinte: o pedaço é o que diz que há mais. */
+  grid-auto-columns: 85%;
+  gap: ${V('space-stack-md')};
+  margin: 0;
+  padding: 0 0 ${V('space-inline-sm')};
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  contain: inline-size;
+}
+.ucam-site-carousel__item {
+  min-inline-size: 0;
+  scroll-snap-align: start;
+}
+.ucam-site-carousel__item > * {
+  block-size: 100%;
+  max-inline-size: none;
+}
+${acima('duas-colunas')} {
+  .ucam-site-carousel__trilha { grid-auto-columns: calc((100% - ${V('space-stack-md')}) / 2); }
+}
+${acima('grade-completa')} {
+  .ucam-site-carousel__trilha { grid-auto-columns: calc((100% - 2 * ${V('space-stack-md')}) / 3); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ucam-site-carousel__trilha { scroll-behavior: smooth; }
+}
+
 /* -------------------------------------------------------- logo-marquee --- */
 /* Contrato: sites/spec/components/logo-marquee.json. Os logos desfilam em
  * laço: a trilha tem duas cópias do grupo e anda metade da própria largura.

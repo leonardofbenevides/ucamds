@@ -1,0 +1,173 @@
+{
+  "$schema": "../../../spec/schema/component.schema.json",
+  "id": "carousel",
+  "name": "Carousel",
+  "selector": "ucam-site-carousel",
+  "status": "review",
+  "version": "0.1.0",
+  "since": "0.1.7",
+  "category": "conteudo",
+  "description": "Uma fileira de cartões que rola de lado, com encaixe por cartão e os controles \"1 de 6 ‹ ›\". Não roda sozinha: a rolagem, o toque e o Tab alcançam todos os cartões, e as setas só adiantam.",
+  "quando_usar": [
+    "Depoimentos, \"Vale a pena ser UCAM\", cursos em destaque: itens do mesmo tipo que não precisam estar todos à vista.",
+    "De quatro a doze itens. Menos que isso cabe numa grade; mais, pede uma página com lista."
+  ],
+  "evidencia": {
+    "origem": "candidomendes.edu.br, home e página do curso, capturas de 15/10/2026",
+    "ocorrencias": [
+      {
+        "tela": "www — home, depoimentos",
+        "rotulo": "Depoimentos dos alunos UCAM · 1 DE 6 ‹ ›",
+        "problema": "o ngb-carousel troca o conteúdo inteiro: os depoimentos fora da vez não existem para o Tab nem para o leitor de tela"
+      },
+      {
+        "tela": "www — home, curso em destaque",
+        "rotulo": "ngb-carousel com indicadores",
+        "problema": "roda sozinho, sem pausa: o texto muda enquanto a pessoa lê (WCAG 2.2.2)"
+      }
+    ],
+    "conclusao": "Fileira que rola, e não carrossel que troca: todos os itens estão na página, as setas rolam a fileira e nada se mexe sem a pessoa pedir."
+  },
+  "anatomia": [
+    {
+      "parte": "root",
+      "obrigatorio": true,
+      "descricao": "<section aria-label>. O nome diz o que a fileira mostra: \"Depoimentos dos alunos\"."
+    },
+    {
+      "parte": "topo",
+      "obrigatorio": true,
+      "descricao": "<div> com o título (opcional, projetado) à esquerda e os controles à direita.",
+      "classe": "ucam-site-carousel__topo"
+    },
+    {
+      "parte": "controles",
+      "obrigatorio": false,
+      "descricao": "<div> com a contagem e as duas setas. Só aparecem quando a fileira passa da largura; sem script (Trilho A), a página decide se os liga.",
+      "classe": "ucam-site-carousel__controles"
+    },
+    {
+      "parte": "contagem",
+      "obrigatorio": false,
+      "descricao": "\"1 de 6\": a página atual da fileira sobre o total de páginas. Região de status educada: é dita quando a página muda.",
+      "classe": "ucam-site-carousel__contagem"
+    },
+    {
+      "parte": "seta",
+      "obrigatorio": false,
+      "descricao": "<button> com o chevron e nome por extenso (\"Anterior\", \"Próximo\"), aria-controls na trilha. Desabilitado na ponta.",
+      "classe": "ucam-site-carousel__seta"
+    },
+    {
+      "parte": "trilha",
+      "obrigatorio": true,
+      "descricao": "<ul> que rola de lado com encaixe por cartão: um item e um pedaço do seguinte no telefone, dois em duas colunas, três na grade completa.",
+      "classe": "ucam-site-carousel__trilha"
+    },
+    {
+      "parte": "item",
+      "obrigatorio": true,
+      "descricao": "<li> com o conteúdo: um depoimento, um cartão.",
+      "classe": "ucam-site-carousel__item"
+    }
+  ],
+  "props": [
+    {
+      "nome": "ariaLabel",
+      "tipo": "string",
+      "default": "'Destaques'",
+      "descricao": "O nome da fileira. Vazio volta ao padrão: região sem nome não diz o que mostra."
+    }
+  ],
+  "estados": [
+    "default",
+    "hover",
+    "focus-visible",
+    "disabled"
+  ],
+  "limites": {
+    "regras": [
+      "Nunca roda sozinha. Movimento que a pessoa não pediu é outra peça (o desfile de logos), e lá há pausa.",
+      "Todos os itens ficam na página: nada de trocar o conteúdo, que esconde o resto do Tab e do leitor de tela.",
+      "Itens do mesmo tipo e da mesma altura de leitura; um cartão de curso no meio de depoimentos é outra fileira."
+    ],
+    "motivo": "O carrossel que troca e roda sozinho mostra um item por vez a quem não consegue rolar, e muda o texto enquanto a pessoa lê. A fileira que rola dá o mesmo desenho sem tirar nada de ninguém."
+  },
+  "acessibilidade": {
+    "requisitos": [
+      "Região com nome (aria-label); a trilha é focável para rolar pelas setas do teclado.",
+      "Setas com nome por extenso e aria-controls; desabilitadas na ponta.",
+      "Contagem em role=status: dita quando a página muda, não a cada pixel.",
+      "Sob prefers-reduced-motion a rolagem das setas não anima."
+    ],
+    "criterios_wcag": [
+      "1.3.1",
+      "2.1.1",
+      "2.2.2",
+      "4.1.2"
+    ]
+  },
+  "conteudo": {
+    "rotulo": {
+      "bom": [
+        "Depoimentos dos alunos",
+        "Cursos em destaque"
+      ],
+      "ruim": [
+        "Carrossel",
+        "Slider 1"
+      ]
+    },
+    "regras": [
+      "O nome da fileira diz o que ela mostra, não o que ela é."
+    ]
+  },
+  "migracao": {
+    "de": "candidomendes.edu.br",
+    "mapa": [
+      {
+        "legado": "<ngb-carousel>",
+        "novo": "<section class=\"ucam-site-carousel\">",
+        "nota": "Os slides viram itens de uma lista que rola; os indicadores viram a contagem."
+      }
+    ]
+  },
+  "exemplos": [
+    {
+      "titulo": "Depoimentos",
+      "codigo": "<section class=\"ucam-site-carousel\" aria-label=\"Depoimentos dos alunos\">\n  <div class=\"ucam-site-carousel__topo\">…</div>\n  <ul class=\"ucam-site-carousel__trilha\" id=\"dep-trilha\" tabindex=\"0\">\n    <li class=\"ucam-site-carousel__item\">…</li>\n  </ul>\n</section>"
+    }
+  ],
+  "boas_praticas": [
+    {
+      "faca": "Deixar a fileira rolar e as setas só adiantarem.",
+      "evite": "Trocar o slide e esconder os outros.",
+      "porque": "O que não está na página não existe para o Tab nem para o leitor de tela."
+    },
+    {
+      "faca": "Deixar um pedaço do item seguinte à vista.",
+      "evite": "Cortar a fileira exatamente na borda do último item visível.",
+      "porque": "O pedaço é o que diz, sem seta nenhuma, que há mais para o lado."
+    }
+  ],
+  "vs": [
+    {
+      "componente": "logo-marquee",
+      "diferenca": "O desfile anda sozinho, em laço, com pausa; o Carousel só se mexe quando a pessoa rola ou aperta a seta.",
+      "escolha": "Logos de parceiros desfilam; conteúdo que se lê fica numa fileira que rola."
+    }
+  ],
+  "implementacao": {
+    "trilho_a": {
+      "contrato": "Uma classe por parte. Sem script, a trilha já rola com encaixe; as setas e a contagem precisam de script da página.",
+      "raiz": ".ucam-site-carousel",
+      "variaveis": [
+        "--ucam-site-size-icon-button",
+        "--ucam-site-color-border-strong",
+        "--ucam-site-space-stack-md"
+      ],
+      "nota": "No Trilho A, a página que não liga as setas pode omitir os controles: a fileira continua inteira ao alcance da rolagem e do Tab."
+    },
+    "trilho_b": "sites/ui/projects/site-ui/src/lib/carousel/carousel.ts — section[ucamSiteCarousel], li[ucamSiteCarouselItem], [ucamSiteCarouselTitulo]. Entradas: ariaLabel."
+  }
+}
