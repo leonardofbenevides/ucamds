@@ -15184,15 +15184,16 @@ ${acima('nav-fixa')} {
 /* A CENA. Em 25/09/2026 era a ilustração da capa do site, em tons do bordô;
  * em 10/10/2026 virou a Candido Mendes na Praça XV, a pedido e com
  * referências: o chafariz da marca, o casarão de arcos, a torre de vidro, o
- * cais e a barca. Decorativa (aria-hidden): o argumento continua na frase. A
- * geometria é calculada por tools/cena-login.mjs, que também a grava nas
- * telas do Portal (--aplicar); não se edita o SVG à mão. */
+ * cais e a barca. Em 29/10/2026 virou a pilha de cartões de acesso, no
+ * estilo da skill Hairline (tools/cena-pilha.mjs). Decorativa (aria-hidden):
+ * o argumento continua na frase. A geometria é calculada lá e gravada nas
+ * telas do Portal por tools/cena-login.mjs --aplicar; não se edita o SVG à
+ * mão. O viewBox já é a caixa da figura: não sangra mais para fora do recuo,
+ * como a praça precisava, e tem teto para não crescer além do formulário. */
 .ucam-login__cena {
   min-inline-size: 0;
   margin-block-start: var(--ucam-space-stack-lg);
-  /* Sangra meio recuo de cada lado: a placa da cena mede 85% do viewBox e
-   * dentro do recuo cheio ficava pequena para a coluna. */
-  margin-inline: calc(var(--ucam-login-recuo) / -2);
+  max-inline-size: 26rem;
 }
 .ucam-login__cena-svg {
   display: block;
@@ -15200,89 +15201,42 @@ ${acima('nav-fixa')} {
   block-size: auto;
   overflow: visible;
 }
-/* A PALETA DA CENA (13/10/2026, terceira versão, com a referência do estádio
- * em azul: 'a ilustra podia ser em outro estilo'). É desenho a TRAÇO sobre
- * papel: as faces ficam na cor do fundo, o volume vem do contorno, a face de
- * sombra e o chão levam a tinta diluída, e o cheio aparece em pouca coisa
- * (bandeiras, gente, troncos, o ladrilho escolhido). Aqui o papel é o bordô
- * da coluna e a tinta é o branco do texto; na capa do site é o contrário. A
- * versão de 10/10 pintava cada material com três tons opacos e pesava.
- * As faces continuam OPACAS (na cor do papel): o que está na frente cobre o
- * que está atrás. A capa (site/src/app/pages/index.page.ts) repete esta
- * tabela; mudou aqui, muda lá. */
+/* A PALETA DA PILHA (29/10/2026, tools/cena-pilha.mjs). A figura segue a
+ * skill Hairline: UM traço em quatro pesos, e a placa cheia na cor do papel,
+ * para a de cima cobrir a de baixo. Aqui o papel é o bordô da coluna e a
+ * tinta é o branco do texto; cada peso é uma mistura das duas, então a
+ * figura vira sozinha no tema escuro. O realce (.hi) é o único lugar em
+ * tinta cheia: o ladrilho do meio da grade em repouso, o cartão escolhido
+ * com o ponteiro. A tabela da Praça XV, com treze tons de cheio, saiu junto
+ * com ela; a capa do site (index.page.ts) tem a dela. */
 .ucam-login__cena {
   --cena-p: var(--ucam-color-surface-brand);
   --cena-t: var(--ucam-color-text-on-brand);
 }
-/* SUAVE (28/10/2026, "tá muito poluído"): o traço deixou de ser o branco
- * cheio e passou a tinta a 60%; riscos de textura (telha, vidro, juntas,
- * onda), janelas em arco e os cheios das peças caíram para perto da metade
- * do que eram, e os traços grossos afinaram. Na mesma leva saíram as ondas
- * da água e a nervura da torre (tools/cena-login.mjs). No dia seguinte,
- * "suavizar e diminuir a quantidade de elementos": saíram árvores, anexo,
- * telha, calçamento, uma fileira de arcos e quatro das dez peças; as classes
- * delas (pv, rg, v, f1, tr) saíram daqui junto. */
-.ucam-login__cena path { fill: none; stroke: color-mix(in srgb, var(--cena-t) 60%, transparent); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
-.ucam-login__cena :is(.p0, .p1, .l, .t0, .k0, .k1, .r0) { fill: var(--cena-p); }
-.ucam-login__cena :is(.p2, .m) { fill: color-mix(in srgb, var(--cena-t) 7%, var(--cena-p)); }
-.ucam-login__cena :is(.s, .k2) { fill: color-mix(in srgb, var(--cena-t) 13%, var(--cena-p)); }
-.ucam-login__cena .t1 { fill: color-mix(in srgb, var(--cena-t) 11%, var(--cena-p)); }
-.ucam-login__cena .t2 { fill: color-mix(in srgb, var(--cena-t) 20%, var(--cena-p)); }
-.ucam-login__cena .r1 { fill: color-mix(in srgb, var(--cena-t) 8%, var(--cena-p)); }
-.ucam-login__cena .r2 { fill: color-mix(in srgb, var(--cena-t) 15%, var(--cena-p)); }
-.ucam-login__cena :is(.g, .gm, .ag, .sh, .cr, .vd, .lz, .pt, .kc, .kd, .fundo) { stroke: none; }
-.ucam-login__cena .g { fill: color-mix(in srgb, var(--cena-t) 6%, transparent); }
-.ucam-login__cena .gm { fill: color-mix(in srgb, var(--cena-t) 11%, transparent); }
-.ucam-login__cena .ag { fill: color-mix(in srgb, var(--cena-t) 14%, transparent); }
-.ucam-login__cena .sh { fill: color-mix(in srgb, var(--cena-t) 8%, transparent); }
-.ucam-login__cena .cr { fill: color-mix(in srgb, var(--cena-t) 14%, transparent); }
-.ucam-login__cena .vd { fill: color-mix(in srgb, var(--cena-t) 16%, var(--cena-p)); }
-.ucam-login__cena .lz { fill: var(--cena-p); }
-.ucam-login__cena .pt { fill: color-mix(in srgb, var(--cena-t) 28%, transparent); }
-.ucam-login__cena .kc { fill: color-mix(in srgb, var(--cena-t) 14%, var(--cena-p)); }
-.ucam-login__cena :is(.kd, .a) { fill: color-mix(in srgb, var(--cena-t) 55%, var(--cena-p)); }
-.ucam-login__cena .a2 { fill: color-mix(in srgb, var(--cena-t) 35%, var(--cena-p)); }
-.ucam-login__cena :is(.malha, .gr, .fc) { stroke-width: 0.75; }
-.ucam-login__cena .malha { stroke: color-mix(in srgb, var(--cena-t) 5%, transparent); }
-.ucam-login__cena .gr { stroke: color-mix(in srgb, var(--cena-t) 18%, transparent); }
-.ucam-login__cena :is(.clarao-0, .clarao-1) { stop-color: var(--cena-p); stop-opacity: 0; }
-.ucam-login__cena .kk { stroke-width: 2; }
-.ucam-login__cena .tr2 { stroke-width: 1.75; }
-.ucam-login__cena .fo { stroke-width: 1; }
+.ucam-login__cena path {
+  fill: var(--cena-p);
+  stroke: color-mix(in srgb, var(--cena-t) 34%, var(--cena-p));
+  stroke-width: 1;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 260ms cubic-bezier(0.5, 0, 0.1, 1);
+}
+.ucam-login__cena .sil { stroke: color-mix(in srgb, var(--cena-t) 58%, var(--cena-p)); }
+.ucam-login__cena .lo { stroke: color-mix(in srgb, var(--cena-t) 24%, var(--cena-p)); }
+.ucam-login__cena .hi { stroke: var(--cena-t); }
+.ucam-login__cena .nf { fill: none; }
+.ucam-login__cena .dot { stroke: none; fill: color-mix(in srgb, var(--cena-t) 58%, var(--cena-p)); }
+.ucam-login__cena .dot.off { fill: color-mix(in srgb, var(--cena-t) 24%, var(--cena-p)); }
 
-/* A CENA SE MEXE (13/10/2026: "dá pra ter alguma interação, algum
- * movimento?"). Só CSS, e só para quem não pediu menos movimento: as dez
- * peças boiam devagar, cada uma no seu tempo; a barca vai e volta ao longo do
- * cais; as janelas acesas da torre piscam (a água oscilava até 28/10/2026,
- * quando as ondas saíram). A peça tem dois
- * grupos: o de fora anda com o ponteiro, o de dentro boia. O levantar no
- * hover saiu em 14/10/2026 ("não ficou legal"): a cena é decorativa e peça
- * que reage ao ponteiro promete um clique que não existe. */
-/* O PONTEIRO: --px e --py vêm do script (estadoScript, em tools/lib/shell.mjs),
- * de -1 a 1. A praça anda para um lado e as peças para o outro. É a
- * propriedade translate, e não transform, para não disputar com o boiar nem
- * com o levantar. */
-.ucam-login__cena { --px: 0; --py: 0; }
-.ucam-login__cena :is(.base, .barca) {
-  translate: calc(var(--px) * 6px) calc(var(--py) * 4px);
-  transition: translate var(--ucam-motion-duration-travel) ease-out;
-}
-.ucam-login__cena .pc {
-  translate: calc(var(--px) * -12px) calc(var(--py) * -8px);
-  transition: translate var(--ucam-motion-duration-travel) ease-out;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .ucam-login__cena .pc > g {
-    animation: ucam-cena-boiar 5.5s ease-in-out infinite alternate;
-    animation-delay: calc(var(--i) * -1.3s);
-  }
-  .ucam-login__cena .barca > g { animation: ucam-cena-navegar 28s ease-in-out infinite alternate; }
-  .ucam-login__cena .lz { animation: ucam-cena-piscar 3.2s ease-in-out infinite alternate; }
-}
-@keyframes ucam-cena-boiar { from { transform: translateY(3px); } to { transform: translateY(-5px); } }
-/* A barca anda na direção do cais: na projeção, (-0,866; 0,5) por unidade. */
-@keyframes ucam-cena-navegar { from { transform: translate(52px, -30px); } to { transform: translate(-104px, 60px); } }
-@keyframes ucam-cena-piscar { from { opacity: 1; } to { opacity: 0.25; } }
+/* A PILHA RESPONDE AO PONTEIRO (29/10/2026, "viva com ponteiro", escolhido
+ * no pedido). O script mora no estadoScript (tools/lib/shell.mjs): o cartão
+ * sob o ponteiro desliza para fora e mostra o rosto, os de cima sobem para
+ * abrir o vão. Em 14/10 o levantar no hover tinha saído ("promete um clique
+ * que não existe"); desta vez o pedido foi a figura viva, e o cursor fica o
+ * de sempre para não prometer clique. Sem toque, e parada para quem pediu
+ * menos movimento. O deslocamento por --px/--py, o boiar das peças, a barca
+ * e as janelas que piscavam saíram com a praça. */
 
 .ucam-login__subfrase {
   margin: 0;

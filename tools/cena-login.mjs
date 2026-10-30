@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 /* ------------------------------------------------------------------------
- * A CENA DO LOGIN: a Candido Mendes na Praça XV, em isométrica calculada.
+ * A CENA DO LOGIN E A CAPA DO SITE, em isométrica calculada.
+ *
+ * Desde 29/10/2026 o login é a pilha de cartões de tools/cena-pilha.mjs (no
+ * estilo da skill Hairline), e a Praça XV descrita abaixo saiu do código;
+ * este arquivo segue gravando o login nas telas (--aplicar) e desenhando a
+ * capa do site (montarCapa, --capa). A história da praça fica para quem
+ * quiser saber de onde vieram a malha, a ordem de pintura e a paleta a traço.
  *
  * Pedido de 10/10/2026, com cinco referências (as ilustrações do Chase, um
  * estádio e uma rua em azul, peças empilhadas em traço fino): "melhore essas
@@ -50,13 +56,12 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { cenaPilha } from './cena-pilha.mjs';
 
 const COS = 0.8660254;
 const SEN = 0.5;
 const OX = 404;
 const OY = 152;
-const LARGURA = 900;
-const ALTURA = 660;
 /* A sombra de um ponto a altura h cai em (x + h·SX, y + h·SY): para a direita
  * de quem olha, um pouco para a frente. */
 const SX = 0.4;
@@ -66,10 +71,6 @@ const n = (v) => String(+v.toFixed(1));
 const P = (x, y, z = 0) => [(x - y) * COS + OX, (x + y) * SEN - z + OY];
 const d3 = (pts) => pts.map((p, i) => (i ? 'L' : 'M') + P(...p).map(n).join(' ')).join('') + 'Z';
 const linhas3 = (segs) => segs.map(([a, b]) => 'M' + P(...a).map(n).join(' ') + 'L' + P(...b).map(n).join(' ')).join('');
-
-/* Sorteio com semente: a cena sai igual a cada geração. */
-let semente = 7;
-const sorte = () => ((semente = (semente * 16807) % 2147483647) - 1) / 2147483646;
 
 /* Casco convexo no plano do chão (cadeia monótona). */
 function casco(pts) {
@@ -85,27 +86,6 @@ function casco(pts) {
     return h;
   };
   return [...meia(p), ...meia(p.reverse())];
-}
-const circulo = (x, y, r, k = 20) => Array.from({ length: k }, (_, i) => [x + r * Math.cos((i / k) * 2 * Math.PI), y + r * Math.sin((i / k) * 2 * Math.PI)]);
-/* Um círculo do chão vira elipse de eixos retos na projeção. */
-function elipse(x, y, z, r) {
-  const [cx, cy] = P(x, y, z);
-  const rx = r * Math.SQRT2 * COS;
-  const ry = r * Math.SQRT2 * SEN;
-  return `M${n(cx - rx)} ${n(cy)}a${n(rx)} ${n(ry)} 0 1 0 ${n(2 * rx)} 0a${n(rx)} ${n(ry)} 0 1 0 ${n(-2 * rx)} 0Z`;
-}
-const disco = (cx, cy, r) => `M${n(cx - r)} ${n(cy)}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;
-/* Retângulo de cantos redondos no chão: a praça e os canteiros. */
-function redondo(x, y, w, d, r, k = 6) {
-  const pts = [];
-  const cantos = [[x + w - r, y + r, -90], [x + w - r, y + d - r, 0], [x + r, y + d - r, 90], [x + r, y + r, 180]];
-  for (const [cx, cy, a0] of cantos) {
-    for (let i = 0; i <= k; i++) {
-      const a = ((a0 + (i / k) * 90) * Math.PI) / 180;
-      pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a), 0]);
-    }
-  }
-  return d3(pts);
 }
 
 const chao = [];
@@ -127,24 +107,6 @@ const sombraDe = (pts, h) => sombras.push({ d: d3(casco([...pts, ...pts.map(([x,
 const esq = (Y, x1, x2, z1, z2, c) => ({ d: d3([[x1, Y, z1], [x2, Y, z1], [x2, Y, z2], [x1, Y, z2]]), c });
 const dir = (X, y1, y2, z1, z2, c) => ({ d: d3([[X, y1, z1], [X, y2, z1], [X, y2, z2], [X, y1, z2]]), c });
 const topo = (z, x, y, w, d, c) => ({ d: d3([[x, y, z], [x + w, y, z], [x + w, y + d, z], [x, y + d, z]]), c });
-/* Vão em arco pleno numa face: o desenho da janela do casarão. */
-function arco(lado, plano, a, b, z1, z2, c) {
-  const r = (b - a) / 2;
-  const pt = (u, z) => (lado === 'e' ? [u, plano, z] : [plano, u, z]);
-  const pts = [pt(a, z1), pt(b, z1)];
-  for (let i = 0; i <= 6; i++) {
-    const t = (i / 6) * Math.PI;
-    pts.push(pt(a + r + r * Math.cos(t), z2 - r + r * Math.sin(t)));
-  }
-  return { d: d3(pts), c };
-}
-const fila = (q, a, b, folga, f) => {
-  const passo = (b - a) / q;
-  return Array.from({ length: q }, (_, i) => f(a + i * passo + (passo * folga) / 2, a + (i + 1) * passo - (passo * folga) / 2));
-};
-
-const CAL = { e: 'p1', d: 'p2', t: 'p0' };
-const VIDRO = { e: 't1', d: 't2', t: 't0' };
 
 function caixa(x, y, z, w, d, h, o = {}) {
   const t = z + h;
@@ -156,214 +118,6 @@ function caixa(x, y, z, w, d, h, o = {}) {
   solidos.push(s);
   return s;
 }
-function cilindro(x, y, z, r, h, o = {}) {
-  const [cx, cy] = P(x, y, z);
-  const rx = r * Math.SQRT2 * COS;
-  const ry = r * Math.SQRT2 * SEN;
-  const corpo = `M${n(cx - rx)} ${n(cy - h)}L${n(cx - rx)} ${n(cy)}A${n(rx)} ${n(ry)} 0 0 0 ${n(cx + rx)} ${n(cy)}L${n(cx + rx)} ${n(cy - h)}Z`;
-  const s = { bb: [x - r, x + r, y - r, y + r, z, z + h], it: [{ d: corpo, c: o.e ?? 'm' }, { d: elipse(x, y, z + h, r), c: o.t ?? 'l' }] };
-  if (z === 0 && o.sombra !== false) sombraDe(circulo(x, y, r), h);
-  solidos.push(s);
-  return s;
-}
-/* Telhado de quatro águas sobre um retângulo, cumeeira no eixo maior. As duas
- * águas de trás entram primeiro: a 30° de inclinação elas ainda aparecem. A
- * telha é um risco do beiral à cumeeira. */
-function telhado(x, y, z, w, d, h, beiral = 4) {
-  x -= beiral; y -= beiral; w += 2 * beiral; d += 2 * beiral;
-  const t = z + h;
-  const aoLongoDeX = w >= d;
-  const m = Math.min(w, d) / 2;
-  const A = aoLongoDeX ? [x + m, y + m, t] : [x + m, y + m, t];
-  const B = aoLongoDeX ? [x + w - m, y + m, t] : [x + m, y + d - m, t];
-  const c = { a: [x, y, z], b: [x + w, y, z], c: [x + w, y + d, z], d: [x, y + d, z] };
-  const aguas = aoLongoDeX
-    ? { tras: [c.a, c.b, B, A], ladoT: [c.d, c.a, A], frente: [c.d, c.c, B, A], ladoF: [c.b, c.c, B] }
-    : { tras: [c.a, c.d, B, A], ladoT: [c.a, c.b, A], frente: [c.b, c.c, B, A], ladoF: [c.d, c.c, B] };
-  const riscos = [];
-  const passo = 18;
-  if (aoLongoDeX) {
-    for (let u = x + m; u <= x + w - m; u += passo) riscos.push([[u, y + d, z], [u, y + m, t]]);
-    for (let v = y + passo; v < y + d; v += passo) riscos.push([[x + w, v, z], [x + w - (m - Math.abs(v - y - m)) , v, z + (h * (m - Math.abs(v - y - m))) / m]]);
-  } else {
-    for (let v = y + m; v <= y + d - m; v += passo) riscos.push([[x + w, v, z], [x + m, v, t]]);
-    for (let u = x + passo; u < x + w; u += passo) riscos.push([[u, y + d, z], [u, y + d - (m - Math.abs(u - x - m)), z + (h * (m - Math.abs(u - x - m))) / m]]);
-  }
-  solidos.push({
-    bb: [x + beiral, x + w - beiral, y + beiral, y + d - beiral, z, t],
-    it: [
-      { d: d3(aguas.tras), c: 'r0' },
-      { d: d3(aguas.ladoT), c: 'r0' },
-      { d: d3(aoLongoDeX ? aguas.frente : aguas.ladoF), c: 'r1' },
-      { d: d3(aoLongoDeX ? aguas.ladoF : aguas.frente), c: 'r2' },
-    ],
-  });
-}
-function piramide(x, y, z, w, d, h, o = CAL) {
-  const ap = [x + w / 2, y + d / 2, z + h];
-  solidos.push({
-    bb: [x, x + w, y, y + d, z, z + h],
-    it: [
-      { d: d3([[x, y, z], [x + w, y, z], ap]), c: o.t },
-      { d: d3([[x, y, z], [x, y + d, z], ap]), c: o.t },
-      { d: d3([[x, y + d, z], [x + w, y + d, z], ap]), c: o.e },
-      { d: d3([[x + w, y, z], [x + w, y + d, z], ap]), c: o.d },
-    ],
-  });
-}
-/* Palmeira imperial: fuste alto e a copa em leque. É o que diz "Rio". */
-function palmeira(x, y, h = 78) {
-  const [bx, by] = P(x, y, 0);
-  const ty = by - h;
-  const folhas = [[-20, -4], [-15, -15], [-5, -21], [7, -20], [17, -12], [20, 0], [-12, 8], [12, 9]]
-    .map(([u, v]) => `M${n(bx)} ${n(ty)}Q${n(bx + u * 0.55)} ${n(ty + v - 7)} ${n(bx + u)} ${n(ty + v + 3)}`).join('');
-  solidos.push({ bb: [x - 3, x + 3, y - 3, y + 3, 0, h + 20], it: [{ d: `M${n(bx)} ${n(by)}L${n(bx)} ${n(ty)}`, c: 'tr2' }, { d: folhas, c: 'fo' }] });
-}
-function poste(x, y, h = 36) {
-  const [bx, by] = P(x, y, 0);
-  solidos.push({ bb: [x - 2, x + 2, y - 2, y + 2, 0, h], it: [{ d: `M${n(bx)} ${n(by)}L${n(bx)} ${n(by - h)}`, c: 'fi' }, { d: disco(bx, by - h - 3.2, 3.2), c: 'a' }] });
-}
-function bandeira(x, y, h = 56) {
-  solidos.push({
-    bb: [x - 1, x + 18, y - 1, y + 1, 0, h],
-    it: [{ d: linhas3([[[x, y, 0], [x, y, h]]]), c: 'fi' }, { d: d3([[x, y, h], [x + 18, y, h - 2], [x + 18, y, h - 14], [x, y, h - 12]]), c: 'a' }],
-  });
-}
-function montar() {
-  semente = 7;
-
-  /* ---- A ÁGUA e o cais: a praça dá para a baía. ---- */
-  chao.push({ d: d3([[512, -700, 0], [1500, -700, 0], [1500, 1700, 0], [512, 1700, 0]]), c: 'ag' });
-  /* As 45 ondas em til saíram em 28/10/2026 ("tá muito poluído"); a água é
-   * só o plano. Os sorteios delas continuam gastos para que as janelas acesas
-   * da torre, sorteadas depois, fiquem onde estavam. */
-  for (let i = 0; i < 90; i++) sorte();
-
-  /* ---- O CHÃO: a praça calçada, os canteiros pontilhados. ---- */
-  chao.push({ d: redondo(150, 204, 346, 268, 40), c: 'g' });
-  /* O calçamento riscado e os canteiros das árvores saíram em 29/10/2026
-   * ("diminuir a quantidade de elementos"). */
-  const canteiros = [[120, 30, 100, 62, 26], [352, 34, 130, 58, 26]];
-  for (const [x, y, w, d, r] of canteiros) {
-    chao.push({ d: redondo(x, y, w, d, r), c: 'gm' });
-  }
-
-  /* ---- A TORRE: vidro escuro e andares acesos. A nervura vertical (nove
-   * riscos por face) saiu em 28/10/2026 com as ondas: era a textura mais
-   * densa da cena. ---- */
-  const torre = caixa(236, 10, 0, 92, 92, 252, VIDRO);
-  const acesas = [];
-  for (let i = 0; i < 10; i++) {
-    const col = Math.floor(sorte() * 10);
-    const z = 12 + Math.floor(sorte() * 26) * 9;
-    acesas.push(sorte() < 0.62 ? esq(102, 236 + col * 9.2 + 1.6, 236 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz') : dir(328, 10 + col * 9.2 + 1.6, 10 + (col + 1) * 9.2 - 1.6, z, z + 5, 'lz'));
-  }
-  torre.it.splice(2, 0, ...acesas);
-  caixa(250, 24, 252, 64, 64, 14, VIDRO);
-  const [ax, ay] = P(282, 56, 266);
-  solidos.push({ bb: [281, 283, 55, 57, 266, 300], it: [{ d: `M${n(ax)} ${n(ay)}L${n(ax)} ${n(ay - 34)}`, c: 'fi' }, { d: disco(ax, ay - 34, 2), c: 'a' }] });
-
-  /* ---- O CASARÃO: caiado, arcos, telhado de quatro águas. Uma fileira de
-   * arcos só desde 29/10/2026; a de baixo e a telha riscada saíram. ---- */
-  const casa = caixa(150, 112, 0, 312, 80, 62, CAL);
-  casa.it.push(...fila(11, 158, 454, 0.42, (a, b) => arco('e', 192, a, b, 35, 55, 'vd')));
-  casa.it.push(...fila(3, 118, 186, 0.46, (a, b) => arco('d', 462, a, b, 35, 55, 'vd')));
-  telhado(150, 112, 62, 312, 80, 24);
-
-  /* ---- A ALA: o mesmo casarão, de lado para a praça. ---- */
-  const ala = caixa(60, 150, 0, 78, 236, 54, CAL);
-  ala.it.push(...fila(8, 158, 378, 0.42, (a, b) => arco('d', 138, a, b, 31, 48, 'vd')));
-  ala.it.push(...fila(3, 66, 132, 0.46, (a, b) => arco('e', 386, a, b, 31, 48, 'vd')));
-  telhado(60, 150, 54, 78, 236, 22);
-
-  /* O ANEXO de concreto saiu em 29/10/2026. */
-
-  /* ---- O CHAFARIZ do Mestre Valentim, que é o desenho da marca. ---- */
-  const [cx, cy] = [330, 334];
-  caixa(cx - 50, cy - 50, 0, 100, 100, 5, CAL);
-  caixa(cx - 40, cy - 40, 5, 80, 80, 5, CAL);
-  caixa(cx - 30, cy - 30, 10, 60, 60, 5, CAL);
-  const corpo = caixa(cx - 18, cy - 18, 15, 36, 36, 36, CAL);
-  corpo.it.push(arco('e', cy + 18, cx - 8, cx + 8, 15, 42, 'vd'), arco('d', cx + 18, cy - 8, cy + 8, 15, 42, 'vd'));
-  caixa(cx - 23, cy - 23, 51, 46, 46, 5, CAL);
-  caixa(cx - 13, cy - 13, 56, 26, 26, 18, CAL);
-  caixa(cx - 17, cy - 17, 74, 34, 34, 4, CAL);
-  piramide(cx - 13, cy - 13, 78, 26, 26, 40);
-  const [ex, ey] = P(cx, cy, 122);
-  solidos.push({ bb: [cx - 3, cx + 3, cy - 3, cy + 3, 118, 140], it: [{ d: `M${n(ex)} ${n(ey)}L${n(ex)} ${n(ey - 15)}M${n(ex - 4)} ${n(ey - 10)}L${n(ex + 4)} ${n(ey - 10)}`, c: 'fi' }, { d: disco(ex, ey, 4.5), c: 'a' }] });
-
-  /* ---- O CAIS e a barca. ---- */
-  caixa(498, -700, 0, 14, 2400, 4, { sombra: false });
-  emGrupo('barca', () => {
-    caixa(548, 250, 0, 34, 104, 9, { ...CAL, sombra: false });
-    const cabine = caixa(554, 268, 9, 22, 62, 10, CAL);
-    cabine.it.push(...fila(5, 272, 326, 0.4, (a, b) => dir(576, a, b, 12, 17, 'vd')));
-    cilindro(565, 318, 19, 4, 9, { e: 'a2', t: 'a' });
-  });
-
-  /* ---- O QUE O ACESSO ABRE, flutuando em volta da praça (13/10/2026: "uma
-   * tela de sistemas, carteirinha, aprovações, provas, vestibular", depois
-   * "mais elementos de sistema" e "distribua melhor os elementos"). Dez peças
-   * de pé, todas voltadas para o mesmo lado.
-   *
-   * Cada peça é posta pelo lugar que ocupa NA TELA (o canto de cima à
-   * esquerda da face), e não por coordenada de mundo: a distribuição é um
-   * problema de composição no plano do desenho. As dez formam um arco em
-   * volta da torre, com alturas alternadas e nenhuma sobre telhado, árvore
-   * ou cais. Em 14/10/2026 ("um balanço melhor") o arco virou um halo: eram
-   * seis peças à esquerda e três empilhadas à direita; agora são cinco de
-   * cada lado da torre, os livros passaram para cima dela à direita e cada
-   * lado desce até a altura do telhado. O conteúdo de cada uma é medido
-   * a partir do canto de baixo à esquerda dela. ---- */
-  const KA = { e: 'k1', d: 'k2', t: 'k0' };
-  const doChao = (sx, sy, Y) => { const x = (sx - OX) / COS + Y; return [x, (x + Y) / 2 + OY - sy]; };
-  const peca = (sx, sy, w, h, Y = 265) => {
-    const [x, topo] = doChao(sx, sy, Y);
-    const z = topo - h;
-    const s = emGrupo('pc', () => caixa(x, Y - 5, z, w, 5, h, KA));
-    const f = (u1, u2, v1, v2, c) => s.it.push(esq(Y, x + u1, x + u2, z + v1, z + v2, c));
-    const risco = (pts, c) => s.it.push({ d: linhas3(pts.slice(1).map((p, i) => [[x + pts[i][0], Y, z + pts[i][1]], [x + p[0], Y, z + p[1]]])), c });
-    const barras = (u1, u2, v1, v2) => { for (let u = u1; u < u2; u += 4.5) f(u, u + (Math.round(u) % 2 ? 2.8 : 1.4), v1, v2, 'kd'); };
-    return { f, risco, barras };
-  };
-  // A tela de sistemas, a maior: cabeçalho e seis ladrilhos, um escolhido.
-  const tela = peca(16, 58, 120, 86);
-  tela.f(0, 120, 74, 86, 'kc');
-  [8, 16, 24].forEach((u) => tela.f(u, u + 4, 78, 82, 'kd'));
-  [40, 8].forEach((v, l) => [8, 45, 82].forEach((u, c) => tela.f(u, u + 30, v, v + 26, l === 0 && c === 1 ? 'kd' : 'kc')));
-  // A carteirinha: retrato, nome, duas linhas e o código de barras.
-  const cart = peca(186, 118, 68, 44);
-  cart.f(6, 24, 16, 38, 'kc');
-  cart.f(30, 62, 32, 36, 'kd');
-  cart.f(30, 56, 24, 27, 'kc');
-  cart.f(30, 48, 17, 20, 'kc');
-  cart.barras(6, 62, 4, 11);
-  // A folha de prova: título e quatro questões de quatro alternativas.
-  const prova = peca(300, -6, 48, 64);
-  prova.f(7, 34, 53, 57, 'kd');
-  [41, 30, 19, 8].forEach((v, l) => [7, 17, 27, 37].forEach((u, c) => prova.f(u, u + 6, v, v + 6, c === [1, 3, 0, 2][l] ? 'kd' : 'kc')));
-  // O capelo do vestibular, no alto, antes da torre.
-  const [vx, vz] = doChao(452, 60, 262);
-  const [bx, by] = P(vx, 262, vz);
-  emGrupo('pc', () => {
-    caixa(vx - 12, 250, vz - 14, 24, 24, 11, KA);
-    caixa(vx - 28, 234, vz - 3, 56, 56, 3, KA);
-    solidos.push({ bb: [vx - 1, vx + 28, 261, 290, vz, vz + 1], it: [{ d: `M${n(bx)} ${n(by)}L${n(bx + 26)} ${n(by + 15)}L${n(bx + 26)} ${n(by + 30)}`, c: 'fi' }, { d: disco(bx + 26, by + 32, 2.6), c: 'a' }] });
-  });
-  // Do outro lado da torre: o gráfico do gerencial e o aprovado.
-  const graf = peca(884, 92, 64, 48, 5);
-  [[8, 12], [21, 24], [34, 17], [47, 33]].forEach(([u, h], i) => graf.f(u, u + 9, 6, 6 + h, i === 3 ? 'kd' : 'kc'));
-  const visto = peca(742, 196, 58, 52, 5);
-  visto.risco([[13, 29], [24, 17], [45, 41]], 'kk');
-  visto.f(13, 45, 6, 9, 'kc');
-  /* ---- Árvores e palmeiras. A gente saiu em 13/10/2026; os postes, as
-   * bandeiras e as árvores de trás do casarão em 15/10 ("mais clean nas
-   * sombras, detalhes e elementos"; a malha do fundo fica, ele gosta); as
-   * árvores redondas e uma palmeira em 29/10, junto com quatro das dez peças
-   * (protocolo, calendário, livros, boleto): "diminuir a quantidade". ---- */
-  [224, 326, 428].forEach((y) => palmeira(478, y));
-}
-
 /* ---------------------------------------------------------------------
  * A CENA DA CAPA DO SITE: só telas (15/10/2026: "na tela inicial do site
  * UCAMDS deixe a ilustra só das interfaces, de telas"). A capa é a porta do
@@ -496,7 +250,7 @@ const fundo = (id) =>
   `<ellipse cx='450' cy='330' rx='640' ry='470' fill='url(#${id}-clarao)' class='fundo'/>` +
   `<rect x='-400' y='-420' width='1700' height='1400' fill='url(#${id}-malha)' mask='url(#${id}-mascara)' class='fundo'/>`;
 
-function caminhos(montador = montar) {
+function caminhos(montador) {
   chao.length = sombras.length = solidos.length = grupos.length = 0;
   montador();
   const itens = [...chao, ...sombras, ...ordenar(solidos).flatMap((s) => s.it)];
@@ -509,15 +263,12 @@ function caminhos(montador = montar) {
     else juntos.push({ ...it });
   }
   const path = (i) => `<path d='${i.d}' class='${i.c}'/>`;
-  const moveis = [...grupos].sort((a, b) => (a.nome === 'barca' ? -1 : 0) - (b.nome === 'barca' ? -1 : 0));
   let k = 0;
-  /* Dois planos para o ponteiro: a praça (base) e o que flutua. */
-  return `<g class='base'>${juntos.map(path).join('')}</g>` + moveis.map((m) => `<g class='${m.nome}'${m.nome === 'pc' ? ` style='--i:${k++}'` : ''}><g>${m.solidos.flatMap((s) => s.it).map(path).join('')}</g></g>`).join('');
+  return `<g class='base'>${juntos.map(path).join('')}</g>` + grupos.map((m) => `<g class='${m.nome}'${m.nome === 'pc' ? ` style='--i:${k++}'` : ''}><g>${m.solidos.flatMap((s) => s.it).map(path).join('')}</g></g>`).join('');
 }
 
-export function cenaLogin() {
-  return `<svg class='ucam-login__cena-svg' viewBox='-110 -76 1120 812' aria-hidden='true' focusable='false'>${fundo('lg')}${caminhos()}</svg>`;
-}
+/* O login, desde 29/10/2026, é a pilha de cartões de tools/cena-pilha.mjs. */
+export const cenaLogin = cenaPilha;
 
 /* A capa do site, sobre o branco: a cena de telas (montarCapa), com a mesma
  * malha. Lá não há painel de raio para recortar o fundo: a cena inteira

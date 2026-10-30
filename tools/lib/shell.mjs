@@ -1,4 +1,5 @@
 // O shell da aplicação, montado a partir do contrato — nunca escrito à mão.
+import { geometria } from '../cena-pilha.mjs';
 //
 // POR QUE ESTE ARQUIVO EXISTE
 //
@@ -2098,30 +2099,69 @@ const FN_ANUNCIA = `
 
 export const estadoScript = `
 (function () {
-  /* A CENA DO LOGIN ACOMPANHA O PONTEIRO (13/10/2026). O painel institucional
-   * mede onde o ponteiro está, de -1 a 1 em cada eixo, e grava em --px e --py
-   * na cena; a folha desloca as peças que flutuam para um lado e a praça para
-   * o outro, e a distância entre os dois planos é o que dá profundidade. Um
-   * quadro por medida, nada em toque, e nada para quem pediu menos movimento. */
+  /* A PILHA DO LOGIN RESPONDE AO PONTEIRO (29/10/2026). A geometria é a de
+   * tools/cena-pilha.mjs, embutida aqui pelo texto: o build gravou o repouso
+   * com a mesma função, então os caminhos do SVG estão na ordem do quadro.
+   * O ponteiro escolhe pelo repouso (geo.alvo), nunca pelo que está na tela;
+   * o escolhido desliza e os de cima sobem, 700ms na curva (.32, .72, 0, 1),
+   * 45ms de atraso por cartão de distância. Um quadro por vez e só enquanto
+   * algo anda; nada em toque, nada para quem pediu menos movimento. */
   var painel = document.querySelector('.ucam-login__institucional');
-  var cena = painel && painel.querySelector('.ucam-login__cena');
-  if (!cena || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var quadro = 0, x = 0, y = 0;
+  var svg = painel && painel.querySelector('.ucam-login__cena-svg');
+  var pilha = svg && svg.querySelector('.pilha');
+  if (!pilha || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var geo = (${geometria.toString()})();
+  var paths = pilha.querySelectorAll('path');
+  var ease = (function (x1, y1, x2, y2) {
+    var cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx, cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
+    return function (t) {
+      var u = t;
+      for (var i = 0; i < 8; i++) {
+        var x = ((ax * u + bx) * u + cx) * u - t, d = (3 * ax * u + 2 * bx) * u + cx;
+        if (Math.abs(x) < 1e-5 || !d) break;
+        u = Math.min(1, Math.max(0, u - x / d));
+      }
+      return ((ay * u + by) * u + cy) * u;
+    };
+  })(0.32, 0.72, 0, 1);
+  var tw = function (v) { return { de: v, para: v, t0: 0 }; };
+  var val = function (t, agora) { var p = Math.min(1, Math.max(0, (agora - t.t0) / 700)); return t.de + (t.para - t.de) * ease(p); };
+  var leva = function (t, para, agora, atraso) { if (t.para === para) return; t.de = val(t, agora); t.para = para; t.t0 = agora + atraso; };
+  var sai = geo.REST.map(tw), sobe = geo.REST.map(function () { return tw(0); });
+  var act = -1, quadro = 0;
+  function desenha(agora) {
+    quadro = 0;
+    var s = sai.map(function (t) { return val(t, agora); }), l = sobe.map(function (t) { return val(t, agora); });
+    geo.quadro(s, l, act).forEach(function (q, i) {
+      var p = paths[i];
+      if (!p) return;
+      if (p.getAttribute('d') !== q[0]) p.setAttribute('d', q[0]);
+      if (p.getAttribute('class') !== q[1]) p.setAttribute('class', q[1]);
+    });
+    var anda = sai.concat(sobe).some(function (t) { return agora < t.t0 + 700; });
+    if (anda) quadro = requestAnimationFrame(desenha);
+  }
+  function escolhe(a) {
+    if (a === act) return;
+    var agora = performance.now(), de = a >= 0 ? a : act;
+    act = a;
+    for (var i = 0; i < geo.N; i++) {
+      var atraso = Math.abs(i - de) * 45;
+      leva(sai[i], a < 0 ? geo.REST[i] : i === a ? geo.OUT : 0, agora, atraso);
+      leva(sobe[i], a >= 0 && i > a ? geo.LIFT : 0, agora, atraso);
+    }
+    if (!quadro) quadro = requestAnimationFrame(desenha);
+  }
   painel.addEventListener('pointermove', function (e) {
     if (e.pointerType === 'touch') return;
-    x = e.clientX; y = e.clientY;
-    if (quadro) return;
-    quadro = requestAnimationFrame(function () {
-      quadro = 0;
-      var r = painel.getBoundingClientRect();
-      cena.style.setProperty('--px', ((x - r.left) / r.width * 2 - 1).toFixed(3));
-      cena.style.setProperty('--py', ((y - r.top) / r.height * 2 - 1).toFixed(3));
-    });
+    var m = svg.getScreenCTM();
+    if (!m) return;
+    var p = svg.createSVGPoint();
+    p.x = e.clientX; p.y = e.clientY;
+    p = p.matrixTransform(m.inverse());
+    escolhe(geo.alvo(p.x, p.y));
   });
-  painel.addEventListener('pointerleave', function () {
-    cena.style.setProperty('--px', '0');
-    cena.style.setProperty('--py', '0');
-  });
+  painel.addEventListener('pointerleave', function () { escolhe(-1); });
 })();
 (function () {
   /* REFERÊNCIA OU APLICAÇÃO (ADR-057, 03/10/2026). Este mesmo script sai em
