@@ -61,6 +61,23 @@
       "tipo": "number",
       "default": "600000",
       "descricao": "A partir de quanto tempo restante o tom vira perigo. Dez minutos por padrão."
+    },
+    {
+      "nome": "digitos",
+      "tipo": "boolean",
+      "default": "true",
+      "descricao": "Mostra o hh:mm:ss ao lado da frase. Falso em faixa estreita."
+    },
+    {
+      "nome": "avisoFinal",
+      "tipo": "string",
+      "default": "A prova será entregue automaticamente no fim do tempo.",
+      "descricao": "O que o anúncio do último minuto diz que vai acontecer."
+    },
+    {
+      "nome": "agora",
+      "tipo": "Date",
+      "descricao": "Congela o instante de referência. Só para preview e teste: com ele o relógio não anda."
     }
   ],
   "eventos": [
@@ -150,6 +167,6 @@
       "estado": "data-tom=\"warning\" ou \"danger\" no elemento raiz.",
       "variaveis": []
     },
-    "trilho_b": "A escrever. A reescrita do vestibular tem a peça feita à mão e serve de ponto de partida; o wrapper entra em ui/projects/ui/src/lib/ucam quando a tela de prova for portada."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/relogio/ucam-relogio.ts — <ucam-relogio>. Entradas: fim, total, perigoMs, digitos, avisoFinal, agora. Saída: esgotou (uma vez). Recalcula fim − agora a cada segundo; os anúncios saem de um status à parte, um por troca de tom e um no último minuto."
   }
 }

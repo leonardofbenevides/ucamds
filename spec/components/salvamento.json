@@ -141,6 +141,6 @@
       "estado": "data-estado no elemento raiz.",
       "variaveis": []
     },
-    "trilho_b": "A escrever. A reescrita do vestibular tem a peça feita à mão e serve de ponto de partida; o wrapper entra em ui/projects/ui/src/lib/ucam quando a tela de prova for portada."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/salvamento/ucam-salvamento.ts — <ucam-salvamento>. Entradas: estado, pendentes, mensagem. As frases do contrato saem do componente; o anúncio é um nó próprio dentro do role=\"status\", que só muda no problema e na volta ao normal depois dele."
   }
 }

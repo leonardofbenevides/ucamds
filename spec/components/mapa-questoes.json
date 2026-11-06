@@ -62,7 +62,7 @@
       "nome": "itens",
       "tipo": "MapaItem[]",
       "obrigatorio": true,
-      "descricao": "As questões, na ordem da prova: número, estado (em branco ou respondida) e se está marcada para revisar."
+      "descricao": "As questões, na ordem da prova: { numero, estado: \"respondida\" | \"em-branco\", revisar?, grupo?, rotulo? }. grupo é o caderno (sai em grade própria, com o nome acima); rotulo faz o item largo, como a redação."
     },
     {
       "nome": "atual",
@@ -74,6 +74,12 @@
       "tipo": "number",
       "default": "5",
       "descricao": "Quantas bolhas por linha. Fixo por prova, para a posição virar memória."
+    },
+    {
+      "nome": "label",
+      "tipo": "string",
+      "default": "Questões da prova",
+      "descricao": "O nome acessível do nav."
     }
   ],
   "eventos": [
@@ -168,6 +174,6 @@
         "--ucam-mapa-colunas"
       ]
     },
-    "trilho_b": "A escrever. A reescrita do vestibular tem a peça feita à mão e serve de ponto de partida; o wrapper entra em ui/projects/ui/src/lib/ucam quando a tela de prova for portada."
+    "trilho_b": "ui/projects/ui/src/lib/ucam/mapa-questoes/ucam-mapa-questoes.ts — <ucam-mapa-questoes>. Entradas: itens, atual, colunas, label. Saída: ir (número). Mesma marcação e mesmas classes do Trilho A; o nome acessível de cada bolha é montado pelo componente."
   }
 }

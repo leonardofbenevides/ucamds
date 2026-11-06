@@ -70,6 +70,22 @@ if (existsSync(publicApi)) {
       erros.push(`public-api.ts expõe a base: ${linha.trim()}`);
     }
   }
+
+  // O LADO DE DENTRO DA MESMA FRONTEIRA: todo wrapper sai na API pública.
+  // Até 06/11/2026 kbd, link, prazo e radio-group estavam prontos, com demo
+  // ensinando `import { UcamPrazo } from '@ucam/ui'`, e nenhum dos quatro
+  // estava no public-api.ts: o @ucam/ui 0.1.5 publicado não os tem, e quem
+  // copiava a demo recebia erro de compilação. O portão do build-pacotes
+  // compara contagens e não via pasta esquecida.
+  const dirUcam = join(LIB, 'lib', 'ucam');
+  if (existsSync(dirUcam)) {
+    const exportadas = new Set([...src.matchAll(/^export \* from '\.\/lib\/ucam\/([a-z-]+)/gm)].map((m) => m[1]));
+    for (const d of readdirSync(dirUcam, { withFileTypes: true })) {
+      if (d.isDirectory() && !exportadas.has(d.name)) {
+        erros.push(`lib/ucam/${d.name} não está no public-api.ts: o wrapper existe e nenhuma aplicação consegue importá-lo`);
+      }
+    }
+  }
 }
 
 // Wrappers podem importar a base; aplicações, não. Verifica se todo wrapper
@@ -153,6 +169,11 @@ if (existsSync(zardDir) && existsSync(ucamDir)) {
     'calendar': null, 'date-range-field': null, 'toast': null, 'breadcrumb': null,
     'spinner': null, 'popover': null, 'accordion': null, 'slider': null,
     'number-field': null, 'toggle-group': null,
+    // As três peças da prova (06/11/2026). Nenhuma tem par na base: o mapa é
+    // uma grade de botões com três sinais por forma, o relógio recalcula de um
+    // fim dado pelo servidor e anuncia por região à parte, e o salvamento é uma
+    // frase com role="status" que escolhe o que anunciar.
+    'mapa-questoes': null, 'relogio': null, 'salvamento': null,
     'card': 'card',
     'alert': 'alert',
     'tabs': 'tabs',

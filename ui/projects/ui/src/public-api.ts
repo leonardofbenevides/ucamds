@@ -26,6 +26,7 @@ export * from './lib/ucam/checkbox';
 export * from './lib/ucam/switch';
 export * from './lib/ucam/segmented';
 export * from './lib/ucam/toggle-group';
+export * from './lib/ucam/radio-group';
 
 export * from './lib/ucam/card';
 export * from './lib/ucam/choice-card';
@@ -45,8 +46,14 @@ export * from './lib/ucam/empty-state';
 export * from './lib/ucam/progress';
 export * from './lib/ucam/spinner';
 export * from './lib/ucam/toast';
+export * from './lib/ucam/prazo';
+export * from './lib/ucam/relogio';
+export * from './lib/ucam/salvamento';
 
 export * from './lib/ucam/realce';
+export * from './lib/ucam/kbd';
+export * from './lib/ucam/link';
+export * from './lib/ucam/mapa-questoes';
 
 export * from './lib/ucam/list-item';
 export * from './lib/ucam/description-list';

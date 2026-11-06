@@ -337,7 +337,8 @@ for (const { file, spec } of components) {
   if (caminho && !existe) {
     falha(`components/${file}`, `implementacao.trilho_b aponta para ${caminho[0]}, que não existe`);
   }
-  if (texto && /a escrever|pendente|não implementado/i.test(texto) && existe) {
+  // \bpendente\b: a prop `pendentes` do salvamento não é pendência.
+  if (texto && /a escrever|\bpendente\b|não implementado/i.test(texto) && existe) {
     falha(`components/${file}`, `implementacao.trilho_b diz "a escrever" e ${caminho[0]} está lá`);
   }
   if (!texto) {
