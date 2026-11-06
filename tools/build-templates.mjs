@@ -9,7 +9,7 @@
 //
 //   node tools/build-templates.mjs
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync, readdirSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { iconCss } from './lib/icon-css.mjs';
@@ -143,6 +143,42 @@ const propagaConsultaScript = `
 // O índice de destinos vem de lib/shell.mjs — ver o cabeçalho de
 // indiceDeDestinos() para o porquê de ele não morar aqui.
 const { de: destinosDe, religaPreview } = indiceDeDestinos(projetos);
+
+/* UMA PASTA POR PROJETO (06/11/2026: "crie pastas pra organizar as telas e
+ * não ficarem todas jogadas juntas").
+ *
+ * As telas saíam todas soltas em t/, como <projeto>-<tela>.html — 120 arquivos
+ * num diretório só. Agora cada projeto tem a sua pasta: t/<projeto>/<tela>.html.
+ *
+ * O resto do gerador continua escrevendo como se as telas fossem irmãs no
+ * mesmo diretório (ver indiceDeDestinos em lib/shell.mjs), e a mudança de
+ * andar se resolve aqui, numa passada só sobre a página pronta:
+ *  - todo caminho relativo que sobe ("../fonts", "../marca", "../telas",
+ *    "../index.html") sobe um andar a mais;
+ *  - o echarts fica em t/, ao lado das pastas, e é um só para todas;
+ *  - o link para outra tela, que era o nome do arquivo irmão, vira
+ *    ../<projeto>/<tela>.html — vale também para o link entre projetos.
+ * Só o nome que é de tela de verdade é reescrito: a lista vem da spec. */
+const PASTA_DA_TELA = new Map(projetos.flatMap((p) => p.templates.map((t) => [`${p.id}-${t.id}`, `${p.id}/${t.id}`])));
+const LINK_DE_TELA = new RegExp(
+  `(?<![\\w/.-])(${[...PASTA_DA_TELA.keys()].sort((a, b) => b.length - a.length).join('|')})\\.html`,
+  'g',
+);
+const aninha = (html) =>
+  html
+    .replace(/(["'(])\.\.\//g, '$1../../')
+    .replace('<script src="echarts.min.js">', '<script src="../echarts.min.js">')
+    .replace(LINK_DE_TELA, (_, nome) => `../${PASTA_DA_TELA.get(nome)}.html`);
+
+// As páginas da versão solta saem do caminho: t/ é gerado (está no
+// .gitignore), e um arquivo velho ao lado das pastas seria a tela de ontem
+// respondendo no endereço antigo, sem ninguém saber.
+for (const d of DESTINOS) {
+  for (const dir of [d.dir, join(d.dir, 'fonte')]) {
+    if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir)) if (f.endsWith('.html')) rmSync(join(dir, f));
+  }
+}
 
 /* O TÍTULO DA TELA VIRA <h1> — aqui, e só aqui.
  *
@@ -412,19 +448,18 @@ ${t.preview.includes('data-grafico') ? `<script src="echarts.min.js"></script>
     const marcacao = listboxSelects(promoveTitulo(corDosAvatares(religaPreview(t.preview))));
 
     for (const d of DESTINOS) {
-      writeFileSync(
-        join(d.dir, `${proj.id}-${t.id}.html`),
-        html.replace('__DOC__', esc(d.doc(proj, t))),
-        'utf8',
-      );
-      // Em fonte/, e não ao lado: as sondas de scratchpad varrem docs/t/*.html
-      // como "as telas", e um fragmento sem script passaria por tela morta.
-      if (!existsSync(join(d.dir, 'fonte'))) mkdirSync(join(d.dir, 'fonte'), { recursive: true });
-      writeFileSync(join(d.dir, 'fonte', `${proj.id}-${t.id}.html`), marcacao.trim() + '\n', 'utf8');
+      const pasta = join(d.dir, proj.id);
+      if (!existsSync(pasta)) mkdirSync(pasta, { recursive: true });
+      writeFileSync(join(pasta, `${t.id}.html`), aninha(html.replace('__DOC__', esc(d.doc(proj, t)))), 'utf8');
+      // Em fonte/, e não ao lado: as sondas de scratchpad varrem as pastas de
+      // t/ como "as telas", e um fragmento sem script passaria por tela morta.
+      const pastaFonte = join(d.dir, 'fonte', proj.id);
+      if (!existsSync(pastaFonte)) mkdirSync(pastaFonte, { recursive: true });
+      writeFileSync(join(pastaFonte, `${t.id}.html`), marcacao.trim() + '\n', 'utf8');
     }
     n++;
   }
 }
 
-console.log('templates autônomos → docs/t/ e site/src/assets/t/');
+console.log('templates autônomos → docs/t/<projeto>/ e site/src/assets/t/<projeto>/');
 console.log(`  ${n} telas · ${projetos.length} projetos`);

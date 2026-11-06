@@ -677,8 +677,8 @@ const telas = comTelasVivas(projetos).map((proj) => ({
   // quem monta a tela é o build. O site só precisa do nome do arquivo.
   templates: proj.templates.map(({ preview: _preview, ...t }) => ({
     ...t,
-    // O arquivo autônomo em docs/t/, para abrir a tela em tamanho real.
-    arquivo: `${proj.id}-${t.id}.html`,
+    // O arquivo autônomo em docs/t/<projeto>/, para abrir a tela em tamanho real.
+    arquivo: `${proj.id}/${t.id}.html`,
   })),
 }));
 

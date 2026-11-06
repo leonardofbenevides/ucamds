@@ -9,7 +9,7 @@
 const CDP = process.env.CDP || 'http://localhost:9471';
 const BASE = process.env.BASE || 'http://localhost:5471';
 async function abre(tela, largura = 1440) {
-  const alvo = await (await fetch(`${CDP}/json/new?${BASE}/t/isencao-${tela}.html`, { method: 'PUT' })).json();
+  const alvo = await (await fetch(`${CDP}/json/new?${BASE}/t/isencao/${tela}.html`, { method: 'PUT' })).json();
   const ws = new WebSocket(alvo.webSocketDebuggerUrl); await new Promise((r) => (ws.onopen = r));
   let id = 0; const pend = new Map(); const erros = [];
   ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id && pend.has(m.id)) { pend.get(m.id)(m); pend.delete(m.id); } if (m.method === 'Runtime.exceptionThrown') erros.push(m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text); };

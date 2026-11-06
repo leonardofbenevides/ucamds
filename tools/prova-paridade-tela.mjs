@@ -6,7 +6,7 @@
  * comparavam COMPONENTE (A contra A+) e a geometria da base; a tela inteira —
  * moldura, barra de visão, tabela, rodapé — nunca foi posta lado a lado.
  *
- * O que ela faz: abre a página autônoma do Trilho A (/t/<proj>-<tela>.html)
+ * O que ela faz: abre a página autônoma do Trilho A (/t/<proj>/<tela>.html)
  * e a tela viva em Angular (/vivo/<proj>/<tela>) na MESMA largura, tira uma
  * foto de cada uma, e compara as duas no próprio navegador (canvas), que é o
  * único lugar sem dependência onde se decodifica PNG. Devolve a fração de
@@ -105,7 +105,7 @@ async function foto(url, nome) {
 
 const base = `http://localhost:${PORTA}`;
 console.log(`paridade de ${projeto}/${tela} a ${LARGURA}px`);
-const A = await foto(`${base}/t/${projeto}-${tela}.html?embed=1&tema=light`, `${projeto}-${tela}.A`);
+const A = await foto(`${base}/t/${projeto}/${tela}.html?embed=1&tema=light`, `${projeto}-${tela}.A`);
 const B = await foto(`${base}/vivo/${projeto}/${tela}?tema=light`, `${projeto}-${tela}.B`);
 console.log(`  altura  A ${A.altura}px · B ${B.altura}px`);
 

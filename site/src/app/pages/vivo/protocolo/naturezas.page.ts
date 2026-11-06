@@ -27,7 +27,7 @@ import {
  * 100% igual à referência?". A resposta é medida por
  * tools/prova-paridade-tela.mjs, que fotografa esta rota (/vivo/protocolo/
  * naturezas, sem o cromo do site) e a página autônoma do Trilho A
- * (/t/protocolo-naturezas.html) na mesma largura e compara pixel a pixel.
+ * (/t/protocolo/naturezas.html) na mesma largura e compara pixel a pixel.
  *
  * O que esta tela NÃO faz: fingir o servidor. Exportar e arquivar são
  * ações de sistema; aqui só trocam um anúncio, como a aplicação faria antes

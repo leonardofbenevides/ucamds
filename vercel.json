@@ -5,5 +5,137 @@
   "buildCommand": "pnpm dist",
   "outputDirectory": "site/dist/analog/public",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/t/protocolo-:tela",
+      "destination": "/t/protocolo/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/protocolo-:tela",
+      "destination": "/t/fonte/protocolo/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/portal-:tela",
+      "destination": "/t/portal/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/portal-:tela",
+      "destination": "/t/fonte/portal/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/sigfin-:tela",
+      "destination": "/t/sigfin/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/sigfin-:tela",
+      "destination": "/t/fonte/sigfin/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/relatorios-:tela",
+      "destination": "/t/relatorios/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/relatorios-:tela",
+      "destination": "/t/fonte/relatorios/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/gerencial-:tela",
+      "destination": "/t/gerencial/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/gerencial-:tela",
+      "destination": "/t/fonte/gerencial/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/isencao-:tela",
+      "destination": "/t/isencao/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/isencao-:tela",
+      "destination": "/t/fonte/isencao/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/secretaria-:tela",
+      "destination": "/t/secretaria/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/secretaria-:tela",
+      "destination": "/t/fonte/secretaria/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/vestibular-:tela",
+      "destination": "/t/vestibular/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/vestibular-:tela",
+      "destination": "/t/fonte/vestibular/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/extensao-:tela",
+      "destination": "/t/extensao/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/extensao-:tela",
+      "destination": "/t/fonte/extensao/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/captacao-:tela",
+      "destination": "/t/captacao/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/captacao-:tela",
+      "destination": "/t/fonte/captacao/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/polos-:tela",
+      "destination": "/t/polos/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/polos-:tela",
+      "destination": "/t/fonte/polos/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/turmas-:tela",
+      "destination": "/t/turmas/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/turmas-:tela",
+      "destination": "/t/fonte/turmas/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/diploma-:tela",
+      "destination": "/t/diploma/:tela",
+      "permanent": true
+    },
+    {
+      "source": "/t/fonte/diploma-:tela",
+      "destination": "/t/fonte/diploma/:tela",
+      "permanent": true
+    }
+  ]
 }

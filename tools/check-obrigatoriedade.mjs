@@ -107,8 +107,13 @@ function cordasDe(v, saco = []) {
 const alvos = [];
 const telas = path.join(ROOT, 'site/src/assets/t');
 if (fs.existsSync(telas)) {
-  for (const f of fs.readdirSync(telas).filter((x) => x.endsWith('.html'))) {
-    alvos.push({ arquivo: path.join(telas, f), rotulo: `telas/${f}`, json: false });
+  // Uma pasta por projeto (t/<projeto>/<tela>.html); fonte/ é o fragmento
+  // copiável, sem script, e fica de fora como sempre ficou.
+  for (const proj of fs.readdirSync(telas, { withFileTypes: true })) {
+    if (!proj.isDirectory() || proj.name === 'fonte') continue;
+    for (const f of fs.readdirSync(path.join(telas, proj.name)).filter((x) => x.endsWith('.html'))) {
+      alvos.push({ arquivo: path.join(telas, proj.name, f), rotulo: `telas/${proj.name}/${f}`, json: false });
+    }
   }
 }
 for (const rel of ['docs/index.html']) {

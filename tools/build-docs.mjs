@@ -813,7 +813,7 @@ function templatePage(proj, t) {
     <p class="muted small">Origem: ${esc(t.origem)}</p>
   </header>
 
-  ${deviceFrame(`t/${proj.id}-${t.id}.html`, `Tela ${t.nome} — ${proj.nome}`)}
+  ${deviceFrame(`t/${proj.id}/${t.id}.html`, `Tela ${t.nome} — ${proj.nome}`)}
 
   <section class="demo">
     <div class="panel">
@@ -876,7 +876,7 @@ function pageProjeto(proj) {
     <h2>${proj.templates.length} telas</h2>
     <div class="blocks">
       ${proj.templates.map((t) => `<a class="block" href="#/templates/${proj.id}/${t.id}">
-        <span class="block-shot"><img src="t/${proj.id}-${t.id}.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('block-shot--sem')"><span class="block-shot-fb">${icon('fileText')}</span></span>
+        <span class="block-shot"><img src="t/${proj.id}/${t.id}.png" alt="" loading="lazy" onerror="this.parentNode.classList.add('block-shot--sem')"><span class="block-shot-fb">${icon('fileText')}</span></span>
         <span class="block-meta">
           <strong>${esc(t.nome)}</strong>
           <span class="muted small">${esc(t.descricao)}</span>
