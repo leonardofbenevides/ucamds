@@ -29,9 +29,17 @@ const SAIDA = join(ROOT, 'dist', 'agentes');
 const ler = (rel) => JSON.parse(readFileSync(join(ROOT, rel), 'utf8'));
 const { version: VERSAO } = ler('package.json');
 
-for (const f of ['dist/tokens/ucam-tokens.json', 'dist/css/ucam.css']) {
+for (const [f, comando] of [
+  ['dist/tokens/ucam-tokens.json', 'pnpm run tokens'],
+  ['dist/css/ucam.css', 'pnpm run css'],
+  // Os Sites entram no kit desde 06/11/2026: até então as 33 peças do
+  // @ucam/site-ui não existiam para o agente, e o ucam_check_usage REPROVAVA
+  // marcação correta de site (.ucam-site-btn "não pinta nada").
+  ['dist/sites/tokens/ucam-site-tokens.json', 'pnpm run sites'],
+  ['dist/sites/css/ucam-site.css', 'pnpm run sites'],
+]) {
   if (!existsSync(join(ROOT, f))) {
-    console.error(`✗ ${f} não existe. Rode: pnpm run tokens && pnpm run css`);
+    console.error(`✗ ${f} não existe. Rode: ${comando}`);
     process.exit(1);
   }
 }
@@ -47,6 +55,13 @@ const migracao = ler('spec/migracao.json');
 const recursos = ler('spec/resources.json');
 const escrita = ler('spec/writing.json');
 const estados = ler('spec/states.json');
+const sitesDemos = ler('sites/spec/demos.json').demos;
+const sites = readdirSync(join(ROOT, 'sites/spec/components'))
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => ler(`sites/spec/components/${f}`))
+  .sort((a, b) => a.id.localeCompare(b.id));
+/** O seletor de verdade da peça em @ucam/site-ui, tirado do trilho_b (o mesmo que tools/build-sites-index.mjs faz). */
+const seletorSite = (c) => / — (.+?)\. Entradas: /.exec(c.implementacao?.trilho_b ?? '')?.[1] ?? null;
 
 const umaLinha = (s = '', n = 160) => {
   const t = String(s).replace(/\s+/g, ' ').replace(/\|/g, '/').trim();
@@ -228,6 +243,18 @@ ${lista(escrita.principios).slice(0, 8).map((p) => `- ${umaLinha(itemTexto(p), 2
 |---|---|---|---|
 ${componentes.map((c) => `| ${c.name} | \`${c.selector}\` | ${c.status} | ${umaLinha(c.description, 130)} |`).join('\n')}
 
+## Sites públicos (UCAMDS Sites, ${sites.length} peças)
+
+Os sites — candidomendes.edu.br, CENPRE, Campos — têm um sistema próprio sobre as mesmas fundações (ADR-067), com base no bordô do site da Candido Mendes (ADR-079). **Não misture os dois**: em site, as classes são \`.ucam-site-*\` sob um ancestral \`.ucam-site\` e os tokens são \`--ucam-site-*\` semânticos; os \`<ucam-*>\` e o \`.ucam-btn\` da aplicação não pintam numa página que só carrega a folha dos sites.
+
+- CSS puro (WordPress, HTML): \`@ucam/site-css\` — \`${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-site-css-${VERSAO}.tgz\`, depois \`<link>\` para \`css/ucam-site-fonts.css\` e \`css/ucam-site.css\`.
+- Angular: \`@ucam/site-ui\` — diretivas finas sobre a mesma folha (\`a[ucamSiteButton]\`, \`section[ucamSiteHero]\`…), sem estilo próprio; pede a folha na mesma versão.
+- No MCP, passe \`familia: "site"\`: \`ucam_list_components\`, \`ucam_get_component\` (devolve o HTML da demo, pronto para copiar, e o uso em Angular) e \`ucam_get_tokens\`. Seletor \`ucam-site-<id>\` também resolve sozinho. \`ucam_check_usage\` reconhece as classes dos sites e reprova primitiva \`--ucam-site-wine-600\` como reprova a da aplicação.
+
+| Peça | Classe | Angular | Para quê |
+|---|---|---|---|
+${sites.map((c) => `| ${c.name} | \`${c.implementacao.trilho_a.raiz}\` |\`${seletorSite(c) ?? '—'}\` | ${umaLinha(c.description, 110)} |`).join('\n')}
+
 ## Padrões de tela
 
 ${padroes.map((p) => `- **\`${p.id}\` — ${p.nome}.** ${umaLinha(p.problema, 220)}${p.regras?.length ? `\n  Regras: ${p.regras.map((r) => umaLinha(r, 140)).join(' · ')}` : ''}`).join('\n')}
@@ -263,6 +290,12 @@ const llms = `# UCAMDS — Design System da Universidade Candido Mendes
 - [spec/icons.json](spec/icons.json): o conjunto de ícones e o nome de cada um
 - [spec/writing.json](spec/writing.json): escrita de interface — rótulo, mensagem de erro, vazio
 - [spec/tokens/theme.dark.json](spec/tokens/theme.dark.json): sobrescritas do tema escuro (o ucam_get_tokens já resolve por tema)
+- [spec/versoes.json](spec/versoes.json): cada versão publicada e a data dela (o ucam_get_changes diz o que cada uma trouxe)
+- [spec/sites/components/](spec/sites/components/): um contrato por peça dos sites públicos (UCAMDS Sites)
+- [spec/sites/demos.json](spec/sites/demos.json): o HTML e o Angular de cada peça dos sites, prontos para copiar
+- [spec/sites/tokens/semantic.json](spec/sites/tokens/semantic.json): tokens semânticos dos sites (--ucam-site-*)
+- [spec/sites/tokens/ucam-site-tokens.json](spec/sites/tokens/ucam-site-tokens.json): os mesmos, resolvidos
+- [spec/sites/classes.json](spec/sites/classes.json): as classes que o @ucam/site-css desenha
 `;
 
 /* --------------------------------------------------------------- skills --- */
@@ -276,12 +309,16 @@ Com o servidor MCP \`ucamds\` ligado, use as ferramentas \`ucam_*\`. Sem ele, os
 const skillDs =
   cabecalhoSkill(
     'ucam-ds',
-    'Constrói ou altera telas e componentes de aplicações da Universidade Candido Mendes usando o Design System da UCAM (UCAMDS): componentes <ucam-*> ou classes .ucam-*, tokens semânticos, padrões de tela e telas de referência. Use sempre que a tarefa for criar, montar, redesenhar ou ajustar interface num app da UCAM (SIGU, Módulo Gerencial, Protocolo, Portal, SigFin), escolher cor, espaçamento, botão, tabela ou formulário. Nunca emite hex cru, token primitivo, <z-*> nem prop fora do contrato.',
+    'Constrói ou altera telas e componentes de aplicações da Universidade Candido Mendes usando o Design System da UCAM (UCAMDS): componentes <ucam-*> ou classes .ucam-*, tokens semânticos, padrões de tela e telas de referência. Use sempre que a tarefa for criar, montar, redesenhar ou ajustar interface num app da UCAM (SIGU, Módulo Gerencial, Protocolo, Portal, SigFin) ou num site público (candidomendes.edu.br, CENPRE, Campos — classes .ucam-site-*), escolher cor, espaçamento, botão, tabela ou formulário. Nunca emite hex cru, token primitivo, <z-*> nem prop fora do contrato.',
   ) +
   `
 # Construir com o UCAMDS
 
 ${fonteDeDados}
+
+## Site público ou aplicação?
+
+São dois sistemas. Num **site** (candidomendes.edu.br, CENPRE, Campos) não há telas de referência nem padrões de tela: monte a página com as peças de \`ucam_list_components({ familia: "site" })\`, copie a marcação de \`demo\` em \`ucam_get_component\`, use os tokens \`--ucam-site-*\` de \`ucam_get_tokens({ familia: "site" })\` e audite com \`ucam_check_usage\`. Nunca misture \`.ucam-site-*\` com \`<ucam-*>\` ou \`.ucam-btn\`. A ordem abaixo é a das **aplicações**.
 
 ## Ordem de trabalho
 
@@ -399,6 +436,21 @@ copyFileSync(join(ROOT, 'dist', 'tokens', 'ucam-tokens.json'), join(spec, 'token
 const classes = [...new Set([...readFileSync(join(ROOT, 'dist/css/ucam.css'), 'utf8').matchAll(/\.(ucam-[\w-]+)/g)].map((m) => m[1]))].sort();
 writeFileSync(join(spec, 'classes-trilho-a.json'), JSON.stringify({ $description: 'Classes que o @ucam/css desenha. Gerado de dist/css/ucam.css.', classes }, null, 2) + '\n', 'utf8');
 
+// Sites: contratos com o seletor Angular de verdade ao lado (o `selector` do
+// contrato é o identificador no catálogo, não um elemento que exista), as
+// demos copiáveis, os tokens e as classes que a folha desenha.
+const specSites = join(spec, 'sites');
+mkdirSync(join(specSites, 'components'), { recursive: true });
+mkdirSync(join(specSites, 'tokens'), { recursive: true });
+for (const c of sites) {
+  writeFileSync(join(specSites, 'components', `${c.id}.json`), JSON.stringify({ ...c, seletor_angular: seletorSite(c) }, null, 2) + '\n', 'utf8');
+}
+writeFileSync(join(specSites, 'demos.json'), JSON.stringify({ demos: sitesDemos }, null, 2) + '\n', 'utf8');
+copyFileSync(join(ROOT, 'sites', 'spec', 'tokens', 'semantic.json'), join(specSites, 'tokens', 'semantic.json'));
+copyFileSync(join(ROOT, 'dist', 'sites', 'tokens', 'ucam-site-tokens.json'), join(specSites, 'tokens', 'ucam-site-tokens.json'));
+const classesSites = [...new Set([...readFileSync(join(ROOT, 'dist/sites/css/ucam-site.css'), 'utf8').matchAll(/\.(ucam-site(?:-[\w-]+)?)/g)].map((m) => m[1]))].sort();
+writeFileSync(join(specSites, 'classes.json'), JSON.stringify({ $description: 'Classes que o @ucam/site-css desenha. Gerado de dist/sites/css/ucam-site.css.', classes: classesSites }, null, 2) + '\n', 'utf8');
+
 // servidor e CLI
 mkdirSync(join(SAIDA, 'mcp'), { recursive: true });
 mkdirSync(join(SAIDA, 'bin'), { recursive: true });
@@ -507,4 +559,4 @@ writeFileSync(
   'utf8',
 );
 
-console.log(`agentes → dist/agentes/  AGENTS.md · llms.txt · 3 skills · ${componentes.length} contratos · ${projetos.reduce((n, p) => n + p.templates.length, 0)} telas · ${classes.length} classes`);
+console.log(`agentes → dist/agentes/  AGENTS.md · llms.txt · 3 skills · ${componentes.length} contratos · ${projetos.reduce((n, p) => n + p.templates.length, 0)} telas · ${classes.length} classes · sites: ${sites.length} peças, ${classesSites.length} classes`);

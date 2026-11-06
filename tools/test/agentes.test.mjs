@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
 import { createInterface } from 'node:readline';
 import { gzipSync } from 'node:zlib';
-import { mkdtempSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -250,4 +250,60 @@ test('instalar atualiza o que o kit gravou e mantém o que o projeto editou', (t
   writeFileSync(agentes, '# Nossas regras\n');
   assert.match(rodar(), /AGENTS\.ucam\.md: editado no projeto, mantido/);
   assert.equal(readFileSync(agentes, 'utf8'), '# Nossas regras\n');
+});
+
+/* ---------------------------------------------------------------- sites --- */
+
+// Até 06/11/2026 o kit não sabia dos Sites: as peças do @ucam/site-ui não
+// existiam para o agente, e o auditor REPROVAVA marcação certa de site
+// (.ucam-site-btn "não é desenhada pelo @ucam/css") enquanto deixava passar a
+// primitiva --ucam-site-wine-600.
+
+test('sites: catálogo, contrato com demo e tokens por familia', async (t) => {
+  const s = abrirServidor();
+  t.after(s.fechar);
+  const pecas = (await s.chamar('ucam_list_components', { familia: 'site' })).dados;
+  const fonte = readdirSync(join(ROOT, 'sites', 'spec', 'components')).filter((f) => f.endsWith('.json')).length;
+  assert.equal(pecas.length, fonte, 'toda peça de sites/spec/components chega ao agente');
+  assert.ok(pecas.every((p) => p.familia === 'site' && p.classe?.startsWith('.ucam-site') && p.angular));
+  const app = (await s.chamar('ucam_list_components')).dados;
+  assert.ok(app.every((p) => p.familia === 'sistema'), 'sem familia, só a aplicação: o button do site não se confunde com o dela');
+
+  const hero = (await s.chamar('ucam_get_component', { id: 'ucam-site-hero' })).dados;
+  assert.equal(hero.familia, 'site', 'o seletor ucam-site-* resolve sem precisar da familia');
+  assert.ok(hero.demo?.principal?.preview, 'a peça vem com o HTML da demo');
+  assert.equal((await s.chamar('ucam_get_component', { id: 'button' })).dados.familia, 'sistema');
+  assert.equal((await s.chamar('ucam_get_component', { id: '.ucam-site-btn' })).dados.id, 'button');
+  const errado = await s.chamar('ucam_get_component', { id: 'hero' });
+  assert.equal(errado.erro, true);
+  assert.match(errado.dados.atencao, /familia "site"/, 'quem pede no sistema errado é avisado de que existe no outro');
+
+  const tokens = (await s.chamar('ucam_get_tokens', { familia: 'site', prefixo: 'color-action-primary' })).dados;
+  assert.ok(tokens.length && tokens.every((x) => x.css.startsWith('var(--ucam-site-color-action-primary')));
+  const ruim = await s.pedir('tools/call', { name: 'ucam_list_components', arguments: { familia: 'outra' } });
+  assert.equal(ruim.error?.code, -32602);
+});
+
+test('sites: o auditor aprova as 33 demos e pega o que é errado', async (t) => {
+  const s = abrirServidor();
+  t.after(s.fechar);
+  const demos = JSON.parse(readFileSync(join(KIT, 'spec', 'sites', 'demos.json'), 'utf8')).demos;
+  const achados = [];
+  for (const [id, d] of Object.entries(demos)) {
+    for (const bloco of [d.principal, ...(Array.isArray(d.exemplos) ? d.exemplos : [])].filter(Boolean)) {
+      for (const k of ['codigo', 'preview']) {
+        if (!bloco[k]) continue;
+        const r = (await s.chamar('ucam_check_usage', { codigo: bloco[k] })).dados;
+        for (const a of r.achados) achados.push(`${id}: [${a.regra}] ${a.mensagem}`);
+      }
+    }
+  }
+  assert.deepEqual(achados, [], 'a demo é marcação certa por definição: achado nela é falso positivo');
+
+  const regras = async (codigo) => (await s.chamar('ucam_check_usage', { codigo })).dados.achados.map((a) => a.regra);
+  assert.deepEqual(await regras('<div style="color: var(--ucam-site-wine-600)"></div>'), ['ADR-007']);
+  assert.deepEqual(await regras('<a class="ucam-site-btn--gigante" href="/">x</a>'), ['sites']);
+  assert.deepEqual(await regras('<ucam-site-hero></ucam-site-hero>'), ['sites']);
+  assert.deepEqual(await regras('<div class="ucam-site"><button class="ucam-btn">x</button></div>'), ['sites'], 'misturar os dois sistemas avisa');
+  assert.deepEqual(await regras('<div class="ucam"><select></select></div>'), ['ADR-011'], 'na aplicação o select nativo segue avisado');
 });

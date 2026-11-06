@@ -74,6 +74,7 @@ const arquivosDe = (dir) => {
 
 const fontes = [
   ...arquivosDe(join(ROOT, 'spec')),
+  ...arquivosDe(join(ROOT, 'sites', 'spec')),
   ...arquivosDe(join(ROOT, 'tools', 'agentes')),
   join(ROOT, 'tools', 'build-agentes.mjs'),
 ];
@@ -113,7 +114,7 @@ const RAIZ_SPEC = join(KIT, 'spec');
 for (const p of arquivosDe(RAIZ_SPEC)) {
   const rel = relative(RAIZ_SPEC, p).replace(/\\/g, '/');
   // Os contratos são lidos por diretório, não um a um.
-  if (rel.startsWith('components/')) continue;
+  if (rel.startsWith('components/') || rel.startsWith('sites/components/')) continue;
   const alcancado = nucleo.includes(`'${rel}'`) || llms.includes(rel);
   if (!alcancado) avisos.push(`spec/${rel} vai no pacote e nada o alcança: nenhuma ferramenta o lê e o llms.txt não o aponta`);
 }

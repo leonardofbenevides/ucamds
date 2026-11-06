@@ -39,8 +39,41 @@ export function dados() {
     semantica: lerJson('tokens/semantic.json'),
     classes: existsSync(join(SPEC, 'classes-trilho-a.json')) ? new Set(lerJson('classes-trilho-a.json').classes) : null,
     versoes: existsSync(join(SPEC, 'versoes.json')) ? lerJson('versoes.json').versoes : [],
+    sites: lerSites(),
   };
   return memo;
+}
+
+// Os Sites (ADR-067) são um segundo sistema sobre as mesmas fundações: outra
+// folha (.ucam-site-*), outros tokens (--ucam-site-*), outra lib Angular. O kit
+// os carrega à parte e as ferramentas os servem com `familia: "site"` — no
+// mesmo saco, o button dos sites e o da aplicação dividiriam o id e o agente
+// pegaria o errado.
+function lerSites() {
+  const dir = join(SPEC, 'sites');
+  if (!existsSync(join(dir, 'components'))) return null;
+  const componentes = readdirSync(join(dir, 'components'))
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => lerJson(`sites/components/${f}`))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const tokens = lerJson('sites/tokens/ucam-site-tokens.json');
+  const grupos = [...new Set(Object.keys(tokens.primitive ?? {}).map((k) => k.replace(/-\d+$/, '')))];
+  return {
+    componentes,
+    demos: lerJson('sites/demos.json').demos,
+    tokens,
+    semantica: lerJson('sites/tokens/semantic.json'),
+    classes: new Set(lerJson('sites/classes.json').classes),
+    primitivas: grupos.length ? new RegExp(`var\\(--ucam-site-(?:${grupos.join('|')})-\\d+`, 'g') : null,
+  };
+}
+
+const FAMILIAS = ['sistema', 'site', 'todas'];
+function familiaDe(familia = 'sistema') {
+  const f = String(familia).toLowerCase();
+  if (!FAMILIAS.includes(f)) throw Object.assign(new Error(`familia "${familia}" não existe. Use: ${FAMILIAS.join(', ')}.`), { code: -32602 });
+  if (f !== 'sistema' && !dados().sites) throw Object.assign(new Error('Este kit não traz os Sites.'), { code: -32602 });
+  return f;
 }
 
 /* ---------------------------------------------------------- versões --- */
@@ -108,16 +141,39 @@ const curta = (s = '', n = 220) => {
   return t.length > n ? t.slice(0, n - 1) + '…' : t;
 };
 
-function acharComponente(chave = '') {
-  const k = String(chave).trim().toLowerCase().replace(/^<|>$/g, '');
-  return dados().componentes.find(
-    (c) => c.id === k || c.selector.toLowerCase() === k || `ucam-${c.id}` === k || c.name.toLowerCase() === k,
-  );
+function acharComponente(chave = '', familia = 'sistema') {
+  let k = String(chave).trim().toLowerCase().replace(/^<|>$/g, '');
+  const { componentes, sites } = dados();
+  const doSistema = () =>
+    componentes.find((c) => c.id === k || c.selector.toLowerCase() === k || `ucam-${c.id}` === k || c.name.toLowerCase() === k);
+  const doSite = () =>
+    sites?.componentes.find(
+      (c) =>
+        c.id === k ||
+        c.selector.toLowerCase() === k ||
+        c.name.toLowerCase() === k ||
+        c.implementacao?.trilho_a?.raiz?.toLowerCase() === `.${k.replace(/^\./, '')}` ||
+        (c.seletor_angular ?? '').toLowerCase().includes(`[${k}]`),
+    );
+  // O seletor do site se identifica sozinho: ninguém precisa lembrar da familia
+  // para pedir ucam-site-hero.
+  if (/^(site:|ucam-site-|\.ucam-site-)/.test(k)) {
+    const pedido = k.replace(/^site:/, '');
+    k = pedido;
+    const achado = doSite();
+    if (achado) return achado;
+    k = pedido.replace(/^\.?ucam-site-/, '');
+    return doSite();
+  }
+  if (familia === 'site') return doSite();
+  return doSistema() ?? (familia === 'todas' ? doSite() : undefined);
 }
 
-function descricaoDoToken(nome) {
+const ehSite = (c) => Boolean(c && dados().sites?.componentes.includes(c));
+
+function descricaoDoToken(nome, semantica = dados().semantica) {
   // color-text-primary -> semantic.color.text.primary.$description
-  let no = dados().semantica;
+  let no = semantica;
   const partes = nome.split('-');
   let i = 0;
   while (i < partes.length && no) {
@@ -137,24 +193,26 @@ export const FERRAMENTAS = [
   {
     name: 'ucam_list_components',
     description:
-      'Lista o catálogo do Design System da UCAM: id, seletor Angular (<ucam-*>), maturidade, categoria e descrição curta. Use antes de compor qualquer tela, para saber o que existe — nunca invente um componente.',
+      'Lista o catálogo do Design System da UCAM: id, seletor Angular, maturidade, categoria e descrição curta. Use antes de compor qualquer tela, para saber o que existe — nunca invente um componente. Para os SITES públicos (candidomendes.edu.br, CENPRE), passe familia: "site".',
     inputSchema: {
       type: 'object',
       properties: {
         categoria: { type: 'string', description: 'Filtra pela categoria (ex.: dados, acao, formulario).' },
         busca: { type: 'string', description: 'Texto livre procurado no nome e na descrição.' },
+        familia: { type: 'string', enum: ['sistema', 'site', 'todas'], description: 'sistema (padrão): as aplicações, <ucam-*> e .ucam-*. site: os sites públicos (candidomendes.edu.br, CENPRE, Campos), .ucam-site-* e @ucam/site-ui. todas: as duas.' },
       },
     },
   },
   {
     name: 'ucam_get_component',
     description:
-      'Devolve o contrato completo de um componente: props com valores válidos, anatomia, estados, acessibilidade, limites de uso, conteúdo, mapa de migração e exemplos. É a fonte da verdade para a API — prop que não está aqui não existe.',
+      'Devolve o contrato completo de um componente: props com valores válidos, anatomia, estados, acessibilidade, limites de uso, conteúdo, mapa de migração e exemplos. É a fonte da verdade para a API — prop que não está aqui não existe. Peça dos sites (familia: "site", ou o seletor ucam-site-<id>) vem também com a demo: o HTML pronto para copiar e o uso em Angular.',
     inputSchema: {
       type: 'object',
       required: ['id'],
       properties: {
-        id: { type: 'string', description: 'Id (button), seletor (ucam-button) ou nome (Button).' },
+        id: { type: 'string', description: 'Id (button), seletor (ucam-button, ucam-site-hero), classe raiz (.ucam-site-btn) ou nome (Button).' },
+        familia: { type: 'string', enum: ['sistema', 'site', 'todas'], description: 'sistema (padrão): as aplicações, <ucam-*> e .ucam-*. site: os sites públicos (candidomendes.edu.br, CENPRE, Campos), .ucam-site-* e @ucam/site-ui. todas: as duas.' },
         secoes: {
           type: 'array',
           items: { type: 'string' },
@@ -166,12 +224,13 @@ export const FERRAMENTAS = [
   {
     name: 'ucam_get_tokens',
     description:
-      'Devolve os tokens SEMÂNTICOS resolvidos por tema, com o nome da custom property (--ucam-*) e o papel de cada um. Componentes e aplicações só referenciam tokens semânticos (ADR-007): nunca hex cru, nunca primitiva.',
+      'Devolve os tokens SEMÂNTICOS resolvidos por tema, com o nome da custom property (--ucam-*, ou --ucam-site-* com familia: "site") e o papel de cada um. Componentes e aplicações só referenciam tokens semânticos (ADR-007): nunca hex cru, nunca primitiva.',
     inputSchema: {
       type: 'object',
       properties: {
         tema: { type: 'string', enum: ['claro', 'escuro'], description: 'Padrão: claro.' },
         prefixo: { type: 'string', description: 'Ex.: color-text, color-feedback, space, radius, typography.' },
+        familia: { type: 'string', enum: ['sistema', 'site'], description: 'sistema (padrão) ou site. Os sites não têm tema escuro.' },
       },
     },
   },
@@ -266,24 +325,43 @@ function obterMudancas({ desde } = {}) {
   };
 }
 
-function listarComponentes({ categoria, busca } = {}) {
+function listarComponentes({ categoria, busca, familia } = {}) {
+  const f = familiaDe(familia);
   const b = busca?.toLowerCase();
-  return dados()
-    .componentes.filter((c) => !categoria || c.category === categoria)
-    .filter((c) => !b || `${c.name} ${c.description}`.toLowerCase().includes(b))
-    .map((c) => ({ id: c.id, seletor: c.selector, status: c.status, categoria: c.category, descricao: curta(c.description) }));
+  const filtro = (c) => (!categoria || c.category === categoria) && (!b || `${c.name} ${c.description}`.toLowerCase().includes(b));
+  const doSistema = f === 'site' ? [] : dados().componentes.filter(filtro)
+    .map((c) => ({ id: c.id, familia: 'sistema', seletor: c.selector, status: c.status, categoria: c.category, descricao: curta(c.description) }));
+  const doSite = f === 'sistema' ? [] : dados().sites.componentes.filter(filtro)
+    .map((c) => ({ id: c.id, familia: 'site', classe: c.implementacao?.trilho_a?.raiz, angular: c.seletor_angular, status: c.status, categoria: c.category, descricao: curta(c.description) }));
+  return [...doSistema, ...doSite];
 }
 
-function obterComponente({ id, secoes } = {}) {
-  const c = acharComponente(id);
+function obterComponente({ id, secoes, familia } = {}) {
+  const f = familiaDe(familia);
+  const c = acharComponente(id, f);
   if (!c) {
-    return { erro: `Nenhum contrato para "${id}". Não invente o componente: use ucam_list_components.`, sugestoes: listarComponentes({ busca: id }).slice(0, 5) };
+    const outra = f === 'sistema' ? acharComponente(id, 'site') : f === 'site' ? acharComponente(id) : null;
+    return {
+      erro: `Nenhum contrato para "${id}" em familia "${f}". Não invente o componente: use ucam_list_components.`,
+      ...(outra ? { atencao: `Existe "${id}" na familia "${f === 'sistema' ? 'site' : 'sistema'}". Aplicação e site são sistemas diferentes: confira em qual você está.` } : {}),
+      sugestoes: listarComponentes({ busca: id, familia: f }).slice(0, 5),
+    };
   }
-  if (!secoes?.length) return c;
-  return Object.fromEntries(['id', 'name', 'selector', 'status', ...secoes].filter((k) => c[k] !== undefined).map((k) => [k, c[k]]));
+  // A peça do site vem com a demo: o contrato diz a regra, a demo é a marcação
+  // que a cumpre — a mesma que o catálogo de sites mostra.
+  const extra = ehSite(c) ? { familia: 'site', demo: dados().sites.demos[c.id] ?? null } : { familia: 'sistema' };
+  if (!secoes?.length) return { ...c, ...extra };
+  return { ...Object.fromEntries(['id', 'name', 'selector', 'status', 'seletor_angular', ...secoes].filter((k) => c[k] !== undefined).map((k) => [k, c[k]])), ...extra };
 }
 
-function obterTokens({ tema = 'claro', prefixo = '' } = {}) {
+function obterTokens({ tema = 'claro', prefixo = '', familia } = {}) {
+  const f = familiaDe(familia);
+  if (f === 'site') {
+    const { tokens } = dados().sites;
+    return Object.entries(tokens.semantic)
+      .filter(([nome]) => nome.startsWith(prefixo))
+      .map(([nome, v]) => ({ token: nome, css: `var(--ucam-site-${nome})`, valor: v?.value ?? v, papel: v?.description ? curta(v.description, 260) : descricaoDoToken(nome, dados().sites.semantica) }));
+  }
   const { tokens } = dados();
   const base = { ...tokens.semantic };
   if (tema === 'escuro') Object.assign(base, tokens.dark ?? {});
@@ -408,7 +486,7 @@ export function estados({ estado } = {}) {
 export function checar({ codigo = '' } = {}) {
   const achados = [];
   const add = (regra, severidade, mensagem, trecho) => achados.push({ regra, severidade, mensagem, trecho: curta(trecho, 120) });
-  const { componentes, classes } = dados();
+  const { componentes, classes, sites } = dados();
   const porSeletor = new Map(componentes.filter((c) => !c.selector.startsWith('[')).map((c) => [c.selector, c]));
 
   for (const m of codigo.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
@@ -420,10 +498,17 @@ export function checar({ codigo = '' } = {}) {
   for (const m of codigo.matchAll(PRIMITIVAS)) {
     add('ADR-007', 'erro', 'Token PRIMITIVO referenciado. Aplicação só lê a camada semântica (color.text.*, color.surface.*, color.feedback.*…).', m[0]);
   }
+  if (sites?.primitivas) {
+    for (const m of codigo.matchAll(sites.primitivas)) {
+      add('ADR-007', 'erro', 'Token PRIMITIVO dos sites referenciado. Só os semânticos são públicos (--ucam-site-color-*, --ucam-site-typography-*…): ucam_get_tokens com familia "site".', m[0]);
+    }
+  }
   for (const m of codigo.matchAll(/<(z-[a-z0-9-]+)/g)) {
     add('ADR-006', 'erro', `<${m[1]}> é a base ZardUI. Aplicações importam <ucam-*>, nunca <z-*>.`, m[0]);
   }
-  for (const m of codigo.matchAll(/<select\b(?![^>]*ucam-select)/g)) {
+  // Nos sites o <select> nativo É a peça (input.json: select[ucamSiteInput],
+  // .ucam-site-input__field): a ADR-011 é da aplicação.
+  for (const m of codigo.matchAll(/<select\b(?![^>]*(?:ucam-select|ucam-site-|ucamSiteInput))/g)) {
     add('ADR-011', 'aviso', 'Select nativo. No Trilho B use <ucam-select>; no Trilho A, class="ucam-select" (o gerador troca pelo listbox do sistema).', m[0]);
   }
 
@@ -431,6 +516,20 @@ export function checar({ codigo = '' } = {}) {
   for (const m of codigo.matchAll(/<(ucam-[a-z0-9-]+)((?:[^>"']|"[^"]*"|'[^']*')*)>/g)) {
     const [inteiro, seletor, attrs] = m;
     const c = porSeletor.get(seletor);
+    if (!c && seletor.startsWith('ucam-site-')) {
+      // Os sites não registram elemento: a peça é a classe, ou a diretiva do
+      // @ucam/site-ui sobre o elemento nativo.
+      const s = acharComponente(seletor);
+      add(
+        'sites',
+        'erro',
+        s
+          ? `<${seletor}> não existe como elemento. Nos sites a peça é a classe ${s.implementacao?.trilho_a?.raiz} ou, em Angular, ${s.seletor_angular}.`
+          : `<${seletor}> não existe. Veja ucam_list_components com familia "site".`,
+        inteiro,
+      );
+      continue;
+    }
     if (!c) {
       add('contrato', 'erro', `<${seletor}> não tem contrato — o componente não existe. Veja ucam_list_components.`, inteiro);
       continue;
@@ -462,12 +561,26 @@ export function checar({ codigo = '' } = {}) {
 
   if (classes) {
     const vistas = new Set();
+    let doSistema = null;
+    let doSite = null;
     for (const m of codigo.matchAll(/class(?:Name)?=["']([^"']+)["']/g)) {
       for (const cl of m[1].split(/\s+/)) {
-        if (!/^ucam-/.test(cl) || classes.has(cl) || vistas.has(cl)) continue;
+        if (!/^ucam-/.test(cl)) continue;
+        const site = /^ucam-site(?:-|$)/.test(cl);
+        if (site ? sites?.classes.has(cl) : classes.has(cl)) {
+          if (site) doSite ??= cl;
+          else doSistema ??= cl;
+          continue;
+        }
+        if (vistas.has(cl)) continue;
         vistas.add(cl);
-        add('trilho-a', 'erro', `.${cl} não é desenhada pelo @ucam/css — não pinta nada.`, cl);
+        if (site && !sites) continue; // kit sem os Sites: não há como saber
+        add(site ? 'sites' : 'trilho-a', 'erro', `.${cl} não é desenhada pelo ${site ? '@ucam/site-css' : '@ucam/css'} — não pinta nada.`, cl);
       }
+    }
+    // Aplicação e site são duas folhas, e quem carrega uma não tem a outra.
+    if (doSistema && doSite) {
+      add('sites', 'aviso', `O trecho mistura a aplicação (.${doSistema}) e os sites (.${doSite}). São sistemas diferentes, com folhas diferentes: numa página de site, .${doSistema} não pinta. Use a peça equivalente de ucam_list_components com familia "site".`, doSistema);
     }
   }
 

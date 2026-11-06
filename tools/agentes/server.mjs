@@ -26,7 +26,7 @@ function tratar(msg) {
         capabilities: { tools: {}, resources: {} },
         serverInfo: { name: 'ucamds', title: 'Design System da UCAM', version: dados().versao },
         instructions:
-          'Contratos do Design System da UCAM. Antes de escrever interface: ucam_list_templates e ucam_get_pattern para achar a tela parecida; ucam_get_component para a API exata de cada <ucam-*>; ucam_get_tokens para cor e espaço; ucam_get_states para qualquer estado — desabilitado, carregando, somente leitura, selecionado —, porque essas regras valem para TODO componente e não estão em contrato nenhum. Antes de concluir: ucam_check_usage. Ao atualizar o pacote, ou se uma regra parecer ter mudado: ucam_get_changes. Prop, componente, token ou nome de estado que as ferramentas não devolvem não existe.',
+          'Contratos do Design System da UCAM. Antes de escrever interface: ucam_list_templates e ucam_get_pattern para achar a tela parecida; ucam_get_component para a API exata de cada <ucam-*>; ucam_get_tokens para cor e espaço; ucam_get_states para qualquer estado — desabilitado, carregando, somente leitura, selecionado —, porque essas regras valem para TODO componente e não estão em contrato nenhum. Antes de concluir: ucam_check_usage. Ao atualizar o pacote, ou se uma regra parecer ter mudado: ucam_get_changes. Para os SITES públicos (candidomendes.edu.br, CENPRE, Campos), que são outro sistema com classes .ucam-site-* e tokens --ucam-site-*, passe familia: "site" em ucam_list_components, ucam_get_component e ucam_get_tokens. Prop, componente, token ou nome de estado que as ferramentas não devolvem não existe.',
       });
     }
     case 'ping':
