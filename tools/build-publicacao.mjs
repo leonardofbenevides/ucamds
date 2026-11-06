@@ -169,25 +169,22 @@ if (!process.argv.includes('--sem-conferir-publicado')) {
         // de agora: o índice pode ter sido escrito por uma versão anterior desta
         // conta (a de antes de ordenar as uniões do .d.ts, por exemplo), e
         // comparar dois hashes de regras diferentes recusaria à toa.
-        if (noAr.conteudo && noAr.conteudo === p.conteudo) continue;
-        let doAr = null;
-        let arquivosDoAr = null;
-        {
-          try {
-            const r = await fetch(`${base}/${noAr.tgz}`, { signal: AbortSignal.timeout(30000) });
-            if (!r.ok) throw new Error(`HTTP ${r.status}`);
-            ({ sha: doAr, arquivos: arquivosDoAr } = conteudoDoTgz(Buffer.from(await r.arrayBuffer())));
-          } catch (e) {
-            problemas.push(`não consegui baixar ${base}/${noAr.tgz} (${e.message}) para comparar com o local`);
-            continue;
-          }
+        // O lado local também é recalculado do tarball, pelo mesmo motivo: o
+        // index.json local pode ser de um build anterior à regra de agora.
+        const doLocal = conteudoDoTgz(readFileSync(join(PACOTES, p.tgz)));
+        if (noAr.conteudo && noAr.conteudo === doLocal.sha) continue;
+        let doAr;
+        try {
+          const r = await fetch(`${base}/${noAr.tgz}`, { signal: AbortSignal.timeout(30000) });
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          doAr = conteudoDoTgz(Buffer.from(await r.arrayBuffer()));
+        } catch (e) {
+          problemas.push(`não consegui baixar ${base}/${noAr.tgz} (${e.message}) para comparar com o local`);
+          continue;
         }
-        if (doAr === p.conteudo) continue;
-        let detalhe = '';
-        if (arquivosDoAr) {
-          const d = diferencas(arquivosDoAr, conteudoDoTgz(readFileSync(join(PACOTES, p.tgz))).arquivos);
-          detalhe = ` (${d.length} arquivo(s): ${d.slice(0, 4).join(', ')}${d.length > 4 ? '…' : ''})`;
-        }
+        if (doAr.sha === doLocal.sha) continue;
+        const d = diferencas(doAr.arquivos, doLocal.arquivos);
+        const detalhe = ` (${d.length} arquivo(s): ${d.slice(0, 4).join(', ')}${d.length > 4 ? '…' : ''})`;
         problemas.push(`${p.nome} ${VERSAO} já está no ar com outro conteúdo${detalhe} — suba a versão: pnpm run versao ${proxima}`);
       }
     }
