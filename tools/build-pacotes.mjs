@@ -28,6 +28,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { conteudoDoTgz } from './lib/conteudo-tgz.mjs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -39,6 +40,23 @@ const { version: VERSAO } = JSON.parse(readFileSync(join(ROOT, 'package.json'), 
 
 const erros = [];
 const feitos = [];
+
+// A versão do package.json tem de ter entrada em spec/versoes.json: é dela que
+// sai o CHANGELOG e a resposta de ucam_get_changes. Versão sem entrada é versão
+// que o dev recebe sem saber o que trouxe.
+{
+  const versoes = JSON.parse(readFileSync(join(ROOT, 'spec', 'versoes.json'), 'utf8')).versoes;
+  const ultima = versoes.at(-1);
+  if (ultima?.versao !== VERSAO) {
+    erros.push(`package.json está na ${VERSAO} e spec/versoes.json termina na ${ultima?.versao ?? '(vazio)'} — suba a versão com: pnpm run versao <x.y.z>`);
+  }
+  const adrs = JSON.parse(readFileSync(join(ROOT, 'spec', 'decisions', 'adr.json'), 'utf8')).decisions;
+  const depois = ultima ? adrs.filter((a) => a.data > ultima.data) : [];
+  if (depois.length) {
+    console.warn(`⚠ ${depois.length} ADR(s) com data depois da ${VERSAO} (${ultima.data}): ${depois.map((a) => a.id).join(', ')}.`);
+    console.warn('  Empacotar serve para provar; para PUBLICAR, suba a versão (pnpm run versao <x.y.z>) — o portão de publicação recusa conteúdo novo sob versão já publicada.');
+  }
+}
 
 /** Exigido: sem isto o pacote sai pela metade e ninguém percebe até instalar. */
 function exigir(caminho, dica) {
@@ -425,10 +443,14 @@ function agentes() {
     type: 'module',
     engines: { node: '>=18' },
     bin: { 'ucam-ds': './bin/ucam-ds.mjs', 'ucam-ds-mcp': './mcp/server.mjs' },
+    // O `ucam-ds versao` pergunta aqui se há versão nova. Vem do manifesto
+    // mínimo que tools/build-agentes.mjs grava, que lê spec/resources.json.
+    publicacao: JSON.parse(readFileSync(join(origem, 'package.json'), 'utf8')).publicacao,
     exports: {
       './mcp': './mcp/nucleo.mjs',
       './spec/*': './spec/*',
       './AGENTS.md': './AGENTS.md',
+      './CHANGELOG.md': './CHANGELOG.md',
       './package.json': './package.json',
     },
   };
@@ -562,11 +584,19 @@ for (const montar of [tokens, css, siteCss, siteUi, ui, elements, agentes]) {
   if (!dir) continue;
   // O AGENTS.md viaja em TODO pacote: quem instala só o @ucam/css também
   // abre o projeto num editor com agente, e é o arquivo que o agente lê primeiro.
-  const guia = join(DIST, 'agentes', 'AGENTS.md');
-  if (montar !== agentes && existsSync(guia)) cpSync(guia, join(dir, 'AGENTS.md'));
+  // O CHANGELOG vai junto pela mesma razão: quem atualiza só o @ucam/ui
+  // precisa saber o que a versão trouxe sem ter o kit dos agentes instalado.
+  for (const f of ['AGENTS.md', 'CHANGELOG.md']) {
+    const origem = join(DIST, 'agentes', f);
+    if (montar !== agentes && existsSync(origem)) cpSync(origem, join(dir, f));
+  }
   const tgz = empacotar(dir);
+  if (!tgz) continue;
   const nome = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')).name;
-  feitos.push({ nome, tgz });
+  // Impressão do CONTEÚDO (tools/lib/conteudo-tgz.mjs): é o que o portão de
+  // publicação compara para saber se a versão mudou sem o número mudar.
+  const { sha: conteudo } = conteudoDoTgz(readFileSync(join(SAIDA, tgz)));
+  feitos.push({ nome, tgz, conteudo });
 }
 
 if (feitos.length) {
@@ -587,5 +617,7 @@ writeFileSync(
   JSON.stringify({ versao: VERSAO, geradoEm: new Date().toISOString(), pacotes: feitos }, null, 2) + '\n',
   'utf8',
 );
+// Publicado em /pacotes/CHANGELOG.md: é o endereço que `ucam-ds versao` mostra.
+if (existsSync(join(DIST, 'agentes', 'CHANGELOG.md'))) cpSync(join(DIST, 'agentes', 'CHANGELOG.md'), join(SAIDA, 'CHANGELOG.md'));
 console.log('\n✓ tarballs prontos. Instalação local:');
 for (const f of feitos) console.log(`    pnpm add ./dist/pacotes/${f.tgz}`);

@@ -3,26 +3,41 @@
 //
 //   npx ucam-ds instalar [--forcar]   liga MCP, skills e AGENTS.md no projeto atual
 //   npx ucam-ds checar <arquivo...>   audita arquivos contra os contratos (sai 1 com erro)
+//   npx ucam-ds versao                diz a versão instalada e se há mais nova publicada
 //   npx ucam-ds mcp                   sobe o servidor MCP em stdio
 //
 // Fonte em tools/agentes/; copiado para o pacote por tools/build-agentes.mjs.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import { RAIZ, checar } from '../mcp/nucleo.mjs';
+import { RAIZ, checar, compararVersao } from '../mcp/nucleo.mjs';
 
 const [, , comando, ...resto] = process.argv;
 const forcar = resto.includes('--forcar');
 const alvo = process.cwd();
 
-function gravarSeNovo(caminho, conteudo, rotulo) {
+// O que o kit gravou e ninguém mexeu é do kit, e a versão nova SOBRESCREVE: é o
+// que o AGENTS.md promete no cabeçalho. Até 06/11/2026 o `instalar` mantinha
+// todo arquivo que já existia, e quem atualizava o pacote seguia com as regras
+// da versão velha no projeto, sem aviso. A marca de gerado decide: se o dev a
+// tirou, editou o arquivo de propósito, e ele fica — com o aviso.
+const MARCAS = [/pelo UCAMDS \d+\.\d+\.\d+/, /^---\nname: ucam-[\w-]+\n/];
+const ehDoKit = (txt) => MARCAS.some((m) => m.test(txt.replace(/\r\n/g, '\n')));
+
+function gravarDoKit(caminho, conteudo, rotulo) {
   if (existsSync(caminho) && !forcar) {
-    console.log(`  · ${rotulo}: já existe, mantido (use --forcar para sobrescrever)`);
-    return;
+    const atual = readFileSync(caminho, 'utf8');
+    if (atual === conteudo) return console.log(`  · ${rotulo}: já atualizado`);
+    if (!ehDoKit(atual)) return console.log(`  · ${rotulo}: editado no projeto, mantido (use --forcar para trocar pela versão do kit)`);
+    writeFileSync(caminho, conteudo, 'utf8');
+    return console.log(`  ✓ ${rotulo} (atualizado para a ${versaoDoKit()})`);
   }
   writeFileSync(caminho, conteudo, 'utf8');
   console.log(`  ✓ ${rotulo}`);
 }
+
+const manifesto = () => JSON.parse(readFileSync(join(RAIZ, 'package.json'), 'utf8'));
+const versaoDoKit = () => manifesto().version;
 
 function instalar() {
   const caminhoServidor = relative(alvo, join(RAIZ, 'mcp', 'server.mjs')).replace(/\\/g, '/');
@@ -50,19 +65,13 @@ function instalar() {
     for (const s of readdirSync(join(RAIZ, 'skills'))) {
       const dir = join(alvo, base, 'skills', s);
       mkdirSync(dir, { recursive: true });
-      const destino = join(dir, 'SKILL.md');
-      if (existsSync(destino) && !forcar) {
-        console.log(`  · ${base}/skills/${s}: já existe, mantido`);
-        continue;
-      }
-      copyFileSync(join(RAIZ, 'skills', s, 'SKILL.md'), destino);
-      console.log(`  ✓ ${base}/skills/${s}/SKILL.md`);
+      gravarDoKit(join(dir, 'SKILL.md'), readFileSync(join(RAIZ, 'skills', s, 'SKILL.md'), 'utf8'), `${base}/skills/${s}/SKILL.md`);
     }
   }
 
   // 4. AGENTS.md: o do DS entra como arquivo próprio; o do projeto só ganha a referência.
   const agentesDs = join(alvo, 'AGENTS.ucam.md');
-  gravarSeNovo(agentesDs, readFileSync(join(RAIZ, 'AGENTS.md'), 'utf8'), 'AGENTS.ucam.md');
+  gravarDoKit(agentesDs, readFileSync(join(RAIZ, 'AGENTS.md'), 'utf8'), 'AGENTS.ucam.md');
   const referencia = '\n\n## Design System da UCAM\n\nToda interface deste projeto segue o UCAMDS. Leia `AGENTS.ucam.md` e use o servidor MCP `ucamds` antes de escrever tela ou componente.\n';
   for (const nome of ['AGENTS.md', 'CLAUDE.md']) {
     const arq = join(alvo, nome);
@@ -74,7 +83,32 @@ function instalar() {
     writeFileSync(arq, (txt ? txt.trimEnd() : `# ${nome.replace('.md', '')}`) + referencia, 'utf8');
     console.log(`  ✓ ${nome} (referência ao UCAMDS)`);
   }
-  console.log('\nReinicie o cliente (Claude Code, VS Code) para ele enxergar o servidor e as skills.');
+  console.log(`\nUCAMDS ${versaoDoKit()}. Reinicie o cliente (Claude Code, VS Code) para ele enxergar o servidor e as skills.`);
+}
+
+// Pergunta ao site se há versão mais nova. Fica fora do `checar` de propósito:
+// o CI pode não ter rede, e auditoria que depende de rede reprova pelo motivo
+// errado. Sem rede, diz que não conseguiu perguntar e sai 0.
+async function versao() {
+  const { version, publicacao } = manifesto();
+  console.log(`UCAMDS instalado: ${version}`);
+  if (!publicacao?.host) return console.log('  · este pacote não sabe onde o UCAMDS é publicado; veja o site do design system.');
+  const base = `${publicacao.host}${publicacao.pacotes}`;
+  let publicado;
+  try {
+    const r = await fetch(`${base}/index.json`, { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    publicado = await r.json();
+  } catch (e) {
+    return console.log(`  · não consegui perguntar a ${base} (${e.message}).`);
+  }
+  const ordem = compararVersao(publicado.versao, version);
+  if (ordem === 0) return console.log('  ✓ é a mais nova publicada.');
+  if (ordem < 0) return console.log(`  · está à frente da publicada (${publicado.versao}): é um build que ainda não saiu.`);
+  console.log(`  ⚠ há a ${publicado.versao}. Para atualizar:\n`);
+  for (const p of publicado.pacotes ?? []) console.log(`    pnpm add ${p.nome === '@ucam/ds-mcp' ? '-D ' : ''}${base}/${p.tgz}`);
+  console.log(`\n  Troque só os pacotes que o app já usa e rode de novo: npx ucam-ds instalar`);
+  console.log(`  O que mudou: ${base}/CHANGELOG.md, ou ucam_get_changes com desde = ${version}`);
 }
 
 function checarArquivos() {
@@ -100,10 +134,13 @@ switch (comando) {
   case 'checar':
     checarArquivos();
     break;
+  case 'versao':
+    await versao();
+    break;
   case 'mcp':
     await import('../mcp/server.mjs');
     break;
   default:
-    console.log('ucam-ds instalar [--forcar] | checar <arquivo...> | mcp');
+    console.log('ucam-ds instalar [--forcar] | checar <arquivo...> | versao | mcp');
     process.exit(comando ? 2 : 0);
 }

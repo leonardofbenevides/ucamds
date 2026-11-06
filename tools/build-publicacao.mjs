@@ -29,6 +29,8 @@
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { conteudoDoTgz, diferencas } from './lib/conteudo-tgz.mjs';
+import { compararVersao } from './agentes/nucleo.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
@@ -129,8 +131,67 @@ for (const p of recursos.pacotes.itens) {
   }
 }
 
+/* ---------------------------- a versão publicada não muda por baixo da URL --- */
+
+// De 06/10 a 06/11/2026 a 0.1.5 foi republicada com outro conteúdo a cada
+// deploy: o ucam-ds-mcp-0.1.5.tgz no ar diferia do local em 43 arquivos. Para
+// quem já tinha instalado, o lockfile guardava o integrity do tarball antigo e
+// a próxima instalação limpa falhava; para quem não tinha, não havia como saber
+// que algo mudou. Aqui se pergunta ao site o que está no ar e se compara o
+// CONTEÚDO (tools/lib/conteudo-tgz.mjs), não os bytes.
+//
+// Sem rede o portão reprova: publicar exige rede de qualquer jeito, e portão que
+// aprova quando não consegue olhar é o defeito que este arquivo existe para não
+// ter. `--sem-conferir-publicado` existe para a primeira publicação de um host novo.
+if (!process.argv.includes('--sem-conferir-publicado')) {
+  const base = `${host}${ROTA_PACOTES}`;
+  const local = JSON.parse(readFileSync(join(PACOTES, 'index.json'), 'utf8'));
+  let publicado = null;
+  try {
+    const r = await fetch(`${base}/index.json`, { signal: AbortSignal.timeout(15000) });
+    if (r.status === 404) publicado = { versao: '0.0.0', pacotes: [] };
+    else if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    else publicado = await r.json();
+  } catch (e) {
+    problemas.push(`não consegui ler ${base}/index.json (${e.message}) para conferir a versão no ar — sem isso não se sabe se a ${VERSAO} já saiu com outro conteúdo`);
+  }
+  if (publicado) {
+    const ordem = compararVersao(VERSAO, publicado.versao);
+    const proxima = VERSAO.replace(/(\d+)$/, (n) => String(Number(n) + 1));
+    if (ordem < 0) {
+      problemas.push(`no ar está a ${publicado.versao} e aqui a ${VERSAO}: publicar voltaria o design system para trás`);
+    } else if (ordem === 0) {
+      for (const p of local.pacotes) {
+        const noAr = publicado.pacotes.find((x) => x.nome === p.nome);
+        if (!noAr) continue;
+        let doAr = noAr.conteudo ?? null;
+        let arquivosDoAr = null;
+        if (!doAr) {
+          // Índice publicado antes de 06/11 não traz a impressão: baixa o tarball.
+          try {
+            const r = await fetch(`${base}/${noAr.tgz}`, { signal: AbortSignal.timeout(30000) });
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            ({ sha: doAr, arquivos: arquivosDoAr } = conteudoDoTgz(Buffer.from(await r.arrayBuffer())));
+          } catch (e) {
+            problemas.push(`não consegui baixar ${base}/${noAr.tgz} (${e.message}) para comparar com o local`);
+            continue;
+          }
+        }
+        if (doAr === p.conteudo) continue;
+        let detalhe = '';
+        if (arquivosDoAr) {
+          const d = diferencas(arquivosDoAr, conteudoDoTgz(readFileSync(join(PACOTES, p.tgz))).arquivos);
+          detalhe = ` (${d.length} arquivo(s): ${d.slice(0, 4).join(', ')}${d.length > 4 ? '…' : ''})`;
+        }
+        problemas.push(`${p.nome} ${VERSAO} já está no ar com outro conteúdo${detalhe} — suba a versão: pnpm run versao ${proxima}`);
+      }
+    }
+  }
+}
+
 const tarballs = readdirSync(PACOTES).filter((f) => f.endsWith('.tgz'));
 for (const t of tarballs) cpSync(join(PACOTES, t), join(destino, t));
+if (existsSync(join(PACOTES, 'CHANGELOG.md'))) cpSync(join(PACOTES, 'CHANGELOG.md'), join(destino, 'CHANGELOG.md'));
 cpSync(join(PACOTES, 'index.json'), join(destino, 'index.json'));
 
 // Toda URL ensinada nos exemplos de instalação tem de resolver.

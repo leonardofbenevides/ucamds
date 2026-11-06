@@ -22,6 +22,7 @@ import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, write
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { comTelasVivas } from './lib/telas-vivas.mjs';
+import { mudancas, inventario } from './agentes/nucleo.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SAIDA = join(ROOT, 'dist', 'agentes');
@@ -188,6 +189,7 @@ ${REGRAS_DE_OURO.map((r, i) => `${i + 1}. ${r}`).join('\n')}
 | Por que a regra é essa? | \`ucam_get_decisions\` | \`spec/decisions/adr.json\` |
 | Como converto esta tela legada? | \`ucam_migrate_from_legacy\` | \`spec/migracao.json\` e a seção \`migracao\` de cada contrato |
 | Isto está certo? | \`ucam_check_usage\` | \`npx ucam-ds checar <arquivo>\` |
+| O que mudou desde a versão que o app usa? | \`ucam_get_changes\` | \`CHANGELOG.md\` e \`npx ucam-ds versao\` |
 
 Skills que empacotam o método: ${recursos.skills.itens.map((s) => `\`${s.nome}\` (${umaLinha(s.faz, 90)})`).join('; ')}. \`npx ucam-ds instalar\` liga o MCP, as skills e este arquivo no projeto.
 
@@ -383,7 +385,7 @@ for (const [nome, conteudo] of [['ucam-ds', skillDs], ['ucam-migrate', skillMigr
 // spec copiada: só o que as ferramentas leem
 const spec = join(SAIDA, 'spec');
 for (const d of ['components', 'patterns', 'decisions']) cpSync(join(ROOT, 'spec', d), join(spec, d), { recursive: true });
-for (const f of ['migracao.json', 'writing.json', 'layouts.json', 'states.json', 'icons.json']) copyFileSync(join(ROOT, 'spec', f), join(spec, f));
+for (const f of ['migracao.json', 'writing.json', 'layouts.json', 'states.json', 'icons.json', 'versoes.json']) copyFileSync(join(ROOT, 'spec', f), join(spec, f));
 // templates.json vai ENRIQUECIDO: onde a tela existe montada em Angular, o
 // `codigo` é o template dela e não o esboço — o mesmo que o site mostra
 // (lib/telas-vivas.mjs). O kit é saída gerada; a spec continua intocada.
@@ -432,7 +434,7 @@ pnpm add -D ${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-ds-mc
 npx ucam-ds instalar
 \`\`\`
 
-\`instalar\` faz quatro coisas, sem apagar o que já existe:
+\`instalar\` faz quatro coisas. O que ele mesmo gravou numa versão anterior é atualizado; o que foi editado no projeto (a marca de gerado foi tirada) fica, com aviso:
 
 1. registra o servidor \`ucamds\` em \`.mcp.json\` (Claude Code) e em \`.vscode/mcp.json\` (VS Code / Copilot);
 2. copia as skills \`ucam-ds\`, \`ucam-migrate\` e \`ucam-audit\` para \`.claude/skills/\` e \`.agents/skills/\`;
@@ -452,12 +454,57 @@ npx ucam-ds checar src/app/**/*.html
 \`\`\`
 
 Sai com código 1 se houver erro.
+
+## Atualizar
+
+\`\`\`bash
+npx ucam-ds versao
+\`\`\`
+
+Diz a versão instalada e, se houver mais nova publicada, a linha de instalação de cada pacote. O que cada versão trouxe está em \`CHANGELOG.md\`, neste pacote, e no MCP em \`ucam_get_changes\`. Depois de trocar o pacote, rode \`npx ucam-ds instalar\` de novo para levar o AGENTS.md e as skills novos ao projeto.
 `,
   'utf8',
 );
 
+// CHANGELOG: o que cada versão trouxe, da mesma função que responde ao
+// ucam_get_changes. Viaja em todo pacote ao lado do AGENTS.md (build-pacotes).
+{
+  const m = mudancas({
+    versoes: ler('spec/versoes.json').versoes,
+    adrs,
+    ...inventario({ componentes, projetos }),
+  });
+  const dataBr = (d) => d.split('-').reverse().join('/');
+  const blocoDe = (v) => {
+    const linhas = v.adrs.map((a) => `- **${a.id}** — ${umaLinha(a.titulo, 140)}${a.status && a.status !== 'aceita' ? ` _(${a.status})_` : ''}`);
+    if (v.componentesNovos?.length) linhas.push(`- Componentes novos: ${v.componentesNovos.map((c) => `\`${c}\``).join(', ')}`);
+    if (v.telasNovas?.length) linhas.push(`- Telas novas: ${v.telasNovas.map((t) => `\`${t}\``).join(', ')}`);
+    return linhas.length ? linhas.join('\n') : '- Sem decisão nova registrada: correções e acabamento.';
+  };
+  const p = m.pendente;
+  const temPendente = p && (p.adrs.length || p.componentesNovos?.length || p.telasNovas?.length);
+  const partes = [
+    `# Mudanças do UCAMDS`,
+    ``,
+    `> Gerado de \`spec/versoes.json\` e \`spec/decisions/adr.json\` (\`tools/build-agentes.mjs\`). Não editar à mão. A mesma resposta sai do MCP: \`ucam_get_changes\` com \`desde\` = a versão que o seu app usa.`,
+    ``,
+    `Uma versão leva as decisões registradas depois da versão anterior e até a data dela. Decisão nova pode revogar uma antiga: quando uma regra que você conhecia mudou, a ADR diz por quê.`,
+  ];
+  if (temPendente) partes.push(``, `## Ainda sem versão`, ``, `Entrou na spec depois da ${m.ultima}. No repositório, é o que a próxima versão leva.`, ``, blocoDe(p));
+  for (const v of [...m.versoes].reverse()) {
+    partes.push(``, `## ${v.versao} — ${dataBr(v.data)}`, ``, v.inicial ? '- Primeira versão publicada.' : blocoDe(v));
+  }
+  writeFileSync(join(SAIDA, 'CHANGELOG.md'), partes.join('\n') + '\n', 'utf8');
+}
+
 // Manifesto mínimo: o servidor lê a versão daqui. O build-pacotes sobrescreve
 // com o manifesto completo; sem este, o MCP rodando de dist/ respondia 0.0.0.
-writeFileSync(join(SAIDA, 'package.json'), JSON.stringify({ name: '@ucam/ds-mcp', version: VERSAO, private: true, type: 'module' }, null, 2) + '\n', 'utf8');
+// `publicacao` diz ao `ucam-ds versao` onde procurar versão nova — a mesma
+// fonte que a página de instalação lê.
+writeFileSync(
+  join(SAIDA, 'package.json'),
+  JSON.stringify({ name: '@ucam/ds-mcp', version: VERSAO, private: true, type: 'module', publicacao: { host: recursos.publicacao.host, pacotes: recursos.publicacao.pacotes } }, null, 2) + '\n',
+  'utf8',
+);
 
 console.log(`agentes → dist/agentes/  AGENTS.md · llms.txt · 3 skills · ${componentes.length} contratos · ${projetos.reduce((n, p) => n + p.templates.length, 0)} telas · ${classes.length} classes`);

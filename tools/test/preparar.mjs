@@ -10,7 +10,8 @@
 //
 //   node tools/test/preparar.mjs
 
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { construir } from '../build-sites-tokens.mjs';
@@ -37,3 +38,16 @@ if (folha.falhas.length) {
 const dirCss = join(ROOT, 'dist', 'sites', 'css');
 mkdirSync(dirCss, { recursive: true });
 writeFileSync(join(dirCss, 'ucam-site.css'), folha.css, 'utf8');
+
+// O kit dos agentes (tools/test/agentes.test.mjs sobe o servidor de verdade a
+// partir de dist/agentes). Ele lê os tokens resolvidos e a folha do Trilho A;
+// numa árvore limpa os dois não existem, e o kit é gerado do zero. Em todo caso
+// o kit é REFEITO: testar o dist/agentes de ontem contra a fonte de hoje
+// aprovaria o que já mudou.
+for (const [saida, gerador] of [
+  ['dist/tokens/ucam-tokens.json', 'tools/build-tokens.mjs'],
+  ['dist/css/ucam.css', 'tools/build-css.mjs'],
+]) {
+  if (!existsSync(join(ROOT, saida))) execFileSync(process.execPath, [join(ROOT, gerador)], { cwd: ROOT, stdio: 'ignore' });
+}
+execFileSync(process.execPath, [join(ROOT, 'tools', 'build-agentes.mjs')], { cwd: ROOT, stdio: 'ignore' });

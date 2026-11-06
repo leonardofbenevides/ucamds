@@ -38,8 +38,67 @@ export function dados() {
     tokens: lerJson('tokens/ucam-tokens.json'),
     semantica: lerJson('tokens/semantic.json'),
     classes: existsSync(join(SPEC, 'classes-trilho-a.json')) ? new Set(lerJson('classes-trilho-a.json').classes) : null,
+    versoes: existsSync(join(SPEC, 'versoes.json')) ? lerJson('versoes.json').versoes : [],
   };
   return memo;
+}
+
+/* ---------------------------------------------------------- versões --- */
+
+/** Compara x.y.z numericamente: negativo se a < b. */
+export function compararVersao(a = '0.0.0', b = '0.0.0') {
+  const pa = String(a).split('.').map(Number);
+  const pb = String(b).split('.').map(Number);
+  for (let i = 0; i < 3; i++) if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+  return 0;
+}
+
+const novos = (agora, antes) => (agora && antes ? agora.filter((x) => !antes.includes(x)) : null);
+
+/**
+ * O que cada versão trouxe. Pura: recebe os dados e não lê disco, para o
+ * gerador do CHANGELOG e a ferramenta do MCP darem a mesma resposta.
+ *
+ * Uma versão leva as ADRs com data DEPOIS da versão anterior e até a sua.
+ * `pendente` é o que entrou na spec depois da última versão: no repositório,
+ * é o que a próxima versão vai levar; dentro de um pacote instalado, é
+ * conteúdo que saiu sem versão nova — o defeito que o portão de publicação
+ * existe para impedir.
+ */
+export function mudancas({ versoes = [], adrs: todas = [], componentes = [], telas = [], desde } = {}) {
+  const ordem = [...versoes].sort((a, b) => compararVersao(a.versao, b.versao));
+  const adrs = [...todas].sort((a, b) => a.data.localeCompare(b.data) || a.id.localeCompare(b.id, 'pt', { numeric: true }));
+  const resumoAdr = (a) => ({ id: a.id, titulo: a.titulo, status: a.status, data: a.data });
+  const porVersao = ordem.map((v, i) => {
+    const anterior = ordem[i - 1];
+    return {
+      versao: v.versao,
+      data: v.data,
+      ...(anterior ? {} : { inicial: true }),
+      adrs: anterior ? adrs.filter((a) => a.data > anterior.data && a.data <= v.data).map(resumoAdr) : [],
+      componentesNovos: anterior ? novos(v.componentes, anterior.componentes) : null,
+      telasNovas: anterior ? novos(v.telas, anterior.telas) : null,
+      ...(v.nota ? { nota: v.nota } : {}),
+    };
+  });
+  const ultima = ordem.at(-1);
+  const pendente = ultima
+    ? {
+        adrs: adrs.filter((a) => a.data > ultima.data).map(resumoAdr),
+        componentesNovos: novos(componentes, ultima.componentes),
+        telasNovas: novos(telas, ultima.telas),
+      }
+    : null;
+  const filtradas = desde ? porVersao.filter((v) => compararVersao(v.versao, desde) > 0) : porVersao;
+  return { ultima: ultima?.versao ?? null, versoes: filtradas, pendente };
+}
+
+/** Ids de componente e de tela ("projeto/tela") da spec carregada. */
+export function inventario(d = dados()) {
+  return {
+    componentes: d.componentes.map((c) => c.id).sort(),
+    telas: d.projetos.flatMap((p) => p.templates.map((t) => `${p.id}/${t.id}`)).sort(),
+  };
 }
 
 /* ------------------------------------------------------------ ajudantes --- */
@@ -177,7 +236,35 @@ export const FERRAMENTAS = [
       'Audita um trecho de código (template Angular, HTML do Trilho A ou CSS) contra os contratos: cor crua, primitiva referenciada, <z-*> da base, componente ou prop inexistente, valor fora do enum, classe que o Trilho A não desenha, mais de um primário, select nativo, caixa alta. Rode antes de concluir qualquer tela.',
     inputSchema: { type: 'object', required: ['codigo'], properties: { codigo: { type: 'string' } } },
   },
+  {
+    name: 'ucam_get_changes',
+    description:
+      'O que mudou entre versões do UCAMDS: as decisões (ADRs) de cada versão e, quando a versão registrou, os componentes e as telas que ela trouxe. Diz também qual versão este kit serve. Use ao atualizar o pacote, ou quando uma regra que você conhecia parece ter mudado: decisão nova pode revogar uma antiga.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        desde: { type: 'string', description: 'Versão que o seu app usa hoje (ex.: 0.1.5). Devolve só as versões depois dela. Sem ela, devolve o histórico inteiro.' },
+      },
+    },
+  },
 ];
+
+function obterMudancas({ desde } = {}) {
+  const d = dados();
+  const m = mudancas({ versoes: d.versoes, adrs: d.adrs, ...inventario(d), desde });
+  const pendente = m.pendente && (m.pendente.adrs.length || m.pendente.componentesNovos?.length || m.pendente.telasNovas?.length) ? m.pendente : null;
+  return {
+    versaoDoKit: d.versao,
+    ultimaVersao: m.ultima,
+    versoes: m.versoes,
+    ...(pendente
+      ? {
+          semVersao: pendente,
+          atencao: `Este kit traz decisões posteriores à ${m.ultima} sem versão nova. Elas valem: siga a spec que as ferramentas devolvem, não a lembrança da ${m.ultima}.`,
+        }
+      : {}),
+  };
+}
 
 function listarComponentes({ categoria, busca } = {}) {
   const b = busca?.toLowerCase();
@@ -500,6 +587,7 @@ const EXECUTORES = {
   ucam_migrate_from_legacy: migrar,
   ucam_get_states: estados,
   ucam_check_usage: checar,
+  ucam_get_changes: obterMudancas,
 };
 
 export function executar(nome, args = {}) {

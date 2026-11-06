@@ -129,6 +129,11 @@
         "nome": "ucam_check_usage",
         "faz": "Audita um trecho de código: cor crua, token primitivo, <z-*>, componente ou prop inexistente, valor fora do enum, classe que o Trilho A não desenha, mais de um primário, select nativo, caixa alta. Também na linha de comando: npx ucam-ds checar.",
         "estado": "disponível"
+      },
+      {
+        "nome": "ucam_get_changes",
+        "faz": "O que cada versão trouxe — decisões, componentes e telas — e qual versão o kit serve. Na linha de comando, npx ucam-ds versao diz se há versão mais nova publicada.",
+        "estado": "disponível"
       }
     ]
   },

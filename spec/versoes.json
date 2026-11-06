@@ -1,0 +1,12 @@
+{
+  "$lede": "Cada versão publicada do UCAMDS, com a data em que saiu.",
+  "$description": "Cada versão publicada do UCAMDS, com a data em que saiu. É daqui que sai o CHANGELOG dos pacotes e a resposta de ucam_get_changes: as ADRs com data depois da versão anterior e até a data desta, mais os componentes e as telas que a versão trouxe. As cinco primeiras foram reconstruídas do git em 06/11/2026 e não guardam a lista de componentes e telas; daí em diante tools/versao.mjs grava a lista sozinho, e a diferença entre duas listas é o que a versão acrescentou. Não editar à mão: suba a versão com `pnpm run versao <x.y.z>`, que acerta também os três package.json que precisam andar juntos.",
+  "versoes": [
+    { "versao": "0.1.0", "data": "2026-09-21" },
+    { "versao": "0.1.1", "data": "2026-10-01" },
+    { "versao": "0.1.2", "data": "2026-10-03" },
+    { "versao": "0.1.3", "data": "2026-10-05" },
+    { "versao": "0.1.4", "data": "2026-10-06" },
+    { "versao": "0.1.5", "data": "2026-10-06" }
+  ]
+}
