@@ -558,7 +558,11 @@ Diz a versão instalada e, se houver mais nova publicada, a linha de instalaçã
   ];
   if (temPendente) partes.push(``, `## Ainda sem versão`, ``, `Entrou na spec depois da ${m.ultima}. No repositório, é o que a próxima versão leva.`, ``, blocoDe(p));
   for (const v of [...m.versoes].reverse()) {
-    partes.push(``, `## ${v.versao} — ${dataBr(v.data)}`, ``, v.inicial ? '- Primeira versão publicada.' : blocoDe(v));
+    // A nota da versão abre a seção: numa versão sem ADR nova ela é a única
+    // coisa que diz ao dev o que mudou.
+    const corpo = v.inicial ? '- Primeira versão publicada.' : blocoDe(v);
+    const semAdr = !v.inicial && !v.adrs.length && !v.componentesNovos?.length && !v.telasNovas?.length;
+    partes.push(``, `## ${v.versao} — ${dataBr(v.data)}`, ``, ...(v.nota ? [v.nota, ``] : []), v.nota && semAdr ? '- Sem decisão nova registrada.' : corpo);
   }
   writeFileSync(join(SAIDA, 'CHANGELOG.md'), partes.join('\n') + '\n', 'utf8');
 }
