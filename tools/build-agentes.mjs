@@ -127,7 +127,7 @@ const REGRAS_DE_OURO = [
   'Antes de concluir, rode `ucam_check_usage` (ou `npx ucam-ds checar <arquivo>`) e corrija todo erro.',
 ];
 
-const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042', 'ADR-044', 'ADR-054', 'ADR-055', 'ADR-056', 'ADR-060', 'ADR-061', 'ADR-062', 'ADR-063', 'ADR-064', 'ADR-065', 'ADR-066', 'ADR-070', 'ADR-074', 'ADR-075', 'ADR-077', 'ADR-078']);
+const ADRS_ESSENCIAIS = new Set(['ADR-001', 'ADR-002', 'ADR-003', 'ADR-004', 'ADR-007', 'ADR-011', 'ADR-015', 'ADR-022', 'ADR-023', 'ADR-027', 'ADR-029', 'ADR-033', 'ADR-034', 'ADR-042', 'ADR-044', 'ADR-054', 'ADR-055', 'ADR-056', 'ADR-060', 'ADR-061', 'ADR-062', 'ADR-063', 'ADR-064', 'ADR-065', 'ADR-066', 'ADR-070', 'ADR-074', 'ADR-075', 'ADR-077', 'ADR-078', 'ADR-081', 'ADR-082']);
 
 
 const secaoEstados = () => {
@@ -174,12 +174,24 @@ ${umaLinha(estados.vocabulario.regra, 400)}
 |---|---|---|
 ${vocab}`;
 };
+// O AGENTS.md é lido INTEIRO pelo agente em todo projeto que instala o kit, a
+// cada sessão. Até 06/11/2026 ele repetia o que o MCP devolve sob demanda — a
+// tabela de cada tela, a descrição de cada componente, as regras de cada
+// padrão — e tinha 582 linhas (89 mil caracteres). Aqui fica o que o agente
+// precisa saber ANTES de perguntar: as regras, os estados, o checklist e os
+// NOMES do que existe. O resto é uma chamada de ferramenta.
+/** A primeira frase, até n caracteres: o bastante para saber se vale abrir a ADR. */
+const primeiraFrase = (s = '', n = 200) => umaLinha(String(s).split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý])/)[0], n);
+
+const porCategoria = (itens, rotulo) => {
+  const grupos = new Map();
+  for (const c of itens) grupos.set(c.category, [...(grupos.get(c.category) ?? []), rotulo(c)]);
+  return [...grupos].sort(([a], [b]) => a.localeCompare(b)).map(([cat, l]) => `- **${cat}**: ${l.join(', ')}`).join('\n');
+};
+
 const secaoTelas = projetos
-  .map((p) => {
-    const linhas = p.templates.map((t) => `| \`${p.id}/${t.id}\` | ${t.nome} | \`${t.padrao}\` | ${umaLinha(t.descricao, 140)} |`).join('\n');
-    return `### ${p.nome}\n\n${umaLinha(p.descricao, 400)}\n\n| Tela | Nome | Padrão | O que resolve |\n|---|---|---|---|\n${linhas}`;
-  })
-  .join('\n\n');
+  .map((p) => `- **${p.nome}** (\`${p.id}\`, ${p.templates.length}): ${p.templates.map((t) => `\`${t.id}\``).join(', ')}`)
+  .join('\n');
 
 const agentsMd = `# Design System da UCAM — instruções para agentes e desenvolvedores
 
@@ -216,10 +228,10 @@ ${trilhos()}
 
 ${adrs
   .filter((a) => ADRS_ESSENCIAIS.has(a.id))
-  .map((a) => `- **${a.id} — ${a.titulo}.** ${umaLinha(a.decisao, 420)}`)
+  .map((a) => `- **${a.id} — ${a.titulo}.** ${primeiraFrase(a.decisao)}`)
   .join('\n')}
 
-As ${adrs.length} decisões completas: \`ucam_get_decisions\`.
+O porquê e as consequências de cada uma, e as ${adrs.length} decisões: \`ucam_get_decisions({ id })\`.
 
 ## Estados
 
@@ -239,9 +251,9 @@ ${lista(escrita.principios).slice(0, 8).map((p) => `- ${umaLinha(itemTexto(p), 2
 
 ## Catálogo (${componentes.length} contratos)
 
-| Componente | Seletor | Maturidade | Para quê |
-|---|---|---|---|
-${componentes.map((c) => `| ${c.name} | \`${c.selector}\` | ${c.status} | ${umaLinha(c.description, 130)} |`).join('\n')}
+Por categoria. Para quê, props, limites e acessibilidade de cada um: \`ucam_get_component({ id })\`. Componente que não está aqui não existe.
+
+${porCategoria(componentes, (c) => `\`${c.selector}\``)}
 
 ## Sites públicos (UCAMDS Sites, ${sites.length} peças)
 
@@ -251,13 +263,15 @@ Os sites — candidomendes.edu.br, CENPRE, Campos — têm um sistema próprio s
 - Angular: \`@ucam/site-ui\` — diretivas finas sobre a mesma folha (\`a[ucamSiteButton]\`, \`section[ucamSiteHero]\`…), sem estilo próprio; pede a folha na mesma versão.
 - No MCP, passe \`familia: "site"\`: \`ucam_list_components\`, \`ucam_get_component\` (devolve o HTML da demo, pronto para copiar, e o uso em Angular) e \`ucam_get_tokens\`. Seletor \`ucam-site-<id>\` também resolve sozinho. \`ucam_check_usage\` reconhece as classes dos sites e reprova primitiva \`--ucam-site-wine-600\` como reprova a da aplicação.
 
-| Peça | Classe | Angular | Para quê |
-|---|---|---|---|
-${sites.map((c) => `| ${c.name} | \`${c.implementacao.trilho_a.raiz}\` |\`${seletorSite(c) ?? '—'}\` | ${umaLinha(c.description, 110)} |`).join('\n')}
+As peças, pela classe raiz (a diretiva Angular e a demo vêm em \`ucam_get_component\`):
+
+${porCategoria(sites, (c) => `\`${c.implementacao.trilho_a.raiz}\``)}
 
 ## Padrões de tela
 
-${padroes.map((p) => `- **\`${p.id}\` — ${p.nome}.** ${umaLinha(p.problema, 220)}${p.regras?.length ? `\n  Regras: ${p.regras.map((r) => umaLinha(r, 140)).join(' · ')}` : ''}`).join('\n')}
+${padroes.map((p) => `- **\`${p.id}\` — ${p.nome}.** ${primeiraFrase(p.problema, 160)}`).join('\n')}
+
+As regras de cada padrão são obrigatórias e vêm em \`ucam_get_pattern({ id })\`.
 
 ## Telas de referência
 
