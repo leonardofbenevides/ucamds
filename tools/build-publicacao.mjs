@@ -164,10 +164,15 @@ if (!process.argv.includes('--sem-conferir-publicado')) {
       for (const p of local.pacotes) {
         const noAr = publicado.pacotes.find((x) => x.nome === p.nome);
         if (!noAr) continue;
-        let doAr = noAr.conteudo ?? null;
+        // O hash do índice é só o atalho de quando bate. Quando não bate, o
+        // tarball no ar é baixado e a impressão RECALCULADA com a normalização
+        // de agora: o índice pode ter sido escrito por uma versão anterior desta
+        // conta (a de antes de ordenar as uniões do .d.ts, por exemplo), e
+        // comparar dois hashes de regras diferentes recusaria à toa.
+        if (noAr.conteudo && noAr.conteudo === p.conteudo) continue;
+        let doAr = null;
         let arquivosDoAr = null;
-        if (!doAr) {
-          // Índice publicado antes de 06/11 não traz a impressão: baixa o tarball.
+        {
           try {
             const r = await fetch(`${base}/${noAr.tgz}`, { signal: AbortSignal.timeout(30000) });
             if (!r.ok) throw new Error(`HTTP ${r.status}`);

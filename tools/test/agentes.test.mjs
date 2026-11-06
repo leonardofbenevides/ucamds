@@ -214,6 +214,23 @@ function tgz(arquivos) {
   return gzipSync(Buffer.concat(blocos));
 }
 
+test('impressão do conteúdo ignora a ordem de uma união de literais no .d.ts', () => {
+  // O caso real da 0.2.0: a Vercel e a máquina local emitiram o mesmo tipo em ordem diferente.
+  const a = conteudoDoTgz(tgz({ 'types/x.d.ts': 'zSize?: "xs" | "sm" | "default" | null;\nv: "a";' }));
+  const b = conteudoDoTgz(tgz({ 'types/x.d.ts': 'zSize?: "default" | "xs" | "sm" | null;\nv: "a";' }));
+  assert.equal(a.sha, b.sha);
+  const c = conteudoDoTgz(tgz({ 'types/x.d.ts': 'zSize?: "default" | "xs" | "md" | null;\nv: "a";' }));
+  assert.notEqual(a.sha, c.sha, 'membro trocado continua sendo mudança');
+  const n1 = conteudoDoTgz(tgz({ 'types/x.d.ts': 'columns: InputSignal<1 | 3 | 2 | "auto">; h1: A | B;' }));
+  const n2 = conteudoDoTgz(tgz({ 'types/x.d.ts': 'columns: InputSignal<2 | "auto" | 1 | 3>; h1: A | B;' }));
+  assert.equal(n1.sha, n2.sha, 'união de números também');
+  const j1 = conteudoDoTgz(tgz({ 'x.js': '//#region ../node_modules/.pnpm/@angular+elements@22_c469cd7a/x.mjs\nvar a = 1;\n//#endregion' }));
+  const j2 = conteudoDoTgz(tgz({ 'x.js': '//#region ../node_modules/.pnpm/@angular+elements@22.1.4_@angular+core@22.1.4/x.mjs\nvar a = 1;\n//#endregion' }));
+  assert.equal(j1.sha, j2.sha, 'o caminho do store no comentário de região não é conteúdo');
+  const j3 = conteudoDoTgz(tgz({ 'x.js': '//#region a\nvar a = 2;\n//#endregion' }));
+  assert.notEqual(j1.sha, j3.sha);
+});
+
 test('impressão do conteúdo ignora a hora do build e acusa o arquivo que mudou', () => {
   const a = conteudoDoTgz(tgz({ 'x.json': '{"$generated": "2026-10-01T00:00:00Z", "v": 1}', 'y.css': 'a{}' }));
   const b = conteudoDoTgz(tgz({ 'x.json': '{"$generated": "2026-11-06T09:00:00Z", "v": 1}', 'y.css': 'a{}' }));

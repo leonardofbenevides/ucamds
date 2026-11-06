@@ -40,10 +40,37 @@ export function lerTgz(tgz) {
   return arquivos;
 }
 
-/** Tira o carimbo de hora do build, que não é conteúdo. */
+/**
+ * Tira o que muda de build para build sem mudar o que o dev recebe.
+ *
+ * - `$generated` nos JSON: a hora do build.
+ * - A ORDEM dos membros de uma união de literais nos .d.ts. Visto na 0.2.0
+ *   (06/11/2026): o tarball que a Vercel construiu e o local diferiam só em
+ *   `zSize?: "xs" | "sm" | … | "default"` contra `"default" | "xs" | …` — o
+ *   mesmo tipo, emitido em outra ordem pelo verificador do TypeScript. Sem
+ *   isto, o portão de publicação recusaria o próximo deploy da mesma versão.
+ */
 function normalizar(nome, dados) {
-  if (!/\.json$/.test(nome)) return dados;
-  return Buffer.from(dados.toString('utf8').replace(/"\$generated"\s*:\s*"[^"]*",?\s*/g, ''), 'utf8');
+  if (/\.json$/.test(nome)) {
+    return Buffer.from(dados.toString('utf8').replace(/"\$generated"\s*:\s*"[^"]*",?\s*/g, ''), 'utf8');
+  }
+  if (/\.d\.ts$/.test(nome)) {
+    // Literal de texto ou de número ("xs", 3, -1). A fronteira impede que o 1
+    // de `h1` conte como literal.
+    const lit = String.raw`(?:"[^"\n]*"|(?<![\w$.])-?\d+(?:\.\d+)?(?![\w.]))`;
+    const uniao = new RegExp(String.raw`(?:${lit}\s*\|\s*)+${lit}`, 'g');
+    return Buffer.from(
+      dados.toString('utf8').replace(uniao, (u) => u.split('|').map((s) => s.trim()).sort().join(' | ')),
+      'utf8',
+    );
+  }
+  // - Os comentários `//#region <caminho>` do bundle: o caminho do pacote no
+  //   store do pnpm sai encurtado com hash no Windows e por extenso no Linux
+  //   da Vercel (visto no ucam-elements.js da 0.2.0).
+  if (/\.m?js$/.test(nome)) {
+    return Buffer.from(dados.toString('utf8').replace(/^\/\/#(?:end)?region\b.*$/gm, ''), 'utf8');
+  }
+  return dados;
 }
 
 /** Impressão digital do conteúdo, mais o hash de cada arquivo (para dizer O QUE mudou). */
