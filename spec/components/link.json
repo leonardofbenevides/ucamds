@@ -55,7 +55,7 @@
     },
     {
       "nome": "variant",
-      "tipo": "'default' | 'apoio'",
+      "tipo": "'default' | 'apoio' | 'nome'",
       "default": "'default'",
       "descricao": "apoio é o mesmo link em corpo menor, para a saída secundária que acompanha um rótulo de campo. O que desce é o tamanho, nunca o contraste.",
       "valores": {
@@ -70,6 +70,13 @@
           "limite": "Não usar para encolher um link que ficou grande demais no corpo do texto — ali o tamanho é o do texto que o contém.",
           "tokens": {
             "texto": "color.text.link"
+          }
+        },
+        "nome": {
+          "uso": "O nome que abre um registro fora da tabela: o setor num painel, a natureza numa lista de valores. Mesmo desenho do nome da linha da tabela (30/10/2026): tinta primária e peso de rótulo em repouso, sublinhado e cor do app no hover e no foco.",
+          "limite": "Só onde o nome é o rótulo de uma linha ou de um item, e a linha diz por si que abre. Em texto corrido, o link é o default: sem sublinhado ele some na frase.",
+          "tokens": {
+            "texto": "color.text.primary"
           }
         }
       }

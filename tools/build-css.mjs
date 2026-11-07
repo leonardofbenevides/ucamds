@@ -3661,12 +3661,17 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * a frase vai num <span> e o link volta a ser de prosa. */
 .ucam-table tbody :is(th, td:not(.td--num)) > a.ucam-link:only-child {
   font-weight: var(--ucam-typography-label-font-weight);
-  /* Tinta do sistema, não primária (ADR-082): o nome que abre um registro tem
-   * a cor do app, como o nome de pessoa na mesma tabela (pedido de 12/10). */
-  color: var(--ucam-sistema-tinta, var(--ucam-color-text-link));
+  /* Tinta primária em repouso, cor do app no hover (30/10/2026: "padronize
+   * títulos de todas as tabelas e listas, usar o cinza e ter hover"). A
+   * ADR-082 tinha posto a tinta do sistema em repouso; ver O NOME DA LINHA
+   * VOLTA AO CINZA, no bloco do identificador. */
+  color: var(--ucam-color-text-primary);
   text-decoration: none;
 }
-.ucam-table tbody :is(th, td:not(.td--num)) > a.ucam-link:only-child:is(:hover, :focus-visible) { text-decoration: underline; }
+.ucam-table tbody :is(th, td:not(.td--num)) > a.ucam-link:only-child:is(:hover, :focus-visible) {
+  color: var(--ucam-sistema-tinta, var(--ucam-color-text-link));
+  text-decoration: underline;
+}
 /* APOIO DE CÉLULA, em linha: a continuação de um grupo, o motivo de uma
  * situação, o e-mail ao lado do nome. Era ucam-card__apoio em bloco dentro da
  * célula, e toda linha da tabela ganhava duas alturas por causa de duas. */
@@ -4267,6 +4272,16 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
 }
 .ucam-table .td--figura > .ucam-icon-tile { flex: none; }
 .ucam-table .td--figura__texto { min-inline-size: 0; }
+
+/* ABREVIAÇÃO NO CABEÇALHO DA TABELA (30/10/2026: "que isso bugado?"). Os
+ * turnos M, T e N da grade de horário são <abbr title>, e o navegador desenha
+ * o pontilhado de abbr embaixo de cada letra: numa fileira de colunas
+ * estreitas, quinze riscos soltos que liam como defeito. O nome por extenso
+ * continua no title e na legenda da tabela; o risco sai. */
+.ucam-table abbr[title] {
+  text-decoration: none;
+  cursor: help;
+}
 
 /* ------------------------------------------------------ selo: ponto --- */
 /* O PONTO substitui o ícone em densidade alta. Contrato: badge.json.
@@ -9182,6 +9197,12 @@ ${acima('duas-colunas')} {
  * o ritmo é do arranjo, não da tela, então mora aqui e vale para todas. */
 .ucam-corpo > .ucam-section + .ucam-section,
 .ucam-corpo > * + .ucam-section { margin-block-start: var(--ucam-space-stack-lg); }
+/* BLOCO DEPOIS DE BLOCO tem o mesmo vão (30/10/2026: "cade o espaçamento").
+ * No Analytics do Protocolo o cartão do mapa de calor vinha logo depois do
+ * split e encostava nele, 0px, porque só a seção sabia pedir ar. O vão é o do
+ * gap do próprio split, para o cartão de baixo ficar à mesma distância que o
+ * painel ao lado. A margem colapsa com a de quem já tinha style inline. */
+.ucam-corpo > :is(.ucam-split, .ucam-card, .ucam-grid, .ucam-stats, .ucam-table-wrap) + :is(.ucam-split, .ucam-card, .ucam-grid, .ucam-table-wrap) { margin-block-start: var(--ucam-space-stack-lg); }
 
 /* A UNIDADE É UMA PASTA, e o que a divide é um FIO INTEIRO, não o vão.
  *
@@ -12944,7 +12965,12 @@ figure:has(> .ucam-citacao) { margin: 0; }
   block-size: 100%;
   inline-size: var(--ucam-progress-valor);
   border-radius: inherit;
-  background: var(--ucam-color-text-secondary);
+  /* A COR SUAVE DO SISTEMA é o preenchimento de quem não declara tom
+   * (30/10/2026). Era text.secondary, quase preto: com a ADR-082 tirando a
+   * cor das barras que não julgam, toda barra de carga e de proporção caiu
+   * nele, e a fila por setor do Gerencial virou seis faixas grafite. Ver
+   * .ucam-progress__fill--sistema, que é este mesmo valor com nome. */
+  background: color-mix(in oklab, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 55%, var(--ucam-color-surface-default));
   transition: inline-size var(--ucam-motion-duration-reveal) var(--ucam-motion-easing-standard);
 }
 
@@ -12985,6 +13011,13 @@ figure:has(> .ucam-citacao) { margin: 0; }
  * preenchimento usa a tinta da ação, que no escuro é a clara do sistema. A
  * primeira linha é a de quem não entende light-dark(). */
 .ucam-progress__fill--marca   { background: light-dark(var(--ucam-color-surface-brand), var(--ucam-color-action-primary-default)); }
+/* SISTEMA (29/10/2026: "não deixe isso preto, deixe de uma cor suave da cor
+ * da subpaleta"). Várias barras lado a lado que comparam cargas — a fila por
+ * setor no Gerencial — não julgam nada: o neutro escuro pesava como alarme, e
+ * o azul de info competia com o vermelho do "fora do prazo". Aqui a barra
+ * veste a cor da categoria do sistema clareada, a família do ladrilho do
+ * ícone ao lado. Suave de propósito: o número está na legenda. */
+.ucam-progress__fill--sistema { background: color-mix(in oklab, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 55%, var(--ucam-color-surface-default)); }
 
 .ucam-progress__legenda {
   display: flex;
@@ -13911,6 +13944,34 @@ ${abaixo('nav-fixa')} and (max-height: 56.25rem) {
  * th de linha, e mês, total e categoria — que não abrem nada — liam como
  * link. A cor do sistema numa tabela quer dizer "isto identifica um registro
  * ou abre"; o resto fica na tinta do texto. */
+
+/* O NOME DA LINHA VOLTA AO CINZA (30/10/2026: "padronize títulos de todas as
+ * tabelas e listas, usar o cinza e ter hover"). Revoga a regra acima para o
+ * que NOMEIA a linha — nome da pessoa, título da célula com figura, cabeçalho
+ * de linha que abre: tinta primária, como o título do ListItem sempre foi, e
+ * a cor do app passa a ser o sinal do hover e do foco, junto do sublinhado.
+ * Numa coluna inteira de nomes em cor, a cor não destacava nada; no hover ela
+ * diz qual linha se vai abrir. O identificador (matrícula, CPF, protocolo)
+ * segue na cor do app: é a âncora que o olho procura ao descer (ADR-071). */
+:is(.ucam-table, .ucam-table-moldura) tbody :is(.td--pessoa__nome, .td--figura__texto > .ucam-card__titulo),
+:is(.ucam-table, .ucam-table-moldura) tbody th[scope="row"]:has(a),
+.ucam-link--nome {
+  color: var(--ucam-color-text-primary);
+}
+:is(.ucam-table, .ucam-table-moldura) tbody :is(a, button):is(.td--pessoa__nome, .ucam-card__titulo):is(:hover, :focus-visible),
+:is(.ucam-table, .ucam-table-moldura) tbody th[scope="row"] a:is(:hover, :focus-visible),
+.ucam-table--linha-clicavel tbody tr:hover :is(.td--pessoa__nome, th[scope="row"] a),
+.ucam-link--nome:is(:hover, :focus-visible) {
+  color: var(--ucam-sistema-tinta, var(--ucam-color-action-primary-default));
+}
+/* O nome solto que abre um registro, fora da tabela: o setor no painel, a
+ * natureza na lista de valores. Mesmo desenho do nome da linha — peso de
+ * rótulo, sem sublinhado em repouso, sublinhado e cor do app no hover. */
+.ucam-link--nome {
+  font-weight: var(--ucam-typography-label-font-weight);
+  text-decoration: none;
+}
+.ucam-link--nome:is(:hover, :focus-visible) { text-decoration: underline; }
 
 .ucam-sr-only {
   position: absolute;

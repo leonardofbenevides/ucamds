@@ -15,7 +15,7 @@ import { UcamIcon } from '../icon/ucam-icon';
  * cima das hastes descendentes, que é o que faz sublinhado parecer sujeira
  * tipográfica.
  */
-export type UcamLinkVariant = 'default' | 'apoio';
+export type UcamLinkVariant = 'default' | 'apoio' | 'nome';
 
 @Component({
   selector: 'ucam-link',
@@ -55,6 +55,18 @@ export type UcamLinkVariant = 'default' | 'apoio';
     /* O que desce em "apoio" é o TAMANHO, nunca o contraste. */
     ucam-link .ucam-link--apoio { font-size: var(--ucam-typography-caption-font-size); }
 
+    /* "nome": o nome que abre um registro. Tinta primária e sem sublinhado em
+       repouso; o hover sublinha e põe a cor do app. */
+    ucam-link .ucam-link--nome {
+      color: var(--ucam-color-text-primary);
+      font-weight: var(--ucam-typography-label-font-weight);
+      text-decoration: none;
+    }
+    ucam-link .ucam-link--nome:is(:hover, :focus-visible) {
+      color: var(--ucam-sistema-tinta, var(--ucam-color-action-primary-default));
+      text-decoration: underline;
+    }
+
     ucam-link .ucam-link ucam-icon {
       display: inline-block;
       margin-inline-start: 0.2em;
@@ -81,7 +93,7 @@ export class UcamLink {
   readonly ariaLabel = input<string | null>(null);
 
   protected readonly classes = computed(
-    () => `ucam-link${this.variant() === 'apoio' ? ' ucam-link--apoio' : ''}`,
+    () => `ucam-link${this.variant() === 'default' ? '' : ' ucam-link--' + this.variant()}`,
   );
 
   /**

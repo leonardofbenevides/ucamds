@@ -84,17 +84,21 @@
     },
     {
       "nome": "tone",
-      "tipo": "'neutral' | 'marca' | 'info' | 'success' | 'warning' | 'danger'",
-      "default": "'neutral'",
+      "tipo": "'neutral' | 'marca' | 'sistema' | 'info' | 'success' | 'warning' | 'danger'",
+      "default": "'sistema'",
       "descricao": "Tinta do preenchimento.",
       "valores": {
         "neutral": {
           "uso": "Proporção sem julgamento — quanto de uma cota foi usado.",
-          "limite": "É o default. Tom colorido sem regra escrita vira decoração."
+          "limite": "Cinza-claro, declarado: a parte que ainda não tem julgamento numa barra segmentada. Tom colorido sem regra escrita vira decoração."
         },
         "marca": {
           "uso": "O andamento que é da pessoa numa tela de tarefa única: o tempo da prova, as questões respondidas. Veste a superfície de marca do sistema.",
           "limite": "Não julga, como o neutro. Em tela de trabalho, com várias barras por linha, o neutro continua sendo o certo: uma coluna de barras de marca vira faixa de cor."
+        },
+        "sistema": {
+          "uso": "É o default (30/10/2026). Cargas e proporções sem julgamento: a fila de cada setor contra a do mais cheio. Veste a cor da categoria do sistema clareada, a mesma família do ladrilho do ícone.",
+          "limite": "Não diz bom nem ruim; o atraso vai em palavra ao lado. Fora de um shell com data-sistema cai na cor da ação."
         },
         "info": {
           "uso": "Andamento normal.",

@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation 
  * frágil e ficaria calado quando quebrasse. O que a base entrega de fato aqui
  * são seis declarações de CSS — copiadas, com a geometria da spec.
  */
-export type UcamProgressTone = 'neutral' | 'marca' | 'info' | 'success' | 'warning' | 'danger';
+export type UcamProgressTone = 'neutral' | 'marca' | 'sistema' | 'info' | 'success' | 'warning' | 'danger';
 
 /**
  * Um segmento da barra SEGMENTADA (ADR-046): de que partes é feito um total.
@@ -37,6 +37,8 @@ const PREENCHIMENTO: Record<UcamProgressTone, string> = {
   neutral: 'bg-[var(--ucam-color-border-default)]',
   // No escuro a superfície de marca é funda e some sobre o trilho: usa a tinta da ação.
   marca: 'bg-[light-dark(var(--ucam-color-surface-brand),var(--ucam-color-action-primary-default))]',
+  // A cor da categoria do sistema clareada, para cargas comparadas lado a lado.
+  sistema: 'bg-[color-mix(in_oklab,var(--ucam-sistema-cor,var(--ucam-color-action-primary-default))_55%,var(--ucam-color-surface-default))]',
   info: 'bg-[var(--ucam-color-feedback-info-graphic)]',
   success: 'bg-[var(--ucam-color-feedback-success-graphic)]',
   warning: 'bg-[var(--ucam-color-feedback-warning-graphic)]',
@@ -102,7 +104,7 @@ export class UcamProgress {
   readonly max = input(100);
   /** Nome acessível. Nunca "progresso": diz o que está sendo medido. */
   readonly label = input.required<string>();
-  readonly tone = input<UcamProgressTone>('neutral');
+  readonly tone = input<UcamProgressTone>('sistema');
   readonly size = input<'sm' | 'md'>('md');
   /** Substitui a leitura numérica crua: "24 de 40 requerimentos abertos". */
   readonly valueText = input<string | null>(null);

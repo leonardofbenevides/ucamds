@@ -172,8 +172,16 @@ export const DESVIO_L = {
  * teal era a única faixa clara da família. Em L 52 com o croma da categoria
  * todas seguem com texto branco acima de AA (5,2 a 6,3:1) e voltam a ser
  * matizes distintos. Atendimento não entra: é a marca (HERDA_MARCA). */
+/* CROMA CALIBRADO NO ÍNDIGO E NO FÚCSIA (30/10/2026: "a cor tá muito
+ * vibrante, calibre um pouco", com a faixa dos Relatórios Acadêmicos). Com o
+ * croma inteiro da categoria, as duas matizes que nascem mais saturadas na
+ * paleta base — indigo.600 e fuchsia.600 — saíam elétricas (#5149E8 e
+ * #A600B8) ao lado de faixas que já liam sóbrias. A 60% do croma elas voltam
+ * à família das outras, na mesma altura e com o texto branco ainda acima de
+ * AA; as demais seguem com o croma inteiro. */
+const CROMA_FAIXA = { pesquisa: 0.6, comunicacao: 0.6 };
 export const MARCA_PROPRIA = Object.fromEntries(
-  ['academico', 'financeiro', 'gestao', 'pessoas', 'acervo', 'pesquisa', 'comunicacao'].map((s) => [s, { claro: { L: 52, croma: 1 } }]),
+  ['academico', 'financeiro', 'gestao', 'pessoas', 'acervo', 'pesquisa', 'comunicacao'].map((s) => [s, { claro: { L: 52, croma: CROMA_FAIXA[s] ?? 1 } }]),
 );
 
 /* A AÇÃO PRÓPRIA DE UM SISTEMA — e é um DESVIO ASSUMIDO, não uma janela nova.

@@ -1585,6 +1585,25 @@
         "Refina a ADR-082 (29/10): o link, o nome e o identificador continuam na tinta do sistema, e sem a chave essa tinta é o próprio bordô."
       ],
       "afeta": ["app-shell", "field", "data-table", "text-field"]
+    },
+    {
+      "id": "ADR-084",
+      "titulo": "O nome da linha volta ao cinza, e a barra sem tom leva a cor do app",
+      "status": "aceita",
+      "data": "2026-11-07",
+      "contexto": "Na revisão das telas de 07/11/2026 o Leonardo escolheu o nome da linha em cinza: a tinta do sistema em todo nome de tabela fazia a coluna inteira parecer link e brigava com o identificador ao lado. Na mesma rodada, a barra de magnitude em grafite (ADR-082) lia como desabilitada.",
+      "decisao": "Em repouso, td--pessoa__nome, o título da célula com figura, th[scope=row] com link, o link sozinho na célula e o novo .ucam-link--nome ficam em text.primary, com o peso de rótulo; a tinta do sistema e o sublinhado vêm só no hover e no foco. O identificador (.ucam-id, CPF, matrícula, protocolo) continua na tinta do sistema. A barra de progresso sem tom passa ao tom sistema: a cor do app misturada a 55% com a superfície; sem ?paleta=sistema, essa cor é o bordô (ADR-083). warning e danger continuam só para a exceção.",
+      "consequencias": [
+        "Revoga em parte a ADR-071 e a ADR-082 no nome da linha: a cor dele passa a dizer \"posso abrir\" só sob o ponteiro.",
+        "Revoga em parte a ADR-082 na barra de magnitude: grafite deixa de ser o padrão.",
+        "Trilho B: UcamProgressTone ganha sistema, que vira o padrão; ucam-link ganha a variante nome.",
+        "Telas com tabela e cartão empilhados no corpo ganham o vão stack-lg entre os dois."
+      ],
+      "afeta": [
+        "data-table",
+        "link",
+        "progress"
+      ]
     }
   ]
 }
