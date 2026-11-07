@@ -68,6 +68,10 @@
       },
       "link": {
         "$value": "{blue.100}"
+      },
+      "rotulo": {
+        "$value": "{wine.200}",
+        "$description": "O rótulo clareia como o link: 10,37:1 sobre o painel (neutral.800) e 7,09:1 sobre a faixa de rótulos do escuro (neutral.700)."
       }
     },
     "action": {

@@ -19,9 +19,14 @@ import { selectChevronCss } from './lib/select-chevron.mjs';
 import { cssDaSubpaleta, SISTEMAS } from './lib/subpaleta.mjs';
 import { contrast } from './lib/wcag.mjs';
 
+/* Onde a cor de cada sistema (ADR-037) ainda vale: só sob pedido, desde a
+ * ADR-083. Sem a chave, faixa, ação e realce são bordô em todo app. */
+const PALETA_DO_SISTEMA = ':root:is([data-paleta="sistema"], [data-paleta="moldura"])';
+
 /* A cor de faixa que um projeto declara em templates.json (`cor`). Branco
  * sobre ela tem de passar de 4.5:1 — é o texto da marca e o placeholder da
- * busca que vão por cima. */
+ * busca que vão por cima. Desde a ADR-083 ela só vale sob ?paleta=sistema ou
+ * moldura, como o resto da subpaleta: o padrão é a faixa bordô em todo app. */
 function cssDaCorDeFaixa() {
   const projetos = JSON.parse(readFileSync(new URL('../spec/templates.json', import.meta.url), 'utf8'));
   const lista = Array.isArray(projetos) ? projetos : projetos.projetos ?? Object.values(projetos).find(Array.isArray) ?? [];
@@ -31,7 +36,7 @@ function cssDaCorDeFaixa() {
     if (!/^#[0-9A-Fa-f]{6}$/.test(p.cor)) throw new Error(`cor de faixa ilegível em ${p.id}: ${p.cor}`);
     const r = contrast('#FFFFFF', p.cor);
     if (r < 4.5) throw new Error(`cor de faixa de ${p.id} (${p.cor}) não segura texto branco: ${r.toFixed(2)}:1`);
-    regras.push(`.ucam-shell[data-projeto="${p.id}"] > .ucam-appbar--marca { --ucam-appbar-bg: ${p.cor.toUpperCase()}; }`);
+    regras.push(`${PALETA_DO_SISTEMA} .ucam-shell[data-projeto="${p.id}"] > .ucam-appbar--marca { --ucam-appbar-bg: ${p.cor.toUpperCase()}; }`);
   }
   return regras.join('\n');
 }
@@ -1089,7 +1094,10 @@ ${contentorAcima('duas-colunas')} {
   font-size: var(--ucam-typography-label-font-size);
   font-weight: var(--ucam-typography-label-font-weight);
   line-height: var(--ucam-typography-label-line-height);
-  color: var(--ucam-color-text-primary);
+  /* Bordô desde a ADR-083 (30/10/2026), em caixa baixa: o mesmo rótulo do
+   * cabeçalho de tabela. O asterisco, que já era bordô, passa a ler como
+   * parte do rótulo e não como alerta solto. */
+  color: var(--ucam-color-text-rotulo);
 }
 
 /* Asterisco decorativo: a obrigatoriedade real vem de required/aria-required. */
@@ -1391,6 +1399,15 @@ ${contentorAcima('duas-colunas')} {
 .ucam-input[type="search"]::-webkit-search-cancel-button:hover,
 .ucam-input-group__controle[type="search"]::-webkit-search-cancel-button:hover {
   background-color: var(--ucam-busca-limpar-hover, var(--ucam-color-text-primary));
+}
+
+/* UM X SÓ (06/11/2026: "por que tem 2 x aqui"). Quando o grupo já traz a
+ * AÇÃO de limpar (.ucam-input-group__acao, com nome acessível próprio), o X
+ * nativo do type="search" aparecia ao lado dela: dois botões que fazem a
+ * mesma coisa. A ação do grupo fica — ela é focável pelo Tab e tem nome; o X
+ * nativo não é nenhuma das duas coisas. */
+.ucam-input-group:has(.ucam-input-group__acao) input[type="search"]::-webkit-search-cancel-button {
+  display: none;
 }
 
 /* Quem precisa de passo por ponteiro usa o GRUPO de número: − e + como ações
@@ -3129,7 +3146,10 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
    * surface.subtle: o subtle (#F8FAFC) sobre o branco dá 1,04:1 e a faixa não
    * se via na captura; o sunken é o primeiro degrau que lê como faixa. */
   background: var(--ucam-color-surface-sunken);
-  color: var(--ucam-color-text-secondary);
+  /* BORDÔ (ADR-083, 30/10/2026): o rótulo da coluna leva a tinta de rótulo,
+   * a mesma do nome do campo. Era text.secondary. Só a cor mudou: caixa,
+   * peso e espaçamento continuam os do papel table-header. */
+  color: var(--ucam-color-text-rotulo);
   font-size: var(--ucam-typography-table-header-font-size);
   font-weight: var(--ucam-typography-table-header-font-weight);
   letter-spacing: var(--ucam-typography-table-header-letter-spacing);
@@ -3888,14 +3908,15 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   color: var(--ucam-color-text-secondary);
 }
 
-/* A coluna que manda: a seta ganha a tinta cheia do texto. aria-sort é o
- * seletor, e não uma classe — o atributo que o leitor de tela anuncia é o
- * mesmo que pinta, então não há como marcar visualmente sem marcar
- * semanticamente. */
-.ucam-table th[aria-sort]:not([aria-sort="none"]) > button {
-  color: var(--ucam-color-text-primary);
-}
-
+/* A coluna que manda: a seta ganha a tinta cheia e troca de desenho (um
+ * sentido só no lugar do par). aria-sort é o seletor, e não uma classe — o
+ * atributo que o leitor de tela anuncia é o mesmo que pinta, então não há
+ * como marcar visualmente sem marcar semanticamente.
+ *
+ * O RÓTULO NÃO MUDA DE COR (ADR-083, 30/10/2026). Ele escurecia para
+ * text.primary quando o resto era cinza; com os rótulos em bordô, a coluna
+ * ordenada saía preta no meio deles e lia como a exceção errada. A seta já
+ * diz qual coluna manda. */
 .ucam-table th[aria-sort]:not([aria-sort="none"]) > button .ic {
   color: var(--ucam-color-action-primary-default);
 }
@@ -3910,8 +3931,9 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * outras três coisas que se fazem com uma coluna ganharam onde morar.
  *
  * O gatilho herda tudo de ".ucam-table th > button" (alvo, tinta, seta sempre
- * visível). Aqui só o estado aberto, que se lê como o hover que ficou. */
-.ucam-table__coluna[aria-expanded="true"] { color: var(--ucam-color-text-primary); }
+ * visível). Aqui só o estado aberto, que se lê como o hover que ficou. O
+ * rótulo fica na tinta de rótulo: escurecer o bordô para preto ao abrir lia
+ * como outra coluna, não como a mesma aberta (ADR-083). */
 .ucam-table__coluna[aria-expanded="true"] .ic { color: var(--ucam-color-text-secondary); }
 
 /* POSIÇÃO FIXA, e a razão é o recorte. A tabela mora num .ucam-table-wrap com
@@ -5966,13 +5988,14 @@ ${abaixo('respiro-completo')} {
  * cores semânticas são as mesmas em todos os apps, e o portão falha se alguma
  * regra de [data-sistema] declarar uma delas.
  *
- * ?paleta=comum desliga tudo, ?paleta=moldura deixa a cor só na moldura. */
-${SISTEMAS.map((s) => ':root:not([data-paleta="comum"]) .ucam-shell[data-sistema="' + s + '"] { --ucam-sistema-cor: var(--ucam-color-categoria-' + s + '); }').join('\n')}
+ * SÓ SOB PEDIDO desde 30/10/2026 (ADR-083): sem chave tudo é bordô;
+ * ?paleta=sistema liga a subpaleta cheia, ?paleta=moldura só na moldura. */
+${SISTEMAS.map((s) => PALETA_DO_SISTEMA + ' .ucam-shell[data-sistema="' + s + '"] { --ucam-sistema-cor: var(--ucam-color-categoria-' + s + '); }').join('\n')}
 
 /* ATENDIMENTO não deriva: é a matiz da marca, e o token diz por quê — "o
  * atendimento é a cara da instituição, e leva a marca". A tinta dele é o
  * próprio bordô, como a do Portal. Ver HERDA_MARCA em lib/subpaleta.mjs. */
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema="atendimento"] {
+${PALETA_DO_SISTEMA} .ucam-shell[data-sistema="atendimento"] {
   --ucam-sistema-tinta: var(--ucam-color-action-primary-default);
 }
 
@@ -6023,7 +6046,7 @@ ${cssDaSubpaleta(tokensCss)}
  * tinta da faixa, ao lado do nome, e o que equilibra o par é o tamanho — o
  * ícone no degrau de 24px, a mesma altura da logo. */
 .ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile,
-:root:not([data-paleta="comum"]) .ucam-shell[data-sistema] .ucam-appbar--marca .ucam-appbar__marca {
+${PALETA_DO_SISTEMA} .ucam-shell[data-sistema] .ucam-appbar--marca .ucam-appbar__marca {
   background: transparent;
   color: var(--ucam-appbar-fg);
 }
@@ -11142,7 +11165,6 @@ ${abaixo('controle-deitado')} {
  * controle de 36px desalinha a barra inteira. */
 .ucam-toolbar--compacta .ucam-field__label {
   white-space: nowrap;
-  color: var(--ucam-color-text-secondary);
 }
 
 /* Filete vertical entre GRUPOS de controle da mesma fileira: os filtros de um

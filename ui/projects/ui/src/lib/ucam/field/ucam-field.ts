@@ -20,7 +20,7 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation,
   host: { class: 'flex flex-col gap-1.5' },
   template: `
     @if (!labelHidden()) {
-      <label class="text-sm font-medium leading-tight text-foreground" [attr.for]="controlId()">
+      <label class="text-sm font-medium leading-tight text-[var(--ucam-color-text-rotulo)]" [attr.for]="controlId()">
         {{ label() }}
         @if (required()) {
           <!-- decorativo: a obrigatoriedade real vai em required/aria-required -->

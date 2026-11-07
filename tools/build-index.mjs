@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 import { contrast, grade } from './lib/wcag.mjs';
 import { listboxSelects, listboxScript } from './lib/select-listbox.mjs';
-import { menuContaScript, estadoScript, descricaoScript, linhaDoTempoScript, abasScript, toastScript, dataScript, intervaloScript, calendarioScript, popoverScript, sliderScript } from './lib/shell.mjs';
+import { menuContaScript, estadoScript, descricaoScript, linhaDoTempoScript, abasScript, toastScript, dataScript, intervaloScript, calendarioScript, popoverScript, sliderScript, mascaraScript } from './lib/shell.mjs';
 import { iconCss } from './lib/icon-css.mjs';
 import { comTelasVivas } from './lib/telas-vivas.mjs';
 import { SISTEMAS, HERDA_MARCA, DESVIO_L, subpaleta } from './lib/subpaleta.mjs';
@@ -1095,7 +1095,7 @@ ${abasScript
  * delegação, mesmo motivo de estar aqui.
  */
 export function ligarPecas(): void {
-${[toastScript, dataScript, intervaloScript, calendarioScript, popoverScript, sliderScript]
+${[toastScript, dataScript, intervaloScript, calendarioScript, popoverScript, sliderScript, mascaraScript]
   .join('\n')
   .split('\n')
   .map((l) => (l ? '  ' + l : l))

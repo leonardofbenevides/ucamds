@@ -7638,6 +7638,163 @@ export const sliderScript = `
 })();
 `.trim();
 
+/**
+ * AS MÁSCARAS DO CAMPO (06/11/2026: "crie máscaras"). O campo de valor da
+ * demo do InputGroup aceitava "980,0012123" e "432234564657": o R$ do adorno
+ * prometia dinheiro e o campo guardava qualquer sequência. Aqui o campo com
+ * data-mascara põe a pontuação enquanto se digita, e o que a pessoa digita é
+ * só dígito:
+ *
+ *   moeda     1.250,00        os dígitos entram pelos centavos, como no caixa
+ *   cpf       000.000.000-00  com dígito verificador conferido ao sair
+ *   cnpj      00.000.000/0000-00
+ *   telefone  (00) 0000-0000 ou (00) 00000-0000, pelo número de dígitos
+ *   cep       00000-000
+ *
+ * O teclado é o numérico (inputmode), e o maxlength é o da máscara. Ao sair,
+ * valor INCOMPLETO ou CPF/CNPJ que não fecha o dígito vira erro do campo
+ * (field.json), com a frase que diz o formato. Moeda não tem erro de formato:
+ * qualquer sequência de dígitos é um valor; se zero vale ou não é regra da
+ * tela, não da máscara.
+ *
+ * Também liga o [data-limpar] da ação do InputGroup, que era desenho sem
+ * comportamento: limpa o campo do grupo, avisa quem filtra (input e change) e
+ * devolve o foco ao campo.
+ *
+ * O Trilho B tem a mesma regra em ui/.../input-group/ucam-mascara.ts.
+ */
+export const mascaraScript = `
+(function () {
+  var REGRAS = {
+    moeda: { modo: 'decimal', max: 13 },
+    cpf: { modo: 'numeric', max: 11, molde: '000.000.000-00', frase: 'CPF inválido. Confira os 11 dígitos.' },
+    cnpj: { modo: 'numeric', max: 14, molde: '00.000.000/0000-00', frase: 'CNPJ inválido. Confira os 14 dígitos.' },
+    telefone: { modo: 'tel', max: 11, frase: 'Telefone incompleto. Use DDD e número.' },
+    cep: { modo: 'numeric', max: 8, molde: '00000-000', frase: 'CEP incompleto. São 8 dígitos.' }
+  };
+  function digitos(v, max) { return String(v).replace(/\\D/g, '').slice(0, max); }
+  function molda(d, molde) {
+    var s = '', i = 0;
+    for (var k = 0; k < molde.length && i < d.length; k++) s += molde[k] === '0' ? d[i++] : molde[k];
+    return s;
+  }
+  function moeda(d) {
+    if (!d) return '';
+    d = d.replace(/^0+/, '');
+    if (!d) return '0,00';
+    while (d.length < 3) d = '0' + d;
+    var inteiro = d.slice(0, -2).replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');
+    return inteiro + ',' + d.slice(-2);
+  }
+  function telefone(d) {
+    return molda(d, d.length > 10 ? '(00) 00000-0000' : '(00) 0000-0000');
+  }
+  function formata(tipo, v) {
+    var r = REGRAS[tipo], d = digitos(v, r.max);
+    if (tipo === 'moeda') return moeda(d);
+    if (tipo === 'telefone') return telefone(d);
+    return molda(d, r.molde);
+  }
+  function dv(d, pesos) {
+    var s = 0;
+    for (var i = 0; i < pesos.length; i++) s += Number(d[i]) * pesos[i];
+    var r = s % 11;
+    return r < 2 ? 0 : 11 - r;
+  }
+  function valido(tipo, v) {
+    var d = digitos(v, 99);
+    if (tipo === 'cpf') {
+      if (d.length !== 11 || /^(\\d)\\1+$/.test(d)) return false;
+      return dv(d, [10, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(d[9]) && dv(d, [11, 10, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(d[10]);
+    }
+    if (tipo === 'cnpj') {
+      if (d.length !== 14 || /^(\\d)\\1+$/.test(d)) return false;
+      return dv(d, [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(d[12]) && dv(d, [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(d[13]);
+    }
+    if (tipo === 'telefone') return d.length === 10 || d.length === 11;
+    if (tipo === 'cep') return d.length === 8;
+    return true;
+  }
+  function erro(campo, frase) {
+    var id = campo.id + '-mascara-erro', e = document.getElementById(id);
+    var resto = (campo.getAttribute('aria-describedby') || '').split(/\\s+/).filter(function (x) { return x && x !== id; });
+    if (!frase) {
+      if (e) e.remove();
+      var outro = resto.some(function (x) { var el = document.getElementById(x); return el && el.classList.contains('ucam-field__error'); });
+      if (!outro) {
+        campo.removeAttribute('aria-invalid');
+        var g = campo.closest('.ucam-input-group');
+        if (g) g.removeAttribute('data-invalid');
+      }
+      if (resto.length) campo.setAttribute('aria-describedby', resto.join(' ')); else campo.removeAttribute('aria-describedby');
+      return;
+    }
+    var field = campo.closest('.ucam-field');
+    if (!field || !campo.id) return;
+    if (!e) {
+      e = document.createElement('span');
+      e.className = 'ucam-field__error';
+      e.id = id;
+      field.appendChild(e);
+    }
+    e.textContent = frase;
+    campo.setAttribute('aria-invalid', 'true');
+    var grupo = campo.closest('.ucam-input-group');
+    if (grupo) grupo.setAttribute('data-invalid', '');
+    campo.setAttribute('aria-describedby', [id].concat(resto).join(' '));
+  }
+  /* Campo com a diretiva ucamMascara (Trilho B) é dela: formatar aqui também
+   * brigaria com o ngModel. */
+  function tipoDe(c) {
+    var t = c.matches && c.matches('input[data-mascara]:not([ucammascara])') && c.getAttribute('data-mascara');
+    return t && REGRAS[t] ? t : null;
+  }
+  function monta(c) {
+    var t = tipoDe(c);
+    if (!t) return;
+    var r = REGRAS[t];
+    if (!c.hasAttribute('inputmode')) c.setAttribute('inputmode', r.modo);
+    if (!c.hasAttribute('autocomplete')) c.setAttribute('autocomplete', 'off');
+    var m = c.value ? formata(t, c.value) : '';
+    if (m !== c.value) c.value = m;
+  }
+  function montaTodos(raiz) {
+    if (!raiz || !raiz.querySelectorAll) return;
+    if (raiz.matches && raiz.matches('input[data-mascara]')) monta(raiz);
+    Array.prototype.forEach.call(raiz.querySelectorAll('input[data-mascara]'), monta);
+  }
+  document.addEventListener('input', function (e) {
+    var c = e.target, t = tipoDe(c);
+    if (!t || e.isTrusted === false) return;
+    var m = formata(t, c.value);
+    if (m !== c.value) { c.value = m; c.setSelectionRange(m.length, m.length); }
+    if (c.getAttribute('aria-invalid') === 'true' && valido(t, m)) erro(c, '');
+  });
+  document.addEventListener('focusout', function (e) {
+    var c = e.target, t = tipoDe(c);
+    if (!t || t === 'moeda') return;
+    if (!c.value) return erro(c, '');
+    erro(c, valido(t, c.value) ? '' : REGRAS[t].frase);
+  });
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-limpar]');
+    if (!b) return;
+    var grupo = b.closest('.ucam-input-group');
+    var campo = grupo && grupo.querySelector('input, textarea');
+    if (!campo) return;
+    campo.value = '';
+    campo.dispatchEvent(new Event('input', { bubbles: true }));
+    campo.dispatchEvent(new Event('change', { bubbles: true }));
+    if (tipoDe(campo)) erro(campo, '');
+    campo.focus();
+  });
+  montaTodos(document);
+  new MutationObserver(function (lista) {
+    lista.forEach(function (m) { Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) montaTodos(n); }); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+`.trim();
+
 
 /**
  * A DATA NO TRILHO A (28/09/2026: "datepicker não funciona?"). O contrato

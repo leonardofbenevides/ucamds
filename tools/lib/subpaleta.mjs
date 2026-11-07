@@ -339,9 +339,15 @@ export function cssDaSubpaleta(tokensCss) {
   const porTema = { claro: paraTema(claro, 'claro'), escuro: paraTema(escuro, 'escuro') };
 
   /* A família da AÇÃO só troca no modo cheio: `?paleta=moldura` é o meio termo
-   * do teste — cor do sistema na moldura, bordô no que se clica. */
-  const cheio = (sel) => `:root:not([data-paleta="comum"]):not([data-paleta="moldura"])${sel}`;
-  const qualquer = (sel) => `:root:not([data-paleta="comum"])${sel}`;
+   * do teste — cor do sistema na moldura, bordô no que se clica.
+   *
+   * SÓ SOB PEDIDO desde 30/10/2026 (ADR-083). As telas que os times subiram
+   * saíram todas em bordô, e o retorno foi "esse bordô mais presente agrada o
+   * pessoal". O padrão virou o que era o `?paleta=comum`; a subpaleta continua
+   * aqui, medida pelo mesmo portão, para quem quiser comparar com
+   * `?paleta=sistema`. */
+  const cheio = (sel) => `:root[data-paleta="sistema"]${sel}`;
+  const qualquer = (sel) => `:root:is([data-paleta="sistema"], [data-paleta="moldura"])${sel}`;
 
   const declara = (p, cheia) =>
     (cheia

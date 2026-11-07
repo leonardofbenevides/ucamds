@@ -90,6 +90,11 @@ export type UcamInputGroupSize = 'sm' | 'md' | 'lg';
     ucam-input-group :is(input, select, textarea):focus-visible {
       outline: none;
     }
+    /* Um X só: com a ação de limpar projetada, o X nativo do type="search"
+     * seria um segundo botão fazendo a mesma coisa (06/11/2026). */
+    ucam-input-group:has([acao]) input[type='search']::-webkit-search-cancel-button {
+      display: none;
+    }
   `,
 })
 export class UcamInputGroup {

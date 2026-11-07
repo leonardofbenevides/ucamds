@@ -168,6 +168,7 @@
   --ucam-color-text-on-brand: #FFFFFF;
   --ucam-color-text-on-action: #FFFFFF;
   --ucam-color-text-link: #14589E;
+  --ucam-color-text-rotulo: #8E1331;
   --ucam-color-action-primary-default: #8E1331;
   --ucam-color-action-primary-hover: #6C1E2B;
   --ucam-color-action-primary-active: #52151F;
@@ -356,6 +357,7 @@
     --ucam-color-text-on-brand: #FFFFFF;
     --ucam-color-text-on-action: #0E162A;
     --ucam-color-text-link: #DDEBFA;
+    --ucam-color-text-rotulo: #FCC9CB;
     --ucam-color-action-primary-default: #DB6F7A;
     --ucam-color-action-primary-hover: #F1A1A7;
     --ucam-color-action-primary-active: #FCC9CB;
@@ -438,6 +440,7 @@
   --ucam-color-text-on-brand: #FFFFFF;
   --ucam-color-text-on-action: #0E162A;
   --ucam-color-text-link: #DDEBFA;
+  --ucam-color-text-rotulo: #FCC9CB;
   --ucam-color-action-primary-default: #DB6F7A;
   --ucam-color-action-primary-hover: #F1A1A7;
   --ucam-color-action-primary-active: #FCC9CB;

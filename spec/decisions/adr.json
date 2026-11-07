@@ -1568,6 +1568,23 @@
         "Gráfico com duas séries de comparação deixa de usar azul e rosa em todo app."
       ],
       "afeta": ["link", "data-table", "progress", "chart"]
+    },
+    {
+      "id": "ADR-083",
+      "titulo": "Bordô em todo app: a subpaleta por sistema sai do padrão, e o rótulo ganha a cor da marca",
+      "status": "aceita",
+      "data": "2026-10-30",
+      "contexto": "Em 29/10/2026 vieram as primeiras telas que os times subiram com o DS: a Sala de matrícula da Secretaria Virtual, a Fila de análise da Isenção e Usuários do Módulo Gerencial. As três saíram em bordô — faixa, ação, aba e item ativo — enquanto o DS pintava cada sistema com a sua cor (ADR-037, ainda em teste): Secretaria em marinho, Isenção em azul, Gerencial em roxo. O retorno de quem usa foi \"esse bordô mais presente agrada o pessoal\". As três telas também traziam o rótulo de campo e o cabeçalho de tabela em caixa alta bordô, e o nome de pessoa em caixa alta, como a base do SIGU o guarda.",
+      "decisao": "Bordô é o padrão em todo app. A subpaleta da ADR-037 continua calculada e medida pelo mesmo portão, mas só vale sob pedido: data-paleta=\"sistema\" (?paleta=sistema nas telas) liga a família da ação e a faixa do sistema; data-paleta=\"moldura\" pinta só a moldura. A cor de faixa declarada por projeto em templates.json (a azul da Isenção) segue a mesma chave. Sem a chave, --ucam-sistema-cor e --ucam-sistema-tinta não existem e todo consumidor cai no primário bordô. Rótulo de campo e cabeçalho de coluna passam a usar um token novo, color.text.rotulo: wine.600 no claro (9,18:1 sobre branco) e wine.200 no escuro (7,09:1 sobre a faixa de rótulos). A caixa alta não veio junto: ADR-003 continua valendo. Nome de pessoa vindo da base em caixa alta se converte pelo formato nome-de-pessoa.",
+      "consequencias": [
+        "A identidade do sistema fica no ícone e no nome ao lado da logo, que já eram o que dizia em que sistema se está.",
+        "Barra de progresso --sistema, ladrilho do cartão, item ativo e marquinha caem no bordô sem regra nova: todos já tinham o primário como reserva.",
+        "Rótulo deitado da barra compacta também em bordô: deixou de ter cor própria (text.secondary).",
+        "Trilho B: o rótulo do ucam-field e o th da ucam-data-table leem color.text.rotulo.",
+        "?paleta=comum deixou de existir; quem tinha o link vê o padrão, que é o mesmo.",
+        "Refina a ADR-082 (29/10): o link, o nome e o identificador continuam na tinta do sistema, e sem a chave essa tinta é o próprio bordô."
+      ],
+      "afeta": ["app-shell", "field", "data-table", "text-field"]
     }
   ]
 }

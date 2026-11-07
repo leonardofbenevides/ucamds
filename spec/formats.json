@@ -95,6 +95,15 @@
       "regra": "Uma casa decimal como padrão; zero casas quando o número vem de uma contagem pequena, onde a casa inventa precisão que o dado não tem. O símbolo cola no número."
     },
     {
+      "id": "nome-de-pessoa",
+      "nome": "Nome de pessoa",
+      "forma": "Cada palavra com inicial maiúscula; da, das, de, do, dos e e em minúsculas, salvo na primeira posição",
+      "exemplo": "Victor Hugo Ferreira dos Santos Cardozo",
+      "modelo": "VICTOR HUGO FERREIRA DOS SANTOS CARDOZO",
+      "onde": "Célula de pessoa na tabela, cabeçalho do diálogo, ficha, avatar (as iniciais saem do nome já formatado). Entrou em 30/10/2026 (ADR-083): as telas da Secretaria Virtual, da Isenção e do Gerencial que os times subiram mostravam o nome como a base do SIGU o guarda, em caixa alta.",
+      "regra": "A base do parque guarda nome em caixa alta, e caixa alta é proibida na tela (ADR-003). A aplicação converte ao exibir: tudo em minúsculas no locale pt-BR, inicial maiúscula em cada palavra e em cada parte separada por hífen ou apóstrofo (Ana-Clara, D'Ávila), e as partículas da, das, de, do, dos e e voltam a minúsculas quando não são a primeira palavra. Algarismo romano no fim fica em maiúsculas (Pedro Alves II). Nunca regrava a base: é apresentação, como a máscara do CPF. Nome que já chega em caixa mista é exibido como chegou — quem o digitou sabia a grafia."
+    },
+    {
       "id": "cpf",
       "nome": "CPF",
       "forma": "000.000.000-00",

@@ -99,6 +99,12 @@
       "tipo": "boolean",
       "default": "false",
       "descricao": "Estado de erro do conjunto. A borda é do root, então o erro se vê no grupo todo — marcar só o campo deixaria metade do controle sem sinal."
+    },
+    {
+      "nome": "mascara",
+      "tipo": "'moeda' | 'cpf' | 'cnpj' | 'telefone' | 'cep' | null",
+      "default": "null",
+      "descricao": "Pontuação posta enquanto se digita: a pessoa digita só dígito. moeda 1.250,00 (os dígitos entram pelos centavos), cpf 000.000.000-00, cnpj 00.000.000/0000-00, telefone (00) 00000-0000, cep 00000-000. Fica no CAMPO, não no grupo: no Trilho A é data-mascara no <input>, no Trilho B a diretiva ucamMascara, que também valida e devolve { mascara: frase } quando o valor está incompleto ou o dígito do CPF/CNPJ não fecha. Moeda não tem erro de formato; se zero vale é regra da tela."
     }
   ],
   "estados": [
@@ -191,7 +197,7 @@
   "exemplos": [
     {
       "titulo": "Valor em reais",
-      "codigo": "<ucam-field label=\"Valor da mensalidade\">\n  <ucam-input-group prefix=\"R$\">\n    <input ucam-input type=\"text\" inputmode=\"decimal\" [(ngModel)]=\"valor\" />\n  </ucam-input-group>\n</ucam-field>"
+      "codigo": "<ucam-field label=\"Valor da mensalidade\">\n  <ucam-input-group prefix=\"R$\">\n    <input ucam-input ucamMascara=\"moeda\" [(ngModel)]=\"valor\" />\n  </ucam-input-group>\n</ucam-field>"
     },
     {
       "titulo": "Prazo com unidade",
@@ -200,6 +206,10 @@
     {
       "titulo": "Busca com ícone e ação de limpar",
       "codigo": "<ucam-input-group icon=\"search\">\n  <input ucam-input type=\"search\" [(ngModel)]=\"termo\" />\n  <ucam-icon-button acao icon=\"x\" variant=\"ghost\" label=\"Limpar Pesquisar natureza\" (click)=\"termo.set('')\" />\n</ucam-input-group>"
+    },
+    {
+      "titulo": "Documento e contato com máscara",
+      "codigo": "<ucam-field label=\"CPF\" [error]=\"cpf.errors?.['mascara']\">\n  <input ucam-input ucamMascara=\"cpf\" [(ngModel)]=\"doc\" #cpf=\"ngModel\" />\n</ucam-field>\n<ucam-field label=\"Telefone\">\n  <input ucam-input ucamMascara=\"telefone\" [(ngModel)]=\"fone\" />\n</ucam-field>"
     }
   ],
   "boas_praticas": [
@@ -234,7 +244,7 @@
       "contrato": "input-group.json",
       "raiz": ".ucam-input-group, com .ucam-input-group__controle dentro",
       "estado": "data-invalid e :focus-within no root",
-      "nota": "O poço é do root: o controle entra com border:0 e background:none. O foco é :focus-within, e não :focus, porque quem recebe o foco é o campo de dentro enquanto quem desenha o anel é o grupo."
+      "nota": "O poço é do root: o controle entra com border:0 e background:none. O foco é :focus-within, e não :focus, porque quem recebe o foco é o campo de dentro enquanto quem desenha o anel é o grupo. Com a ação de limpar no grupo, o X nativo do type=\"search\" some — seriam dois X fazendo a mesma coisa —, e [data-limpar] na ação liga o comportamento: limpa, avisa input e change, devolve o foco. Um X só. A máscara é data-mascara no controle (mascaraScript)."
     },
     "trilho_b": "Envelope sobre o z-input-group do ZardUI, que já resolve a geometria do conjunto — cantos internos, divisórias e as variantes de addon. O wrapper acrescenta o que o contrato exige e a base não impõe: adorno sempre aria-hidden, ação obrigada a ter nome acessível, e o controle esticado à altura do grupo. NÃO entrega: mais de uma ação por grupo, nem junção de dois campos distintos — as duas são recusadas de propósito e o motivo está em limites."
   },

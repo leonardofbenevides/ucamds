@@ -58,7 +58,8 @@
         "SIGFIN — todas as telas: título centralizado em caixa alta sobre barra com gradiente verde",
         "Portal — grade de módulos: barras cinza-escuro em caixa alta ocupando a largura toda",
         "Protocolo — Setor e Natureza: ações em texto cinza pequeno em caixa alta no canto superior direito",
-        "Protocolo — Análise: opções de select em caixa alta numa lista que ocupa seis páginas"
+        "Protocolo — Análise: opções de select em caixa alta numa lista que ocupa seis páginas",
+        "Secretaria Virtual, Isenção e Gerencial em produção (29/10/2026) — rótulo de campo e cabeçalho de tabela em caixa alta bordô, e nome de pessoa em caixa alta vindo da base. O bordô ficou (ADR-083, color.text.rotulo); a caixa alta, não. O nome se converte pelo formato nome-de-pessoa."
       ]
     },
     {

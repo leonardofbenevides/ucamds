@@ -402,7 +402,8 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       text-align: start;
       /* Caixa NATURAL no cabeçalho — ADR-003. */
       font-weight: var(--ucam-typography-label-font-weight);
-      color: var(--ucam-color-text-secondary);
+      /* Tinta de rótulo, bordô (ADR-083), como a folha do Trilho A. */
+      color: var(--ucam-color-text-rotulo);
       background: var(--ucam-color-surface-default);
       border-block-end: 1px solid var(--ucam-color-border-default);
       /* OS MESMOS RECUOS DA FOLHA DO TRILHO A (03/10/2026). A prova de
@@ -633,9 +634,8 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        o th é sticky, logo posicionado, e segura o absoluto. */
     .ucam-table th > ucam-menu { position: absolute; inline-size: 0; block-size: 0; overflow: hidden; }
     /* A seta do gatilho herda a tinta do rótulo, como na folha do Trilho A
-       (prova de paridade, 05/10/2026). */
-    .ucam-table__coluna:hover,
-    .ucam-table__coluna[aria-expanded='true'] { color: var(--ucam-color-text-primary); }
+       (prova de paridade, 05/10/2026). O rótulo não escurece no hover nem
+       aberto: fica bordô, como lá (ADR-083). */
     th[aria-sort='ascending'] .ucam-table__coluna ucam-icon,
     th[aria-sort='descending'] .ucam-table__coluna ucam-icon { color: var(--ucam-color-action-primary-default); }
     .ucam-table__coluna:focus-visible {
