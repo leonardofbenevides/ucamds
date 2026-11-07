@@ -1,16 +1,24 @@
 import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
 
+import { RouterLink } from '@angular/router';
+
 import { Leitura, TextoComponent } from './texto.component';
 
 /** Cabeçalho padrão de página da documentação. */
 @Component({
   selector: 'ucam-page-header',
-  imports: [TextoComponent],
+  imports: [TextoComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header class="cabecalho">
       @if (secao()) {
-        <p class="eyebrow eyebrow-marca">{{ secao() }}</p>
+        <p class="eyebrow eyebrow-marca">
+          @if (secaoLink()) {
+            <a class="secao-link" [routerLink]="secaoLink()">{{ secao() }}</a>
+          } @else {
+            {{ secao() }}
+          }
+        </p>
       }
       <div class="linha">
         <h1 class="display">{{ titulo() }}</h1>
@@ -51,6 +59,13 @@ import { Leitura, TextoComponent } from './texto.component';
   styles: `
     /* O filete abaixo do cabeçalho é o mesmo das seções: uma régua só para a
        página inteira, e por isso o tom sutil, não o default. */
+    .secao-link {
+      color: inherit;
+      text-decoration: none;
+    }
+    .secao-link:hover {
+      text-decoration: underline;
+    }
     .cabecalho {
       padding-block-end: 1.75rem;
       margin-block-end: 3rem;
@@ -136,6 +151,8 @@ export class PageHeaderComponent {
   readonly secao = input<string>('');
   readonly titulo = input<string>('');
   readonly lede = input<string>('');
+  /** Rota da seção acima desta página: o sobretítulo vira o caminho de volta. */
+  readonly secaoLink = input<string>('');
   /** O racional longo da fundação — o `$description` da spec. Fica fechado. */
   readonly porque = input<string>('');
 }

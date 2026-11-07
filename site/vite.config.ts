@@ -30,7 +30,7 @@ function specRoutes(): string[] {
   // sem tocar em código.
   const telas = readSpec('templates.json').projetos.flatMap(
     (p: { id: string; templates: { id: string }[] }) =>
-      p.templates.map((t) => `/telas/${p.id}/${t.id}`),
+      [`/telas/${p.id}`, ...p.templates.map((t) => `/telas/${p.id}/${t.id}`)],
   );
 
   // Os sites: o segundo catálogo (ADR-067), de sites/spec/components.

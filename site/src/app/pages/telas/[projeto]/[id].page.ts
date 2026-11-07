@@ -57,6 +57,7 @@ const SITUACOES = [
     @if (dados(); as d) {
       <ucam-page-header
         [secao]="d.tela.perfil ? d.projeto.nome + ' · ' + d.tela.perfil : d.projeto.nome"
+        [secaoLink]="'/telas/' + d.projeto.id"
         [titulo]="d.tela.nome"
         [lede]="d.tela.descricao"
       />

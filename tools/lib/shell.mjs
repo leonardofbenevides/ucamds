@@ -2257,11 +2257,34 @@ export const estadoScript = `
   // COLUNA ORIGINAL (data-col), carimbada na primeira vez que a tabela e
   // tocada: fixar move celulas de lugar, e o indice na fileira deixa de dizer
   // de que coluna uma celula e.
+  // AS FOLHAS DO CABEÇALHO, na ordem das células do corpo. Com cabeçalho de
+  // um andar são os th da fileira; com grupos (Recebido, À parte) a folha é o
+  // th que desce os dois andares (rowspan) ou cada filho do grupo no segundo
+  // andar. É por elas que o menu ordena uma tabela agrupada (28/10/2026).
+  function colunasFolhas(tabela) {
+    var cab = tabela.tHead;
+    if (!cab || !cab.rows.length) return [];
+    if (cab.rows.length === 1) return Array.prototype.slice.call(cab.rows[0].children);
+    var baixo = Array.prototype.slice.call(cab.rows[1].children);
+    var folhas = [];
+    Array.prototype.forEach.call(cab.rows[0].children, function (th) {
+      if (Number(th.getAttribute('rowspan') || 1) > 1) { folhas.push(th); return; }
+      var k = Number(th.getAttribute('colspan') || 1);
+      while (k-- > 0 && baixo.length) folhas.push(baixo.shift());
+    });
+    return folhas;
+  }
+
   function colunasCarimbar(tabela) {
     if (tabela.hasAttribute('data-colunas')) return;
     tabela.setAttribute('data-colunas', '');
-    var n = tabela.tHead ? tabela.tHead.rows[0].children.length : 0;
-    Array.prototype.forEach.call(tabela.rows, function (tr) {
+    var folhas = colunasFolhas(tabela);
+    var n = folhas.length;
+    folhas.forEach(function (th, k) { th.setAttribute('data-col', String(k)); });
+    var fileiras = [];
+    Array.prototype.forEach.call(tabela.tBodies, function (tb) { fileiras = fileiras.concat(Array.prototype.slice.call(tb.rows)); });
+    if (tabela.tFoot) fileiras = fileiras.concat(Array.prototype.slice.call(tabela.tFoot.rows));
+    fileiras.forEach(function (tr) {
       // Fileira de estado (vazio, erro) tem uma celula com colspan: fica fora.
       if (tr.children.length !== n) return;
       Array.prototype.forEach.call(tr.children, function (c, k) { c.setAttribute('data-col', String(k)); });
@@ -2309,8 +2332,15 @@ export const estadoScript = `
   function colunaOrdenar(tabela, th, dir) {
     var tb = tabela.tBodies[0];
     if (!tb) return;
-    var linhas = Array.prototype.slice.call(tb.rows);
-    linhas.forEach(function (tr, k) { if (!tr.hasAttribute('data-ordem')) tr.setAttribute('data-ordem', String(k)); });
+    // A LINHA DE DETALHE (expansível) viaja com a linha-mãe: ordena-se só a
+    // mãe, e o detalhe que vinha logo abaixo dela volta logo abaixo dela.
+    var linhas = Array.prototype.filter.call(tb.rows, function (tr) { return !tr.classList.contains('ucam-table__detalhe'); });
+    var detalhes = linhas.map(function (tr) {
+      var d = [];
+      for (var x = tr.nextElementSibling; x && x.classList.contains('ucam-table__detalhe'); x = x.nextElementSibling) d.push(x);
+      return d;
+    });
+    linhas.forEach(function (tr, k) { tr.__detalhes = detalhes[k]; if (!tr.hasAttribute('data-ordem')) tr.setAttribute('data-ordem', String(k)); });
     var col = th.getAttribute('data-col');
     var cmp = new Intl.Collator('pt-BR', { numeric: true, sensitivity: 'base' });
     function cel(tr) { return tr.querySelector('[data-col="' + col + '"]'); }
@@ -2325,14 +2355,14 @@ export const estadoScript = `
       var r = !isNaN(na) && !isNaN(nb) ? na - nb : cmp.compare(va, vb);
       return dir === 'desc' ? -r : r;
     });
-    linhas.forEach(function (tr) { tb.appendChild(tr); });
+    linhas.forEach(function (tr) { tb.appendChild(tr); (tr.__detalhes || []).forEach(function (d) { tb.appendChild(d); }); });
     // Quem pagina é o filtroScript; daqui sai só o aviso de que a fila mudou de
     // ordem. Sem ele a página 1 seguiria mostrando as linhas que já estavam
     // visíveis, agora espalhadas pela ordem nova.
     tabela.dispatchEvent(new CustomEvent('ucam:lista', { bubbles: true }));
     // UMA coluna governa a ordem: as outras ordenaveis voltam a none, e o
     // aria-sort que o leitor anuncia e o mesmo atributo que pinta a seta.
-    Array.prototype.forEach.call(th.parentElement.children, function (o) {
+    colunasFolhas(tabela).forEach(function (o) {
       if (!o.hasAttribute('aria-sort')) return;
       var d = o === th ? dir : null;
       o.setAttribute('aria-sort', d === 'asc' ? 'ascending' : d === 'desc' ? 'descending' : 'none');
@@ -2357,6 +2387,87 @@ export const estadoScript = `
   // empilha (a folha decide) e usa a MESMA colunaOrdenar: o aria-sort e a seta
   // do cabeçalho continuam dizendo a ordem para o leitor de tela e para a
   // largura de mesa.
+  // O MENU DA COLUNA É PADRÃO (28/10/2026: "coloque funções nos headers de
+  // tabela também, isso é padrão"). Até aqui só 41 das 153 tabelas das telas
+  // traziam o menu escrito na marcação. Toda coluna de dado ganha o mesmo
+  // gatilho e o mesmo menu do contrato (data-table, column-menu): ordenar,
+  // fixar e ocultar. A tabela de cabeçalho agrupado ganha só a ordenação,
+  // porque fixar ou ocultar uma folha desmancharia o colspan do grupo. Fica
+  // de fora o que não é coluna de dado (seleção, ações, cabeçalho vazio ou
+  // com controle) e a tabela que declara data-sem-menu: a grade de horário e
+  // a tabela equivalente do gráfico, que já é a forma acessível dele.
+  // O BOTÃO "ABRIR TUDO" no cabeçalho da coluna de expansão. Nasce aqui, para
+  // toda tabela com linhas que abrem, e diz o próprio estado: expandido quando
+  // todas as linhas visíveis estão abertas.
+  function expansorTodos(tabela) {
+    if (!tabela) return;
+    var b = tabela.querySelector('thead [data-expansor-todos]');
+    if (!b) return;
+    var filhos = Array.prototype.filter.call(tabela.querySelectorAll('tbody .ucam-table__expansor[aria-controls]'), function (x) { return !x.closest('tr[hidden]'); });
+    var todasAbertas = filhos.length > 0 && filhos.every(function (x) { return x.getAttribute('aria-expanded') === 'true'; });
+    b.setAttribute('aria-expanded', String(todasAbertas));
+    b.setAttribute('aria-label', todasAbertas ? 'Fechar todas as linhas' : 'Abrir todas as linhas');
+    b.setAttribute('title', todasAbertas ? 'Fechar todas' : 'Abrir todas');
+  }
+  function expansorTodosMontar() {
+    Array.prototype.forEach.call(document.querySelectorAll('table.ucam-table thead th.th--expansor'), function (th) {
+      if (th.querySelector('[data-expansor-todos]')) return;
+      var tabela = th.closest('table');
+      if (!tabela.querySelector('tbody .ucam-table__expansor[aria-controls]')) return;
+      th.innerHTML = '<button type="button" class="ucam-btn ucam-btn--icon ucam-btn--ghost ucam-btn--sm ucam-table__expansor" data-expansor-todos aria-expanded="false" aria-label="Abrir todas as linhas" title="Abrir todas"><svg class="ic" aria-hidden="true"><use href="#i-chevronRight"/></svg></button>';
+      expansorTodos(tabela);
+    });
+  }
+
+  var colMenuN = 0;
+  function colunasMenuMontar() {
+    Array.prototype.forEach.call(document.querySelectorAll('table.ucam-table'), function (tabela) {
+      if (tabela.closest('[data-sem-menu], .ucam-grafico__tabela')) return;
+      if (!tabela.tHead || !tabela.tBodies[0] || tabela.tBodies[0].rows.length < 2) return;
+      var agrupada = tabela.tHead.rows.length > 1;
+      colunasFolhas(tabela).forEach(function (th, k) {
+        if (th.querySelector('.ucam-table__coluna, input, button, select, a')) return;
+        if (th.classList.contains('th--selecao') || th.classList.contains('th--acoes') || th.classList.contains('td--acoes')) return;
+        if (!(th.textContent || '').trim()) return;
+        var id = 'ucam-col-' + (++colMenuN);
+        var it = function (acao, icone, rotulo, papel, extra) {
+          return '<button type="button" class="ucam-menu__item" role="' + papel + '"' + (papel === 'menuitemradio' ? ' aria-checked="false"' : '') +
+            ' tabindex="-1" data-coluna="' + acao + '"' + (extra || '') + '><svg class="ic" aria-hidden="true"><use href="#i-' + icone + '"/></svg>' + rotulo + '</button>';
+        };
+        var menu = it('asc', 'arrowUpNarrowWide', 'Crescente', 'menuitemradio') +
+          it('desc', 'arrowDownWideNarrow', 'Decrescente', 'menuitemradio') +
+          it('limpar', 'x', 'Remover ordenação', 'menuitem', ' hidden');
+        if (!agrupada) {
+          menu += '<div class="ucam-menu__sep" role="separator"></div>' +
+            it('fixar-inicio', 'pin', 'Fixar à esquerda', 'menuitemradio') +
+            it('fixar-fim', 'pin', 'Fixar à direita', 'menuitemradio') +
+            '<div class="ucam-menu__sep" role="separator"></div>' +
+            it('ocultar', 'eyeOff', 'Ocultar coluna', 'menuitem', k === 0 ? ' aria-disabled="true"' : '');
+        }
+        var gat = document.createElement('button');
+        gat.type = 'button';
+        gat.className = 'ucam-table__coluna';
+        gat.id = id + '-gatilho';
+        gat.setAttribute('data-menu', '');
+        gat.setAttribute('aria-haspopup', 'menu');
+        gat.setAttribute('aria-expanded', 'false');
+        gat.setAttribute('aria-controls', id + '-menu');
+        while (th.firstChild) gat.appendChild(th.firstChild);
+        gat.insertAdjacentHTML('beforeend', ' <svg class="ic" aria-hidden="true"><use href="#i-chevronsUpDown"/></svg>');
+        var caixa = document.createElement('div');
+        caixa.className = 'ucam-menu ucam-menu--coluna';
+        caixa.id = id + '-menu';
+        caixa.setAttribute('role', 'menu');
+        caixa.setAttribute('aria-labelledby', gat.id);
+        caixa.hidden = true;
+        caixa.innerHTML = menu;
+        th.appendChild(gat);
+        th.appendChild(caixa);
+        if (!th.hasAttribute('aria-sort')) th.setAttribute('aria-sort', 'none');
+      });
+    });
+  }
+
   var ordenarN = 0;
   function ordenarMontar() {
     Array.prototype.forEach.call(document.querySelectorAll('.ucam-table-wrap > .ucam-table'), function (tabela) {
@@ -2364,7 +2475,7 @@ export const estadoScript = `
       if (wrap.querySelector('.ucam-table__ordenar') || !tabela.tHead) return;
       // Uma linha só não tem o que ordenar.
       if (!tabela.tBodies[0] || tabela.tBodies[0].rows.length < 2) return;
-      var ths = Array.prototype.filter.call(tabela.tHead.rows[0].children, function (th) {
+      var ths = colunasFolhas(tabela).filter(function (th) {
         return th.hasAttribute('aria-sort') && th.querySelector('.ucam-table__coluna');
       });
       if (!ths.length) return;
@@ -2405,7 +2516,8 @@ export const estadoScript = `
       wrap.insertBefore(caixa, tabela);
     });
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ordenarMontar); else ordenarMontar();
+  function colunasMontar() { expansorTodosMontar(); colunasMenuMontar(); ordenarMontar(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', colunasMontar); else colunasMontar();
   document.addEventListener('change', function (e) {
     var sel = e.target.closest && e.target.closest('.ucam-table__ordenar select, .ucam-table__ordenar [data-listbox]');
     if (!sel) return;
@@ -2414,7 +2526,7 @@ export const estadoScript = `
     var valorOrd = sel.tagName === 'SELECT' ? sel.value : (sel.getAttribute('data-valor') || '');
     var textoOrd = sel.tagName === 'SELECT' ? sel.options[sel.selectedIndex].textContent : sel.textContent.trim();
     var partes = valorOrd.split('|');
-    var ths = tabela.tHead.rows[0].children;
+    var ths = colunasFolhas(tabela);
     var th = null;
     for (var i = 0; i < ths.length; i++) if (ths[i].getAttribute('data-col') === (partes[0] || '')) th = ths[i];
     if (!th) th = Array.prototype.filter.call(ths, function (x) { return x.getAttribute('aria-sort') && x.getAttribute('aria-sort') !== 'none'; })[0];
@@ -4882,6 +4994,24 @@ ${FN_ANUNCIA}
     // pela folha (aria-expanded) e o verbo do nome acessível troca junto. A
     // linha mãe leva data-aberta, que é por onde a folha e uma eventual
     // impressão sabem o que está aberto.
+    // ABRIR E FECHAR TUDO (28/10/2026: "permita poder abrir e fechar tudo").
+    // O chevron do cabeçalho da coluna de expansão governa a tabela inteira:
+    // se alguma linha está fechada, abre todas; se todas estão abertas, fecha
+    // todas. Cada linha passa pelo mesmo caminho do clique dela, então o nome
+    // acessível e o data-aberta da linha-mãe trocam igual.
+    var todos = t.closest('[data-expansor-todos]');
+    if (todos) {
+      var tabTodos = todos.closest('table');
+      var filhos = tabTodos ? tabTodos.querySelectorAll('tbody .ucam-table__expansor[aria-controls]') : [];
+      var abrirTodos = Array.prototype.some.call(filhos, function (b) { return b.getAttribute('aria-expanded') !== 'true' && !b.closest('tr[hidden]'); });
+      Array.prototype.forEach.call(filhos, function (b) {
+        if ((b.getAttribute('aria-expanded') === 'true') !== abrirTodos && !b.closest('tr[hidden]')) b.click();
+      });
+      expansorTodos(tabTodos);
+      anuncia(abrirTodos ? 'Todas as linhas abertas.' : 'Todas as linhas fechadas.', todos);
+      return;
+    }
+
     var expansor = t.closest('.ucam-table__expansor[aria-controls]');
     if (expansor) {
       var detalhe = document.getElementById(expansor.getAttribute('aria-controls'));
@@ -4893,6 +5023,7 @@ ${FN_ANUNCIA}
       if (nomeExp) expansor.setAttribute('aria-label', nomeExp.replace(/^(Mostrar|Ocultar) /, abrir ? 'Ocultar ' : 'Mostrar '));
       var maeExp = expansor.closest('tr');
       if (maeExp) { if (abrir) maeExp.setAttribute('data-aberta', ''); else maeExp.removeAttribute('data-aberta'); }
+      expansorTodos(expansor.closest('table'));
       return;
     }
 
@@ -8628,6 +8759,11 @@ export const tabelaScript = `
     });
     // O nome pode ser BOTÃO quando a linha abre uma gaveta na própria tela
     // (data-table.json, rowClickable): aí não há endereço para outra aba.
+    // O TÍTULO DA LINHA primeiro, em qualquer coluna (28/10/2026): no
+    // cadastro de bancos e de bolsas a primeira coluna é o código e o nome que
+    // abre o registro vem na segunda. Sem título, o primeiro link da primeira.
+    var titulo = tr.querySelector('a.td--pessoa__nome[href], button.td--pessoa__nome');
+    if (titulo && !titulo.closest('.td--acoes, .ucam-menu')) return titulo;
     return celulas.length ? celulas[0].querySelector('a[href], button.td--pessoa__nome') : null;
   }
   function segueLinha(e) {
