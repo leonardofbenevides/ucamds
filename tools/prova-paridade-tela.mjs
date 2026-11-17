@@ -29,6 +29,7 @@ import http from 'node:http';
 import { join, dirname, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
+import { achaChrome } from './lib/cdp.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLICO = join(ROOT, 'site/dist/analog/public');
@@ -37,7 +38,11 @@ const LARGURA = Number(larguraArg);
 const PORTA = 5313;
 const CDP = 9353;
 const SAIDA = join(ROOT, 'scratchpad', 'paridade');
-const CHROME = process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = achaChrome();
+if (!CHROME) {
+  console.error('✗ Chrome não encontrado (defina CHROME=/caminho/para/chrome)');
+  process.exit(1);
+}
 
 if (!existsSync(join(PUBLICO, 'index.html'))) {
   console.error('✗ site/dist/analog/public não existe — rode: pnpm --dir site build');
