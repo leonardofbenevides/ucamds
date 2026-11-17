@@ -42,6 +42,10 @@
           "uso": "Excluir. Exige confirmação (ADR-002)."
         },
         {
+          "lucide": "play",
+          "uso": "Executar agora uma rotina agendada (sigfin/agendamento-calculo). Sempre com nome acessível que diz o quê (\"Executar agora Mensalidade EAD\") e confirmação que diz o que vai rodar."
+        },
+        {
           "lucide": "check",
           "uso": "Confirmar, marcar como concluído."
         },

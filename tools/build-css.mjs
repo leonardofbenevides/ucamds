@@ -4589,6 +4589,16 @@ ${SISTEMAS.map((s, i) => '.ucam-avatar[data-cor="' + (i + 1) + '"] { --ucam-avat
 }
 
 .ucam-card__cabecalho > .ucam-icon-tile { flex: none; }
+/* O ladrilho do cabeçalho do cartão é CINZA ESCURO também dentro do shell
+ * (17/11/2026: "tudo bordô, use mais do cinza escuro"). Uma grade de cartões
+ * com um ladrilho bordô em cada um repetia a cor seis vezes sem discriminar
+ * nada, e competia com o vermelho do "fora do prazo". É o que o Trilho B já
+ * desenhava (ucam-card.ts pinta o neutro). Tom declarado — --marca ou
+ * categoria — continua vencendo. */
+.ucam-shell .ucam-card__cabecalho > .ucam-icon-tile:not([class*="ucam-icon-tile--a"], [class*="ucam-icon-tile--f"], [class*="ucam-icon-tile--g"], [class*="ucam-icon-tile--p"], [class*="ucam-icon-tile--c"], [class*="ucam-icon-tile--m"]) {
+  background: var(--ucam-color-surface-sunken);
+  color: var(--ucam-color-text-secondary);
+}
 
 /* Dentro de um bloco de arranjo o ritmo volta a ser do bloco: o gap do stack
  * já separa o cabeçalho do que vem depois, e a margem somaria a ele. */

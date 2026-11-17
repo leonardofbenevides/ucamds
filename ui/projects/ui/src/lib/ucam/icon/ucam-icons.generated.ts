@@ -1,7 +1,7 @@
 // GERADO por tools/build-icons.mjs a partir de spec/icons.json.
 // NÃO EDITAR À MÃO. Para adicionar um ícone, edite a spec e rode: pnpm run icons
 //
-// 84 ícones em 4 grupos.
+// 85 ícones em 4 grupos.
 
 import { lucideArchive,
   lucideArrowDownRight,
@@ -66,6 +66,7 @@ import { lucideArchive,
   lucidePencil,
   lucidePhone,
   lucidePin,
+  lucidePlay,
   lucidePlus,
   lucidePresentation,
   lucidePrinter,
@@ -153,6 +154,7 @@ export type UcamIconName =
   | 'pencil'
   | 'phone'
   | 'pin'
+  | 'play'
   | 'plus'
   | 'presentation'
   | 'printer'
@@ -184,6 +186,7 @@ export const UCAM_ICONS: Record<string, string> = {
   lucideMinus,
   lucidePencil,
   lucideTrash2,
+  lucidePlay,
   lucideCheck,
   lucideX,
   lucideSearch,
@@ -272,6 +275,7 @@ export const UCAM_ICON_KEY: Record<UcamIconName, string> = {
   'minus': 'lucideMinus',
   'pencil': 'lucidePencil',
   'trash2': 'lucideTrash2',
+  'play': 'lucidePlay',
   'check': 'lucideCheck',
   'x': 'lucideX',
   'search': 'lucideSearch',
@@ -360,6 +364,7 @@ export const UCAM_ICON_USO: Record<UcamIconName, string> = {
   'minus': "Passo de DIMINUIR do campo de número (input-group --numero), par do plus. Só ali: remover registro é trash2, e recolher é chevron.",
   'pencil': "Editar.",
   'trash2': "Excluir. Exige confirmação (ADR-002).",
+  'play': "Executar agora uma rotina agendada (sigfin/agendamento-calculo). Sempre com nome acessível que diz o quê (\"Executar agora Mensalidade EAD\") e confirmação que diz o que vai rodar.",
   'check': "Confirmar, marcar como concluído.",
   'x': "Fechar diálogo, remover filtro. Substitui o caractere × do legado, que é lido como multiplicação.",
   'search': "Buscar.",
