@@ -56,6 +56,7 @@ import {
   navScript,
   contadorScript,
   avatarScript,
+  focoVisivelScript,
 } from './lib/shell.mjs';
 // A prova de mentira do Vestibular: fixture, fora de shell.mjs e do ucam-comportamento.js (ADR-057).
 import { provaScript } from './lib/prova-referencia.mjs';
@@ -398,6 +399,7 @@ ${sprite}
 <script>${atalhoBuscaScript}</script>
 <script>${menuContaScript}</script>
 <script>${estadoScript}</script>
+<script>${focoVisivelScript}</script>
 <script>${descricaoScript}</script>
 <script>${viewbarScript}</script>
 <script>${linhaDoTempoScript}</script>

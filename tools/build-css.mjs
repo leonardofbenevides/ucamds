@@ -1030,8 +1030,13 @@ ${abaixo('controle-deitado')} {
  * (regra do contêiner abaixo). */
 /* O que ocupa a LINHA INTEIRA: grupo de caixas, grade de escolha, grupo de
  * interruptores, aviso, anexos. Uma fileira só, sem subgrade. */
+/* Os CAMPOS DO TRILHO B (17/11/2026) são uma trilha, como o .ucam-field: o
+ * hospedeiro <ucam-text-field> não leva a classe, e sem esta exceção todo
+ * campo de formulário em Angular ocupava a linha inteira — Descrição e Quem
+ * abre empilhados onde a referência os põe lado a lado (tela viva
+ * protocolo/natureza-form). Área de texto e anexo seguem na linha, como no A. */
 .ucam-form-grid > .ucam-field--linha,
-.ucam-form-grid > :not(.ucam-field, .ucam-form-row) {
+.ucam-form-grid > :not(.ucam-field, .ucam-form-row, ucam-text-field, ucam-select, ucam-number-field, ucam-date-field, ucam-date-range-field, ucam-combobox, ucam-input-group) {
   grid-column: 1 / -1;
   grid-row: auto;
 }
@@ -3889,6 +3894,20 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   padding-block: 0.5rem;
   margin-block: -0.5rem;
   padding-inline: 0;
+}
+
+/* O ANEL VAI PARA DENTRO. O botão cobre a faixa inteira (acima), então o anel
+ * de 2px para fora sai dela, e o cartão e o invólucro que rola recortam: o
+ * fio de cima sumia em toda tabela de cartão (achado da sonda foco,
+ * 17/11/2026). Mesmo remédio da ação do grupo de campo. */
+.ucam-table th > button:focus-visible {
+  outline-offset: -2px;
+}
+/* O selo que é botão ("Falhou · Tentar de novo" na fila da isenção) mora na
+ * última coluna e encosta no invólucro que rola: o anel por fora perdia o
+ * lado direito (sonda foco, 17/11/2026). */
+.ucam-table td button.ucam-badge:focus-visible {
+  outline-offset: -2px;
 }
 
 /* O CONVITE de ordenação.
@@ -6887,6 +6906,11 @@ ${acima('nav-fixa')} {
   min-block-size: 0;
 }
 
+/* A área rola, então recebe Tab; ela ocupa a largura do painel, que recorta
+ * (overflow hidden pelo raio), e o anel por fora perdia as laterais — sobravam
+ * dois fios soltos (sonda foco, 17/11/2026). */
+.ucam-busca__rolagem:focus-visible { outline-offset: -2px; }
+
 .ucam-busca__grupo[hidden] { display: none; }
 
 .ucam-busca__titulo {
@@ -7352,6 +7376,10 @@ ${abaixo('respiro-completo')} {
   min-block-size: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+  /* Folga ao rolar até o item focado: sem ela o navegador parava com o item
+   * encostado na borda do rolo e o anel (2px + 2px para fora) saía cortado —
+   * "Inadimplência", "Tabelas de apoio" (sonda foco, 17/11/2026). */
+  scroll-padding-block: var(--ucam-space-inline-sm);
   /* A BARRA DE ROLAGEM NÃO É DESENHADA, e é isso que dá uma largura só à
    * coluna. Com os itens sangrando de ponta a ponta, os 10px que a barra
    * tirava da lista apareciam como preenchimento terminando antes da borda no

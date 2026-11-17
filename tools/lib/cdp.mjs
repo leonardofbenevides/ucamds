@@ -67,7 +67,13 @@ export async function abreNavegador({ raiz = null } = {}) {
   const chrome = spawn(exe, [
     '--headless=new', '--remote-debugging-port=0', `--user-data-dir=${perfil}`,
     '--hide-scrollbars', '--force-device-scale-factor=1', '--no-first-run', '--no-default-browser-check',
-    '--disable-extensions', '--disable-background-networking', '--mute-audio', 'about:blank',
+    '--disable-extensions', '--disable-background-networking', '--mute-audio',
+    // VÁRIAS ABAS AO MESMO TEMPO: sem estas três o Chrome estrangula as abas
+    // de fundo — transição parada no primeiro quadro e setTimeout a 1s. Foi
+    // o que deu "Pular para o conteúdo" fora da tela em 73 telas e a sonda de
+    // mortos estourando 240s com seis abas (17/11/2026).
+    '--disable-background-timer-throttling', '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding',
+    'about:blank',
   ], { stdio: 'ignore' });
 
   // Porta 0: o Chrome escolhe e escreve em DevToolsActivePort.
@@ -81,8 +87,28 @@ export async function abreNavegador({ raiz = null } = {}) {
   const servidor = raiz ? await serve(raiz) : null;
   const paginas = new Set();
 
+  /* CADA PÁGINA NUM CONTEXTO PRÓPRIO (17/11/2026). As abas do mesmo perfil
+   * dividem o localStorage: a sonda de mortos clicava "Recolher navegação"
+   * numa tela e as outras abas carregavam a navegação recolhida — os títulos
+   * de grupo saíam "sem caixa". Contexto novo = armazenamento novo. */
+  let navegador = null;
+  async function canalDoNavegador() {
+    if (navegador) return navegador;
+    const { webSocketDebuggerUrl } = await (await fetch(`${cdp}/json/version`)).json();
+    const ws = new WebSocket(webSocketDebuggerUrl);
+    await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
+    let n = 0; const pend = new Map();
+    ws.onmessage = (e) => { const m = JSON.parse(e.data); if (m.id && pend.has(m.id)) { pend.get(m.id)(m); pend.delete(m.id); } };
+    const cmd = (method, params = {}) => new Promise((res, rej) => { const i = ++n; pend.set(i, (m) => (m.error ? rej(new Error(m.error.message)) : res(m.result))); ws.send(JSON.stringify({ id: i, method, params })); });
+    navegador = { ws, cmd };
+    return navegador;
+  }
+
   async function pagina() {
-    const alvo = await (await fetch(`${cdp}/json/new?about:blank`, { method: 'PUT' })).json();
+    const b = await canalDoNavegador();
+    const { browserContextId } = await b.cmd('Target.createBrowserContext', { disposeOnDetach: false });
+    const { targetId } = await b.cmd('Target.createTarget', { url: 'about:blank', browserContextId });
+    const alvo = { id: targetId, contexto: browserContextId, webSocketDebuggerUrl: `ws://127.0.0.1:${porta}/devtools/page/${targetId}` };
     const ws = new WebSocket(alvo.webSocketDebuggerUrl);
     await new Promise((r, j) => { ws.onopen = r; ws.onerror = j; });
     let seq = 0;
@@ -116,6 +142,8 @@ export async function abreNavegador({ raiz = null } = {}) {
     await cmd('Page.enable');
     await cmd('Runtime.enable');
     await cmd('Network.enable');
+    // Toda aba se comporta como a da frente (foco, :focus-visible, rAF).
+    await cmd('Emulation.setFocusEmulationEnabled', { enabled: true }).catch(() => {});
 
     /** Avalia uma expressão (promessas resolvem). Exceção vira erro com o texto.
      *  `{ limite }` em ms troca os 30s padrão (varredura longa pede mais). */
@@ -128,6 +156,9 @@ export async function abreNavegador({ raiz = null } = {}) {
     /** Navega com a viewport pedida e espera carregar + fontes. Zera `erros`. */
     async function vai(url, { largura = 1440, altura = 900, mobile = false, espera = 250 } = {}) {
       erros.length = 0;
+      // Cada tela começa sem a preferência que a anterior gravou (navegação
+      // recolhida, tema, favoritos): mesma origem, mesmo contexto.
+      try { await cmd('Storage.clearDataForOrigin', { origin: new URL(url).origin, storageTypes: 'local_storage,session_storage' }); } catch {}
       await cmd('Emulation.setDeviceMetricsOverride', { width: largura, height: altura, deviceScaleFactor: 1, mobile });
       if (mobile) await cmd('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
       const carregou = uma('Page.loadEventFired');
@@ -151,6 +182,7 @@ export async function abreNavegador({ raiz = null } = {}) {
       paginas.delete(p);
       try { ws.close(); } catch {}
       await fetch(`${cdp}/json/close/${alvo.id}`).catch(() => {});
+      await navegador?.cmd('Target.disposeBrowserContext', { browserContextId: alvo.contexto }).catch(() => {});
     }
 
     const p = { cmd, ev, vai, foto, tecla, erros, fecha, uma };
@@ -160,6 +192,7 @@ export async function abreNavegador({ raiz = null } = {}) {
 
   async function fecha() {
     for (const p of [...paginas]) await p.fecha();
+    try { navegador?.ws.close(); } catch {}
     chrome.kill();
     if (servidor) await servidor.fecha();
     for (let i = 0; i < 10; i++) {

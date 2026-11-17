@@ -5993,6 +5993,25 @@ ${FN_ANUNCIA}
     topo.indeterminate = marcadas > 0 && marcadas < cx.length;
     if (topo.indeterminate) topo.setAttribute('data-indeterminate', 'true');
     else topo.removeAttribute('data-indeterminate');
+    // SEM LINHA, SEM "SELECIONAR TODAS" (17/11/2026, sonda mortos na
+    // Sincronização com a Principia): com o filtro zerando a lista, a caixa
+    // do cabeçalho seguia habilitada e marcava nada. Desabilita enquanto não
+    // há linha elegível; volta quando o filtro devolve linhas.
+    if (!cx.length) { if (!topo.disabled) { topo.disabled = true; topo.setAttribute('data-sem-linhas', ''); } }
+    else if (topo.hasAttribute('data-sem-linhas')) { topo.disabled = false; topo.removeAttribute('data-sem-linhas'); }
+  }
+
+  // O filtro esconde linhas por [hidden]: a cabeça se recalcula quando isso muda.
+  if (window.MutationObserver) {
+    Array.prototype.forEach.call(document.querySelectorAll('table'), function (tabela) {
+      if (!cabeca(tabela) || !tabela.tBodies.length) return;
+      var agendado = false;
+      new MutationObserver(function () {
+        if (agendado) return;
+        agendado = true;
+        setTimeout(function () { agendado = false; sincroniza(tabela); }, 0);
+      }).observe(tabela.tBodies[0], { attributes: true, attributeFilter: ['hidden'], subtree: true, childList: true });
+    });
   }
 
   // O eco da concessão: "22 de 44 concedidos" anda com o que se marca. O total
@@ -7194,9 +7213,27 @@ export const toastScript = `
   // DECLARATIVO (ADR-074): um botão com data-toast confirma sem script da
   // tela — data-toast-tom escolhe o tom. É o que a demo do catálogo usa, e o
   // que uma tela legada usa quando a ação não passa pelo data-fluxo.
+  //
+  // Dois furos fechados em 17/11/2026 (sonda mudas, protocolo/analise-requerimento):
+  // (1) o toast é só visual — a pilha não é região viva —, então a frase vai
+  // também para o [data-anuncio] da tela, como faz o anuncia() do caminho
+  // data-fluxo; (2) o botão que exige um campo (data-exige-texto) confirmava
+  // com o campo vazio — "Pedido enviado ao aluno" sem o texto que o aluno lê.
+  // Agora o campo vazio recebe o erro e nada é confirmado.
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-toast]');
-    if (b) window.ucamToast(b.getAttribute('data-toast'), b.getAttribute('data-toast-tom'));
+    if (!b || b.getAttribute('aria-disabled') === 'true') return;
+    var exige = b.getAttribute('data-exige-texto');
+    var campo = exige && document.querySelector(exige);
+    if (campo && !campo.value.trim()) {
+      if (window.ucamErroDeCampo) window.ucamErroDeCampo(campo, b.getAttribute('data-exige-msg') || 'Preencha este campo antes de continuar.');
+      else campo.focus();
+      return;
+    }
+    var texto = b.getAttribute('data-toast');
+    window.ucamToast(texto, b.getAttribute('data-toast-tom'));
+    var viva = (b.closest('.ucam-shell') || document).querySelector('[data-anuncio]') || document.querySelector('[data-anuncio]');
+    if (viva) { viva.textContent = ''; setTimeout(function () { viva.textContent = texto; }, 60); }
   });
 })();
 `.trim();
@@ -9262,6 +9299,10 @@ export const estadosDaListaScript = `
     var caixa = document.createElement('div');
     caixa.className = 'ucam-empty';
     if (estado === 'vazio') {
+      // No app a lista passa de "Carregando" para vazia: sem status, quem não
+      // vê ouve o carregando e nunca o fim (WCAG 4.1.3; achado da sonda
+      // estados, 17/11/2026). O erro já sai como alert.
+      caixa.setAttribute('role', 'status');
       caixa.appendChild(icone('inbox'));
       caixa.appendChild(p('ucam-empty__title', titulo(escopo)));
       var acao = criar(escopo);
@@ -9391,5 +9432,64 @@ export const sessaoScript = `
   dlg.addEventListener('cancel', function (e) { e.preventDefault(); });
   dlg.showModal();
   dlg.querySelector('[data-continuar]').focus();
+})();
+`.trim();
+
+/* O FOCO NÃO FICA ENCOBERTO (WCAG 2.4.11; sonda foco, 17/11/2026).
+ *
+ * O navegador rola até o controle que recebeu foco, mas não sabe das barras
+ * grudadas: no Vestibular, percorrer o mapa de questões com Tab deixava o
+ * botão focado inteiro DEBAIXO da barra da prova (botão em 156–193px, barra
+ * cobrindo 84–200), e numa ficha a área de texto ia parar sob o rodapé fixo.
+ * A cada foco, mede o que cobre o controle — elemento fixed ou sticky que não
+ * o contém — e rola o rolo dele o bastante para deixá-lo à vista, com 8px de
+ * folga. Em cima e embaixo; nada a fazer quando nada cobre.
+ *
+ * Não usa scroll-padding fixo porque a altura das barras muda com a escala,
+ * com a janela e com a quebra da meta (ver viewbarScript), e cada arranjo rola
+ * um rolo diferente (documento no topo, painel no lateral). */
+export const focoVisivelScript = `
+(function () {
+  var FOLGA = 8;
+  function grudado(el) {
+    var p = getComputedStyle(el).position;
+    return p === 'fixed' || p === 'sticky';
+  }
+  function rolo(el) {
+    for (var a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+      var o = getComputedStyle(a).overflowY;
+      if ((o === 'auto' || o === 'scroll') && a.scrollHeight > a.clientHeight) return a;
+    }
+    return null;
+  }
+  function quemCobre(el, x, y) {
+    var h = document.elementFromPoint(x, y);
+    if (!h || el === h || el.contains(h) || h.contains(el)) return null;
+    for (var a = h; a && a !== document.body; a = a.parentElement) {
+      if (a.contains(el)) return null;
+      if (grudado(a)) return a;
+    }
+    return null;
+  }
+  document.addEventListener('focusin', function (e) {
+    var el = e.target;
+    if (!el || !el.getBoundingClientRect || el.closest('dialog, .ucam-drawer, [role=menu], [role=listbox], .ucam-busca')) return;
+    // Depois do rolo do próprio navegador.
+    requestAnimationFrame(function () {
+      var r = el.getBoundingClientRect();
+      if (!r.width || !r.height || r.bottom < 0 || r.top > innerHeight) return;
+      var x = Math.min(Math.max(r.left + r.width / 2, 0), innerWidth - 1);
+      var delta = 0;
+      var cima = quemCobre(el, x, Math.max(r.top + 1, 0));
+      if (cima) delta = r.top - cima.getBoundingClientRect().bottom - FOLGA;
+      else {
+        var baixo = quemCobre(el, x, Math.min(r.bottom - 1, innerHeight - 1));
+        if (baixo) delta = r.bottom - baixo.getBoundingClientRect().top + FOLGA;
+      }
+      if (!delta) return;
+      var c = rolo(el);
+      if (c) c.scrollTop += delta; else window.scrollBy(0, delta);
+    });
+  });
 })();
 `.trim();

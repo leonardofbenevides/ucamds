@@ -22,6 +22,8 @@ export const pergunta = 'em cada parada do Tab, o anel aparece, inteiro e sem na
 const PARADA = `(() => {
   const e = document.activeElement;
   if (!e || e === document.body || e === document.documentElement) return null;
+  // A barra do protótipo (Ver documentação) é do site, não da tela.
+  if (e.closest('.ucamds-bar')) return null;
   const rotulo = (x) => (x.getAttribute('aria-label') || x.textContent || x.placeholder || x.getAttribute('data-acao') || x.id || '').trim().replace(/\\s+/g, ' ').slice(0, 30);
   const nome = (x) => x.tagName.toLowerCase() + (typeof x.className === 'string' && x.className.trim() ? '.' + x.className.trim().split(/\\s+/)[0] : '');
   const r = e.getBoundingClientRect();
@@ -89,7 +91,9 @@ const PARADA = `(() => {
  * animações finitas acabarem; as infinitas (carregando) não acabam nunca. */
 const ASSENTA = `Promise.race([
   Promise.all(document.getAnimations()
-    .filter((a) => a.effect && a.effect.getComputedTiming().iterations !== Infinity)
+    // Só as do relógio do documento: a animação ligada à rolagem (ucam-rolo)
+    // não termina nunca, e esperar por ela custava 1s em toda parada.
+    .filter((a) => a.timeline === document.timeline && a.effect && a.effect.getComputedTiming().iterations !== Infinity)
     .map((a) => a.finished.catch(() => null))),
   new Promise((r) => setTimeout(r, 1000)),
 ]).then(() => true)`;
@@ -116,7 +120,7 @@ export async function roda(p, { url }) {
     vistos.add(r.id);
     if (r.coberto) add(`coberto por ${r.coberto}: ${r.id}`);
     if (r.recorte) add(`anel recortado por ${r.recorte}: ${r.id}`);
-    if (r.w < 2 || r.h < 2 || r.clip.width < 2 || r.clip.height < 2) { add(`foco em elemento sem caixa visível: ${r.id}`); continue; }
+    if (r.w < 2 || r.h < 2 || r.clip.width < 2 || r.clip.height < 2) { add(`foco em elemento sem caixa visível: ${r.id}`); achados.get(`foco em elemento sem caixa visível: ${r.id}`).detalhe = `caixa ${Math.round(r.w)}×${Math.round(r.h)}, foto ${JSON.stringify(r.clip)}`; continue; }
     try {
       const com = await foto(p, r.clip);
       await p.ev('window.__focoAtual.blur(); true');

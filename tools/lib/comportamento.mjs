@@ -38,6 +38,7 @@ export const COMPONENTE = [
   'estadoScript',
   'descricaoScript',
   'viewbarScript',
+  'focoVisivelScript',
   'linhaDoTempoScript',
   'abasScript',
   'filtroScript',
