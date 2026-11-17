@@ -88,6 +88,20 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
             (click)="favorite.set(!favorite())"
           />
         }
+        <!-- A META do título (o .ucam-viewbar__meta do Trilho A): um fato curto
+             que qualifica a tela — "12 naturezas cadastradas", "2 de 5 etapas
+             concluídas". Separada por ponto médio, cede antes do título. Leva
+             a classe do A para que, onde a folha dele convive com a lib, a
+             quebra estreita (meta sob o título, sem o ponto) valha igual.
+             Faltava: 80 telas de referência têm meta e o B não a desenhava
+             (tela viva protocolo/natureza-form, 17/11/2026). -->
+        @if (meta()) {
+          <span
+            class="ucam-viewbar__meta flex items-center gap-[var(--ucam-space-inline-sm)] min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[length:var(--ucam-typography-body-sm-font-size)] text-[color:var(--ucam-color-text-secondary)] before:content-['·'] before:text-[color:var(--ucam-color-border-strong)]"
+            style="flex: 0 100 auto"
+            >{{ meta() }}</span
+          >
+        }
         <div class="flex items-center gap-2 lg:ms-auto max-lg:flex-wrap max-lg:min-w-0 lg:shrink-0"><ng-container [ngTemplateOutlet]="acoes" /></div>
       </div>
       <!-- Ferramentas: abas de fila à esquerda, ordenação e filtros à direita. -->
@@ -159,6 +173,8 @@ export class UcamPageHeader {
   readonly variante = input<UcamPageHeaderVariante>('pagina');
   readonly title = input.required<string>();
   readonly count = input<number | null>(null);
+  /** Só na barra: o fato curto ao lado do título ("12 naturezas cadastradas"). */
+  readonly meta = input<string | null>(null);
   readonly description = input<string | null>(null);
   readonly breadcrumb = input<UcamCrumb[] | null>(null);
   readonly backLink = input<string | null>(null);

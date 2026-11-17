@@ -698,7 +698,7 @@ export type UcamSystemCategory =
               } @else {
                 <span
                   class="inline-flex min-w-5 items-center justify-center rounded-full px-1 text-[length:var(--ucam-typography-caption-font-size)] tabular-nums"
-                  [class]="item.current ? 'bg-[var(--ucam-color-surface-default)] text-[var(--ucam-color-text-primary)]' : 'text-[var(--ucam-color-text-secondary)]'"
+                  [class]="item.current ? 'bg-[var(--ucam-color-action-primary-default)] text-[var(--ucam-color-text-on-action)]' : 'text-[var(--ucam-color-text-secondary)]'"
                   >{{ item.count }}</span
                 >
               }
@@ -790,7 +790,7 @@ export type UcamSystemCategory =
                     size="sm"
                     aria-hidden="true"
                     class="transition-transform"
-                    [class.-rotate-90]="!favoritosAbertos()"
+                    [class.rotate-180]="favoritosAbertos()"
                   />
                 </button>
               }
@@ -1298,7 +1298,10 @@ export class UcamAppShell {
     return (
       recuo +
       (item.current
-        ? ' bg-[var(--ucam-color-action-primary-subtle)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-text-primary)]'
+        ? // O item aberto na cor do sistema (ADR-062, bordô desde a ADR-083): fundo
+          // a 14% da tinta de ação e rótulo nela, como o .ucam-shell do Trilho A.
+          // Estava no rosado de outubro com o rótulo preto (paridade, 17/11/2026).
+          ' bg-[color-mix(in_srgb,var(--ucam-sistema-cor,var(--ucam-color-action-primary-default))_14%,transparent)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-action-primary-default)]'
         : ' text-[var(--ucam-color-text-secondary)] hover:bg-[var(--ucam-color-interaction-hover)] hover:text-[var(--ucam-color-text-primary)]')
     );
   }

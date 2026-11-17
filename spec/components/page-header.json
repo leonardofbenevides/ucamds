@@ -122,6 +122,12 @@
       "descricao": "Exibido junto ao título: Setores 58."
     },
     {
+      "nome": "meta",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Só na barra: o fato curto que qualifica a tela, ao lado do título e separado por ponto médio (\"12 naturezas cadastradas\", \"2 de 5 etapas concluídas\"). Cede antes do título; abaixo da largura de controle deitado desce para a linha de baixo, sem o ponto. É o .ucam-viewbar__meta do Trilho A, que 80 telas de referência usam e o Trilho B não desenhava até 17/11/2026."
+    },
+    {
       "nome": "favorite",
       "tipo": "boolean | null",
       "default": "null",

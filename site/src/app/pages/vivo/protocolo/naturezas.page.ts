@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 
 import {
   UcamAppShell,
-  UcamBadge,
   UcamButton,
   UcamCelula,
   UcamDataTable,
@@ -11,7 +10,6 @@ import {
   UcamSegmented,
   UcamTextField,
   type UcamColumnDef,
-  type UcamCrumb,
   type UcamNavGroup,
   type UcamNavItem,
   type UcamSegmentItem,
@@ -32,7 +30,8 @@ import {
  * O que esta tela NÃO faz: fingir o servidor. Exportar e arquivar são
  * ações de sistema; aqui só trocam um anúncio, como a aplicação faria antes
  * de chamar o serviço. Os dados são os mesmos doze registros da referência,
- * com as mesmas três linhas marcadas, para a foto comparar o mesmo estado.
+ * para a foto comparar o mesmo estado. Refeita em 17/11/2026 sobre a
+ * referência de 12/10 ("simples, uma linha"), que ela vinha copiando velha.
  *
  * Os blocos de arranjo (.ucam-corpo, .ucam-toolbar, .ucam-card, .ucam-lote)
  * vêm da folha do Trilho A que o site já carrega sob .ucam — é a camada de
@@ -40,34 +39,32 @@ import {
  */
 interface Natureza extends Record<string, unknown> {
   nome: string;
-  apoio: string;
-  selo?: string;
-  setor: string;
-  unidades: string;
+  abertura: 'externa' | 'interna';
+  destinos: string;
   requerimentos: number;
-  modalidade: string;
 }
 
+const ABERTA_POR = { externa: 'Aluno', interna: 'Funcionário' } as const;
+
 const NATUREZAS: Natureza[] = [
-  { nome: 'Acadêmico', apoio: 'Notas, disciplinas, revisão', setor: 'Secretaria Acadêmica', unidades: 'Todas as unidades', requerimentos: 312, modalidade: 'EAD Presencial' },
-  { nome: 'Declaração', apoio: 'Matrícula, vínculo, histórico', setor: 'Secretaria Acadêmica', unidades: 'Todas as unidades', requerimentos: 268, modalidade: 'EAD Presencial' },
-  { nome: 'Graduação EAD', apoio: 'Solicitações do EAD de graduação', setor: 'Secretaria Acadêmica', unidades: 'Campos, Araruama, Além Paraíba', requerimentos: 241, modalidade: 'EAD' },
-  { nome: 'Acesso e senha', apoio: 'Portal, e-mail institucional, Wi-Fi', setor: 'CPD · Nível 1', unidades: 'Todas as unidades', requerimentos: 194, modalidade: 'EAD Presencial' },
-  { nome: 'Financeiro', apoio: 'Boletos, negociação, restituição', setor: 'Financeiro', unidades: 'Todas as unidades', requerimentos: 188, modalidade: 'EAD Presencial' },
-  { nome: 'Outros', apoio: 'Demais solicitações, com triagem manual', setor: 'Secretaria Acadêmica', unidades: 'Todas as unidades', requerimentos: 143, modalidade: 'EAD Presencial' },
-  { nome: 'Estágio e prática', apoio: 'Convênio, termo de compromisso, relatório', setor: 'CENPRE', unidades: 'Campos, Rio', requerimentos: 129, modalidade: 'Presencial' },
-  { nome: 'Trancamento e reabertura', apoio: 'Trancamento, cancelamento, retorno', setor: 'Secretaria Acadêmica', unidades: 'Todas as unidades', requerimentos: 90, modalidade: 'EAD Presencial' },
-  { nome: 'Diploma e colação', apoio: 'Registro, segunda via, colação de grau', setor: 'Secretaria Acadêmica', unidades: 'Todas as unidades', requerimentos: 71, modalidade: 'EAD Presencial' },
-  { nome: 'Pós-graduação EAD', apoio: 'Solicitações do EAD de pós', setor: 'Secretaria Acadêmica', unidades: 'Todas as unidades EAD', requerimentos: 63, modalidade: 'EAD' },
-  { nome: 'Biblioteca', apoio: 'Empréstimo, nada consta, multa', setor: 'Biblioteca', unidades: 'Todas as unidades', requerimentos: 47, modalidade: 'EAD Presencial' },
-  { nome: 'Impressão e material', apoio: 'Encerrada em 30/06 · pedidos em Outros', selo: 'Arquivada', setor: 'Centro Gráfico', unidades: 'Campos, Rio', requerimentos: 26, modalidade: 'Presencial' },
+  { nome: 'Acadêmico', abertura: 'externa', destinos: '5 de 5 unidades', requerimentos: 312 },
+  { nome: 'Declaração', abertura: 'externa', destinos: '5 de 5 unidades', requerimentos: 268 },
+  { nome: 'Graduação EAD', abertura: 'externa', destinos: '3 de 5 unidades', requerimentos: 241 },
+  { nome: 'Acesso e senha', abertura: 'externa', destinos: '5 de 5 unidades', requerimentos: 194 },
+  { nome: 'Financeiro', abertura: 'externa', destinos: '5 de 5 unidades', requerimentos: 188 },
+  { nome: 'Outros', abertura: 'interna', destinos: '5 de 5 unidades', requerimentos: 143 },
+  { nome: 'Estágio e prática', abertura: 'externa', destinos: '2 de 5 unidades', requerimentos: 129 },
+  { nome: 'Trancamento e reabertura', abertura: 'externa', destinos: '5 de 5 unidades', requerimentos: 90 },
+  { nome: 'Diploma e colação', abertura: 'externa', destinos: '5 de 5 unidades', requerimentos: 71 },
+  { nome: 'Pós-graduação EAD', abertura: 'externa', destinos: '2 de 5 unidades', requerimentos: 63 },
+  { nome: 'Biblioteca', abertura: 'interna', destinos: '5 de 5 unidades', requerimentos: 47 },
+  { nome: 'Impressão e material', abertura: 'interna', destinos: '2 de 5 unidades', requerimentos: 26 },
 ];
 
 @Component({
   selector: 'ucam-vivo-protocolo-naturezas',
   imports: [
     UcamAppShell,
-    UcamBadge,
     UcamButton,
     UcamCelula,
     UcamDataTable,
@@ -88,6 +85,7 @@ const NATUREZAS: Natureza[] = [
       systemName="Protocolo"
       systemIcon="clipboardList"
       systemCategory="atendimento"
+      logoUrl="/marca/ucam-logo-horizontal.svg"
       homeHref="#"
       [user]="usuario"
       [navGroups]="nav"
@@ -115,17 +113,14 @@ const NATUREZAS: Natureza[] = [
         <span class="ucam-nav__item" role="link" aria-disabled="true" data-sem-tela><svg class="ic" aria-hidden="true"><use href="#i-info" /></svg><span>Central de ajuda</span></span>
       </ng-container>
 
-      <ucam-page-header variante="barra" title="Naturezas do requerimento" [breadcrumb]="trilha">
-        <ucam-button variant="secondary" iconStart="download" (click)="agir('exportar')">Exportar</ucam-button>
+      <!-- A referência desde 12/10/2026 ("simples, uma linha"): sem trilha, sem
+           Exportar, sem seleção e sem linha de apoio; o recorte é por quem abre. -->
+      <ucam-page-header variante="barra" title="Naturezas do requerimento">
         <ucam-button variant="primary" iconStart="plus" (click)="agir('nova')">Nova natureza</ucam-button>
-        <ucam-segmented ucamFerramentas [items]="modalidades" [(value)]="modalidade" ariaLabel="Modalidade" />
+        <ucam-segmented ucamFerramentas [items]="recortes" [(value)]="recorte" ariaLabel="Quem abre" />
       </ucam-page-header>
 
       <div class="ucam-corpo">
-        <p class="ucam-lede" style="margin-block-end: 1.25rem">
-          A natureza é o que decide o setor responsável por cada requerimento.
-        </p>
-
         <div class="ucam-toolbar ucam-toolbar--compacta">
           <ucam-text-field
             class="ucam-field ucam-field--grow"
@@ -138,68 +133,27 @@ const NATUREZAS: Natureza[] = [
           />
         </div>
 
-        <!-- Sem recuo e com recorte, como a referência: a tabela encosta na
-             moldura do cartão. -->
         <div class="ucam-card" style="padding: 0; overflow: clip">
           <ucam-data-table
             caption="Naturezas de requerimento cadastradas, da mais aberta para a menos aberta no período de 01/02/2026 a 03/09/2026"
             [columns]="colunas"
             [rows]="linhas()"
-            selectable="multiple"
             itemLabel="naturezas"
             identifierKey="nome"
-            [selected]="marcadas()"
-            [rowSelectable]="ativa"
             [sort]="{ column: 'requerimentos', direction: 'desc' }"
             [state]="linhas().length ? 'idle' : 'empty'"
             emptyReason="no-results"
-            (selectionChange)="marcadas.set($event)"
           >
-            <ng-template ucamCelula="nome" let-l>
-              <span class="ucam-card__titulo"
-                >{{ l.nome }}
-                @if (l.selo) {
-                  <ucam-badge tone="neutral" [label]="l.selo" />
-                }
-              </span>
-              <span class="ucam-card__apoio">{{ l.apoio }}</span>
-            </ng-template>
-            <!-- O setor não quebra: é a mesma escolha por célula da referência
-                 (style nowrap no td), que mantém "Secretaria Acadêmica" numa
-                 linha e a fileira em 87px. -->
-            <ng-template ucamCelula="setor" let-l>
-              <span style="white-space: nowrap">{{ l.setor }}</span>
-            </ng-template>
+            <!-- O nome abre a natureza: link na tinta de texto, cor do app no
+                 hover (ADR-084). -->
+            <ng-template ucamCelula="nome" let-l><a class="ucam-link" href="#">{{ l.nome }}</a></ng-template>
+            <ng-template ucamCelula="abertura" let-l><span style="white-space: nowrap">{{ abertaPor(l) }}</span></ng-template>
+            <ng-template ucamCelula="destinos" let-l><span style="white-space: nowrap">{{ l.destinos }}</span></ng-template>
             <ng-template ucamCelula="acoes" let-l>
-              <span class="ucam-cluster">
-                <ucam-icon-button icon="pencil" variant="ghost" [label]="'Editar a natureza ' + l.nome" />
-                <ucam-icon-button icon="archive" variant="ghost" [label]="'Arquivar a natureza ' + l.nome" (click)="agir('arquivar')" />
-              </span>
+              <ucam-icon-button icon="pencil" variant="ghost" [label]="'Editar a natureza ' + l.nome" (click)="agir('editar')" />
             </ng-template>
           </ucam-data-table>
 
-          @if (marcadas().length > 0) {
-            <!-- A barra de lote consome a coluna de seleção (contrato data-table,
-                 lote). O Trilho B ainda não a desenha dentro da tabela: aqui
-                 vai como bloco, e a paridade mede a diferença. -->
-            <div class="ucam-lote">
-              <p class="ucam-lote__contagem" role="status">
-                {{ marcadas().length }} {{ marcadas().length === 1 ? 'natureza selecionada' : 'naturezas selecionadas' }}
-              </p>
-              <div class="ucam-lote__acoes">
-                <button type="button" class="ucam-lote__acao" (click)="agir('exportar')">
-                  <svg class="ic" aria-hidden="true"><use href="#i-download" /></svg> Exportar
-                </button>
-                <button type="button" class="ucam-lote__acao" (click)="agir('arquivar')">
-                  <svg class="ic" aria-hidden="true"><use href="#i-archive" /></svg> Arquivar
-                </button>
-              </div>
-              <button type="button" class="ucam-lote__limpar" (click)="marcadas.set([])">Limpar</button>
-            </div>
-          }
-
-          <!-- Só o resumo, como a referência: uma página de dados não pede
-               controles de página. -->
           <div class="ucam-pagination">
             <span class="ucam-pagination__range"
               >1–{{ linhas().length }} de {{ linhas().length }} naturezas · 1.772 requerimentos de 01/02 a
@@ -218,22 +172,25 @@ export default class VivoProtocoloNaturezasPage {
     { value: 'rio', label: 'Rio' },
     { value: 'araruama', label: 'Araruama' },
   ];
-  protected readonly trilha: UcamCrumb[] = [{ label: 'Meus sistemas', link: '#' }, { label: 'Naturezas' }];
-
   /** O que a pessoa fixou. Quem persiste é a aplicação; aqui, a memória. */
   protected readonly favoritos = signal<UcamNavItem[]>([
     { label: 'Urgentes sem resposta', icon: 'triangleAlert', href: '#' },
     { label: 'Secretaria Acadêmica', icon: 'building2', href: '#' },
-    { label: 'Parâmetros dos setores', icon: 'settings', href: '#' },
+    { label: 'Natureza Acadêmico', icon: 'listFilter', href: '#' },
   ]);
 
+  /* A navegação da referência desde a leva 4 (spec/templates.json, shell do
+     protocolo): o primeiro grupo sem título, Indicadores juntando Gerencial e
+     Analytics pelo que mostram, e sem Funcionários. Estava na de outubro. */
   protected readonly nav: UcamNavGroup[] = [
     {
-      label: 'Trabalho',
+      items: [{ label: 'Caixa de entrada', icon: 'inbox', href: '#', count: 9 }],
+    },
+    {
+      label: 'Indicadores',
       items: [
-        { label: 'Caixa de entrada', icon: 'inbox', href: '#', count: 9 },
-        { label: 'Gerencial', icon: 'layoutGrid', href: '#' },
-        { label: 'Analytics', icon: 'chartColumn', href: '#' },
+        { label: 'Por setor', icon: 'layoutGrid', href: '#' },
+        { label: 'Tendências', icon: 'chartColumn', href: '#' },
       ],
     },
     {
@@ -241,38 +198,32 @@ export default class VivoProtocoloNaturezasPage {
       items: [
         { label: 'Setores', icon: 'building2', href: '#' },
         { label: 'Naturezas', icon: 'listFilter', href: '#', current: true },
-        { label: 'Funcionários', icon: 'users', disabled: true },
       ],
     },
   ];
 
-  protected readonly modalidades: UcamSegmentItem[] = [
+  protected readonly recortes: UcamSegmentItem[] = [
     { id: '', label: 'Todas' },
-    { id: 'EAD', label: 'EAD' },
-    { id: 'Presencial', label: 'Presencial' },
+    { id: 'externa', label: 'Abertas pelo aluno' },
+    { id: 'interna', label: 'Internas' },
   ];
-  protected readonly modalidade = signal('');
+  protected readonly recorte = signal('');
   protected readonly busca = signal('');
-  /** As três linhas marcadas da referência, para a foto comparar o mesmo estado. */
-  protected readonly marcadas = signal<readonly Natureza[]>(NATUREZAS.slice(7, 10));
   protected readonly anuncio = signal('');
-  /** Natureza arquivada não entra em ação de lote: a caixa fica, desabilitada. */
-  protected readonly ativa = (n: Natureza) => !n.selo;
+  protected readonly abertaPor = (n: Natureza) => ABERTA_POR[n.abertura];
 
   protected readonly colunas: UcamColumnDef[] = [
     { key: 'nome', header: 'Natureza', type: 'text' },
-    { key: 'setor', header: 'Setor responsável', type: 'text', width: 'min' },
-    // 'min' no cabeçalho e não na célula: a coluna mede o rótulo e o texto
-    // longo das unidades quebra, como o th--min da referência.
-    { key: 'unidades', header: 'Unidades atendidas', type: 'text', width: 'min' },
+    { key: 'abertura', header: 'Aberta por', type: 'text', width: 'min' },
+    { key: 'destinos', header: 'Destinos', type: 'text', width: 'min' },
     { key: 'requerimentos', header: 'Requerimentos', type: 'number', width: 'min', sortable: true },
     { key: 'acoes', header: 'Ações', type: 'actions' },
   ];
 
   protected readonly linhas = computed(() => {
-    const m = this.modalidade();
+    const r = this.recorte();
     const b = this.busca().trim().toLowerCase();
-    return NATUREZAS.filter((n) => (!m || n.modalidade.split(' ').includes(m)) && (!b || n.nome.toLowerCase().includes(b)));
+    return NATUREZAS.filter((n) => (!r || n.abertura === r) && (!b || n.nome.toLowerCase().includes(b)));
   });
 
   protected desfixar(item: UcamNavItem): void {

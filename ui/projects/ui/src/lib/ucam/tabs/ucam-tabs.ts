@@ -91,7 +91,9 @@ let seq = 0;
       border: 0;
       /* 3px; o pixel a mais sai do recuo de baixo (espelho do Trilho A). */
       border-block-end: 3px solid transparent;
-      padding: var(--ucam-space-inset-sm) 0 calc(var(--ucam-space-inset-sm) - 1px);
+      /* 4px nas laterais, como o .ucam-tabs__tab do A: sem eles o rótulo encostava
+         no sublinhado e a tira saía 8px mais curta (paridade, 17/11/2026). */
+      padding: var(--ucam-space-inset-sm) var(--ucam-space-inline-xs) calc(var(--ucam-space-inset-sm) - 1px);
       margin-block-end: -1px;
       font: inherit;
       font-size: var(--ucam-typography-label-font-size);

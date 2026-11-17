@@ -17,14 +17,20 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation,
   exportAs: 'ucamField',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  host: { class: 'flex flex-col gap-1.5' },
+  /* Vão de 8px (space.stack-sm) entre rótulo, controle e apoio, como o
+   * .ucam-field do Trilho A; era gap-1.5 (6px) e todo formulário em Angular
+   * saía 2px mais baixo por campo (paridade, 17/11/2026). */
+  host: { class: 'flex flex-col gap-[var(--ucam-space-stack-sm)]' },
   template: `
     @if (!labelHidden()) {
-      <label class="text-sm font-medium leading-tight text-[var(--ucam-color-text-rotulo)]" [attr.for]="controlId()">
+      <!-- Rótulo e apoio nos papéis de tipografia do A (label, caption): com
+           leading-tight/snug saíam 18,75 e 19,25px contra 20 e 18, e o campo
+           descia 1px por fileira (paridade, 17/11/2026). -->
+      <label class="text-[length:var(--ucam-typography-label-font-size)] [font-weight:var(--ucam-typography-label-font-weight)] leading-[var(--ucam-typography-label-line-height)] text-[var(--ucam-color-text-rotulo)]" [attr.for]="controlId()">
         {{ label() }}
         @if (required()) {
           <!-- decorativo: a obrigatoriedade real vai em required/aria-required -->
-          <span class="text-primary" aria-hidden="true">*</span>
+          <span class="text-primary ms-[0.15em]" aria-hidden="true">*</span>
         }
       </label>
     } @else {
@@ -35,7 +41,7 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation,
 
     @if (showError()) {
       <!-- role=alert anuncia sem roubar o foco -->
-      <p class="text-xs leading-snug text-destructive" [id]="errorId()" role="alert">{{ errorMessage() }}</p>
+      <p class="text-[length:var(--ucam-typography-caption-font-size)] leading-[var(--ucam-typography-caption-line-height)] text-destructive" [id]="errorId()" role="alert">{{ errorMessage() }}</p>
     }
 
     <!--
@@ -48,7 +54,7 @@ import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation,
     -->
     @if (hint()) {
       <p
-        class="text-xs leading-snug text-muted-foreground"
+        class="text-[length:var(--ucam-typography-caption-font-size)] leading-[var(--ucam-typography-caption-line-height)] text-muted-foreground"
         [class.sr-only]="showError()"
         [id]="hintId()"
       >{{ hint() }}</p>

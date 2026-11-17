@@ -528,12 +528,12 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       font-weight: var(--ucam-typography-action-font-weight);
     }
 
-    /* Densidade compacta: 8 × 12, os mesmos números da folha do Trilho A
-       (.ucam-table--compact). Antes escrevia var(--ucam-space-1), que não
-       existe nos tokens — a regra estava escrita e não pintava. */
+    /* Densidade compacta: 9 × 12 na célula e 8 no cabeçalho, os números da
+       folha do Trilho A desde a ADR-056 (01/10/2026). Ficaram nos 8 e 6 de
+       antes até a paridade da tela viva natureza-form achar (17/11/2026). */
     .ucam-table--compact td,
-    .ucam-table--compact th { padding: 0.5rem var(--ucam-space-inset-sm); }
-    .ucam-table--compact thead th { padding-block: 0.375rem; }
+    .ucam-table--compact th { padding: 0.5625rem var(--ucam-space-inset-sm); }
+    .ucam-table--compact thead th { padding-block: 0.5rem; }
     .ucam-table--compact .ucam-table__acoes .ucam-btn, .ucam-table--compact .td--acoes .ucam-btn { block-size: var(--ucam-size-control-sm); min-inline-size: var(--ucam-size-control-sm); }
 
     /* Largura FIXA, e não 1%: com uma coluna fixa no início, a de seleção gruda
@@ -636,11 +636,18 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
     /* A seta do gatilho herda a tinta do rótulo, como na folha do Trilho A
        (prova de paridade, 05/10/2026). O rótulo não escurece no hover nem
        aberto: fica bordô, como lá (ADR-083). */
+    /* Em repouso o ícone do cabeçalho é secundário, como o .ic do th no A; a
+       tinta de ação fica para a coluna que manda na ordem (abaixo). Herdava o
+       bordô do rótulo (paridade, 17/11/2026). */
+    .ucam-table__coluna ucam-icon { color: var(--ucam-color-text-secondary); }
     th[aria-sort='ascending'] .ucam-table__coluna ucam-icon,
     th[aria-sort='descending'] .ucam-table__coluna ucam-icon { color: var(--ucam-color-action-primary-default); }
+    /* Anel para dentro, como na folha do Trilho A: o gatilho cobre a faixa do
+       cabeçalho e o anel para fora era recortado pelo cartão (sonda foco,
+       17/11/2026). */
     .ucam-table__coluna:focus-visible {
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
-      outline-offset: 2px;
+      outline-offset: -2px;
       border-radius: var(--ucam-radius-sm);
     }
 
