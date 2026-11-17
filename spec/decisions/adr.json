@@ -1604,6 +1604,24 @@
         "link",
         "progress"
       ]
+    },
+    {
+      "id": "ADR-085",
+      "titulo": "A tela renderizada vira portão: oito sondas nas 116 telas, e toda tela viva a menos de 1% da referência",
+      "status": "aceita",
+      "data": "2026-11-17",
+      "contexto": "Os portões do build liam a marcação (spec, obrigatoriedade, regra do anexo). Os defeitos que mais custaram de setembro a novembro só apareciam com a tela aberta — controle que não faz nada, ação que não avisa quem não vê, anel de foco cortado ou sob uma barra grudada — e eram achados por scripts soltos em scratchpad/, com porta fixa, escritos para 22 telas quando já eram 116. A única tela viva (protocolo/naturezas) tinha ido de 0,30% a 8,43% de diferença da referência sem ninguém ver: a referência mudou em 12/10 e o Trilho B ficou em outubro (densidade compacta, item ativo, rótulo, meta da barra).",
+      "decisao": "tools/sondas.mjs roda oito sondas versionadas em tools/sondas/ (erros, nomes, rolagem, alvos, foco, estados, mortos, mudas) em toda tela de docs/t, com Chrome e servidor próprios (tools/lib/cdp.mjs). Achado novo reprova; achado aceito vai em tools/sondas/excecoes.json com motivo e data. tools/check-paridade.mjs roda a prova de paridade em toda tela viva e reprova acima de 1%. Os dois entram no pnpm dist (precisam de navegador), e a autoprova das sondas (telas com defeito plantado) entra no test:tools. O foco que cai sob barra fixa ou grudada é rolado para a vista por focoVisivelScript (WCAG 2.4.11), em todo arranjo.",
+      "consequencias": [
+        "Primeira rodada: estados, nomes, rolagem e alvos limpos nas 116 telas; o vazio da lista ganhou role=status, o anel do cabeçalho da tabela e o da busca global foram para dentro, o toast declarativo passou a falar e a respeitar o campo exigido, e o Gravar nota da correção de redações passou a gravar.",
+        "Trilho B alinhado ao A pela paridade: campo do B ocupa uma trilha da grade de formulário, densidade compacta 9/8 (ADR-056), vão e tipografia do campo, aba com 4px, ícone do cabeçalho em repouso secundário, item ativo da navegação na cor do sistema (ADR-062/083) e seta de Favoritos para cima quando aberto.",
+        "ucam-page-header ganha meta: o fato curto ao lado do título que 80 telas de referência têm e o Trilho B não desenhava.",
+        "Segunda tela viva, protocolo/natureza-form (formulário), a 0,2%; naturezas refeita sobre a referência de 12/10, a 0,77%.",
+        "As sondas e provas de scratchpad/ ficam obsoletas: prova nova se escreve como sonda, com teste de defeito plantado."
+      ],
+      "afeta": [
+        "*"
+      ]
     }
   ]
 }

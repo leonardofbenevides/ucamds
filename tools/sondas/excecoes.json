@@ -1,0 +1,33 @@
+{
+  "$description": "Achados das sondas (tools/sondas.mjs) aceitos com motivo. Cada exceção casa por sonda, tela (ou \"*\") e chave EXATA do achado; a sonda acusa quando uma exceção deixa de aparecer, para ela sair daqui. Exceção não é silêncio: é a decisão escrita, com data, de que o achado é o comportamento certo da tela de referência.",
+  "excecoes": [
+    {
+      "sonda": "mortos",
+      "tela": "vestibular/resultado",
+      "chave": "Ir para o site [button]",
+      "motivo": "Classe b (data-fluxo='b'): leva ao site institucional, fora do conjunto de telas. No app é um link externo; a referência não desenha o destino.",
+      "desde": "2026-11-17"
+    },
+    {
+      "sonda": "mortos",
+      "tela": "vestibular/aprovado",
+      "chave": "Concluir matrícula [button]",
+      "motivo": "Classe b: leva à matrícula on-line do candidato, que não tem tela de referência no Vestibular. Desabilitar o primário da tela de aprovado diria o contrário do que ela comunica.",
+      "desde": "2026-11-17"
+    },
+    {
+      "sonda": "mortos",
+      "tela": "vestibular/provas",
+      "chave": "Filtros [button]",
+      "motivo": "Classe b: o painel de filtros do cadastro de provas não foi desenhado (o recorte da barra já cobre a situação). Decidir se o painel existe é do time do Vestibular.",
+      "desde": "2026-11-17"
+    },
+    {
+      "sonda": "mortos",
+      "tela": "vestibular/redacoes",
+      "chave": "Filtros [button]",
+      "motivo": "Classe b: mesmo caso do cadastro de provas — painel de filtros não desenhado.",
+      "desde": "2026-11-17"
+    }
+  ]
+}

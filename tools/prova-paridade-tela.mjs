@@ -14,8 +14,9 @@
  * conteúdo), porque "3% diferente" não diz onde olhar, e grava o mapa de
  * diferenças em PNG.
  *
- * Não é portão de build: precisa do site construído e de um Chrome. É a régua
- * que diz quanto falta, e o que falta vai para a lista do item 3.
+ * Não roda no build diário: precisa do site construído e de um Chrome. Desde
+ * 17/11/2026 é PORTÃO no `pnpm dist` por tools/check-paridade.mjs, que roda
+ * esta prova em toda tela viva e reprova acima de 1%.
  *
  * Como rodar:
  *   1. pnpm --dir site build

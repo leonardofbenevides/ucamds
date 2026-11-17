@@ -217,8 +217,15 @@ for (const { file, ref } of tokensEmSpecs) {
 
 const adrs = read('decisions/adr.json').decisions;
 const adrIds = new Set(adrs.map((a) => a.id));
+// "sites" é a FAMÍLIA dos Sites: os contratos dela vivem em
+// sites/spec/components/ e quem os valida é tools/validate-sites-spec.mjs.
+// Uma ADR que vale para a família inteira (a 079, base bordô dos Sites) não
+// é contrato faltando.
+const familiaSites = existsSync(join(ROOT, 'sites', 'spec', 'components')) &&
+  readdirSync(join(ROOT, 'sites', 'spec', 'components')).some((f) => f.endsWith('.json'));
 for (const a of adrs) {
   for (const alvo of a.afeta) {
+    if (alvo === 'sites' && familiaSites) continue;
     if (alvo !== '*' && !ids.has(alvo)) {
       avisa('decisions/adr.json', `${a.id} afeta "${alvo}", que ainda não tem contrato`);
     }
