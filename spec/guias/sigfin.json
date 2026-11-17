@@ -391,6 +391,30 @@
         { "termo": "Pronta", "significa": "Linha com documento válido, que pode ser enviada." },
         { "termo": "Enviada ao banco", "significa": "Já mandada ao Sicoob." }
       ]
+    },
+    "agendamento-calculo": {
+      "objetivo": "Gerenciar os cálculos automáticos de mensalidade que rodam mensalmente: acompanhar quando rodaram, pausar ou retomar, executar manualmente e excluir agendamentos.",
+      "quem": "Financeiro (tesouraria).",
+      "tarefas": [
+        {
+          "titulo": "Acompanhar e executar um agendamento",
+          "passos": [
+            "Consulte na tabela as unidades, modalidades, opções configuradas, a última execução e a situação (ativo ou pausado).",
+            "Clique em Atualizar para recarregar a lista e ver o horário da última atualização.",
+            "Para rodar um agendamento fora do dia programado, abra Mais ações na linha desejada e clique em Executar agora."
+          ]
+        },
+        {
+          "titulo": "Pausar, retomar ou excluir",
+          "passos": [
+            "Use as ações da linha para pausar um agendamento sem apagar suas configurações, ou para retomá-lo.",
+            "Ao excluir um agendamento, confirme no diálogo. A exclusão não desfaz o que já foi calculado."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Pausado", "significa": "Agendamento suspenso temporariamente, sem apagar as configurações." }
+      ]
     }
   }
 }
