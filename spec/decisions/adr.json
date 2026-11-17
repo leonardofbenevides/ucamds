@@ -1637,6 +1637,26 @@
       "afeta": [
         "data-table"
       ]
+    },
+    {
+      "id": "ADR-087",
+      "titulo": "Voz editorial: a marca vira fio e serifa, e a cor fica só onde informa",
+      "status": "aceita",
+      "data": "2026-11-17",
+      "contexto": "Em 17/11/2026 o Leonardo pediu o estilo \"mais clean, mas interessante, com mais personalidade e mais sofisticado\". O diagnóstico das telas: a tarja bordô de 72px era o maior bloco de cor da tela e o resto lia como template de SaaS; uma família tipográfica em pesos parecidos, sem um título que se impusesse; e ruído de contorno — pastilha tinta com filete em todo selo, ladrilho tinto em todo item de lista e indicador. Três direções foram aplicadas às telas reais (editorial, grafite preciso, papel quente); a escolhida foi a editorial, com a faixa deixando de ser tarja.",
+      "decisao": "A faixa de marca é papel com um fio bordô de 2px embaixo; logo, marquinha e nome do sistema vão na tinta da ação, e o selo de notificação volta ao laranja. Entra font.display (Newsreader, auto-hospedada) para título de página, de seção, de diálogo, de painel, de vazio, nome do sistema e número grande do indicador — nunca em texto corrido, rótulo, célula ou controle. O selo de estado perde pastilha e filete e fica ponto + palavra (o selo que é botão mantém a pastilha). O ícone de item de lista, de indicador e o ladrilho pequeno de linha perdem o fundo tinto. O item atual da navegação passa a barra de 3px + tinta, sem fundo.",
+      "consequencias": [
+        "Revoga em parte a ADR-083 (tarja bordô em todo app) e a ADR-062 no item ativo da navegação e no ladrilho de conteúdo.",
+        "Trilho B acompanha: aparência brand do app-shell vira papel com fio, título da barra em font.display, selo sem pastilha, item ativo com barra. Paridade das telas vivas: naturezas 0,8%, natureza-form 0,25%.",
+        "check-faixa passa a exigir o fio da faixa de marca; o \"sem papel na tarja\" vale só para a faixa escura."
+      ],
+      "afeta": [
+        "app-shell",
+        "badge",
+        "page-header",
+        "stat",
+        "list-item"
+      ]
     }
   ]
 }

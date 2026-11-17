@@ -673,6 +673,10 @@
     "mono": {
       "$value": "{fontFamily.mono}",
       "$description": "Código, identificadores e número de requerimento."
+    },
+    "display": {
+      "$value": "{fontFamily.serif}",
+      "$description": "A VOZ DA INSTITUIÇÃO (ADR-087, 17/11/2026): título de página, de seção e de diálogo, nome do sistema na faixa e o número grande do indicador. Nunca em texto corrido, rótulo, célula ou controle — ali a interface fala em body."
     }
   },
   "elevation": {

@@ -70,7 +70,7 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
         <!-- A contagem vai DENTRO do h1: quem ouve recebe "Setores, 58" numa
              leitura só, em vez de uma frase de apoio que gastava uma linha. -->
         <h1
-          class="flex items-baseline gap-2 min-w-0 m-0 text-[length:var(--ucam-typography-page-title-font-size)] leading-[var(--ucam-typography-page-title-line-height)] tracking-[var(--ucam-typography-page-title-letter-spacing)] [font-weight:var(--ucam-typography-page-title-font-weight)]"
+          class="flex items-baseline gap-2 min-w-0 m-0 font-[family-name:var(--ucam-font-display)] text-[length:1.625rem] leading-[var(--ucam-typography-page-title-line-height)] tracking-[-0.015em] [font-weight:500]"
         >
           <span class="truncate">{{ title() }}</span>
           @if (count() !== null) {

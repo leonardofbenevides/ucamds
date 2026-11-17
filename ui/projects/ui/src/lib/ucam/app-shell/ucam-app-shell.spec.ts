@@ -84,12 +84,12 @@ describe('UcamAppShell — a faixa de marca e o que gruda sob ela', () => {
     el = f.nativeElement;
   });
 
-  it('a faixa de marca pinta o texto com text-on-brand, que é claro nos dois temas', () => {
-    // text-on-action vira tinta ESCURA no tema escuro (a ação fica clara), e
-    // sobre a superfície de marca, que continua escura, o nome do sistema some.
-    const faixa = el.querySelector('ucam-app-shell > div > header')!;
-    expect(faixa.className).toContain('text-[var(--ucam-color-text-on-brand)]');
-    expect(faixa.className).not.toContain('text-on-action');
+  it('a faixa de marca é papel com fio bordô (ADR-087), e a marca vai na tinta da ação', () => {
+    // Era tarja bordô com texto claro; desde 17/11/2026 a marca é fio e tipografia.
+    const faixa = el.querySelector<HTMLElement>('ucam-app-shell > div > header')!;
+    expect(faixa.className).toContain('bg-[var(--ucam-color-surface-default)]');
+    expect(faixa.className).toContain('text-[var(--ucam-color-text-primary)]');
+    expect(faixa.style.boxShadow).toContain('var(--ucam-color-action-primary-default)');
   });
 
   it('declara o degrau da faixa para o que gruda dentro do conteúdo', () => {

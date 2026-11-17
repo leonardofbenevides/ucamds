@@ -9,6 +9,8 @@
 export const familias = [
   { pkg: '@fontsource-variable/geist', arquivo: 'geist', nome: 'Geist Variable' },
   { pkg: '@fontsource-variable/geist-mono', arquivo: 'geist-mono', nome: 'Geist Mono Variable' },
+  // Títulos e números grandes (ADR-087): a voz da instituição.
+  { pkg: '@fontsource-variable/newsreader', arquivo: 'newsreader', nome: 'Newsreader Variable' },
 ];
 
 // Os sites (sites/spec/tokens/primitive.json, ADR-069) têm voz editorial:

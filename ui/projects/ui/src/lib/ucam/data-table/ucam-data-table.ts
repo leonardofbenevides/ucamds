@@ -213,6 +213,7 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
                 [class.ucam-table__col-min]="col.width === 'min'"
                 [class.ucam-table__acoes]="col.type === 'actions'"
                 [class.th--acoes]="col.type === 'actions'"
+                [class.th--num]="col.type === 'number' || col.type === 'currency'"
                 [class.ucam-col--fixa-inicio]="ladoFixo(col) === 'start'"
                 [class.ucam-col--fixa-fim]="ladoFixo(col) === 'end'"
                 [style.--ucam-col-x]="deslocamento(col)"
@@ -653,6 +654,9 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       color: var(--ucam-color-text-primary);
     }
     .ucam-table__coluna:is(:hover, [aria-expanded='true']) ucam-icon { color: var(--ucam-color-text-primary); }
+    /* Cabeçalho numérico: o gatilho encosta à direita, como o .th--num button
+       do Trilho A — a margem de início fica automática (paridade, 17/11/2026). */
+    .ucam-table th.th--num .ucam-table__coluna { margin-inline-start: auto; }
     th[aria-sort='ascending'] .ucam-table__coluna ucam-icon,
     th[aria-sort='descending'] .ucam-table__coluna ucam-icon { color: var(--ucam-color-action-primary-default); }
     /* Anel para dentro, como na folha do Trilho A: o gatilho cobre a faixa do

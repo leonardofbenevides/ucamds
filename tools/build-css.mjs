@@ -4248,6 +4248,19 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   color: var(--ucam-color-text-secondary);
 }
 
+/* SEM PASTILHA (ADR-087, 17/11/2026). O selo de estado era fundo pastel +
+ * filete + ponto + palavra, e era a peça mais repetida da tela — três ou
+ * quatro por linha numa caixa de entrada, cada uma um retângulo de cor
+ * disputando com o dado. Fica o que informa: o ponto na cor do tom
+ * (.ucam-badge__ponto, que o selo já trazia) e a palavra na tinta do tom. O
+ * selo que é BOTÃO ("Falhou · Tentar de novo") mantém a pastilha: ali o fundo
+ * é a promessa de clique. */
+:is(.ucam-badge, .ucam-prazo):not(button) {
+  background: transparent;
+  border-color: transparent;
+  padding-inline: 0;
+}
+
 /* O PASSO (06/10/2026): o número que diz em que ordem a tela se usa. Retorno
  * de quem usou a análise da isenção: "não entendi por onde começar". Com a
  * tela em rolagem única, cada seção que pede um gesto abre com o número —
@@ -5926,12 +5939,19 @@ ${abaixo('respiro-completo')} {
   --ucam-appbar-control-bg: transparent;
 }
 
-/* Faixa da marca — a tarja bordô do parque legado, para quem ainda a quer.
- * Deixou de ser o default: ver a nota em .ucam-shell. */
+/* Faixa da marca. ATÉ 17/11/2026 era a tarja bordô cheia de 72px; com a
+ * ADR-087 ("mais clean, com mais personalidade, mais sofisticado") a marca
+ * sai do plano de fundo e vira FIO E TIPOGRAFIA: papel, um fio bordô de 2px
+ * embaixo, e logo, marquinha e nome do sistema na tinta da ação. A faixa
+ * deixa de ser o maior bloco de cor da tela — quem tem cor agora é o que age
+ * e o que diz "você está aqui". */
 .ucam-appbar--marca {
-  --ucam-appbar-bg: var(--ucam-color-surface-brand);
-  --ucam-appbar-fg: var(--ucam-color-text-on-brand);
-  --ucam-appbar-control-bg: transparent;
+  --ucam-appbar-bg: var(--ucam-color-surface-default);
+  --ucam-appbar-fg: var(--ucam-color-text-primary);
+  box-shadow: inset 0 -2px 0 var(--ucam-color-action-primary-default);
+}
+.ucam-appbar--marca :is(.ucam-appbar__logo, .ucam-appbar__system) {
+  color: var(--ucam-color-action-primary-default);
 }
 
 /* O anel de foco da faixa TINTA sai do fg, não do token global.
@@ -5943,8 +5963,8 @@ ${abaixo('respiro-completo')} {
  * Só nas faixas escura e de marca (ADR-048). Na faixa de papel, que é o
  * padrão, o fg é a tinta do texto, quase preta, e o anel saía mais pesado que
  * em qualquer outro lugar da tela. Ali vale o anel cinza de todo o sistema. */
-:is(.ucam-appbar--escura, .ucam-appbar--marca) :focus-visible,
-:is(.ucam-appbar--escura, .ucam-appbar--marca) .ucam-appbar__search:focus-within { outline-color: var(--ucam-appbar-fg); }
+.ucam-appbar--escura :focus-visible,
+.ucam-appbar--escura .ucam-appbar__search:focus-within { outline-color: var(--ucam-appbar-fg); }
 
 /* O QUE ABRE DA FAIXA É PAPEL, e volta ao anel cinza. O painel da busca, o
  * menu da conta, a lista do campus e a grade de sistemas moram DENTRO do
@@ -6100,16 +6120,16 @@ ${cssDaSubpaleta(tokensCss)}
 .ucam-appbar--marca .ucam-appbar__marca.ucam-icon-tile,
 ${PALETA_DO_SISTEMA} .ucam-shell[data-sistema] .ucam-appbar--marca .ucam-appbar__marca {
   background: transparent;
-  color: var(--ucam-appbar-fg);
+  color: var(--ucam-color-action-primary-default);
 }
 
 /* O selo de notificação, na tinta de perigo, sumia sobre a faixa bordô do
  * Protocolo: um anel na cor da própria faixa o separa do fundo. */
 .ucam-appbar--marca .ucam-appbar__selo {
-  /* INVERTIDO: perigo sobre bordô era bordô sobre bordô, e um anel não
-   * bastava. Branco com o número na cor da faixa lê em toda faixa de marca. */
-  background: var(--ucam-appbar-fg);
-  color: var(--ucam-appbar-bg);
+  /* Era INVERTIDO (branco sobre a tarja bordô). Com a faixa de papel da
+   * ADR-087, volta à tinta de notificação, com o anel do papel. */
+  background: var(--ucam-color-notificacao-background);
+  color: var(--ucam-color-notificacao-foreground);
   box-shadow: 0 0 0 2px var(--ucam-appbar-bg);
 }
 
@@ -11927,11 +11947,20 @@ a.ucam-list-item:active,
  * marcação sem efeito seria mentir por atributo. */
 
 .ucam-list-item__figura { flex: none; }
-/* O ladrilho da linha de lista também é do sistema (ADR-062). Regra própria
- * porque a figura da lista repinta o ladrilho mais abaixo na folha. */
+/* O ladrilho da linha de lista é CINZA, e só o da linha escolhida veste a cor
+ * do sistema (17/11/2026: "aqui tem que estar cinza e o selecionado bordô").
+ * Seis ladrilhos bordô numa coluna eram seis portadores de cor iguais, e o
+ * escolhido — já com o fundo sutil da ação — sumia entre eles. Cheio, no par
+ * do botão primário, para não se confundir com o fundo rosado da linha.
+ * Regra própria porque a figura da lista repinta o ladrilho do shell
+ * (ADR-062) mais abaixo na folha. */
 .ucam-shell .ucam-list-item__figura.ucam-icon-tile:not([class*="ucam-icon-tile--a"], [class*="ucam-icon-tile--f"], [class*="ucam-icon-tile--g"], [class*="ucam-icon-tile--p"], [class*="ucam-icon-tile--c"], [class*="ucam-icon-tile--m"]) {
-  background: color-mix(in srgb, var(--ucam-sistema-cor, var(--ucam-color-action-primary-default)) 14%, transparent);
-  color: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
+  background: var(--ucam-color-surface-sunken);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-shell .ucam-list-item[aria-current="true"] .ucam-list-item__figura.ucam-icon-tile:not([class*="ucam-icon-tile--a"], [class*="ucam-icon-tile--f"], [class*="ucam-icon-tile--g"], [class*="ucam-icon-tile--p"], [class*="ucam-icon-tile--c"], [class*="ucam-icon-tile--m"]) {
+  background: var(--ucam-sistema-cor, var(--ucam-color-action-primary-default));
+  color: var(--ucam-color-text-on-action);
 }
 
 /* O ITEM QUE ESCOLHE — lista que governa o painel ao lado (Grupo × Menu).
@@ -15857,6 +15886,71 @@ ${acima('nav-fixa')} {
 /* A busca continua sendo o campo maior da barra: com as datas crescendo, ela
  * encolhia para 245px na Baixa de mensalidades. Peso 2 contra 1. */
 .ucam-toolbar:has(> .ucam-field--data) > .ucam-field--grow { flex-grow: 2; }
+
+/* ------------------------------------------- voz editorial (ADR-087) --- */
+/* 17/11/2026: "mais clean, mas interessante, com mais personalidade e mais
+ * sofisticado". Escolhida a direção editorial entre três maquetes aplicadas
+ * às telas: a marca deixa de ser plano de cor e passa a ser VOZ — a serifa
+ * (font.display, Newsreader) nos títulos e no número grande, fios no lugar
+ * de caixas, e cor só onde ela informa. No fim da folha porque muda tamanho e
+ * peso declarados lá em cima com a mesma especificidade. */
+
+/* A serifa da instituição: título de página, seção, diálogo, vazio, e o nome
+ * do sistema na faixa. Peso 500: a serifa a 600 fica pesada em tela. */
+:is(.ucam-viewbar__titulo, .ucam-section__title, .ucam-dialog__title, .ucam-empty__title, .ucam-appbar__system, .ucam-aside__title) {
+  font-family: var(--ucam-font-display);
+  font-weight: 500;
+  font-optical-sizing: auto;
+}
+/* A serifa lê menor que a Geist no mesmo corpo: o título sobe dois degraus. */
+.ucam-viewbar__titulo {
+  font-size: 1.625rem;
+  letter-spacing: -0.015em;
+}
+.ucam-section__title {
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+}
+.ucam-appbar__system {
+  font-size: 1.375rem;
+  letter-spacing: -0.01em;
+}
+
+/* O NÚMERO GRANDE do indicador é a frase mais curta da tela, e a serifa em
+ * 40px é o que o faz ler como manchete e não como célula. */
+.ucam-stat__value {
+  font-family: var(--ucam-font-display);
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 2.5rem;
+  letter-spacing: -0.03em;
+}
+
+/* O ÍCONE NÃO PRECISA DE LADRILHO no conteúdo: o quadrado tinto em cada item
+ * de lista e em cada indicador era a segunda cor mais repetida da tela. O
+ * ladrilho fica onde ele é identidade (marquinha, grade de módulos). */
+:where(.ucam-shell) .ucam-stat__figura,
+.ucam-icon-tile.ucam-list-item__figura,
+:where(.ucam-shell) .ucam-icon-tile--sm:not(.ucam-appbar__marca) {
+  background: transparent;
+  color: var(--ucam-color-text-secondary);
+}
+
+/* "VOCÊ ESTÁ AQUI" COM UM SINAL SÓ: a barra de 3px na borda de início e a
+ * tinta da ação no rótulo, sem fundo — o mesmo desenho da linha escolhida da
+ * tabela (ADR-046). O fundo tinto a 14% deixava a navegação com um bloco de
+ * cor a mais na tela. */
+.ucam-shell .ucam-nav__subitem[aria-current="page"] {
+  background: transparent;
+  color: var(--ucam-color-action-primary-default);
+}
+.ucam-shell .ucam-nav__item[aria-current="page"],
+.ucam-shell .ucam-nav__item[aria-current="page"]:hover {
+  background: transparent;
+  box-shadow: inset 3px 0 0 var(--ucam-color-action-primary-default);
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
 `;
 
 /* ------------------------------------------------------- portão ADR-007 --- */

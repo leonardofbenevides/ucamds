@@ -519,6 +519,10 @@
     },
     "mono": {
       "$value": "\"Geist Mono Variable\", ui-monospace, \"Cascadia Mono\", \"Segoe UI Mono\", Consolas, \"Liberation Mono\", monospace"
+    },
+    "serif": {
+      "$value": "\"Newsreader Variable\", \"Iowan Old Style\", \"Palatino Linotype\", Georgia, serif",
+      "$description": "Newsreader, auto-hospedada como a Geist (ADR-087, 17/11/2026). Serifa de texto com eixo óptico, desenhada para ler bem em tela."
     }
   },
   "alpha": {
