@@ -384,7 +384,7 @@
       "nome": "navGroups",
       "tipo": "UcamNavGroup[]",
       "default": "[]",
-      "descricao": "Os destinos da navegação, em grupos: { label?, items: { label, icon?, href?, current?, count?, disabled? }[] }. O item atual declara current e sai com aria-current=\"page\"; count é a contagem ao lado do rótulo. Só entra o que existe: item que não leva a lugar nenhum não se desenha. Vazio, a coluna fica só com o que a aplicação projetar."
+      "descricao": "Os destinos da navegação, em grupos: { label?, items: { label, icon?, href?, current?, count?, disabled? }[] }. O item atual declara current e sai com aria-current=\"page\"; count é a contagem ao lado do rótulo. Só entra o que existe: item que não leva a lugar nenhum não se desenha. Vazio, a coluna fica só com o que a aplicação projetar. Um item com items vira RAMO (Trilho B desde 17/11/2026, o .ucam-nav__item--ramo do A): botão que abre e fecha a lista de subitens { label, href, current, disabled }, sem ícone, com o fio alinhado ao centro do ícone do pai; nasce aberto quando contém a página atual."
     },
     {
       "nome": "shellLayout",

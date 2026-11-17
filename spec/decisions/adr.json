@@ -1622,6 +1622,21 @@
       "afeta": [
         "*"
       ]
+    },
+    {
+      "id": "ADR-086",
+      "titulo": "O rótulo da coluna volta ao cinza, e o cabeçalho da tabela ganha hover",
+      "status": "aceita",
+      "data": "2026-11-17",
+      "contexto": "Na revisão de 17/11/2026 o Leonardo apontou o cabeçalho da tabela em bordô (\"deveria ser cinza\") e a falta de hover nele (\"kd o hover?\"). A ADR-083 tinha posto o rótulo da coluna na tinta de rótulo, a mesma do nome do campo; numa fileira de seis colunas o bordô lia como seis links. O hover existia na folha, mas pintava o ícone com a mesma cor do repouso: o cabeçalho que abre o menu da coluna não mudava sob o ponteiro.",
+      "decisao": "O rótulo de coluna (thead th) passa a text.secondary nos dois trilhos. O gatilho do cabeçalho ganha, no hover e com o menu aberto, um fundo de 7% da tinta primária atrás do rótulo (6px para fora de cada lado, com margem negativa para não mexer no alinhamento) e rótulo e ícone em text.primary. A seta da coluna que governa a ordem continua na tinta de ação. O nome do campo de formulário segue em text.rotulo (bordô).",
+      "consequencias": [
+        "Revoga em parte a ADR-083: text.rotulo deixa de pintar o cabeçalho de coluna.",
+        "Trilho B: ucam-data-table acompanha (th em text.secondary, hover no .ucam-table__coluna)."
+      ],
+      "afeta": [
+        "data-table"
+      ]
     }
   ]
 }

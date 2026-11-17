@@ -867,6 +867,8 @@ export interface ProjetoTelas {
    *  ao dado gerado desde sempre; só não constava do tipo, e por isso a galeria
    *  de telas não tinha como usá-lo. */
   icone: string;
+  /** A família do sistema (atendimento, financeiro…): dá a cor da pasta em /telas. */
+  categoria: string;
   templates: Tela[];
   /** O guia "Como usar" (spec/guias/<id>.json), para quem USA o sistema. */
   guia: GuiaSistema | null;

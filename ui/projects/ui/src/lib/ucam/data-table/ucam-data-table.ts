@@ -402,8 +402,8 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
       text-align: start;
       /* Caixa NATURAL no cabeçalho — ADR-003. */
       font-weight: var(--ucam-typography-label-font-weight);
-      /* Tinta de rótulo, bordô (ADR-083), como a folha do Trilho A. */
-      color: var(--ucam-color-text-rotulo);
+      /* Cinza (ADR-086), como a folha do Trilho A. */
+      color: var(--ucam-color-text-secondary);
       background: var(--ucam-color-surface-default);
       border-block-end: 1px solid var(--ucam-color-border-default);
       /* OS MESMOS RECUOS DA FOLHA DO TRILHO A (03/10/2026). A prova de
@@ -640,6 +640,19 @@ const ALINHAMENTO: Record<UcamColumnType, 'start' | 'end' | 'center'> = {
        tinta de ação fica para a coluna que manda na ordem (abaixo). Herdava o
        bordô do rótulo (paridade, 17/11/2026). */
     .ucam-table__coluna ucam-icon { color: var(--ucam-color-text-secondary); }
+    /* Hover e menu aberto (ADR-086): fundo leve atrás do rótulo, rótulo e
+       ícone na tinta primária, como o th > button do Trilho A. */
+    .ucam-table__coluna {
+      padding-inline: 0.375rem;
+      margin-inline: -0.375rem;
+      border-radius: var(--ucam-radius-control-sm);
+      transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard), color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+    }
+    .ucam-table__coluna:is(:hover, [aria-expanded='true']) {
+      background: color-mix(in srgb, var(--ucam-color-text-primary) 7%, transparent);
+      color: var(--ucam-color-text-primary);
+    }
+    .ucam-table__coluna:is(:hover, [aria-expanded='true']) ucam-icon { color: var(--ucam-color-text-primary); }
     th[aria-sort='ascending'] .ucam-table__coluna ucam-icon,
     th[aria-sort='descending'] .ucam-table__coluna ucam-icon { color: var(--ucam-color-action-primary-default); }
     /* Anel para dentro, como na folha do Trilho A: o gatilho cobre a faixa do

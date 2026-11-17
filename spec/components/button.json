@@ -168,6 +168,12 @@
       "descricao": "Default explícito 'button' — o default do HTML é 'submit' e causa envio acidental de formulário."
     },
     {
+      "nome": "href",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Com href, o botão é um <a> com a mesma aparência: para a ação que NAVEGA (Cancelar que volta à lista, \"Nova natureza\" que abre o formulário). A referência do Trilho A escreve <a class=\"ucam-btn\">. Indisponível, o link perde o href e ganha aria-disabled; type não se aplica."
+    },
+    {
       "nome": "iconStart",
       "tipo": "string | null",
       "default": "null",

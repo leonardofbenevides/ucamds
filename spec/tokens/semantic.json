@@ -78,7 +78,7 @@
       },
       "rotulo": {
         "$value": "{wine.600}",
-        "$description": "Tinta de RÓTULO: o nome do campo de formulário e o cabeçalho de coluna de tabela. Entrou em 30/10/2026 (ADR-083), quando as telas que os times subiram vieram com o rótulo em bordô e o retorno foi \"esse bordô mais presente agrada o pessoal\". Só a cor: a caixa continua baixa e o peso continua o do rótulo, porque a caixa alta espaçada lia como fonte mono (ver dsucam-tipografia-tabela). 9,18:1 sobre branco e 8,45:1 sobre o cinza da faixa de rótulos. Não é cor de ação: rótulo não se clica, e por isso não usa action.primary, que no escuro vira preenchimento claro."
+        "$description": "Tinta de RÓTULO: o nome do campo de formulário e o cabeçalho de coluna de tabela. Entrou em 30/10/2026 (ADR-083), quando as telas que os times subiram vieram com o rótulo em bordô e o retorno foi \"esse bordô mais presente agrada o pessoal\". Só a cor: a caixa continua baixa e o peso continua o do rótulo, porque a caixa alta espaçada lia como fonte mono (ver dsucam-tipografia-tabela). 9,18:1 sobre branco e 8,45:1 sobre o cinza da faixa de rótulos. Não é cor de ação: rótulo não se clica, e por isso não usa action.primary, que no escuro vira preenchimento claro. Desde a ADR-086 (17/11/2026) só o nome do CAMPO: o cabeçalho de coluna voltou a text.secondary."
       }
     },
     "action": {

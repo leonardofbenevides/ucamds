@@ -116,7 +116,8 @@ const NATUREZAS: Natureza[] = [
       <!-- A referência desde 12/10/2026 ("simples, uma linha"): sem trilha, sem
            Exportar, sem seleção e sem linha de apoio; o recorte é por quem abre. -->
       <ucam-page-header variante="barra" title="Naturezas do requerimento">
-        <ucam-button variant="primary" iconStart="plus" (click)="agir('nova')">Nova natureza</ucam-button>
+        <!-- Na referência é <a>: "Nova natureza" abre o formulário. -->
+        <ucam-button variant="primary" iconStart="plus" href="#">Nova natureza</ucam-button>
         <ucam-segmented ucamFerramentas [items]="recortes" [(value)]="recorte" ariaLabel="Quem abre" />
       </ucam-page-header>
 

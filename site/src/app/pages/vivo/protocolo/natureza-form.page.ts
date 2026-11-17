@@ -173,9 +173,7 @@ const ANEXOS = ['Prova corrigida', 'Requerimento assinado', 'Atestado ou comprov
         </div>
 
         <div class="ucam-form-actions ucam-form-actions--sticky">
-          <!-- Cancelar NAVEGA, então é <a>; o ucam-button não tem href, e o
-               link leva a classe do botão, como na referência. -->
-          <a class="ucam-btn ucam-btn--ghost" href="#">Cancelar</a>
+          <ucam-button variant="ghost" href="#">Cancelar</ucam-button>
           <ucam-button variant="primary" iconStart="check" (click)="anunciar('Natureza ' + descricao() + ' criada. Ela recebe pedidos nas unidades com destino.')">Criar natureza</ucam-button>
         </div>
       </div>

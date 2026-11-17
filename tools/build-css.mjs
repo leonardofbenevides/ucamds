@@ -3151,10 +3151,11 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
    * surface.subtle: o subtle (#F8FAFC) sobre o branco dá 1,04:1 e a faixa não
    * se via na captura; o sunken é o primeiro degrau que lê como faixa. */
   background: var(--ucam-color-surface-sunken);
-  /* BORDÔ (ADR-083, 30/10/2026): o rótulo da coluna leva a tinta de rótulo,
-   * a mesma do nome do campo. Era text.secondary. Só a cor mudou: caixa,
-   * peso e espaçamento continuam os do papel table-header. */
-  color: var(--ucam-color-text-rotulo);
+  /* CINZA (ADR-086, 17/11/2026: "deveria ser cinza"). A ADR-083 tinha posto
+   * o rótulo da coluna na tinta de rótulo (bordô), a mesma do nome do campo;
+   * numa fileira de seis colunas o bordô lia como seis links. Volta ao
+   * text.secondary; o nome do CAMPO segue bordô. */
+  color: var(--ucam-color-text-secondary);
   font-size: var(--ucam-typography-table-header-font-size);
   font-weight: var(--ucam-typography-table-header-font-weight);
   letter-spacing: var(--ucam-typography-table-header-letter-spacing);
@@ -3928,8 +3929,25 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   transition: color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
 }
 
-.ucam-table th > button:hover .ic {
-  color: var(--ucam-color-text-secondary);
+/* O HOVER DO CABEÇALHO (ADR-086, 17/11/2026: "kd o hover?"). A regra
+ * existia e pintava o ícone com a MESMA cor do repouso: nada mudava sob o
+ * ponteiro, e o cabeçalho que abre menu não dizia que abre. Agora o gatilho
+ * ganha um fundo leve atrás do rótulo (6px para fora de cada lado, sem mexer
+ * no alinhamento — a margem negativa desconta o recuo), e rótulo e ícone vão
+ * para a tinta primária. O mesmo vale para o menu aberto. */
+.ucam-table th > button {
+  padding-inline: 0.375rem;
+  margin-inline: -0.375rem;
+  border-radius: var(--ucam-radius-control-sm);
+  transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
+              color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+.ucam-table th > button:is(:hover, [aria-expanded="true"]) {
+  background: color-mix(in srgb, var(--ucam-color-text-primary) 7%, transparent);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-table th > button:is(:hover, [aria-expanded="true"]) .ic {
+  color: var(--ucam-color-text-primary);
 }
 
 /* A coluna que manda: a seta ganha a tinta cheia e troca de desenho (um

@@ -70,8 +70,23 @@ import { UcamSelect, type UcamOption } from '../select/ucam-select';
  * fronteira do Trilho A, e a mesma razão: em 1024px a coluna de 19,875rem
  * come um quinto da janela.
  */
+/** Destino dentro de um ramo (o .ucam-nav__subitem do Trilho A): sem ícone. */
+export interface UcamNavSubItem {
+  label: string;
+  href?: string;
+  current?: boolean;
+  disabled?: boolean;
+}
+
 export interface UcamNavItem {
   label: string;
+  /**
+   * RAMO (17/11/2026): com items, o item não navega — abre e fecha a lista de
+   * subitens, como Etapas e Tabelas no SigFin. Nasce aberto quando contém a
+   * página atual. Faltava no Trilho B, e SigFin, Gerencial e Extensão não
+   * podiam ser montados em Angular.
+   */
+  items?: UcamNavSubItem[];
   // O tipo do ícone é FECHADO: nome fora do conjunto curado (spec/icons.json)
   // não compila, em vez de virar quadrado vazio em produção.
   icon?: UcamIconName;
@@ -832,7 +847,50 @@ export type UcamSystemCategory =
               }
               <div class="flex flex-col gap-0.5">
                 @for (item of grupo.items; track item.label) {
-                  <ng-container [ngTemplateOutlet]="itemNav" [ngTemplateOutletContext]="{ $implicit: item, fixado: false }" />
+                  @if (item.items?.length) {
+                    <!-- RAMO: o .ucam-nav__item--ramo do Trilho A. Botão, não
+                         link — não leva a lugar nenhum, abre a lista. -->
+                    <button
+                      type="button"
+                      class="relative flex w-full min-h-[var(--ucam-size-control-lg)] cursor-pointer items-center gap-[var(--ucam-space-inline-sm)] rounded-[var(--ucam-radius-control)] border border-transparent bg-transparent py-[var(--ucam-space-inline-xs)] text-start text-[length:var(--ucam-typography-body-sm-font-size)] leading-5 text-[var(--ucam-color-text-secondary)] transition-colors hover:bg-[var(--ucam-color-interaction-hover)] hover:text-[var(--ucam-color-text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
+                      [class]="recolhida() ? 'justify-center px-0' : 'px-[var(--ucam-space-inset-sm)]'"
+                      [attr.aria-expanded]="ramoAberto(item)"
+                      [attr.aria-controls]="idRamo(item)"
+                      [attr.title]="recolhida() ? item.label : null"
+                      (click)="alternaRamo(item)"
+                    >
+                      @if (item.icon) {
+                        <ucam-icon [name]="item.icon" />
+                      }
+                      <span [class]="recolhida() ? 'sr-only' : 'min-w-0 flex-1 truncate'">{{ item.label }}</span>
+                      @if (!recolhida()) {
+                        <ucam-icon name="chevronDown" size="sm" aria-hidden="true" class="shrink-0 transition-transform" [class.rotate-180]="ramoAberto(item)" />
+                      }
+                    </button>
+                    <div
+                      [id]="idRamo(item)"
+                      class="mt-0.5 flex-col gap-0.5 border-s border-[var(--ucam-color-border-subtle)] ms-[calc(var(--ucam-space-inset-sm)+0.4375rem)] ps-[var(--ucam-space-inset-sm)]"
+                      [class]="ramoAberto(item) && !recolhida() ? 'flex' : 'hidden'"
+                    >
+                      @for (sub of item.items; track sub.label) {
+                        <a
+                          [href]="sub.disabled ? null : (sub.href ?? null)"
+                          [attr.role]="sub.disabled ? 'link' : null"
+                          [attr.aria-disabled]="sub.disabled ? 'true' : null"
+                          [attr.aria-current]="sub.current ? 'page' : null"
+                          class="flex min-h-[var(--ucam-size-control-sm)] items-center gap-[var(--ucam-space-inline-sm)] rounded-[var(--ucam-radius-control)] px-[var(--ucam-space-inset-sm)] py-[var(--ucam-space-inline-xs)] text-[length:var(--ucam-typography-body-sm-font-size)] no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
+                          [class]="sub.current
+                            ? 'bg-[var(--ucam-color-action-primary-subtle)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-text-primary)]'
+                            : sub.disabled
+                              ? 'cursor-default text-[var(--ucam-color-text-disabled)]'
+                              : 'text-[var(--ucam-color-text-secondary)] hover:bg-[var(--ucam-color-interaction-hover)] hover:text-[var(--ucam-color-text-primary)]'"
+                          ><span>{{ sub.label }}</span></a
+                        >
+                      }
+                    </div>
+                  } @else {
+                    <ng-container [ngTemplateOutlet]="itemNav" [ngTemplateOutletContext]="{ $implicit: item, fixado: false }" />
+                  }
                 }
               </div>
             </div>
@@ -1286,6 +1344,20 @@ export class UcamAppShell {
    *  e não por borda: a borda tirava 1px da caixa e centrava marca, busca e
    *  conta meio pixel acima da referência. */
   protected readonly fileteFaixa = computed(() => 'var(--ucam-color-border-subtle)');
+
+  /** Ramos que a pessoa abriu ou fechou; sem escolha, abre o que contém a página atual. */
+  private readonly ramos = signal<ReadonlyMap<string, boolean>>(new Map());
+  protected ramoAberto(item: UcamNavItem): boolean {
+    const escolha = this.ramos().get(item.label);
+    return escolha ?? !!item.items?.some((s) => s.current);
+  }
+  protected alternaRamo(item: UcamNavItem): void {
+    const aberto = this.ramoAberto(item);
+    this.ramos.update((m) => new Map(m).set(item.label, !aberto));
+  }
+  protected idRamo(item: UcamNavItem): string {
+    return this.navId() + '-ramo-' + item.label.normalize('NFD').replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
+  }
 
   protected classesItem(item: UcamNavItem, fixado = false): string {
     // Recolhida, o ícone centra; fixado, a ponta direita guarda o desfixar.

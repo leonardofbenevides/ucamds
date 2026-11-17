@@ -12,6 +12,7 @@ import {
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { UcamIcon, type UcamIconName } from '../icon';
 
 import { ZardButtonComponent } from '../../shared/components/button/button.component';
@@ -99,23 +100,17 @@ const ICON_SIZE_MAP: Record<UcamButtonSize, ZardButtonSizeVariants> = {
 @Component({
   selector: 'ucam-button',
   exportAs: 'ucamButton',
-  imports: [ZardButtonComponent, UcamIcon],
+  imports: [ZardButtonComponent, UcamIcon, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  /* COM href, É LINK (17/11/2026). Cancelar e "Nova natureza" NAVEGAM: na
+     referência são <a class="ucam-btn">, e a tela viva precisava escrever a
+     classe à mão porque o componente só desenhava <button>. Mesma aparência,
+     semântica de link: abre em nova aba, aparece na lista de links do leitor
+     de tela e não leva type. Desabilitado, perde o href e ganha aria-disabled
+     — link não tem disabled. */
   template: `
-    <button
-      #botao
-      z-button
-      [zType]="zType()"
-      [zSize]="zSize()"
-      [class]="extraClasses()"
-      [attr.data-ucam-variant]="variant()"
-      [attr.data-tone]="tone() === 'neutral' ? null : tone()"
-      [attr.type]="type()"
-      [attr.aria-busy]="loading() ? 'true' : null"
-      [attr.aria-label]="ariaLabel()"
-      (click)="onClick($event)"
-    >
+    <ng-template #conteudo>
       @if (loading()) {
         <ucam-icon name="loaderCircle" size="sm" class="motion-safe:animate-spin" />
       } @else if (iconStart()) {
@@ -125,7 +120,39 @@ const ICON_SIZE_MAP: Record<UcamButtonSize, ZardButtonSizeVariants> = {
       @if (iconEnd() && !loading()) {
         <ucam-icon [name]="iconEnd()!" size="sm" data-icon="inline-end" />
       }
-    </button>
+    </ng-template>
+    @if (href()) {
+      <a
+        #botao
+        z-button
+        [zType]="zType()"
+        [zSize]="zSize()"
+        [class]="extraClasses()"
+        [attr.data-ucam-variant]="variant()"
+        [attr.data-tone]="tone() === 'neutral' ? null : tone()"
+        [attr.href]="disabled() ? null : href()"
+        [attr.role]="disabled() ? 'link' : null"
+        [attr.aria-label]="ariaLabel()"
+        (click)="onClick($event)"
+        ><ng-container [ngTemplateOutlet]="conteudo"
+      /></a>
+    } @else {
+      <button
+        #botao
+        z-button
+        [zType]="zType()"
+        [zSize]="zSize()"
+        [class]="extraClasses()"
+        [attr.data-ucam-variant]="variant()"
+        [attr.data-tone]="tone() === 'neutral' ? null : tone()"
+        [attr.type]="type()"
+        [attr.aria-busy]="loading() ? 'true' : null"
+        [attr.aria-label]="ariaLabel()"
+        (click)="onClick($event)"
+      >
+        <ng-container [ngTemplateOutlet]="conteudo" />
+      </button>
+    }
   `,
   styles: `
     /* DESABILITADO — ADR-042, o mesmo bloco de .ucam-btn:disabled em
@@ -177,6 +204,9 @@ export class UcamButton {
    * envio acidental de formulário. A base não define type; aqui é explícito.
    */
   readonly type = input<'button' | 'submit' | 'reset'>('button');
+
+  /** Com href o botão é um <a>: para a ação que NAVEGA (Cancelar, "Nova natureza"). */
+  readonly href = input<string | null>(null);
 
   /*
    * NÃO existe output `click`, e a ausência é a correção — a mesma do
@@ -236,8 +266,10 @@ export class UcamButton {
      */
     afterRenderEffect(() => {
       const el = this.botao().nativeElement;
-      aplicarEstado(this.renderer, el, 'disabled', this.disabled() ? '' : null);
-      aplicarEstado(this.renderer, el, 'aria-disabled', this.loading() ? 'true' : null);
+      // Link não tem disabled: indisponível ou carregando, diz por aria-disabled.
+      const link = !!this.href();
+      aplicarEstado(this.renderer, el, 'disabled', !link && this.disabled() ? '' : null);
+      aplicarEstado(this.renderer, el, 'aria-disabled', this.loading() || (link && this.disabled()) ? 'true' : null);
     });
 
     /**
