@@ -28,6 +28,13 @@
       "chave": "Filtros [button]",
       "motivo": "Classe b: mesmo caso do cadastro de provas — painel de filtros não desenhado.",
       "desde": "2026-11-17"
+    },
+    {
+      "sonda": "mortos",
+      "tela": "sigfin/agendamento-calculo",
+      "chave": "Novo agendamento [button]",
+      "motivo": "Classe b: o formulário de novo agendamento ainda não tem tela neste conjunto.",
+      "desde": "2026-11-17"
     }
   ]
 }
