@@ -61,6 +61,56 @@ import { TextoComponent } from '../../../docs/texto.component';
           }
         </div>
 
+        <!-- COMO USAR (spec/guias/<id>.json, 27/10/2026): a única parte desta
+             página escrita para quem USA o sistema, e não para quem o desenha.
+             Por tarefa, não por região da tela; uma tela por bloco, fechado,
+             para a galeria continuar sendo o que se vê primeiro. -->
+        @if (p.guia; as g) {
+          <section class="guia" aria-labelledby="guia-titulo">
+            <h2 id="guia-titulo">Como usar</h2>
+            <p class="guia-app">{{ g.app.para_que }}</p>
+            @if (g.app.quem) {
+              <p class="small muted"><span class="rotulo">Quem usa</span>{{ g.app.quem }}</p>
+            }
+            @for (t of p.templates; track t.id) {
+              @if (g.telas[t.id]; as gt) {
+                <details class="guia-tela">
+                  <summary>{{ t.nome }}</summary>
+                  <p>{{ gt.objetivo }}</p>
+                  <p class="small muted"><span class="rotulo">Quem</span>{{ gt.quem }}</p>
+                  @for (tf of gt.tarefas; track tf.titulo) {
+                    <h3>{{ tf.titulo }}</h3>
+                    <ol>
+                      @for (passo of tf.passos; track $index) {
+                        <li>{{ passo }}</li>
+                      }
+                    </ol>
+                  }
+                  @if (gt.termos?.length) {
+                    <h3>Termos</h3>
+                    <dl>
+                      @for (x of gt.termos; track x.termo) {
+                        <dt>{{ x.termo }}</dt>
+                        <dd>{{ x.significa }}</dd>
+                      }
+                    </dl>
+                  }
+                  @if (gt.duvidas?.length) {
+                    <h3>Dúvidas</h3>
+                    <dl>
+                      @for (x of gt.duvidas; track x.pergunta) {
+                        <dt>{{ x.pergunta }}</dt>
+                        <dd>{{ x.resposta }}</dd>
+                      }
+                    </dl>
+                  }
+                  <p class="small"><a [routerLink]="'/telas/' + p.id + '/' + t.id">Abrir a tela {{ t.nome }}</a></p>
+                </details>
+              }
+            }
+          </section>
+        }
+
         <!-- O MAPA DE FLUXO do sistema (ADR-033): de onde se chega a cada tela
              e o que cada ação faz. Sai do bloco "fluxos" de templates.json,
              que é o mesmo que marca data-fluxo nos botões das telas. -->
@@ -266,6 +316,67 @@ import { TextoComponent } from '../../../docs/texto.component';
       margin-bottom: 0 !important;
       font-family: var(--f-mono);
       font-size: 0.75rem;
+      color: var(--ucam-color-text-secondary);
+    }
+
+    .guia {
+      margin-block-start: 2.5rem;
+      max-inline-size: 48rem;
+    }
+    /* A régua de título de seção do site (.secao-titulo de /comecar). */
+    .guia h2 {
+      margin: 0 0 0.9rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ucam-color-text-secondary);
+    }
+    .guia-app {
+      margin: 0 0 0.5rem;
+    }
+    .guia > p.small {
+      margin-block-end: 1rem;
+    }
+    .guia-tela > p:last-child {
+      margin-block-start: 1rem;
+    }
+    .guia-tela {
+      border-block-start: 1px solid var(--ucam-color-border-default);
+      padding-block: 0.75rem;
+    }
+    .guia-tela:last-of-type {
+      border-block-end: 1px solid var(--ucam-color-border-default);
+    }
+    .guia-tela summary {
+      cursor: pointer;
+      font-weight: 560;
+    }
+    .guia-tela h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--ucam-color-text-primary);
+      margin: 1.25rem 0 0.35rem;
+    }
+    /* O reset do site tira o marcador das listas; aqui a ordem é o conteúdo. */
+    .guia-tela ol {
+      list-style: decimal;
+      margin: 0;
+      padding-inline-start: 1.5rem;
+    }
+    .guia-tela li::marker {
+      color: var(--ucam-color-text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+    .guia-tela li + li {
+      margin-block-start: 0.25rem;
+    }
+    .guia-tela dt {
+      font-weight: 560;
+      margin-block-start: 0.5rem;
+    }
+    .guia-tela dd {
+      margin: 0;
       color: var(--ucam-color-text-secondary);
     }
 

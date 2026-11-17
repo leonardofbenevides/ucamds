@@ -1,0 +1,128 @@
+{
+  "projeto": "relatorios",
+  "app": {
+    "para_que": "Tirar relatórios da vida acadêmica (matrícula, notas, frequência, grade, evasão) na tela, em PDF com timbre, Excel ou Word.",
+    "quem": "Secretarias, coordenações e direção."
+  },
+  "telas": {
+    "catalogo": {
+      "objetivo": "Achar o relatório de que você precisa.",
+      "quem": "Quem tira relatórios acadêmicos.",
+      "tarefas": [
+        {
+          "titulo": "Achar o relatório",
+          "passos": [
+            "Acessados com frequência mostra os quatro que você mais gerou nos últimos 30 dias. Clique para abrir.",
+            "Em Por assunto, os relatórios estão agrupados (Aluno, Avaliação, Curso…). Clique no nome do relatório.",
+            "Se não souber o assunto, digite parte do nome em Buscar relatório."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Falta um relatório que eu usava.", "resposta": "Cada relatório é liberado por unidade e por grupo. Confira a unidade no alto ou peça a liberação ao CPD." }
+      ]
+    },
+    "filtros": {
+      "objetivo": "Dizer ao relatório o que você quer ver antes de gerá-lo.",
+      "quem": "Quem tira relatórios acadêmicos.",
+      "tarefas": [
+        {
+          "titulo": "Preencher e gerar",
+          "passos": [
+            "Os campos com asterisco são obrigatórios (aqui, Período letivo e Curso).",
+            "Escolha primeiro o Período letivo: a lista de cursos depende dele.",
+            "Os outros campos só restringem o resultado. Deixe em Todos para não filtrar.",
+            "Clique em Gerar relatório.",
+            "O quadro Sobre este relatório, à direita, diz o que ele responde, de onde vêm os dados e em que formatos sai."
+          ]
+        }
+      ]
+    },
+    "resultado": {
+      "objetivo": "Ler o resultado do relatório, conferir os totais e exportar.",
+      "quem": "Quem tira relatórios acadêmicos.",
+      "tarefas": [
+        {
+          "titulo": "Ler e exportar",
+          "passos": [
+            "As etiquetas abaixo do título mostram os filtros usados. Para mudar, clique em Alterar filtros.",
+            "Os cartões de cima somam os alunos por situação.",
+            "A tabela vem em páginas; use Anterior, Próxima ou o número da página, no pé.",
+            "Clique no título de uma coluna para ordenar por ela.",
+            "Exportar oferece PDF com timbre, Excel ou Word, sempre com a lista inteira."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Faltas", "significa": "Percentual de faltas do aluno. Acima de 25% da carga horária reprova por frequência." }
+      ]
+    },
+    "matriculados-curso": {
+      "objetivo": "Ler um relatório que vem separado por curso, com uma tabela para cada um.",
+      "quem": "Secretarias e coordenações.",
+      "tarefas": [
+        {
+          "titulo": "Ler o relatório",
+          "passos": [
+            "Cada curso tem o próprio título e a própria tabela, em ordem alfabética.",
+            "O número ao lado do curso conta alunos distintos: quem estuda em dois turnos aparece em duas linhas e conta uma vez.",
+            "O relatório não tem páginas. Role até o fim ou use Exportar para levar a lista inteira."
+          ]
+        }
+      ]
+    },
+    "evasao-curso": {
+      "objetivo": "Ver quantos alunos saíram no período, por motivo e por curso.",
+      "quem": "Coordenações e direção.",
+      "tarefas": [
+        {
+          "titulo": "Ler o relatório",
+          "passos": [
+            "O gráfico de cima soma cada situação em todos os cursos.",
+            "A tabela abaixo detalha cada curso por turno (manhã, tarde, noite).",
+            "Exportar leva a tabela em PDF, Excel ou Word."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Abandono", "significa": "Aluno que tinha matrícula no período anterior e não tem nenhuma no período consultado." },
+        { "termo": "Total em evasão", "significa": "Trancamento + cancelamento + transferência + abandono. Formando não entra." }
+      ]
+    },
+    "diario": {
+      "objetivo": "Ver as faltas de cada aluno de uma turma, aula por aula.",
+      "quem": "Professores, secretarias e coordenações.",
+      "tarefas": [
+        {
+          "titulo": "Ler o diário",
+          "passos": [
+            "Cada linha é um aluno; cada coluna é uma aula, agrupada por mês.",
+            "O número na célula é quantas faltas o aluno teve naquela aula. Um ponto quer dizer presente.",
+            "Role a tabela para a direita para ver as outras aulas. O nome do aluno fica parado.",
+            "O limite de faltas da turma aparece acima da tabela.",
+            "Exportar PDF tira o diário com timbre."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Lado: Frente / Verso", "significa": "A frente do diário traz as faltas por aula; o verso traz o conteúdo dado em cada aula." },
+        { "termo": "· (ponto)", "significa": "Presente na aula." }
+      ]
+    },
+    "horario-aluno": {
+      "objetivo": "Ver a semana de aulas de um aluno num quadro.",
+      "quem": "Secretarias e atendimento.",
+      "tarefas": [
+        {
+          "titulo": "Ler o quadro",
+          "passos": [
+            "As colunas são os dias, de segunda a sábado; as linhas são as faixas de horário.",
+            "Cada célula traz a disciplina, a turma e a sala.",
+            "Duas aulas no mesmo horário aparecem uma sobre a outra na mesma célula: é choque de horário.",
+            "Exportar leva o quadro em PDF, Excel ou Word."
+          ]
+        }
+      ]
+    }
+  }
+}

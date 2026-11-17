@@ -1,0 +1,163 @@
+{
+  "projeto": "isencao",
+  "app": {
+    "para_que": "Analisar quais disciplinas um candidato vindo de outra instituição não precisa cursar de novo, comparando o histórico dele com a matriz do curso.",
+    "quem": "Coordenações de curso, do lado de quem analisa, e o candidato, do lado de quem acompanha."
+  },
+  "telas": {
+    "fila": {
+      "objetivo": "Ver quem pediu isenção, em que pé está cada pedido e abrir o próximo para analisar.",
+      "quem": "Coordenação.",
+      "tarefas": [
+        {
+          "titulo": "Escolher o próximo pedido",
+          "passos": [
+            "A aba Em análise mostra o que ainda está aberto; Concluídas, o que já tem parecer.",
+            "Use Aguardando análise para ver só os pedidos que esperam por você.",
+            "Filtre por curso ou digite o nome ou a inscrição do candidato.",
+            "A coluna Sugestão diz se a análise automática já comparou as disciplinas. Com \"Disponível\", a análise vai mais rápido.",
+            "Clique no nome do candidato para abrir a análise."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Aguardando envio", "significa": "O candidato ainda não mandou nenhum documento." },
+        { "termo": "Aguardando análise", "significa": "Os documentos chegaram e o pedido espera a coordenação." },
+        { "termo": "Aguardando candidato", "significa": "A coordenação pediu um documento e espera o candidato (prazo de 15 dias)." },
+        { "termo": "Sugestão", "significa": "Resultado da comparação automática entre as ementas do candidato e as da matriz. Ajuda, mas quem decide é a coordenação." },
+        { "termo": "Falhou · Tentar de novo", "significa": "A comparação automática não terminou. Clique para rodar de novo." }
+      ]
+    },
+    "analise": {
+      "objetivo": "Decidir, disciplina por disciplina, o que o candidato fica isento de cursar, e fechar o pedido.",
+      "quem": "Coordenação.",
+      "tarefas": [
+        {
+          "titulo": "Analisar e finalizar",
+          "passos": [
+            "Confira a ficha do candidato e os documentos enviados (clipe no alto).",
+            "Na tabela de disciplinas, escolha para cada uma: Isentar, Não isentar ou Pedir documento. A coluna Sugestão mostra o que a comparação automática recomenda e com que semelhança.",
+            "Para ir mais rápido, Aplicar sugestões preenche as disciplinas sem decisão que têm sugestão firme. Confira depois: as que ficaram para você revisar continuam em branco.",
+            "O contador \"N sem decisão\", no alto, leva à próxima disciplina que falta.",
+            "Com tudo decidido, finalize. Se pediu algum documento, o botão vira Enviar pedido ao candidato."
+          ]
+        },
+        {
+          "titulo": "Pedir um documento",
+          "passos": [
+            "Escolha Pedir documento na disciplina e diga, no campo que abre, o que o candidato deve mandar.",
+            "Clique em Enviar pedido ao candidato. O pedido passa a Aguardando candidato, e as decisões já tomadas ficam guardadas.",
+            "Salvar rascunho guarda o que você fez sem enviar nada."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Ementa 92%", "significa": "Quanto a ementa da disciplina cursada se parece com a da matriz." },
+        { "termo": "✦ (estrela pequena)", "significa": "Marca a opção sugerida pela comparação automática naquela linha." },
+        { "termo": "Revisar", "significa": "A sugestão não é firme: a coordenação precisa olhar com atenção." }
+      ],
+      "duvidas": [
+        { "pergunta": "Posso fechar parte das disciplinas e esperar o documento do resto?", "resposta": "Não. Com documento pedido, o pedido inteiro espera o candidato. As decisões já tomadas ficam salvas." }
+      ]
+    },
+    "consulta": {
+      "objetivo": "Ver um pedido já concluído e o parecer entregue ao candidato.",
+      "quem": "Coordenação.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e reabrir",
+          "passos": [
+            "As decisões aparecem fixas em cada disciplina.",
+            "Baixar parecer ou Imprimir parecer tiram o documento entregue.",
+            "Reabrir análise desfaz o parecer e devolve o pedido para análise. Use só se houver erro: o candidato já recebeu o resultado."
+          ]
+        }
+      ]
+    },
+    "sem-documentos": {
+      "objetivo": "Lembrar o candidato que ainda não mandou nenhum documento.",
+      "quem": "Coordenação.",
+      "tarefas": [
+        {
+          "titulo": "Notificar o candidato",
+          "passos": [
+            "O cartão de Documentos diz há quantos dias o pedido está sem documento e quando foi o último aviso.",
+            "O telefone e o e-mail do candidato estão na ficha, para contato direto.",
+            "Clique em Notificar candidato. O aviso fica registrado na atividade."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "O candidato recebe e-mail?", "resposta": "Hoje não: o aviso aparece para ele só na página de acompanhamento. Para garantir, use também o telefone ou o e-mail da ficha." }
+      ]
+    },
+    "acompanhamento": {
+      "objetivo": "Ver em que pé está o seu pedido de isenção e mandar o que a coordenação pediu.",
+      "quem": "Candidato.",
+      "tarefas": [
+        {
+          "titulo": "Mandar o documento pedido",
+          "passos": [
+            "A faixa no alto mostra em que etapa o pedido está.",
+            "Se a coordenação pediu algo, o aviso amarelo diz o quê e até quando.",
+            "Clique em Enviar documento, escreva o que é e escolha o arquivo (PDF, JPG ou PNG, até 10 MB).",
+            "Depois de enviar, o pedido volta para a coordenação analisar."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Por que não vejo quais disciplinas foram isentas?", "resposta": "O resultado de todas sai junto, no parecer. Até lá elas aparecem como Em análise." },
+        { "pergunta": "E se eu perder o prazo?", "resposta": "A análise segue com o que você já mandou." }
+      ]
+    },
+    "resultado": {
+      "objetivo": "Ler o resultado da sua isenção e baixar o parecer.",
+      "quem": "Candidato.",
+      "tarefas": [
+        {
+          "titulo": "Ler o resultado",
+          "passos": [
+            "O alto da página diz quantas disciplinas foram isentas e quantas horas elas somam.",
+            "A tabela mostra o resultado de cada disciplina.",
+            "Clique em Baixar parecer para guardar o documento."
+          ]
+        }
+      ]
+    },
+    "matrizes": {
+      "objetivo": "Ver as matrizes curriculares contra as quais a isenção compara o histórico do candidato.",
+      "quem": "Coordenação.",
+      "tarefas": [
+        {
+          "titulo": "Consultar uma matriz",
+          "passos": [
+            "As abas separam Vigentes, Em extinção e Encerradas.",
+            "Clique no nome da matriz para ver as disciplinas por período e a carga de cada uma.",
+            "O número em Em análise abre a fila só com os pedidos daquele curso."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Em extinção", "significa": "Matriz que ainda vale para quem entrou nela, mas não recebe aluno novo." },
+        { "termo": "Carga na isenção", "significa": "Soma das horas das disciplinas que entram na análise." }
+      ],
+      "duvidas": [
+        { "pergunta": "Como corrijo uma matriz?", "resposta": "As matrizes vêm do SIGU e são só lidas aqui. A correção é feita no SIGU." }
+      ]
+    },
+    "cursos": {
+      "objetivo": "Ver, curso por curso, quem coordena, que matriz vale e se a sugestão automática está ligada.",
+      "quem": "Coordenação.",
+      "tarefas": [
+        {
+          "titulo": "Configurar um curso",
+          "passos": [
+            "Clique no nome do curso ou em Configurar.",
+            "No painel que abre, escolha a coordenação responsável e ligue ou desligue a sugestão automática.",
+            "Clique em Salvar. Vale para os pedidos que chegarem daqui em diante."
+          ]
+        }
+      ]
+    }
+  }
+}

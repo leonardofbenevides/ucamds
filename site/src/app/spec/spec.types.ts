@@ -868,6 +868,27 @@ export interface ProjetoTelas {
    *  de telas não tinha como usá-lo. */
   icone: string;
   templates: Tela[];
+  /** O guia "Como usar" (spec/guias/<id>.json), para quem USA o sistema. */
+  guia: GuiaSistema | null;
+}
+
+export interface GuiaTarefa {
+  titulo: string;
+  passos: string[];
+}
+
+export interface GuiaTela {
+  objetivo: string;
+  quem: string;
+  tarefas: GuiaTarefa[];
+  termos?: { termo: string; significa: string }[];
+  duvidas?: { pergunta: string; resposta: string }[];
+}
+
+export interface GuiaSistema {
+  projeto: string;
+  app: { para_que: string; quem?: string };
+  telas: Record<string, GuiaTela>;
 }
 
 /* ----------------------------------------------------------------- topo --- */

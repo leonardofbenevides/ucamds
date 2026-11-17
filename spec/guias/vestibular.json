@@ -1,0 +1,149 @@
+{
+  "projeto": "vestibular",
+  "app": {
+    "para_que": "Fazer a prova do vestibular pela internet, no seu tempo e no seu aparelho. Do lado da universidade, cadastrar a prova e corrigir as redações.",
+    "quem": "Candidatos e a banca."
+  },
+  "telas": {
+    "conferir-dados": {
+      "objetivo": "Conferir se os dados da sua inscrição estão certos antes da prova.",
+      "quem": "Candidato.",
+      "tarefas": [
+        {
+          "titulo": "Começar",
+          "passos": [
+            "Confira nome, CPF, curso e turno.",
+            "Se algo estiver errado, fale com a secretaria pelo e-mail da página antes de começar.",
+            "Clique em Entrar na prova. O tempo ainda não começa a contar."
+          ]
+        }
+      ]
+    },
+    "instrucoes": {
+      "objetivo": "Saber como a prova funciona antes de o relógio começar.",
+      "quem": "Candidato.",
+      "tarefas": [
+        {
+          "titulo": "Iniciar a prova",
+          "passos": [
+            "Leia o tempo de prova, o número de questões e as orientações.",
+            "Marque \"Li as orientações e estou pronto para começar\".",
+            "Clique em Iniciar prova. A partir daí o tempo conta sem parar."
+          ]
+        }
+      ]
+    },
+    "questao": {
+      "objetivo": "Responder as questões objetivas.",
+      "quem": "Candidato.",
+      "tarefas": [
+        {
+          "titulo": "Responder e andar pela prova",
+          "passos": [
+            "Clique numa alternativa. A resposta é salva na hora (veja \"Salvo\" no alto).",
+            "Próxima e Anterior andam entre as questões. As setas do teclado também.",
+            "O quadro Questões, à direita, mostra todas: cheia é respondida, vazia é em branco. Clique num número para ir até ela.",
+            "Em dúvida? Clique em Marcar para revisar. Um ponto aparece no número da questão.",
+            "Próxima em branco leva à próxima que falta."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Posso mudar uma resposta?", "resposta": "Sim, quantas vezes quiser, até entregar a prova." },
+        { "pergunta": "E se o tempo acabar?", "resposta": "A prova é entregue com o que você respondeu até ali." }
+      ]
+    },
+    "redacao": {
+      "objetivo": "Escrever a redação e entregar a prova.",
+      "quem": "Candidato.",
+      "tarefas": [
+        {
+          "titulo": "Escrever e entregar",
+          "passos": [
+            "Leia os textos de apoio e a proposta.",
+            "Escreva no campo Seu texto. O contador mostra quantos caracteres faltam para o mínimo de 300 (sem contar espaços).",
+            "Clique em Entregar prova. Se houver questão em branco, a tela diz quais e leva até a primeira.",
+            "Confirme a entrega. Depois disso, nada pode ser mudado."
+          ]
+        }
+      ]
+    },
+    "resultado": {
+      "objetivo": "Saber que a prova foi entregue e acompanhar o resultado.",
+      "quem": "Candidato.",
+      "tarefas": [
+        {
+          "titulo": "Esperar o resultado",
+          "passos": [
+            "Com redação, o resultado só sai depois da correção da banca.",
+            "Clique em Ver se já saiu para consultar. Não precisa fazer mais nada até lá."
+          ]
+        }
+      ]
+    },
+    "aprovado": {
+      "objetivo": "Ver o resultado e seguir para a matrícula.",
+      "quem": "Candidato aprovado.",
+      "tarefas": [
+        {
+          "titulo": "Matricular-se",
+          "passos": [
+            "Clique em Concluir matrícula. A matrícula é feita na área do inscrito, em outro sistema.",
+            "Imprimir comprovante tira a confirmação da aprovação."
+          ]
+        }
+      ]
+    },
+    "redacoes": {
+      "objetivo": "Corrigir as redações e dar a nota.",
+      "quem": "Banca.",
+      "tarefas": [
+        {
+          "titulo": "Corrigir",
+          "passos": [
+            "Confira o período e a forma de ingresso nas etiquetas abaixo do título. Para mudar, use Filtros.",
+            "A aba Em espera mostra o que falta corrigir. Clique no candidato.",
+            "Leia a proposta e o texto.",
+            "Digite a nota, de 0 a 10, de meio em meio ponto, e grave. A próxima redação abre sozinha."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Gravei a nota errada.", "resposta": "Atenção: gravar a nota já calcula o resultado e avisa o candidato aprovado por e-mail e SMS. Corrija o quanto antes na aba Corrigidas." }
+      ]
+    },
+    "provas": {
+      "objetivo": "Ver e montar os cadernos da prova online.",
+      "quem": "Banca.",
+      "tarefas": [
+        {
+          "titulo": "Editar a prova",
+          "passos": [
+            "Confira o processo seletivo, a forma de ingresso e a captação nas etiquetas. Use Filtros para trocar.",
+            "Cada cartão é um caderno, com as questões dele. Clique na questão para editar.",
+            "Adicionar questão abre uma questão em branco no caderno.",
+            "Excluir caderno apaga o caderno e todas as questões dele. Pede confirmação."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Caderno", "significa": "Bloco de questões de uma disciplina (Português, Matemática, Redação)." }
+      ]
+    },
+    "questao-form": {
+      "objetivo": "Criar ou editar uma questão de um caderno.",
+      "quem": "Banca.",
+      "tarefas": [
+        {
+          "titulo": "Preencher a questão",
+          "passos": [
+            "Texto de apoio é opcional: é o que o candidato lê antes. Separe os parágrafos com uma linha em branco.",
+            "Escreva o Enunciado: o que o candidato deve fazer.",
+            "Dê a Pontuação (0 a 10, de meio em meio ponto) e a Ordem no caderno.",
+            "Clique em Salvar questão."
+          ]
+        }
+      ]
+    }
+  }
+}

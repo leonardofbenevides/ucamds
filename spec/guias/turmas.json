@@ -1,0 +1,65 @@
+{
+  "projeto": "turmas",
+  "app": {
+    "para_que": "Juntar turmas do SIGU de unidades e cursos diferentes numa turma só do AVA (Moodle), e ver o balanço das disciplinas do período.",
+    "quem": "Coordenação de EAD."
+  },
+  "telas": {
+    "analise": {
+      "objetivo": "Ver as turmas do AVA do período e quais turmas do SIGU estão em cada uma.",
+      "quem": "Coordenação de EAD.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e criar",
+          "passos": [
+            "Escolha o período letivo.",
+            "Os cartões dizem quantas turmas AVA existem e quantas turmas SIGU estão ou não compartilhadas.",
+            "Clique na seta da linha para ver as turmas SIGU de uma turma AVA.",
+            "Clique no nome da turma AVA para abrir o cadastro dela.",
+            "Nova turma AVA cria uma turma; depois você inclui as turmas SIGU."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Turma AVA", "significa": "A sala no Moodle onde os alunos estudam juntos." },
+        { "termo": "Turma SIGU", "significa": "A turma do sistema acadêmico, de uma unidade e um curso." },
+        { "termo": "Migrada", "significa": "A turma já foi criada no Moodle." }
+      ]
+    },
+    "cadastro": {
+      "objetivo": "Ver e mudar uma turma do AVA: o nome e as turmas do SIGU que estão nela.",
+      "quem": "Coordenação de EAD.",
+      "tarefas": [
+        {
+          "titulo": "Incluir e tirar turmas",
+          "passos": [
+            "Compartilhar turma SIGU abre a escolha da turma. Ela precisa ter o mesmo professor, o mesmo turno e os mesmos dias das que já estão.",
+            "Para tirar uma turma, use Remover na linha. A confirmação diz quantos alunos saem do Moodle.",
+            "Renomear troca o nome da turma AVA; o código não muda."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "A turma foi recusada.", "resposta": "Uma turma SIGU só pode estar numa turma AVA. Confira também professor, turno e dias." }
+      ]
+    },
+    "balanco": {
+      "objetivo": "Ver todas as disciplinas do período, das maiores para as menores, e quais faltam ir para o Moodle.",
+      "quem": "Coordenação de EAD.",
+      "tarefas": [
+        {
+          "titulo": "Ler o balanço",
+          "passos": [
+            "Escolha o período letivo.",
+            "Use os recortes Mais de 80 alunos ou Não migradas para ver o que pede atenção.",
+            "Clique na seta da linha para ver unidades, cursos e professores da disciplina."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Compartilhada", "significa": "Disciplina numa turma AVA que junta várias turmas SIGU." },
+        { "termo": "Isolada", "significa": "Turma SIGU que não está em nenhuma turma AVA." }
+      ]
+    }
+  }
+}

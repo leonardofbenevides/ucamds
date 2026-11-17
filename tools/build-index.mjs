@@ -18,6 +18,7 @@ import { listboxSelects, listboxScript } from './lib/select-listbox.mjs';
 import { menuContaScript, estadoScript, descricaoScript, linhaDoTempoScript, abasScript, toastScript, dataScript, intervaloScript, calendarioScript, popoverScript, sliderScript, mascaraScript } from './lib/shell.mjs';
 import { iconCss } from './lib/icon-css.mjs';
 import { comTelasVivas } from './lib/telas-vivas.mjs';
+import { lerGuias } from './lib/guias.mjs';
 import { SISTEMAS, HERDA_MARCA, DESVIO_L, subpaleta } from './lib/subpaleta.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -671,8 +672,12 @@ const densidade = {
 // Angular (site/src/app/pages/vivo/), o `codigo` que o site mostra é o
 // template dela, e `vivo: true` liga a rota /vivo/<projeto>/<tela>. Ver
 // lib/telas-vivas.mjs — o kit de agentes faz o mesmo, pelo mesmo módulo.
+// O GUIA "Como usar" de cada sistema (spec/guias/, 27/10/2026), que a página
+// do sistema mostra ao lado da galeria. O portão é tools/check-guias.mjs.
+const guias = lerGuias(ROOT);
 const telas = comTelasVivas(projetos).map((proj) => ({
   ...proj,
+  guia: guias[proj.id] ?? null,
   // O preview CRU também fica de fora: é a entrada de quem monta a tela, e
   // quem monta a tela é o build. O site só precisa do nome do arquivo.
   templates: proj.templates.map(({ preview: _preview, ...t }) => ({

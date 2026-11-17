@@ -1,0 +1,160 @@
+{
+  "projeto": "extensao",
+  "app": {
+    "para_que": "Cuidar da vida acadêmica da pós-graduação lato sensu e da extensão: calendário, oferta, ficha do aluno, notas, datas de prova, cálculo e comunicação com os alunos.",
+    "quem": "Secretaria acadêmica da pós e da extensão."
+  },
+  "telas": {
+    "disciplinas": {
+      "objetivo": "Manter as disciplinas cadastradas na unidade.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Consultar, criar e inativar",
+          "passos": [
+            "As abas separam Ativas e Inativas. A busca filtra enquanto você digita.",
+            "Clique no nome da disciplina para editar. Nova disciplina abre o formulário.",
+            "Excluir é inativar. Disciplina em uso não pode ser inativada: o botão fica apagado e diz o motivo.",
+            "Disciplina inativa volta com Reativar, na própria linha."
+          ]
+        }
+      ]
+    },
+    "disciplina-form": {
+      "objetivo": "Cadastrar ou editar uma disciplina.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Preencher a disciplina",
+          "passos": [
+            "Sigla (até 10 caracteres) e Descrição (o nome que aparece na grade e no histórico).",
+            "Créditos, Carga horária em horas e Ordem nas listas.",
+            "Clique em Salvar disciplina."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Apareceu um aviso de que a sigla é de uma disciplina inativa.", "resposta": "Salvar vai reativar a disciplina antiga, com os dados dela, em vez de criar outra." }
+      ]
+    },
+    "calendario-academico": {
+      "objetivo": "Montar o calendário do ano: o período, os regimes (semestres e módulos), as atividades e os feriados.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Montar o calendário",
+          "passos": [
+            "Em Período, preencha o Ano e as datas de início e fim. Salve o calendário antes de seguir.",
+            "Na aba Regimes, use Adicionar regime para cada período letivo (1º semestre, 2º semestre, módulos).",
+            "Nas abas Atividades e Feriados, inclua o que acontece no ano.",
+            "Clique em Salvar calendário."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Regime", "significa": "Um período letivo dentro do ano. Disciplina oferecida, data de prova e cálculo acadêmico escolhem um regime." }
+      ],
+      "duvidas": [
+        { "pergunta": "Os feriados tiram aula da grade?", "resposta": "Hoje não: as aulas são geradas para todo dia do regime, com ou sem feriado." }
+      ]
+    },
+    "aluno": {
+      "objetivo": "Ver e corrigir o cadastro de um aluno.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Editar a ficha",
+          "passos": [
+            "O cabeçalho mostra matrícula, curso e turma.",
+            "Use as abas para ir a cada parte: dados pessoais, documentos, endereço e telefones, escolaridade, documentos digitalizados.",
+            "Mude o que precisar e clique em Salvar alterações. Descartar alterações volta ao que estava.",
+            "O botão Disciplinas, no alto, abre as inscrições do aluno."
+          ]
+        }
+      ]
+    },
+    "aluno-disciplinas": {
+      "objetivo": "Ver e mudar as disciplinas em que o aluno está inscrito.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Inscrever o aluno",
+          "passos": [
+            "Use as abas de regime para ver um semestre por vez.",
+            "Clique em Adicionar disciplina e escolha entre as oferecidas no curso do aluno.",
+            "A inscrição entra como Cursando."
+          ]
+        }
+      ]
+    },
+    "lancamento-notas": {
+      "objetivo": "Lançar as notas de uma prova para todos os alunos de uma turma.",
+      "quem": "Secretaria acadêmica e professores.",
+      "tarefas": [
+        {
+          "titulo": "Lançar",
+          "passos": [
+            "Na barra de filtros, escolha da esquerda para a direita: Calendário, Regime, Curso, Disciplina oferecida e Turma.",
+            "No último filtro, Prova em lançamento, escolha a prova cujas notas você vai digitar. Só a coluna dela fica editável.",
+            "Digite as notas. Vírgula ou ponto, tanto faz. A nota máxima aparece acima da tabela.",
+            "Clique em Salvar notas, no pé. Descartar alterações volta tudo ao que estava gravado."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "A média não aparece.", "resposta": "A média e a situação (aprovado ou reprovado) só saem depois do Cálculo acadêmico." },
+        { "pergunta": "Apaguei uma nota.", "resposta": "Nota apagada ou zero é gravada como excluída." }
+      ]
+    },
+    "calculo-academico": {
+      "objetivo": "Calcular média, coeficiente de rendimento e situação (aprovado ou reprovado) dos alunos.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Rodar o cálculo",
+          "passos": [
+            "Escolha o Calendário e o Regime no alto.",
+            "Em O que calcular, deixe ligadas as partes que vão rodar. O normal é deixar as quatro.",
+            "Escolha a aba do recorte: por curso, por disciplina oferecida, por turma ou por aluno.",
+            "Marque as linhas e clique em Calcular. O andamento chega pelas notificações (sino), e a tela fica livre."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "CR", "significa": "Coeficiente de rendimento: a média ponderada pelos créditos das disciplinas concluídas." },
+        { "termo": "Sem pedido", "significa": "Ninguém pediu o cálculo para essa linha ainda." },
+        { "termo": "Na fila", "significa": "O cálculo foi pedido e espera a vez no servidor." }
+      ]
+    },
+    "datas-de-prova": {
+      "objetivo": "Marcar as datas das provas de uma disciplina oferecida.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Marcar as datas",
+          "passos": [
+            "Na barra de filtros, escolha Calendário, Regime, Curso e Disciplina oferecida.",
+            "A tabela mostra as provas da disciplina que já têm data. A frase acima dela diz o que falta.",
+            "Clique em Adicionar data, escolha a prova, a data e o horário."
+          ]
+        }
+      ]
+    },
+    "envio-email": {
+      "objetivo": "Mandar um e-mail para muitos alunos de uma vez.",
+      "quem": "Secretaria acadêmica.",
+      "tarefas": [
+        {
+          "titulo": "Enviar",
+          "passos": [
+            "Em Destinatários, clique em Adicionar grupo e escolha: alunos de um curso, de uma turma ou pessoas digitadas uma a uma.",
+            "O total soma os grupos. Quem está em dois grupos recebe dois e-mails.",
+            "Se quiser, escolha um Modelo: ele preenche assunto e mensagem.",
+            "Escreva o Assunto e a Mensagem.",
+            "Clique em Enviar e-mail e confirme. O envio aparece em Envios recentes."
+          ]
+        }
+      ]
+    }
+  }
+}

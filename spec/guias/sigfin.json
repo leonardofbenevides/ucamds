@@ -1,0 +1,396 @@
+{
+  "projeto": "sigfin",
+  "app": {
+    "para_que": "Cuidar do dinheiro da universidade: o caixa do dia, o cálculo e a cobrança das mensalidades, bolsas, convênios e a troca de arquivos com os bancos e com a Principia.",
+    "quem": "Tesouraria, caixa e controladoria."
+  },
+  "telas": {
+    "movimento-caixa": {
+      "objetivo": "Conferir e fechar o seu caixa do dia: o que entrou, o que saiu e quanto ficou em cada forma de pagamento.",
+      "quem": "Quem opera o caixa.",
+      "tarefas": [
+        {
+          "titulo": "Conferir o dia",
+          "passos": [
+            "Confira a Data no alto. O caixa é seu e do dia: mostra só o que você lançou naquela data.",
+            "Os quatro números se somam assim: saldo anterior + total recebido − total de saída = saldo do dia.",
+            "A tabela Lançamentos do dia lista cada entrada e saída na ordem em que aconteceram.",
+            "O quadro Em caixa, à direita, divide o saldo por forma de pagamento (dinheiro, cartão, cheque)."
+          ]
+        },
+        {
+          "titulo": "Lançar e fechar",
+          "passos": [
+            "Para registrar uma entrada ou saída que não veio de boleto, clique em Registrar lançamento.",
+            "No fim do expediente, clique em Fechar caixa. Depois de fechado, não se lança mais nada naquele dia.",
+            "Use Imprimir para tirar o boletim do caixa."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Saldo anterior", "significa": "O que ficou no seu caixa no fechamento do dia anterior." },
+        { "termo": "Movimentação", "significa": "Valores que passam pelo caixa sem entrar no saldo, como vale e banco tesouraria." },
+        { "termo": "Vale", "significa": "Dinheiro que sai do caixa para uma pessoa ou fornecedor e que depois tem acerto (devolução ou complemento)." }
+      ],
+      "duvidas": [
+        { "pergunta": "Lancei errado. Como apago?", "resposta": "Lançamento não se apaga nem se edita: faz-se o estorno. O original continua na lista, mas sai dos totais." }
+      ]
+    },
+    "calculo-mensalidade": {
+      "objetivo": "Calcular a mensalidade de um aluno, com os descontos e as datas, e emitir o boleto.",
+      "quem": "Tesouraria e atendimento financeiro.",
+      "tarefas": [
+        {
+          "titulo": "Calcular e emitir",
+          "passos": [
+            "Em Matrícula ou nome, digite e escolha o aluno. O quadro abaixo confirma curso, unidade e plano.",
+            "Confira a Referência (o mês cobrado), o Vencimento e a data limite do desconto (Desconto até).",
+            "Ligue Rematrícula se a cobrança for da rematrícula. Ligue Registrar boleto se o boleto deve ser registrado no banco, e escolha a Agência.",
+            "Clique em Calcular mensalidade. O Resultado mostra cada parte do valor: tabela, convênio, bolsa e descontos.",
+            "No resultado, copie a linha digitável, envie por e-mail ou imprima o boleto."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Referência", "significa": "O mês da mensalidade que está sendo cobrada (mm/aaaa)." },
+        { "termo": "Desconto até", "significa": "Até esse dia o aluno paga com o desconto de pontualidade." }
+      ],
+      "duvidas": [
+        { "pergunta": "Apareceu que não é possível calcular porque já existe boleto.", "resposta": "Mensalidade com boleto emitido só pode ser recalculada pela administração financeira ou pela direção." }
+      ]
+    },
+    "relatorio-filtros": {
+      "objetivo": "Montar o recorte de um relatório financeiro antes de gerá-lo.",
+      "quem": "Tesouraria e controladoria.",
+      "tarefas": [
+        {
+          "titulo": "Gerar o relatório",
+          "passos": [
+            "Preencha a Competência de e até (mês/ano). As duas precisam ser do mesmo ano.",
+            "Escolha a Unidade. Se quiser, restrinja pela Modalidade.",
+            "Para um curso só, digite parte do nome em Curso. Em branco, vêm todos.",
+            "Marque ao menos um Tipo de curso.",
+            "Clique em Gerar relatório. Ele é montado com os dados do SigFin das 7h de hoje."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Preciso de um período que atravessa o ano.", "resposta": "Gere um relatório para cada ano. A consulta de mensalidades em aberto olha um ano por vez." }
+      ]
+    },
+    "inadimplencia": {
+      "objetivo": "Ver quem está com mensalidade vencida no recorte escolhido, quanto deve e desde quando.",
+      "quem": "Tesouraria e controladoria.",
+      "tarefas": [
+        {
+          "titulo": "Ler e exportar o resultado",
+          "passos": [
+            "As etiquetas abaixo do título mostram o recorte usado. Para mudar, clique em Alterar filtros.",
+            "Cada linha é um aluno. Clique na seta à esquerda para ver as parcelas que formam o total.",
+            "A coluna Mais antiga diz o vencimento da parcela mais velha e há quantos dias está em aberto.",
+            "Exportar oferece o resumo por aluno ou todas as parcelas, em PDF ou Excel."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Total em aberto", "significa": "Soma do valor líquido das parcelas vencidas. Não inclui juros, multa nem a bolsa que o aluno perde ao atrasar." }
+      ]
+    },
+    "recebimentos": {
+      "objetivo": "Ver quanto entrou em cada dia do período, banco por banco e na tesouraria.",
+      "quem": "Tesouraria e controladoria.",
+      "tarefas": [
+        {
+          "titulo": "Ler o relatório",
+          "passos": [
+            "As etiquetas abaixo do título mostram o recorte. Data de referência diz se a conta é pela data do pagamento ou pela do crédito na conta.",
+            "Cada linha é um dia útil. Cada coluna é um banco que recebeu no período, mais a tesouraria e o total do dia.",
+            "A última linha soma cada coluna.",
+            "Use Exportar para PDF ou planilha."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Multa e juros", "significa": "Coluna informativa: o valor já está dentro do recebido de cada banco. Não some de novo." }
+      ],
+      "duvidas": [
+        { "pergunta": "Faltam dias na lista.", "resposta": "Dia sem expediente não vira linha. A tela diz quais dias do período foram pulados." }
+      ]
+    },
+    "tipos-bolsa": {
+      "objetivo": "Manter os tipos de bolsa que a unidade concede e como cada um entra no cálculo.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Consultar, criar e inativar",
+          "passos": [
+            "As abas Todos, Ativos e Inativos separam os tipos pela situação. A busca procura por código ou descrição.",
+            "Clique no nome do tipo para editar.",
+            "Novo tipo de bolsa abre o formulário em branco.",
+            "Tipo que alguém já usa não se exclui: inative. Ele sai das escolhas e continua no histórico."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Valor integral", "significa": "Sim quando a bolsa é calculada sobre a mensalidade cheia (bruta), antes dos outros descontos." },
+        { "termo": "Desconto de antecipação", "significa": "Sim quando quem tem esta bolsa também ganha os 5% por pagar até a data do desconto." }
+      ]
+    },
+    "tipo-bolsa-form": {
+      "objetivo": "Cadastrar ou editar um tipo de bolsa.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Preencher o tipo",
+          "passos": [
+            "Código (até 10 caracteres) e Descrição são obrigatórios.",
+            "Em No cálculo da mensalidade, marque o que vale para toda bolsa deste tipo: se cobre o valor integral, se convive com o desconto de antecipação e se retira a correção pelo IGP-M.",
+            "Clique em Salvar tipo de bolsa."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Mudei uma marcação. As mensalidades já calculadas mudam?", "resposta": "Não na hora. Valor integral vale a partir do próximo cálculo; o desconto de antecipação vale já nos recebimentos e boletos seguintes." }
+      ]
+    },
+    "convenios": {
+      "objetivo": "Manter as entidades com que a universidade tem convênio de mensalidade.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Consultar, criar e inativar",
+          "passos": [
+            "As abas Todos, Ativos e Inativos separam os convênios pela situação.",
+            "Clique no nome do convênio para editar.",
+            "Novo convênio abre o formulário em branco.",
+            "Convênio com aluno vinculado não se exclui: inative."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Valor integral", "significa": "O convênio cobre a mensalidade inteira." },
+        { "termo": "Paga dependência", "significa": "O convênio também paga as disciplinas que o aluno refaz." }
+      ],
+      "duvidas": [
+        { "pergunta": "Onde ponho o percentual do convênio?", "resposta": "No vínculo de cada aluno com o convênio, não aqui." }
+      ]
+    },
+    "convenio-form": {
+      "objetivo": "Cadastrar ou editar um convênio.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Preencher o convênio",
+          "passos": [
+            "Código e Descrição são obrigatórios.",
+            "Marque se o convênio cobre o valor integral e se paga também as dependências.",
+            "Clique em Salvar convênio."
+          ]
+        }
+      ]
+    },
+    "bancos": {
+      "objetivo": "Manter os bancos em que a universidade recebe e as agências de cobrança de cada um.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e editar",
+          "passos": [
+            "As abas Todos, Ativos e Inativos separam os bancos pela situação.",
+            "Clique no nome do banco para ver e editar as agências de cobrança.",
+            "Novo banco cadastra o banco; as agências se cadastram depois, dentro dele."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Agência de cobrança", "significa": "Agência, cedente e carteira que aparecem no boleto. É ela que se ativa e desativa." }
+      ]
+    },
+    "banco-form": {
+      "objetivo": "Cadastrar ou editar um banco.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Preencher o banco",
+          "passos": [
+            "Código: o número de compensação do banco, com 3 dígitos (001 Banco do Brasil, 756 Sicoob…). É ele que escolhe o modelo do boleto.",
+            "Sigla e Descrição.",
+            "Clique em Salvar banco. Depois, abra o banco para cadastrar as agências."
+          ]
+        }
+      ]
+    },
+    "feriados-bancarios": {
+      "objetivo": "Manter os dias em que os bancos não abrem, para que vencimento nesses dias passe ao dia útil seguinte.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Manter a lista",
+          "passos": [
+            "A lista vem do feriado mais próximo ao mais distante.",
+            "Novo feriado pede só data e descrição.",
+            "Inativar tira o efeito do feriado sem apagar o registro."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Preciso cadastrar sábado e domingo?", "resposta": "Não. Fim de semana já é dia sem banco." },
+        { "pergunta": "Feriado municipal vale só para a minha unidade?", "resposta": "Não. O feriado vale para todas as unidades." }
+      ]
+    },
+    "feriado-form": {
+      "objetivo": "Cadastrar ou editar um feriado bancário.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Preencher o feriado",
+          "passos": [
+            "Escolha a Data. O dia da semana aparece sozinho na lista.",
+            "Escreva a Descrição (por exemplo, \"Proclamação da República\").",
+            "Clique em Salvar feriado."
+          ]
+        }
+      ]
+    },
+    "competencia": {
+      "objetivo": "Saber em que ponto está a cobrança do mês e ir direto para a próxima etapa.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Seguir a cobrança do mês",
+          "passos": [
+            "Escolha o mês em Competência, no alto à direita.",
+            "As cinco etapas aparecem na ordem em que se fazem: datas de vencimento, cálculo, envio, baixa e sincronização.",
+            "Cada linha diz a situação (Concluída, Com pendência, Em andamento, Não iniciada) e quanto falta.",
+            "Clique na linha para abrir a etapa, já no mês escolhido."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Preciso seguir a ordem?", "resposta": "O sistema não trava, mas uma etapa depende da anterior: sem data de vencimento não se calcula, e sem cálculo não há o que enviar." }
+      ]
+    },
+    "calculo-lote": {
+      "objetivo": "Calcular as mensalidades do mês de vários cursos de uma vez, conferir e salvar.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Calcular, conferir e salvar",
+          "passos": [
+            "Escolha a Competência, a Modalidade e as Unidades na barra do alto.",
+            "Ajuste as chaves abaixo: incluir formandos, incluir alunos sem bolsa, só os ainda não calculados.",
+            "Clique em Calcular. A tabela mostra cada curso com a quantidade de mensalidades e o valor total.",
+            "Clique na seta da linha para conferir aluno por aluno.",
+            "Marque os cursos certos e clique em Salvar mensalidades, na barra que aparece."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Sem data de vencimento", "significa": "O curso não tem data cadastrada para o mês e não pode ser calculado. Cadastre em Datas de vencimento." },
+        { "termo": "Processos", "significa": "Cálculos rodando agora, seus e de outras pessoas. O que termina sai da lista." }
+      ]
+    },
+    "vencimentos-lote": {
+      "objetivo": "Definir as datas de vencimento e de desconto do mês para vários planos de uma vez.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Trocar as datas",
+          "passos": [
+            "Use os filtros acima da tabela para achar os planos: competência, tipo de curso e unidade.",
+            "Marque os planos que vão receber as datas novas.",
+            "Em Novas datas, preencha o Vencimento (até quando paga sem multa) e o Pagamento antecipado (até quando vale o desconto).",
+            "Clique em Aplicar aos marcados. A coluna Situação mostra o andamento."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "A data cai num feriado.", "resposta": "O vencimento passa ao dia útil seguinte e a data do desconto ao dia útil anterior, sem você fazer nada." }
+      ]
+    },
+    "envio-mensalidades": {
+      "objetivo": "Mandar à Principia as mensalidades calculadas do mês, para que os boletos sejam emitidos e cobrados.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Enviar",
+          "passos": [
+            "Confira a Competência na barra de filtros.",
+            "Use a aba Não enviadas para ver só o que falta.",
+            "Marque as mensalidades na tabela. O botão Enviar, no alto, diz quantas vão.",
+            "Clique em Enviar e confirme. A coluna Envio passa a \"Enviada\"."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Estado", "significa": "Como a mensalidade saiu do cálculo: Novo (calculada pela primeira vez), Alterado (recalculada) ou Estornado (cancelada)." },
+        { "termo": "Envio", "significa": "Se a mensalidade já foi mandada à Principia." }
+      ],
+      "duvidas": [
+        { "pergunta": "O botão Enviar está apagado.", "resposta": "Marque ao menos uma mensalidade na tabela. Passe o ponteiro sobre o botão para ler o motivo." }
+      ]
+    },
+    "baixa-mensalidades": {
+      "objetivo": "Dar baixa nas mensalidades que a Principia informou como pagas, para que saiam do em aberto.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Dar baixa",
+          "passos": [
+            "Escolha o intervalo de Vencimento e, se quiser, a Unidade.",
+            "Use a aba Pagos para ver só o que pode ser baixado.",
+            "Marque os títulos e clique em Dar baixa, no alto. Confirme.",
+            "Os títulos vão para a fila de baixa. A lista se atualiza quando o banco de dados confirma."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Dar baixa", "significa": "Registrar no SigFin que o título foi pago. Não é baixar arquivo." },
+        { "termo": "Na fila de baixa", "significa": "Já mandado para baixa, esperando a confirmação." }
+      ],
+      "duvidas": [
+        { "pergunta": "Marquei um título pendente e ele não foi.", "resposta": "Só título pago entra na baixa. O aviso diz quantos ficaram de fora." }
+      ]
+    },
+    "sincronizacao-principia": {
+      "objetivo": "Achar as mensalidades do mês que não chegaram à Principia, entender o motivo e reenviar as que podem ir.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Reenviar o que falta",
+          "passos": [
+            "Escolha a Competência na barra de filtros.",
+            "A coluna Motivo diz por que cada mensalidade não chegou. Role a tabela para a direita se ela estiver cortada.",
+            "Use a aba Podem ser reenviadas para ver só as que vão.",
+            "Marque as linhas e clique em Sincronizar, na barra que aparece."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Dados insuficientes", "significa": "Falta algo no cadastro do aluno (CPF do responsável, endereço). Corrija o cadastro antes de reenviar." }
+      ],
+      "duvidas": [
+        { "pergunta": "Apareceu \"Já existe uma consulta em andamento\".", "resposta": "Só uma consulta à Principia roda por vez no sistema inteiro. Espere a outra terminar." }
+      ]
+    },
+    "pagamentos-sicoob": {
+      "objetivo": "Pagar fornecedores e pessoas em lote pelo Sicoob a partir de uma planilha.",
+      "quem": "Tesouraria.",
+      "tarefas": [
+        {
+          "titulo": "Carregar e enviar",
+          "passos": [
+            "Clique em Escolher planilha e escolha o arquivo .xlsx. A coluna de documento precisa se chamar CPF, CPF/CNPJ ou CPFCNPJ.",
+            "A tela confere cada CPF e CNPJ. As linhas com documento inválido aparecem em vermelho, com o motivo.",
+            "Corrija essas linhas na planilha e carregue de novo, ou siga sem elas.",
+            "Marque as linhas prontas e clique em Enviar pagamentos. Confirme."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Pronta", "significa": "Linha com documento válido, que pode ser enviada." },
+        { "termo": "Enviada ao banco", "significa": "Já mandada ao Sicoob." }
+      ]
+    }
+  }
+}

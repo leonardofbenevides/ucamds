@@ -1,0 +1,152 @@
+{
+  "projeto": "captacao",
+  "app": {
+    "para_que": "Acompanhar a captação de alunos: quantos se inscreveram, foram aprovados e se matricularam, a rematrícula dos veteranos, as metas, o dinheiro do semestre e a bolsa social.",
+    "quem": "Gestão comercial e direção."
+  },
+  "telas": {
+    "painel": {
+      "objetivo": "Ver o semestre em números: alunos por modalidade, evasão, recebido e a receber.",
+      "quem": "Gestão comercial.",
+      "tarefas": [
+        {
+          "titulo": "Ler o painel",
+          "passos": [
+            "Escolha o semestre no alto à direita.",
+            "Os cartões de cima comparam os alunos de cada modalidade com o mesmo semestre do ano anterior.",
+            "Ver os mesmos dados em tabela, abaixo do gráfico, mostra os números exatos.",
+            "Em Por unidade e polo, recorte pela modalidade e clique na seta da linha para abrir os cursos da unidade."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Evadido", "significa": "Aluno do semestre que não está matriculado nem formando: trancado, transferido, não matriculado ou formado." },
+        { "termo": "A receber", "significa": "Parcelas do semestre ainda não pagas, vencidas ou não." }
+      ]
+    },
+    "financeiro": {
+      "objetivo": "Ver o dinheiro do mês: quantos pagaram, quanto foi faturado, recebido e falta receber.",
+      "quem": "Gestão comercial e financeira.",
+      "tarefas": [
+        {
+          "titulo": "Ler o mês",
+          "passos": [
+            "Escolha o Mês e o Regime na barra de filtros.",
+            "Use as abas de modalidade para trocar os números e a tabela.",
+            "Clique na seta de uma unidade para ver os cursos e o ticket médio de cada um.",
+            "Relatórios, no alto, gera as planilhas do servidor."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Regime de caixa", "significa": "Conta pelo dia em que o dinheiro entrou." },
+        { "termo": "Regime de competência", "significa": "Conta pelo mês da parcela, paga ou não." },
+        { "termo": "Ticket médio", "significa": "Valor recebido dividido pelo número de alunos que pagaram." }
+      ]
+    },
+    "captacao": {
+      "objetivo": "Ver o processo seletivo pela situação dos candidatos, por modalidade e por unidade.",
+      "quem": "Gestão comercial.",
+      "tarefas": [
+        {
+          "titulo": "Acompanhar a captação",
+          "passos": [
+            "Escolha o Período de captação.",
+            "Cada cartão de modalidade mostra os candidatos em cada situação. Clique na seta para abrir o detalhe por curso e turno.",
+            "A tabela Por unidade e polo traz os mesmos números por unidade. Clique no nome da unidade para abrir o detalhe.",
+            "Exportar candidatos baixa a lista de uma modalidade."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Pendente → Confirmado → Aprovado → Matriculado", "significa": "A ordem em que o candidato avança. Cada inscrição conta só na situação em que está agora." }
+      ],
+      "duvidas": [
+        { "pergunta": "Os números estão um pouco atrasados.", "resposta": "O servidor atualiza a captação a cada hora cheia." },
+        { "pergunta": "Por que o total passa do número de pessoas?", "resposta": "A contagem é por inscrição: quem se inscreveu em dois cursos conta duas vezes." }
+      ]
+    },
+    "captacao-detalhe": {
+      "objetivo": "Ver uma modalidade em detalhe: situação dos candidatos por turno, curso e unidade.",
+      "quem": "Gestão comercial.",
+      "tarefas": [
+        {
+          "titulo": "Ler o detalhe",
+          "passos": [
+            "As abas Cursos e Unidades mostram a mesma captação por dois lados. Os totais são iguais.",
+            "As colunas M, T e N são os turnos manhã, tarde e noite. I é integral.",
+            "Clique em Captação · graduação, na trilha, para voltar."
+          ]
+        }
+      ]
+    },
+    "rematricula": {
+      "objetivo": "Acompanhar quantos veteranos já se rematricularam.",
+      "quem": "Gestão comercial.",
+      "tarefas": [
+        {
+          "titulo": "Acompanhar",
+          "passos": [
+            "Escolha o período letivo e a aba Presencial ou EAD.",
+            "Já rematriculados diz a parte da turma que já renovou.",
+            "Rematriculados nesta semana conta desde domingo.",
+            "Na tabela por unidade, baixe a lista de alunos para fazer contato com quem falta."
+          ]
+        }
+      ]
+    },
+    "metas": {
+      "objetivo": "Comparar o que foi captado com a meta, curso por curso ou unidade por unidade.",
+      "quem": "Gestão comercial e direção.",
+      "tarefas": [
+        {
+          "titulo": "Ler as metas",
+          "passos": [
+            "Escolha o recorte na barra de filtros: modalidade, período, forma de ingresso, unidade e com que período comparar.",
+            "Os cartões de cima somam o realizado, a meta e quantos cursos bateram a meta.",
+            "Use as abas Curso e Unidade. A seta da linha abre a outra dimensão.",
+            "Diferença negativa é quanto falta; positiva é quanto passou."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Base", "significa": "Matriculados do curso no semestre anterior." },
+        { "termo": "Realizado", "significa": "Pessoas (CPF) matriculadas no período, no retrato de hoje." },
+        { "termo": "Alcançado", "significa": "Realizado sobre a meta. 100% ou mais = meta batida." }
+      ]
+    },
+    "analise-metas": {
+      "objetivo": "Ver onde se concentram inscritos e matriculados e quanto de cada um vira matrícula.",
+      "quem": "Gestão comercial.",
+      "tarefas": [
+        {
+          "titulo": "Ler a análise",
+          "passos": [
+            "Escolha modalidade e período letivo.",
+            "A tabela vem em ordem de matriculados, com o acumulado.",
+            "Use as abas Curso e Unidade para trocar o agrupamento."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Conversão", "significa": "Matriculados sobre inscritos." },
+        { "termo": "Concentração", "significa": "Quantos cursos (ou unidades) fazem até 80% dos matriculados." }
+      ]
+    },
+    "bolsa-social": {
+      "objetivo": "Ver quantos alunos têm bolsa social, de que percentual e em que modalidade.",
+      "quem": "Gestão comercial e direção.",
+      "tarefas": [
+        {
+          "titulo": "Ler e baixar",
+          "passos": [
+            "Escolha o semestre.",
+            "Os cartões dividem os bolsistas por percentual (40%, 50%, 100%).",
+            "A tabela cruza modalidade e percentual.",
+            "Candidatos a bolsa, no alto, baixa a planilha do semestre."
+          ]
+        }
+      ]
+    }
+  }
+}

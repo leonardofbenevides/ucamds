@@ -1,0 +1,63 @@
+{
+  "projeto": "polos",
+  "app": {
+    "para_que": "Acompanhar os polos EAD: a captação de cada polo, o dinheiro do mês e o repasse, e a situação financeira de cada aluno.",
+    "quem": "Gestão de polos EAD."
+  },
+  "telas": {
+    "captacao": {
+      "objetivo": "Ver a captação EAD do período nos polos.",
+      "quem": "Gestão de polos EAD.",
+      "tarefas": [
+        {
+          "titulo": "Ler a captação",
+          "passos": [
+            "Escolha o Período letivo e o Período de captação. Para um polo só, escolha o Polo.",
+            "Os cartões mostram inscritos, aprovados e matriculados, e a conversão.",
+            "Desça para ver por forma de ingresso, por curso e por semana.",
+            "Use o mês para recortar a evolução semanal."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Inscritos", "significa": "Todos os candidatos, em qualquer situação." },
+        { "termo": "Conversão", "significa": "Matriculados sobre inscritos." }
+      ]
+    },
+    "financeiro": {
+      "objetivo": "Ver quanto entrou no mês, quanto vai de repasse para cada polo e quem está inadimplente.",
+      "quem": "Gestão de polos EAD.",
+      "tarefas": [
+        {
+          "titulo": "Ler o mês",
+          "passos": [
+            "Escolha o período letivo e o Mês do pagamento.",
+            "Na aba Repasse, cada linha é um polo. Clique na seta para ver os cursos.",
+            "Para ver o percentual de repasse, escolha um polo só: com vários, ele aparece como traço.",
+            "Na aba Inadimplência, abra o curso para ver os alunos com cobrança vencida."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Repasse", "significa": "A parte do recebido que vai para o polo: 25% até 100 pagantes, 30% de 101 a 200, 35% acima de 200." }
+      ]
+    },
+    "ficha-financeira": {
+      "objetivo": "Ver a situação financeira de cada aluno de um curso num polo.",
+      "quem": "Gestão de polos EAD.",
+      "tarefas": [
+        {
+          "titulo": "Consultar um aluno",
+          "passos": [
+            "Escolha o Período letivo, o Polo e o Curso na barra de filtros.",
+            "Use Com vencida para ver só quem deve.",
+            "Clique na seta da linha para abrir a ficha do aluno: cada mensalidade e acordo, pagos ou não."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Acordo pago", "significa": "Parcelas de acordo de dívida pagas, sobre o total do acordo." }
+      ]
+    }
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "projeto": "diploma",
+  "app": {
+    "para_que": "Levar o diploma do formando do pedido da unidade até a publicação no Diário Oficial: a unidade expede o processo, a Unidade de Registro de Diplomas (URD) analisa, defere e registra no livro, junta os registros em lote, publica e envia o diploma digital. Qualquer pessoa confere um diploma na consulta pública.",
+    "quem": "A secretaria de cada unidade, a equipe da URD e, na consulta pública, qualquer pessoa com o diploma em mãos."
+  },
+  "telas": {
+    "processos": {
+      "objetivo": "Ver os processos de diploma que as unidades expediram, quanto prazo falta em cada um e abrir o próximo para analisar.",
+      "quem": "Equipe da URD.",
+      "tarefas": [
+        {
+          "titulo": "Achar o processo que precisa de você",
+          "passos": [
+            "O recorte no alto separa os processos pela situação: Expedidos, Em análise, Em exigência e Deferidos. O número de cada um diz quantos há.",
+            "Filtre pela unidade ou pelo prazo (até 120, 60 ou 30 dias) para ver primeiro o que vence antes.",
+            "Digite o número do processo ou o nome do aluno na pesquisa.",
+            "Clique no nome do aluno para abrir o processo."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Prazo", "significa": "Quantos dias faltam para o processo vencer. Com 20 dias ou menos, ou já vencido, ele aparece marcado." },
+        { "termo": "Em exigência", "significa": "A URD pediu um documento à unidade e o processo espera a resposta." }
+      ]
+    },
+    "processo": {
+      "objetivo": "Analisar o processo de diploma de um aluno e decidir: deferir, pedir documento ou anular.",
+      "quem": "Equipe da URD.",
+      "tarefas": [
+        {
+          "titulo": "Analisar e deferir",
+          "passos": [
+            "As etapas no alto mostram onde o processo está: aberto, expedido, em análise, deferido, registrado e publicado.",
+            "Confira os dados do aluno e do curso na aba Dados, e os arquivos na aba Documentos.",
+            "Se houver equivalência de disciplinas, confira na aba Equivalências.",
+            "Clique em Deferir. A confirmação diz o que muda; confirme e o processo segue para o registro no livro."
+          ]
+        },
+        {
+          "titulo": "Pedir um documento que falta",
+          "passos": [
+            "Clique em Pedir documento e diga o que falta.",
+            "O pedido entra na aba Exigências e o processo fica Em exigência até a unidade responder."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Onde estão Anular e Marcar como 2ª via?", "resposta": "No menu ⋮ do cabeçalho. Anular guarda o processo com o motivo; ele não é apagado." }
+      ]
+    },
+    "diploma-digital": {
+      "objetivo": "Enviar ao serviço de diploma digital os diplomas registrados num dia e acompanhar a assinatura de cada um.",
+      "quem": "Equipe da URD.",
+      "tarefas": [
+        {
+          "titulo": "Enviar os diplomas do dia",
+          "passos": [
+            "A data de registro já vem com o último dia que tem diploma registrado. Troque-a para ver outro dia.",
+            "O recorte A registrar mostra o que ainda não foi enviado.",
+            "Clique em Registrar na linha do aluno e confira aluno, curso, unidade e registro na confirmação.",
+            "Confirmado, a linha passa a Aguardando assinatura. Quando estiver Assinado, o PDF fica disponível na própria linha."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "2ª via", "significa": "Diploma emitido de novo. Antes de enviar, ele pede a chancela, preenchida com o registro da primeira via." }
+      ]
+    },
+    "criar-lote": {
+      "objetivo": "Juntar diplomas registrados num lote novo, que depois será publicado no Diário Oficial.",
+      "quem": "Equipe da URD.",
+      "tarefas": [
+        {
+          "titulo": "Criar um lote",
+          "passos": [
+            "Use o recorte Sem lote: só diploma sem lote entra num lote novo.",
+            "Se quiser, filtre pela data de registro.",
+            "Marque os diplomas. O botão Criar lote passa a dizer quantos vão.",
+            "Clique em Criar lote e confirme. As linhas mostram o número do lote novo, e o aviso diz quantos entraram e quantos ficaram de fora."
+          ]
+        }
+      ]
+    },
+    "lotes": {
+      "objetivo": "Levar cada lote pelos passos até a publicação: expedir, publicar e baixar o Diário Oficial.",
+      "quem": "Equipe da URD.",
+      "tarefas": [
+        {
+          "titulo": "Fazer o próximo passo de um lote",
+          "passos": [
+            "Cada lote tem uma ação só, na coluna da direita, conforme a situação: Expedir no Cadastrado, Publicar no Expedido e Diário Oficial no Publicado.",
+            "Clique na ação e confirme."
+          ]
+        },
+        {
+          "titulo": "Retirar um diploma de um lote ainda cadastrado",
+          "passos": [
+            "Abra a linha do lote cadastrado: ela mostra os diplomas que estão nele.",
+            "Clique em Retirar no diploma, ou em Cancelar lote para desfazer o lote inteiro."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Onde copio o aviso de registro?", "resposta": "Abra a linha de um lote Expedido: o aviso aparece com o botão Copiar." }
+      ]
+    },
+    "livro": {
+      "objetivo": "Consultar o livro de registro de diplomas de um ano e imprimi-lo.",
+      "quem": "Equipe da URD.",
+      "tarefas": [
+        {
+          "titulo": "Achar uma folha",
+          "passos": [
+            "Escolha o ano. O número do livro vem junto (2026 é o livro 8).",
+            "Pesquise pelo nome do aluno, pelo número de registro ou pelo processo.",
+            "Clique na linha para abrir a folha inteira, com os campos que vão impressos."
+          ]
+        },
+        {
+          "titulo": "Imprimir o livro",
+          "passos": [
+            "Escolha o ano e clique em Imprimir o livro. Sai uma folha por página, com livro, UF e assinatura do dirigente."
+          ]
+        }
+      ]
+    },
+    "consulta": {
+      "objetivo": "Conferir se um diploma da Candido Mendes foi registrado e publicado.",
+      "quem": "Qualquer pessoa com o diploma em mãos: o próprio formado, uma empresa, outra instituição.",
+      "tarefas": [
+        {
+          "titulo": "Validar um diploma",
+          "passos": [
+            "Digite o número do processo, com 11 dígitos, que está no verso do diploma.",
+            "Digite o número do registro, com 8 dígitos, que está ao lado do livro e da folha.",
+            "Clique em Validar diploma."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "E se o diploma tiver QR code?", "resposta": "Leia o QR code: ele abre esta página já preenchida." },
+        { "pergunta": "Apareceu que o diploma não foi encontrado.", "resposta": "O aviso repete os números digitados. Confira cada dígito no verso do diploma e tente de novo." }
+      ]
+    },
+    "validacao": {
+      "objetivo": "Mostrar o resultado da validação: se o diploma foi registrado e publicado, de quem é e onde está no livro.",
+      "quem": "Quem validou um diploma na consulta pública.",
+      "tarefas": [
+        {
+          "titulo": "Ler o resultado",
+          "passos": [
+            "A situação vem primeiro, com a data da publicação no Diário Oficial.",
+            "Abaixo estão o nome, o curso, os números do processo e do registro, o livro e a folha e as datas.",
+            "Ao lado, a frente do diploma em texto, como foi impressa.",
+            "Clique em Baixar a publicação para ter a página do Diário Oficial, ou em Validar outro diploma para começar de novo."
+          ]
+        }
+      ]
+    }
+  }
+}

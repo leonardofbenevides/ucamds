@@ -1,0 +1,368 @@
+{
+  "projeto": "gerencial",
+  "app": {
+    "para_que": "Dizer quem entra no SIGU e o que cada pessoa vê: contas de usuário, grupos, menus das aplicações e as permissões que ligam uns aos outros.",
+    "quem": "CPD e quem administra acessos na unidade."
+  },
+  "telas": {
+    "inicio": {
+      "objetivo": "Ver o que está impedindo alguém de trabalhar na unidade e resolver.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Resolver as pendências",
+          "passos": [
+            "Confira a unidade no alto: os números são só dela.",
+            "Em Precisa de atenção, cada linha é um problema (conta bloqueada, sem grupo, aguardando primeiro acesso, grupo sem menu).",
+            "Clique na linha para ir à tela onde ele se resolve.",
+            "Alterações recentes, à direita, mostra as últimas mudanças de acesso. Ver auditoria completa abre a trilha inteira."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Usuário sem grupo", "significa": "Entra no SIGU e não vê nenhum menu." },
+        { "termo": "Grupo sem menu", "significa": "Quem está no grupo não ganha acesso a nada por ele." }
+      ]
+    },
+    "usuarios": {
+      "objetivo": "Encontrar uma conta de acesso, ver a situação dela e bloquear ou desbloquear.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Encontrar uma conta",
+          "passos": [
+            "Digite nome, CPF ou e-mail no campo de busca. A lista filtra enquanto você digita.",
+            "Use as abas Todos, Ativos, Bloqueados e Aguardando acesso para recortar pela situação.",
+            "Para ver só um grupo, escolha-o no filtro de grupos à direita da busca.",
+            "Clique no nome para abrir a página da pessoa."
+          ]
+        },
+        {
+          "titulo": "Bloquear várias contas",
+          "passos": [
+            "Marque as contas na primeira coluna.",
+            "Na barra que aparece, clique em Bloquear acesso e confirme. Quem já está bloqueado é pulado."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Bloqueado · cartão", "significa": "Bloqueado pelo SIGU depois de 3 erros no cartão de segurança." },
+        { "termo": "Aguardando acesso", "significa": "Conta criada que ainda não entrou pela primeira vez." }
+      ],
+      "duvidas": [
+        { "pergunta": "Como excluo uma conta?", "resposta": "Contas não se excluem pela lista: bloqueie. O bloqueio guarda o histórico e pode ser desfeito." }
+      ]
+    },
+    "usuario-detalhe": {
+      "objetivo": "Ver tudo sobre o acesso de uma pessoa: de onde vêm os menus dela, o cartão de segurança e o que mudou.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Entender o que a pessoa vê",
+          "passos": [
+            "Em Grupos, cada linha é um grupo da pessoa e quantos menus ele dá.",
+            "Acesso direto a menus lista os menus dados só para ela, fora dos grupos.",
+            "O acesso total é a soma dos dois, sem repetição.",
+            "Para pôr a pessoa em outro grupo, clique em Adicionar a grupo."
+          ]
+        },
+        {
+          "titulo": "Cartão e conta",
+          "passos": [
+            "O quadro Cartão de segurança mostra o número e a validade. Reemitir cartão troca o número, e o anterior deixa de valer na hora.",
+            "Editar usuário muda os dados da conta. Os três pontos ao lado reúnem as ações menos usadas, como bloquear.",
+            "Atividade, à direita, lista as mudanças de acesso dessa pessoa."
+          ]
+        }
+      ]
+    },
+    "usuario-form": {
+      "objetivo": "Criar uma conta de acesso ao SIGU ou editar uma que já existe.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Criar a conta",
+          "passos": [
+            "Digite o CPF: ele é o login da pessoa.",
+            "Preencha nome e e-mail institucional. A senha provisória vai para esse e-mail.",
+            "Em Lotação, escolha a unidade.",
+            "Em Grupos, marque os grupos da pessoa: é deles que vêm os menus.",
+            "Clique em Criar usuário."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Apareceu que já existe usuário com esse CPF.", "resposta": "Cada CPF tem uma conta só. Procure a pessoa em Usuários; se estiver bloqueada, desbloqueie." }
+      ]
+    },
+    "grupo-menu": {
+      "objetivo": "Dizer quais menus um grupo libera para quem está nele.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Mudar os menus de um grupo",
+          "passos": [
+            "Escolha o grupo na coluna Grupos, à esquerda. O nome dele vai para o alto da tela.",
+            "À direita, os menus vêm separados por aplicação. Caixa marcada = o grupo libera aquele menu.",
+            "Marque ou desmarque os menus. Marcar um menu com submenus marca todos eles.",
+            "Nada vale até você clicar em Salvar permissões, no pé da tela. Descartar desfaz o que você mudou."
+          ]
+        },
+        {
+          "titulo": "Achar um menu",
+          "passos": [
+            "Digite parte do nome em Filtrar menu, no alto.",
+            "Use Concedidos ou Não concedidos para ver só os menus que o grupo tem, ou só os que faltam."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Concedido em", "significa": "Desde quando o grupo libera aquele menu." },
+        { "termo": "Copiar de outro grupo", "significa": "Começa as permissões a partir das de outro grupo, para ajustar depois." }
+      ],
+      "duvidas": [
+        { "pergunta": "Salvei e a pessoa não viu o menu novo.", "resposta": "A permissão vale na hora, mas a pessoa só vê o menu novo quando recarrega a página ou troca de unidade." }
+      ]
+    },
+    "grupo-usuarios": {
+      "objetivo": "Ver e mudar quem está num grupo, nesta unidade.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Pôr e tirar pessoas do grupo",
+          "passos": [
+            "Adicionar integrante, no alto, abre a busca de pessoas.",
+            "Para tirar alguém, use a ação da linha. A confirmação diz o que a pessoa perde.",
+            "Menus do grupo leva à tela que diz o que o grupo libera."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Grupo padrão", "significa": "Marca guardada no vínculo da pessoa com o grupo. Hoje nenhum sistema usa essa marca para decidir nada." }
+      ]
+    },
+    "usuario-menu": {
+      "objetivo": "Dar ou tirar de uma pessoa um menu que os grupos dela não dão.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Dar um menu a uma pessoa",
+          "passos": [
+            "Clique em Conceder menu e escolha a aplicação e o menu.",
+            "O menu entra na lista na hora. Não há botão de salvar.",
+            "Para tirar, use Revogar na linha. Isso não tira o que a pessoa recebe pelos grupos."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Quando usar isto e quando usar o grupo?", "resposta": "Se mais de uma pessoa precisa do menu, ponha no grupo. Acesso direto é exceção para uma pessoa." }
+      ]
+    },
+    "auditoria": {
+      "objetivo": "Descobrir quem mudou um acesso, quando e de onde.",
+      "quem": "Quem administra acessos e a auditoria interna.",
+      "tarefas": [
+        {
+          "titulo": "Procurar um registro",
+          "passos": [
+            "Use as abas para ver só Acesso (entrada, bloqueio), Permissão (grupos e menus) ou Conta (criação, cartão).",
+            "Digite o nome da pessoa, a ação ou a origem na busca.",
+            "Clique no título de uma coluna para ordenar.",
+            "Exportar baixa a trilha visível em CSV."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Quem", "significa": "Quem fez a mudança. \"SIGU automático\" é uma regra do sistema, não uma pessoa." },
+        { "termo": "Origem", "significa": "O sistema e o endereço de rede de onde a mudança veio." }
+      ],
+      "duvidas": [
+        { "pergunta": "Achei um registro errado. Como corrijo?", "resposta": "A trilha não se edita nem se apaga. Para desfazer, faça a mudança contrária; ela também fica registrada." }
+      ]
+    },
+    "unidades": {
+      "objetivo": "Manter as unidades (campi e polos) da instituição.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Consultar, criar e inativar",
+          "passos": [
+            "As abas separam Ativas e Inativas. A busca procura pela sigla ou pelo nome.",
+            "Filtre pela mantenedora, se houver mais de uma.",
+            "Clique na sigla para editar. Nova unidade abre o formulário.",
+            "Inativar tira a unidade das listas de escolha sem apagar o registro."
+          ]
+        }
+      ]
+    },
+    "unidade-form": {
+      "objetivo": "Cadastrar ou editar uma unidade.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Preencher a unidade",
+          "passos": [
+            "Em Identificação, a Sigla é como a unidade aparece em listas e relatórios. Ela não pode repetir.",
+            "Escolha a Mantenedora.",
+            "Preencha o contato do responsável.",
+            "Digite o CEP: logradouro, bairro, cidade e UF são preenchidos e continuam editáveis.",
+            "Clique em Salvar unidade."
+          ]
+        }
+      ]
+    },
+    "grupos": {
+      "objetivo": "Manter os grupos de acesso. É pelo grupo que as pessoas recebem menus.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e criar",
+          "passos": [
+            "A tabela mostra quantos menus cada grupo libera e quantas pessoas estão nele.",
+            "Clique no nome para editar. Novo grupo abre o formulário.",
+            "Para mudar os menus de um grupo, vá a Permissões por grupo."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Inativei um grupo e as pessoas continuam vendo os menus.", "resposta": "Inativar só tira o grupo das listas. Para tirar o acesso, tire os menus do grupo ou as pessoas dele." }
+      ]
+    },
+    "grupo-form": {
+      "objetivo": "Cadastrar ou editar um grupo.",
+      "quem": "Quem administra acessos.",
+      "tarefas": [
+        {
+          "titulo": "Preencher o grupo",
+          "passos": [
+            "Sigla (até 10 letras, aparece nas listas) e Nome são obrigatórios.",
+            "Escolha o Tipo de usuário: funcionário, professor ou aluno.",
+            "Descreva para que serve o grupo, para quem vier depois.",
+            "Clique em Salvar grupo. Os menus se escolhem depois, em Permissões por grupo."
+          ]
+        }
+      ]
+    },
+    "aplicacoes": {
+      "objetivo": "Manter os sistemas que o Gerencial conhece. Cada aplicação tem os próprios menus e aparece no Portal para quem tem acesso.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e editar",
+          "passos": [
+            "A tabela mostra quantos menus cada aplicação tem.",
+            "Clique no nome para editar a ficha, com endereços e mantenedoras.",
+            "Aplicação com menus ativos não pode ser inativada: o botão fica apagado e diz o motivo."
+          ]
+        }
+      ]
+    },
+    "aplicacao-form": {
+      "objetivo": "Cadastrar ou editar uma aplicação.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Preencher a aplicação",
+          "passos": [
+            "Sigla e Nome são obrigatórios. Escolha o Tipo de usuário.",
+            "Em Endereços, informe onde a aplicação responde (DNS e IP interno). Sem endereço ativo ela não aparece no Portal.",
+            "Clique em Salvar aplicação."
+          ]
+        }
+      ]
+    },
+    "menus": {
+      "objetivo": "Manter os itens que formam o menu lateral de cada aplicação.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e editar",
+          "passos": [
+            "A busca procura por nome ou legenda.",
+            "A tabela diz a que aplicação o menu pertence e qual é o menu pai.",
+            "Clique no nome para editar. Menu com submenus ativos não pode ser inativado."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Menu pai", "significa": "O item em que este fica dentro, na lateral. Sem pai, o item fica no primeiro nível." }
+      ]
+    },
+    "menu-form": {
+      "objetivo": "Cadastrar ou editar um item de menu.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Preencher o menu",
+          "passos": [
+            "Nome: o texto que aparece na lateral.",
+            "Legenda: a dica que aparece ao passar o ponteiro e na busca.",
+            "Link: o endereço dentro da aplicação. Use # para um item que só agrupa outros.",
+            "Escolha a Aplicação (não dá para trocar depois) e, se for o caso, o Menu pai.",
+            "Clique em Salvar menu."
+          ]
+        }
+      ]
+    },
+    "mantenedoras": {
+      "objetivo": "Manter as entidades mantenedoras. Toda unidade pertence a uma.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e editar",
+          "passos": [
+            "Clique no nome para editar.",
+            "Mantenedora com unidades ativas não pode ser inativada."
+          ]
+        }
+      ]
+    },
+    "mantenedora-form": {
+      "objetivo": "Cadastrar ou editar uma mantenedora.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Preencher a mantenedora",
+          "passos": [
+            "Sigla e Razão social são obrigatórias. O CNPJ não pode repetir o de outra mantenedora ativa.",
+            "Em Responsável, quem responde legalmente pela mantenedora.",
+            "Credenciamento é opcional.",
+            "Clique em Salvar mantenedora."
+          ]
+        }
+      ]
+    },
+    "cartoes-seguranca": {
+      "objetivo": "Manter os cartões de segurança, o segundo fator pedido em funções sensíveis do SIGU (como cadastro de provas).",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Consultar e emitir",
+          "passos": [
+            "Busque pelo nome da pessoa ou pelos últimos dígitos do cartão.",
+            "Início e Fim dizem o período em que o cartão vale. Fora dele, o SIGU não aceita o cartão.",
+            "Novo cartão registra um cartão entregue a uma pessoa."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "A pessoa pode ter dois cartões?", "resposta": "Não deve: com dois cartões valendo ao mesmo tempo, o SIGU não aceita nenhum. Inative o antigo antes de emitir o novo." }
+      ]
+    },
+    "cartao-form": {
+      "objetivo": "Registrar o cartão de segurança entregue a uma pessoa.",
+      "quem": "CPD.",
+      "tarefas": [
+        {
+          "titulo": "Emitir o cartão",
+          "passos": [
+            "Em Pessoa, busque pelo nome ou CPF.",
+            "Digite o Número impresso no cartão.",
+            "Preencha Início e Fim. O fim não pode ser antes do início.",
+            "Clique em Emitir cartão."
+          ]
+        }
+      ]
+    }
+  }
+}

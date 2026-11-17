@@ -1,0 +1,211 @@
+{
+  "projeto": "protocolo",
+  "app": {
+    "para_que": "Receber, tratar e responder os requerimentos de alunos e funcionários. Cada pedido chega ao setor certo pela natureza e pelo tipo, e quem trabalha no setor encaminha, responde ou conclui com parecer.",
+    "quem": "Funcionários dos setores (Secretaria, CPD, Financeiro e outros), coordenações e a gestão do Protocolo."
+  },
+  "telas": {
+    "analise-requerimento": {
+      "objetivo": "Tratar os requerimentos que chegaram para você: ler o pedido, encaminhar a outro setor, responder a quem encaminhou ou concluir com parecer.",
+      "quem": "Quem integra um setor do Protocolo.",
+      "tarefas": [
+        {
+          "titulo": "Encontrar o pedido certo",
+          "passos": [
+            "Escolha a aba no alto: Caixa de entrada (o que você pode assumir), Minha pauta (o que já é seu), Encaminhados (o que você mandou para outro setor e só acompanha), Aguardando aluno ou Concluídos.",
+            "Para ver pedidos mais antigos, troque o Período de \"Semestre atual\" para \"Atual e anterior\".",
+            "Para ver primeiro o que é urgente, troque a Ordem de \"Mais recentes\" para \"Prioridade\".",
+            "Clique no pedido. Ele abre no painel ao lado e a lista continua no lugar."
+          ]
+        },
+        {
+          "titulo": "Concluir um pedido",
+          "passos": [
+            "Com o pedido aberto, leia a Atividade: ela mostra, do mais novo para o mais antigo, o que o requerente pediu e o que cada setor já fez.",
+            "Escreva o parecer no campo Parecer, no fim do painel. Sem parecer o sistema não conclui.",
+            "Clique em Concluir e escolha o desfecho: Deferido ou Indeferido.",
+            "O pedido vai para a aba Concluídos. Se precisar voltar atrás, abra-o lá e clique em Reabrir."
+          ]
+        },
+        {
+          "titulo": "Passar o pedido adiante",
+          "passos": [
+            "Encaminhar manda o pedido a outro setor: escolha o setor e escreva o motivo.",
+            "Responder devolve o pedido ao setor que o encaminhou para você, com o seu texto. Não vai para o aluno.",
+            "Nos dois casos o pedido sai da sua Caixa de entrada e passa para Encaminhados, onde você acompanha sem agir."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Caixa de entrada", "significa": "Pedidos em aberto de setores que você integra, na unidade do requerente, cujo nível cabe no seu. Ninguém distribui: quem quer, assume." },
+        { "termo": "Minha pauta", "significa": "Pedidos que você assumiu ou que alguém designou para você." },
+        { "termo": "Encaminhados", "significa": "Pedidos que você passou adiante e que agora estão em outro setor. Você só acompanha." },
+        { "termo": "Urgente", "significa": "Prioridade marcada no pedido. Aparece primeiro na ordem por Prioridade." },
+        { "termo": "vence em / venceu há", "significa": "O prazo do tipo do pedido, em dias corridos desde a abertura. Tipo sem prazo nunca vence." },
+        { "termo": "Barra à esquerda do item", "significa": "Pedido que você ainda não abriu." }
+      ],
+      "duvidas": [
+        { "pergunta": "Troquei a unidade no alto e a lista não mudou. Por quê?", "resposta": "A caixa mostra todas as unidades em que você trabalha. A unidade do alto vale para os cadastros, não para a caixa." },
+        { "pergunta": "Respondi e o aluno não recebeu.", "resposta": "Responder fala com o setor que encaminhou o pedido. O que o aluno lê é o parecer, na conclusão." }
+      ]
+    },
+    "gerencial": {
+      "objetivo": "Ver em que setor a fila está atrasando, sem abrir setor por setor.",
+      "quem": "Gestão do Protocolo e responsáveis de setor.",
+      "tarefas": [
+        {
+          "titulo": "Achar onde está o atraso",
+          "passos": [
+            "Leia os quatro números do topo: quantos pedidos estão em andamento, quantos passaram do prazo, quantos urgentes ninguém respondeu e quantos foram concluídos no mês.",
+            "Desça até Fila por setor. Os setores vêm do mais atrasado para o menos atrasado.",
+            "A barra azul compara a fila de cada setor com a do setor mais cheio; ela não mede capacidade.",
+            "Para olhar só o presencial ou só o EAD, use Modalidade no alto, à direita.",
+            "Clique num setor para abrir os pedidos dele na Caixa de entrada."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Fora do prazo", "significa": "Pedido em andamento cujo tipo tem prazo e já passou dele. Tipo sem prazo nunca conta aqui." },
+        { "termo": "Mais antigo há N dias", "significa": "Há quanto tempo o pedido mais velho daquele setor está esperando." }
+      ],
+      "duvidas": [
+        { "pergunta": "Por que não vejo pedidos do ano passado?", "resposta": "O painel olha só o semestre atual e o anterior." }
+      ]
+    },
+    "analytics": {
+      "objetivo": "Saber se o atendimento está melhorando ou piorando: os últimos 30 dias contra os 30 anteriores e o volume de pedidos mês a mês.",
+      "quem": "Gestão do Protocolo.",
+      "tarefas": [
+        {
+          "titulo": "Ler a tendência",
+          "passos": [
+            "O bloco Últimos 30 dias é sempre o mesmo recorte: compara os 30 dias mais recentes com os 30 de antes. A seta mostra se subiu ou desceu.",
+            "Para recortar por assunto, escolha a Natureza nas abas do alto (Acadêmico, Declaração, Financeiro…).",
+            "O gráfico e a tabela de Volume obedecem às datas De e Até. Mude as datas para ver outros meses.",
+            "À direita, Setores com requerimento fora do prazo mostra a situação de agora. Clique num setor para abrir a lista."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Resposta", "significa": "O primeiro parecer dado ao pedido." },
+        { "termo": "Mediana", "significa": "O valor do meio: metade dos pedidos foi respondida em menos tempo, metade em mais." },
+        { "termo": "Taxa de conclusão", "significa": "Concluídos sobre abertos no mês. Passa de 100% quando se conclui mais do que se abre." }
+      ],
+      "duvidas": [
+        { "pergunta": "Mudei as datas e os números de cima não mudaram.", "resposta": "É de propósito: o topo sempre compara os últimos 30 dias. As datas valem para o gráfico e a tabela de volume." },
+        { "pergunta": "Como exporto?", "resposta": "O Analytics não exporta. Clique no número ou no setor para abrir a lista de pedidos que ele conta." }
+      ]
+    },
+    "listagem-setores": {
+      "objetivo": "Manter os setores do Protocolo e quem trabalha em cada um.",
+      "quem": "Gestão do Protocolo.",
+      "tarefas": [
+        {
+          "titulo": "Ver e editar os integrantes de um setor",
+          "passos": [
+            "Escolha o setor na lista da esquerda. Use Pesquisar setor se a lista for longa.",
+            "À direita aparecem os integrantes, com o nível e as unidades de cada um.",
+            "Para mudar o nível ou a unidade de alguém, clique no lápis ao lado do nome.",
+            "Para pôr uma pessoa no setor, clique em Novo integrante."
+          ]
+        },
+        {
+          "titulo": "Criar ou excluir um setor",
+          "passos": [
+            "Novo setor, no alto à direita, pede só a descrição.",
+            "Excluir setor só funciona com o setor vazio. Se o botão estiver apagado, passe o ponteiro sobre ele para ler o que falta tirar."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Nível", "significa": "Decide quais tipos de pedido a pessoa vê na caixa. Não limita o que ela pode fazer com o pedido." },
+        { "termo": "Responsável", "significa": "Marca quem responde pelo setor nos números do Analytics. Pode haver mais de um, ou nenhum." },
+        { "termo": "Na fila", "significa": "Pedidos em andamento que estão naquele setor agora." }
+      ]
+    },
+    "naturezas": {
+      "objetivo": "Ver e manter as naturezas de requerimento: os grandes assuntos que o aluno ou o funcionário escolhe ao abrir um pedido.",
+      "quem": "Gestão do Protocolo.",
+      "tarefas": [
+        {
+          "titulo": "Encontrar e abrir uma natureza",
+          "passos": [
+            "Use as abas Todas, Abertas pelo aluno e Internas para separar o que o aluno abre pelo portal do que só o funcionário abre.",
+            "Digite parte do nome no campo de busca.",
+            "Clique no nome da natureza para ver os tipos, os destinos por unidade e os anexos exigidos.",
+            "Os três pontos ao lado do nome de cada coluna ordenam, fixam ou escondem a coluna."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Natureza", "significa": "O assunto geral do pedido (Acadêmico, Declaração, Financeiro). Dentro dela ficam os tipos." },
+        { "termo": "Destinos", "significa": "Em quantas unidades a natureza tem um setor para receber os pedidos. Unidade sem destino não consegue abrir pedido daquela natureza." },
+        { "termo": "Requerimentos", "significa": "Quantos pedidos a natureza recebeu no período." }
+      ]
+    },
+    "novo-requerimento": {
+      "objetivo": "Abrir um requerimento no balcão em nome de um aluno ou de outra pessoa.",
+      "quem": "Atendimento e secretarias.",
+      "tarefas": [
+        {
+          "titulo": "Abrir o pedido",
+          "passos": [
+            "Escolha a Unidade do requerente.",
+            "Se a pessoa já tem cadastro, digite o nome em \"Já tem cadastro\". Se não aparecer, use a aba Primeiro atendimento e informe CPF e nome.",
+            "Escolha a Natureza e depois o Tipo do requerimento. A prévia à direita mostra o setor que vai receber, o prazo e quantos anexos são exigidos.",
+            "Escreva a descrição do pedido e anexe os documentos pedidos.",
+            "Clique em Enviar requerimento. O número do protocolo aparece no aviso, na Caixa de entrada."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Setor de destino", "significa": "Quem vai tratar o pedido. Vem do tipo escolhido; você não escolhe." },
+        { "termo": "Anexos exigidos", "significa": "Quantos arquivos o tipo pede. Com menos, o envio é recusado." }
+      ],
+      "duvidas": [
+        { "pergunta": "A pessoa não aparece na busca.", "resposta": "Confira a unidade. Se mesmo assim não aparecer, use Primeiro atendimento. Quem não está no acadêmico não consegue abrir requerimento." },
+        { "pergunta": "Apareceu que a abertura foi recusada por falta de destino.", "resposta": "A natureza não tem setor configurado para aquela unidade. Avise a gestão do Protocolo, que configura em Naturezas › Destinos por unidade." }
+      ]
+    },
+    "natureza-form": {
+      "objetivo": "Criar ou editar uma natureza e os tipos de pedido que ela oferece.",
+      "quem": "Gestão do Protocolo.",
+      "tarefas": [
+        {
+          "titulo": "Montar a natureza",
+          "passos": [
+            "Escreva a Descrição: é o nome que o requerente lê.",
+            "Em Quem abre, diga se o aluno pode abrir pelo portal ou se só o funcionário abre.",
+            "Na aba Tipos de requerimento, clique em Adicionar tipo para cada pedido possível, com nível, prazo, destino e anexos.",
+            "Na aba Destinos por unidade, diga qual setor recebe os pedidos em cada unidade.",
+            "Clique em Criar natureza."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Nível do tipo", "significa": "De 1 a 3. Só integrantes com nível igual ou maior veem o pedido na caixa." },
+        { "termo": "Prazo", "significa": "Dias corridos desde a abertura. Sem prazo, o pedido nunca aparece como atrasado." },
+        { "termo": "Segue a natureza", "significa": "O tipo não tem setor próprio: o pedido vai para o setor da natureza na unidade do requerente." }
+      ]
+    },
+    "integrante-form": {
+      "objetivo": "Pôr uma pessoa num setor, numa unidade, e dizer que pedidos ela vê.",
+      "quem": "Gestão do Protocolo.",
+      "tarefas": [
+        {
+          "titulo": "Adicionar alguém ao setor",
+          "passos": [
+            "Escolha a Unidade onde a pessoa vai atuar.",
+            "Digite o nome em Pessoa e escolha na lista. A pessoa precisa existir no acadêmico.",
+            "Escolha o Nível: 1 vê só os tipos de nível 1, 2 vê os de nível 1 e 2, 3 vê todos.",
+            "Ligue Responsável pelo setor se a pessoa responde pelo setor nos números.",
+            "Clique em Adicionar ao setor."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "A pessoa trabalha em duas unidades.", "resposta": "Cadastre um vínculo para cada unidade. O nível pode ser diferente em cada uma." }
+      ]
+    }
+  }
+}

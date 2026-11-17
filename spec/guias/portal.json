@@ -1,0 +1,138 @@
+{
+  "projeto": "portal",
+  "app": {
+    "para_que": "Entrar uma vez, com CPF e senha, e chegar a todos os sistemas da universidade em que você tem acesso.",
+    "quem": "Todo funcionário, professor e aluno da UCAM."
+  },
+  "telas": {
+    "grade-modulos": {
+      "objetivo": "Abrir o sistema em que você vai trabalhar.",
+      "quem": "Qualquer pessoa que entrou no Portal.",
+      "tarefas": [
+        {
+          "titulo": "Abrir um sistema",
+          "passos": [
+            "Os sistemas aparecem agrupados por unidade (EAD, Presencial, Rio…). O mesmo sistema pode aparecer em mais de uma unidade: escolha a da unidade em que você vai trabalhar.",
+            "Se a lista for longa, digite o nome no campo de busca no alto.",
+            "Clique no cartão do sistema."
+          ]
+        },
+        {
+          "titulo": "Deixar os que você mais usa no topo",
+          "passos": [
+            "Passe o ponteiro sobre o cartão e clique na estrela. O sistema passa para o grupo Favoritos, acima das unidades.",
+            "Para tirar dos favoritos, clique de novo na estrela cheia."
+          ]
+        }
+      ],
+      "termos": [
+        { "termo": "Grade / Lista", "significa": "Dois jeitos de ver os mesmos sistemas: em cartões ou em linhas." },
+        { "termo": "Recolher todas", "significa": "Fecha os grupos de unidade e deixa só os títulos, para achar a unidade mais rápido." }
+      ],
+      "duvidas": [
+        { "pergunta": "Falta um sistema que eu uso.", "resposta": "O acesso a cada sistema é liberado por pessoa. Peça ao CPD a liberação do sistema naquela unidade." }
+      ]
+    },
+    "login": {
+      "objetivo": "Entrar nos sistemas da universidade.",
+      "quem": "Qualquer pessoa com cadastro.",
+      "tarefas": [
+        {
+          "titulo": "Entrar",
+          "passos": [
+            "Digite o CPF, com ou sem pontos.",
+            "Digite a senha. O olho ao lado do campo mostra o que você digitou.",
+            "Clique em Entrar."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Nunca tive senha.", "resposta": "Clique em Esqueci minha senha. O mesmo caminho serve para criar a primeira senha: você recebe um código no e-mail do seu cadastro." },
+        { "pergunta": "Errei a senha e apareceu um erro genérico.", "resposta": "Por segurança, o sistema não diz se o erro foi no CPF ou na senha. Confira os dois ou use Esqueci minha senha." },
+        { "pergunta": "Minha conta está bloqueada.", "resposta": "O bloqueio é feito pelo CPD. Use Fale com o suporte, no pé da página." }
+      ]
+    },
+    "recuperar-senha": {
+      "objetivo": "Começar a troca de senha, ou criar a primeira senha, sem estar logado.",
+      "quem": "Qualquer pessoa com cadastro.",
+      "tarefas": [
+        {
+          "titulo": "Pedir o código",
+          "passos": [
+            "Digite o seu CPF.",
+            "Clique em Enviar código. Um código de 6 dígitos vai para o e-mail do seu cadastro.",
+            "Abra o e-mail e siga para o passo 2, Código."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Não tenho e-mail no cadastro.", "resposta": "Sem e-mail não dá para recuperar por aqui. Use Fale com o suporte, no pé da página." },
+        { "pergunta": "A senha nova vale para todos os sistemas?", "resposta": "Sim. Vale para todos os sistemas e todas as unidades ligados ao seu CPF." }
+      ]
+    },
+    "recuperar-senha-codigo": {
+      "objetivo": "Provar que é você digitando o código que chegou no seu e-mail.",
+      "quem": "Quem pediu o código no passo anterior.",
+      "tarefas": [
+        {
+          "titulo": "Confirmar o código",
+          "passos": [
+            "O aviso azul diz para qual e-mail o código foi e por quanto tempo vale (20 minutos).",
+            "Digite os 6 dígitos, sem espaços.",
+            "Clique em Confirmar código."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "O código não chegou.", "resposta": "Olhe a caixa de spam. Se não estiver lá, espere 1 minuto e clique em Reenviar código." },
+        { "pergunta": "O código expirou.", "resposta": "Peça outro em Reenviar código. Só o mais recente vale." }
+      ]
+    },
+    "definir-senha": {
+      "objetivo": "Escolher a senha nova.",
+      "quem": "Quem confirmou o código.",
+      "tarefas": [
+        {
+          "titulo": "Salvar a senha nova",
+          "passos": [
+            "Digite a senha nova.",
+            "Digite a mesma senha em Confirmar nova senha.",
+            "Clique em Salvar nova senha.",
+            "Clique em Ir para a entrada e entre com o CPF e a senha nova."
+          ]
+        }
+      ],
+      "duvidas": [
+        { "pergunta": "Já estava logado em outro computador. Vou ser desconectado?", "resposta": "Não. Quem já estava dentro continua até a sessão acabar por falta de uso." }
+      ]
+    },
+    "chegada": {
+      "objetivo": "Esperar o sistema abrir depois de clicar nele no Portal.",
+      "quem": "Qualquer pessoa que clicou num sistema.",
+      "tarefas": [
+        {
+          "titulo": "Se demorar",
+          "passos": [
+            "A conferência leva poucos segundos.",
+            "Se a tela não sair daqui, clique em Voltar para o Portal e tente abrir o sistema de novo.",
+            "Se continuar, use Fale com o suporte, no pé da página."
+          ]
+        }
+      ]
+    },
+    "sessao-encerrada": {
+      "objetivo": "Entender por que você saiu do sistema e entrar de novo.",
+      "quem": "Qualquer pessoa cuja sessão acabou.",
+      "tarefas": [
+        {
+          "titulo": "Voltar ao trabalho",
+          "passos": [
+            "A sessão acaba depois de 20 minutos sem uso, ou quando você sai em outra aba.",
+            "Clique em Entrar de novo e digite CPF e senha.",
+            "O que você não tinha salvado antes de a sessão acabar precisa ser preenchido de novo."
+          ]
+        }
+      ]
+    }
+  }
+}
