@@ -17,8 +17,19 @@ import { readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { achaChrome } from './lib/cdp.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+/* NO BUILD DA VERCEL NÃO HÁ NAVEGADOR (17/11/2026: o primeiro deploy da 0.4.0
+ * caiu aqui). O portão vale no `pnpm dist` da máquina, que é o que antecede o
+ * deploy; lá, sem Chrome, ele pula dizendo por quê. Fora da Vercel, sem Chrome
+ * é falha — portão que some calado não é portão. */
+if (!achaChrome() && process.env.VERCEL) {
+  console.log('· paridade: pulado no build da Vercel (sem navegador); roda no pnpm dist local antes do deploy');
+  process.exit(0);
+}
+
 const VIVO = join(ROOT, 'site', 'src', 'app', 'pages', 'vivo');
 const i = process.argv.indexOf('--teto');
 const TETO = i >= 0 ? Number(process.argv[i + 1]) : 1;

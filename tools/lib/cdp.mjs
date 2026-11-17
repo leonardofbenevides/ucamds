@@ -39,6 +39,8 @@ const CANDIDATOS = [
 export const dorme = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export function achaChrome() {
+  // CHROME=nenhum simula máquina sem navegador (prova do caminho da Vercel).
+  if (process.env.CHROME === 'nenhum') return null;
   return CANDIDATOS.find((c) => existsSync(c)) || null;
 }
 

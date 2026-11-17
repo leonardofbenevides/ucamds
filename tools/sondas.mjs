@@ -21,7 +21,7 @@
 import { readdirSync, statSync, existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { abreNavegador } from './lib/cdp.mjs';
+import { abreNavegador, achaChrome } from './lib/cdp.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'docs');
@@ -37,6 +37,15 @@ const PARALELO = Number(opc('paralelo', '4'));
 const RAIZ = opc('raiz') ? resolve(ROOT, opc('raiz')) : DOCS;
 const COMO_JSON = args.includes('--json');
 const EXCECOES_ARQ = opc('excecoes') ? resolve(ROOT, opc('excecoes')) : join(PASTA, 'excecoes.json');
+
+/* NO BUILD DA VERCEL NÃO HÁ NAVEGADOR (17/11/2026: o primeiro deploy da 0.4.0
+ * caiu aqui). O portão vale no `pnpm dist` da máquina, que é o que antecede o
+ * deploy; lá, sem Chrome, ele pula dizendo por quê. Fora da Vercel, sem Chrome
+ * é falha — portão que some calado não é portão. */
+if (!achaChrome() && process.env.VERCEL) {
+  console.log('· sondas: pulado no build da Vercel (sem navegador); roda no pnpm dist local antes do deploy');
+  process.exit(0);
+}
 
 /* ---------------------------------------------------------------- sondas --- */
 const ORDEM = ['erros', 'nomes', 'rolagem', 'alvos', 'foco', 'estados', 'mortos', 'mudas'];
