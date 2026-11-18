@@ -929,7 +929,7 @@ if (classesDoTrilhoA) {
     if (typeof raiz !== 'string' || !raiz.trim()) {
       falha(
         file,
-        `não declara implementacao.trilho_a.raiz — sem ela ninguém confere se o @ucam/css entrega este componente. Declare a classe raiz, ou "${SEM_TRILHO_A}" se a camada CSS realmente não o tem`,
+        `não declara implementacao.trilho_a.raiz — sem ela ninguém confere se o @leonardofbenevides/css entrega este componente. Declare a classe raiz, ou "${SEM_TRILHO_A}" se a camada CSS realmente não o tem`,
       );
       continue;
     }
@@ -955,7 +955,7 @@ if (classesDoTrilhoA) {
       if (classesDoTrilhoA.has(classe)) continue;
       falha(
         file,
-        `declara .${classe} como raiz do Trilho A, e @ucam/css não emite essa classe — o contrato promete um componente que a camada CSS não tem`,
+        `declara .${classe} como raiz do Trilho A, e @leonardofbenevides/css não emite essa classe — o contrato promete um componente que a camada CSS não tem`,
       );
     }
   }
@@ -1005,7 +1005,7 @@ if (classesDoTrilhoA && classesDoTrilhoB) {
         if (classesDoTrilhoA.has(classe) || classesDoTrilhoB.has(classe)) continue;
         falha(
           file,
-          `anatomia: a parte "${parte.parte}" declara .${classe}, e nenhuma das duas camadas escreve essa classe — nem @ucam/css, nem o wrapper em ui/. Ou a parte tem outro nome, ou ela não é endereçável e o campo classe deve sair`,
+          `anatomia: a parte "${parte.parte}" declara .${classe}, e nenhuma das duas camadas escreve essa classe — nem @leonardofbenevides/css, nem o wrapper em ui/. Ou a parte tem outro nome, ou ela não é endereçável e o campo classe deve sair`,
         );
       }
     }

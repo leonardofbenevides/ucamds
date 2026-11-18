@@ -172,7 +172,7 @@ export function validar({ raiz = ROOT, css } = {}) {
     const temBomRuim = Object.values(spec.conteudo ?? {}).some((v) => v && typeof v === 'object' && !Array.isArray(v) && (v.bom || v.ruim));
     if (!temBomRuim) avisa(file, `${id}: conteudo sem par bom/ruim`);
     if (!spec.implementacao?.trilho_a?.raiz) falha(file, `${id} sem implementacao.trilho_a.raiz`);
-    /* ---- trilho B: a peça Angular de @ucam/site-ui (subprojeto 3) ----
+    /* ---- trilho B: a peça Angular de @leonardofbenevides/site-ui (subprojeto 3) ----
      * O schema compartilhado define trilho_b como TEXTO. O formato é
      *   "<arquivo.ts> — <seletor>. Entradas: a, b. Nativos: c. Conteúdo: d."
      * com Nativos e Conteúdo opcionais. Entradas são as input() da peça;

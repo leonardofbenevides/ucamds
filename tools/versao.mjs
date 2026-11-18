@@ -4,7 +4,7 @@
 //   pnpm run versao 0.2.0 --nota "Uma frase sobre o que a versão é"
 //
 // Três package.json andam juntos (tools/build-pacotes.mjs recusa empacotar se
-// divergirem): o da raiz, o de @ucam/ui e o de @ucam/site-ui. E spec/versoes.json
+// divergirem): o da raiz, o de @leonardofbenevides/ui e o de @leonardofbenevides/site-ui. E spec/versoes.json
 // ganha a entrada da versão, com a data de hoje e a lista de componentes e
 // telas — é a diferença entre duas listas que o CHANGELOG chama de "novos".
 //
@@ -50,7 +50,7 @@ for (const rel of MANIFESTOS) {
   writeFileSync(join(ROOT, rel), trocado, 'utf8');
 }
 
-// @ucam/site-ui pede a folha na MESMA versão (tools/build-pacotes.mjs confere).
+// @leonardofbenevides/site-ui pede a folha na MESMA versão (tools/build-pacotes.mjs confere).
 {
   const rel = 'sites/ui/projects/site-ui/package.json';
   const txt = ler(rel);

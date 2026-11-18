@@ -412,7 +412,7 @@
   },
   "breakpoint": {
     "$type": "dimension",
-    "$description": "Escala de viewport: 480 · 640 · 768 · 960 · 1024px, em rem.\n\nExiste porque não existia. Até 09/09/2026 as 28 media queries do @ucam/css eram literais escritos dentro de tools/build-css.mjs, em sete medidas — 30, 34, 40, 48, 60, 64 e 82rem — e em três dialetos de borda no mesmo arquivo: 47.99, 47.999, 63.99, 63.999 e 29.999rem. Duas delas se sobrepunham: `max-width: 64rem` e `min-width: 64rem` valiam ao mesmo tempo em exatamente 1024px, e a caixa de entrada ficava de duas colunas e de uma coluna na mesma largura.\n\nA escala é em rem e não em px de propósito: quem aumenta a fonte do navegador precisa que o layout mude de arranjo junto, e um breakpoint em px ignora esse ajuste.\n\nBreakpoint NÃO é var(). Media query não enxerga custom property — é uma restrição do CSS, não uma escolha. O valor é lido daqui pelo gerador e sai literal na folha, do mesmo jeito que a ADR-007 trata qualquer token: a fonte é o spec, o literal é saída.",
+    "$description": "Escala de viewport: 480 · 640 · 768 · 960 · 1024px, em rem.\n\nExiste porque não existia. Até 09/09/2026 as 28 media queries do @leonardofbenevides/css eram literais escritos dentro de tools/build-css.mjs, em sete medidas — 30, 34, 40, 48, 60, 64 e 82rem — e em três dialetos de borda no mesmo arquivo: 47.99, 47.999, 63.99, 63.999 e 29.999rem. Duas delas se sobrepunham: `max-width: 64rem` e `min-width: 64rem` valiam ao mesmo tempo em exatamente 1024px, e a caixa de entrada ficava de duas colunas e de uma coluna na mesma largura.\n\nA escala é em rem e não em px de propósito: quem aumenta a fonte do navegador precisa que o layout mude de arranjo junto, e um breakpoint em px ignora esse ajuste.\n\nBreakpoint NÃO é var(). Media query não enxerga custom property — é uma restrição do CSS, não uma escolha. O valor é lido daqui pelo gerador e sai literal na folha, do mesmo jeito que a ADR-007 trata qualquer token: a fonte é o spec, o literal é saída.",
     "xs": {
       "$value": "30rem",
       "$description": "480px. A menor largura que o sistema atende de verdade. Abaixo dela a faixa de marca já cedeu tudo que era dispensável."
@@ -431,7 +431,7 @@
     },
     "xl": {
       "$value": "64rem",
-      "$description": "1024px. Desktop. É o degrau que mais carrega peso na folha: onze das media queries do @ucam/css dependem só dele."
+      "$description": "1024px. Desktop. É o degrau que mais carrega peso na folha: onze das media queries do @leonardofbenevides/css dependem só dele."
     }
   },
   "fontSize": {

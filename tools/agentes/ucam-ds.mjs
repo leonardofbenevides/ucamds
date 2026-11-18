@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// CLI do @ucam/ds-mcp.
+// CLI do @leonardofbenevides/ds-mcp.
 //
 //   npx ucam-ds instalar [--forcar]   liga MCP, skills e AGENTS.md no projeto atual
 //   npx ucam-ds checar <arquivo...>   audita arquivos contra os contratos (sai 1 com erro)
@@ -106,7 +106,7 @@ async function versao() {
   if (ordem === 0) return console.log('  ✓ é a mais nova publicada.');
   if (ordem < 0) return console.log(`  · está à frente da publicada (${publicado.versao}): é um build que ainda não saiu.`);
   console.log(`  ⚠ há a ${publicado.versao}. Para atualizar:\n`);
-  for (const p of publicado.pacotes ?? []) console.log(`    pnpm add ${p.nome === '@ucam/ds-mcp' ? '-D ' : ''}${base}/${p.tgz}`);
+  for (const p of publicado.pacotes ?? []) console.log(`    pnpm add ${p.nome === '@leonardofbenevides/ds-mcp' ? '-D ' : ''}${base}/${p.tgz}`);
   console.log(`\n  Troque só os pacotes que o app já usa e rode de novo: npx ucam-ds instalar`);
   console.log(`  O que mudou: ${base}/CHANGELOG.md, ou ucam_get_changes com desde = ${version}`);
 }

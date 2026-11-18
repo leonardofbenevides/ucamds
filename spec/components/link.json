@@ -23,7 +23,7 @@
       },
       {
         "tela": "Protocolo — todas",
-        "problema": "cada tela repetia style=\"color:var(--ucam-color-text-link)\" nos links, sem sublinhado, sem estado visitado e sem foco próprio. O @ucam/css não estiliza elemento nu por decisão de arquitetura, e ninguém tinha criado a classe"
+        "problema": "cada tela repetia style=\"color:var(--ucam-color-text-link)\" nos links, sem sublinhado, sem estado visitado e sem foco próprio. O @leonardofbenevides/css não estiliza elemento nu por decisão de arquitetura, e ninguém tinha criado a classe"
       },
       {
         "tela": "Protocolo — listagens",
@@ -242,7 +242,7 @@
   ],
   "implementacao": {
     "trilho_a": {
-      "contrato": "Uma classe na âncora. O @ucam/css não estiliza elemento nu — é a restrição de arquitetura do Trilho A —, então <a> sem a classe continua saindo no azul e roxo do navegador. Isso é deliberado: o CSS convive com o do app hospedeiro sem repintá-lo.",
+      "contrato": "Uma classe na âncora. O @leonardofbenevides/css não estiliza elemento nu — é a restrição de arquitetura do Trilho A —, então <a> sem a classe continua saindo no azul e roxo do navegador. Isso é deliberado: o CSS convive com o do app hospedeiro sem repintá-lo.",
       "raiz": ".ucam-link",
       "estado": "hover engrossa o sublinhado de 1px para 2px em vez de trocar a cor: engrossar não mexe no contraste já verificado.",
       "variaveis": [

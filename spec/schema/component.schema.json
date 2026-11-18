@@ -151,7 +151,7 @@
           "classe": {
             "type": "string",
             "pattern": "^ucam-[a-z0-9-]+(__[a-z0-9-]+)?$",
-            "description": "Classe do @ucam/css que realiza esta parte. Opcional: parte que só existe no Trilho B não tem classe."
+            "description": "Classe do @leonardofbenevides/css que realiza esta parte. Opcional: parte que só existe no Trilho B não tem classe."
           }
         }
       }

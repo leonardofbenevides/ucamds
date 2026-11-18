@@ -313,8 +313,8 @@
       "echarts",
       "ngx-echarts"
     ],
-    "nota": "É a PRIMEIRA dependência de execução de terceiros do @ucam/ui. As outras peças da base ZardUI são código copiado; esta traz um motor junto. Carregado sob demanda por provideZardCharts(): a aplicação que não desenha gráfico não paga o megabyte. Ver ADR sobre o assunto.",
-    "trilho_a": "não entrega — o gráfico não existe em @ucam/css. Não há como desenhar isto sem JavaScript, e o legado em AngularJS continua exportando para planilha até migrar a tela."
+    "nota": "É a PRIMEIRA dependência de execução de terceiros do @leonardofbenevides/ui. As outras peças da base ZardUI são código copiado; esta traz um motor junto. Carregado sob demanda por provideZardCharts(): a aplicação que não desenha gráfico não paga o megabyte. Ver ADR sobre o assunto.",
+    "trilho_a": "não entrega — o gráfico não existe em @leonardofbenevides/css. Não há como desenhar isto sem JavaScript, e o legado em AngularJS continua exportando para planilha até migrar a tela."
   },
   "migracao": {
     "de": "Exportação para planilha",

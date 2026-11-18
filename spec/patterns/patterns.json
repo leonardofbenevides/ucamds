@@ -313,7 +313,7 @@
         "ucam-progress",
         "ucam-stepper"
       ],
-      "evidencia": "As rotas /candidato/:oid/** do app Vestibular Online (apps/vestibular-online, Angular 21 com @ucam/ui), com testes: instrucoes, prova/:caderno/:n, prova/redacao e resultado. Substitui a prova do processo-seletivo-frontend (Angular 9). As ADRs que o padrão puxa (o desvio do check no choice-card, a bolha cheia fora da conta da ADR-023, o relógio na faixa) ficam para o detalhamento do padrão."
+      "evidencia": "As rotas /candidato/:oid/** do app Vestibular Online (apps/vestibular-online, Angular 21 com @leonardofbenevides/ui), com testes: instrucoes, prova/:caderno/:n, prova/redacao e resultado. Substitui a prova do processo-seletivo-frontend (Angular 9). As ADRs que o padrão puxa (o desvio do check no choice-card, a bolha cheia fora da conta da ADR-023, o relógio na faixa) ficam para o detalhamento do padrão."
     }
   ]
 }

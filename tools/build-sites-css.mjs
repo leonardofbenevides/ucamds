@@ -84,7 +84,7 @@ export function construirCss({ raiz = ROOT } = {}) {
   const acima = (papel) => `@media (min-width: ${tokens.remDoPapel(papel)}rem)`;
   const V = (n) => `var(--ucam-site-${n})`;
 
-  const css = `/* @ucam/site-css — gerado por tools/build-sites-css.mjs. NÃO EDITAR À MÃO.
+  const css = `/* @leonardofbenevides/site-css — gerado por tools/build-sites-css.mjs. NÃO EDITAR À MÃO.
  * Trilho A dos sites: aparência sem framework, escopada sob .ucam-site.
  * Mobile-first, só min-width. Só token semântico dos sites. */
 @import "../tokens/ucam-site-tokens.css";
@@ -2550,7 +2550,7 @@ function principal() {
   const out = join(ROOT, 'dist', 'sites', 'css');
   if (!existsSync(out)) mkdirSync(out, { recursive: true });
   writeFileSync(join(out, 'ucam-site.css'), r.css, 'utf8');
-  console.log('@ucam/site-css → dist/sites/css/ucam-site.css');
+  console.log('@leonardofbenevides/site-css → dist/sites/css/ucam-site.css');
   for (const l of r.relatos) console.log(l);
 }
 

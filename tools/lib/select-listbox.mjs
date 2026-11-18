@@ -5,7 +5,7 @@
 // A ADR-011 decidiu, em 30/08, que o <select> nativo sai: a lista aberta de
 // um select nativo não é estilizável em navegador nenhum, então metade do
 // componente ficava fora do design system — campo fechado com a marca, lista
-// aberta com o azul do Windows. A decisão foi aplicada ao @ucam/ui (Angular,
+// aberta com o azul do Windows. A decisão foi aplicada ao @leonardofbenevides/ui (Angular,
 // overlay do z-select) e verificada 8/8 por CDP.
 //
 // O que ninguém aplicou foi o outro lado: as TELAS de spec/templates.json
@@ -17,7 +17,7 @@
 // trigger h-9 px-3 rounded-lg border; content rounded-md border shadow-md com
 // viewport p-1; item rounded-md py-1 pl-2 pr-8 com o check à direita.
 //
-// O COMPORTAMENTO fica aqui, na página de exemplo, e não no @ucam/css: o
+// O COMPORTAMENTO fica aqui, na página de exemplo, e não no @leonardofbenevides/css: o
 // Trilho A é folha de estilo e não vira framework. Um app AngularJS já tem
 // ng-repeat e ng-click — o que faltava era com o que pintar a lista, e as
 // classes .ucam-listbox/.ucam-option resolvem isso. Este script é a versão

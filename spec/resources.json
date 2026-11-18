@@ -4,35 +4,35 @@
     "$description": "Ainda não há registro privado, então a instalação é por URL: o tarball é servido em /pacotes e o pnpm o resolve como qualquer dependência, gravando a URL no package.json do seu app. A coluna de estado diz o que já existe; o que está planejado vale como especificação, não como dependência.",
     "itens": [
       {
-        "nome": "@ucam/tokens",
+        "nome": "@leonardofbenevides/tokens",
         "conteudo": "CSS custom properties, SCSS e JSON, gerados de spec/tokens.",
         "consumidores": "Todos os apps, inclusive AngularJS",
         "estado": "gerado",
         "nota": "Tarball em /pacotes. É também o que o <link> do Trilho A serve, em /tokens."
       },
       {
-        "nome": "@ucam/css",
+        "nome": "@leonardofbenevides/css",
         "conteudo": "Primitivos sem framework, escopados sob .ucam, sem preflight.",
         "consumidores": "Trilho A — legado",
         "estado": "gerado",
         "nota": "Tarball em /pacotes. Traz tokens, sprite e fontes junto."
       },
       {
-        "nome": "@ucam/ui",
+        "nome": "@leonardofbenevides/ui",
         "conteudo": "Componentes Angular sobre ZardUI adaptada.",
         "consumidores": "Trilho B — apps novos e migrados",
         "estado": "gerado",
         "nota": "Tarball em /pacotes, a partir do build do ng-packagr. Exige Angular 21 ou 22."
       },
       {
-        "nome": "@ucam/elements",
+        "nome": "@leonardofbenevides/elements",
         "conteudo": "Trilho A+ (ADR-010): os seis componentes que precisam de JavaScript, como custom elements. Uma tag script, uma tag link.",
         "consumidores": "Trilho A — telas legadas que precisam de comportamento",
         "estado": "gerado",
         "nota": "Tarball em /pacotes. Não carregue junto com a biblioteca Angular: o registro do custom element é global e a segunda definição lança."
       },
       {
-        "nome": "@ucam/ds-mcp",
+        "nome": "@leonardofbenevides/ds-mcp",
         "conteudo": "Servidor MCP, CLI ucam-ds (instalar, checar), skills, AGENTS.md e os contratos em JSON.",
         "consumidores": "Ferramentas de desenvolvimento: Claude Code, VS Code/Copilot e CI",
         "estado": "gerado",
@@ -68,13 +68,13 @@
   },
   "mcp": {
     "$lede": "Os contratos do design system entregues a agentes de IA como DADO, não prosa: API, tokens, padrões e telas.",
-    "$description": "Servidor MCP que entrega os contratos do design system a agentes de IA: a API exata de cada componente, os tokens resolvidos por tema, os padrões, as telas de referência, as decisões e os mapas de migração — dados, não prosa. Vem no pacote @ucam/ds-mcp, roda em stdio e não tem dependência: sobe em qualquer máquina com Node 18 ou mais novo, sem alcançar o registro público.",
+    "$description": "Servidor MCP que entrega os contratos do design system a agentes de IA: a API exata de cada componente, os tokens resolvidos por tema, os padrões, as telas de referência, as decisões e os mapas de migração — dados, não prosa. Vem no pacote @leonardofbenevides/ds-mcp, roda em stdio e não tem dependência: sobe em qualquer máquina com Node 18 ou mais novo, sem alcançar o registro público.",
     "config": {
       "mcpServers": {
         "ucamds": {
           "command": "node",
           "args": [
-            "node_modules/@ucam/ds-mcp/mcp/server.mjs"
+            "node_modules/@leonardofbenevides/ds-mcp/mcp/server.mjs"
           ]
         }
       }
@@ -139,7 +139,7 @@
   },
   "skills": {
     "$lede": "O MCP entrega os dados; a skill entrega o método. Três, geradas da spec e instaladas no projeto.",
-    "$description": "Skills empacotam o uso do design system para agentes. O MCP entrega os dados; a skill entrega o método. As três vêm no @ucam/ds-mcp, geradas da spec, e npx ucam-ds instalar as copia para o projeto.",
+    "$description": "Skills empacotam o uso do design system para agentes. O MCP entrega os dados; a skill entrega o método. As três vêm no @leonardofbenevides/ds-mcp, geradas da spec, e npx ucam-ds instalar as copia para o projeto.",
     "itens": [
       {
         "nome": "ucam-ds",
@@ -165,9 +165,9 @@
       {
         "id": "a",
         "nome": "Trilho A — legado",
-        "como": "Duas tags de folha no <head> e um script com defer, e nada mais: sem instalar pacote, sem passo de build, sem reset global. A folha traz os tokens junto — nenhum terceiro <link> é preciso — e desenha os componentes sob um ancestral .ucam; o script dá à marcação o comportamento das telas de referência. Os ícones são a única peça que a URL não entrega pronta: <use href=\"{host}/icons/sprite.svg#nome\"> é BLOQUEADO quando a página mora noutro domínio, porque referência externa de <use> é same-origin e CORS não levanta esse bloqueio. Sirva o sprite da PRÓPRIA origem do app — baixe {host}/icons/sprite.svg para junto das suas estáticas, ou instale o tarball @ucam/css, que o traz —, ou injete-o uma vez no documento por fetch e referencie por <use href=\"#nome\">, que é o que o próprio site do design system faz.",
+        "como": "Duas tags de folha no <head> e um script com defer, e nada mais: sem instalar pacote, sem passo de build, sem reset global. A folha traz os tokens junto — nenhum terceiro <link> é preciso — e desenha os componentes sob um ancestral .ucam; o script dá à marcação o comportamento das telas de referência. Os ícones são a única peça que a URL não entrega pronta: <use href=\"{host}/icons/sprite.svg#nome\"> é BLOQUEADO quando a página mora noutro domínio, porque referência externa de <use> é same-origin e CORS não levanta esse bloqueio. Sirva o sprite da PRÓPRIA origem do app — baixe {host}/icons/sprite.svg para junto das suas estáticas, ou instale o tarball @leonardofbenevides/css, que o traz —, ou injete-o uma vez no documento por fetch e referencie por <use href=\"#nome\">, que é o que o próprio site do design system faz.",
         "codigo": "<link rel=\"stylesheet\" href=\"{host}/css/ucam-fonts.css\">\n<link rel=\"stylesheet\" href=\"{host}/css/ucam.css\">\n<script src=\"{host}/css/ucam-comportamento.js\" defer></script>\n\n<div class=\"ucam\">\n  <button class=\"ucam-btn ucam-btn--primary\">Salvar</button>\n</div>",
-        "limite": "Aparência e estado que cabem em classe, mais o comportamento da marcação: ucam-comportamento.js é o mesmo código que as telas de referência rodam (ADR-057) — navegação, menu da conta, busca, abas, gaveta, diálogo, confirmação, toast, ordenação e seleção da tabela, calendário, listbox do select. O que ele não faz é o serviço: todo data-acao vira o evento ucam:acao e a aplicação responde. Combobox com busca e paginação acessível continuam sendo do Trilho A+. A URL não tem versão, de propósito: uma correção de contraste chega ao parque inteiro no deploy seguinte, sem ninguém tocar em aplicação nenhuma. Quem precisa congelar instala o tarball @ucam/css em /pacotes. Máquina sem saída para a internet: baixe os arquivos e sirva do próprio app, mantendo css/ ao lado de tokens/ e fonts/ — os caminhos dentro da folha são relativos. E quem só quer as variáveis, sem componente, carrega {host}/tokens/ucam-tokens.css. Medido em 21/09/2026 numa página servida de outra origem: a folha pinta o botão no bordô da marca e a Geist carrega (o woff2 sai com Access-Control-Allow-Origin: *), e só o <use> externo cai, calado — sem erro na tela, uma linha no console."
+        "limite": "Aparência e estado que cabem em classe, mais o comportamento da marcação: ucam-comportamento.js é o mesmo código que as telas de referência rodam (ADR-057) — navegação, menu da conta, busca, abas, gaveta, diálogo, confirmação, toast, ordenação e seleção da tabela, calendário, listbox do select. O que ele não faz é o serviço: todo data-acao vira o evento ucam:acao e a aplicação responde. Combobox com busca e paginação acessível continuam sendo do Trilho A+. A URL não tem versão, de propósito: uma correção de contraste chega ao parque inteiro no deploy seguinte, sem ninguém tocar em aplicação nenhuma. Quem precisa congelar instala o tarball @leonardofbenevides/css em /pacotes. Máquina sem saída para a internet: baixe os arquivos e sirva do próprio app, mantendo css/ ao lado de tokens/ e fonts/ — os caminhos dentro da folha são relativos. E quem só quer as variáveis, sem componente, carrega {host}/tokens/ucam-tokens.css. Medido em 21/09/2026 numa página servida de outra origem: a folha pinta o botão no bordô da marca e a Geist carrega (o woff2 sai com Access-Control-Allow-Origin: *), e só o <use> externo cai, calado — sem erro na tela, uma linha no console."
       },
       {
         "id": "a-mais",
@@ -180,7 +180,7 @@
         "id": "b",
         "nome": "Trilho B — apps novos e migrados",
         "como": "Instale os pacotes direto da URL e importe o bloco @theme. Não é preciso baixar arquivo à mão: o pnpm resolve o tarball, grava a URL no package.json e um clone do seu app reinstala sozinho.",
-        "codigo": "pnpm add {host}/pacotes/ucam-tokens-{versao}.tgz          {host}/pacotes/ucam-ui-{versao}.tgz\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@ucam/tokens/ucam-theme.css\";",
+        "codigo": "pnpm add {host}/pacotes/leonardofbenevides-tokens-{versao}.tgz          {host}/pacotes/leonardofbenevides-ui-{versao}.tgz\n\n/* styles.css */\n@import \"tailwindcss\";\n@import \"@leonardofbenevides/tokens/ucam-theme.css\";",
         "limite": "Aplicações importam <ucam-*>. Nunca <z-*>: o ZardUI é matéria-prima do design system, não dependência das aplicações. Sem registro, a URL fixa a versão — não há faixa semver nem pnpm update, e subir de versão é trocar o número."
       }
     ]

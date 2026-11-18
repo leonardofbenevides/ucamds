@@ -298,7 +298,7 @@
         "--ucam-typography-caption-font-size",
         "--ucam-space-inline-xs"
       ],
-      "nota": "O @ucam/css NÃO entrega roving tabindex nem navegação por seta: folha de estilo não é comportamento, e uma tira legada só estilizada continua exigindo um Tab por aba. Nas telas de exemplo e na documentação quem entrega isso é a camada de comportamento (tools/lib/shell.mjs → abasScript), que cobre só .ucam-tabs — a tira do cromo da documentação tem dono próprio. Numa aplicação, o caminho é o custom element do Trilho A+ (ADR-010) ou o componente do Trilho B."
+      "nota": "O @leonardofbenevides/css NÃO entrega roving tabindex nem navegação por seta: folha de estilo não é comportamento, e uma tira legada só estilizada continua exigindo um Tab por aba. Nas telas de exemplo e na documentação quem entrega isso é a camada de comportamento (tools/lib/shell.mjs → abasScript), que cobre só .ucam-tabs — a tira do cromo da documentação tem dono próprio. Numa aplicação, o caminho é o custom element do Trilho A+ (ADR-010) ou o componente do Trilho B."
     },
     "trilho_b": "ui/projects/ui/src/lib/ucam/tabs/ucam-tabs.ts — entrega roving tabindex, o modo de ativação e a ligação aria-controls/aria-labelledby com o painel. A contagem sai em .ucam-tabs__contagem, o mesmo desenho do Trilho A: número esmaecido, sem pastilha."
   }

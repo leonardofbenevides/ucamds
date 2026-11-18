@@ -33,7 +33,7 @@ export function construirIndice({ raiz = ROOT } = {}) {
   const componentes = readdirSync(join(raiz, 'sites/spec/components'))
     .filter((f) => f.endsWith('.json'))
     .map((f) => ler(`sites/spec/components/${f}`))
-    // seletor_angular: o seletor de verdade da peça em @ucam/site-ui, tirado do
+    // seletor_angular: o seletor de verdade da peça em @leonardofbenevides/site-ui, tirado do
     // trilho_b. O campo `selector` do contrato é o identificador da peça no
     // catálogo (ucam-site-<id>), não um elemento que exista.
     .map((c) => ({ ...c, demo: demos[c.id], decisoes: decisoesDe(c), seletor_angular: / — (.+?)\. Entradas: /.exec(c.implementacao?.trilho_b ?? '')?.[1] }))

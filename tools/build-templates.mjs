@@ -219,7 +219,7 @@ const promoveTitulo = (html = '') =>
 for (const { dir } of DESTINOS) if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 
 // A logo institucional vive ao lado das telas, um nível acima — o mesmo
-// caminho relativo que as fontes usam. O @ucam/css não embute asset nenhum: é
+// caminho relativo que as fontes usam. O @leonardofbenevides/css não embute asset nenhum: é
 // a página hospedeira que aponta o arquivo, por --ucam-appbar-logo.
 // Dois arquivos, não um: a moldura com rail usa o SÍMBOLO (o lockup
 // horizontal não cabe em 72px), e a moldura com faixa usa o lockup. Uma tela
@@ -310,7 +310,7 @@ ${tokensCss}
 ${ucamCss}
 /* Depois do ucamCss, e não antes.
  *
- * O @ucam/css declara o default de --ucam-appbar-logo no MESMO seletor
+ * O @leonardofbenevides/css declara o default de --ucam-appbar-logo no MESMO seletor
  * (.ucam-shell). Mesma especificidade: quem vence é quem vem por último. Com
  * esta regra antes da folha, a página apontava a logo e o default a
  * sobrescrevia em silêncio — a faixa reservava o espaço e não pintava nada.

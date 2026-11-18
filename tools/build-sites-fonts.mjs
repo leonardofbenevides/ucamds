@@ -19,7 +19,7 @@ const licencas = familiasSites.map((f) => {
   return `${f.nome}: ${l ?? 'SIL Open Font License 1.1'}`;
 });
 
-const cabecalho = `/* @ucam/site-css fontes — gerado por tools/build-sites-fonts.mjs
+const cabecalho = `/* @leonardofbenevides/site-css fontes — gerado por tools/build-sites-fonts.mjs
  * NÃO EDITAR À MÃO.
  *
  * Work Sans (display) e Inter (corpo), auto-hospedadas. Sem CDN.
@@ -49,5 +49,5 @@ const alvo = join(ROOT, destino.css);
 mkdirSync(dirname(alvo), { recursive: true });
 writeFileSync(alvo, `${cabecalho}\n${fontFaceCss(destino.prefixo, familiasSites)}\n`, 'utf8');
 
-console.log('@ucam/site-css fontes → dist/sites/fonts/ e dist/sites/css/ucam-site-fonts.css');
+console.log('@leonardofbenevides/site-css fontes → dist/sites/fonts/ e dist/sites/css/ucam-site-fonts.css');
 console.log(`  ${arquivosWoff2De(familiasSites).length} arquivos · ${(bytes / 1024).toFixed(1)} KB · Work Sans e Inter, eixo variável`);
