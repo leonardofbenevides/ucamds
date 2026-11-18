@@ -76,8 +76,10 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
   styles: `
     .pastas {
       display: grid;
-      gap: 1.75rem 1.5rem;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 13.5rem), 1fr));
+      /* Duas por linha no celular: com o mínimo de 13,5rem a 375px cabia
+         uma só, e a página virava uma fila de cartões quase vazios. */
+      gap: 1.75rem clamp(0.75rem, 3vw, 1.5rem);
+      grid-template-columns: repeat(auto-fill, minmax(min(calc(50% - 0.75rem), 13.5rem), 1fr));
       margin: 0;
       padding: 0;
       list-style: none;
@@ -154,9 +156,12 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       position: relative;
       display: flex;
       flex: 1;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 1rem;
+      /* Um arranjo só, de qualquer largura: o nome embaixo, e o traço com a
+         contagem numa linha própria, sempre no canto direito. Lado a lado, o
+         nome longo empurrava o traço para a linha de baixo e à esquerda. */
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 0.6rem;
       min-block-size: 7.5rem;
       padding: 1rem 1.1rem;
       border-radius: 1.25rem;
@@ -181,6 +186,7 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       flex: none;
       flex-direction: column;
       align-items: flex-end;
+      align-self: flex-end;
       gap: 0.35rem;
       padding-block-end: 0.15rem;
     }
