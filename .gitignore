@@ -6,7 +6,9 @@ dist/
 site/dist/
 site/.vercel/
 site/.nitro/
-site/.angular/
+# Cache do Angular em QUALQUER pasta (17/11/2026: o da raiz entrou no
+# repositório público pelo commit 1e16bcd).
+.angular/
 site/src/generated/
 site/out-tsc/
 
