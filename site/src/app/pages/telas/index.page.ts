@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 
 import { telas, meta } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
-import { TextoComponent } from '../../docs/texto.component';
 
 /**
  * Telas inteiras, uma pasta por sistema.
@@ -15,15 +14,14 @@ import { TextoComponent } from '../../docs/texto.component';
  * passou a ter a mesma forma. Cada pasta abre /telas/<projeto>, onde ficam as
  * miniaturas e o mapa de fluxo do sistema.
  *
- * A pasta não carrega miniatura: sem iframe aqui, a página abre leve. O que
- * ela mostra é o que decide qual abrir: na frente o nome, a descrição e a contagem; na
- * folha que sai de dentro, as primeiras telas.
+ * A pasta não carrega miniatura nem texto corrido: sem iframe aqui, a página
+ * abre leve, e o que ela mostra é só o que decide qual abrir: o nome do sistema
+ * e quantas telas há. A descrição mora em /telas/<projeto>.
  */
-const AMOSTRA = 4;
 
 @Component({
   selector: 'ucam-telas',
-  imports: [TextoComponent, RouterLink, PageHeaderComponent],
+  imports: [RouterLink, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ucam-page-header
@@ -52,22 +50,19 @@ const AMOSTRA = 4;
                Newsreader (ADR-087). -->
           <a class="pasta" [routerLink]="'/telas/' + p.id" [style.--cor]="'var(--ucam-color-categoria-' + p.categoria + ')'">
             <span class="costas" aria-hidden="true"><span class="aba"></span></span>
-            <span class="folha" aria-hidden="true">
-              @for (t of amostra(p.templates); track t.id) {
-                <span class="folha__linha">{{ t.nome }}</span>
-              }
-            </span>
+            <span class="folha" aria-hidden="true"></span>
             <!-- 17/11, terceira volta ("pastinha nesse estilo", referência do
                  Leonardo): a pasta deixou a cor e virou papelaria neutra:
                  costas cinza-claras com aba, folha branca, frente branca e,
                  no canto de baixo à direita, um traço curto com a contagem
                  embaixo. A cor do sistema só aparece no traço, no hover. -->
+            <!-- 18/11, quarta volta ("mais assim nesse estilo da imagem e
+                 resolva a quantidade enorme de textos"): saíram a descrição,
+                 os nomes da folha e o ícone. A folha é papel em branco que
+                 aparece pela borda; a frente leva o nome embaixo à esquerda
+                 e, à direita, o traço com a contagem. -->
             <span class="frente">
-              <span class="frente__cabeca">
-                <strong class="frente__titulo">{{ p.nome }}</strong>
-                <svg class="ic frente__icone" aria-hidden="true"><use [attr.href]="'#i-' + p.icone" /></svg>
-              </span>
-              <span class="frente__descricao"><ucam-t [t]="p.descricao" /></span>
+              <strong class="frente__titulo">{{ p.nome }}</strong>
               <span class="frente__marca">
                 <span class="frente__traco" aria-hidden="true"></span>
                 <span class="frente__conta"><span class="sr-only">, </span>{{ p.templates.length }} {{ p.templates.length === 1 ? 'tela' : 'telas' }}</span>
@@ -81,8 +76,8 @@ const AMOSTRA = 4;
   styles: `
     .pastas {
       display: grid;
-      gap: 2rem 1.75rem;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 16.5rem), 1fr));
+      gap: 1.75rem 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 13.5rem), 1fr));
       margin: 0;
       padding: 0;
       list-style: none;
@@ -92,18 +87,18 @@ const AMOSTRA = 4;
     }
 
     .pasta {
-      /* A PASTA NEUTRA (terceira volta): papelaria, não cartaz. As costas
-         são o cinza mais claro que ainda se separa do chão (a tinta do texto
-         misturada ao papel), nos dois temas; frente e folha são o papel do
-         tema. A cor do sistema fica reservada ao traço, e só no hover. */
+      /* A PASTA (quarta volta): o ícone de pasta em tamanho de cartão. As
+         costas são a tinta do texto a 9% sobre o papel, nos dois temas; folha
+         e frente são o papel do tema. A cor do sistema fica no traço, no
+         hover. */
       --fundo: color-mix(in oklab, var(--ucam-color-text-primary) 9%, var(--ucam-color-surface-default));
       --papel: var(--ucam-color-surface-default);
       position: relative;
       display: flex;
       flex: 1;
       flex-direction: column;
-      /* O espaço de cima é o da aba e das duas linhas da folha que aparecem. */
-      padding-block-start: 5.1rem;
+      /* A aba e a beirada da folha que aparece acima da frente. */
+      padding-block-start: 2.6rem;
       color: inherit;
       text-decoration: none;
       border-radius: 1.25rem;
@@ -126,7 +121,7 @@ const AMOSTRA = 4;
       inset-block-end: calc(100% - 1px);
       inset-inline-start: 0;
       inline-size: 38%;
-      block-size: 1.35rem;
+      block-size: 1.1rem;
       border-start-start-radius: 0.9rem;
       background: var(--fundo);
     }
@@ -136,48 +131,34 @@ const AMOSTRA = 4;
       position: absolute;
       inset-block: 0;
       inset-inline-start: calc(100% - 0.75rem);
-      inline-size: 2rem;
+      inline-size: 1.75rem;
       border-start-end-radius: 0.6rem;
       background: var(--fundo);
       transform: skewX(38deg);
       transform-origin: bottom left;
     }
 
-    /* A FOLHA: papel com as primeiras telas do sistema. Em repouso as duas
-       primeiras aparecem acima da frente; no hover ela sobe e mostra o resto. */
+    /* A FOLHA: papel em branco que aparece pela borda de cima da frente. */
     .folha {
       position: absolute;
-      inset: 2rem 0.85rem auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      block-size: 8rem;
-      padding: 0.6rem 0.8rem;
+      inset: 1.75rem 0.75rem auto;
+      block-size: 4rem;
       border-radius: 0.75rem;
       background: var(--papel);
       box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
-      font-size: 0.75rem;
-      line-height: 1.35;
-      color: var(--ucam-color-text-secondary);
-      overflow: hidden;
-    }
-    .folha__linha {
-      min-inline-size: 0;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
     }
 
     /* A FRENTE: papel do tema, uma sombra curta para cima que a descola da
-       folha, título em Newsreader e a descrição. */
+       folha; o nome embaixo à esquerda, o traço e a contagem à direita. */
     .frente {
       position: relative;
       display: flex;
       flex: 1;
-      flex-direction: column;
-      gap: 0.5rem;
-      min-block-size: 8rem;
-      padding: 1rem 1.1rem 1rem;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      min-block-size: 7.5rem;
+      padding: 1rem 1.1rem;
       border-radius: 1.25rem;
       background: var(--papel);
       box-shadow:
@@ -186,49 +167,25 @@ const AMOSTRA = 4;
       color: var(--ucam-color-text-primary);
       transform-origin: bottom center;
     }
-    .frente__cabeca {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
     .frente__titulo {
       min-inline-size: 0;
       font-family: var(--ucam-font-display);
-      font-size: 1.375rem;
+      font-size: 1.1875rem;
       font-weight: 500;
       line-height: 1.15;
       letter-spacing: -0.005em;
       text-wrap: balance;
     }
-    .frente__icone {
-      flex: none;
-      inline-size: 1.25rem;
-      block-size: 1.25rem;
-      margin-block-start: 0.2rem;
-      color: var(--ucam-color-text-secondary);
-    }
-    .frente__descricao {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      font-size: 0.8125rem;
-      line-height: 1.45;
-      color: var(--ucam-color-text-secondary);
-    }
-    /* O TRAÇO no canto de baixo à direita, com a contagem embaixo: a
-       etiqueta da pasta. */
     .frente__marca {
       display: flex;
+      flex: none;
       flex-direction: column;
       align-items: flex-end;
       gap: 0.35rem;
-      margin-block-start: auto;
-      padding-block-start: 0.5rem;
+      padding-block-end: 0.15rem;
     }
     .frente__traco {
-      inline-size: 2.25rem;
+      inline-size: 1.75rem;
       block-size: 3px;
       border-radius: 2px;
       background: var(--ucam-color-text-primary);
@@ -250,7 +207,7 @@ const AMOSTRA = 4;
           background-color 260ms ease;
       }
       .pasta:is(:hover, :focus-visible) .folha {
-        transform: translateY(-1.5rem);
+        transform: translateY(-0.9rem);
       }
       .pasta:is(:hover, :focus-visible) .frente {
         transform: rotateX(-10deg) scaleX(0.985);
@@ -268,9 +225,4 @@ export default class TelasPage {
   protected readonly lista = telas;
   protected readonly total = meta.telas;
   protected readonly projetos = meta.projetos;
-
-  /** Quatro nomes inteiros, ou três e "e mais N": nunca quatro e "e mais 1". */
-  protected amostra<T>(ts: readonly T[]): readonly T[] {
-    return ts.length > AMOSTRA ? ts.slice(0, AMOSTRA - 1) : ts;
-  }
 }
