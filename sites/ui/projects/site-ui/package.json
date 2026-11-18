@@ -1,5 +1,5 @@
 {
-  "name": "@ucam/site-ui",
+  "name": "@leonardofbenevides/site-ui",
   "version": "0.5.0",
   "description": "Peças Angular do UCAMDS Sites. Casca fina sobre @ucam/site-css: nenhuma peça tem estilo próprio.",
   "license": "UNLICENSED",

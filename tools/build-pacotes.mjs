@@ -69,7 +69,7 @@ const LICENCA = `Copyright (c) Universidade Candido Mendes.
 Uso interno. Redistribuição fora da UCAM não autorizada.
 `;
 
-/* ------------------------------------------------------------ @ucam/tokens --- */
+/* ------------------------------------------------------------ @leonardofbenevides/tokens --- */
 // O menor denominador comum: só as variáveis. Um app AngularJS que não pode
 // receber CSS de componente ainda pode alinhar cor, espaçamento e tipografia.
 
@@ -81,14 +81,14 @@ function tokens() {
   cpSync(join(DIST, 'tokens'), dir, { recursive: true });
 
   const pkg = {
-    name: '@ucam/tokens',
+    name: '@leonardofbenevides/tokens',
     version: VERSAO,
     description:
       'Tokens do Design System da UCAM em CSS, SCSS e JSON (DTCG). Consumível por qualquer stack, inclusive AngularJS.',
     license: 'UNLICENSED',
     sideEffects: ['*.css'],
     // O `exports` é o contrato de importação. Sem ele, Node e bundlers
-    // modernos recusam subcaminhos e o `@import "@ucam/tokens/ucam-theme.css"`
+    // modernos recusam subcaminhos e o `@import "@leonardofbenevides/tokens/ucam-theme.css"`
     // que a página de instalação ensina falha com ERR_PACKAGE_PATH_NOT_EXPORTED.
     exports: {
       './ucam-tokens.css': './ucam-tokens.css',
@@ -103,7 +103,7 @@ function tokens() {
   writeFileSync(join(dir, 'LICENSE'), LICENCA, 'utf8');
   writeFileSync(
     join(dir, 'README.md'),
-    `# @ucam/tokens
+    `# @leonardofbenevides/tokens
 
 Tokens do Design System da Universidade Candido Mendes. Gerado de \`spec/tokens/\`
 por \`tools/build-tokens.mjs\` — não editar à mão.
@@ -111,14 +111,14 @@ por \`tools/build-tokens.mjs\` — não editar à mão.
 ## Qualquer stack, inclusive AngularJS
 
 \`\`\`html
-<link rel="stylesheet" href="node_modules/@ucam/tokens/ucam-tokens.css">
+<link rel="stylesheet" href="node_modules/@leonardofbenevides/tokens/ucam-tokens.css">
 \`\`\`
 
 ## Angular moderno com Tailwind v4
 
 \`\`\`css
 @import "tailwindcss";
-@import "@ucam/tokens/ucam-theme.css";
+@import "@leonardofbenevides/tokens/ucam-theme.css";
 \`\`\`
 
 ## O que tem dentro
@@ -127,7 +127,7 @@ por \`tools/build-tokens.mjs\` — não editar à mão.
 |---|---|
 | \`ucam-tokens.css\` | As custom properties \`--ucam-*\`, tema claro e escuro. |
 | \`ucam-theme.css\` | O bloco \`@theme\` do Tailwind v4. |
-| \`ucam-zard-bridge.css\` | Liga os tokens às variáveis da base. Uso interno do \`@ucam/ui\`. |
+| \`ucam-zard-bridge.css\` | Liga os tokens às variáveis da base. Uso interno do \`@leonardofbenevides/ui\`. |
 | \`ucam-tokens.json\` | Formato DTCG/W3C, para ferramentas de design. |
 | \`_ucam-tokens.scss\` | Variáveis SCSS, para build antigo que não lê custom property. |
 
@@ -138,7 +138,7 @@ O tema escuro entra por \`data-theme="dark"\` no elemento raiz.
   return dir;
 }
 
-/* --------------------------------------------------------------- @ucam/css --- */
+/* --------------------------------------------------------------- @leonardofbenevides/css --- */
 // Trilho A. Autocontido de propósito: traz os tokens, o sprite e as fontes
 // junto. Um app legado que precisa de dois `<link>` não deveria ter de
 // entender resolução de dependência entre pacotes — e como os dois vêm do
@@ -162,7 +162,7 @@ function css() {
   }
 
   const pkg = {
-    name: '@ucam/css',
+    name: '@leonardofbenevides/css',
     version: VERSAO,
     description:
       'Primitivos visuais do UCAMDS sem framework, escopados sob .ucam. Trilho A: aplicações legadas.',
@@ -182,15 +182,15 @@ function css() {
   writeFileSync(join(dir, 'LICENSE'), LICENCA, 'utf8');
   writeFileSync(
     join(dir, 'README.md'),
-    `# @ucam/css
+    `# @leonardofbenevides/css
 
 Trilho A do Design System da UCAM: aparência sem framework, para o parque
 legado — AngularJS, Angular 14 ou anterior, qualquer coisa que aceite um
 \`<link>\`.
 
 \`\`\`html
-<link rel="stylesheet" href="node_modules/@ucam/css/css/ucam-fonts.css">
-<link rel="stylesheet" href="node_modules/@ucam/css/css/ucam.css">
+<link rel="stylesheet" href="node_modules/@leonardofbenevides/css/css/ucam-fonts.css">
+<link rel="stylesheet" href="node_modules/@leonardofbenevides/css/css/ucam.css">
 
 <div class="ucam">
   <button class="ucam-btn ucam-btn--primary">Salvar</button>
@@ -208,7 +208,7 @@ abas, gaveta, diálogo, confirmação, toast, ordenação e seleção da tabela,
 calendário do campo de data, listbox do select.
 
 \`\`\`html
-<script src="node_modules/@ucam/css/css/ucam-comportamento.js" defer></script>
+<script src="node_modules/@leonardofbenevides/css/css/ucam-comportamento.js" defer></script>
 \`\`\`
 
 Todo controle com \`data-acao\` dispara o evento \`ucam:acao\` (\`detail.acao\`,
@@ -237,8 +237,8 @@ domínio não desenha nada, e só aparece uma linha no console.
 ## O que este pacote NÃO entrega
 
 Comportamento. Combobox com busca, retenção de foco de diálogo e paginação
-acessível precisam de JavaScript — estão no \`@ucam/ui\` e, para o legado, no
-\`@ucam/elements\` (Trilho A+, ADR-010), que os entrega como custom elements sem
+acessível precisam de JavaScript — estão no \`@leonardofbenevides/ui\` e, para o legado, no
+\`@leonardofbenevides/elements\` (Trilho A+, ADR-010), que os entrega como custom elements sem
 framework. Gráfico também não: a folha não desenha gráfico, e a tela estática
 mostra a tabela equivalente.
 `,
@@ -247,7 +247,7 @@ mostra a tabela equivalente.
   return dir;
 }
 
-/* --------------------------------------------------------- @ucam/site-css --- */
+/* --------------------------------------------------------- @leonardofbenevides/site-css --- */
 // O Trilho A dos SITES (ADR-067): tokens --ucam-site-*, submarcas, a folha
 // .ucam-site-* e as fontes Work Sans e Inter. Quem consome: o WordPress de
 // Campos, o site institucional em Angular 18 e o CENPRE.
@@ -269,7 +269,7 @@ function siteCss() {
   if (existsSync(join(DIST, 'icons'))) cpSync(join(DIST, 'icons'), join(dir, 'icons'), { recursive: true });
   else erros.push('dist/icons não existe — rode: pnpm run icons');
   const pkg = {
-    name: '@ucam/site-css',
+    name: '@leonardofbenevides/site-css',
     version: VERSAO,
     description:
       'Folha de estilo do UCAMDS Sites: tokens, submarcas e classes .ucam-site-* para os sites públicos da UCAM. CSS puro, sem framework.',
@@ -288,14 +288,14 @@ function siteCss() {
   writeFileSync(join(dir, 'LICENSE'), LICENCA, 'utf8');
   writeFileSync(
     join(dir, 'README.md'),
-    `# @ucam/site-css
+    `# @leonardofbenevides/site-css
 
 O UCAMDS Sites (ADR-067): a folha dos sites públicos da UCAM — institucional,
 CENPRE, Campos. CSS puro, mobile-first, sem framework.
 
 \`\`\`html
-<link rel="stylesheet" href="node_modules/@ucam/site-css/css/ucam-site-fonts.css">
-<link rel="stylesheet" href="node_modules/@ucam/site-css/css/ucam-site.css">
+<link rel="stylesheet" href="node_modules/@leonardofbenevides/site-css/css/ucam-site-fonts.css">
+<link rel="stylesheet" href="node_modules/@leonardofbenevides/site-css/css/ucam-site.css">
 
 <body class="ucam-site">
   <a class="ucam-site-btn ucam-site-btn--primary" href="/inscricao">Inscreva-se</a>
@@ -306,11 +306,11 @@ CENPRE, Campos. CSS puro, mobile-first, sem framework.
 submarca e marque o elemento raiz:
 
 \`\`\`html
-<link rel="stylesheet" href="node_modules/@ucam/site-css/tokens/ucam-site-marca-cenpre.css">
+<link rel="stylesheet" href="node_modules/@leonardofbenevides/site-css/tokens/ucam-site-marca-cenpre.css">
 <html data-marca="cenpre">
 \`\`\`
 
-SCSS: \`@use 'node_modules/@ucam/site-css/tokens/ucam-site-tokens' as site;\`
+SCSS: \`@use 'node_modules/@leonardofbenevides/site-css/tokens/ucam-site-tokens' as site;\`
 expõe as variáveis \`$ucam-site-*\` e o mapa \`$ucam-site-semantic\`.
 
 ## Ícones
@@ -337,12 +337,12 @@ folha mas não são para uso: só os semânticos (\`--ucam-site-color-*\`,
   return dir;
 }
 
-/* ---------------------------------------------------------------- @ucam/ui --- */
+/* ---------------------------------------------------------------- @leonardofbenevides/ui --- */
 // Trilho B. Aqui não se monta nada: ng-packagr já produziu a árvore correta em
 // ui/dist/ui. O que se faz é conferir que ela não está velha.
 
-/* ---------------------------------------------------------- @ucam/site-ui --- */
-// A lib Angular dos sites: casca fina sobre @ucam/site-css, sem estilo
+/* ---------------------------------------------------------- @leonardofbenevides/site-ui --- */
+// A lib Angular dos sites: casca fina sobre @leonardofbenevides/site-css, sem estilo
 // próprio. Sai pronta do ng-packagr; aqui se confere que é a versão da raiz e
 // que pede a folha na MESMA versão — lib e folha andam juntas, porque a lib
 // só aplica classes que a folha daquela versão emite.
@@ -351,14 +351,14 @@ function siteUi() {
   if (!exigir(join(origem, 'package.json'), 'rode: pnpm run lib:sites')) return null;
 
   const pkgLib = JSON.parse(readFileSync(join(origem, 'package.json'), 'utf8'));
-  if (pkgLib.name !== '@ucam/site-ui') erros.push(`sites/ui/dist/site-ui declara "${pkgLib.name}"`);
+  if (pkgLib.name !== '@leonardofbenevides/site-ui') erros.push(`sites/ui/dist/site-ui declara "${pkgLib.name}"`);
   if (pkgLib.version !== VERSAO) {
     erros.push(`sites/ui/dist/site-ui está na ${pkgLib.version} e a raiz na ${VERSAO} — acerte sites/ui/projects/site-ui/package.json e refaça o build`);
   }
-  const folha = pkgLib.peerDependencies?.['@ucam/site-css'];
-  if (folha !== VERSAO) erros.push(`@ucam/site-ui pede @ucam/site-css "${folha}" e a folha sai na ${VERSAO}`);
+  const folha = pkgLib.peerDependencies?.['@leonardofbenevides/site-css'];
+  if (folha !== VERSAO) erros.push(`@leonardofbenevides/site-ui pede @leonardofbenevides/site-css "${folha}" e a folha sai na ${VERSAO}`);
   for (const proibida of ['tailwindcss', '@angular/cdk', '@angular/router']) {
-    if (pkgLib.peerDependencies?.[proibida] || pkgLib.dependencies?.[proibida]) erros.push(`@ucam/site-ui depende de ${proibida}, que a spec dos sites proíbe`);
+    if (pkgLib.peerDependencies?.[proibida] || pkgLib.dependencies?.[proibida]) erros.push(`@leonardofbenevides/site-ui depende de ${proibida}, que a spec dos sites proíbe`);
   }
   if (!pkgLib.typings || !existsSync(join(origem, pkgLib.typings))) {
     erros.push(`sites/ui/dist/site-ui não tem os tipos declarados em "typings" (${pkgLib.typings ?? 'ausente'})`);
@@ -376,7 +376,7 @@ function ui() {
   if (!exigir(join(origem, 'package.json'), 'rode: pnpm run lib')) return null;
 
   const pkgLib = JSON.parse(readFileSync(join(origem, 'package.json'), 'utf8'));
-  if (pkgLib.name !== '@ucam/ui') {
+  if (pkgLib.name !== '@leonardofbenevides/ui') {
     erros.push(`ui/dist/ui declara "${pkgLib.name}" — o build saiu de um manifesto antigo, refaça`);
   }
   if (pkgLib.version !== VERSAO) {
@@ -387,7 +387,7 @@ function ui() {
   // parado enquanto a fonte andava. Conferir símbolo por símbolo é caro; a
   // contagem de entradas do public-api contra os diretórios de lib/ucam pega
   // o caso real, que é wrapper novo que nunca entrou no build.
-  // O nome do .d.ts deriva do nome do pacote (@ucam/ui → ucam-ui.d.ts), então
+  // O nome do .d.ts deriva do nome do pacote (@leonardofbenevides/ui → ucam-ui.d.ts), então
   // cravá-lo aqui faria esta checagem passar calada no dia em que o nome
   // mudasse — que é o dia em que ela mais precisa falar. Vem do manifesto.
   const dts = join(origem, pkgLib.typings ?? '');
@@ -420,7 +420,7 @@ function ui() {
   return dir;
 }
 
-/* ----------------------------------------------------------- @ucam/ds-mcp --- */
+/* ----------------------------------------------------------- @leonardofbenevides/ds-mcp --- */
 // O kit para agentes: servidor MCP, skills, AGENTS.md e a spec em JSON. A árvore
 // já sai pronta de tools/build-agentes.mjs; aqui só entra o manifesto. Sem
 // dependência de execução, de propósito: o servidor tem de subir em máquina que
@@ -435,7 +435,7 @@ function agentes() {
   cpSync(origem, dir, { recursive: true });
 
   const pkg = {
-    name: '@ucam/ds-mcp',
+    name: '@leonardofbenevides/ds-mcp',
     version: VERSAO,
     description:
       'Kit do UCAMDS para agentes de IA: servidor MCP (stdio, sem dependência), skills ucam-ds/ucam-migrate/ucam-audit, AGENTS.md e os contratos em JSON.',
@@ -459,7 +459,7 @@ function agentes() {
   return dir;
 }
 
-/* ---------------------------------------------------------- @ucam/elements --- */
+/* ---------------------------------------------------------- @leonardofbenevides/elements --- */
 // Trilho A+ (ADR-010): os componentes cujo contrato depende de comportamento,
 // entregues ao parque legado como custom elements. Uma tag <script>, uma tag
 // <link>, e <ucam-combobox> passa a existir numa página AngularJS.
@@ -485,7 +485,7 @@ function elements() {
   }
 
   const pkg = {
-    name: '@ucam/elements',
+    name: '@leonardofbenevides/elements',
     version: VERSAO,
     description:
       'Trilho A+ do UCAMDS: os componentes que precisam de JavaScript, empacotados como custom elements para o parque legado.',
@@ -501,7 +501,7 @@ function elements() {
   writeFileSync(join(dir, 'LICENSE'), LICENCA, 'utf8');
   writeFileSync(
     join(dir, 'README.md'),
-    `# @ucam/elements
+    `# @leonardofbenevides/elements
 
 Trilho A+ do Design System da UCAM (ADR-010): os componentes cujo contrato
 depende de comportamento, entregues ao legado como custom elements. Sem
@@ -520,7 +520,7 @@ Os nomes de tag são os do contrato: \`<ucam-button>\` aqui é o mesmo
 
 ## Quando usar, e quando não
 
-O Trilho A (\`@ucam/css\`) continua sendo a entrega padrão para o legado: ele
+O Trilho A (\`@leonardofbenevides/css\`) continua sendo a entrega padrão para o legado: ele
 resolve tudo que é aparência e estado declarável em classe, e custa um
 \`<link>\`. O A+ é para as telas que precisam de um componente cujo contrato não
 cabe em CSS — combobox com busca, retenção de foco de diálogo, paginação com
@@ -582,9 +582,9 @@ mkdirSync(SAIDA, { recursive: true });
 for (const montar of [tokens, css, siteCss, siteUi, ui, elements, agentes]) {
   const dir = montar();
   if (!dir) continue;
-  // O AGENTS.md viaja em TODO pacote: quem instala só o @ucam/css também
+  // O AGENTS.md viaja em TODO pacote: quem instala só o @leonardofbenevides/css também
   // abre o projeto num editor com agente, e é o arquivo que o agente lê primeiro.
-  // O CHANGELOG vai junto pela mesma razão: quem atualiza só o @ucam/ui
+  // O CHANGELOG vai junto pela mesma razão: quem atualiza só o @leonardofbenevides/ui
   // precisa saber o que a versão trouxe sem ter o kit dos agentes instalado.
   for (const f of ['AGENTS.md', 'CHANGELOG.md']) {
     const origem = join(DIST, 'agentes', f);
