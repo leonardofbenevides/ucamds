@@ -32,7 +32,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build distribution and packages
-        run: pnpm run build && pnpm run lib && pnpm run lib:sites && pnpm run elements && pnpm run pacotes && pnpm run publicar
+        run: pnpm run build && pnpm run lib && pnpm run lib:sites && pnpm run elements && pnpm run pacotes
 
       - name: Publish tarballs to GitHub Packages
         env:
