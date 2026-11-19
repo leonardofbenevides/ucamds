@@ -267,6 +267,11 @@
   ],
   "boas_praticas": [
     {
+      "faca": "Confirmação de ação irreversível que NÃO destrói (enviar, pagar, publicar, concluir) leva o primário do sistema; o corpo diz o que não se desfaz.",
+      "evite": "Pintar de vermelho o botão de \"Enviar pagamentos\" porque o envio não volta atrás.",
+      "porque": "Vermelho diz \"isto apaga ou tira alguma coisa\" (excluir, remover). Usado para o que é só definitivo, ele dilui o aviso de quando algo some de fato. Visto no Pagamentos Sicoob em 19/11/2026: \"pq vermelho?\""
+    },
+    {
       "faca": "Reservar o diálogo para tarefa curta que precisa do contexto atrás.",
       "evite": "Formulário acima de cinco campos, ou com campo de texto longo, dentro de modal.",
       "porque": "O formulário de requerimento tem sete campos e produz rolagem aninhada. É página, não diálogo."

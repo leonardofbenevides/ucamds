@@ -404,7 +404,7 @@
       "$value": {
         "fontSize": "{fontSize.2xl}",
         "fontWeight": "{fontWeight.semibold}",
-        "lineHeight": "1.75rem",
+        "lineHeight": "2rem",
         "letterSpacing": "-0.02em"
       }
     },

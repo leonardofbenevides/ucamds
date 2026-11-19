@@ -104,7 +104,12 @@ const ANEXOS = ['Prova corrigida', 'Requerimento assinado', 'Atestado ou comprov
         <span class="ucam-nav__item" role="link" aria-disabled="true" data-sem-tela><svg class="ic" aria-hidden="true"><use href="#i-info" /></svg><span>Central de ajuda</span></span>
       </ng-container>
 
-      <ucam-page-header variante="barra" title="Nova natureza" meta="12 naturezas cadastradas" [breadcrumb]="trilha" />
+      <!-- As ações do formulário moram na barra do título (ADR-091, 19/11/2026),
+           como na referência: a barra gruda no topo e fica sempre à vista. -->
+      <ucam-page-header variante="barra" title="Nova natureza" meta="12 naturezas cadastradas" [breadcrumb]="trilha">
+        <ucam-button variant="ghost" href="#">Cancelar</ucam-button>
+        <ucam-button variant="primary" iconStart="check" (click)="anunciar('Natureza ' + descricao() + ' criada. Ela recebe pedidos nas unidades com destino.')">Criar natureza</ucam-button>
+      </ucam-page-header>
 
       <div class="ucam-corpo">
         <section class="ucam-section ucam-section--lateral">
@@ -177,10 +182,6 @@ const ANEXOS = ['Prova corrigida', 'Requerimento assinado', 'Atestado ou comprov
           }
         </div>
 
-        <div class="ucam-form-actions ucam-form-actions--sticky">
-          <ucam-button variant="ghost" href="#">Cancelar</ucam-button>
-          <ucam-button variant="primary" iconStart="check" (click)="anunciar('Natureza ' + descricao() + ' criada. Ela recebe pedidos nas unidades com destino.')">Criar natureza</ucam-button>
-        </div>
       </div>
 
       <ucam-dialog title="Adicionar tipo" [(open)]="dialogoTipo">

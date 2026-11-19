@@ -50,6 +50,7 @@ import {
   sliderScript,
   mascaraScript,
   periodoScript,
+  diaScript,
   criadoScript,
   estadosDaListaScript,
   sessaoScript,
@@ -425,6 +426,7 @@ ${proj.id === 'vestibular' ? `<script>${provaScript}</script>` : ''}
 <script>${sliderScript}</script>
 <script>${mascaraScript}</script>
 <script>${periodoScript}</script>
+<script>${diaScript}</script>
 <script>${criadoScript}</script>
 <script>${estadosDaListaScript}</script>
 <script>${sessaoScript}</script>

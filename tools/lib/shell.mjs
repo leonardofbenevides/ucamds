@@ -2201,7 +2201,7 @@ export const estadoScript = `
     'imprimir': 1, 'marcar-lidas': 1, 'anexar': 1, 'remover-anexo': 1,
     'etapa-continuar': 1, 'etapa-voltar': 1, 'etapa-inicio': 1,
     'filtros': 1, 'limpar-busca': 1, 'limpar-filtros': 1, 'remover-filtro': 1,
-    'limpar-selecao': 1, 'limpar-campos': 1, 'descartar-form': 1, 'copiar': 1
+    'limpar-selecao': 1, 'limpar-campos': 1, 'descartar-form': 1, 'copiar': 1, 'copiar-tabela': 1
   };
   var RE = /^(Fixar|Remover) (.+) (nos|dos) (.+)$/;
 
@@ -2936,10 +2936,16 @@ ${FN_ANUNCIA}
     eco(li);
   }
 
-  function csvDe(tabela) {
-    var q = function (s) { return '"' + String(s).replace(/"/g, '""') + '"'; };
+  // sep = ';' dá CSV com aspas (o Excel em pt-BR abre em colunas); sep = TAB
+  // dá o que se cola numa planilha ou num e-mail (copiar-tabela). A linha de
+  // detalhe aberta (tabela dentro da linha) fica de fora: ela é outra tabela.
+  function csvDe(tabela, sep) {
+    sep = sep || ';';
+    var q = sep === ';'
+      ? function (s) { return '"' + String(s).replace(/"/g, '""') + '"'; }
+      : function (s) { return String(s); };
     return Array.prototype.filter.call(tabela.rows, function (tr) {
-      return !tr.hidden;
+      return !tr.hidden && !tr.querySelector('table');
     }).map(function (tr) {
       return Array.prototype.filter.call(tr.cells, function (c) {
         return !c.hidden && !c.classList.contains('th--selecao') && !c.classList.contains('td--selecao') && !c.classList.contains('th--acoes') && !c.classList.contains('td--acoes');
@@ -2947,7 +2953,7 @@ ${FN_ANUNCIA}
         var clone = c.cloneNode(true);
         Array.prototype.forEach.call(clone.querySelectorAll('.ucam-menu, .ucam-sr-only'), function (n) { n.remove(); });
         return q(clone.textContent.replace(/[ \\t\\r\\n]+/g, ' ').trim());
-      }).join(';');
+      }).join(sep);
     }).join(NL);
   }
 
@@ -3459,8 +3465,23 @@ ${FN_ANUNCIA}
       return;
     }
 
+    // COPIAR A TABELA (19/11/2026, Inadimplência: "será q eu n quero
+    // exportar ou imprimir, ou copiar essas infos?"): as linhas à vista, com
+    // TAB entre as colunas, prontas para colar numa planilha ou num e-mail.
+    if (qual === 'copiar-tabela') {
+      var tb = (botao.closest('section') || document).querySelector('table.ucam-table');
+      if (!tb) return;
+      var texto = csvDe(tb, String.fromCharCode(9));
+      var n = Math.max(0, texto.split(NL).length - 1);
+      var pronto = function () { rotuloTemporario(botao, 'Copiado'); anuncia(n + (n === 1 ? ' linha copiada' : ' linhas copiadas') + ', com o cabeçalho. Cole numa planilha.', botao); };
+      if (navigator.clipboard) navigator.clipboard.writeText(texto).then(pronto, pronto);
+      else pronto();
+      return;
+    }
+
     if (qual === 'exportar') {
-      var tabela = (botao.closest('.ucam-corpo, .ucam-main') || document).querySelector('table.ucam-table') || document.querySelector('table.ucam-table');
+      // A tabela da SEÇÃO do botão, quando ele mora numa; senão a da tela.
+      var tabela = (botao.closest('section') || botao.closest('.ucam-corpo, .ucam-main') || document).querySelector('table.ucam-table') || document.querySelector('table.ucam-table');
       if (!tabela) return;
       var titulo = (document.querySelector('.ucam-viewbar__titulo, h1') || {}).textContent || 'tabela';
       baixar(titulo.trim().toLowerCase().replace(/[^a-z0-9à-ú]+/gi, '-') + '.csv', csvDe(tabela));
@@ -4292,7 +4313,13 @@ ${FN_ANUNCIA}
         if (n.children.length === 0 && /^Calculado em /.test(n.textContent.trim())) n.textContent = 'Calculado agora, às ' + hora() + '.';
       });
       anuncia('Resultado calculado às ' + hora() + ', logo abaixo do formulário.', botao);
-      return eco(resultado);
+      // O eco vai na LINHA que mudou, não na seção: a seção inteira piscava
+      // num bloco verde do tamanho da tabela (19/11/2026, "pq esse focus fica
+      // assim?").
+      var mudou = Array.prototype.filter.call(resultado.querySelectorAll('p, span'), function (n) {
+        return n.children.length === 0 && /^Calculado agora/.test(n.textContent.trim());
+      })[0];
+      return eco(mudou || tituloResultado || resultado);
     }
 
     if (qual === 'copiar') {
@@ -7219,6 +7246,13 @@ export const toastScript = `
     // ocupando a pilha e o novo nascia em cima dele.
     var max = parseInt(getComputedStyle(p).getPropertyValue('--ucam-toasts-max'), 10) || MAX;
     var vivos = function () { return p.querySelectorAll('.ucam-toast:not([data-saindo])'); };
+    // O MESMO AVISO NÃO EMPILHA (19/11/2026: três "Resultado calculado às
+    // 17:57" um sobre o outro, de três cliques). O que já está na tela com o
+    // mesmo texto e tom renasce no lugar, com a vida reiniciada.
+    var igual = Array.prototype.filter.call(vivos(), function (t) {
+      return t.classList.contains('ucam-toast--' + tom) && t.querySelector('.ucam-toast__texto').textContent === texto;
+    })[0];
+    if (igual) { p.appendChild(igual); arma(igual); return igual; }
     while (vivos().length >= max) { var velho = vivos()[0]; clearTimeout(velho._t); velho.remove(); }
     var el = document.createElement('div');
     el.className = 'ucam-toast ucam-toast--' + tom;
@@ -8261,6 +8295,39 @@ ${FN_ANUNCIA}
     setTimeout(function () {
       Array.prototype.forEach.call(document.querySelectorAll('[data-periodo="de"]'), function (c) { aplica(c.getAttribute('data-periodo-alvo'), false); });
     }, 0);
+  });
+})();
+`;
+
+/**
+ * O DIA QUE MUDA A TELA (19/11/2026: "fazer com que o filtro de datepicker
+ * funcione", Movimento de caixa). O par do periodoScript para UM dia: um
+ * campo com data-dia (o .ucam-date-field de sempre, que já abre o
+ * calendário e dispara change) reescreve todo texto marcado com
+ * data-dia-texto="Caixa de {d}" e diz a troca a quem não vê. Elementos com
+ * data-dia-hoje só aparecem no dia inicial (o aviso "caixa aberto às 08h02"
+ * não vale para um dia passado). Data inválida não muda nada: o dataScript
+ * já põe o erro no campo.
+ */
+export const diaScript = `
+(function () {
+${FN_ANUNCIA}
+  var VALIDA = /^(\\d{2})\\/(\\d{2})\\/(\\d{4})$/;
+  function aplica(c) {
+    var v = c.value;
+    if (!VALIDA.test(v)) return;
+    var inicial = c.getAttribute('data-dia-inicial') || c.defaultValue;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-dia-texto]'), function (el) {
+      el.textContent = el.getAttribute('data-dia-texto').replace('{d}', v);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-dia-hoje]'), function (el) {
+      el.hidden = v !== inicial;
+    });
+    anuncia('Mostrando o movimento de ' + v + '.', c);
+  }
+  document.addEventListener('change', function (e) {
+    var c = e.target;
+    if (c.matches && c.matches('input[data-dia]')) aplica(c);
   });
 })();
 `;

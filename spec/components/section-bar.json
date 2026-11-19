@@ -246,6 +246,11 @@
   ],
   "boas_praticas": [
     {
+      "faca": "O que se faz com a tabela inteira (copiar, imprimir, exportar) mora na linha do título da seção, à direita, com .ucam-section__cabeca--acoes: fantasma e secundário pequenos, nunca o primário da tela.",
+      "evite": "Tabela de consulta sem como levar os dados para fora, ou as mesmas ferramentas soltas embaixo da tabela.",
+      "porque": "Quem consulta uma lista de inadimplentes quer mandar a lista para alguém ou abrir numa planilha. Visto na Inadimplência em 19/11/2026: \"será q eu n quero exportar ou imprimir, ou copiar essas infos?\". data-acao=copiar-tabela copia as linhas à vista com TAB; exportar baixa o CSV da tabela da própria seção."
+    },
+    {
       "faca": "Hierarquia por peso tipográfico e um fio.",
       "evite": "Barra preenchida de cor ocupando a largura toda.",
       "porque": "A barra cinza-escuro do legado dá à seção mais peso visual do que ao conteúdo que ela agrupa."

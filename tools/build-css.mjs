@@ -16027,6 +16027,83 @@ a.ucam-trilho__item:hover {
 .ucam-nav__item .ic { color: var(--ucam-nav-tinta-calma); }
 .ucam-nav__item:not([aria-current="page"]):hover .ic { color: var(--ucam-color-text-primary); }
 
+/* AS AÇÕES DO FORMULÁRIO MORAM NA BARRA DO TÍTULO (19/11/2026, ADR-091: "no
+ * header com o title não dá pra ter os botões de ação principal?"). O rodapé
+ * .ucam-form-actions saiu das telas de formulário: Cancelar e o primário vão
+ * para .ucam-viewbar__acoes, que gruda no topo e fica à vista o tempo todo.
+ * O texto de apoio que morava ao lado dos botões fica no fim do formulário. */
+.ucam-form-actions__apoio {
+  margin-block-start: var(--ucam-space-stack-md);
+  color: var(--ucam-color-text-secondary);
+  font-size: var(--ucam-typography-body-sm-font-size);
+}
+
+/* A barra de progresso dentro da linha de lista (Cobrança do mês, 19/11/2026):
+ * 4px abaixo do apoio, para não encostar no texto. */
+.ucam-list-item__corpo > .ucam-progress { margin-block-start: var(--ucam-space-inline-xs); }
+
+/* O CABEÇALHO DE SEÇÃO COM FERRAMENTAS (19/11/2026, Inadimplência): título à
+ * esquerda e, na mesma linha, o que se faz com a tabela inteira (copiar,
+ * imprimir, exportar). Leves (fantasma e secundário pequenos): o primário da
+ * tela continua sendo o da barra. Quebra para baixo quando não cabe. */
+.ucam-section__cabeca--acoes {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--ucam-space-inline-md);
+  row-gap: var(--ucam-space-inline-xs);
+}
+.ucam-section__cabeca--acoes > .ucam-cluster {
+  margin-inline-start: auto;
+  gap: var(--ucam-space-inline-xs);
+}
+
+/* A BARRA DE LOTE PRESA AO PÉ DA JANELA (19/11/2026, "pq essa snackbar tá
+ * surgindo no meio da tela?", Cálculo em lote). Em repouso ela ficava entre a
+ * tabela e a paginação e só pairava rolando; numa tabela curta isso é o meio
+ * da tela. Agora ela é fixa no pé da JANELA, centrada na área de conteúdo
+ * (a janela menos trilho e navegação), e o conteúdo ganha folga embaixo
+ * enquanto ela existe, para não tapar a última linha. */
+.ucam-shell { --ucam-lado: 0px; }
+${acima('nav-fixa')} {
+  .ucam-shell:not(.ucam-shell--sem-nav) { --ucam-lado: var(--ucam-nav-width); }
+  .ucam-shell--trilho:not(.ucam-shell--sem-nav) { --ucam-lado: calc(var(--ucam-trilho-width) + var(--ucam-nav-width)); }
+}
+.ucam-lote {
+  position: fixed;
+  inset-block-end: var(--ucam-space-inset-lg);
+  inset-inline-start: calc(var(--ucam-lado, 0px) + (100vw - var(--ucam-lado, 0px)) / 2);
+  translate: -50% 0;
+  margin: 0;
+  max-inline-size: calc(100vw - var(--ucam-lado, 0px) - 2rem);
+}
+.ucam-main:has(.ucam-lote:not([hidden])) { padding-block-end: 5.5rem; }
+/* No celular, a largura toda no pé: centrada e em pílula, a 390px ela
+ * quebrava em três linhas e virava uma bolha. */
+${abaixo('nav-fixa')} {
+  .ucam-lote {
+    inset-inline: var(--ucam-space-inset-md);
+    translate: none;
+    inline-size: auto;
+    max-inline-size: none;
+    justify-content: space-between;
+    row-gap: var(--ucam-space-inline-xs);
+    border-radius: var(--ucam-radius-surface);
+  }
+  .ucam-main:has(.ucam-lote:not([hidden])) { padding-block-end: 8rem; }
+}
+
+/* O DIA NA BARRA (19/11/2026, Movimento de caixa): o filtro de data mora na
+ * mesma fileira do título, logo depois dele, na largura da data e não da
+ * fileira. É um .ucam-date-field de sempre (abre o calendário); com
+ * data-dia, o diaScript reescreve a tela para o dia escolhido. */
+.ucam-viewbar__dia {
+  flex: none;
+  inline-size: 10.5rem;
+  margin-inline-start: var(--ucam-space-inline-sm);
+}
+.ucam-viewbar__dia .ucam-input { inline-size: 100%; padding-inline-start: 2.125rem; cursor: pointer; }
+
 /* O título de grupo: cinza, um degrau abaixo da legenda, sem peso de rótulo. */
 .ucam-nav__group-title {
   font-size: 0.78125rem;

@@ -478,7 +478,7 @@
       "porque": "As duas primeiras tiram o elemento da ordem de foco. Sem ele o teclado atravessa os mais de cem itens do menu do SIGFIN a cada página."
     },
     {
-      "faca": "Ações do formulário dentro do contêiner do formulário, ao fim do cartão ou numa barra fixa (.ucam-form-actions--sticky) em página longa.",
+      "faca": "Ações do formulário na barra do título da página (.ucam-viewbar__acoes), Cancelar antes do primário: a barra gruda no topo e a ação fica à vista do primeiro ao último campo (ADR-091, 19/11/2026). .ucam-form-actions fica para formulário dentro de diálogo, gaveta ou cartão de detalhe, onde a ação é do bloco e não da página.",
       "evite": "Ações no rodapé do corpo, a 700px do último campo.",
       "porque": "A auditoria de 28/09/2026 mediu \"Calcular\" em x=1367 a 1920 com os campos acabando em x=803: o olho procura a ação ao lado do que acabou de preencher (ADR-055)."
     },

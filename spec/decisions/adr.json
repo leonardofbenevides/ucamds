@@ -1710,6 +1710,23 @@
       "afeta": [
         "app-shell"
       ]
+    },
+    {
+      "id": "ADR-091",
+      "titulo": "A ação do formulário mora na barra do título",
+      "status": "aceita",
+      "data": "2026-11-19",
+      "contexto": "Em 19/11/2026, vendo o Cálculo de mensalidade individual, o Leonardo perguntou: \"No header com o title não dá pra ter os botões de ação principal? pq todos estão no corpo?\". Trinta telas tinham o primário só no rodapé do formulário (.ucam-form-actions): Salvar banco, Criar natureza, Enviar requerimento, Calcular mensalidade. Numa página longa, o botão só aparecia depois do último campo. Das três saídas mostradas (só no cabeçalho, cabeçalho e rodapé, só nas telas de ferramenta), ele escolheu só no cabeçalho.",
+      "decisao": "Na tela de formulário, Cancelar e o primário vão para .ucam-viewbar__acoes, na primeira fileira da barra do título, que gruda no topo. O rodapé .ucam-form-actions sai da página; o texto de apoio que morava ao lado dos botões fica no fim do formulário, em .ucam-form-actions__apoio. O rodapé continua valendo dentro de diálogo, gaveta e cartão de detalhe, onde a ação é do bloco e não da página, e nas telas de prova do Vestibular, onde \"Próxima\" e \"Entregar prova\" são o passo da prova. No Trilho B, os botões vão como conteúdo projetado do ucam-page-header. Os scripts que procuram o formulário a partir do botão já recuavam para .ucam-main, e a validação continua igual.",
+      "consequencias": [
+        "26 telas mudaram (Protocolo, SigFin, Gerencial, Relatórios, Secretaria, Pós e extensão); a tela viva natureza-form acompanha.",
+        "A barra do título passa a ser o único lugar do primário da página, como já era nas listagens (ADR-023).",
+        "Formulário que precisa de ação ao pé, por exigência de leitura (um termo a aceitar), declara a exceção na própria tela."
+      ],
+      "afeta": [
+        "page-header",
+        "field"
+      ]
     }
   ]
 }

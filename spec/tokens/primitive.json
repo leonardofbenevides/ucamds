@@ -458,7 +458,8 @@
       "$value": "1.125rem"
     },
     "2xl": {
-      "$value": "1.375rem"
+      "$value": "1.5rem",
+      "$description": "24px desde 19/11/2026 (\"não tá com uma hierarquia boa\", Cálculo de mensalidade individual): a 22px o título da página ficava a 1,22× da seção (18px) e as duas linhas competiam. Só o page-title usa este degrau."
     },
     "3xl": {
       "$value": "1.75rem"
