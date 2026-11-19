@@ -535,8 +535,9 @@ Diz a versão instalada e, se houver mais nova publicada, a linha de instalaçã
 // CHANGELOG: o que cada versão trouxe, da mesma função que responde ao
 // ucam_get_changes. Viaja em todo pacote ao lado do AGENTS.md (build-pacotes).
 {
+  const specVersoes = ler('spec/versoes.json');
   const m = mudancas({
-    versoes: ler('spec/versoes.json').versoes,
+    versoes: specVersoes.versoes,
     adrs,
     ...inventario({ componentes, projetos }),
   });
@@ -556,6 +557,13 @@ Diz a versão instalada e, se houver mais nova publicada, a linha de instalaçã
     ``,
     `Uma versão leva as decisões registradas depois da versão anterior e até a data dela. Decisão nova pode revogar uma antiga: quando uma regra que você conhecia mudou, a ADR diz por quê.`,
   ];
+  // 18/11/2026: a pergunta "o que quer dizer o 0.5.0?" veio de quem publica os
+  // pacotes. A regra do número mora em spec/versoes.json ($numero) e abre o
+  // CHANGELOG, que é onde o dev olha antes de atualizar.
+  if (specVersoes.$numero?.length) {
+    const [titulo, ...itens] = specVersoes.$numero;
+    partes.push(``, `## ${titulo.replace(/\.$/, '')}`, ``, ...itens.map((t) => `- ${t}`));
+  }
   if (temPendente) partes.push(``, `## Ainda sem versão`, ``, `Entrou na spec depois da ${m.ultima}. No repositório, é o que a próxima versão leva.`, ``, blocoDe(p));
   for (const v of [...m.versoes].reverse()) {
     // A nota da versão abre a seção: numa versão sem ADR nova ela é a única

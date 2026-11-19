@@ -54,7 +54,11 @@ for (const rel of MANIFESTOS) {
 {
   const rel = 'sites/ui/projects/site-ui/package.json';
   const txt = ler(rel);
-  writeFileSync(join(ROOT, rel), txt.replace(/("@ucam\/site-css"\s*:\s*")[^"]+(")/, `$1${nova}$2`), 'utf8');
+  // Qualquer escopo: o de 17/11/2026 (@leonardofbenevides) deixou o @ucam do
+  // padrão antigo sem casar, e a 0.5.1 nasceu com a folha pedida na 0.5.0.
+  const trocado = txt.replace(/("@[a-z0-9-]+\/site-css"\s*:\s*")[^"]+(")/, `$1${nova}$2`);
+  if (trocado === txt) throw new Error(`${rel}: não achei a peerDependency de site-css para levar à ${nova}`);
+  writeFileSync(join(ROOT, rel), trocado, 'utf8');
 }
 
 const comps = readdirSync(join(ROOT, 'spec', 'components'))
