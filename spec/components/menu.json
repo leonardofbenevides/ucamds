@@ -118,6 +118,19 @@
       }
     },
     {
+      "nome": "fixo",
+      "tipo": "boolean",
+      "default": "false",
+      "descricao": "Painel com position: fixed, preso à janela e não ao gatilho. Obrigatório quando o gatilho mora num contêiner que rola ou recorta: o \"⋮\" da coluna de ações de uma tabela, dentro do .ucam-table-wrap e do cartão com overflow clip. Absoluto, o menu da última linha saía cortado com um item só à vista (medido em 17/11/2026, sigfin/agendamento-calculo). O script põe o painel sob o gatilho, alinhado pelo fim, sobe quando embaixo não cabe e fecha ao rolar. O menu da coluna (.ucam-menu--coluna) é fixo pelo mesmo motivo.",
+      "valores": {
+        "true": {
+          "uso": "Menu da linha numa tabela, e qualquer menu cujo gatilho esteja num ancestral com overflow diferente de visible.",
+          "limite": "Fecha ao rolar: menu fixo não acompanha o gatilho.",
+          "classe": ".ucam-menu--fixo"
+        }
+      }
+    },
+    {
       "nome": "ariaLabel",
       "tipo": "string | null",
       "default": "null",

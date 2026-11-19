@@ -563,6 +563,16 @@
       "faca": "Uma coluna de estado com cor por linha. Se a linha tem dois estados, o que decide leva a pastilha tinta e o outro vai em texto de apoio.",
       "evite": "Sugestão e decisão lado a lado, cada uma com a sua pastilha verde, âmbar ou vermelha.",
       "porque": "Duas faixas de cor paralelas não dizem qual ler, e escondem justamente onde as duas divergem. É a ADR-027 aplicada a colunas, e não só à barra da borda (ADR-050)."
+    },
+    {
+      "faca": "Lista longa numa célula vira contagem: até dois itens por extenso (\"Campos, Centro\"), de três em diante a quantidade (\"100 unidades\"). A lista inteira fica no formulário ou no detalhe.",
+      "evite": "Pastilhas com os dois primeiros itens e um \"+98\".",
+      "porque": "Os dois nomes à vista são arbitrários e não dizem nada do registro; a quantidade é o que se compara de uma linha para a outra. Visto no agendamento do cálculo do financeiro novo, em 17/11/2026."
+    },
+    {
+      "faca": "Com três ou mais ações por linha, um \"⋮\" só na coluna de ações, com .ucam-menu--fixo no painel; a destrutiva por último, depois do separador e confirmada.",
+      "evite": "Quatro ícones soltos por linha (ligar, executar, editar, excluir), ou o menu absoluto dentro do .ucam-table-wrap.",
+      "porque": "Ícone sem rótulo obriga a decorar o desenho, e o de energia não diz se pausa ou ativa. O menu absoluto é recortado pelo invólucro que rola: na última linha só o primeiro item aparecia."
     }
   ],
   "vs": [

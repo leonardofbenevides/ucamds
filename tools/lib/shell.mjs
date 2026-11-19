@@ -8870,8 +8870,16 @@ export const menuContaScript = `
   // vira para o outro lado; se ainda assim não couber, desliza pelo que falta.
   // O deslize vai em "translate" e não em "transform", que é do surgimento.
   // Painel fixo (a lista do sino no telefone) já está preso à janela.
+  // Fixo também é o MENU DA LINHA (.ucam-menu--fixo, 17/11/2026): o "⋮" da
+  // coluna de ações mora no mesmo .ucam-table-wrap que rola e no cartão com
+  // overflow clip, e o painel absoluto da última linha saía cortado com um
+  // item só à vista. Alinha pelo FIM do gatilho, como o absoluto alinharia.
+  function fixo(menu) {
+    return menu.classList.contains('ucam-menu--coluna') || menu.classList.contains('ucam-menu--fixo');
+  }
+
   function caber(menu) {
-    if (menu.classList.contains('ucam-menu--coluna')) return;
+    if (fixo(menu)) return;
     if (!menu.hasAttribute('data-alinha')) menu.setAttribute('data-alinha', menu.classList.contains('ucam-menu--inicio') ? 'inicio' : 'fim');
     var inicio = menu.getAttribute('data-alinha') === 'inicio';
     menu.classList.toggle('ucam-menu--inicio', inicio);
@@ -8891,13 +8899,14 @@ export const menuContaScript = `
 
   function posicionar(gatilho, menu) {
     caber(menu);
-    if (!menu.classList.contains('ucam-menu--coluna')) return;
+    if (!fixo(menu)) return;
     var r = gatilho.getBoundingClientRect();
     var larg = menu.offsetWidth;
     var alt = menu.offsetHeight;
     var y = r.bottom + 4;
     if (y + alt > window.innerHeight - 8 && r.top - 4 - alt > 8) y = r.top - 4 - alt;
-    var x = Math.max(8, Math.min(r.left, window.innerWidth - larg - 8));
+    var x0 = menu.classList.contains('ucam-menu--fixo') ? r.right - larg : r.left;
+    var x = Math.max(8, Math.min(x0, window.innerWidth - larg - 8));
     menu.style.insetBlockStart = y + 'px';
     menu.style.insetInlineStart = x + 'px';
   }
@@ -8929,11 +8938,11 @@ export const menuContaScript = `
   function fecharColunas() {
     Array.prototype.forEach.call(document.querySelectorAll(GATILHO + '[aria-expanded="true"]'), function (g) {
       var m = menuDe(g);
-      if (m && m.classList.contains('ucam-menu--coluna')) fechar(g, false);
+      if (m && fixo(m)) fechar(g, false);
     });
   }
   document.addEventListener('scroll', function (e) {
-    if (e.target && e.target.closest && e.target.closest('.ucam-menu--coluna')) return;
+    if (e.target && e.target.closest && e.target.closest('.ucam-menu--coluna, .ucam-menu--fixo')) return;
     fecharColunas();
   }, true);
   window.addEventListener('resize', fecharColunas);

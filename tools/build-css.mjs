@@ -4008,6 +4008,17 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   white-space: normal;
 }
 
+/* O MENU DA LINHA (17/11/2026, sigfin/agendamento-calculo). O "⋮" da coluna
+ * de ações mora dentro do .ucam-table-wrap que rola e do cartão com overflow
+ * clip: absoluto, o painel da última linha saía cortado com um item só à
+ * vista. Fixo como o da coluna; o script põe topo e esquerda pelo FIM do
+ * gatilho e fecha ao rolar. Duas classes pelo mesmo motivo do de coluna. */
+.ucam-menu.ucam-menu--fixo {
+  position: fixed;
+  inset-block-start: auto;
+  inset-inline-end: auto;
+}
+
 /* COLUNA FIXA. O script MOVE a coluna para a ponta — fixar uma coluna do meio
  * sem movê-la faria as vizinhas da esquerda passarem por baixo dela — e cola
  * com sticky. O deslocamento de cada célula (--ucam-col-x) vem do script, que
