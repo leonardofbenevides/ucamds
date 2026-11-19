@@ -1,4 +1,4 @@
-/* @ucam/tokens — gerado de spec/tokens/ por tools/build-tokens.mjs
+/* @leonardofbenevides/tokens — gerado de spec/tokens/ por tools/build-tokens.mjs
  * NÃO EDITAR À MÃO. Edite a spec e rode: pnpm tokens
  * Formato: CSS custom properties
  */
@@ -139,7 +139,6 @@
   --ucam-easing-emphasized: cubic-bezier(0.165, 0.84, 0.44, 1);
   --ucam-fontFamily-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --ucam-fontFamily-mono: "Geist Mono Variable", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, "Liberation Mono", monospace;
-  --ucam-fontFamily-serif: "Newsreader Variable", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --ucam-alpha-ink-weak: rgb(14 22 42 / 0.045);
   --ucam-alpha-ink-strong: rgb(14 22 42 / 0.085);
   --ucam-alpha-paper-weak: rgb(248 250 252 / 0.06);
@@ -169,7 +168,7 @@
   --ucam-color-text-on-brand: #FFFFFF;
   --ucam-color-text-on-action: #FFFFFF;
   --ucam-color-text-link: #14589E;
-  --ucam-color-text-rotulo: #8E1331;
+  --ucam-color-text-rotulo: #3B4048;
   --ucam-color-action-primary-default: #8E1331;
   --ucam-color-action-primary-hover: #6C1E2B;
   --ucam-color-action-primary-active: #52151F;
@@ -317,7 +316,6 @@
   --ucam-focus-ring-offset: 2px;
   --ucam-font-body: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --ucam-font-mono: "Geist Mono Variable", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, "Liberation Mono", monospace;
-  --ucam-font-display: "Newsreader Variable", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --ucam-elevation-flat: none;
   --ucam-elevation-raised: none;
   --ucam-elevation-sticky: 0 4px 12px -2px rgb(0 0 0 / 0.09), 0 2px 6px -2px rgb(0 0 0 / 0.05);
@@ -359,7 +357,7 @@
     --ucam-color-text-on-brand: #FFFFFF;
     --ucam-color-text-on-action: #0E162A;
     --ucam-color-text-link: #DDEBFA;
-    --ucam-color-text-rotulo: #FCC9CB;
+    --ucam-color-text-rotulo: #DEE5EE;
     --ucam-color-action-primary-default: #DB6F7A;
     --ucam-color-action-primary-hover: #F1A1A7;
     --ucam-color-action-primary-active: #FCC9CB;
@@ -442,7 +440,7 @@
   --ucam-color-text-on-brand: #FFFFFF;
   --ucam-color-text-on-action: #0E162A;
   --ucam-color-text-link: #DDEBFA;
-  --ucam-color-text-rotulo: #FCC9CB;
+  --ucam-color-text-rotulo: #DEE5EE;
   --ucam-color-action-primary-default: #DB6F7A;
   --ucam-color-action-primary-hover: #F1A1A7;
   --ucam-color-action-primary-active: #FCC9CB;

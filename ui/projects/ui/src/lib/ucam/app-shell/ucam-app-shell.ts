@@ -394,7 +394,6 @@ export type UcamSystemCategory =
           @if (logoUrl()) {
             <span
               class="ucam-shell-logo hidden shrink-0 bg-current min-[64rem]:block"
-              [style.color]="tintaMarca()"
               [style.inline-size]="'var(--ucam-appbar-logo-width, 8.2rem)'"
               [style.block-size]="'var(--ucam-appbar-logo-height, 1.5rem)'"
               [style.mask]="mascaraLogo()"
@@ -412,15 +411,14 @@ export type UcamSystemCategory =
               class="ucam-shell-marca inline-flex shrink-0 items-center justify-center"
               [class]="classesMarca()"
               [style.background]="ladrilhoMarca()"
-              [style.color]="appbarAppearance() === 'light' ? 'var(--ucam-color-text-on-action)' : (tintaMarca() ?? 'currentColor')"
+              [style.color]="appbarAppearance() === 'light' ? 'var(--ucam-color-text-on-action)' : 'currentColor'"
               aria-hidden="true"
             >
               <ucam-icon [name]="systemIcon()!" [size]="appbarAppearance() === 'light' ? 'md' : 'lg'" />
             </span>
           }
           <span
-            class="ucam-shell-sistema font-[family-name:var(--ucam-font-display)] text-[length:1.375rem] [font-weight:500] tracking-[-0.01em] whitespace-nowrap"
-            [style.color]="tintaMarca()"
+            class="ucam-shell-sistema text-[length:var(--ucam-appbar-system-size)] [font-weight:var(--ucam-typography-action-font-weight)] tracking-[-0.01em] whitespace-nowrap"
             >{{ systemName() }}</span
           >
         </a>
@@ -882,7 +880,7 @@ export type UcamSystemCategory =
                           [attr.aria-current]="sub.current ? 'page' : null"
                           class="flex min-h-[var(--ucam-size-control-sm)] items-center gap-[var(--ucam-space-inline-sm)] rounded-[var(--ucam-radius-control)] px-[var(--ucam-space-inset-sm)] py-[var(--ucam-space-inline-xs)] text-[length:var(--ucam-typography-body-sm-font-size)] no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
                           [class]="sub.current
-                            ? '[font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-action-primary-default)]'
+                            ? 'bg-[var(--ucam-color-action-primary-subtle)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-text-primary)]'
                             : sub.disabled
                               ? 'cursor-default text-[var(--ucam-color-text-disabled)]'
                               : 'text-[var(--ucam-color-text-secondary)] hover:bg-[var(--ucam-color-interaction-hover)] hover:text-[var(--ucam-color-text-primary)]'"
@@ -1210,11 +1208,8 @@ export class UcamAppShell {
 
   /** Na faixa tinta, fio e tinta apagada saem do próprio texto; na clara, dos
    *  tokens de superfície — currentColor a 20% sobre branco some. */
-  protected readonly faixaTinta = computed(() => this.appbarAppearance() === 'dark');
-
-  /** ADR-087: na faixa de marca, a marca é tinta — logo, marquinha e nome em bordô. */
-  protected readonly tintaMarca = computed(() =>
-    this.appbarAppearance() === 'brand' ? 'var(--ucam-color-action-primary-default)' : null,
+  protected readonly faixaTinta = computed(
+    () => this.appbarAppearance() === 'brand' || this.appbarAppearance() === 'dark',
   );
 
   protected readonly linhaControle = computed(() =>
@@ -1231,6 +1226,12 @@ export class UcamAppShell {
    *  vermelho), tokens de notificação na clara. O anel é a cor da faixa. */
   protected readonly estiloSelo = computed(() => {
     switch (this.appbarAppearance()) {
+      case 'brand':
+        return {
+          background: 'var(--ucam-color-text-on-brand)',
+          color: 'var(--ucam-color-surface-brand)',
+          'box-shadow': '0 0 0 2px var(--ucam-color-surface-brand)',
+        };
       case 'dark':
         return {
           background: 'var(--ucam-color-text-on-brand)',
@@ -1320,7 +1321,7 @@ export class UcamAppShell {
 
   protected readonly classesFaixa = computed(() =>
     this.appbarAppearance() === 'brand'
-      ? 'bg-[var(--ucam-color-surface-default)] text-[var(--ucam-color-text-primary)]'
+      ? 'bg-[var(--ucam-color-surface-brand)] text-[var(--ucam-color-text-on-brand)]'
       : this.appbarAppearance() === 'dark'
         ? 'bg-[var(--ucam-color-surface-inverse)] text-[var(--ucam-color-text-on-brand)]'
         : 'text-[var(--ucam-color-text-primary)]',
@@ -1329,8 +1330,6 @@ export class UcamAppShell {
   /** Faixa clara: o fundo é o da superfície, tinto a 10% quando o sistema tem
    *  categoria — é o "header próprio" da ADR-037. */
   protected readonly estiloFaixa = computed(() => {
-    // A marca em fio (ADR-087): 2px bordô embaixo no lugar do filete cinza.
-    if (this.appbarAppearance() === 'brand') return { 'box-shadow': 'inset 0 -2px 0 var(--ucam-color-action-primary-default)' };
     if (this.appbarAppearance() !== 'light') return {};
     const cor = this.systemCategory();
     return {
@@ -1374,7 +1373,7 @@ export class UcamAppShell {
         ? // O item aberto na cor do sistema (ADR-062, bordô desde a ADR-083): fundo
           // a 14% da tinta de ação e rótulo nela, como o .ucam-shell do Trilho A.
           // Estava no rosado de outubro com o rótulo preto (paridade, 17/11/2026).
-          ' rounded-s-none shadow-[inset_3px_0_0_var(--ucam-color-action-primary-default)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-action-primary-default)]'
+          ' bg-[color-mix(in_srgb,var(--ucam-sistema-cor,var(--ucam-color-action-primary-default))_14%,transparent)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-action-primary-default)]'
         : ' text-[var(--ucam-color-text-secondary)] hover:bg-[var(--ucam-color-interaction-hover)] hover:text-[var(--ucam-color-text-primary)]')
     );
   }

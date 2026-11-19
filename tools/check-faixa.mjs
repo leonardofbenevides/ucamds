@@ -61,12 +61,10 @@ exige('.ucam-appbar__search', 'background', '--ucam-appbar-control-bg',
 exige('.ucam-select--faixa', 'background-color', '--ucam-appbar-control-bg',
   'o campus lê o mesmo fundo que a busca: são os dois controles da faixa');
 
-// Só a faixa ESCURA é tarja desde a ADR-087 (17/11/2026): a de marca virou
-// papel com fio bordô, e controle de papel sobre papel é o certo ali.
-exige('.ucam-appbar--escura', '--ucam-appbar-control-bg', 'transparent',
-  'papel sobre tarja é um retângulo claro cravado nela — a faixa colorida já separa o controle');
-exige('.ucam-appbar--marca', 'box-shadow', 'var(--ucam-color-action-primary-default)',
-  'a faixa de marca é papel com o fio bordô de 2px embaixo (ADR-087) — sem o fio, a marca some da faixa');
+for (const variante of ['.ucam-appbar--escura', '.ucam-appbar--marca']) {
+  exige(variante, '--ucam-appbar-control-bg', 'transparent',
+    'papel sobre tarja é um retângulo claro cravado nela — a faixa colorida já separa o controle');
+}
 
 /* 2. A cor do avatar é dele -------------------------------------------- */
 

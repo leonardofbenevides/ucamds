@@ -156,11 +156,12 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       position: relative;
       display: flex;
       flex: 1;
-      /* Um arranjo só, de qualquer largura: o nome embaixo, e o traço com a
-         contagem numa linha própria, sempre no canto direito. Lado a lado, o
-         nome longo empurrava o traço para a linha de baixo e à esquerda. */
+      /* Um arranjo só, de qualquer largura: o nome no TOPO da frente e o
+         traço com a contagem no canto de baixo à direita. Com o nome preso à
+         base, o de três linhas subia e cada pasta da fileira começava o texto
+         numa altura (18/11, "tá tudo quebrado"). */
       flex-direction: column;
-      justify-content: flex-end;
+      justify-content: space-between;
       gap: 0.6rem;
       min-block-size: 7.5rem;
       padding: 1rem 1.1rem;
@@ -174,12 +175,11 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
     }
     .frente__titulo {
       min-inline-size: 0;
-      font-family: var(--ucam-font-display);
       font-size: 1.1875rem;
       font-weight: 500;
       line-height: 1.15;
       letter-spacing: -0.005em;
-      text-wrap: balance;
+      text-wrap: pretty;
     }
     .frente__marca {
       display: flex;

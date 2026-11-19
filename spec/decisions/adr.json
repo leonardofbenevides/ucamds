@@ -1657,6 +1657,26 @@
         "stat",
         "list-item"
       ]
+    },
+    {
+      "id": "ADR-088",
+      "titulo": "A voz editorial sai: volta a tarja bordô, a família única e o selo com pastilha",
+      "status": "aceita",
+      "data": "2026-11-18",
+      "contexto": "A ADR-087 (17/11/2026) foi publicada na 0.5.0 e, vista nas telas no ar, o Leonardo pediu em 18/11/2026: \"o que aconteceu com o header das telas?\", \"e os logos com essa fonte?\", \"volte para como estava\". A faixa de papel com fio, o nome do sistema e os títulos em Newsreader e o selo sem pastilha mudaram a cara de todos os apps de uma vez, e não foram aceitos.",
+      "decisao": "Revoga a ADR-087 inteira. A faixa de marca volta a ser a tarja bordô da ADR-083, com logo, marquinha e nome do sistema em branco; o token font.display e a Newsreader saem, e título volta à família do texto; o selo de estado volta à pastilha tinta; item ativo da navegação e ladrilho de conteúdo voltam ao que a ADR-062 dizia. O rótulo de campo (color.text.rotulo) também volta ao cinza de text.secondary, nos dois temas: \"pq esses labels estão coloridos? eles deveriam ser cinza\" (18/11/2026). O cabeçalho de tabela cinza com hover (ADR-086) fica.",
+      "consequencias": [
+        "Revoga a ADR-087; a ADR-083 e a ADR-062 voltam a valer inteiras.",
+        "Trilho A e Trilho B voltam juntos ao estado da 0.4.0 nessas peças (git revert do d39b28c, com o número da versão mantido).",
+        "check-faixa volta a exigir a tarja, não o fio."
+      ],
+      "afeta": [
+        "app-shell",
+        "badge",
+        "page-header",
+        "stat",
+        "list-item"
+      ]
     }
   ]
 }

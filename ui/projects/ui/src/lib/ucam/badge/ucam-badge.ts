@@ -51,15 +51,14 @@ export type UcamBadgeVariant = 'soft' | 'dot' | 'outline';
  * não acontece.
  */
 const TONE_CLASSES: Record<UcamBadgeTone, string> = {
-  neutral: 'bg-transparent px-0 text-muted-foreground border-transparent',
-  // Sem pastilha desde a ADR-087 (17/11/2026), como na folha do Trilho A: o
-  // ponto na cor do tom e a palavra na tinta do tom.
-  info: 'border-transparent bg-transparent px-0 text-[var(--ucam-color-feedback-info-foreground)]',
-  success: 'border-transparent bg-transparent px-0 text-[var(--ucam-color-feedback-success-foreground)]',
-  warning: 'border-transparent bg-transparent px-0 text-[var(--ucam-color-feedback-warning-foreground)]',
-  danger: 'border-transparent bg-transparent px-0 text-[var(--ucam-color-feedback-danger-foreground)]',
-  espera: 'border-transparent bg-transparent px-0 text-[var(--ucam-color-situacao-espera-foreground)]',
-  classe: 'border-transparent bg-transparent px-0 text-[var(--ucam-color-situacao-classe-foreground)]',
+  neutral: 'bg-card text-muted-foreground border-[var(--ucam-color-border-default)]',
+  // O filete é a tinta saturada do tom a 32%, como na folha do Trilho A (ADR-066).
+  info: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-info-border)_32%,transparent)] bg-[var(--ucam-color-feedback-info-background)] text-[var(--ucam-color-feedback-info-foreground)]',
+  success: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-success-border)_32%,transparent)] bg-[var(--ucam-color-feedback-success-background)] text-[var(--ucam-color-feedback-success-foreground)]',
+  warning: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-warning-border)_32%,transparent)] bg-[var(--ucam-color-feedback-warning-background)] text-[var(--ucam-color-feedback-warning-foreground)]',
+  danger: 'border-[color-mix(in_srgb,var(--ucam-color-feedback-danger-border)_32%,transparent)] bg-[var(--ucam-color-feedback-danger-background)] text-[var(--ucam-color-feedback-danger-foreground)]',
+  espera: 'border-[color-mix(in_srgb,var(--ucam-color-situacao-espera-border)_32%,transparent)] bg-[var(--ucam-color-situacao-espera-background)] text-[var(--ucam-color-situacao-espera-foreground)]',
+  classe: 'border-[color-mix(in_srgb,var(--ucam-color-situacao-classe-border)_32%,transparent)] bg-[var(--ucam-color-situacao-classe-background)] text-[var(--ucam-color-situacao-classe-foreground)]',
 };
 
 /**
