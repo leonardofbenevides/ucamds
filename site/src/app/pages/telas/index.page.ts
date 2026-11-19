@@ -42,10 +42,15 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
                msm"): a pasta desenhada saiu. Um cartão plano: ícone do sistema,
                nome, quantas telas e a seta de destino. -->
           <a class="cartao" [routerLink]="'/telas/' + p.id">
-            <svg class="ic cartao__icone" aria-hidden="true"><use [attr.href]="'#i-' + p.icone" /></svg>
+            <!-- 19/11/2026 ("aqui dava pra melhorar"): o ícone volta ao
+                 ladrilho na cor do sistema (as subpaletas voltaram, ADR-090) e
+                 a família entra antes da contagem. -->
+            <span class="ucam-icon-tile cartao__ladrilho" [class]="'ucam-icon-tile--' + p.categoria" aria-hidden="true"
+              ><svg class="ic"><use [attr.href]="'#i-' + p.icone" /></svg
+            ></span>
             <span class="cartao__texto">
               <strong class="cartao__nome">{{ p.nome }}</strong>
-              <span class="cartao__conta">{{ p.templates.length }} {{ p.templates.length === 1 ? 'tela' : 'telas' }}</span>
+              <span class="cartao__conta">{{ familia(p.categoria) }} · {{ p.templates.length }} {{ p.templates.length === 1 ? 'tela' : 'telas' }}</span>
             </span>
             <svg class="ic cartao__seta" aria-hidden="true"><use href="#i-chevronRight" /></svg>
           </a>
@@ -58,6 +63,9 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       display: grid;
       gap: var(--ucam-space-stack-md);
       grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+      /* Toda fileira com a mesma altura: o nome de três linhas da terceira
+         fileira a deixava mais alta que as outras ("pq n tem a mesma altura"). */
+      grid-auto-rows: 1fr;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -88,11 +96,8 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
       outline-offset: 2px;
     }
-    .cartao__icone {
+    .cartao__ladrilho {
       flex: none;
-      inline-size: 1.25rem;
-      block-size: 1.25rem;
-      color: var(--ucam-color-text-secondary);
     }
     .cartao__texto {
       display: flex;
@@ -101,9 +106,16 @@ import { PageHeaderComponent } from '../../docs/page-header.component';
       gap: 0.125rem;
       min-inline-size: 0;
     }
+    /* Duas linhas no máximo: "Gestão de Relacionamento com o Cliente" ia a
+       três. O nome inteiro continua no texto e no destino. */
     .cartao__nome {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
       font-weight: 600;
       line-height: 1.3;
+      text-wrap: balance;
     }
     .cartao__conta {
       font-size: 0.8125rem;
@@ -133,4 +145,18 @@ export default class TelasPage {
   protected readonly lista = telas;
   protected readonly total = meta.telas;
   protected readonly projetos = meta.projetos;
+
+  private static readonly FAMILIAS: Record<string, string> = {
+    academico: 'Acadêmico',
+    financeiro: 'Financeiro',
+    atendimento: 'Atendimento',
+    gestao: 'Gestão',
+    pessoas: 'Pessoas',
+    pesquisa: 'Pesquisa',
+    comunicacao: 'Comunicação',
+    acervo: 'Acervo',
+  };
+  protected familia(c: string): string {
+    return TelasPage.FAMILIAS[c] ?? c;
+  }
 }

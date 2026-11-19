@@ -1694,6 +1694,22 @@
       "afeta": [
         "app-shell"
       ]
+    },
+    {
+      "id": "ADR-090",
+      "titulo": "A subpaleta de cada sistema volta a ser o padrão",
+      "status": "aceita",
+      "data": "2026-11-19",
+      "contexto": "Desde a ADR-083 (30/10/2026) todo app era bordô, e a cor de cada sistema (ADR-037) só aparecia com ?paleta=sistema. Em 19/11/2026, vendo as telas da 0.7.0, o Leonardo pediu: \"antes cada um tinha uma cor, agora todos ficaram bordo?\" e \"o sigfin por exemplo era verde.. retorne com as subpaletas\".",
+      "decisao": "Sem chave, cada sistema veste a sua família: a faixa, a ação e o realce na cor da categoria (SigFin verde, Gerencial na de gestão etc.), com o mesmo portão de contraste e daltonismo da ADR-037. O atendimento continua herdando a marca. data-paleta=\"marca\" (?paleta=marca nas telas) é a saída para tudo bordô, que era o padrão da ADR-083; data-paleta=\"moldura\" continua o meio termo (cor na moldura, ação em bordô). Os seletores trocam :root[data-paleta=\"sistema\"] por :root:not([data-paleta=\"marca\"]), então o padrão vale nos dois trilhos sem atributo nenhum.",
+      "consequencias": [
+        "Revoga a ADR-083 no que ela fazia do bordô o padrão; a subpaleta e o portão dela ficam como estavam.",
+        "O item aberto da navegação segue neutro (ADR-089): a cor do sistema fica na faixa, na ação e no realce, não no menu.",
+        "?paleta=sistema continua aceito e não muda nada (já é o padrão)."
+      ],
+      "afeta": [
+        "app-shell"
+      ]
     }
   ]
 }

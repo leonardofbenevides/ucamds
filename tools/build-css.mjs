@@ -19,9 +19,10 @@ import { selectChevronCss } from './lib/select-chevron.mjs';
 import { cssDaSubpaleta, SISTEMAS } from './lib/subpaleta.mjs';
 import { contrast } from './lib/wcag.mjs';
 
-/* Onde a cor de cada sistema (ADR-037) ainda vale: só sob pedido, desde a
- * ADR-083. Sem a chave, faixa, ação e realce são bordô em todo app. */
-const PALETA_DO_SISTEMA = ':root:is([data-paleta="sistema"], [data-paleta="moldura"])';
+/* Onde a cor de cada sistema (ADR-037) vale: em todo app, de novo o padrão
+ * desde a ADR-090 (19/11/2026). data-paleta="marca" é a saída para tudo
+ * bordô (era o padrão da ADR-083, de 30/10 a 19/11). */
+const PALETA_DO_SISTEMA = ':root:not([data-paleta="marca"])';
 
 /* A cor de faixa que um projeto declara em templates.json (`cor`). Branco
  * sobre ela tem de passar de 4.5:1 — é o texto da marca e o placeholder da

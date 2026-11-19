@@ -360,10 +360,11 @@ ${ucamCss}
                          Vence a escolha guardada: a moldura mostra o tema da
                          documentação, não o de quem a abriu.
      ?embed=1          — esconde a barra de contexto (regra .embed acima).
-     ?paleta=           — subpaleta do sistema (ADR-037), só sob pedido desde
-                         a ADR-083: sem chave tudo é bordô; 'sistema' liga a
-                         cheia; 'moldura' tinge só faixa e menu e mantém a
-                         ação em bordô.
+     ?paleta=           — subpaleta do sistema (ADR-037), o PADRÃO de novo
+                         desde a ADR-090: sem chave cada sistema tem a sua
+                         cor; 'marca' põe tudo em bordô (o padrão da ADR-083);
+                         'moldura' tinge só faixa e menu e mantém a ação em
+                         bordô.
    Sem ?tema, vale o que a pessoa escolheu no menu da conta (localStorage
    ucam-theme, a mesma chave do site de documentação): light, dark ou system.
    Sem escolha, o <html> fica SEM data-theme e a tela é CLARA — o claro é o
@@ -376,7 +377,7 @@ ${ucamCss}
 if(t!=='dark'&&t!=='light'&&t!=='system'){try{t=localStorage.getItem('ucam-theme');}catch(e){t=null;}}
 if(t==='dark'||t==='light'||t==='system')document.documentElement.setAttribute('data-theme',t);
 if(p.has('embed'))document.documentElement.classList.add('embed');
-var pal=p.get('paleta');if(pal==='sistema'||pal==='moldura')document.documentElement.setAttribute('data-paleta',pal);})();
+var pal=p.get('paleta');if(pal==='marca'||pal==='sistema'||pal==='moldura')document.documentElement.setAttribute('data-paleta',pal);})();
 </script>
 </head>
 <body>

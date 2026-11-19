@@ -353,9 +353,14 @@ export function cssDaSubpaleta(tokensCss) {
    * saíram todas em bordô, e o retorno foi "esse bordô mais presente agrada o
    * pessoal". O padrão virou o que era o `?paleta=comum`; a subpaleta continua
    * aqui, medida pelo mesmo portão, para quem quiser comparar com
-   * `?paleta=sistema`. */
-  const cheio = (sel) => `:root[data-paleta="sistema"]${sel}`;
-  const qualquer = (sel) => `:root:is([data-paleta="sistema"], [data-paleta="moldura"])${sel}`;
+   * `?paleta=sistema`.
+   *
+   * PADRÃO DE NOVO desde 19/11/2026 (ADR-090): "o sigfin por exemplo era
+   * verde.. retorne com as subpaletas". Sem chave, cada sistema veste a sua
+   * família; `?paleta=marca` (data-paleta="marca") é a saída para tudo
+   * bordô, e `moldura` continua o meio termo. */
+  const cheio = (sel) => `:root:not([data-paleta="marca"], [data-paleta="moldura"])${sel}`;
+  const qualquer = (sel) => `:root:not([data-paleta="marca"])${sel}`;
 
   const declara = (p, cheia) =>
     (cheia
