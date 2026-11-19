@@ -312,12 +312,9 @@ export function renderShell(cfg = {}, conteudo = '') {
       ? ` aria-keyshortcuts="${esc(buscaAtalho.replace(/\s*\+\s*/g, '+').replace(/\bCtrl\b/i, 'Control'))}"`
       : '') +
     `>` +
-    (buscaAtalho
-      ? buscaAtalho
-          .split('+')
-          .map((t) => `<kbd class="ucam-kbd" aria-hidden="true">${esc(t.trim())}</kbd>`)
-          .join('')
-      : '');
+    // 18/11/2026 ("retire esses textos de helper e atalhos"): a tecla não é
+    // mais desenhada no campo; o atalho vale e o aria-keyshortcuts o anuncia.
+    '';
 
   /* ===================================================== A BUSCA GLOBAL ===
    *
@@ -445,9 +442,7 @@ export function renderShell(cfg = {}, conteudo = '') {
       '<p class="ucam-busca__vazio" hidden>Nada encontrado para ' +
       '<strong data-termo></strong>.</p>' +
       '<div class="ucam-busca__rodape">' +
-      '<span><kbd class="ucam-kbd">&uarr;</kbd><kbd class="ucam-kbd">&darr;</kbd> navegar</span>' +
-      '<span><kbd class="ucam-kbd">&crarr;</kbd> abrir</span>' +
-      '<span><kbd class="ucam-kbd">esc</kbd> fechar</span>' +
+      // A legenda de teclas saiu (18/11/2026); fica a contagem.
       '<span class="ucam-busca__folga"></span>' +
       '<span data-contagem aria-live="polite"></span>' +
       '</div></div>'

@@ -455,16 +455,9 @@ export type UcamSystemCategory =
               (keydown.enter)="search.emit(searchQuery())"
               (keydown.escape)="fechaBusca(true)"
             />
-            @if (searchShortcut(); as tecla) {
-              <!-- aria-hidden: para quem ouve, o atalho já vai no
-                   aria-keyshortcuts do campo. -->
-              <kbd
-                aria-hidden="true"
-                class="inline-flex h-[1.375rem] min-w-[1.375rem] items-center justify-center rounded-[var(--ucam-radius-miudo)] border px-1 font-mono text-[0.6875rem] leading-none"
-                [style.border-color]="linhaControle()"
-                >{{ tecla }}</kbd
-              >
-            }
+            <!-- 18/11/2026 ("retire esses textos de helper e atalhos"): a tecla
+                 deixou de ser desenhada no campo. O atalho continua valendo e
+                 continua anunciado pelo aria-keyshortcuts. -->
           </div>
           <span class="flex-1 max-lg:hidden"></span>
           <button
