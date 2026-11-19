@@ -387,6 +387,12 @@
       "descricao": "Os destinos da navegação, em grupos: { label?, items: { label, icon?, href?, current?, count?, disabled? }[] }. O item atual declara current e sai com aria-current=\"page\"; count é a contagem ao lado do rótulo. Só entra o que existe: item que não leva a lugar nenhum não se desenha. Vazio, a coluna fica só com o que a aplicação projetar. Um item com items vira RAMO (Trilho B desde 17/11/2026, o .ucam-nav__item--ramo do A): botão que abre e fecha a lista de subitens { label, href, current, disabled }, sem ícone, com o fio alinhado ao centro do ícone do pai; nasce aberto quando contém a página atual."
     },
     {
+      "nome": "systems",
+      "tipo": "UcamSystemLink[]",
+      "default": "[]",
+      "descricao": "O TRILHO DE SISTEMAS (ADR-089): { label, icon, href?, current? }[]. A partir de 64rem, no arranjo appbar e com navegação, desenha uma coluna de 56px entre a faixa e a navegação, com um ícone por sistema, nome no aria-label e no title, e o sistema atual em fundo neutro; a navegação estreita para 16.5rem, salvo navWidth declarado. Sem href, o sistema não tem tela e o item sai como link desabilitado. Abaixo de 64rem o trilho não existe, e o lançador que a aplicação projeta em ucamShellAcoes deve ser lg:hidden (no Trilho A, o .ucam-appbar__sistemas some sozinho). No Trilho A, sai de shell.rail com railComoMenu, como .ucam-trilho."
+    },
+    {
       "nome": "shellLayout",
       "tipo": "'appbar' | 'rail' | 'lateral'",
       "default": "'appbar'",

@@ -105,9 +105,11 @@ export interface Ancora {
        A TINTA mudou: era text-link (azul) enquanto o filete ao lado dela é da
        marca (bordô) — a mesma pista dizia duas cores diferentes no mesmo
        item. Agora as duas partes do indicador falam a mesma língua. */
+    /* ADR-089 (19/11/2026): o atual fica na tinta do texto, com peso e o
+       filete, como o item atual da lateral. Cor não é mais a pista. */
     .nesta-pagina a.ativo {
-      color: var(--ucam-color-action-primary-default);
-      font-weight: 560;
+      color: var(--ucam-color-text-primary);
+      font-weight: 600;
     }
 
     /* ----------------------------------------------- abas — abaixo de 82rem */
@@ -190,7 +192,7 @@ export interface Ancora {
       display: none;
     }
     .nesta-pagina a.ativo {
-      border-block-end-color: var(--ucam-color-action-primary-default);
+      border-block-end-color: var(--ucam-color-text-primary);
     }
 
     /* ----------------------------------------- coluna — a partir de 82rem */
@@ -236,11 +238,11 @@ export interface Ancora {
       }
       .nesta-pagina li.grupo a {
         margin-block-start: 0.9rem;
-        font-size: 0.6875rem;
-        font-weight: 650;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--ucam-color-text-secondary);
+        font-size: 0.78125rem;
+        font-weight: 500;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--tinta-calma);
       }
       /* O primeiro grupo encosta no topo da lista: o respiro separa grupos, e
          acima dele há o rótulo "Nesta página", não um grupo. */
@@ -248,7 +250,7 @@ export interface Ancora {
         margin-block-start: 0;
       }
       .nesta-pagina li.grupo a.ativo {
-        color: var(--ucam-color-action-primary-default);
+        color: var(--ucam-color-text-primary);
       }
       .nesta-pagina li.sub a {
         padding-inline-start: 1.5rem;
@@ -265,7 +267,15 @@ export interface Ancora {
       }
       .nesta-pagina a.ativo {
         border-block-end-color: transparent;
-        border-inline-start-color: var(--ucam-color-action-primary-default);
+        border-inline-start-color: var(--ucam-color-text-primary);
+      }
+      /* O rótulo da coluna, como o título de grupo da lateral. */
+      .nesta-pagina #nesta-pagina-titulo {
+        font-size: 0.78125rem;
+        font-weight: 500;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--tinta-calma);
       }
     }
   `,

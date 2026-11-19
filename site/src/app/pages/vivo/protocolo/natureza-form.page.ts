@@ -20,6 +20,8 @@ import {
   type UcamTabItem,
 } from '@ucam/ui';
 
+import { SISTEMAS_PROTOCOLO } from './sistemas';
+
 /**
  * TELA VIVA: Nova natureza (protocolo/natureza-form), montada com @ucam/ui.
  *
@@ -79,6 +81,7 @@ const ANEXOS = ['Prova corrigida', 'Requerimento assinado', 'Atestado ou comprov
       homeHref="#"
       [user]="usuario"
       [navGroups]="nav"
+      [systems]="sistemas"
       [contextOptions]="campi"
       [context]="'campos'"
       contextLabel="Campus"
@@ -92,7 +95,9 @@ const ANEXOS = ['Prova corrigida', 'Requerimento assinado', 'Atestado ou comprov
       (unpin)="desfixar($event)"
     >
       <ng-container ucamShellAcoes>
-        <ucam-icon-button icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
+        <!-- Com o trilho de sistemas (ADR-089), o lançador só vale abaixo de
+             64rem, onde o trilho não existe — como no Trilho A. -->
+        <ucam-icon-button class="lg:hidden" icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
       </ng-container>
       <ng-container ucamShellNavRodape>
         <span class="ucam-nav__item" role="link" aria-disabled="true" data-sem-tela><svg class="ic" aria-hidden="true"><use href="#i-settings" /></svg><span>Configurações</span></span>
@@ -220,6 +225,8 @@ export default class VivoProtocoloNaturezaFormPage {
   /* A navegação da referência desde a leva 4 (spec/templates.json, shell do
      protocolo): o primeiro grupo sem título, Indicadores juntando Gerencial e
      Analytics pelo que mostram, e sem Funcionários. Estava na de outubro. */
+  protected readonly sistemas = SISTEMAS_PROTOCOLO;
+
   protected readonly nav: UcamNavGroup[] = [
     {
       items: [{ label: 'Caixa de entrada', icon: 'inbox', href: '#', count: 9 }],

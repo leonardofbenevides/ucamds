@@ -1677,6 +1677,23 @@
         "stat",
         "list-item"
       ]
+    },
+    {
+      "id": "ADR-089",
+      "titulo": "Trilho de sistemas, item aberto neutro e título de grupo em cinza",
+      "status": "aceita",
+      "data": "2026-11-19",
+      "contexto": "Em 19/11/2026 o Leonardo trouxe duas referências de produto (um catálogo de dados e um painel de análise) e pediu \"podemos revisar todo o estilo do site e das telas?\". As duas têm o mesmo arranjo: uma coluna estreita de ícones com as áreas do produto, a navegação da área ao lado, e o item aberto em fundo neutro. Das propostas tiradas delas, ele escolheu: manter a moldura branca (ADR-040), item aberto em fundo cinza neutro, título de grupo cinza, menor e em frase normal, e o trilho de ícones, nas telas dos dois trilhos e no site.",
+      "decisao": "A partir de 64rem, todo projeto com lista de sistemas (shell.rail com railComoMenu) ganha o trilho: .ucam-trilho, 56px, claro, entre a faixa e a navegação, com um ícone por sistema, nome no aria-label e no title, e o sistema atual em fundo neutro. A navegação estreita para 16.5rem, e a soma das duas colunas fica nos 320px que a navegação sozinha gastava. O lançador da faixa sai nessa largura e volta abaixo dela, onde o trilho não existe. A faixa bordô da ADR-088 fica. O item aberto da navegação deixa a cor do sistema (ADR-062): fundo do texto a 8%, rótulo e ícone na tinta do texto, peso de ação; o hover é mais claro (5%). Em repouso, ícone e título de grupo usam a tinta calma, o texto a 62% sobre a superfície (~5:1 no claro), porque text.secondary (#3B4048) é quase o primário. O título de grupo fica em 12.5px, peso 500, sem caixa alta. No Trilho B, o app-shell ganha a entrada systems (UcamSystemLink). No site, a lateral segue as mesmas regras, e o item atual mantém a barra de 2px, agora na tinta do texto.",
+      "consequencias": [
+        "Revoga em parte a ADR-062: a cor do sistema sai do item aberto da navegação.",
+        "O seletor segmentado e as abas não mudaram: fundo cinza em filtro continua recusado.",
+        "Com a navegação recolhida, ficam duas colunas de ícones lado a lado (trilho e seções).",
+        "No Trilho B, os links desabilitados da navegação passaram a usar [attr.href]: com [href]=\"null\" o Angular não tirava o atributo, e o item sem tela continuava navegável (achado pelo teste do trilho)."
+      ],
+      "afeta": [
+        "app-shell"
+      ]
     }
   ]
 }

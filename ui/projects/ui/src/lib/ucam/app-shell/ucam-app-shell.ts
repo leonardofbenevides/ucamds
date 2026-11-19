@@ -101,6 +101,18 @@ export interface UcamNavGroup {
   items: UcamNavItem[];
 }
 
+/**
+ * UM SISTEMA do trilho (ADR-089): a mesma lista do lançador do Trilho A,
+ * de pé entre a faixa e a navegação. Sem href, o sistema não tem tela neste
+ * conjunto e o item não navega.
+ */
+export interface UcamSystemLink {
+  label: string;
+  icon: UcamIconName;
+  href?: string;
+  current?: boolean;
+}
+
 /** A ação do módulo no alto da coluna. Link com href, botão sem. */
 export interface UcamNavAction {
   label: string;
@@ -610,6 +622,32 @@ export type UcamSystemCategory =
           aria-hidden="true"
         ></div>
       }
+      @if (temTrilho()) {
+        <!-- O TRILHO DE SISTEMAS (ADR-089). Só a partir de 64rem; abaixo, a
+             coluna sobreposta já é o caminho, e o celular não tem largura para
+             duas colunas de cromo. -->
+        <nav
+          aria-label="Sistemas"
+          class="hidden flex-col items-center gap-[var(--ucam-space-inline-xs)] overflow-y-auto border-e border-[var(--ucam-color-border-subtle)] bg-[var(--ucam-color-surface-chrome)] py-[var(--ucam-space-inset-sm)] [scrollbar-width:none] lg:sticky lg:top-[var(--ucam-appbar-height)] lg:flex lg:h-[calc(100dvh-var(--ucam-appbar-height))]"
+        >
+          @for (sis of systems(); track sis.label) {
+            <a
+              [attr.href]="sis.href ?? null"
+              [attr.role]="sis.href ? null : 'link'"
+              [attr.aria-disabled]="sis.href ? null : 'true'"
+              [attr.aria-current]="sis.current ? 'page' : null"
+              [attr.aria-label]="sis.label"
+              [attr.title]="sis.label"
+              class="inline-flex size-10 shrink-0 items-center justify-center rounded-[var(--ucam-radius-control)] no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
+              [class]="sis.current
+                ? 'bg-[color-mix(in_srgb,var(--ucam-color-text-primary)_8%,transparent)] text-[var(--ucam-color-text-primary)]'
+                : sis.href
+                  ? 'text-[var(--ucam-color-text-secondary)] hover:bg-[color-mix(in_srgb,var(--ucam-color-text-primary)_5%,transparent)] hover:text-[var(--ucam-color-text-primary)]'
+                  : 'cursor-default text-[var(--ucam-color-text-secondary)]'"
+              ><ucam-icon [name]="sis.icon" class="size-5" /></a>
+          }
+        </nav>
+      }
       <nav
         [id]="navId()"
         [attr.aria-label]="'Navegação de ' + systemName()"
@@ -684,7 +722,7 @@ export type UcamSystemCategory =
         -->
         <ng-template #itemNav let-item let-fixado="fixado">
           <a
-            [href]="item.disabled ? null : (item.href ?? null)"
+            [attr.href]="item.disabled ? null : (item.href ?? null)"
             [attr.role]="item.disabled ? 'link' : null"
             [attr.aria-current]="item.current ? 'page' : null"
             [attr.aria-disabled]="item.disabled ? 'true' : null"
@@ -693,7 +731,7 @@ export type UcamSystemCategory =
             [class]="classesItem(item, fixado)"
           >
             @if (item.icon) {
-              <ucam-icon [name]="item.icon" [style.color]="item.current ? 'var(--ucam-color-action-primary-default)' : null" />
+              <ucam-icon [name]="item.icon" [style.color]="item.current ? 'var(--ucam-color-text-primary)' : 'color-mix(in srgb, var(--ucam-color-text-primary) 62%, var(--ucam-color-surface-default))'" />
             }
             <span [class]="recolhida() ? 'sr-only' : 'min-w-0 flex-1 truncate'">{{ item.label }}</span>
             @if (item.count != null) {
@@ -706,7 +744,7 @@ export type UcamSystemCategory =
               } @else {
                 <span
                   class="inline-flex min-w-5 items-center justify-center rounded-full px-1 text-[length:var(--ucam-typography-caption-font-size)] tabular-nums"
-                  [class]="item.current ? 'bg-[var(--ucam-color-action-primary-default)] text-[var(--ucam-color-text-on-action)]' : 'text-[var(--ucam-color-text-secondary)]'"
+                  [class]="item.current ? 'text-[var(--ucam-color-text-primary)]' : 'text-[var(--ucam-color-text-secondary)]'"
                   >{{ item.count }}</span
                 >
               }
@@ -787,7 +825,7 @@ export type UcamSystemCategory =
               @if (!recolhida()) {
                 <button
                   type="button"
-                  class="mb-[var(--ucam-space-inline-xs)] flex min-h-6 w-full cursor-pointer items-center gap-[var(--ucam-space-inline-xs)] rounded-[var(--ucam-radius-control-sm)] border-0 bg-transparent px-[calc(var(--ucam-space-inset-sm)+1px)] py-px text-[length:var(--ucam-typography-caption-font-size)] leading-5 font-medium text-[var(--ucam-color-text-secondary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
+                  class="mb-[var(--ucam-space-inline-xs)] flex min-h-6 w-full cursor-pointer items-center gap-[var(--ucam-space-inline-xs)] rounded-[var(--ucam-radius-control-sm)] border-0 bg-transparent px-[calc(var(--ucam-space-inset-sm)+1px)] py-px text-[0.78125rem] leading-5 font-medium text-[color-mix(in_srgb,var(--ucam-color-text-primary)_62%,var(--ucam-color-surface-default))] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
                   [attr.aria-expanded]="favoritosAbertos()"
                   [attr.aria-controls]="navId() + '-favoritos'"
                   (click)="favoritosAbertos.set(!favoritosAbertos())"
@@ -832,7 +870,7 @@ export type UcamSystemCategory =
                 <!-- Caixa natural, um degrau menor e tinta secundária: é o
                      que separa título de grupo de destino navegável (ADR-046). -->
                 <p
-                  class="m-0 mb-[var(--ucam-space-inline-xs)] px-[calc(var(--ucam-space-inset-sm)+1px)] text-[length:var(--ucam-typography-caption-font-size)] leading-5 font-medium text-[var(--ucam-color-text-secondary)]"
+                  class="m-0 mb-[var(--ucam-space-inline-xs)] px-[calc(var(--ucam-space-inset-sm)+1px)] text-[0.78125rem] leading-5 font-medium text-[color-mix(in_srgb,var(--ucam-color-text-primary)_62%,var(--ucam-color-surface-default))]"
                   [class.sr-only]="recolhida()"
                 >
                   {{ grupo.label }}
@@ -867,7 +905,7 @@ export type UcamSystemCategory =
                     >
                       @for (sub of item.items; track sub.label) {
                         <a
-                          [href]="sub.disabled ? null : (sub.href ?? null)"
+                          [attr.href]="sub.disabled ? null : (sub.href ?? null)"
                           [attr.role]="sub.disabled ? 'link' : null"
                           [attr.aria-disabled]="sub.disabled ? 'true' : null"
                           [attr.aria-current]="sub.current ? 'page' : null"
@@ -953,6 +991,8 @@ export class UcamAppShell {
    *  carregada; só com @ucam/ui, é o bordô da universidade). */
   readonly appbarAppearance = input<UcamAppbarAppearance>('brand');
   readonly navGroups = input<UcamNavGroup[]>([]);
+  /** Os sistemas do trilho (ADR-089). Vazio = sem trilho. Só no arranjo appbar. */
+  readonly systems = input<UcamSystemLink[]>([]);
   readonly user = input<{ name: string; photoUrl?: string } | null>(null);
   readonly homeHref = input<string>('/');
   readonly navWidth = input<string>('19.875rem');
@@ -1125,6 +1165,11 @@ export class UcamAppShell {
    *   lateral → mobilebar em cima só abaixo de 64rem, e uma fileira só acima;
    *   rail    → rail de 72px sempre, coluna do módulo a partir de 64rem.
    */
+  /** O trilho de sistemas existe com lista, navegação e faixa (ADR-089). */
+  protected readonly temTrilho = computed(
+    () => this.systems().length > 0 && this.navGroups().length > 0 && this.shellLayout() === 'appbar',
+  );
+
   protected readonly classesGrade = computed(() => {
     switch (this.shellLayout()) {
       case 'lateral':
@@ -1132,7 +1177,9 @@ export class UcamAppShell {
       case 'rail':
         return 'grid grid-cols-[4.5rem_minmax(0,1fr)] grid-rows-[minmax(0,1fr)] lg:grid-cols-[4.5rem_var(--ucam-nav-width)_minmax(0,1fr)]';
       default:
-        return 'grid grid-cols-1 grid-rows-[var(--ucam-appbar-height)_minmax(0,1fr)] lg:grid-cols-[var(--ucam-nav-width)_minmax(0,1fr)]';
+        return this.temTrilho()
+          ? 'grid grid-cols-1 grid-rows-[var(--ucam-appbar-height)_minmax(0,1fr)] lg:grid-cols-[3.5rem_var(--ucam-nav-width)_minmax(0,1fr)]'
+          : 'grid grid-cols-1 grid-rows-[var(--ucam-appbar-height)_minmax(0,1fr)] lg:grid-cols-[var(--ucam-nav-width)_minmax(0,1fr)]';
     }
   });
 
@@ -1273,7 +1320,13 @@ export class UcamAppShell {
   protected readonly variaveis = computed(() => ({
     // 3.5rem recolhida, e não os 4.5 do rail: duas colunas de ícones da mesma
     // largura leem como uma só partida por um filete.
-    '--ucam-nav-width': this.recolhida() ? '3.5rem' : this.navWidth(),
+    // Com trilho a navegação estreita para 16.5rem (56 + 264 = os 320 de antes),
+    // salvo quando o host declarou outra largura.
+    '--ucam-nav-width': this.recolhida()
+      ? '3.5rem'
+      : this.temTrilho() && this.navWidth() === '19.875rem'
+        ? '16.5rem'
+        : this.navWidth(),
     // O recuo lateral da coluna: um pixel a menos que o vão, que é o do fio.
     '--ucam-shell-nav-recuo': 'calc(var(--ucam-space-inline-sm) - 1px)',
     '--ucam-content-max': this.maxContentWidth(),
@@ -1363,10 +1416,9 @@ export class UcamAppShell {
     return (
       recuo +
       (item.current
-        ? // O item aberto na cor do sistema (ADR-062, bordô desde a ADR-083): fundo
-          // a 14% da tinta de ação e rótulo nela, como o .ucam-shell do Trilho A.
-          // Estava no rosado de outubro com o rótulo preto (paridade, 17/11/2026).
-          ' bg-[color-mix(in_srgb,var(--ucam-sistema-cor,var(--ucam-color-action-primary-default))_14%,transparent)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-action-primary-default)]'
+        ? // O item aberto em fundo NEUTRO (ADR-089, 19/11/2026): o texto a 8%,
+          // rótulo e ícone na tinta do texto. A cor fica para ação e estado.
+          ' bg-[color-mix(in_srgb,var(--ucam-color-text-primary)_8%,transparent)] [font-weight:var(--ucam-typography-action-font-weight)] text-[var(--ucam-color-text-primary)]'
         : ' text-[var(--ucam-color-text-secondary)] hover:bg-[var(--ucam-color-interaction-hover)] hover:text-[var(--ucam-color-text-primary)]')
     );
   }

@@ -15,6 +15,8 @@ import {
   type UcamSegmentItem,
 } from '@ucam/ui';
 
+import { SISTEMAS_PROTOCOLO } from './sistemas';
+
 /**
  * TELA VIVA: Naturezas do requerimento, montada com @ucam/ui (Trilho B).
  *
@@ -89,6 +91,7 @@ const NATUREZAS: Natureza[] = [
       homeHref="#"
       [user]="usuario"
       [navGroups]="nav"
+      [systems]="sistemas"
       [contextOptions]="campi"
       [context]="'campos'"
       contextLabel="Campus"
@@ -104,7 +107,9 @@ const NATUREZAS: Natureza[] = [
       (signOut)="agir('sair')"
     >
       <ng-container ucamShellAcoes>
-        <ucam-icon-button icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
+        <!-- Com o trilho de sistemas (ADR-089), o lançador só vale abaixo de
+             64rem, onde o trilho não existe — como no Trilho A. -->
+        <ucam-icon-button class="lg:hidden" icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
       </ng-container>
       <ng-container ucamShellNavRodape>
         <!-- Sem tela de referência desenhada, como na referência: link
@@ -183,6 +188,8 @@ export default class VivoProtocoloNaturezasPage {
   /* A navegação da referência desde a leva 4 (spec/templates.json, shell do
      protocolo): o primeiro grupo sem título, Indicadores juntando Gerencial e
      Analytics pelo que mostram, e sem Funcionários. Estava na de outubro. */
+  protected readonly sistemas = SISTEMAS_PROTOCOLO;
+
   protected readonly nav: UcamNavGroup[] = [
     {
       items: [{ label: 'Caixa de entrada', icon: 'inbox', href: '#', count: 9 }],

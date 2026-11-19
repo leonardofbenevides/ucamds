@@ -936,6 +936,35 @@ export function renderShell(cfg = {}, conteudo = '') {
 
   const menuSistemas = lancadorSistemas('ucam-appbar__sistemas', 'ucam-appbar__lancador');
 
+  /* O TRILHO DE SISTEMAS (ADR-089, 19/11/2026). A mesma lista do lançador,
+   * de pé, numa coluna estreita entre a faixa e a navegação do módulo — o
+   * arranjo das duas referências de produto que o Leonardo trouxe. A faixa
+   * fica (ADR-088): o trilho não é o .ucam-rail de 72px em bordô, que tirava
+   * a faixa; é claro, de 56px, e a navegação estreita para a soma das duas
+   * colunas ficar nos 320px que a navegação sozinha já gastava.
+   *
+   * Abaixo de 64rem ele não existe e o lançador da faixa volta: o celular não
+   * tem largura para duas colunas de cromo. Acima, o lançador some, porque
+   * dois caminhos para a mesma lista lado a lado é ruído. O nome vai no
+   * aria-label e no title (o desenho sozinho não diz o sistema). */
+  const trilho = temLancador && railComoMenu && !topo && !lateral && temNav;
+  const blocoTrilho = trilho
+    ? '<nav class="ucam-trilho" aria-label="Sistemas">' +
+      rail.itens
+        .map((i) =>
+          linkOuMarca(
+            i.href,
+            'ucam-trilho__item',
+            // Sem destino, o title é o do aviso de sem tela (linkOuMarca o põe);
+            // um segundo title seria atributo repetido, e só o primeiro vale.
+            ` aria-label="${esc(i.rotulo)}"` + (i.href ? ` title="${esc(i.rotulo)}"` : '') + (i.ativo ? ' aria-current="page"' : ''),
+            ic(i.icone ?? 'layoutGrid'),
+          ),
+        )
+        .join('') +
+      '</nav>'
+    : '';
+
   /* ======================================================= ARRANJO LATERAL ===
    *
    * Tudo o que a faixa carregava, na coluna. A ordem da lateral não é a da
@@ -1314,7 +1343,7 @@ export function renderShell(cfg = {}, conteudo = '') {
   const estiloRail = railMarca ? ` style="--ucam-rail-marca:url('${esc(railMarca)}')"` : '';
 
   return (
-    `<div class="ucam-shell${temNav ? '' : ' ucam-shell--sem-nav'}${topo ? ' ucam-shell--topo' : railColuna ? ' ucam-shell--rail' : lateral ? ' ucam-shell--lateral' : ''}" data-nav="closed"${estiloRail}${sistemaAttr}>` +
+    `<div class="ucam-shell${temNav ? '' : ' ucam-shell--sem-nav'}${topo ? ' ucam-shell--topo' : railColuna ? ' ucam-shell--rail' : lateral ? ' ucam-shell--lateral' : ''}${trilho ? ' ucam-shell--trilho' : ''}" data-nav="closed"${estiloRail}${sistemaAttr}>` +
     `<a class="ucam-skip" href="#${esc(idConteudo)}">Pular para o conteúdo</a>` +
     // A REGIÃO VIVA DA TELA, vazia e sem tamanho. Toast está fora do
     // catálogo por decisão (alert.json): mensagem que some não pode carregar
@@ -1328,6 +1357,7 @@ export function renderShell(cfg = {}, conteudo = '') {
     blocoTopo +
     barraMovel +
     (topo ? '' : faixa) +
+    blocoTrilho +
     blocoNav +
     // tabindex="-1" é obrigatório: sem ele o foco não pousa no destino e o
     // skip-link move só a rolagem, deixando o teclado onde estava.

@@ -1044,15 +1044,22 @@ const normaliza = (s: string) =>
     .nav-areas > .eyebrow {
       margin-block-end: 0.4rem;
       padding-inline-start: 0.5rem;
+      font-size: 0.78125rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--tinta-calma);
     }
     .nav-areas a {
       font-size: 0.875rem;
       font-weight: 500;
       color: var(--ucam-color-text-primary);
     }
+    /* Atual em fundo NEUTRO (ADR-089, 19/11/2026), como nas telas. */
     .nav-areas a.atual {
-      color: var(--ucam-color-action-primary-default);
-      background: var(--ucam-color-action-primary-subtle);
+      color: var(--ucam-color-text-primary);
+      background: color-mix(in srgb, var(--ucam-color-text-primary) 8%, transparent);
+      font-weight: 600;
     }
     /* O ícone acompanha o texto, como no primeiro andar. currentColor para
        herdar o estado ativo sem uma segunda regra de cor. */
@@ -1096,11 +1103,13 @@ const normaliza = (s: string) =>
          calc(var(--gutter) - 0.55rem), que com gutter de 1.5rem dava 0.95rem:
          a categoria ficava 6px para dentro da coluna que ela encabeça. */
       padding-inline-start: 0.55rem;
-      font-size: 0.6875rem;
-      font-weight: 650;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--ucam-color-text-secondary);
+      /* Frase normal, cinza e um degrau menor (ADR-089): a caixa alta
+         espaçada lia como mono, o mesmo motivo de setembro na tabela. */
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--tinta-calma);
     }
     /* O primeiro não leva respiro: acima dele está o título do grupo, não um
        irmão de que ele precise se separar. */
@@ -1116,15 +1125,15 @@ const normaliza = (s: string) =>
       margin-block-end: 0.4rem;
       padding: 0.2rem 0.5rem;
       border-radius: var(--r-controle);
-      font-size: 0.6875rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ucam-color-text-secondary);
+      font-size: 0.78125rem;
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--tinta-calma);
     }
     .grupo > .grupo-titulo:hover {
       color: var(--ucam-color-text-primary);
-      background: var(--ucam-color-surface-subtle);
+      background: color-mix(in srgb, var(--ucam-color-text-primary) 5%, transparent);
     }
     /* O grupo ABERTO é onde você está, e o título vem no primário contra o
        secundário dos irmãos. É a pista de "seção atual" que o segundo andar de
@@ -1157,17 +1166,20 @@ const normaliza = (s: string) =>
     }
     .nav a:hover {
       color: var(--ucam-color-text-primary);
-      background: var(--ucam-color-surface-subtle);
+      background: color-mix(in srgb, var(--ucam-color-text-primary) 5%, transparent);
     }
     /* O item atual passou a ser TINGIDO DE MARCA, não cinza. O cinza era o
        mesmo do hover: quem passava o mouse por cima da lista via dois itens
        idênticos e não sabia qual era a página aberta. Cor, peso E a barra do
        ::before — três pistas, porque uma delas é cor sozinha e a WCAG 1.4.1
        não aceita cor sozinha. */
+    /* ADR-089 (19/11/2026): o atual sai da marca para o fundo NEUTRO, como
+       nas telas; o hover é mais claro (5% contra 8%) e o atual leva peso e a
+       barra, então cor não é a única pista. */
     .nav a.atual {
-      color: var(--ucam-color-action-primary-default);
-      background: var(--realce-marca);
-      font-weight: 560;
+      color: var(--ucam-color-text-primary);
+      background: color-mix(in srgb, var(--ucam-color-text-primary) 8%, transparent);
+      font-weight: 600;
     }
     .nav a.atual::before {
       content: '';
@@ -1176,7 +1188,7 @@ const normaliza = (s: string) =>
       inset-inline-start: 0;
       inline-size: 2px;
       border-radius: var(--ucam-radius-full);
-      background: var(--ucam-color-action-primary-default);
+      background: var(--ucam-color-text-primary);
     }
     /* Selo de estado: PALAVRA, não ponto. Um ponto precisa de legenda; a
        palavra se explica sozinha e o leitor de tela a lê. Só aparece quando o

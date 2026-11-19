@@ -15936,6 +15936,103 @@ ${acima('nav-fixa')} {
 /* A busca continua sendo o campo maior da barra: com as datas crescendo, ela
  * encolhia para 245px na Baixa de mensalidades. Peso 2 contra 1. */
 .ucam-toolbar:has(> .ucam-field--data) > .ucam-field--grow { flex-grow: 2; }
+
+/* ======================================== revisão de produto (ADR-089) === */
+/* 19/11/2026, duas referências de produto ("podemos revisar todo o estilo?").
+ * Escolhas do Leonardo: a moldura continua branca; o item aberto da
+ * navegação vira fundo NEUTRO (a cor fica para ação e estado); o título de
+ * grupo fica cinza, menor e em frase normal; e entra o trilho de sistemas.
+ * No fim da folha de propósito: vence por ordem as regras de arranjo e a
+ * ADR-062, que pintava o item aberto na cor do sistema. */
+
+/* O trilho. Só existe a partir de 64rem; abaixo, o lançador da faixa. */
+.ucam-trilho { display: none; }
+${acima('nav-fixa')} {
+  .ucam-shell--trilho {
+    --ucam-trilho-width: 3.5rem;
+    --ucam-nav-width: 16.5rem;
+    grid-template-columns: var(--ucam-trilho-width) var(--ucam-nav-width) minmax(0, 1fr);
+    grid-template-areas:
+      "appbar appbar appbar"
+      "trilho nav    main"
+      "footer footer footer";
+  }
+  .ucam-shell--trilho.ucam-shell--nav-recolhida { --ucam-nav-width: 3.5rem; }
+  .ucam-shell--trilho > .ucam-trilho {
+    grid-area: trilho;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ucam-space-inline-xs);
+    padding-block: var(--ucam-space-inset-sm);
+    position: sticky;
+    inset-block-start: var(--ucam-appbar-offset);
+    block-size: calc(100dvh - var(--ucam-appbar-offset));
+    overflow-y: auto;
+    scrollbar-width: none;
+    background: var(--ucam-color-surface-chrome);
+    border-inline-end: 1px solid var(--ucam-color-border-subtle);
+  }
+  /* Dois caminhos para a mesma lista lado a lado é ruído: o lançador sai. */
+  .ucam-shell--trilho .ucam-appbar__sistemas { display: none; }
+}
+.ucam-trilho__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: var(--ucam-radius-control);
+  color: var(--ucam-color-text-secondary);
+  text-decoration: none;
+  transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
+              color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+}
+.ucam-trilho__item .ic { inline-size: 1.25rem; block-size: 1.25rem; }
+a.ucam-trilho__item:hover {
+  background: color-mix(in srgb, var(--ucam-color-text-primary) 5%, transparent);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-trilho__item[aria-current="page"],
+.ucam-trilho__item[aria-current="page"]:hover {
+  background: color-mix(in srgb, var(--ucam-color-text-primary) 8%, transparent);
+  color: var(--ucam-color-text-primary);
+}
+.ucam-trilho__item:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
+  outline-offset: calc(var(--ucam-focus-ring-width) * -1);
+}
+.ucam-trilho__item[data-sem-tela] { cursor: default; }
+
+/* O item aberto: fundo neutro, tinta e ícone do texto, peso de ação. */
+.ucam-shell .ucam-nav__item[aria-current="page"],
+.ucam-shell .ucam-nav__item[aria-current="page"]:hover {
+  background: color-mix(in srgb, var(--ucam-color-text-primary) 8%, transparent);
+  color: var(--ucam-color-text-primary);
+  box-shadow: none;
+}
+.ucam-shell .ucam-nav__item[aria-current="page"] .ic { color: var(--ucam-color-text-primary); }
+.ucam-shell .ucam-nav__item[aria-current="page"] .ucam-nav__count {
+  background: transparent;
+  color: var(--ucam-color-text-primary);
+}
+.ucam-shell .ucam-nav__subitem[aria-current="page"] { color: var(--ucam-color-text-primary); }
+/* Em repouso o ícone é cinza: quem lê é o rótulo, e o ícone escuro em toda
+ * linha fazia a coluna pesar mais que o conteúdo. text.secondary (#3B4048)
+ * é quase o primário; a tinta calma é o texto a 62% sobre a superfície,
+ * ~5:1 no claro, e serve também ao título de grupo, que é texto. */
+.ucam-shell { --ucam-nav-tinta-calma: color-mix(in srgb, var(--ucam-color-text-primary) 62%, var(--ucam-color-surface-default)); }
+.ucam-nav__item .ic { color: var(--ucam-nav-tinta-calma); }
+.ucam-nav__item:not([aria-current="page"]):hover .ic { color: var(--ucam-color-text-primary); }
+
+/* O título de grupo: cinza, um degrau abaixo da legenda, sem peso de rótulo. */
+.ucam-nav__group-title {
+  font-size: 0.78125rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ucam-nav-tinta-calma);
+}
 `;
 
 /* ------------------------------------------------------- portão ADR-007 --- */
