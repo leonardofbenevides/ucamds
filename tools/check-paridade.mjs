@@ -29,6 +29,15 @@ if (!achaChrome() && process.env.VERCEL) {
   console.log('· paridade: pulado no build da Vercel (sem navegador); roda no pnpm dist local antes do deploy');
   process.exit(0);
 }
+// Sem Chrome fora da Vercel: mesma regra das sondas (tools/sondas.mjs).
+if (!achaChrome()) {
+  if (process.env.SONDAS === 'pular') {
+    console.log('⚠ paridade: PULADA por SONDAS=pular (sem navegador). Não publique este dist.');
+    process.exit(0);
+  }
+  console.error('✗ paridade: Chrome/Chromium não encontrado. Instale o Chrome ou aponte CHROME=<caminho do executável>.\n  Para gerar o dist sem as provas (não para publicar): SONDAS=pular pnpm run dist');
+  process.exit(1);
+}
 
 const VIVO = join(ROOT, 'site', 'src', 'app', 'pages', 'vivo');
 const i = process.argv.indexOf('--teto');

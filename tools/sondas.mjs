@@ -46,6 +46,17 @@ if (!achaChrome() && process.env.VERCEL) {
   console.log('· sondas: pulado no build da Vercel (sem navegador); roda no pnpm dist local antes do deploy');
   process.exit(0);
 }
+/* Máquina sem Chrome (19/11/2026: o pnpm dist saiu da sonda em 09cf957 porque
+ * ela estourava com stack trace). Agora diz o que falta e reprova; quem quer
+ * gerar o dist assim mesmo pede o pulo pelo nome, e o pulo fica escrito. */
+if (!achaChrome()) {
+  if (process.env.SONDAS === 'pular') {
+    console.log('⚠ sondas: PULADAS por SONDAS=pular (sem navegador). Este dist não passou pelas sondas das telas; não publique sem rodá-las numa máquina com Chrome.');
+    process.exit(0);
+  }
+  console.error('✗ sondas: Chrome/Chromium não encontrado. Instale o Chrome ou aponte CHROME=<caminho do executável>.\n  Para gerar o dist sem as sondas (não para publicar): SONDAS=pular pnpm run dist');
+  process.exit(1);
+}
 
 /* ---------------------------------------------------------------- sondas --- */
 const ORDEM = ['erros', 'nomes', 'rolagem', 'alvos', 'foco', 'estados', 'mortos', 'mudas'];

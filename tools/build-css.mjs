@@ -14988,6 +14988,13 @@ ${abaixo('nav-fixa')} {
 /* O respiro de baixo: quebrada, a fileira de ferramentas encostava no fio da
  * lista (4px). Na mesma linha das abas a margem cabe na altura da tira. */
 .ucam-viewbar__fileira:has(> .ucam-tabs) > .ucam-viewbar__acoes { margin-block-end: var(--ucam-space-inline-sm); }
+/* E o de cima (19/11/2026, sonda foco): na mesma linha das abas, a margem de
+ * baixo subia o controle centrado até 1px do alto do .ucam-main, que recorta
+ * (overflow clip), e o anel do select "Semestre atual" saía cortado em
+ * protocolo/analise-requerimento. 4px cabem o anel (2 + 2 de afastamento);
+ * as abas descem ao pé da fileira para a marca da aba ativa seguir no fio. */
+.ucam-viewbar__fileira:has(> .ucam-tabs) > .ucam-viewbar__acoes { margin-block-start: var(--ucam-space-inline-xs); }
+.ucam-viewbar__fileira:has(> .ucam-tabs) > .ucam-tabs { align-self: flex-end; }
 
 /* A FILEIRA DE FILTROS não quebra para pôr o botão sozinho numa terceira
  * linha (Inadimplência, 18/11/2026: "sem respiro, mal diagramado"): os chips

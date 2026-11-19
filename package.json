@@ -1,6 +1,6 @@
 {
   "name": "ucamds",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.4.0",
@@ -33,7 +33,7 @@
     "test:sites-ui": "pnpm run sites && pnpm --dir sites/ui run test --watch=false",
     "pacotes": "node tools/check-agentes.mjs && node tools/build-pacotes.mjs",
     "indice": "node tools/build-index.mjs",
-    "dist": "pnpm run build && pnpm run lib && pnpm run lib:sites && pnpm run elements && pnpm run paridade && pnpm run pacotes && pnpm run publicar",
+    "dist": "pnpm run build && pnpm run lib && pnpm run lib:sites && pnpm run elements && pnpm run sondas && pnpm run paridade && pnpm run pacotes && pnpm run publicar",
     "adaptador": "node tools/build-adapters.mjs",
     "agentes": "node tools/build-agentes.mjs && node tools/check-agentes.mjs",
     "faixa": "node tools/check-faixa.mjs",
