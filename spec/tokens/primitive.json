@@ -432,6 +432,10 @@
     "xl": {
       "$value": "64rem",
       "$description": "1024px. Desktop. É o degrau que mais carrega peso na folha: onze das media queries do @leonardofbenevides/css dependem só dele."
+    },
+    "2xl": {
+      "$value": "80rem",
+      "$description": "1280px. Desktop largo. Existe desde 20/11/2026 para os sistemas na faixa (ADR-092): treze ícones de sistema não cabem na faixa de 1024px. É o mesmo xl: do Tailwind, que o Trilho B usa para a mesma fronteira."
     }
   },
   "fontSize": {
@@ -458,8 +462,8 @@
       "$value": "1.125rem"
     },
     "2xl": {
-      "$value": "1.5rem",
-      "$description": "24px desde 19/11/2026 (\"não tá com uma hierarquia boa\", Cálculo de mensalidade individual): a 22px o título da página ficava a 1,22× da seção (18px) e as duas linhas competiam. Só o page-title usa este degrau."
+      "$value": "1.25rem",
+      "$description": "20px desde 20/11/2026. Em 19/11 subiu a 24px (\"não tá com uma hierarquia boa\": a 22px o título ficava a 1,22× da seção de 18px); no dia seguinte, \"pouco respiro e fonte mt grande\". A hierarquia agora vem de descer a SEÇÃO para 16px e de dar ar à fileira do título (56px), não de crescer o título. Só o page-title usa este degrau."
     },
     "3xl": {
       "$value": "1.75rem"

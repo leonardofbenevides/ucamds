@@ -102,8 +102,8 @@ export interface UcamNavGroup {
 }
 
 /**
- * UM SISTEMA do trilho (ADR-089): a mesma lista do lançador do Trilho A,
- * de pé entre a faixa e a navegação. Sem href, o sistema não tem tela neste
+ * UM SISTEMA da faixa (ADR-092): a mesma lista do lançador do Trilho A,
+ * deitada na faixa depois do nome do sistema, a partir de 80rem. Sem href, o sistema não tem tela neste
  * conjunto e o item não navega.
  */
 export interface UcamSystemLink {
@@ -435,6 +435,34 @@ export type UcamSystemCategory =
           >
         </a>
 
+        @if (systems().length) {
+          <!-- OS SISTEMAS NA FAIXA (ADR-092): a partir de 80rem, um ícone por
+               sistema depois do nome; abaixo, o lançador que a aplicação
+               projeta em ucamShellAcoes (com xl:hidden). -->
+          <nav
+            aria-label="Sistemas"
+            class="hidden shrink-0 items-center gap-0.5 ms-[var(--ucam-space-inline-md)] ps-[var(--ucam-space-inline-md)] border-s border-[color-mix(in_srgb,currentColor_24%,transparent)] xl:flex"
+          >
+            @for (sis of systems(); track sis.label) {
+              <a
+                [attr.href]="sis.href ?? null"
+                [attr.role]="sis.href ? null : 'link'"
+                [attr.aria-disabled]="sis.href ? null : 'true'"
+                [attr.aria-current]="sis.current ? 'page' : null"
+                [attr.aria-label]="sis.label"
+                [attr.title]="sis.label"
+                class="inline-flex size-9 items-center justify-center rounded-[var(--ucam-radius-control)] no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[currentColor]"
+                [class]="sis.current
+                  ? 'text-inherit bg-[color-mix(in_srgb,currentColor_22%,transparent)]'
+                  : sis.href
+                    ? 'text-[color-mix(in_srgb,currentColor_78%,transparent)] hover:bg-[color-mix(in_srgb,currentColor_14%,transparent)]'
+                    : 'cursor-default text-[color-mix(in_srgb,currentColor_78%,transparent)] opacity-60'"
+                ><ucam-icon [name]="sis.icon" class="size-[1.125rem]"
+              /></a>
+            }
+          </nav>
+        }
+
         <span class="flex-1"></span>
         @if (searchable()) {
           <!--
@@ -621,32 +649,6 @@ export type UcamSystemCategory =
           (click)="alternaNav()"
           aria-hidden="true"
         ></div>
-      }
-      @if (temTrilho()) {
-        <!-- O TRILHO DE SISTEMAS (ADR-089). Só a partir de 64rem; abaixo, a
-             coluna sobreposta já é o caminho, e o celular não tem largura para
-             duas colunas de cromo. -->
-        <nav
-          aria-label="Sistemas"
-          class="hidden flex-col items-center gap-[var(--ucam-space-inline-xs)] overflow-y-auto border-e border-[var(--ucam-color-border-subtle)] bg-[var(--ucam-color-surface-chrome)] py-[var(--ucam-space-inset-sm)] [scrollbar-width:none] lg:sticky lg:top-[var(--ucam-appbar-height)] lg:flex lg:h-[calc(100dvh-var(--ucam-appbar-height))]"
-        >
-          @for (sis of systems(); track sis.label) {
-            <a
-              [attr.href]="sis.href ?? null"
-              [attr.role]="sis.href ? null : 'link'"
-              [attr.aria-disabled]="sis.href ? null : 'true'"
-              [attr.aria-current]="sis.current ? 'page' : null"
-              [attr.aria-label]="sis.label"
-              [attr.title]="sis.label"
-              class="inline-flex size-10 shrink-0 items-center justify-center rounded-[var(--ucam-radius-control)] no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ucam-color-border-focus)]"
-              [class]="sis.current
-                ? 'bg-[color-mix(in_srgb,var(--ucam-color-text-primary)_8%,transparent)] text-[var(--ucam-color-text-primary)]'
-                : sis.href
-                  ? 'text-[var(--ucam-color-text-secondary)] hover:bg-[color-mix(in_srgb,var(--ucam-color-text-primary)_5%,transparent)] hover:text-[var(--ucam-color-text-primary)]'
-                  : 'cursor-default text-[var(--ucam-color-text-secondary)]'"
-              ><ucam-icon [name]="sis.icon" class="size-5" /></a>
-          }
-        </nav>
       }
       <nav
         [id]="navId()"
@@ -991,7 +993,7 @@ export class UcamAppShell {
    *  carregada; só com @ucam/ui, é o bordô da universidade). */
   readonly appbarAppearance = input<UcamAppbarAppearance>('brand');
   readonly navGroups = input<UcamNavGroup[]>([]);
-  /** Os sistemas do trilho (ADR-089). Vazio = sem trilho. Só no arranjo appbar. */
+  /** Os sistemas da faixa (ADR-092), a partir de 80rem. Vazio = sem fileira. */
   readonly systems = input<UcamSystemLink[]>([]);
   readonly user = input<{ name: string; photoUrl?: string } | null>(null);
   readonly homeHref = input<string>('/');
@@ -1165,11 +1167,6 @@ export class UcamAppShell {
    *   lateral → mobilebar em cima só abaixo de 64rem, e uma fileira só acima;
    *   rail    → rail de 72px sempre, coluna do módulo a partir de 64rem.
    */
-  /** O trilho de sistemas existe com lista, navegação e faixa (ADR-089). */
-  protected readonly temTrilho = computed(
-    () => this.systems().length > 0 && this.navGroups().length > 0 && this.shellLayout() === 'appbar',
-  );
-
   protected readonly classesGrade = computed(() => {
     switch (this.shellLayout()) {
       case 'lateral':
@@ -1177,9 +1174,7 @@ export class UcamAppShell {
       case 'rail':
         return 'grid grid-cols-[4.5rem_minmax(0,1fr)] grid-rows-[minmax(0,1fr)] lg:grid-cols-[4.5rem_var(--ucam-nav-width)_minmax(0,1fr)]';
       default:
-        return this.temTrilho()
-          ? 'grid grid-cols-1 grid-rows-[var(--ucam-appbar-height)_minmax(0,1fr)] lg:grid-cols-[3.5rem_var(--ucam-nav-width)_minmax(0,1fr)]'
-          : 'grid grid-cols-1 grid-rows-[var(--ucam-appbar-height)_minmax(0,1fr)] lg:grid-cols-[var(--ucam-nav-width)_minmax(0,1fr)]';
+        return 'grid grid-cols-1 grid-rows-[var(--ucam-appbar-height)_minmax(0,1fr)] lg:grid-cols-[var(--ucam-nav-width)_minmax(0,1fr)]';
     }
   });
 
@@ -1320,13 +1315,7 @@ export class UcamAppShell {
   protected readonly variaveis = computed(() => ({
     // 3.5rem recolhida, e não os 4.5 do rail: duas colunas de ícones da mesma
     // largura leem como uma só partida por um filete.
-    // Com trilho a navegação estreita para 16.5rem (56 + 264 = os 320 de antes),
-    // salvo quando o host declarou outra largura.
-    '--ucam-nav-width': this.recolhida()
-      ? '3.5rem'
-      : this.temTrilho() && this.navWidth() === '19.875rem'
-        ? '16.5rem'
-        : this.navWidth(),
+    '--ucam-nav-width': this.recolhida() ? '3.5rem' : this.navWidth(),
     // O recuo lateral da coluna: um pixel a menos que o vão, que é o do fio.
     '--ucam-shell-nav-recuo': 'calc(var(--ucam-space-inline-sm) - 1px)',
     '--ucam-content-max': this.maxContentWidth(),

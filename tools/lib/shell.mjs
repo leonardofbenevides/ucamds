@@ -936,27 +936,22 @@ export function renderShell(cfg = {}, conteudo = '') {
 
   const menuSistemas = lancadorSistemas('ucam-appbar__sistemas', 'ucam-appbar__lancador');
 
-  /* O TRILHO DE SISTEMAS (ADR-089, 19/11/2026). A mesma lista do lançador,
-   * de pé, numa coluna estreita entre a faixa e a navegação do módulo — o
-   * arranjo das duas referências de produto que o Leonardo trouxe. A faixa
-   * fica (ADR-088): o trilho não é o .ucam-rail de 72px em bordô, que tirava
-   * a faixa; é claro, de 56px, e a navegação estreita para a soma das duas
-   * colunas ficar nos 320px que a navegação sozinha já gastava.
-   *
-   * Abaixo de 64rem ele não existe e o lançador da faixa volta: o celular não
-   * tem largura para duas colunas de cromo. Acima, o lançador some, porque
-   * dois caminhos para a mesma lista lado a lado é ruído. O nome vai no
-   * aria-label e no title (o desenho sozinho não diz o sistema). */
-  const trilho = temLancador && railComoMenu && !topo && !lateral && temNav;
-  const blocoTrilho = trilho
-    ? '<nav class="ucam-trilho" aria-label="Sistemas">' +
+  /* OS SISTEMAS NA FAIXA (ADR-092, 20/11/2026: "aqui podia estar no header
+   * de todas as aplicações ao invés de uma sidebar"). A mesma lista do
+   * lançador, deitada na faixa logo depois do nome do sistema, a partir de
+   * 80rem: um ícone por sistema, nome no aria-label e no title, e o atual
+   * marcado. Abaixo de 80rem o lançador volta (o Diploma tem 13 sistemas, e
+   * 13 ícones não cabem na faixa de 1024px). Substitui o trilho lateral da
+   * ADR-089, que gastava uma coluna de 56px em toda tela. */
+  const trilho = false;
+  const linhaSistemas = temLancador && railComoMenu && !topo && !lateral
+    ? '<nav class="ucam-appbar__sistemas-linha" aria-label="Sistemas">' +
       rail.itens
         .map((i) =>
           linkOuMarca(
             i.href,
-            'ucam-trilho__item',
-            // Sem destino, o title é o do aviso de sem tela (linkOuMarca o põe);
-            // um segundo title seria atributo repetido, e só o primeiro vale.
+            'ucam-appbar__sistema',
+            // Sem destino, o title é o do aviso de sem tela (linkOuMarca o põe).
             ` aria-label="${esc(i.rotulo)}"` + (i.href ? ` title="${esc(i.rotulo)}"` : '') + (i.ativo ? ' aria-current="page"' : ''),
             ic(i.icone ?? 'layoutGrid'),
           ),
@@ -964,6 +959,7 @@ export function renderShell(cfg = {}, conteudo = '') {
         .join('') +
       '</nav>'
     : '';
+  const blocoTrilho = '';
 
   /* ======================================================= ARRANJO LATERAL ===
    *
@@ -1176,6 +1172,7 @@ export function renderShell(cfg = {}, conteudo = '') {
             ? `<span class="ucam-icon-tile ucam-appbar__marca${moduloCategoria ? ` ucam-icon-tile--${esc(moduloCategoria)}` : ''}" aria-hidden="true">${ic(moduloIcone)}</span>`
             : '') + `<span class="ucam-appbar__system">${esc(sistema)}</span>`,
       ) +
+      linhaSistemas +
       `<span class="ucam-appbar__spacer"></span>` +
       campoBusca +
       (campoBusca ? `<span class="ucam-appbar__spacer"></span>` : '') +
@@ -8037,6 +8034,13 @@ export const dataScript = `
 (function () {
   function digitos(v) { return String(v).replace(/\\D/g, '').slice(0, 8); }
   function mascara(d) { return d.length > 4 ? d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4) : d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; }
+  /* O MÊS (20/11/2026: "tudo de data tem que abrir o datepicker"). Campo com
+   * data-data="mes" é mm/aaaa: máscara de 6 dígitos, valor aaaa-mm, e o
+   * calendário abre na grade de meses (precisao month do mesmo motor).
+   * Competência, referência e período por mês eram campos de texto soltos. */
+  function ehMes(c) { return !!c && c.getAttribute('data-data') === 'mes'; }
+  function mascaraMes(d) { d = d.slice(0, 6); return d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d; }
+  function isoMes(v) { var d = String(v).replace(/[^0-9]/g, ''); return d.length === 6 && +d.slice(0, 2) >= 1 && +d.slice(0, 2) <= 12 ? d.slice(2) + '-' + d.slice(0, 2) : ''; }
   function iso(v) { var d = digitos(v); return d.length === 8 ? d.slice(4) + '-' + d.slice(2, 4) + '-' + d.slice(0, 2) : ''; }
   function real(i) { if (!i) return false; var t = new Date(i + 'T00:00:00'); return !isNaN(t) && t.toISOString().slice(0, 10) === i; }
   function erro(campo, frase) {
@@ -8069,14 +8073,15 @@ export const dataScript = `
   document.addEventListener('input', function (e) {
     var c = e.target;
     if (!c.matches || !c.matches('input[data-data]') || e.isTrusted === false) return;
-    var d = digitos(c.value), m = mascara(d);
+    var d = digitos(c.value), m = ehMes(c) ? mascaraMes(d) : mascara(d);
     if (m !== c.value) { c.value = m; c.setSelectionRange(m.length, m.length); }
-    if (c.getAttribute('aria-invalid') === 'true' && real(iso(m))) erro(c, '');
+    if (c.getAttribute('aria-invalid') === 'true' && (ehMes(c) ? isoMes(m) : real(iso(m)))) erro(c, '');
   });
   document.addEventListener('focusout', function (e) {
     var c = e.target;
     if (!c.matches || !c.matches('input[data-data]')) return;
     if (!c.value) return erro(c, '');
+    if (ehMes(c)) return erro(c, isoMes(c.value) ? '' : 'Mês inválido. Use mm/aaaa.');
     erro(c, real(iso(c.value)) ? '' : 'Data inválida. Use dd/mm/aaaa.');
   });
   /* O CALENDÁRIO DO DS (28/09/2026: "o datepicker está sem estilo", "ao
@@ -8097,6 +8102,7 @@ export const dataScript = `
 ${FN_CALENDARIO}
   var cal = null, dono = null, motor = null;
   function textoDe(d) { return doisD(d.getDate()) + '/' + doisD(d.getMonth() + 1) + '/' + d.getFullYear(); }
+  function textoMes(d) { return doisD(d.getMonth() + 1) + '/' + d.getFullYear(); }
   function rotuloDe(campo) {
     var l = campo.id && document.querySelector('label[for="' + campo.id + '"]');
     return l ? l.textContent.trim() : 'data';
@@ -8113,7 +8119,7 @@ ${FN_CALENDARIO}
   /* MIN, MAX E PERÍODO (ADR-074). data-min e data-max (ISO) no campo
    * bloqueiam os dias de fora; dentro de um [data-intervalo], o calendário de
    * qualquer ponta marca o período inteiro, com as duas pontas escolhidas. */
-  function valorDe(c) { return c && real(iso(c.value)) ? iso(c.value) : ''; }
+  function valorDe(c) { if (ehMes(c)) return isoMes(c.value); return c && real(iso(c.value)) ? iso(c.value) : ''; }
   function posicionar() {
     cal.classList.remove('ucam-calendario--acima');
     var c = dono.getBoundingClientRect(), a = cal.getBoundingClientRect().height;
@@ -8129,14 +8135,14 @@ ${FN_CALENDARIO}
     cal.id = campo.id + '-calendario';
     cal.setAttribute('role', 'dialog');
     cal.setAttribute('aria-label', 'Escolher ' + rotuloDe(campo) + ' no calendário');
-    var o = { precisao: 'day', selecao: 'single', valor: valorDe(campo), min: campo.getAttribute('data-min') || '', max: campo.getAttribute('data-max') || '', comHoje: true };
+    var o = { precisao: ehMes(campo) ? 'month' : 'day', selecao: 'single', valor: valorDe(campo), min: campo.getAttribute('data-min') || '', max: campo.getAttribute('data-max') || '', comHoje: true };
     var grupo = campo.closest('[data-intervalo]');
     if (grupo) {
       var pontas = grupo.querySelectorAll('input[data-data]');
       o.de = valorDe(pontas[0]);
       o.ate = valorDe(pontas[1]);
     }
-    o.aoEscolher = function (chave) { escolher(deIso(chave)); };
+    o.aoEscolher = function (chave) { escolher(deIso(chave.length === 7 ? chave + '-01' : chave)); };
     campo.closest('.ucam-date-field').appendChild(cal);
     motor = Calendario(cal, o);
     motor.desenhar();
@@ -8146,7 +8152,7 @@ ${FN_CALENDARIO}
   }
   function escolher(d) {
     var campo = dono;
-    campo.value = textoDe(d);
+    campo.value = ehMes(campo) ? textoMes(d) : textoDe(d);
     erro(campo, '');
     fecharCal(true);
     avisa(campo);

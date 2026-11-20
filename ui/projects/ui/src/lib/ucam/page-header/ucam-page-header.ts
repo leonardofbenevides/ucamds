@@ -57,7 +57,7 @@ export type UcamPageHeaderVariante = 'pagina' | 'barra';
           <ng-container [ngTemplateOutlet]="trilha" />
         </div>
       }
-      <div class="flex items-center gap-2 min-h-11 px-[var(--ucam-space-inset-lg)] max-lg:flex-wrap max-lg:pb-2">
+      <div class="flex items-center gap-2 min-h-14 px-[var(--ucam-space-inset-lg)] max-lg:flex-wrap max-lg:pb-2">
         @if (backLink()) {
           <a
             [href]="backLink()"

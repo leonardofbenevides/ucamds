@@ -1727,6 +1727,24 @@
         "page-header",
         "field"
       ]
+    },
+    {
+      "id": "ADR-092",
+      "titulo": "Os sistemas vão para a faixa, e todo campo de data abre o calendário",
+      "status": "aceita",
+      "data": "2026-11-20",
+      "contexto": "Em 20/11/2026, um dia depois do trilho lateral da ADR-089, o Leonardo apontou a coluna de ícones e pediu: \"aqui podia estar no header de todas as aplicações ao invés de uma sidebar\". No mesmo dia: \"tudo de data tem q abrir o datepicker\" (Competência de/até, mm/aaaa, eram texto solto, e nove campos de dia tinham só a máscara), e \"pouco respiro e fonte mt grande\" sobre o título da página em 24px.",
+      "decisao": "Os sistemas saem da coluna lateral e vão para a faixa: a partir de 80rem, uma fileira de ícones logo depois do nome do sistema (.ucam-appbar__sistemas-linha; no Trilho B, a mesma entrada systems do app-shell), com o atual marcado; o lançador some nessa largura e volta abaixo dela. A navegação volta à largura de antes (19.875rem). Todo campo de data é um .ucam-date-field com data-data: dia (dd/mm/aaaa) ou mês (data-data=\"mes\", mm/aaaa, calendário na grade de meses). O título da página fica em 20px e o de seção em 16px, e a fileira do título ganha 56px de altura.",
+      "consequencias": [
+        "Revoga a parte da ADR-089 que criou o trilho lateral; o item aberto neutro e o título de grupo cinza ficam.",
+        "Revoga o título de 24px de 19/11 e o título de seção de 18px da ADR-056.",
+        "data-mascara=\"data\" sem data-data deixa de ser aceito para data: a máscara sem calendário era o campo que não abria."
+      ],
+      "afeta": [
+        "app-shell",
+        "date-field",
+        "page-header"
+      ]
     }
   ]
 }

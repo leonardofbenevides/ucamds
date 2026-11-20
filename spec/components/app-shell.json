@@ -390,7 +390,7 @@
       "nome": "systems",
       "tipo": "UcamSystemLink[]",
       "default": "[]",
-      "descricao": "O TRILHO DE SISTEMAS (ADR-089): { label, icon, href?, current? }[]. A partir de 64rem, no arranjo appbar e com navegação, desenha uma coluna de 56px entre a faixa e a navegação, com um ícone por sistema, nome no aria-label e no title, e o sistema atual em fundo neutro; a navegação estreita para 16.5rem, salvo navWidth declarado. Sem href, o sistema não tem tela e o item sai como link desabilitado. Abaixo de 64rem o trilho não existe, e o lançador que a aplicação projeta em ucamShellAcoes deve ser lg:hidden (no Trilho A, o .ucam-appbar__sistemas some sozinho). No Trilho A, sai de shell.rail com railComoMenu, como .ucam-trilho."
+      "descricao": "OS SISTEMAS NA FAIXA (ADR-092): { label, icon, href?, current? }[]. A partir de 80rem, uma fileira de ícones na faixa, logo depois do nome do sistema, com o nome no aria-label e no title e o sistema atual marcado. Abaixo de 80rem a fileira some, e o lançador que a aplicação projeta em ucamShellAcoes deve ser xl:hidden (no Trilho A, o .ucam-appbar__sistemas some sozinho a partir de 80rem). Sem href, o sistema não tem tela e o item sai como link desabilitado. No Trilho A sai de shell.rail com railComoMenu, como .ucam-appbar__sistemas-linha. Substitui o trilho lateral da ADR-089."
     },
     {
       "nome": "shellLayout",

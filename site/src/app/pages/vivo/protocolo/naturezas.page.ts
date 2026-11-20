@@ -107,9 +107,9 @@ const NATUREZAS: Natureza[] = [
       (signOut)="agir('sair')"
     >
       <ng-container ucamShellAcoes>
-        <!-- Com o trilho de sistemas (ADR-089), o lançador só vale abaixo de
-             64rem, onde o trilho não existe — como no Trilho A. -->
-        <ucam-icon-button class="lg:hidden" icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
+        <!-- Com os sistemas na faixa (ADR-092), o lançador só vale abaixo de
+             80rem, onde a fileira de sistemas não aparece — como no Trilho A. -->
+        <ucam-icon-button class="xl:hidden" icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
       </ng-container>
       <ng-container ucamShellNavRodape>
         <!-- Sem tela de referência desenhada, como na referência: link

@@ -118,13 +118,14 @@
   --ucam-breakpoint-md: 48rem;
   --ucam-breakpoint-lg: 60rem;
   --ucam-breakpoint-xl: 64rem;
+  --ucam-breakpoint-2xl: 80rem;
   --ucam-fontSize-xs: 0.75rem;
   --ucam-fontSize-sm: 0.8125rem;
   --ucam-fontSize-base: 0.875rem;
   --ucam-fontSize-md: 0.9375rem;
   --ucam-fontSize-lg: 1rem;
   --ucam-fontSize-xl: 1.125rem;
-  --ucam-fontSize-2xl: 1.5rem;
+  --ucam-fontSize-2xl: 1.25rem;
   --ucam-fontSize-3xl: 1.75rem;
   --ucam-fontWeight-regular: 400;
   --ucam-fontWeight-medium: 500;
@@ -245,11 +246,11 @@
   --ucam-space-inset-md: 1rem;
   --ucam-space-inset-lg: 1.25rem;
   --ucam-space-inset-xl: 1.5rem;
-  --ucam-typography-page-title-font-size: 1.5rem;
+  --ucam-typography-page-title-font-size: 1.25rem;
   --ucam-typography-page-title-font-weight: 560;
-  --ucam-typography-page-title-line-height: 2rem;
+  --ucam-typography-page-title-line-height: 1.75rem;
   --ucam-typography-page-title-letter-spacing: -0.02em;
-  --ucam-typography-section-title-font-size: 1.125rem;
+  --ucam-typography-section-title-font-size: 1rem;
   --ucam-typography-section-title-font-weight: 560;
   --ucam-typography-section-title-line-height: 1.5rem;
   --ucam-typography-section-title-letter-spacing: -0.01em;
@@ -300,6 +301,7 @@
   --ucam-viewport-controle-deitado: 40rem;
   --ucam-viewport-respiro-completo: 48rem;
   --ucam-viewport-duas-colunas: 60rem;
+  --ucam-viewport-sistemas-na-faixa: 80rem;
   --ucam-viewport-nav-fixa: 64rem;
   --ucam-container-duas-colunas: 52rem;
   --ucam-container-duas-colunas-largo: 60rem;

@@ -3074,14 +3074,10 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
  * painel; empilhada com indicadores ou com outro cartão (o resultado do
  * cálculo de mensalidade) a tabela terminava antes dos vizinhos de baixo.
  * Nesses casos a largura é da coluna, e a tabela a acompanha. */
-.ucam-card${TABELA_SOLTA}:has(> .ucam-table-wrap > ${TABELA_ATE(3)}),
-.ucam-table-wrap:not(.ucam-card *)${TABELA_SOLTA}:has(> ${TABELA_ATE(3)}) {
-  max-inline-size: 64rem;
-}
-.ucam-card${TABELA_SOLTA}:has(> .ucam-table-wrap > ${TABELA_ATE(2)}),
-.ucam-table-wrap:not(.ucam-card *)${TABELA_SOLTA}:has(> ${TABELA_ATE(2)}) {
-  max-inline-size: 48rem;
-}
+/* REVOGADO em 20/11/2026 ("fill", Tipos de anexo da Nova natureza): o teto
+ * deixava a tabela de duas colunas num terço da página, com a ação embaixo
+ * dela flutuando à esquerda. Toda tabela ocupa a largura do lugar; a coluna
+ * do nome fica com a sobra, e as colunas curtas (th--min) seguem estreitas. */
 
 .ucam-table caption {
   text-align: start;
@@ -15942,69 +15938,57 @@ ${acima('nav-fixa')} {
 /* 19/11/2026, duas referências de produto ("podemos revisar todo o estilo?").
  * Escolhas do Leonardo: a moldura continua branca; o item aberto da
  * navegação vira fundo NEUTRO (a cor fica para ação e estado); o título de
- * grupo fica cinza, menor e em frase normal; e entra o trilho de sistemas.
+ * grupo fica cinza, menor e em frase normal. O trilho de sistemas que entrou
+ * aqui saiu em 20/11 para a faixa (ADR-092).
  * No fim da folha de propósito: vence por ordem as regras de arranjo e a
  * ADR-062, que pintava o item aberto na cor do sistema. */
 
-/* O trilho. Só existe a partir de 64rem; abaixo, o lançador da faixa. */
-.ucam-trilho { display: none; }
-${acima('nav-fixa')} {
-  .ucam-shell--trilho {
-    --ucam-trilho-width: 3.5rem;
-    --ucam-nav-width: 16.5rem;
-    grid-template-columns: var(--ucam-trilho-width) var(--ucam-nav-width) minmax(0, 1fr);
-    grid-template-areas:
-      "appbar appbar appbar"
-      "trilho nav    main"
-      "footer footer footer";
-  }
-  .ucam-shell--trilho.ucam-shell--nav-recolhida { --ucam-nav-width: 3.5rem; }
-  .ucam-shell--trilho > .ucam-trilho {
-    grid-area: trilho;
+/* OS SISTEMAS NA FAIXA (ADR-092, 20/11/2026). Substituem o trilho lateral
+ * da ADR-089. A partir de 80rem, uma fileira de ícones logo depois do nome do
+ * sistema, na tinta da faixa; o atual leva o chão claro da faixa (o mesmo
+ * 16% do hover, mais forte). Abaixo de 80rem a fileira some e o lançador
+ * volta. O nome de cada sistema vai no aria-label e no title. */
+.ucam-appbar__sistemas-linha { display: none; }
+${acima('sistemas-na-faixa')} {
+  .ucam-appbar__sistemas-linha {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: var(--ucam-space-inline-xs);
-    padding-block: var(--ucam-space-inset-sm);
-    position: sticky;
-    inset-block-start: var(--ucam-appbar-offset);
-    block-size: calc(100dvh - var(--ucam-appbar-offset));
-    overflow-y: auto;
-    scrollbar-width: none;
-    background: var(--ucam-color-surface-chrome);
-    border-inline-end: 1px solid var(--ucam-color-border-subtle);
+    gap: 0.125rem;
+    flex: none;
+    margin-inline-start: var(--ucam-space-inline-md);
+    padding-inline-start: var(--ucam-space-inline-md);
+    border-inline-start: 1px solid color-mix(in srgb, currentColor 24%, transparent);
   }
-  /* Dois caminhos para a mesma lista lado a lado é ruído: o lançador sai. */
-  .ucam-shell--trilho .ucam-appbar__sistemas { display: none; }
+  .ucam-appbar:has(.ucam-appbar__sistemas-linha) .ucam-appbar__sistemas { display: none; }
 }
-.ucam-trilho__item {
+.ucam-appbar__sistema {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: none;
-  inline-size: 2.5rem;
-  block-size: 2.5rem;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
   border-radius: var(--ucam-radius-control);
-  color: var(--ucam-color-text-secondary);
+  color: color-mix(in srgb, currentColor 78%, transparent);
   text-decoration: none;
   transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
               color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
 }
-.ucam-trilho__item .ic { inline-size: 1.25rem; block-size: 1.25rem; }
-a.ucam-trilho__item:hover {
-  background: color-mix(in srgb, var(--ucam-color-text-primary) 5%, transparent);
-  color: var(--ucam-color-text-primary);
+.ucam-appbar--marca .ucam-appbar__sistema { color: color-mix(in srgb, var(--ucam-color-text-on-brand) 78%, transparent); }
+.ucam-appbar__sistema .ic { inline-size: 1.125rem; block-size: 1.125rem; }
+a.ucam-appbar__sistema:hover {
+  background: color-mix(in srgb, currentColor 14%, transparent);
 }
-.ucam-trilho__item[aria-current="page"],
-.ucam-trilho__item[aria-current="page"]:hover {
-  background: color-mix(in srgb, var(--ucam-color-text-primary) 8%, transparent);
-  color: var(--ucam-color-text-primary);
+.ucam-appbar--marca a.ucam-appbar__sistema:hover { color: var(--ucam-color-text-on-brand); background: color-mix(in srgb, var(--ucam-color-text-on-brand) 14%, transparent); }
+.ucam-appbar__sistema[aria-current="page"],
+.ucam-appbar--marca .ucam-appbar__sistema[aria-current="page"] {
+  color: var(--ucam-color-text-on-brand);
+  background: color-mix(in srgb, var(--ucam-color-text-on-brand) 22%, transparent);
 }
-.ucam-trilho__item:focus-visible {
-  outline: var(--ucam-focus-ring-width) solid var(--ucam-color-border-focus);
-  outline-offset: calc(var(--ucam-focus-ring-width) * -1);
+.ucam-appbar__sistema[data-sem-tela] { cursor: default; opacity: 0.6; }
+.ucam-appbar__sistema:focus-visible {
+  outline: var(--ucam-focus-ring-width) solid currentColor;
+  outline-offset: 1px;
 }
-.ucam-trilho__item[data-sem-tela] { cursor: default; }
 
 /* O item aberto: fundo neutro, tinta e ícone do texto, peso de ação. */
 .ucam-shell .ucam-nav__item[aria-current="page"],
@@ -16067,7 +16051,6 @@ a.ucam-trilho__item:hover {
 .ucam-shell { --ucam-lado: 0px; }
 ${acima('nav-fixa')} {
   .ucam-shell:not(.ucam-shell--sem-nav) { --ucam-lado: var(--ucam-nav-width); }
-  .ucam-shell--trilho:not(.ucam-shell--sem-nav) { --ucam-lado: calc(var(--ucam-trilho-width) + var(--ucam-nav-width)); }
 }
 .ucam-lote {
   position: fixed;
@@ -16091,6 +16074,20 @@ ${abaixo('nav-fixa')} {
     border-radius: var(--ucam-radius-surface);
   }
   .ucam-main:has(.ucam-lote:not([hidden])) { padding-block-end: 8rem; }
+}
+
+/* AR NA FILEIRA DO TÍTULO (20/11/2026, "pouco respiro e fonte mt grande"):
+ * 56px em vez de 44 só na fileira que tem o título; as fileiras de abas e
+ * filtros abaixo dela continuam rasas. */
+.ucam-viewbar__fileira:has(> .ucam-viewbar__titulo) { min-block-size: 3.5rem; }
+
+/* TODO CAMPO DE DATA ABRE O CALENDÁRIO (20/11/2026: "tudo de data tem q abrir
+ * o datepicker"). Dia (data-data) e mês (data-data="mes", mm/aaaa) moram num
+ * .ucam-date-field com o ícone do calendário; a folga do ícone vale para
+ * qualquer um deles, e não só dentro de .ucam-field--data. */
+.ucam-date-field:has(> .ucam-date-field__icone) .ucam-input {
+  padding-inline-start: 2.125rem;
+  cursor: pointer;
 }
 
 /* O DIA NA BARRA (19/11/2026, Movimento de caixa): o filtro de data mora na

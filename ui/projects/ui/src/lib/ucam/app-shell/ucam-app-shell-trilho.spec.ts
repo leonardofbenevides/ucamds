@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { UcamAppShell, type UcamNavGroup, type UcamSystemLink } from './ucam-app-shell';
 
-/* Trilho de sistemas (ADR-089, 19/11/2026). */
+/* Sistemas na faixa (ADR-092, 20/11/2026; eram o trilho da ADR-089). */
 @Component({
   imports: [UcamAppShell],
   template: `<ucam-app-shell systemName="Protocolo" [navGroups]="nav" [systems]="sistemas"><p>conteúdo</p></ucam-app-shell>`,

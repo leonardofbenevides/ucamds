@@ -1,7 +1,7 @@
 import type { UcamSystemLink } from '@ucam/ui';
 
 /**
- * O TRILHO DE SISTEMAS das telas vivas do Protocolo (ADR-089): a mesma lista
+ * OS SISTEMAS DA FAIXA das telas vivas do Protocolo (ADR-092): a mesma lista
  * que spec/templates.json declara em protocolo.shell.rail, com o mesmo
  * destino que o Trilho A dá a cada sistema (a primeira tela do projeto).
  * Sem href, o sistema não tem tela de referência e o item não navega.

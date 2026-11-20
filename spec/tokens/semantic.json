@@ -404,19 +404,19 @@
       "$value": {
         "fontSize": "{fontSize.2xl}",
         "fontWeight": "{fontWeight.semibold}",
-        "lineHeight": "2rem",
+        "lineHeight": "1.75rem",
         "letterSpacing": "-0.02em"
       }
     },
     "section-title": {
       "$type": "typography",
       "$value": {
-        "fontSize": "{fontSize.xl}",
+        "fontSize": "{fontSize.lg}",
         "fontWeight": "{fontWeight.semibold}",
         "lineHeight": "1.5rem",
         "letterSpacing": "-0.01em"
       },
-      "$description": "18px desde 01/10/2026 (\"aumente um pouco a dimensão das coisas nas telas\", ADR-056); era 16px, e a 1px do corpo novo deixaria de ler como título."
+      "$description": "16px desde 20/11/2026: com o título da página em 20px, a seção a 18px voltava a competir com ele. A 1px do corpo (15px) ela continua lendo como título pelo peso semibold e pelo vão acima. Foi 18px de 01/10 a 20/11 (ADR-056) e 16px antes."
     },
     "body": {
       "$type": "typography",
@@ -599,6 +599,10 @@
     "duas-colunas": {
       "$value": "{breakpoint.lg}",
       "$description": "A partir daqui duas colunas de MESMO peso cabem lado a lado (o .ucam-split--igual). O bloco de divisão com painel de apoio NÃO lê este papel desde 11/09/2026: ele pergunta ao contêiner (container.duas-colunas), porque a partir de nav-fixa a coluna de navegação come 20rem da janela e a janela deixa de dizer quanto sobra para o conteúdo."
+    },
+    "sistemas-na-faixa": {
+      "$value": "{breakpoint.2xl}",
+      "$description": "A partir daqui os sistemas aparecem como fileira de ícones na faixa, depois do nome do sistema, e o lançador some (ADR-092). Abaixo, o lançador volta: a faixa de 1024px não comporta os treze ícones do Diploma."
     },
     "nav-fixa": {
       "$value": "{breakpoint.xl}",

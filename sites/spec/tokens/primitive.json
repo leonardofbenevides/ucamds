@@ -41,8 +41,5 @@
     "18": { "$value": "4.5rem", "$description": "72px. A margem lateral do conteúdo no desktop, a mesma em todas as páginas do Figma." },
     "20": { "$value": "5rem", "$description": "80px." },
     "24": { "$value": "6rem", "$description": "96px. Respiro entre seções de página." }
-  },
-  "breakpoint": {
-    "2xl": { "$value": "80rem", "$description": "1280px. O desktop largo do Figma (1440) começa a valer aqui. Os sites usam sm, md e xl do compartilhado (640, 768, 1024)." }
   }
 }
