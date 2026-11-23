@@ -112,7 +112,7 @@ const EXIGENCIAS = [
   ['select/select.variants.ts', 'selectTriggerVariants', CONTROL_MD, /'flex (h-\d+) px-3 py-2 w-full/],
   ['input-group/input-group.variants.ts', 'inputGroupVariants', CONTROL_MD, /relative flex (h-\d+) w-full min-w-0/],
 
-  // O textarea nasce com três linhas de controle — é o que o @leonardofbenevides/css faz
+  // O textarea nasce com três linhas de controle — é o que o @ucamds/css faz
   // com `calc(size-control-md * 3)`. A base trazia min-h-16 (64px), quase
   // metade: o mesmo campo tinha dois tamanhos conforme o trilho.
   [

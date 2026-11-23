@@ -337,10 +337,10 @@ function pageIntro() {
   <section class="sec">
     <h2>Como está organizado</h2>
     ${table(['Camada', 'O que é', 'Quem consome'], [
-      ['<code>@leonardofbenevides/tokens</code>', 'Cor, tipografia, espaçamento e tema escuro em CSS, SCSS, JSON e Tailwind v4.', 'Todos os sistemas, inclusive AngularJS'],
-      ['<code>@leonardofbenevides/css</code>', 'Primitivos visuais sem framework, escopados sob <code>.ucam</code>, sem preflight.', 'Sistemas legados, sem migrar'],
-      ['<code>@leonardofbenevides/ui</code>', 'Componentes Angular sobre a ZardUI adaptada.', 'Sistemas novos e migrados'],
-      ['<code>@leonardofbenevides/ds-mcp</code>', 'Servidor MCP que serve os contratos a agentes de IA.', 'Ferramentas de desenvolvimento'],
+      ['<code>@ucamds/tokens</code>', 'Cor, tipografia, espaçamento e tema escuro em CSS, SCSS, JSON e Tailwind v4.', 'Todos os sistemas, inclusive AngularJS'],
+      ['<code>@ucamds/css</code>', 'Primitivos visuais sem framework, escopados sob <code>.ucam</code>, sem preflight.', 'Sistemas legados, sem migrar'],
+      ['<code>@ucamds/ui</code>', 'Componentes Angular sobre a ZardUI adaptada.', 'Sistemas novos e migrados'],
+      ['<code>@ucamds/ds-mcp</code>', 'Servidor MCP que serve os contratos a agentes de IA.', 'Ferramentas de desenvolvimento'],
     ])}
   </section>
 
@@ -725,7 +725,7 @@ function pageTokens() {
 }
 
 function pageMcp() {
-  const cfg = JSON.stringify({ mcpServers: { ucamds: { command: 'npx', args: ['-y', '@leonardofbenevides/ds-mcp@latest'] } } }, null, 2);
+  const cfg = JSON.stringify({ mcpServers: { ucamds: { command: 'npx', args: ['-y', '@ucamds/ds-mcp@latest'] } } }, null, 2);
   return `<article class="page" id="/comecar/mcp">
   <header class="page-head"><div class="page-head-row"><h1>Servidor MCP</h1>${pill('draft')}</div>
   <p class="lede">Serve os contratos dos componentes a agentes de IA, para que eles usem a API real em vez de inventar props.</p></header>
@@ -1510,13 +1510,13 @@ const html = `<!doctype html>
 ${CSS}
 </style>
 
-<!-- O @leonardofbenevides/css real, que dá vida aos previews de componente desta página.
+<!-- O @ucamds/css real, que dá vida aos previews de componente desta página.
      As molduras de dispositivo NÃO leem daqui: elas carregam a página autônoma
      da tela, que traz a própria folha. Ver deviceFrame(). -->
 <style id="ucam-runtime">
 /* ---- tokens gerados ---- */
 ${tokensCss}
-/* ---- @leonardofbenevides/css gerado ---- */
+/* ---- @ucamds/css gerado ---- */
 ${ucamCss}
 </style>
 

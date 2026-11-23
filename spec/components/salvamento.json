@@ -13,7 +13,7 @@
     "Perder o que foi feito custa caro (prova, redação, formulário longo) e a conexão pode cair."
   ],
   "evidencia": {
-    "origem": "vestibular-online (reescrita em Angular 21 sobre @leonardofbenevides/ui 0.1.2)",
+    "origem": "vestibular-online (reescrita em Angular 21 sobre @ucamds/ui 0.1.2)",
     "ocorrencias": [
       {
         "tela": "candidato/prova/cabecalho-prova.ts",

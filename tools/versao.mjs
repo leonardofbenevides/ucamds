@@ -4,7 +4,7 @@
 //   pnpm run versao 0.2.0 --nota "Uma frase sobre o que a versão é"
 //
 // Três package.json andam juntos (tools/build-pacotes.mjs recusa empacotar se
-// divergirem): o da raiz, o de @leonardofbenevides/ui e o de @leonardofbenevides/site-ui. E spec/versoes.json
+// divergirem): o da raiz, o de @ucamds/ui e o de @ucamds/site-ui. E spec/versoes.json
 // ganha a entrada da versão, com a data de hoje e a lista de componentes e
 // telas — é a diferença entre duas listas que o CHANGELOG chama de "novos".
 //
@@ -50,11 +50,11 @@ for (const rel of MANIFESTOS) {
   writeFileSync(join(ROOT, rel), trocado, 'utf8');
 }
 
-// @leonardofbenevides/site-ui pede a folha na MESMA versão (tools/build-pacotes.mjs confere).
+// @ucamds/site-ui pede a folha na MESMA versão (tools/build-pacotes.mjs confere).
 {
   const rel = 'sites/ui/projects/site-ui/package.json';
   const txt = ler(rel);
-  // Qualquer escopo: o de 17/11/2026 (@leonardofbenevides) deixou o @ucam do
+  // Qualquer escopo: a troca de escopo de 17/11/2026 deixou o @ucam do
   // padrão antigo sem casar, e a 0.5.1 nasceu com a folha pedida na 0.5.0.
   const trocado = txt.replace(/("@[a-z0-9-]+\/site-css"\s*:\s*")[^"]+(")/, `$1${nova}$2`);
   if (trocado === txt) throw new Error(`${rel}: não achei a peerDependency de site-css para levar à ${nova}`);

@@ -95,7 +95,7 @@ export function piorCasoSobreFoto(tokens) {
   return { razao: ratio(texto, fundo), opacidade, fundo };
 }
 
-const banner = (fmt) => `/* @leonardofbenevides/site-css — gerado de sites/spec/tokens/ por tools/build-sites-tokens.mjs
+const banner = (fmt) => `/* @ucamds/site-css — gerado de sites/spec/tokens/ por tools/build-sites-tokens.mjs
  * NÃO EDITAR À MÃO. Edite a spec e rode: pnpm sites
  * Formato: ${fmt}
  */\n`;
@@ -284,7 +284,7 @@ function principal() {
   const geradas = new Set(r.arquivos.map(([n]) => n));
   for (const f of readdirSync(out)) if (/^ucam-site-marca-.+\.css$/.test(f) && !geradas.has(f)) rmSync(join(out, f));
   for (const [nome, conteudo] of r.arquivos) writeFileSync(join(out, nome), conteudo, 'utf8');
-  console.log(`\n✓ @leonardofbenevides/site-css tokens → dist/sites/tokens/ (${r.arquivos.map(([n]) => n).join(', ')})`);
+  console.log(`\n✓ @ucamds/site-css tokens → dist/sites/tokens/ (${r.arquivos.map(([n]) => n).join(', ')})`);
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) principal();

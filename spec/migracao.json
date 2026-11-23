@@ -13,7 +13,7 @@
     "trilhos": [
       {
         "id": "a",
-        "nome": "Trilho A — @leonardofbenevides/css",
+        "nome": "Trilho A — @ucamds/css",
         "quando": "A aplicação é AngularJS, JSF/PrimeFaces, Angular ≤ 14 — qualquer coisa que aceite um <link> e não vá subir de versão nos próximos meses.",
         "entrega": "Identidade visual, tokens, tipografia, espaçamento e o desenho de todos os componentes, por classe CSS — e, com ucam-comportamento.js, o comportamento dessa marcação: o mesmo código que as telas de referência rodam (ADR-057). Navegação sobreposta, menu da conta, busca da faixa, abas, gaveta, diálogo, confirmação, toast, menu de coluna, ordenação e seleção da tabela, calendário do campo de data, listbox do select, contador do textarea, estrela de favorito.",
         "naoEntrega": "O serviço. Todo controle com data-acao dispara o evento ucam:acao e para: arquivar, bloquear, salvar, finalizar são chamadas que a aplicação escreve. Nem a fiação ARIA da marcação: quem escreve o markup é responsável por for/id, aria-describedby, aria-current, role e nome acessível — copiar a tela de referência traz tudo isso pronto; escrever do zero, não.",
@@ -31,7 +31,7 @@
       },
       {
         "id": "b",
-        "nome": "Trilho B — @leonardofbenevides/ui",
+        "nome": "Trilho B — @ucamds/ui",
         "quando": "Aplicação Angular moderna, nova ou já migrada.",
         "entrega": "Tudo: desenho, comportamento, foco, teclado, ARIA e a API tipada que o contrato descreve.",
         "naoEntrega": "Layout de tela. Os blocos de arranjo continuam sendo classes — layout é camada própria, com contrato próprio (ADR-012).",

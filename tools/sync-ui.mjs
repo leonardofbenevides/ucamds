@@ -1,4 +1,4 @@
-// Liga @leonardofbenevides/tokens à biblioteca Angular e verifica a fronteira da ADR-006.
+// Liga @ucamds/tokens à biblioteca Angular e verifica a fronteira da ADR-006.
 //
 //   1. copia os CSS gerados para dentro de ui/projects/ui/src/tokens/
 //   2. garante que o styles.css da ZardUI importe a ponte
@@ -73,8 +73,8 @@ if (existsSync(publicApi)) {
 
   // O LADO DE DENTRO DA MESMA FRONTEIRA: todo wrapper sai na API pública.
   // Até 06/11/2026 kbd, link, prazo e radio-group estavam prontos, com demo
-  // ensinando `import { UcamPrazo } from '@leonardofbenevides/ui'`, e nenhum dos quatro
-  // estava no public-api.ts: o @leonardofbenevides/ui 0.1.5 publicado não os tem, e quem
+  // ensinando `import { UcamPrazo } from '@ucamds/ui'`, e nenhum dos quatro
+  // estava no public-api.ts: o @ucamds/ui 0.1.5 publicado não os tem, e quem
   // copiava a demo recebia erro de compilação. O portão do build-pacotes
   // compara contagens e não via pasta esquecida.
   const dirUcam = join(LIB, 'lib', 'ucam');

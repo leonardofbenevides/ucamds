@@ -9570,7 +9570,6 @@ ${acima('duas-colunas')} {
    * alvo ficava 20 de largura por 24 de altura, e 24 é piso dos dois lados. */
   min-block-size: var(--ucam-size-icon-lg);
   min-inline-size: var(--ucam-size-icon-lg);
-  justify-content: center;
   /* FORA DA LINHA DE BASE. Assentando nela, a etiqueta deixava a célula
    * reservar o espaço do descendente de um texto que ela não tem, e a linha
    * da tabela ficava três pixels mais alta do que a peça pede. Ver a nota do
@@ -9592,7 +9591,9 @@ ${acima('duas-colunas')} {
  * Medido na tela de naturezas: sonda a 11,5px acima do centro da caixa caía
  * no <td>, e a mesma sonda abaixo caía na etiqueta. Doze linhas com meio alvo
  * de cada lado. */
-.ucam-check:not(:has(.ucam-check__label)) { align-items: center; }
+/* Só a caixa sem rótulo centra na largura. Com rótulo, numa lista vertical o
+ * item estica, e centrar deixava cada caixa numa posição (23/11/2026). */
+.ucam-check:not(:has(.ucam-check__label)) { align-items: center; justify-content: center; }
 
 /* O TIQUE SAI DO FLUXO, e o motivo é uma linha que pulava.
  *

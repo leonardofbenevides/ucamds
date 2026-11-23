@@ -1,4 +1,4 @@
-// Gera @leonardofbenevides/tokens a partir de spec/tokens/.
+// Gera @ucamds/tokens a partir de spec/tokens/.
 // Saídas: CSS custom properties, SCSS, JSON resolvido e bloco @theme do Tailwind v4.
 //
 // Falha o build se qualquer par texto/superfície reprovar em contraste — nos
@@ -186,7 +186,7 @@ checar('escuro', darkResolved);
 /* ------------------------------------------------------------- saídas --- */
 
 const P = 'ucam';
-const banner = (fmt) => `/* @leonardofbenevides/tokens — gerado de spec/tokens/ por tools/build-tokens.mjs
+const banner = (fmt) => `/* @ucamds/tokens — gerado de spec/tokens/ por tools/build-tokens.mjs
  * NÃO EDITAR À MÃO. Edite a spec e rode: pnpm tokens
  * Formato: ${fmt}
  */\n`;
@@ -397,7 +397,7 @@ ${['sm', 'md', 'lg', 'xl'].map((d) => `  --radius-${d}: var(--${P}-radius-${d});
    * Tailwind v4 gera não crava a curva: ela emite
    * transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)).
    * É consulta em tempo de execução, então redefinir a variável basta.
-   * @leonardofbenevides/ui não importa o bloco @theme — a ponte é o único arquivo gerado
+   * @ucamds/ui não importa o bloco @theme — a ponte é o único arquivo gerado
    * que a lib carrega, e por isso é aqui que isto tem de estar. */
   --default-transition-timing-function: var(--${P}-motion-easing-standard);
   --default-transition-duration: var(--${P}-motion-duration-state);
@@ -440,7 +440,7 @@ for (const destino of [OUT, OUT_SITE]) {
 }
 
 const kb = (s) => (s.length / 1024).toFixed(1) + ' KB';
-console.log('@leonardofbenevides/tokens → dist/tokens/ e site/src/assets/tokens/ (servido em /tokens)');
+console.log('@ucamds/tokens → dist/tokens/ e site/src/assets/tokens/ (servido em /tokens)');
 console.log(`  ucam-tokens.css    ${kb(css)}   ${primFlat.length} primitivos + ${semFlat.length} semânticos + ${darkFlat.length} no escuro`);
 console.log(`  _ucam-tokens.scss  ${kb(scss)}`);
 console.log(`  ucam-tokens.json   ${kb(JSON.stringify(json, null, 2))}`);

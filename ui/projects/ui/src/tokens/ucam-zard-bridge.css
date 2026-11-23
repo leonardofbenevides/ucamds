@@ -1,4 +1,4 @@
-/* @leonardofbenevides/tokens — gerado de spec/tokens/ por tools/build-tokens.mjs
+/* @ucamds/tokens — gerado de spec/tokens/ por tools/build-tokens.mjs
  * NÃO EDITAR À MÃO. Edite a spec e rode: pnpm tokens
  * Formato: ponte ZardUI → tokens UCAM
  */
@@ -95,7 +95,7 @@
    * Tailwind v4 gera não crava a curva: ela emite
    * transition-timing-function: var(--tw-ease, var(--default-transition-timing-function)).
    * É consulta em tempo de execução, então redefinir a variável basta.
-   * @leonardofbenevides/ui não importa o bloco @theme — a ponte é o único arquivo gerado
+   * @ucamds/ui não importa o bloco @theme — a ponte é o único arquivo gerado
    * que a lib carrega, e por isso é aqui que isto tem de estar. */
   --default-transition-timing-function: var(--ucam-motion-easing-standard);
   --default-transition-duration: var(--ucam-motion-duration-state);

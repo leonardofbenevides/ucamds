@@ -1,4 +1,4 @@
-// O kit para agentes (@leonardofbenevides/ds-mcp) sob teste: protocolo do servidor em stdio,
+// O kit para agentes (@ucamds/ds-mcp) sob teste: protocolo do servidor em stdio,
 // as regras que o auditor cobra, o histórico de versões e o `ucam-ds instalar`
 // atualizando o que ele mesmo gravou.
 //
@@ -147,7 +147,7 @@ test('as três versões andam juntas e versoes.json fecha com elas', () => {
   const siteUi = lerJson('sites/ui/projects/site-ui/package.json');
   assert.equal(ui.version, VERSAO);
   assert.equal(siteUi.version, VERSAO);
-  assert.equal(siteUi.peerDependencies?.['@leonardofbenevides/site-css'], VERSAO);
+  assert.equal(siteUi.peerDependencies?.['@ucamds/site-css'], VERSAO);
   const versoes = lerJson('spec/versoes.json').versoes;
   assert.equal(versoes.at(-1).versao, VERSAO, 'suba a versão com pnpm run versao, que grava as duas coisas');
   for (let i = 1; i < versoes.length; i++) {
@@ -271,9 +271,9 @@ test('instalar atualiza o que o kit gravou e mantém o que o projeto editou', (t
 
 /* ---------------------------------------------------------------- sites --- */
 
-// Até 06/11/2026 o kit não sabia dos Sites: as peças do @leonardofbenevides/site-ui não
+// Até 06/11/2026 o kit não sabia dos Sites: as peças do @ucamds/site-ui não
 // existiam para o agente, e o auditor REPROVAVA marcação certa de site
-// (.ucam-site-btn "não é desenhada pelo @leonardofbenevides/css") enquanto deixava passar a
+// (.ucam-site-btn "não é desenhada pelo @ucamds/css") enquanto deixava passar a
 // primitiva --ucam-site-wine-600.
 
 test('sites: catálogo, contrato com demo e tokens por familia', async (t) => {

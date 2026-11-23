@@ -2,7 +2,7 @@
 //
 // O campo `codigo` de spec/templates.json nasceu como esboço: um trecho em
 // Angular dez vezes menor que a tela, que ninguém compilava. Em 03/10/2026 a
-// primeira tela de referência foi montada de verdade com @leonardofbenevides/ui, em
+// primeira tela de referência foi montada de verdade com @ucamds/ui, em
 // site/src/app/pages/vivo/<projeto>/<tela>.page.ts, e comparada pixel a
 // pixel com a página autônoma do Trilho A (tools/prova-paridade-tela.mjs).
 //

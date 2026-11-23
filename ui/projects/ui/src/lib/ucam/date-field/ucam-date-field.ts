@@ -3,6 +3,7 @@ import {
   booleanAttribute,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   ElementRef,
   forwardRef,
@@ -529,13 +530,62 @@ export class UcamDateField implements ControlValueAccessor {
     if (!cal || !campo) return;
     const c = campo.getBoundingClientRect();
     const altura = cal.getBoundingClientRect().height;
+    const topo = this.topoLivre(campo, c);
     const embaixo = window.innerHeight - c.bottom - 8;
-    const emCima = c.top - 8;
-    this.acima.set(altura > embaixo && emCima > embaixo);
+    const emCima = c.top - topo - 8;
+    if (altura <= embaixo) return;
+    if (altura <= emCima) {
+      this.acima.set(true);
+      return;
+    }
+    // Não cabe em nenhum lado (23/11/2026). Os contêineres da tela recortam e
+    // não rolam até ele, então vai para a camada superior, preso entre o fim
+    // do cabeçalho fixo e o pé da janela. Rolar a tela fecha.
+    if (!cal.showPopover) return;
+    const livre = window.innerHeight - topo - 16;
+    const w = cal.getBoundingClientRect().width;
+    cal.setAttribute('popover', 'manual');
+    cal.showPopover();
+    Object.assign(cal.style, {
+      position: 'fixed',
+      margin: '0',
+      inset: 'auto',
+      overflow: 'auto',
+      maxBlockSize: `${livre}px`,
+      inlineSize: `${w}px`,
+      left: `${Math.max(8, Math.min(c.left, window.innerWidth - w - 8))}px`,
+      top: `${Math.max(topo + 8, Math.min(c.bottom + 4, window.innerHeight - Math.min(altura, livre) - 8))}px`,
+    });
+    const aoRolar = (e: Event) => {
+      if (!cal.contains(e.target as Node)) this.fecharCalendario(false);
+    };
+    window.addEventListener('scroll', aoRolar, true);
+    this.soltarRolagem = () => window.removeEventListener('scroll', aoRolar, true);
+    this.injector.get(DestroyRef).onDestroy(() => this.soltarRolagem?.());
+  }
+
+  private soltarRolagem: (() => void) | null = null;
+
+  /** Onde acaba o que está grudado no topo acima do campo (faixa, barra do título). */
+  private topoLivre(campo: HTMLElement, c: DOMRect): number {
+    let topo = 0;
+    const x = c.left + 8;
+    for (let y = 0; y < c.top; y += 12) {
+      for (const el of document.elementsFromPoint?.(x, y) ?? []) {
+        for (let n: Element | null = el; n && n !== document.body; n = n.parentElement) {
+          if (n.contains(campo)) continue;
+          const p = getComputedStyle(n).position;
+          if (p === 'sticky' || p === 'fixed') topo = Math.max(topo, Math.min(n.getBoundingClientRect().bottom, c.top));
+        }
+      }
+    }
+    return topo;
   }
 
   protected fecharCalendario(devolverFoco: boolean): void {
     if (!this.aberto()) return;
+    this.soltarRolagem?.();
+    this.soltarRolagem = null;
     this.aberto.set(false);
     if (devolverFoco) this.campo()?.nativeElement.focus();
   }

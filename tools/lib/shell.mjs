@@ -4374,10 +4374,10 @@ ${FN_ANUNCIA}
       var cabL = tabelaL.tHead ? tabelaL.tHead.rows[0].cells : [];
       var campos = [
         null,
-        '<input class="ucam-input" type="text" aria-label="Documento do lançamento" placeholder="REC 0000">',
+        '<input class="ucam-input" type="text" data-mascara="molde" data-molde="REC 0000" aria-label="Documento do lançamento" placeholder="REC 0000">',
         '<input class="ucam-input" type="text" aria-label="Histórico do lançamento" placeholder="Pagador ou motivo">',
         '<select class="ucam-select" aria-label="Forma de pagamento"><option>Dinheiro</option><option>PIX</option><option>Cartão</option><option>Transferência</option></select>',
-        '<span class="ucam-cluster"><input class="ucam-input" type="text" inputmode="decimal" aria-label="Valor do lançamento, em reais" placeholder="0,00" style="inline-size:7rem"><button class="ucam-btn ucam-btn--primary ucam-btn--sm" type="button" data-fluxo="c" data-acao="lancar-lancamento">Lançar</button><button class="ucam-btn ucam-btn--ghost ucam-btn--sm" type="button" data-fluxo="c" data-acao="cancelar-lancamento">Cancelar</button></span>',
+        '<span class="ucam-cluster"><input class="ucam-input" type="text" inputmode="decimal" data-mascara="moeda" aria-label="Valor do lançamento, em reais" placeholder="0,00" style="inline-size:7rem"><button class="ucam-btn ucam-btn--primary ucam-btn--sm" type="button" data-fluxo="c" data-acao="lancar-lancamento">Lançar</button><button class="ucam-btn ucam-btn--ghost ucam-btn--sm" type="button" data-fluxo="c" data-acao="cancelar-lancamento">Cancelar</button></span>',
       ];
       var colunas = modelo ? modelo.cells.length : 5;
       for (var i = 0; i < colunas; i++) {
@@ -5009,6 +5009,23 @@ ${FN_ANUNCIA}
       var usoOlho = olho.querySelector('use');
       if (usoOlho) usoOlho.setAttribute('href', mostrar ? '#i-eyeOff' : '#i-eye');
       if (campoSenha) campoSenha.type = mostrar ? 'text' : 'password';
+      return;
+    }
+
+    // VER O NÚMERO MASCARADO (23/11/2026). O olho ao lado do dado troca entre
+    // a forma curta e a inteira, só naquela linha. O texto do nome diz o
+    // próximo verbo, como no Mostrar senha.
+    var revela = t.closest('button[data-revelar][aria-pressed]');
+    if (revela) {
+      var dadoR = revela.parentNode.querySelector('[data-revelar-valor]');
+      var verR = revela.getAttribute('aria-pressed') !== 'true';
+      if (!dadoR) return;
+      if (verR) dadoR.setAttribute('data-revelar-oculto', dadoR.textContent);
+      dadoR.textContent = verR ? dadoR.getAttribute('data-revelar-valor') : dadoR.getAttribute('data-revelar-oculto');
+      revela.setAttribute('aria-pressed', String(verR));
+      revela.setAttribute('aria-label', revela.getAttribute('aria-label').replace(verR ? 'Mostrar' : 'Ocultar', verR ? 'Ocultar' : 'Mostrar'));
+      var usoR = revela.querySelector('use');
+      if (usoR) usoR.setAttribute('href', verR ? '#i-eyeOff' : '#i-eye');
       return;
     }
 
@@ -7848,6 +7865,9 @@ export const sliderScript = `
  *   cnpj      00.000.000/0000-00
  *   telefone  (00) 0000-0000 ou (00) 00000-0000, pelo número de dígitos
  *   cep       00000-000
+ *   digitos   só algarismos, até o maxlength (ano, carga, código numérico)
+ *   nota      0,0 a 10,0, com uma casa (75 vira 7,5)
+ *   molde     o formato de data-molde: 0 é dígito, o resto é literal
  *
  * O teclado é o numérico (inputmode), e o maxlength é o da máscara. Ao sair,
  * valor INCOMPLETO ou CPF/CNPJ que não fecha o dígito vira erro do campo
@@ -7868,9 +7888,49 @@ export const mascaraScript = `
     cpf: { modo: 'numeric', max: 11, molde: '000.000.000-00', frase: 'CPF inválido. Confira os 11 dígitos.' },
     cnpj: { modo: 'numeric', max: 14, molde: '00.000.000/0000-00', frase: 'CNPJ inválido. Confira os 14 dígitos.' },
     telefone: { modo: 'tel', max: 11, frase: 'Telefone incompleto. Use DDD e número.' },
-    cep: { modo: 'numeric', max: 8, molde: '00000-000', frase: 'CEP incompleto. São 8 dígitos.' }
+    cep: { modo: 'numeric', max: 8, molde: '00000-000', frase: 'CEP incompleto. São 8 dígitos.' },
+    digitos: { modo: 'numeric', max: 20 },
+    nota: { modo: 'decimal', max: 3, frase: 'Nota vai de 0,0 a 10,0.' },
+    molde: { modo: 'numeric', max: 0 }
   };
+  /* digitos respeita o maxlength do campo; molde vem de data-molde, onde 0 é
+   * dígito e o resto é literal ("REC 0000", "000.0000.0000"). */
+  function regraDe(t, c) {
+    var r = REGRAS[t];
+    if (t === 'digitos') return { modo: r.modo, max: c.maxLength > 0 ? c.maxLength : r.max };
+    if (t !== 'molde') return r;
+    var m = c.getAttribute('data-molde') || '';
+    return { modo: r.modo, max: m.replace(/[^0]/g, '').length, molde: m, frase: 'Incompleto. Use o formato ' + m + '.' };
+  }
   function digitos(v, max) { return String(v).replace(/\\D/g, '').slice(0, max); }
+  /* Nota de 0 a 10 com uma casa. Sem vírgula, 75 vira 7,5 e 100 vira 10,0;
+   * 10 fica 10 enquanto se digita, porque pode ser o começo de 10,0. */
+  function nota(v) {
+    var s = String(v).replace(/\\./g, ',').replace(/[^\\d,]/g, ''), i = s.indexOf(',');
+    if (i >= 0) return (s.slice(0, i).slice(0, 2) || '0') + ',' + s.slice(i + 1).replace(/,/g, '').slice(0, 1);
+    s = s.slice(0, 3);
+    if (s.length < 2 || s === '10') return s;
+    return s.length === 2 ? s[0] + ',' + s[1] : s.slice(0, 2) + ',' + s[2];
+  }
+  function notaFechada(v) {
+    if (!v) return '';
+    var s = nota(v);
+    return s.indexOf(',') < 0 ? s + ',0' : /,$/.test(s) ? s + '0' : s;
+  }
+  /* O cursor fica depois do mesmo dígito: corrigir o meio de um CPF não pode
+   * jogar quem digita para o fim do campo. */
+  function poeCursor(c, m) {
+    var fim = c.selectionStart === c.value.length;
+    var n = String(c.value.slice(0, c.selectionStart)).replace(/\\D/g, '').length;
+    c.value = m;
+    var p = 0;
+    if (fim) p = m.length;
+    else {
+      while (p < m.length && n > 0) { if (/\\d/.test(m[p])) n--; p++; }
+      if (p === 0) while (p < m.length && !/\\d/.test(m[p])) p++;
+    }
+    c.setSelectionRange(p, p);
+  }
   function molda(d, molde) {
     var s = '', i = 0;
     for (var k = 0; k < molde.length && i < d.length; k++) s += molde[k] === '0' ? d[i++] : molde[k];
@@ -7887,10 +7947,12 @@ export const mascaraScript = `
   function telefone(d) {
     return molda(d, d.length > 10 ? '(00) 00000-0000' : '(00) 0000-0000');
   }
-  function formata(tipo, v) {
-    var r = REGRAS[tipo], d = digitos(v, r.max);
+  function formata(tipo, v, c) {
+    if (tipo === 'nota') return nota(v);
+    var r = regraDe(tipo, c), d = digitos(v, r.max);
     if (tipo === 'moeda') return moeda(d);
     if (tipo === 'telefone') return telefone(d);
+    if (tipo === 'digitos') return d;
     return molda(d, r.molde);
   }
   function dv(d, pesos) {
@@ -7899,8 +7961,10 @@ export const mascaraScript = `
     var r = s % 11;
     return r < 2 ? 0 : 11 - r;
   }
-  function valido(tipo, v) {
+  function valido(tipo, v, c) {
     var d = digitos(v, 99);
+    if (tipo === 'nota') return Number(notaFechada(v).replace(',', '.')) <= 10;
+    if (tipo === 'molde') return d.length === regraDe(tipo, c).max;
     if (tipo === 'cpf') {
       if (d.length !== 11 || /^(\\d)\\1+$/.test(d)) return false;
       return dv(d, [10, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(d[9]) && dv(d, [11, 10, 9, 8, 7, 6, 5, 4, 3, 2]) === Number(d[10]);
@@ -7921,6 +7985,7 @@ export const mascaraScript = `
       var outro = resto.some(function (x) { var el = document.getElementById(x); return el && el.classList.contains('ucam-field__error'); });
       if (!outro) {
         campo.removeAttribute('aria-invalid');
+        if (campo.hasAttribute('data-mascara-dica')) { campo.removeAttribute('title'); campo.removeAttribute('data-mascara-dica'); }
         var g = campo.closest('.ucam-input-group');
         if (g) g.removeAttribute('data-invalid');
       }
@@ -7928,7 +7993,14 @@ export const mascaraScript = `
       return;
     }
     var field = campo.closest('.ucam-field');
-    if (!field || !campo.id) return;
+    /* Campo em célula de tabela não tem .ucam-field onde pendurar a frase:
+     * marca inválido e a frase vai no title e no nome acessível da descrição. */
+    if (!field || !campo.id) {
+      campo.setAttribute('aria-invalid', 'true');
+      campo.setAttribute('title', frase);
+      campo.setAttribute('data-mascara-dica', '');
+      return;
+    }
     if (!e) {
       e = document.createElement('span');
       e.className = 'ucam-field__error';
@@ -7950,10 +8022,10 @@ export const mascaraScript = `
   function monta(c) {
     var t = tipoDe(c);
     if (!t) return;
-    var r = REGRAS[t];
+    var r = regraDe(t, c);
     if (!c.hasAttribute('inputmode')) c.setAttribute('inputmode', r.modo);
     if (!c.hasAttribute('autocomplete')) c.setAttribute('autocomplete', 'off');
-    var m = c.value ? formata(t, c.value) : '';
+    var m = c.value ? formata(t, c.value, c) : '';
     if (m !== c.value) c.value = m;
   }
   function montaTodos(raiz) {
@@ -7964,15 +8036,16 @@ export const mascaraScript = `
   document.addEventListener('input', function (e) {
     var c = e.target, t = tipoDe(c);
     if (!t || e.isTrusted === false) return;
-    var m = formata(t, c.value);
-    if (m !== c.value) { c.value = m; c.setSelectionRange(m.length, m.length); }
-    if (c.getAttribute('aria-invalid') === 'true' && valido(t, m)) erro(c, '');
+    var m = formata(t, c.value, c);
+    if (m !== c.value) poeCursor(c, m);
+    if (c.getAttribute('aria-invalid') === 'true' && valido(t, m, c)) erro(c, '');
   });
   document.addEventListener('focusout', function (e) {
     var c = e.target, t = tipoDe(c);
-    if (!t || t === 'moeda') return;
+    if (!t || t === 'moeda' || t === 'digitos') return;
     if (!c.value) return erro(c, '');
-    erro(c, valido(t, c.value) ? '' : REGRAS[t].frase);
+    if (t === 'nota') c.value = notaFechada(c.value);
+    erro(c, valido(t, c.value, c) ? '' : regraDe(t, c).frase);
   });
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-limpar]');
@@ -8097,8 +8170,37 @@ ${FN_CALENDARIO}
   function posicionar() {
     cal.classList.remove('ucam-calendario--acima');
     var c = dono.getBoundingClientRect(), a = cal.getBoundingClientRect().height;
-    var embaixo = innerHeight - c.bottom - 8, emCima = c.top - 8;
-    if (a > embaixo && emCima > embaixo) cal.classList.add('ucam-calendario--acima');
+    var topo = topoLivre(dono, c);
+    var embaixo = innerHeight - c.bottom - 8, emCima = c.top - topo - 8;
+    if (a <= embaixo) return;
+    if (a <= emCima) { cal.classList.add('ucam-calendario--acima'); return; }
+    /* Não cabe em nenhum lado (23/11/2026). Os contêineres da tela recortam e
+     * não rolam até ele, então vai para a camada superior, preso entre o fim
+     * do cabeçalho fixo e o pé da janela. Rolar a tela fecha. */
+    if (!cal.showPopover) return;
+    var livre = innerHeight - topo - 16, w = cal.getBoundingClientRect().width;
+    cal.setAttribute('popover', 'manual');
+    cal.showPopover();
+    cal.style.cssText += ';position:fixed;margin:0;inset:auto;overflow:auto;max-block-size:' + livre + 'px;inline-size:' + w + 'px;'
+      + 'left:' + Math.max(8, Math.min(c.left, innerWidth - w - 8)) + 'px;'
+      + 'top:' + Math.max(topo + 8, Math.min(c.bottom + 4, innerHeight - Math.min(a, livre) - 8)) + 'px';
+  }
+  addEventListener('scroll', function (e) {
+    if (cal && cal.hasAttribute('popover') && !cal.contains(e.target)) fecharCal(false);
+  }, true);
+  /* Onde acaba o que está grudado no topo acima do campo (faixa, barra do título). */
+  function topoLivre(campo, c) {
+    var topo = 0, x = c.left + 8;
+    for (var y = 0; y < c.top; y += 12) {
+      document.elementsFromPoint(x, y).forEach(function (el) {
+        for (var n = el; n && n !== document.body; n = n.parentElement) {
+          if (n.contains(campo)) continue;
+          var p = getComputedStyle(n).position;
+          if (p === 'sticky' || p === 'fixed') topo = Math.max(topo, Math.min(n.getBoundingClientRect().bottom, c.top));
+        }
+      });
+    }
+    return topo;
   }
   function abrirCal(campo) {
     if (cal && dono === campo) return;

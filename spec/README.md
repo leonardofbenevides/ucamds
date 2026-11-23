@@ -13,7 +13,7 @@ para humano ler e traduzir na mão: cada arquivo é entrada de um gerador.
                                  │
         ┌──────────────┬─────────┼──────────┬────────────────┐
         ▼              ▼         ▼          ▼                ▼
-  @leonardofbenevides/tokens    @leonardofbenevides/css  @leonardofbenevides/ui   site de docs    servidor MCP
+  @ucamds/tokens    @ucamds/css  @ucamds/ui   site de docs    servidor MCP
   CSS vars        legado     Angular    catálogo        agentes de IA
   SCSS / JSON     AngularJS  22         navegável       (Claude, Copilot)
 ```

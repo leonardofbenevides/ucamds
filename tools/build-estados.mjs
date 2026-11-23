@@ -1,7 +1,7 @@
 /*
  * Espelho de ESTADO para a documentação.
  *
- * O @leonardofbenevides/css expressa estado por pseudo-classe pura — `.ucam-btn--primary:hover`,
+ * O @ucamds/css expressa estado por pseudo-classe pura — `.ucam-btn--primary:hover`,
  * `:focus-visible`, `:disabled` — e é o certo: é assim que o navegador entrega
  * o estado a quem usa o componente de verdade. O preço é que a DOCUMENTAÇÃO
  * não consegue mostrar os estados lado a lado: `:hover` só existe onde o
@@ -242,7 +242,7 @@ const todas = regras(semComentarios(readFileSync(ENTRADA, 'utf8')));
 const linhas = [
   '/* GERADO por tools/build-estados.mjs — NÃO EDITAR À MÃO.',
   ' *',
-  ' * Espelho das regras de estado do @leonardofbenevides/css em seletores por atributo, para',
+  ' * Espelho das regras de estado do @ucamds/css em seletores por atributo, para',
   ' * a documentação mostrar hover, active, focus e disabled lado a lado. O',
   ' * original continua sendo o que vale; isto existe só para o palco da matriz',
   ' * de estados em /catalogo/<id>. Ver a nota no gerador.',

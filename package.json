@@ -1,6 +1,6 @@
 {
   "name": "ucamds",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.4.0",
@@ -23,7 +23,7 @@
     "dev": "pnpm --dir site dev",
     "telas": "node tools/build-templates.mjs && node tools/cena-login.mjs --capa",
     "fonts": "node tools/build-fonts.mjs",
-    "elements": "pnpm --filter @leonardofbenevides/elements build",
+    "elements": "pnpm --filter @ucamds/elements build",
     "prova": "node elements/prova.mjs",
     "sondas": "node tools/sondas.mjs",
     "paridade": "node tools/check-paridade.mjs",

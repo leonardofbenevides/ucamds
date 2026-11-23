@@ -1,4 +1,4 @@
-// Núcleo do @leonardofbenevides/ds-mcp: lê a spec empacotada e responde às ferramentas.
+// Núcleo do @ucamds/ds-mcp: lê a spec empacotada e responde às ferramentas.
 //
 // Sem dependência nenhuma, de propósito. O pacote vai para máquinas de
 // desenvolvedor do parque inteiro, inclusive as que não alcançam o registro
@@ -199,7 +199,7 @@ export const FERRAMENTAS = [
       properties: {
         categoria: { type: 'string', description: 'Filtra pela categoria (ex.: dados, acao, formulario).' },
         busca: { type: 'string', description: 'Texto livre procurado no nome e na descrição.' },
-        familia: { type: 'string', enum: ['sistema', 'site', 'todas'], description: 'sistema (padrão): as aplicações, <ucam-*> e .ucam-*. site: os sites públicos (candidomendes.edu.br, CENPRE, Campos), .ucam-site-* e @leonardofbenevides/site-ui. todas: as duas.' },
+        familia: { type: 'string', enum: ['sistema', 'site', 'todas'], description: 'sistema (padrão): as aplicações, <ucam-*> e .ucam-*. site: os sites públicos (candidomendes.edu.br, CENPRE, Campos), .ucam-site-* e @ucamds/site-ui. todas: as duas.' },
       },
     },
   },
@@ -212,7 +212,7 @@ export const FERRAMENTAS = [
       required: ['id'],
       properties: {
         id: { type: 'string', description: 'Id (button), seletor (ucam-button, ucam-site-hero), classe raiz (.ucam-site-btn) ou nome (Button).' },
-        familia: { type: 'string', enum: ['sistema', 'site', 'todas'], description: 'sistema (padrão): as aplicações, <ucam-*> e .ucam-*. site: os sites públicos (candidomendes.edu.br, CENPRE, Campos), .ucam-site-* e @leonardofbenevides/site-ui. todas: as duas.' },
+        familia: { type: 'string', enum: ['sistema', 'site', 'todas'], description: 'sistema (padrão): as aplicações, <ucam-*> e .ucam-*. site: os sites públicos (candidomendes.edu.br, CENPRE, Campos), .ucam-site-* e @ucamds/site-ui. todas: as duas.' },
         secoes: {
           type: 'array',
           items: { type: 'string' },
@@ -518,7 +518,7 @@ export function checar({ codigo = '' } = {}) {
     const c = porSeletor.get(seletor);
     if (!c && seletor.startsWith('ucam-site-')) {
       // Os sites não registram elemento: a peça é a classe, ou a diretiva do
-      // @leonardofbenevides/site-ui sobre o elemento nativo.
+      // @ucamds/site-ui sobre o elemento nativo.
       const s = acharComponente(seletor);
       add(
         'sites',
@@ -575,7 +575,7 @@ export function checar({ codigo = '' } = {}) {
         if (vistas.has(cl)) continue;
         vistas.add(cl);
         if (site && !sites) continue; // kit sem os Sites: não há como saber
-        add(site ? 'sites' : 'trilho-a', 'erro', `.${cl} não é desenhada pelo ${site ? '@leonardofbenevides/site-css' : '@leonardofbenevides/css'} — não pinta nada.`, cl);
+        add(site ? 'sites' : 'trilho-a', 'erro', `.${cl} não é desenhada pelo ${site ? '@ucamds/site-css' : '@ucamds/css'} — não pinta nada.`, cl);
       }
     }
     // Aplicação e site são duas folhas, e quem carrega uma não tem a outra.

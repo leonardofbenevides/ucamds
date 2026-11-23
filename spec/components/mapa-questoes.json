@@ -13,7 +13,7 @@
     "Um formulário de muitos itens equivalentes e numerados, em que pular e voltar é o uso normal."
   ],
   "evidencia": {
-    "origem": "vestibular-online (reescrita em Angular 21 sobre @leonardofbenevides/ui 0.1.2)",
+    "origem": "vestibular-online (reescrita em Angular 21 sobre @ucamds/ui 0.1.2)",
     "ocorrencias": [
       {
         "tela": "candidato/prova/mapa-questoes.ts",

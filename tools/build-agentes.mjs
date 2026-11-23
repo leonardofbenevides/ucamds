@@ -2,7 +2,7 @@
 //
 //   node tools/build-agentes.mjs
 //
-// Saída (vira o pacote @leonardofbenevides/ds-mcp em tools/build-pacotes.mjs):
+// Saída (vira o pacote @ucamds/ds-mcp em tools/build-pacotes.mjs):
 //
 //   AGENTS.md            instruções para agentes e pessoas — GERADO da spec
 //   llms.txt             índice curto, no formato llms.txt
@@ -33,7 +33,7 @@ for (const [f, comando] of [
   ['dist/tokens/ucam-tokens.json', 'pnpm run tokens'],
   ['dist/css/ucam.css', 'pnpm run css'],
   // Os Sites entram no kit desde 06/11/2026: até então as 33 peças do
-  // @leonardofbenevides/site-ui não existiam para o agente, e o ucam_check_usage REPROVAVA
+  // @ucamds/site-ui não existiam para o agente, e o ucam_check_usage REPROVAVA
   // marcação correta de site (.ucam-site-btn "não pinta nada").
   ['dist/sites/tokens/ucam-site-tokens.json', 'pnpm run sites'],
   ['dist/sites/css/ucam-site.css', 'pnpm run sites'],
@@ -60,7 +60,7 @@ const sites = readdirSync(join(ROOT, 'sites/spec/components'))
   .filter((f) => f.endsWith('.json'))
   .map((f) => ler(`sites/spec/components/${f}`))
   .sort((a, b) => a.id.localeCompare(b.id));
-/** O seletor de verdade da peça em @leonardofbenevides/site-ui, tirado do trilho_b (o mesmo que tools/build-sites-index.mjs faz). */
+/** O seletor de verdade da peça em @ucamds/site-ui, tirado do trilho_b (o mesmo que tools/build-sites-index.mjs faz). */
 const seletorSite = (c) => / — (.+?)\. Entradas: /.exec(c.implementacao?.trilho_b ?? '')?.[1] ?? null;
 
 const umaLinha = (s = '', n = 160) => {
@@ -119,7 +119,7 @@ npx ucam-ds instalar
 /* ------------------------------------------------------------- AGENTS.md --- */
 
 const REGRAS_DE_OURO = [
-  'Aplicação importa `<ucam-*>` (Trilho B, `@leonardofbenevides/ui`) ou usa as classes `.ucam-*` sob um ancestral `.ucam` (Trilho A, `@leonardofbenevides/css`). Nunca `<z-*>`: a ZardUI é matéria-prima do design system, não dependência (ADR-006).',
+  'Aplicação importa `<ucam-*>` (Trilho B, `@ucamds/ui`) ou usa as classes `.ucam-*` sob um ancestral `.ucam` (Trilho A, `@ucamds/css`). Nunca `<z-*>`: a ZardUI é matéria-prima do design system, não dependência (ADR-006).',
   'Cor, espaço, raio e tipografia só por token SEMÂNTICO (`var(--ucam-color-text-secondary)`). Nada de hex, nada de primitiva (`--ucam-wine-600`), nada de valor arbitrário (ADR-007).',
   'Componente, prop ou valor que o contrato não declara não existe. Consulte `ucam_get_component` antes de escrever o uso — não deduza a API pelo nome.',
   'Toda tela começa por uma tela de referência parecida (`ucam_list_templates`) e pelo padrão que ela implementa (`ucam_get_pattern`). Tela nova sem padrão é pedido de padrão, não improviso.',
@@ -259,8 +259,8 @@ ${porCategoria(componentes, (c) => `\`${c.selector}\``)}
 
 Os sites — candidomendes.edu.br, CENPRE, Campos — têm um sistema próprio sobre as mesmas fundações (ADR-067), com base no bordô do site da Candido Mendes (ADR-079). **Não misture os dois**: em site, as classes são \`.ucam-site-*\` sob um ancestral \`.ucam-site\` e os tokens são \`--ucam-site-*\` semânticos; os \`<ucam-*>\` e o \`.ucam-btn\` da aplicação não pintam numa página que só carrega a folha dos sites.
 
-- CSS puro (WordPress, HTML): \`@leonardofbenevides/site-css\` — \`${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-site-css-${VERSAO}.tgz\`, depois \`<link>\` para \`css/ucam-site-fonts.css\` e \`css/ucam-site.css\`.
-- Angular: \`@leonardofbenevides/site-ui\` — diretivas finas sobre a mesma folha (\`a[ucamSiteButton]\`, \`section[ucamSiteHero]\`…), sem estilo próprio; pede a folha na mesma versão.
+- CSS puro (WordPress, HTML): \`@ucamds/site-css\` — \`${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-site-css-${VERSAO}.tgz\`, depois \`<link>\` para \`css/ucam-site-fonts.css\` e \`css/ucam-site.css\`.
+- Angular: \`@ucamds/site-ui\` — diretivas finas sobre a mesma folha (\`a[ucamSiteButton]\`, \`section[ucamSiteHero]\`…), sem estilo próprio; pede a folha na mesma versão.
 - No MCP, passe \`familia: "site"\`: \`ucam_list_components\`, \`ucam_get_component\` (devolve o HTML da demo, pronto para copiar, e o uso em Angular) e \`ucam_get_tokens\`. Seletor \`ucam-site-<id>\` também resolve sozinho. \`ucam_check_usage\` reconhece as classes dos sites e reprova primitiva \`--ucam-site-wine-600\` como reprova a da aplicação.
 
 As peças, pela classe raiz (a diretiva Angular e a demo vêm em \`ucam_get_component\`):
@@ -309,7 +309,7 @@ const llms = `# UCAMDS — Design System da Universidade Candido Mendes
 - [spec/sites/demos.json](spec/sites/demos.json): o HTML e o Angular de cada peça dos sites, prontos para copiar
 - [spec/sites/tokens/semantic.json](spec/sites/tokens/semantic.json): tokens semânticos dos sites (--ucam-site-*)
 - [spec/sites/tokens/ucam-site-tokens.json](spec/sites/tokens/ucam-site-tokens.json): os mesmos, resolvidos
-- [spec/sites/classes.json](spec/sites/classes.json): as classes que o @leonardofbenevides/site-css desenha
+- [spec/sites/classes.json](spec/sites/classes.json): as classes que o @ucamds/site-css desenha
 `;
 
 /* --------------------------------------------------------------- skills --- */
@@ -318,7 +318,7 @@ const cabecalhoSkill = (nome, descricao) => `---\nname: ${nome}\ndescription: ${
 
 const fonteDeDados = `## Onde estão os dados
 
-Com o servidor MCP \`ucamds\` ligado, use as ferramentas \`ucam_*\`. Sem ele, os mesmos dados estão em \`node_modules/@leonardofbenevides/ds-mcp/spec/\` e a regra geral em \`AGENTS.ucam.md\` (ou \`node_modules/@leonardofbenevides/ds-mcp/AGENTS.md\`). Nunca responda de memória sobre props, tokens ou regras — a spec muda a cada versão.`;
+Com o servidor MCP \`ucamds\` ligado, use as ferramentas \`ucam_*\`. Sem ele, os mesmos dados estão em \`node_modules/@ucamds/ds-mcp/spec/\` e a regra geral em \`AGENTS.ucam.md\` (ou \`node_modules/@ucamds/ds-mcp/AGENTS.md\`). Nunca responda de memória sobre props, tokens ou regras — a spec muda a cada versão.`;
 
 const skillDs =
   cabecalhoSkill(
@@ -448,7 +448,7 @@ mkdirSync(join(spec, 'tokens'), { recursive: true });
 for (const f of ['semantic.json', 'theme.dark.json']) copyFileSync(join(ROOT, 'spec', 'tokens', f), join(spec, 'tokens', f));
 copyFileSync(join(ROOT, 'dist', 'tokens', 'ucam-tokens.json'), join(spec, 'tokens', 'ucam-tokens.json'));
 const classes = [...new Set([...readFileSync(join(ROOT, 'dist/css/ucam.css'), 'utf8').matchAll(/\.(ucam-[\w-]+)/g)].map((m) => m[1]))].sort();
-writeFileSync(join(spec, 'classes-trilho-a.json'), JSON.stringify({ $description: 'Classes que o @leonardofbenevides/css desenha. Gerado de dist/css/ucam.css.', classes }, null, 2) + '\n', 'utf8');
+writeFileSync(join(spec, 'classes-trilho-a.json'), JSON.stringify({ $description: 'Classes que o @ucamds/css desenha. Gerado de dist/css/ucam.css.', classes }, null, 2) + '\n', 'utf8');
 
 // Sites: contratos com o seletor Angular de verdade ao lado (o `selector` do
 // contrato é o identificador no catálogo, não um elemento que exista), as
@@ -463,7 +463,7 @@ writeFileSync(join(specSites, 'demos.json'), JSON.stringify({ demos: sitesDemos 
 copyFileSync(join(ROOT, 'sites', 'spec', 'tokens', 'semantic.json'), join(specSites, 'tokens', 'semantic.json'));
 copyFileSync(join(ROOT, 'dist', 'sites', 'tokens', 'ucam-site-tokens.json'), join(specSites, 'tokens', 'ucam-site-tokens.json'));
 const classesSites = [...new Set([...readFileSync(join(ROOT, 'dist/sites/css/ucam-site.css'), 'utf8').matchAll(/\.(ucam-site(?:-[\w-]+)?)/g)].map((m) => m[1]))].sort();
-writeFileSync(join(specSites, 'classes.json'), JSON.stringify({ $description: 'Classes que o @leonardofbenevides/site-css desenha. Gerado de dist/sites/css/ucam-site.css.', classes: classesSites }, null, 2) + '\n', 'utf8');
+writeFileSync(join(specSites, 'classes.json'), JSON.stringify({ $description: 'Classes que o @ucamds/site-css desenha. Gerado de dist/sites/css/ucam-site.css.', classes: classesSites }, null, 2) + '\n', 'utf8');
 
 // servidor e CLI
 mkdirSync(join(SAIDA, 'mcp'), { recursive: true });
@@ -476,24 +476,24 @@ copyFileSync(join(ROOT, 'tools/agentes/ucam-ds.mjs'), join(SAIDA, 'bin/ucam-ds.m
 mkdirSync(join(SAIDA, 'exemplos', '.vscode'), { recursive: true });
 writeFileSync(
   join(SAIDA, 'exemplos', '.mcp.json'),
-  JSON.stringify({ mcpServers: { ucamds: { command: 'node', args: ['node_modules/@leonardofbenevides/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
+  JSON.stringify({ mcpServers: { ucamds: { command: 'node', args: ['node_modules/@ucamds/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
   'utf8',
 );
 writeFileSync(
   join(SAIDA, 'exemplos', '.vscode', 'mcp.json'),
-  JSON.stringify({ servers: { ucamds: { type: 'stdio', command: 'node', args: ['${workspaceFolder}/node_modules/@leonardofbenevides/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
+  JSON.stringify({ servers: { ucamds: { type: 'stdio', command: 'node', args: ['${workspaceFolder}/node_modules/@ucamds/ds-mcp/mcp/server.mjs'] } } }, null, 2) + '\n',
   'utf8',
 );
 
 writeFileSync(
   join(SAIDA, 'README.md'),
-  `# @leonardofbenevides/ds-mcp
+  `# @ucamds/ds-mcp
 
 Kit do Design System da UCAM para agentes de IA e para quem os usa: servidor MCP, skills, \`AGENTS.md\` e os contratos em JSON. Versão ${VERSAO}.
 
 ## Instalar num app
 
-Não há registro privado, então o pacote se instala pela URL do tarball — \`pnpm add @leonardofbenevides/ds-mcp\` não resolve.
+Não há registro privado, então o pacote se instala pela URL do tarball — \`pnpm add @ucamds/ds-mcp\` não resolve.
 
 \`\`\`bash
 pnpm add -D ${recursos.publicacao.host}${recursos.publicacao.pacotes}/ucam-ds-mcp-${VERSAO}.tgz
@@ -581,7 +581,7 @@ Diz a versão instalada e, se houver mais nova publicada, a linha de instalaçã
 // fonte que a página de instalação lê.
 writeFileSync(
   join(SAIDA, 'package.json'),
-  JSON.stringify({ name: '@leonardofbenevides/ds-mcp', version: VERSAO, private: true, type: 'module', publicacao: { host: recursos.publicacao.host, pacotes: recursos.publicacao.pacotes } }, null, 2) + '\n',
+  JSON.stringify({ name: '@ucamds/ds-mcp', version: VERSAO, private: true, type: 'module', publicacao: { host: recursos.publicacao.host, pacotes: recursos.publicacao.pacotes } }, null, 2) + '\n',
   'utf8',
 );
 

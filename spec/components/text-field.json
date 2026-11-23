@@ -126,7 +126,7 @@
       "nome": "mask",
       "tipo": "'cpf' | 'cnpj' | 'phone' | 'cep' | 'date' | null",
       "default": "null",
-      "descricao": "Máscara de entrada. O valor emitido no modelo é SEMPRE sem máscara — máscara é apresentação, não dado."
+      "descricao": "Máscara de entrada. O valor emitido no modelo é SEMPRE sem máscara — máscara é apresentação, não dado. Na marcação é data-mascara (Trilho A) ou ucamMascara (Trilho B), com os tipos do InputGroup. Só em campo de formato fixo (ADR-094)."
     },
     {
       "nome": "required",

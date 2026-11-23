@@ -92,7 +92,7 @@ const antesHtml = `
 </div>`;
 
 /* ------------------------------------------------------------ DEPOIS --- */
-// Mesma tela, mesma informação. Marcação usando só classes de @leonardofbenevides/css.
+// Mesma tela, mesma informação. Marcação usando só classes de @ucamds/css.
 
 const depoisHtml = `
 <div class="ucam" id="depois">
@@ -220,7 +220,7 @@ footer{border-top:1px solid var(--rl);padding-top:1.25rem;font-size:.8rem;color:
 ${antesCss}
 /* --- tokens gerados --- */
 ${tokensCss}
-/* --- @leonardofbenevides/css gerado --- */
+/* --- @ucamds/css gerado --- */
 ${ucamCss}
 </style>
 
@@ -228,7 +228,7 @@ ${ucamCss}
   <header class="top">
     <div class="marca-linha">${simbolo()}<span class="eyebrow">Design System UCAM &middot; Trilho A</span></div>
     <h1>A mesma tela, sem migrar nada</h1>
-    <p class="standfirst">Tela <strong>Setor</strong> do Sistema de Protocolo. À direita, a mesma informação renderizada por <code>@leonardofbenevides/tokens</code> e <code>@leonardofbenevides/css</code> — as folhas geradas de <code>spec/</code>, embutidas nesta página sem alteração.</p>
+    <p class="standfirst">Tela <strong>Setor</strong> do Sistema de Protocolo. À direita, a mesma informação renderizada por <code>@ucamds/tokens</code> e <code>@ucamds/css</code> — as folhas geradas de <code>spec/</code>, embutidas nesta página sem alteração.</p>
   </header>
 
   <div class="note">
@@ -241,7 +241,7 @@ ${ucamCss}
       <div class="frame">${antesHtml}</div>
     </section>
     <section class="pane">
-      <div class="pane-label"><strong>Depois</strong><span class="tag tag-new">@leonardofbenevides/css</span></div>
+      <div class="pane-label"><strong>Depois</strong><span class="tag tag-new">@ucamds/css</span></div>
       <div class="frame">${depoisHtml}</div>
     </section>
   </div>
@@ -266,7 +266,7 @@ ${ucamCss}
 &lt;div class="ucam"&gt;
   &lt;!-- a tela existente, com as classes trocadas gradualmente --&gt;
 &lt;/div&gt;</pre></div>
-    <p style="margin-top:.9rem;color:var(--tx2);max-width:66ch">A adoção é incremental: o <code>@leonardofbenevides/css</code> não estiliza elemento nu nenhum. Uma tela pode ser convertida por vez, e uma tela pela metade continua funcionando.</p>
+    <p style="margin-top:.9rem;color:var(--tx2);max-width:66ch">A adoção é incremental: o <code>@ucamds/css</code> não estiliza elemento nu nenhum. Uma tela pode ser convertida por vez, e uma tela pela metade continua funcionando.</p>
   </section>
 
   <footer>

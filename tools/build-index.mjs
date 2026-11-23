@@ -85,7 +85,7 @@ const componentes = readdirSync(join(SPEC, 'components'))
    site dizia que os 49 estavam prontos. Quem decide o que uma aplicação
    alcança é o barril, então é o barril que se lê. */
 
-/** Ids exportados por @leonardofbenevides/ui. Vazio se a lib não estiver no workspace. */
+/** Ids exportados por @ucamds/ui. Vazio se a lib não estiver no workspace. */
 function idsDoTrilhoB() {
   const API = join(ROOT, 'ui', 'projects', 'ui', 'src', 'public-api.ts');
   if (!existsSync(API)) return null;
@@ -135,7 +135,7 @@ function trilhosDe(c) {
     {
       id: 'b',
       rotulo: 'Trilho B',
-      meio: '@leonardofbenevides/ui',
+      meio: '@ucamds/ui',
       disponivel: EXPORTADOS ? EXPORTADOS.has(c.id) : null,
       detalhe: EXPORTADOS?.has(c.id) ? c.selector : null,
     },
@@ -955,7 +955,7 @@ writeFileSync(
   'utf8',
 );
 
-// @leonardofbenevides/css entra no site pelo mesmo caminho e pelo mesmo motivo dos tokens: o
+// @ucamds/css entra no site pelo mesmo caminho e pelo mesmo motivo dos tokens: o
 // preview do catálogo é renderizado pelo CSS REAL do Trilho A, não por uma
 // imitação — mudou o token, muda o preview. Tudo ali é escopado sob .ucam,
 // então nada alcança a cromagem do site. O @import relativo aos tokens sai:

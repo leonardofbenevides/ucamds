@@ -201,6 +201,16 @@
       "desde": "20/10/2026, ADR-075. Até então valia a medida do dado e o teto de 30rem da ADR-055 (28/09/2026)."
     },
     {
+      "id": "mascara-quando-o-formato-e-fixo",
+      "regra": "Campo de formato fixo leva máscara: documento, telefone, CEP, valor, nota, ano, carga, código só de dígitos e número com molde. Campo que aceita mais de uma forma fica livre: busca por nome ou CPF, RG, número de endereço, código alfanumérico.",
+      "porque": "A máscara impede o erro enquanto se digita. No campo errado ela impede o dado certo: RG muda de forma por estado, e endereço pode ser 18A ou S/N (ADR-094)."
+    },
+    {
+      "id": "mascarado-com-olho",
+      "regra": "Dado mascarado numa lista, quando a pessoa tem direito de vê-lo, leva um botão de olho na própria linha, com data-revelar e aria-pressed. Ele mostra o valor inteiro só ali e volta a ocultar no segundo toque.",
+      "porque": "Mascarar protege quem olha a tela por cima do ombro, e não pode obrigar quem precisa do número a abrir o registro. Em produção o valor vem do servidor nesse clique, para não viajar na listagem."
+    },
+    {
       "id": "erro-diz-o-esperado",
       "regra": "Mensagem de erro de formato repete o formato esperado.",
       "porque": "'Campo inválido' devolve a pessoa ao mesmo ponto. 'Data inválida. Use dd/mm/aaaa.' resolve na primeira leitura."

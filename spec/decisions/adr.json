@@ -1762,6 +1762,38 @@
         "app-shell",
         "menu"
       ]
+    },
+    {
+      "id": "ADR-094",
+      "titulo": "Campo de formato fixo leva máscara, e campo de forma aberta fica livre",
+      "status": "aceita",
+      "data": "2026-11-23",
+      "contexto": "Em 23/11/2026, vendo o campo Documento do lançamento aceitar 32423423 sem forma nenhuma, o Leonardo pediu máscaras nos campos em geral, para quando se precisa e se pode. A máscara existia desde 06/11 nos dois trilhos, mas nenhum dos 232 campos das 118 telas a usava.",
+      "decisao": "A máscara ganha três tipos: digitos, nota e molde. Entra em todo campo de formato fixo das telas. Busca mista, RG, número de endereço, IP e código alfanumérico ficam livres, porque nesses a máscara recusaria um dado válido. O cursor passa a ficar depois do mesmo dígito ao corrigir o meio do campo.",
+      "consequencias": [
+        "Com o dígito verificador conferido ao sair, os CPFs e CNPJs de exemplo das telas foram recalculados para fechar.",
+        "Nota sem vírgula é lida pela escala de 0 a 10: 75 vira 7,5, 100 vira 10,0, e 9 vira 9,0 ao sair.",
+        "Campo em célula de tabela, sem .ucam-field, mostra o erro de máscara por aria-invalid e title."
+      ],
+      "afeta": [
+        "input-group",
+        "text-field"
+      ]
+    },
+    {
+      "id": "ADR-095",
+      "titulo": "Os pacotes do design system se chamam @ucamds",
+      "status": "aceita",
+      "data": "2026-11-23",
+      "contexto": "Desde 17/11/2026 os pacotes levavam o nome da conta pessoal que hospeda o repositório, porque o GitHub Packages exige que o escopo seja o dono do repositório. Em 23/11/2026, vendo esse nome na página de migração, o Leonardo pediu para retirá-lo de tudo e usar um nome próprio do design system. A organização ucam no GitHub é de terceiros.",
+      "decisao": "O escopo passa a ser @ucamds: @ucamds/css, @ucamds/tokens, @ucamds/ui, @ucamds/elements, @ucamds/site-css, @ucamds/site-ui e @ucamds/ds-mcp.",
+      "consequencias": [
+        "Quem instalou pelo nome antigo troca o nome no package.json e nos imports ao subir para a 0.12.0.",
+        "O GitHub Packages só volta a publicar depois que o repositório for transferido para a organização ucamds."
+      ],
+      "afeta": [
+        "app-shell"
+      ]
     }
   ]
 }

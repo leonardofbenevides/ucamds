@@ -102,9 +102,9 @@
     },
     {
       "nome": "mascara",
-      "tipo": "'moeda' | 'cpf' | 'cnpj' | 'telefone' | 'cep' | null",
+      "tipo": "'moeda' | 'cpf' | 'cnpj' | 'telefone' | 'cep' | 'digitos' | 'nota' | 'molde' | null",
       "default": "null",
-      "descricao": "Pontuação posta enquanto se digita: a pessoa digita só dígito. moeda 1.250,00 (os dígitos entram pelos centavos), cpf 000.000.000-00, cnpj 00.000.000/0000-00, telefone (00) 00000-0000, cep 00000-000. Fica no CAMPO, não no grupo: no Trilho A é data-mascara no <input>, no Trilho B a diretiva ucamMascara, que também valida e devolve { mascara: frase } quando o valor está incompleto ou o dígito do CPF/CNPJ não fecha. Moeda não tem erro de formato; se zero vale é regra da tela."
+      "descricao": "Pontuação posta enquanto se digita: a pessoa digita só dígito. moeda 1.250,00 (os dígitos entram pelos centavos), cpf 000.000.000-00, cnpj 00.000.000/0000-00, telefone (00) 00000-0000, cep 00000-000, digitos só algarismos até o maxlength (ano, carga, código numérico), nota de 0,0 a 10,0 com uma casa (75 vira 7,5), molde o formato de data-molde, onde 0 é dígito e o resto é literal (REC 0000, 000.0000.0000). Só em campo de formato fixo: busca mista, RG, número de endereço e código alfanumérico ficam livres (ADR-094). Fica no CAMPO, não no grupo: no Trilho A é data-mascara no <input>, no Trilho B a diretiva ucamMascara, que também valida e devolve { mascara: frase } quando o valor está incompleto ou o dígito do CPF/CNPJ não fecha. Moeda não tem erro de formato; se zero vale é regra da tela."
     }
   ],
   "estados": [

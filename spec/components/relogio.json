@@ -13,7 +13,7 @@
     "O fim do tempo dispara algo sozinho (entrega, saída), e isso tem de estar avisado antes."
   ],
   "evidencia": {
-    "origem": "vestibular-online (reescrita em Angular 21 sobre @leonardofbenevides/ui 0.1.2)",
+    "origem": "vestibular-online (reescrita em Angular 21 sobre @ucamds/ui 0.1.2)",
     "ocorrencias": [
       {
         "tela": "layout/relogio-faixa.ts e core/tempo/relogio-prova.ts",
