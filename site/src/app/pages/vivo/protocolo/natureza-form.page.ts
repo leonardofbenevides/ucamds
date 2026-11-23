@@ -94,11 +94,6 @@ const ANEXOS = ['Prova corrigida', 'Requerimento assinado', 'Atestado ou comprov
       [favorites]="favoritos()"
       (unpin)="desfixar($event)"
     >
-      <ng-container ucamShellAcoes>
-        <!-- Com os sistemas na faixa (ADR-092), o lançador só vale abaixo de
-             80rem, onde a fileira de sistemas não aparece — como no Trilho A. -->
-        <ucam-icon-button class="xl:hidden" icon="layoutGrid" variant="ghost" size="sm" label="Trocar de sistema" />
-      </ng-container>
       <ng-container ucamShellNavRodape>
         <span class="ucam-nav__item" role="link" aria-disabled="true" data-sem-tela><svg class="ic" aria-hidden="true"><use href="#i-settings" /></svg><span>Configurações</span></span>
         <span class="ucam-nav__item" role="link" aria-disabled="true" data-sem-tela><svg class="ic" aria-hidden="true"><use href="#i-info" /></svg><span>Central de ajuda</span></span>

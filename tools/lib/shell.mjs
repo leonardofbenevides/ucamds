@@ -926,7 +926,7 @@ export function renderShell(cfg = {}, conteudo = '') {
         `<button class="${classeBotao}" type="button" id="${esc(idSistemas)}" aria-haspopup="menu" aria-expanded="false" aria-controls="${esc(idSistemasMenu)}" data-menu aria-label="Trocar de sistema">` +
         ic('layoutGrid') +
         '</button>' +
-        `<div class="ucam-menu ucam-menu--lancador" id="${esc(idSistemasMenu)}" role="menu" aria-labelledby="${esc(idSistemas)}" hidden>` +
+        `<div class="ucam-menu ucam-menu--lancador ucam-menu--apps" id="${esc(idSistemasMenu)}" role="menu" aria-labelledby="${esc(idSistemas)}" hidden>` +
         '<p class="ucam-menu__titulo" aria-hidden="true">Sistemas</p>' +
         rail.itens
           .map((i) => itemMenu(i, ic(i.icone ?? 'layoutGrid')))
@@ -936,30 +936,6 @@ export function renderShell(cfg = {}, conteudo = '') {
 
   const menuSistemas = lancadorSistemas('ucam-appbar__sistemas', 'ucam-appbar__lancador');
 
-  /* OS SISTEMAS NA FAIXA (ADR-092, 20/11/2026: "aqui podia estar no header
-   * de todas as aplicações ao invés de uma sidebar"). A mesma lista do
-   * lançador, deitada na faixa logo depois do nome do sistema, a partir de
-   * 80rem: um ícone por sistema, nome no aria-label e no title, e o atual
-   * marcado. Abaixo de 80rem o lançador volta (o Diploma tem 13 sistemas, e
-   * 13 ícones não cabem na faixa de 1024px). Substitui o trilho lateral da
-   * ADR-089, que gastava uma coluna de 56px em toda tela. */
-  const trilho = false;
-  const linhaSistemas = temLancador && railComoMenu && !topo && !lateral
-    ? '<nav class="ucam-appbar__sistemas-linha" aria-label="Sistemas">' +
-      rail.itens
-        .map((i) =>
-          linkOuMarca(
-            i.href,
-            'ucam-appbar__sistema',
-            // Sem destino, o title é o do aviso de sem tela (linkOuMarca o põe).
-            ` aria-label="${esc(i.rotulo)}"` + (i.href ? ` title="${esc(i.rotulo)}"` : '') + (i.ativo ? ' aria-current="page"' : ''),
-            ic(i.icone ?? 'layoutGrid'),
-          ),
-        )
-        .join('') +
-      '</nav>'
-    : '';
-  const blocoTrilho = '';
 
   /* ======================================================= ARRANJO LATERAL ===
    *
@@ -1172,7 +1148,6 @@ export function renderShell(cfg = {}, conteudo = '') {
             ? `<span class="ucam-icon-tile ucam-appbar__marca${moduloCategoria ? ` ucam-icon-tile--${esc(moduloCategoria)}` : ''}" aria-hidden="true">${ic(moduloIcone)}</span>`
             : '') + `<span class="ucam-appbar__system">${esc(sistema)}</span>`,
       ) +
-      linhaSistemas +
       `<span class="ucam-appbar__spacer"></span>` +
       campoBusca +
       (campoBusca ? `<span class="ucam-appbar__spacer"></span>` : '') +
@@ -1340,7 +1315,7 @@ export function renderShell(cfg = {}, conteudo = '') {
   const estiloRail = railMarca ? ` style="--ucam-rail-marca:url('${esc(railMarca)}')"` : '';
 
   return (
-    `<div class="ucam-shell${temNav ? '' : ' ucam-shell--sem-nav'}${topo ? ' ucam-shell--topo' : railColuna ? ' ucam-shell--rail' : lateral ? ' ucam-shell--lateral' : ''}${trilho ? ' ucam-shell--trilho' : ''}" data-nav="closed"${estiloRail}${sistemaAttr}>` +
+    `<div class="ucam-shell${temNav ? '' : ' ucam-shell--sem-nav'}${topo ? ' ucam-shell--topo' : railColuna ? ' ucam-shell--rail' : lateral ? ' ucam-shell--lateral' : ''}" data-nav="closed"${estiloRail}${sistemaAttr}>` +
     `<a class="ucam-skip" href="#${esc(idConteudo)}">Pular para o conteúdo</a>` +
     // A REGIÃO VIVA DA TELA, vazia e sem tamanho. Toast está fora do
     // catálogo por decisão (alert.json): mensagem que some não pode carregar
@@ -1354,7 +1329,6 @@ export function renderShell(cfg = {}, conteudo = '') {
     blocoTopo +
     barraMovel +
     (topo ? '' : faixa) +
-    blocoTrilho +
     blocoNav +
     // tabindex="-1" é obrigatório: sem ele o foco não pousa no destino e o
     // skip-link move só a rolagem, deixando o teclado onde estava.
@@ -9158,8 +9132,13 @@ export const menuContaScript = `
     var lista = itens(menu);
     var i = lista.indexOf(document.activeElement);
     if (e.key === 'Escape') { e.preventDefault(); fechar(dono, true); }
-    else if (e.key === 'ArrowDown') { e.preventDefault(); lista[(i + 1) % lista.length].focus(); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); lista[(i - 1 + lista.length) % lista.length].focus(); }
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || (menu.classList.contains('ucam-menu--apps') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight'))) {
+      // No painel de apps (grade de 3) as setas andam na grade.
+      var grade = menu.classList.contains('ucam-menu--apps');
+      var passo = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : (e.key === 'ArrowDown' ? 1 : -1) * (grade ? 3 : 1);
+      e.preventDefault();
+      lista[(i + passo + lista.length * 3) % lista.length].focus();
+    }
     else if (e.key === 'Tab') fechar(dono, false);
   });
 })();

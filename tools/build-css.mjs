@@ -15943,51 +15943,50 @@ ${acima('nav-fixa')} {
  * No fim da folha de propósito: vence por ordem as regras de arranjo e a
  * ADR-062, que pintava o item aberto na cor do sistema. */
 
-/* OS SISTEMAS NA FAIXA (ADR-092, 20/11/2026). Substituem o trilho lateral
- * da ADR-089. A partir de 80rem, uma fileira de ícones logo depois do nome do
- * sistema, na tinta da faixa; o atual leva o chão claro da faixa (o mesmo
- * 16% do hover, mais forte). Abaixo de 80rem a fileira some e o lançador
- * volta. O nome de cada sistema vai no aria-label e no title. */
-.ucam-appbar__sistemas-linha { display: none; }
-${acima('sistemas-na-faixa')} {
-  .ucam-appbar__sistemas-linha {
-    display: flex;
-    align-items: center;
-    gap: 0.125rem;
-    flex: none;
-    margin-inline-start: var(--ucam-space-inline-md);
-    padding-inline-start: var(--ucam-space-inline-md);
-    border-inline-start: 1px solid color-mix(in srgb, currentColor 24%, transparent);
-  }
-  .ucam-appbar:has(.ucam-appbar__sistemas-linha) .ucam-appbar__sistemas { display: none; }
+/* O PAINEL DE APPS (ADR-093, 22/11/2026: "os outros apps estão no canto
+ * direito dentro de um icon que abre um dropdown com todos os apps, como o
+ * google faz"). O lançador da faixa abre uma grade de três colunas, ícone
+ * sobre o nome. O app aberto leva o fundo neutro do item atual. */
+.ucam-menu.ucam-menu--apps:not([hidden]) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ucam-space-inline-xs);
+  inline-size: 21rem;
+  max-inline-size: calc(100vw - 2rem);
+  max-block-size: min(30rem, calc(100dvh - 6rem));
+  overflow-y: auto;
+  padding: var(--ucam-space-inline-sm);
 }
-.ucam-appbar__sistema {
-  display: inline-flex;
+.ucam-menu--apps .ucam-menu__titulo { grid-column: 1 / -1; }
+.ucam-menu--apps .ucam-menu__item {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  inline-size: 2.25rem;
-  block-size: 2.25rem;
-  border-radius: var(--ucam-radius-control);
-  color: color-mix(in srgb, currentColor 78%, transparent);
-  text-decoration: none;
-  transition: background-color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard),
-              color var(--ucam-motion-duration-state) var(--ucam-motion-easing-standard);
+  justify-content: flex-start;
+  gap: var(--ucam-space-inline-sm);
+  inline-size: auto;
+  min-block-size: 5.25rem;
+  padding: var(--ucam-space-inset-sm) var(--ucam-space-inline-xs);
+  font-size: var(--ucam-typography-caption-font-size);
+  line-height: 1rem;
+  text-align: center;
+  white-space: normal;
 }
-.ucam-appbar--marca .ucam-appbar__sistema { color: color-mix(in srgb, var(--ucam-color-text-on-brand) 78%, transparent); }
-.ucam-appbar__sistema .ic { inline-size: 1.125rem; block-size: 1.125rem; }
-a.ucam-appbar__sistema:hover {
-  background: color-mix(in srgb, currentColor 14%, transparent);
+.ucam-menu--apps .ucam-menu__item .ic { flex: none; inline-size: 1.5rem; block-size: 1.5rem; }
+.ucam-menu--apps .ucam-menu__item[aria-current="page"] {
+  background: color-mix(in srgb, var(--ucam-color-text-primary) 8%, transparent);
+  color: var(--ucam-color-text-primary);
+  font-weight: var(--ucam-typography-action-font-weight);
 }
-.ucam-appbar--marca a.ucam-appbar__sistema:hover { color: var(--ucam-color-text-on-brand); background: color-mix(in srgb, var(--ucam-color-text-on-brand) 14%, transparent); }
-.ucam-appbar__sistema[aria-current="page"],
-.ucam-appbar--marca .ucam-appbar__sistema[aria-current="page"] {
-  color: var(--ucam-color-text-on-brand);
-  background: color-mix(in srgb, var(--ucam-color-text-on-brand) 22%, transparent);
-}
-.ucam-appbar__sistema[data-sem-tela] { cursor: default; opacity: 0.6; }
-.ucam-appbar__sistema:focus-visible {
-  outline: var(--ucam-focus-ring-width) solid currentColor;
-  outline-offset: 1px;
+${abaixo('faixa-minima')} {
+  .ucam-menu.ucam-menu--apps:not([hidden]) {
+    position: fixed;
+    inset-inline: 1rem;
+    inset-block-start: 3.5rem;
+    inline-size: auto;
+    max-inline-size: none;
+    translate: none;
+  }
 }
 
 /* O item aberto: fundo neutro, tinta e ícone do texto, peso de ação. */

@@ -2,12 +2,12 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { UcamAppShell, type UcamNavGroup, type UcamSystemLink } from './ucam-app-shell';
 
-/* Sistemas na faixa (ADR-092, 20/11/2026; eram o trilho da ADR-089). */
+/* Painel de apps (ADR-093, 22/11/2026): um ícone na faixa abre a grade. */
 @Component({
   imports: [UcamAppShell],
   template: `<ucam-app-shell systemName="Protocolo" [navGroups]="nav" [systems]="sistemas"><p>conteúdo</p></ucam-app-shell>`,
 })
-class ComTrilho {
+class ComSistemas {
   readonly nav: UcamNavGroup[] = [{ label: 'Cadastros', items: [{ label: 'Naturezas', icon: 'listFilter', href: '#n', current: true }] }];
   readonly sistemas: UcamSystemLink[] = [
     { label: 'Protocolo', icon: 'clipboardList', href: '#p', current: true },
@@ -19,7 +19,7 @@ class ComTrilho {
   imports: [UcamAppShell],
   template: `<ucam-app-shell systemName="Protocolo" [navGroups]="nav"><p>conteúdo</p></ucam-app-shell>`,
 })
-class SemTrilho {
+class SemSistemas {
   readonly nav: UcamNavGroup[] = [{ items: [{ label: 'Naturezas', href: '#n' }] }];
 }
 
@@ -27,36 +27,37 @@ async function montar<T>(c: new () => T) {
   await TestBed.configureTestingModule({ imports: [c] }).compileComponents();
   const f = TestBed.createComponent(c);
   await f.whenStable();
-  return f.nativeElement as HTMLElement;
+  return f;
 }
+const gatilho = (el: HTMLElement) => el.querySelector<HTMLButtonElement>('header button[aria-label="Trocar de sistema"]');
 
-describe('UcamAppShell — trilho de sistemas', () => {
-  it('desenha um <nav> "Sistemas" com o sistema atual marcado e nome em cada item', async () => {
-    const el = await montar(ComTrilho);
-    const trilho = el.querySelector('nav[aria-label="Sistemas"]')!;
-    expect(trilho).toBeTruthy();
-    const itens = [...trilho.querySelectorAll('a')];
-    expect(itens.map((a) => a.getAttribute('aria-label'))).toEqual(['Protocolo', 'Acadêmico']);
-    expect(itens[0].getAttribute('aria-current')).toBe('page');
+describe('UcamAppShell — painel de apps', () => {
+  it('a faixa tem um ícone só, e nenhuma fileira de sistemas', async () => {
+    const el = (await montar(ComSistemas)).nativeElement as HTMLElement;
+    expect(gatilho(el)?.getAttribute('aria-haspopup')).toBe('menu');
+    expect(el.querySelector('nav[aria-label="Sistemas"]')).toBeNull();
   });
 
-  it('sistema sem tela não navega e se declara desabilitado', async () => {
-    const el = await montar(ComTrilho);
-    const sem = el.querySelector('nav[aria-label="Sistemas"] a[aria-label="Acadêmico"]')!;
-    expect(sem.hasAttribute('href')).toBe(false);
-    expect(sem.getAttribute('aria-disabled')).toBe('true');
-    expect(sem.getAttribute('role')).toBe('link');
+  it('o painel abre em grade, com o atual marcado e o sem tela desabilitado', async () => {
+    const f = await montar(ComSistemas);
+    gatilho(f.nativeElement)!.click();
+    await f.whenStable();
+    const painel = document.querySelector('.ucam-menu--apps')!;
+    const itens = [...painel.querySelectorAll('[role="menuitem"]')];
+    expect(itens.map((i) => i.textContent?.trim())).toEqual(['Protocolo', 'Acadêmico']);
+    expect(itens[0].getAttribute('aria-current')).toBe('page');
+    expect(itens[1].getAttribute('aria-disabled')).toBe('true');
   });
 
   it('o item aberto da navegação é neutro, não na cor da ação', async () => {
-    const el = await montar(ComTrilho);
+    const el = (await montar(ComSistemas)).nativeElement as HTMLElement;
     const atual = el.querySelector('a[aria-current="page"][href="#n"]')!;
     expect(atual.className).toContain('text-[var(--ucam-color-text-primary)]');
     expect(atual.className).not.toContain('action-primary');
   });
 
-  it('sem lista de sistemas, não há trilho', async () => {
-    const el = await montar(SemTrilho);
-    expect(el.querySelector('nav[aria-label="Sistemas"]')).toBeNull();
+  it('sem lista de sistemas, não há ícone', async () => {
+    const el = (await montar(SemSistemas)).nativeElement as HTMLElement;
+    expect(gatilho(el)).toBeNull();
   });
 });

@@ -102,8 +102,8 @@ export interface UcamNavGroup {
 }
 
 /**
- * UM SISTEMA da faixa (ADR-092): a mesma lista do lançador do Trilho A,
- * deitada na faixa depois do nome do sistema, a partir de 80rem. Sem href, o sistema não tem tela neste
+ * UM SISTEMA do painel de apps (ADR-093): o ícone no canto direito da faixa
+ * abre a grade com todos, como o lançador do Trilho A. Sem href, o sistema não tem tela neste
  * conjunto e o item não navega.
  */
 export interface UcamSystemLink {
@@ -435,34 +435,6 @@ export type UcamSystemCategory =
           >
         </a>
 
-        @if (systems().length) {
-          <!-- OS SISTEMAS NA FAIXA (ADR-092): a partir de 80rem, um ícone por
-               sistema depois do nome; abaixo, o lançador que a aplicação
-               projeta em ucamShellAcoes (com xl:hidden). -->
-          <nav
-            aria-label="Sistemas"
-            class="hidden shrink-0 items-center gap-0.5 ms-[var(--ucam-space-inline-md)] ps-[var(--ucam-space-inline-md)] border-s border-[color-mix(in_srgb,currentColor_24%,transparent)] xl:flex"
-          >
-            @for (sis of systems(); track sis.label) {
-              <a
-                [attr.href]="sis.href ?? null"
-                [attr.role]="sis.href ? null : 'link'"
-                [attr.aria-disabled]="sis.href ? null : 'true'"
-                [attr.aria-current]="sis.current ? 'page' : null"
-                [attr.aria-label]="sis.label"
-                [attr.title]="sis.label"
-                class="inline-flex size-9 items-center justify-center rounded-[var(--ucam-radius-control)] no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[currentColor]"
-                [class]="sis.current
-                  ? 'text-inherit bg-[color-mix(in_srgb,currentColor_22%,transparent)]'
-                  : sis.href
-                    ? 'text-[color-mix(in_srgb,currentColor_78%,transparent)] hover:bg-[color-mix(in_srgb,currentColor_14%,transparent)]'
-                    : 'cursor-default text-[color-mix(in_srgb,currentColor_78%,transparent)] opacity-60'"
-                ><ucam-icon [name]="sis.icon" class="size-[1.125rem]"
-              /></a>
-            }
-          </nav>
-        }
-
         <span class="flex-1"></span>
         @if (searchable()) {
           <!--
@@ -542,6 +514,28 @@ export type UcamSystemCategory =
         <!-- Ações da faixa: o lançador de sistemas e o que mais a aplicação
              projetar. -->
         <ng-container [ngTemplateOutlet]="acoes" />
+
+        @if (systems().length) {
+          <!-- OS OUTROS APPS (ADR-093): um ícone no canto direito, que abre o
+               painel com todos, em grade. -->
+          <button
+            type="button"
+            class="ucam-shell-lancador"
+            aria-label="Trocar de sistema"
+            [ucamMenuTrigger]="menuSistemas"
+          >
+            <ucam-icon name="layoutGrid" aria-hidden="true" />
+          </button>
+          <ucam-menu
+            class="hidden"
+            #menuSistemas
+            layout="grade"
+            titulo="Sistemas"
+            ariaLabel="Sistemas"
+            [items]="itensSistemas()"
+            (escolher)="aoEscolherSistema($event)"
+          />
+        }
 
         @if (user(); as u) {
           <!--
@@ -993,7 +987,7 @@ export class UcamAppShell {
    *  carregada; só com @ucam/ui, é o bordô da universidade). */
   readonly appbarAppearance = input<UcamAppbarAppearance>('brand');
   readonly navGroups = input<UcamNavGroup[]>([]);
-  /** Os sistemas da faixa (ADR-092), a partir de 80rem. Vazio = sem fileira. */
+  /** Os sistemas do painel de apps (ADR-093). Vazio = sem o ícone. */
   readonly systems = input<UcamSystemLink[]>([]);
   readonly user = input<{ name: string; photoUrl?: string } | null>(null);
   readonly homeHref = input<string>('/');
@@ -1235,6 +1229,15 @@ export class UcamAppShell {
     ...this.userMenuItems(),
     { id: ID_SAIR, label: 'Sair', icon: 'logOut', separadorAntes: this.userMenuItems().length > 0 },
   ]);
+
+  protected readonly itensSistemas = computed<UcamMenuItem[]>(() =>
+    this.systems().map((s) => ({ id: s.label, label: s.label, icon: s.icon, atual: s.current, disabled: !s.href })),
+  );
+
+  protected aoEscolherSistema(item: UcamMenuItem): void {
+    const sistema = this.systems().find((s) => s.label === item.id);
+    if (sistema?.href && !sistema.current) location.assign(sistema.href);
+  }
 
   protected aoEscolherNaConta(item: UcamMenuItem): void {
     if (item.id === ID_SAIR) this.signOut.emit();

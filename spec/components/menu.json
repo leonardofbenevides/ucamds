@@ -147,6 +147,18 @@
       "tipo": "string | null",
       "default": "null",
       "descricao": "Linha de apoio do heading: o campus, no menu da conta. Sem heading não é desenhada."
+    },
+    {
+      "nome": "layout",
+      "tipo": "'lista' | 'grade'",
+      "default": "'lista'",
+      "descricao": "'grade' é o painel de apps (ADR-093, .ucam-menu--apps): três colunas, ícone sobre o nome, setas andando na grade. Só para escolher entre destinos com ícone; ações continuam em lista."
+    },
+    {
+      "nome": "titulo",
+      "tipo": "string | null",
+      "default": "null",
+      "descricao": "Rótulo visual do painel (\"Sistemas\"). É aria-hidden: o nome acessível continua em ariaLabel."
     }
   ],
   "estados": [

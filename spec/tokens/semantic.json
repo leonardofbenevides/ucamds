@@ -600,10 +600,6 @@
       "$value": "{breakpoint.lg}",
       "$description": "A partir daqui duas colunas de MESMO peso cabem lado a lado (o .ucam-split--igual). O bloco de divisão com painel de apoio NÃO lê este papel desde 11/09/2026: ele pergunta ao contêiner (container.duas-colunas), porque a partir de nav-fixa a coluna de navegação come 20rem da janela e a janela deixa de dizer quanto sobra para o conteúdo."
     },
-    "sistemas-na-faixa": {
-      "$value": "{breakpoint.2xl}",
-      "$description": "A partir daqui os sistemas aparecem como fileira de ícones na faixa, depois do nome do sistema, e o lançador some (ADR-092). Abaixo, o lançador volta: a faixa de 1024px não comporta os treze ícones do Diploma."
-    },
     "nav-fixa": {
       "$value": "{breakpoint.xl}",
       "$description": "A partir daqui a navegação lateral é COLUNA da grade — persistente, sem escurecimento e sem armadilha de foco. Abaixo, é gaveta sobreposta. É a fronteira que mais decide a forma da aplicação: a busca da faixa, a fileira de seções e a caixa de entrada em duas colunas também dependem dela."

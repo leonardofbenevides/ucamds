@@ -46,6 +46,8 @@ export interface UcamMenuItem {
    * aria-checked, e a marca aparece além da cor (WCAG 1.4.1).
    */
   checked?: boolean;
+  /** O destino em que já se está (o app aberto): sai com aria-current. */
+  atual?: boolean;
   /** Ação destrutiva — tinta de perigo, e nunca a primeira do menu. */
   destrutivo?: boolean;
 }
@@ -87,12 +89,16 @@ let seq = 0;
       <div
         class="ucam ucam-menu"
         [class.ucam-menu--acima]="placement() === 'above'"
+        [class.ucam-menu--apps]="layout() === 'grade'"
         role="menu"
         [id]="id"
         [attr.aria-label]="ariaLabel()"
         [attr.aria-labelledby]="ariaLabel() ? null : idGatilho()"
         (keydown)="aoTeclar($event)"
       >
+        @if (titulo()) {
+          <p class="ucam-menu__titulo" aria-hidden="true">{{ titulo() }}</p>
+        }
         @if (heading()) {
           <!-- IDENTIFICAÇÃO, e não item: quem abre o menu da conta lê o nome
                por extenso antes das ações. Fica fora do rodízio das setas
@@ -119,6 +125,7 @@ let seq = 0;
             [attr.role]="item.checked === undefined ? 'menuitem' : 'menuitemradio'"
             [attr.aria-checked]="item.checked === undefined ? null : item.checked"
             [attr.aria-disabled]="item.disabled ? 'true' : null"
+            [attr.aria-current]="item.atual ? 'page' : null"
             tabindex="-1"
             (click)="escolherItem(item)"
           >
@@ -213,6 +220,40 @@ let seq = 0;
       color: var(--ucam-color-text-secondary);
       font-size: var(--ucam-typography-caption-font-size);
     }
+    .ucam-menu__titulo {
+      margin: 0;
+      padding: var(--ucam-space-inline-xs) var(--ucam-space-inset-sm);
+      color: var(--ucam-color-text-secondary);
+      font-size: var(--ucam-typography-caption-font-size);
+    }
+    /* O PAINEL DE APPS (ADR-093): grade de três, ícone sobre o nome. */
+    .ucam-menu.ucam-menu--apps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--ucam-space-inline-xs);
+      inline-size: 21rem;
+      max-inline-size: calc(100vw - 2rem);
+      max-block-size: min(30rem, calc(100dvh - 6rem));
+      overflow-y: auto;
+      padding: var(--ucam-space-inline-sm);
+    }
+    .ucam-menu--apps .ucam-menu__titulo { grid-column: 1 / -1; }
+    .ucam-menu--apps .ucam-menu__item {
+      flex-direction: column;
+      justify-content: flex-start;
+      inline-size: auto;
+      min-block-size: 5.25rem;
+      padding: var(--ucam-space-inset-sm) var(--ucam-space-inline-xs);
+      font-size: var(--ucam-typography-caption-font-size);
+      line-height: 1rem;
+      text-align: center;
+    }
+    .ucam-menu--apps .ucam-menu__item ucam-icon { inline-size: 1.5rem; block-size: 1.5rem; }
+    .ucam-menu--apps .ucam-menu__item ucam-icon svg { inline-size: 100%; block-size: 100%; }
+    .ucam-menu--apps .ucam-menu__item[aria-current='page'] {
+      background: color-mix(in srgb, var(--ucam-color-text-primary) 8%, transparent);
+      font-weight: var(--ucam-typography-action-font-weight);
+    }
     .ucam-menu__sep {
       margin: var(--ucam-space-1) 0;
       border: 0;
@@ -237,6 +278,10 @@ export class UcamMenu {
    */
   readonly heading = input<string | null>(null);
   readonly subheading = input<string | null>(null);
+  /** 'grade' é o painel de apps (ADR-093): três colunas, ícone sobre o nome. */
+  readonly layout = input<'lista' | 'grade'>('lista');
+  /** Rótulo visual do painel ("Sistemas"); o nome acessível segue em ariaLabel. */
+  readonly titulo = input<string | null>(null);
 
   readonly escolher = output<UcamMenuItem>();
 
@@ -280,9 +325,19 @@ export class UcamMenu {
     switch (evento.key) {
       case 'ArrowDown':
         evento.preventDefault();
-        this.focarIndice(atual + 1);
+        this.focarIndice(atual + (this.layout() === 'grade' ? 3 : 1));
         break;
       case 'ArrowUp':
+        evento.preventDefault();
+        this.focarIndice(atual - (this.layout() === 'grade' ? 3 : 1));
+        break;
+      case 'ArrowRight':
+        if (this.layout() !== 'grade') break;
+        evento.preventDefault();
+        this.focarIndice(atual + 1);
+        break;
+      case 'ArrowLeft':
+        if (this.layout() !== 'grade') break;
         evento.preventDefault();
         this.focarIndice(atual - 1);
         break;

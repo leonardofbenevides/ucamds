@@ -1745,6 +1745,23 @@
         "date-field",
         "page-header"
       ]
+    },
+    {
+      "id": "ADR-093",
+      "titulo": "Os outros apps moram num ícone no canto direito, com painel em grade",
+      "status": "aceita",
+      "data": "2026-11-22",
+      "contexto": "A ADR-089 pôs os sistemas numa coluna lateral e a ADR-092 os deitou na faixa. Em 22/11/2026, vendo a fileira, o Leonardo corrigiu: \"Não é assim. Os outros apps estão no canto direito dentro de um icon que abre um dropdown com todos os apps, como o google faz\".",
+      "decisao": "Em toda largura, a faixa tem um ícone de grade no canto direito, antes da conta. Ele abre um painel de três colunas com todos os sistemas, ícone sobre o nome, e o sistema aberto em fundo neutro. No Trilho A é o lançador com .ucam-menu--apps; no Trilho B, a entrada systems do app-shell desenha o botão e o painel, com layout=\"grade\" no ucam-menu. As setas andam na grade.",
+      "consequencias": [
+        "Revoga a fileira de sistemas da ADR-092; o restante dela (calendário em todo campo de data, título 20px, seção 16px) fica.",
+        "A aplicação no Trilho B não projeta mais um lançador em ucamShellAcoes: passa systems.",
+        "O papel de viewport sistemas-na-faixa sai; breakpoint.2xl fica, porque os Sites o usam."
+      ],
+      "afeta": [
+        "app-shell",
+        "menu"
+      ]
     }
   ]
 }

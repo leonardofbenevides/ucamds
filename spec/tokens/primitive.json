@@ -435,7 +435,7 @@
     },
     "2xl": {
       "$value": "80rem",
-      "$description": "1280px. Desktop largo. Existe desde 20/11/2026 para os sistemas na faixa (ADR-092): treze ícones de sistema não cabem na faixa de 1024px. É o mesmo xl: do Tailwind, que o Trilho B usa para a mesma fronteira."
+      "$description": "1280px. Desktop largo. Compartilhado com os Sites, que o usam em desktop-largo."
     }
   },
   "fontSize": {
