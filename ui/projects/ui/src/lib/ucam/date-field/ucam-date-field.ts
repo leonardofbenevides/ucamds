@@ -20,7 +20,6 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ZardInputComponent } from '../../shared/components/input/input.component';
 import { UcamField, describedBy, nextFieldIds } from '../field/ucam-field';
 import { UcamIcon } from '../icon/ucam-icon';
-import { UcamIconButton } from '../icon-button/ucam-icon-button';
 import { UcamCalendar } from '../calendar/ucam-calendar';
 import type { UcamDateRange } from '../calendar/ucam-calendar-grade';
 
@@ -50,8 +49,10 @@ import type { UcamDateRange } from '../calendar/ucam-calendar-grade';
  * devolve o foco ao campo. Dia fora de min/max fica aria-disabled — continua
  * focável, para a seta não pular buracos, e não é escolhível.
  *
- * A precisão de MÊS continua no nativo (type=month), por botão ao lado: o DS
- * ainda não tem grade de meses, e a de dias não serve para escolher mês.
+ * A precisão de MÊS abre o mesmo calendário na grade de meses (25/11/2026),
+ * como o dataScript do Trilho A desde a ADR-092. O seletor nativo de mês, por
+ * botão ao lado, saiu: era o único lugar em que os dois trilhos abriam
+ * desenhos diferentes para o mesmo dado.
  */
 export type UcamDatePrecision = 'day' | 'month' | 'year';
 
@@ -62,8 +63,6 @@ interface Regra {
   formato: string;
   /** Largura pelo conteúdo — acaba com as larguras arbitrárias do legado. */
   largura: string;
-  /** O `type` do input nativo que abre o seletor — só o de mês sobrou nele. */
-  tipoNativo: string;
   fmt: (d: string) => string;
 }
 
@@ -75,8 +74,6 @@ const REGRA: Record<UcamDatePrecision, Regra> = {
     // era a medida do dado, calc(10ch + 3rem) — o ícone
     // entrou no campo e come o recuo inicial.
     largura: 'w-full',
-    // Sem nativo: a precisão de dia abre o calendário do DS.
-    tipoNativo: '',
     fmt: (d) =>
       d.replace(/(\d{2})(\d{2})?(\d{1,4})?/, (_, a, b, c) => [a, b, c].filter(Boolean).join('/')),
   },
@@ -87,16 +84,14 @@ const REGRA: Record<UcamDatePrecision, Regra> = {
     // 20/10/2026: era 9ch, e o input é border-box — os 0,75rem de recuo de
     // cada lado e a borda saíam de dentro dos 9ch e cortavam "10/2026".
     largura: 'w-full',
-    tipoNativo: 'month',
     fmt: (d) => d.replace(/(\d{2})(\d{1,4})?/, (_, a, b) => [a, b].filter(Boolean).join('/')),
   },
   year: {
     max: 4,
     formato: 'aaaa',
     largura: 'w-full',
-    // Não existe <input type="year">: a precisão de ano não tem calendário, e
-    // oferecer um seria pedir dois cliques para escolher o que já está escrito.
-    tipoNativo: '',
+    // A precisão de ano não tem calendário: oferecer um seria pedir dois
+    // cliques para escolher o que já está escrito.
     fmt: (d) => d,
   },
 };
@@ -139,7 +134,7 @@ const porExtenso = (iso: string) => {
 @Component({
   selector: 'ucam-date-field',
   exportAs: 'ucamDateField',
-  imports: [UcamField, ZardInputComponent, UcamIconButton, UcamIcon, UcamCalendar],
+  imports: [UcamField, ZardInputComponent, UcamIcon, UcamCalendar],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   providers: [
@@ -212,36 +207,12 @@ const porExtenso = (iso: string) => {
               [min]="min()"
               [max]="max()"
               [period]="period()"
+              [precision]="precision() === 'month' ? 'month' : 'day'"
               (valueChange)="aoEscolherNoDs($event)"
             />
           </div>
         }
 
-        @if (mostrarSeletor()) {
-          <ucam-icon-button
-            icon="calendar"
-            label="Escolher mês no seletor"
-            size="sm"
-            [disabled]="disabled()"
-            (click)="abrirNativo()"
-          />
-          <!-- O input nativo NÃO é o campo: ele existe só para emprestar o
-               seletor de MÊS do sistema. Fora da ordem de tabulação e escondido
-               do leitor de tela, porque quem representa o campo é o de texto
-               acima — dois controles para o mesmo dado seriam duas paradas de
-               tabulação para uma coisa só. -->
-          <input
-            #nativo
-            class="ucam-date-field__nativo"
-            [type]="regra().tipoNativo"
-            [value]="iso()"
-            [attr.min]="min()"
-            [attr.max]="max()"
-            tabindex="-1"
-            aria-hidden="true"
-            (change)="aoEscolherNoCalendario($event)"
-          />
-        }
       </span>
     </ucam-field>
   `,
@@ -369,20 +340,6 @@ const porExtenso = (iso: string) => {
     @media (forced-colors: active) {
       ucam-date-field .ucam-calendario__dia[aria-pressed='true'] { outline: 2px solid CanvasText; }
     }
-    /* Sem display:none: um input escondido assim não abre o seletor em parte
-       dos navegadores. Fica com tamanho zero, sobre o botão, para o calendário
-       nascer ancorado onde a pessoa clicou. */
-    ucam-date-field .ucam-date-field__nativo {
-      position: absolute;
-      inset-inline-end: 0;
-      inset-block-end: 0;
-      inline-size: 1px;
-      block-size: 1px;
-      opacity: 0;
-      pointer-events: none;
-      border: 0;
-      padding: 0;
-    }
   `,
 })
 export class UcamDateField implements ControlValueAccessor {
@@ -405,7 +362,6 @@ export class UcamDateField implements ControlValueAccessor {
   /** O valor trafega em ISO (aaaa-mm-dd), nunca com máscara. */
   readonly value = model<string>('');
 
-  private readonly nativo = viewChild<ElementRef<HTMLInputElement>>('nativo');
   // read: ElementRef — o #campo está num <input z-input>, e sem o read o
   // viewChild devolve a instância do componente da base, que não tem
   // nativeElement: fechar o calendário com Esc lançava erro ao devolver o
@@ -451,13 +407,9 @@ export class UcamDateField implements ControlValueAccessor {
   );
 
   protected readonly iso = computed(() => this.value() ?? '');
-  /** Precisão de dia: o calendário do DS. */
+  /** Dia e mês: o calendário do DS (o de mês abre na grade de meses). */
   protected readonly calendarioDs = computed(
-    () => this.showPicker() && this.precision() === 'day',
-  );
-  /** Precisão de mês: o seletor nativo de mês, por botão ao lado. */
-  protected readonly mostrarSeletor = computed(
-    () => this.showPicker() && !!this.regra().tipoNativo,
+    () => this.showPicker() && this.precision() !== 'year',
   );
 
   // ---------------------------------------------------------- calendário ---
@@ -465,6 +417,7 @@ export class UcamDateField implements ControlValueAccessor {
   protected readonly acima = signal(false);
   protected readonly escolhido = computed(() => {
     const v = this.value() ?? '';
+    if (this.precision() === 'month') return /^[0-9]{4}-[0-9]{2}$/.test(v) ? v : '';
     return dataReal(v, 'day') ? v : '';
   });
 
@@ -645,26 +598,6 @@ export class UcamDateField implements ControlValueAccessor {
     if (this.aberto() && !this.host.nativeElement.contains(e.target as Node)) {
       this.fecharCalendario(false);
     }
-  }
-
-  protected abrirNativo(): void {
-    const el = this.nativo()?.nativeElement;
-    if (!el) return;
-    // showPicker exige ativação do usuário — o clique no botão é ela. Em
-    // navegador sem suporte, o campo de texto continua sendo o caminho: a
-    // digitação nunca dependeu disto.
-    el.showPicker?.();
-  }
-
-  protected aoEscolherNoCalendario(evento: Event): void {
-    const iso = (evento.target as HTMLInputElement).value;
-    if (!iso) return;
-    this.rascunho = null;
-    this.value.set(iso);
-    this.onChange(iso);
-    // O foco volta para o CAMPO, não fica no input escondido: o contrato exige
-    // devolução do foco ao campo quando o seletor fecha.
-    (document.getElementById(this.ids.controlId) as HTMLInputElement | null)?.focus();
   }
 
   // ControlValueAccessor — o valor trafega sempre em ISO.

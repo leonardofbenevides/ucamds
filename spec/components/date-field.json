@@ -57,7 +57,7 @@
     {
       "parte": "botao-calendario",
       "obrigatorio": false,
-      "descricao": "Na precisão de dia NÃO é botão: o ícone de calendário é decorativo, mora dentro do campo, no início (.ucam-date-field__icone), e o gatilho é o próprio campo — clique ou Alt+seta para baixo. Na precisão de mês do Trilho B segue sendo um IconButton com nome acessível, que abre o seletor nativo de mês."
+      "descricao": "Na precisão de dia NÃO é botão: o ícone de calendário é decorativo, mora dentro do campo, no início (.ucam-date-field__icone), e o gatilho é o próprio campo — clique ou Alt+seta para baixo. Na precisão de mês é igual, e o calendário abre na grade de meses nos dois trilhos (desde 25/11/2026 também no B, que antes abria o seletor nativo de mês por um IconButton)."
     },
     {
       "parte": "erro",

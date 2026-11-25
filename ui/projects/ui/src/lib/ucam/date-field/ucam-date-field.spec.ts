@@ -112,3 +112,38 @@ describe('UcamDateField — níveis do calendário (ADR-077)', () => {
     expect(el.querySelector('.ucam-calendario')).toBeNull();
   });
 });
+
+/* Precisão de mês (25/11/2026): o mesmo calendário, na grade de meses, como
+   o data-data="mes" do Trilho A. Antes era o seletor nativo por um botão. */
+@Component({
+  imports: [UcamDateField],
+  template: `<ucam-date-field label="Competência" precision="month" [(value)]="valor" />`,
+})
+class HospedeiroMes {
+  readonly valor = signal('2026-10');
+}
+
+describe('UcamDateField — precisão de mês', () => {
+  it('abre a grade de meses no clique, e escolher grava aaaa-mm e mm/aaaa', async () => {
+    await TestBed.configureTestingModule({ imports: [HospedeiroMes] }).compileComponents();
+    const fx = TestBed.createComponent(HospedeiroMes);
+    fx.detectChanges();
+    await fx.whenStable();
+    const el: HTMLElement = fx.nativeElement;
+    expect(el.querySelector('ucam-icon-button')).toBeNull();
+    const campo = el.querySelector('input[aria-haspopup="dialog"]') as HTMLInputElement;
+    expect(campo.value).toBe('10/2026');
+    campo.click();
+    fx.detectChanges();
+    const cal = el.querySelector('.ucam-calendario')!;
+    const meses = [...cal.querySelectorAll<HTMLButtonElement>('.ucam-calendario__opcao')];
+    expect(meses.length).toBe(12);
+    expect(cal.querySelector('.ucam-calendario__dia')).toBeNull();
+    meses.find((m) => m.getAttribute('data-chave') === '2026-03')!.click();
+    fx.detectChanges();
+    await fx.whenStable();
+    expect(fx.componentInstance.valor()).toBe('2026-03');
+    expect(campo.value).toBe('03/2026');
+    expect(el.querySelector('.ucam-calendario')).toBeNull();
+  });
+});
