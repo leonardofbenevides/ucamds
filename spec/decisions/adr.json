@@ -1794,6 +1794,23 @@
       "afeta": [
         "app-shell"
       ]
+    },
+    {
+      "id": "ADR-096",
+      "titulo": "Padrão de tela tem variantes, e a tela diz qual é a sua",
+      "status": "aceita",
+      "data": "2026-11-27",
+      "contexto": "Em 25 e 27/11/2026, vendo o menu do Diploma, o Leonardo disse que as telas estavam muito iguais e pediu para evoluir os padrões. A Listagem servia a 37 telas com quatro tarefas diferentes, cadastro de apoio, fila de trabalho, operação em lote e trilha de registro, e todas saíam com o mesmo esqueleto de recorte, busca e tabela. O Formulário misturava acesso, cadastro curto, cadastro com seções e lançamento em grade. O mesmo menu tinha dez itens para seis formas, porque cada rota do legado virava item.",
+      "decisao": "Listagem, Formulário, Consulta e Painel ganham variantes em patterns.json, cada uma com quando usar, esqueleto e regras: Listagem em cadastro, fila, lote e trilha; Formulário em acesso, curto, seções e lançamento; Consulta em par e ficha; Painel em visão geral e análise. Toda tela desses padrões declara a variante no campo \"variante\", e o validador falha sem ela. Item de menu é tarefa, não rota: tela com a mesma forma de outra vira recorte, aba ou botão da tela-mãe.",
+      "consequencias": [
+        "A fila de trabalho mostra o que pede atenção antes da tabela; o cadastro de apoio não tem faixa de atenção nem gráfico.",
+        "As 98 telas desses quatro padrões foram classificadas; as telas-modelo de cada variante sobem primeiro e as outras em levas.",
+        "O Diploma passou de dez itens de menu para cinco no mesmo dia, pela regra do item como tarefa."
+      ],
+      "afeta": [
+        "data-table",
+        "page-header"
+      ]
     }
   ]
 }

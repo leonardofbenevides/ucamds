@@ -244,6 +244,9 @@ const SITUACOES = [
             <dd>
               @if (padrao(); as p) {
                 <a [routerLink]="'/padroes/' + p.id">{{ p.nome }}</a>
+                @if (variante(); as v) {
+                  · <a [routerLink]="'/padroes/' + p.id" [fragment]="'variante-' + v.id">{{ v.nome }}</a>
+                }
               } @else {
                 {{ d.tela.padrao }}
               }
@@ -715,6 +718,11 @@ export default class TelaPage {
     const d = this.dados();
     return d ? padraoPorId(d.tela.padrao) : undefined;
   });
+
+  /** A variante do padrão que a tela declara (ADR-096). */
+  protected readonly variante = computed(() =>
+    this.padrao()?.variantes?.find((v) => v.id === this.dados()?.tela.variante),
+  );
 
   /**
    * Agrupadas pela pergunta que o dev faz: o que ainda não tem resposta vem

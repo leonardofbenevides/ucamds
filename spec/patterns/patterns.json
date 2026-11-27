@@ -39,7 +39,70 @@
         "ucam-tabs",
         "ucam-text-field"
       ],
-      "evidencia": "image 9 (Natureza), image 10 (Pesquisa), image 11-13 (Setor), image 6-7 (Análise)"
+      "evidencia": "image 9 (Natureza), image 10 (Pesquisa), image 11-13 (Setor), image 6-7 (Análise)",
+      "variantes": [
+        {
+          "id": "cadastro",
+          "nome": "Cadastro de apoio",
+          "quando": "Tabela de referência que muda pouco e que outras telas consultam: bancos, feriados, unidades, grupos, matrizes.",
+          "estrutura": [
+            "PageHeader com o título e Novo … como primário",
+            "Busca só quando passa de uma tela de linhas; recorte só se houver situação (ativo e inativo)",
+            "Tabela curta e compacta, sem prazo nem indicador; o nome abre a edição",
+            "Edição em diálogo até cinco campos, página própria acima disso"
+          ],
+          "regras": [
+            "Não tem faixa de atenção nem gráfico: nada aqui vence, e número no topo seria enfeite.",
+            "Inativar, não excluir, quando outro registro aponta para este."
+          ]
+        },
+        {
+          "id": "fila",
+          "nome": "Fila de trabalho",
+          "quando": "Itens que chegam, esperam alguém e saem: processos, pedidos, matrículas a confirmar. Cada linha é uma tarefa.",
+          "estrutura": [
+            "PageHeader com a contagem do que está na fila e, se houver, o Novo … como primário",
+            "Faixa de atenção acima da tabela: o que vence hoje, o que venceu e o que está parado, cada um com a contagem e o recorte que o mostra",
+            "Recorte por situação na barra, com a contagem na opção; os números somam o Todos",
+            "Prazo como marcador só quando aperta (ucam-prazo); o confortável é número simples",
+            "A ação que move o item fica na linha, com confirmação que diz o efeito; o nome abre o item"
+          ],
+          "regras": [
+            "A fila responde \"o que eu faço agora?\". O que pede atenção aparece antes da tabela, não escondido num recorte.",
+            "Uma ação por linha é o comum; duas só quando são as duas saídas de uma decisão (deferir e recusar)."
+          ]
+        },
+        {
+          "id": "lote",
+          "nome": "Operação em lote",
+          "quando": "A pessoa escolhe muitos itens e aplica uma operação a todos de uma vez: calcular, enviar, baixar, montar lote, gerar ofício.",
+          "estrutura": [
+            "PageHeader com o primário que nomeia a operação e conta a seleção (\"Gerar ofício com 4\"), desabilitado com o motivo até haver seleção",
+            "Parâmetros da operação numa seção acima da lista, porque valem para todos os marcados",
+            "Lista com seleção; o selo de cada linha diz se ela já passou pela operação",
+            "Prévia do efeito antes de confirmar: quantos itens, quanto em dinheiro, quem é avisado",
+            "Barra de lote no pé da janela; depois de aplicar, o aviso diz quantos entraram e quantos ficaram de fora"
+          ],
+          "regras": [
+            "O que já passou pela operação não pode entrar de novo, e a barra diz quantos ficaram de fora e por quê.",
+            "Operação irreversível confirma nomeando o efeito; irreversível não é destrutivo, então o botão é primário (boas práticas do dialog.json)."
+          ]
+        },
+        {
+          "id": "trilha",
+          "nome": "Trilha de registro",
+          "quando": "O que aconteceu, em ordem: auditoria, movimento de caixa, histórico de envios. Ninguém cria nem edita; lê e confere.",
+          "estrutura": [
+            "PageHeader com o período lido e Exportar como secundário",
+            "Período e quem fez como filtros na barra; o período padrão é hoje ou a semana",
+            "Linhas agrupadas por dia, a hora na primeira coluna, mais recente em cima",
+            "Totais do período acima da lista quando há valor (entradas, saídas, saldo)"
+          ],
+          "regras": [
+            "Sem ação na linha e sem primário: a trilha não se edita. Correção é um lançamento novo, que aparece na própria trilha."
+          ]
+        }
+      ]
     },
     {
       "id": "formulario-entidade",
@@ -68,7 +131,60 @@
         "ucam-text-field",
         "ucam-textarea"
       ],
-      "evidencia": "image 7 (Novo Requerimento — caso de uso indevido), image 14 (Funcionário — caso apropriado)"
+      "evidencia": "image 7 (Novo Requerimento — caso de uso indevido), image 14 (Funcionário — caso apropriado)",
+      "variantes": [
+        {
+          "id": "acesso",
+          "nome": "Acesso",
+          "quando": "Entrar, recuperar senha, consultar sem login. A pessoa ainda não está dentro do sistema.",
+          "estrutura": [
+            "Cartão único centrado, sem navegação do sistema",
+            "Um campo por passo quando o passo é verificação (código, senha nova)",
+            "Um primário que diz o que acontece"
+          ],
+          "regras": [
+            "Erro de credencial não diz qual campo errou."
+          ]
+        },
+        {
+          "id": "curto",
+          "nome": "Cadastro curto",
+          "quando": "Até cinco campos sem texto longo: banco, feriado, convênio, integrante.",
+          "estrutura": [
+            "Página com uma seção lateral, ou diálogo quando abre por cima da lista",
+            "Cancelar e o primário na barra do título (ADR-091)"
+          ],
+          "regras": [
+            "Se cabe num diálogo sem rolar, é diálogo; a página existe para quem chega por link."
+          ]
+        },
+        {
+          "id": "secoes",
+          "nome": "Cadastro com seções",
+          "quando": "Muitos campos em assuntos distintos: requerimento, usuário, matrícula, dados do aluno.",
+          "estrutura": [
+            "Seções laterais, cada uma com o título e o porquê dos dados",
+            "Grade de formulário de uma a quatro trilhas por seção",
+            "Ações na barra do título; resumo dos erros no topo quando o envio falha"
+          ],
+          "regras": [
+            "A seção diz para que serve o dado (sai impresso, abre o prazo), não repete o rótulo."
+          ]
+        },
+        {
+          "id": "lancamento",
+          "nome": "Lançamento em grade",
+          "quando": "O mesmo dado para muitos itens de uma vez: notas de uma turma, alunos em turmas, datas do calendário.",
+          "estrutura": [
+            "Tabela editável, uma linha por item, o campo dentro da célula",
+            "Contagem do que falta lançar no cabeçalho",
+            "Salvar na barra do título; salvamento de rascunho dito no rodapé"
+          ],
+          "regras": [
+            "Tab anda na coluna, não na linha: quem lança nota lança a mesma avaliação para todos."
+          ]
+        }
+      ]
     },
     {
       "id": "confirmacao-destrutiva",
@@ -190,7 +306,37 @@
         "ucam-segmented",
         "ucam-stat"
       ],
-      "evidencia": "image 6 (contagem por aba), SIGFIN movimento de caixa, redesenho interno de 2026"
+      "evidencia": "image 6 (contagem por aba), SIGFIN movimento de caixa, redesenho interno de 2026",
+      "variantes": [
+        {
+          "id": "visao-geral",
+          "nome": "Visão geral",
+          "quando": "A primeira tela de um sistema ou de uma área: como estamos hoje e o que pede atenção.",
+          "estrutura": [
+            "Indicadores com a comparação (período anterior ou meta)",
+            "O que mudou desde a última visita",
+            "Atalhos para as filas que têm item esperando",
+            "Um gráfico de tendência no máximo"
+          ],
+          "regras": [
+            "Todo número leva a algum lugar: o indicador é link para a lista que o explica."
+          ]
+        },
+        {
+          "id": "analise",
+          "nome": "Análise",
+          "quando": "Uma pergunta respondida com dados: captação por polo, inadimplência por curso, tempo de atendimento.",
+          "estrutura": [
+            "Período e recorte no topo",
+            "Indicadores da pergunta",
+            "Gráfico escolhido pela pergunta (tendência, composição, relação, grade) com a tabela-fonte logo abaixo",
+            "Exportar como secundário"
+          ],
+          "regras": [
+            "Gráfico sem tabela não entra: a tabela é a fonte acessível e é ela que se exporta."
+          ]
+        }
+      ]
     },
     {
       "id": "listagem-inspetor",
@@ -276,7 +422,34 @@
         "ucam-select",
         "ucam-stat"
       ],
-      "evidencia": "Relatórios Acadêmicos (Spring Boot + Thymeleaf), 74 templates gerados a partir do mesmo layout, entregues como skill em 08/09/2026: references/04-paginas.md descreve o par formulário/resultado com .resumo-filtros, .link-voltar, .botoes-exportacao, .paginacao e .nota-dados; 05-interacoes-js.md descreve cascata, acumulador e overlay. O que este padrão muda em relação à origem: o overlay sai (ADR-005), o resumo vira chip na barra de visão em vez de faixa em tom de marca, a exportação vira menu em vez de fileira de três botões outline, e a paginação ganha a faixa de contagem. As três telas de referência estão em spec/templates.json, projeto relatorios."
+      "evidencia": "Relatórios Acadêmicos (Spring Boot + Thymeleaf), 74 templates gerados a partir do mesmo layout, entregues como skill em 08/09/2026: references/04-paginas.md descreve o par formulário/resultado com .resumo-filtros, .link-voltar, .botoes-exportacao, .paginacao e .nota-dados; 05-interacoes-js.md descreve cascata, acumulador e overlay. O que este padrão muda em relação à origem: o overlay sai (ADR-005), o resumo vira chip na barra de visão em vez de faixa em tom de marca, a exportação vira menu em vez de fileira de três botões outline, e a paginação ganha a faixa de contagem. As três telas de referência estão em spec/templates.json, projeto relatorios.",
+      "variantes": [
+        {
+          "id": "par",
+          "nome": "Pergunta e resposta",
+          "quando": "Relatório com filtros: uma tela pergunta, outra responde com os filtros em chips.",
+          "estrutura": [
+            "A estrutura do padrão: filtros numa tela, resultado com chips, totais, tabela e exportação na outra"
+          ],
+          "regras": [
+            "Quando a resposta tem tendência ou composição, o gráfico vem antes da tabela que ele resume."
+          ]
+        },
+        {
+          "id": "ficha",
+          "nome": "Ficha de um registro",
+          "quando": "A consulta devolve UMA pessoa ou um documento: ficha financeira, consulta de aluno, validação de diploma.",
+          "estrutura": [
+            "Cabeçalho com quem é (nome, identificador, situação)",
+            "Lista de descrição com os dados de identidade",
+            "Abas ou seções para o que é longo (parcelas, histórico)",
+            "Ações de leitura: imprimir, exportar, copiar"
+          ],
+          "regras": [
+            "Não tem primário: é leitura. Se alguém precisa mudar o dado, o caminho é um link para a tela que muda."
+          ]
+        }
+      ]
     },
     {
       "id": "fluxo-guiado",

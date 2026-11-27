@@ -319,6 +319,7 @@
           "id": "gerencial",
           "nome": "Painel gerencial",
           "padrao": "painel-indicadores",
+          "variante": "visao-geral",
           "origem": "Protocolo-v3.0-2026 (Angular 22), rota /gerencial (frontend/src/app/features/gerencial/gerencial.component.html; lido em 13/10/2026; reescrita ainda não publicada)",
           "descricao": "Fila e atraso de todos os setores em uma tela, com a fila do setor mais atrasado logo abaixo. Responde onde está o problema antes de exigir que alguém abra setor por setor.",
           "usa": [
@@ -445,6 +446,7 @@
           "id": "analytics",
           "nome": "Analytics",
           "padrao": "painel-indicadores",
+          "variante": "analise",
           "origem": "Protocolo-v3.0-2026 (Angular 22), rota /analytics (frontend/src/app/features/gerencial/analytics.component.html; lido em 13/10/2026; reescrita ainda não publicada)",
           "descricao": "O que melhora e o que piora no atendimento: os últimos 30 dias contra os 30 anteriores, e o volume mês a mês no período escolhido.",
           "usa": [
@@ -694,6 +696,7 @@
           "id": "naturezas",
           "nome": "Naturezas do requerimento",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Protocolo-v3.0-2026 (Angular 22), rota /naturezas (frontend/src/app/features/cadastros/naturezas/naturezas.component.html; lido em 13/10/2026; reescrita ainda não publicada)",
           "descricao": "As naturezas de requerimento com quem as abre, em quantas unidades têm destino e quantos pedidos receberam no período. Cada linha leva à natureza, com tipos, destinos e tipos de anexo.",
           "usa": [
@@ -834,6 +837,7 @@
           "id": "novo-requerimento",
           "nome": "Novo requerimento",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Protocolo-v3.0-2026 (Angular 22), rota /requerimentos/novo (frontend/src/app/features/requerimentos/novo-requerimento.component.html; lido em 13/10/2026; reescrita ainda não publicada)",
           "descricao": "Abertura no balcão em nome de um requerente, numa página só, com a prévia do que será criado ao lado. O requerente é procurado por nome, ou por CPF no primeiro atendimento.",
           "usa": [
@@ -1001,6 +1005,7 @@
           "id": "natureza-form",
           "nome": "Nova natureza",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Protocolo-v3.0-2026 (Angular 22), rota /naturezas (frontend/src/app/features/cadastros/naturezas/naturezas.component.html, tipos-requerimento-tab, destino-do-tipo-card e tipos-anexo-tab; lido em 13/10/2026; reescrita ainda não publicada)",
           "descricao": "A natureza em página própria: descrição e quem a abre, e as três abas do sistema, com os tipos (nível, prazo em dias corridos, destino e anexos), os destinos por unidade e o catálogo de tipos de anexo.",
           "usa": [
@@ -1129,6 +1134,7 @@
           "id": "integrante-form",
           "nome": "Novo integrante",
           "padrao": "formulario-entidade",
+          "variante": "curto",
           "origem": "Protocolo-v3.0-2026 (Angular 22), rota /setores (frontend/src/app/features/cadastros/setores/setores.component.html, gaveta Novo integrante; lido em 13/10/2026; reescrita ainda não publicada)",
           "descricao": "Entrada de uma pessoa no quadro do setor, numa unidade: quem é, que nível tem ali e se responde pelo setor. O mesmo formulário serve à edição.",
           "usa": [
@@ -1692,6 +1698,7 @@
           "id": "login",
           "nome": "Autenticação",
           "padrao": "formulario-entidade",
+          "variante": "acesso",
           "origem": "Tela Autentique-se do SIGU",
           "descricao": "Entrada no sistema. É a tela mais acessada de toda a universidade e a que tem a maior densidade de problemas por pixel.",
           "usa": [
@@ -1827,6 +1834,7 @@
           "nome": "Recuperar senha",
           "perfil": "Qualquer pessoa com cadastro",
           "padrao": "formulario-entidade",
+          "variante": "acesso",
           "origem": "portal-login-v2, rota recuperar-senha, passo 1 (lido em 06/10/2026)",
           "descricao": "Primeiro dos três passos para trocar a senha sem estar logado: a pessoa diz o CPF e o sistema envia um código para o e-mail do cadastro. É também o caminho de quem nunca teve senha.",
           "usa": [
@@ -1922,6 +1930,7 @@
           "nome": "Confirmar código",
           "perfil": "Qualquer pessoa com cadastro",
           "padrao": "formulario-entidade",
+          "variante": "acesso",
           "origem": "portal-login-v2, rota recuperar-senha, passo 2 e os diálogos \"Escolha o e-mail\" e \"Confirme o envio\" (lido em 06/10/2026)",
           "descricao": "Segundo passo: a pessoa digita o código de 6 dígitos que chegou no e-mail. A tela diz para onde o código foi, por quanto tempo vale e como pedir outro.",
           "usa": [
@@ -2028,6 +2037,7 @@
           "nome": "Definir nova senha",
           "perfil": "Qualquer pessoa com cadastro",
           "padrao": "formulario-entidade",
+          "variante": "acesso",
           "origem": "portal-login-v2, rota cadastrar-senha (lido em 06/10/2026)",
           "descricao": "Último passo: a pessoa escolhe a senha nova, repete para conferir e recebe a confirmação na própria tela, com o caminho de volta para a entrada.",
           "usa": [
@@ -2471,6 +2481,7 @@
           "id": "movimento-caixa",
           "nome": "Movimento de caixa",
           "padrao": "listagem-crud",
+          "variante": "trilha",
           "origem": "SIGFIN — Movimento de Caixa",
           "descricao": "Fechamento diário do caixa: entradas, saídas e saldo por forma de pagamento. É a tela de abertura do sistema financeiro.",
           "usa": [
@@ -2605,6 +2616,7 @@
           "id": "calculo-mensalidade",
           "nome": "Cálculo de mensalidade individual",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "SIGFIN — Calculo de Mensalidade Individual",
           "descricao": "Recalcula a mensalidade de um aluno com desconto antecipado, vencimento e registro de boleto.",
           "usa": [
@@ -2748,6 +2760,7 @@
           "nome": "Filtros do relatório",
           "perfil": "Financeiro",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "rel-contabilidade-frontend, a barra lateral de filtros comum aos 19 relatórios (lido em 06/10/2026)",
           "descricao": "A tela em que a pessoa monta o recorte de um relatório financeiro antes de gerá-lo. Os filtros são os que os relatórios do SigFin repetem: competência, unidade, modalidade, tipo de curso e curso.",
           "usa": [
@@ -2862,6 +2875,7 @@
           "nome": "Inadimplência",
           "perfil": "Financeiro",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "rel-contabilidade-frontend, rota /inadimplente (lido em 06/10/2026). É a referência dos cinco relatórios de mensalidade por aluno: quitada, recebida, adiantada, em aberto e inadimplência",
           "descricao": "Resultado de relatório financeiro por aluno: cada linha é um aluno com o total em aberto, e abre as parcelas que compõem esse total. Fecha com a linha de totais do recorte.",
           "usa": [
@@ -2992,6 +3006,7 @@
           "nome": "Recebimentos por dia",
           "perfil": "Financeiro",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "rel-contabilidade-frontend, rota /provisao_receita_diaria, \"RECEITA DIÁRIA\" (lido em 06/10/2026). É a referência dos relatórios em matriz, com colunas que vêm dos dados",
           "descricao": "Relatório em matriz: uma linha por dia e uma coluna por banco, com a tesouraria e o total do dia. O cabeçalho tem dois andares para separar o que compõe o total do que fica à parte, e o rodapé soma cada coluna.",
           "usa": [
@@ -3110,6 +3125,7 @@
           "nome": "Tipos de bolsa",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "financeiro-front-end, cadastro \"Tipos de bolsa\" (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "Os tipos de bolsa que a unidade concede. Cada tipo diz como a bolsa entra no cálculo da mensalidade: se cobre o valor inteiro e se convive com o desconto de antecipação.",
           "usa": [
@@ -3231,6 +3247,7 @@
           "nome": "Novo tipo de bolsa",
           "perfil": "Financeiro",
           "padrao": "formulario-entidade",
+          "variante": "curto",
           "origem": "financeiro-front-end, cadastro \"Tipos de bolsa\", formulário (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de tipos de bolsa: identificação e no cálculo da mensalidade, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -3302,6 +3319,7 @@
           "nome": "Convênios",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "financeiro-front-end, cadastro \"Convênios\" (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "As entidades com que a unidade tem convênio de mensalidade. Cada convênio diz se cobre o valor inteiro e se paga também as disciplinas em dependência.",
           "usa": [
@@ -3415,6 +3433,7 @@
           "nome": "Novo convênio",
           "perfil": "Financeiro",
           "padrao": "formulario-entidade",
+          "variante": "curto",
           "origem": "financeiro-front-end, cadastro \"Convênios\", formulário (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de convênios: identificação e o que o convênio cobre, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -3480,6 +3499,7 @@
           "nome": "Bancos e agências",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "financeiro-front-end, cadastro \"Bancos e agências\" (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "Os bancos em que a universidade recebe e as agências e carteiras de cobrança de cada um. É daqui que saem os dados do cedente nos boletos.",
           "usa": [
@@ -3591,6 +3611,7 @@
           "nome": "Novo banco",
           "perfil": "Financeiro",
           "padrao": "formulario-entidade",
+          "variante": "curto",
           "origem": "financeiro-front-end, cadastro \"Bancos e agências\", formulário (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de bancos: identificação, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -3657,6 +3678,7 @@
           "nome": "Feriados bancários",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "financeiro-front-end, cadastro \"Feriado Bancário\" (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "Os dias em que os bancos não funcionam. O vencimento de mensalidade que cai num deles é empurrado, e é por isso que a tesouraria mantém a lista.",
           "usa": [
@@ -3783,6 +3805,7 @@
           "nome": "Novo feriado",
           "perfil": "Financeiro",
           "padrao": "formulario-entidade",
+          "variante": "curto",
           "origem": "financeiro-front-end, cadastro \"Feriado Bancário\", diálogo de edição (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de feriados: feriado, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -3847,6 +3870,7 @@
           "nome": "Cobrança do mês",
           "perfil": "Financeiro (tesouraria)",
           "padrao": "painel-indicadores",
+          "variante": "visao-geral",
           "origem": "Proposta da leva 3 da equalização (fluxo 10, 13/10/2026). Não existe no financeiro-frontend: lá as cinco etapas são itens soltos do menu, cada um pedindo a competência de novo.",
           "descricao": "Em que ponto da cobrança do mês a tesouraria está: as cinco etapas em ordem, a situação e o número de cada uma, e o caminho para a tela da etapa já na competência escolhida.",
           "usa": [
@@ -3913,6 +3937,7 @@
           "nome": "Cálculo de mensalidade em lote",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "financeiro-frontend (Angular 18), rota /mensalidade/calcular/lote (lido em 06/10/2026)",
           "descricao": "O cálculo das mensalidades do mês por curso: a tesouraria calcula, confere curso a curso (e aluno a aluno, abrindo a linha) e salva o que está certo.",
           "usa": [
@@ -4040,6 +4065,7 @@
           "nome": "Agendamentos do cálculo",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "fila",
           "origem": "Print da tela \"Agendamento de Cálculo Automático\" do financeiro novo, trazido em 17/11/2026 (o código não está nos clones de financeiro-frontend nem de financeiro-backend). As opções são as do CalculateTuitionFilterDTO do cálculo em lote.",
           "descricao": "Os cálculos de mensalidade que rodam sozinhos num dia do mês: para quais unidades e modalidades, com que opções, quando rodaram pela última vez e se estão valendo. É a tabela de referência para listagem com ações por linha.",
           "usa": [
@@ -4171,6 +4197,7 @@
           "nome": "Datas de vencimento",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "financeiro-frontend (Angular 18), rota /principia/atualizacao-vencimentos (lido em 06/10/2026)",
           "descricao": "As datas dos planos de pagamento de uma competência, por curso e unidade, com a troca em lote: uma data aplicada a todos os planos marcados.",
           "usa": [
@@ -4275,6 +4302,7 @@
           "nome": "Enviar mensalidades",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "financeiro-frontend (Angular 18), rota /principia/envio (lido em 06/10/2026)",
           "descricao": "As mensalidades calculadas de uma competência que ainda precisam chegar à Principia, que emite e cobra os boletos.",
           "usa": [
@@ -4390,6 +4418,7 @@
           "nome": "Baixar mensalidades",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "financeiro-frontend (Angular 18), rota /principia/baixa (lido em 06/10/2026)",
           "descricao": "Os títulos que a Principia informou num intervalo de datas, com o que já foi pago. A tesouraria marca os que quer e manda para a fila de baixa.",
           "usa": [
@@ -4501,6 +4530,7 @@
           "nome": "Sincronização com a Principia",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "financeiro-frontend (Angular 18), rota /principia/sincronizar-pendentes (lido em 06/10/2026)",
           "descricao": "Conciliação: as mensalidades de uma competência que não chegaram à Principia, com o motivo de cada uma e o reenvio das que podem ir.",
           "usa": [
@@ -4616,6 +4646,7 @@
           "nome": "Pagamentos Sicoob",
           "perfil": "Financeiro",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "financeiro-frontend (Angular 18), rota /principia/envio-sicoob-lote (lido em 06/10/2026)",
           "descricao": "Pagamento em lote pelo Sicoob a partir de uma planilha: a tela confere o CPF ou CNPJ de cada linha e só envia o que passou.",
           "usa": [
@@ -5092,6 +5123,7 @@
           "id": "filtros",
           "nome": "Filtros da consulta",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "Relatórios Acadêmicos — Formulário de filtros (exemplo-pagina-formulario/filtros.html)",
           "descricao": "A pergunta: o formulário que gera o relatório de situação de matrícula por curso. Período e curso são obrigatórios; turno depende do curso; ingresso é um período em um único grupo.",
           "usa": [
@@ -5177,6 +5209,7 @@
           "id": "resultado",
           "nome": "Resultado da consulta",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "Relatórios Acadêmicos — Tela de resultado (exemplo-pagina-resultado/exibir.html)",
           "descricao": "A resposta: os alunos que a combinação de filtros devolveu, com os totais por situação em cima, a tabela paginada no servidor, e a saída em PDF, Excel, Word e impressão.",
           "usa": [
@@ -5283,6 +5316,7 @@
           "id": "matriculados-curso",
           "nome": "Resultado agrupado por curso",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "relatorios-academicos-v3.0-2026 — backend/relatorios-academico/src/main/resources/templates/relatorioalunosmatriculadoscurso/ (filtros.html e exibir.html), AlunosMatriculadosCursoService.java e MatriculaDataProviderJdbc.java (lido em 13/10/2026)",
           "descricao": "O resultado que se lê por grupo: um título e uma tabela por curso, sem paginação. O exemplo é Matrículas diárias por curso; é a forma de cerca de vinte relatórios do sistema.",
           "usa": [
@@ -5409,6 +5443,7 @@
           "id": "evasao-curso",
           "nome": "Resultado com gráfico",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "relatorios-academicos-v3.0-2026 — backend/relatorios-academico/src/main/resources/templates/relatoriotranccanctransporcurso/ (filtros.html e exibir.html), TrancCancTransPorCursoService.java e TrancCancTransPorCursoDataProviderJdbc.java (lido em 13/10/2026)",
           "descricao": "O resultado em que um gráfico resume o que a tabela detalha. O exemplo é Trancamento, cancelamento e transferência por curso: a evasão por situação em cima, e cada curso por turno embaixo. É a forma de oito relatórios.",
           "usa": [
@@ -5541,6 +5576,7 @@
           "id": "diario",
           "nome": "Resultado em pivô",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "relatorios-academicos-v3.0-2026 — backend/relatorios-academico/src/main/resources/templates/relatoriodiario/ (filtros.html e exibir.html), DiarioService.java e DiarioDataProviderJdbc.java (lido em 13/10/2026)",
           "descricao": "O resultado largo: alunos nas linhas, aulas nas colunas, agrupadas por mês num cabeçalho em dois andares, com rolagem horizontal e o aluno fixo. O exemplo é a frente do Diário de classe; é a forma de cerca de cinco relatórios.",
           "usa": [
@@ -5678,6 +5714,7 @@
           "id": "horario-aluno",
           "nome": "Resultado em grade de horário",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "relatorios-academicos-v3.0-2026 — backend/relatorios-academico/src/main/resources/templates/relatoriohorarioaluno/ (filtros.html e exibir.html), HorarioAlunoService.java, DiaSemanaFiltro.java e TurnoFiltro.java (lido em 13/10/2026)",
           "descricao": "O resultado que é um quadro: os dias da semana nas colunas, as faixas de horário nas linhas e a aula no cruzamento. O exemplo é o Horário do aluno; é a forma de quatro relatórios.",
           "usa": [
@@ -5983,6 +6020,7 @@
           "id": "inicio",
           "nome": "Início do Gerencial",
           "padrao": "painel-indicadores",
+          "variante": "visao-geral",
           "origem": "Módulo Gerencial em construção — Painel do módulo (captura de 14/09/2026)",
           "descricao": "Porta de entrada do módulo: quatro números sobre o acesso da unidade, as pendências que impedem alguém de trabalhar e as últimas alterações de permissão.",
           "usa": [
@@ -6070,6 +6108,7 @@
           "id": "usuarios",
           "nome": "Usuários",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Módulo Gerencial em construção — Usuários (captura de 14/09/2026)",
           "descricao": "Listagem das contas de acesso da unidade, com busca que filtra ao digitar, recorte por situação e as duas ações de linha.",
           "usa": [
@@ -6389,6 +6428,7 @@
           "id": "usuario-form",
           "nome": "Novo usuário",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Módulo Gerencial em construção — botão \"+ Novo Usuário\" (formulário não capturado)",
           "descricao": "Criação de conta em página própria: identificação, lotação, grupos e as duas regras de acesso. O mesmo formulário serve à edição.",
           "usa": [
@@ -6693,6 +6733,7 @@
           "nome": "Grupo × Usuários",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /permissoes/grupo, aba \"Usuários\" (lido em 06/10/2026)",
           "descricao": "Quem está num grupo, nesta unidade: a lista dos integrantes, com adicionar e tirar. É a outra metade de Grupo × Menu, que diz o que o grupo concede.",
           "usa": [
@@ -6807,6 +6848,7 @@
           "nome": "Usuário × Menu",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /permissoes/usuario-menu (lido em 06/10/2026)",
           "descricao": "Os menus que uma pessoa recebeu diretamente, fora dos grupos, numa unidade. Concede e revoga um a um.",
           "usa": [
@@ -6915,6 +6957,7 @@
           "id": "auditoria",
           "nome": "Trilha de auditoria",
           "padrao": "listagem-crud",
+          "variante": "trilha",
           "origem": "Módulo Gerencial — botão \"Ver tudo\" das Alterações recentes do início (tela nunca desenhada)",
           "descricao": "Os registros de acesso e permissão em ordem, com recorte por tipo e busca. Só leitura: a trilha responde \"quem fez\" e não admite correção.",
           "usa": [
@@ -7005,6 +7048,7 @@
           "nome": "Unidades",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /unidades (lido em 06/10/2026). É a referência das sete listagens de cadastro do sistema: usuários, aplicações, grupos, unidades, mantenedoras, cartões de segurança e menus",
           "descricao": "Listagem de um cadastro de apoio: busca que filtra ao digitar, recorte por situação, editar na linha e inativar no lugar de excluir. As outras listagens de cadastro do Gerencial têm a mesma forma e mudam só as colunas.",
           "usa": [
@@ -7143,6 +7187,7 @@
           "nome": "Nova unidade",
           "perfil": "Administração de acessos",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Gerencial v3.0, rota /unidades/:oid (lido em 06/10/2026). É a referência dos formulários de cadastro do sistema",
           "descricao": "Formulário de um cadastro de apoio, em três seções: identificação, contato e endereço. Uma ação de salvar, no fim, e a volta para a listagem com o registro novo à vista.",
           "usa": [
@@ -7234,6 +7279,7 @@
           "nome": "Grupos",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /grupos (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "Os grupos de acesso da unidade, com quantos menus cada um concede e quantas pessoas estão nele. É por grupo que a permissão se dá.",
           "usa": [
@@ -7350,6 +7396,7 @@
           "nome": "Novo grupo",
           "perfil": "Administração de acessos",
           "padrao": "formulario-entidade",
+          "variante": "curto",
           "origem": "Gerencial v3.0, rota /grupos/:oid (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de grupos: identificação, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -7426,6 +7473,7 @@
           "nome": "Aplicações",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /aplicacoes (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "Os sistemas que o Gerencial conhece. Cada aplicação é dona dos menus que os grupos concedem, e aparece na grade do Portal para quem tem acesso.",
           "usa": [
@@ -7538,6 +7586,7 @@
           "nome": "Nova aplicação",
           "perfil": "Administração de acessos",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Gerencial v3.0, rota /aplicacoes/:oid (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de aplicações: identificação, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -7625,6 +7674,7 @@
           "nome": "Menus",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /menus (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "Os itens que formam o menu lateral de cada aplicação. É deste cadastro que sai o que cada pessoa vê, depois de cruzado com os grupos e os acessos diretos.",
           "usa": [
@@ -7741,6 +7791,7 @@
           "nome": "Novo menu",
           "perfil": "Administração de acessos",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Gerencial v3.0, rota /menus, formulário (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de menus: identificação e onde aparece, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -7809,6 +7860,7 @@
           "nome": "Mantenedoras",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /mantenedoras (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "As entidades mantenedoras das unidades. É um cadastro pequeno e quase parado: existe porque toda unidade pertence a uma.",
           "usa": [
@@ -7915,6 +7967,7 @@
           "nome": "Nova mantenedora",
           "perfil": "Administração de acessos",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Gerencial v3.0, rota /mantenedoras/:oid (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de mantenedoras: identificação e responsável, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -7985,6 +8038,7 @@
           "nome": "Cartões de segurança",
           "perfil": "Administração de acessos",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Gerencial v3.0, rota /cartoes-seguranca (lido em 06/10/2026). Segue a referência gerencial/unidades",
           "descricao": "Os cartões de segurança emitidos para pessoas da universidade, com o período em que cada um vale.",
           "usa": [
@@ -8111,6 +8165,7 @@
           "nome": "Novo cartão",
           "perfil": "Administração de acessos",
           "padrao": "formulario-entidade",
+          "variante": "curto",
           "origem": "Gerencial v3.0, rota /cartoes-seguranca/:oid (lido em 06/10/2026). Segue a referência gerencial/unidade-form",
           "descricao": "Formulário do cadastro de cartões: cartão, com uma ação de salvar e a volta para a listagem.",
           "usa": [
@@ -9181,6 +9236,7 @@
           "nome": "Fila de análise",
           "perfil": "Coordenação",
           "padrao": "listagem-crud",
+          "variante": "fila",
           "origem": "isencao-v2-prototipo.html — vista \"Admin + IA\" e \"Admin manual\" (24/09/2026)",
           "descricao": "A fila da coordenação: quem pediu isenção, em que pé está e se a análise automatizada já tem sugestão. Uma tabela, com curso como coluna e filtro, e a situação como recorte — sem os dois \"modos\" do protótipo.",
           "usa": [
@@ -10036,6 +10092,7 @@
           "nome": "Matrizes curriculares",
           "perfil": "Coordenação",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Item do menu Cadastros sem tela até 28/09/2026; o protótipo isencao-v2 só citava a matriz no select da análise.",
           "descricao": "As matrizes contra as quais a isenção compara o histórico do candidato: qual está vigente, quantas disciplinas e horas entram na análise, e quantas solicitações dependem de cada uma. Abrir uma matriz mostra as disciplinas.",
           "usa": [
@@ -10152,6 +10209,7 @@
           "nome": "Cursos",
           "perfil": "Coordenação",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "Item do menu Cadastros sem tela até 28/09/2026; a regra aberta \"quem liga a análise automatizada, e para quais cursos\" (fila) pedia um lugar.",
           "descricao": "Os cursos do campus do ponto de vista da isenção: quem coordena, qual matriz vale e se a análise automatizada está ligada. Abrir um curso mostra a configuração da isenção dele.",
           "usa": [
@@ -10404,6 +10462,7 @@
           "nome": "Sala de matrícula",
           "perfil": "Secretaria acadêmica",
           "padrao": "listagem-crud",
+          "variante": "fila",
           "origem": "secretaria-virtual-frontend (Angular 18), rota /sala-de-matricula (lido em 06/10/2026)",
           "descricao": "Os aprovados de um período de ingresso, com o que cada um já cumpriu para se matricular (contrato, documentos e primeira mensalidade). De quem está pronto, a secretaria gera a matrícula.",
           "usa": [
@@ -10531,6 +10590,7 @@
           "nome": "Matricular candidato",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "secretaria-virtual-frontend, diálogo \"Matricular candidato\" da sala de matrícula (lido em 06/10/2026)",
           "descricao": "O cadastro que falta para gerar a matrícula de um aprovado: dados pessoais, escolaridade, documentos e contatos. Termina no número de matrícula.",
           "usa": [
@@ -10641,6 +10701,7 @@
           "nome": "Alocar alunos",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "lancamento",
           "origem": "secretaria-virtual-frontend (Angular 18), rota /alocacao-de-alunos (lido em 06/10/2026)",
           "descricao": "Matrícula em lote nas disciplinas de uma turma: de um lado os alunos do curso que ainda estão sem disciplina, do outro as disciplinas com as vagas que restam.",
           "usa": [
@@ -10739,6 +10800,7 @@
           "nome": "Consulta de aluno",
           "perfil": "Secretaria acadêmica",
           "padrao": "consulta-relatorio",
+          "variante": "ficha",
           "origem": "secretaria-virtual-frontend (Angular 18), rota /consulta-de-aluno (lido em 06/10/2026)",
           "descricao": "A busca de aluno por nome ou CPF, em todas as unidades: devolve a matrícula, a unidade, o curso e o ano de ingresso.",
           "usa": [
@@ -10830,6 +10892,7 @@
           "nome": "Matrícula de extensão",
           "perfil": "Secretaria acadêmica",
           "padrao": "listagem-crud",
+          "variante": "fila",
           "origem": "secretaria-virtual-frontend (Angular 18), rota /matricula-extensao (lido em 06/10/2026), e SecretariaVirtual-v3.0-2026 (Angular 22), mesma rota (lido em 12/10/2026; reescrita ainda não publicada)",
           "descricao": "Os inscritos em cursos de extensão e de pós-graduação de um período de inscrição, com a situação de cada um. A secretaria aprova os candidatos de mestrado e abre a matrícula de quem está pronto, um por vez.",
           "usa": [
@@ -10967,6 +11030,7 @@
           "nome": "Matricular inscrito",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "SecretariaVirtual-v3.0-2026 (Angular 22), diálogo de detalhe e matrícula da rota /matricula-extensao (lido em 12/10/2026; reescrita ainda não publicada)",
           "descricao": "O que falta para matricular um inscrito de extensão ou de pós: a turma, o turno, a escolaridade e os contatos. Termina no número de matrícula.",
           "usa": [
@@ -11122,6 +11186,7 @@
           "nome": "Conferir os dados",
           "perfil": "Candidato",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Vestibular Online, rota /candidato/:oid (apps/vestibular-online/src/app/candidato/entrada/)",
           "descricao": "A primeira tela de quem abre o link: os dados da inscrição para conferir, o contato da secretaria e uma só ação, Entrar na prova.",
           "usa": [
@@ -11983,6 +12048,7 @@
           "nome": "Questão do caderno",
           "perfil": "Banca",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "Vestibular Online, rotas /banca/provas/:caderno/questao/:questao e …/questao/nova (apps/vestibular-online/src/app/banca/provas/questao-form.html)",
           "descricao": "Criar ou editar uma questão em página própria: texto de apoio, enunciado, pontuação e ordem no caderno; excluir passa por um diálogo destrutivo.",
           "usa": [
@@ -12449,6 +12515,7 @@
           "nome": "Disciplinas",
           "perfil": "Secretaria acadêmica",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /disciplina — paginas/cadastros-parametros/disciplina/disciplina.component.ts e sharedservices/tipo-basico-form/; extensao-backend W/CadastroBasicoRest.java e RepositorioAbstract.java (lido em 15/10/2026)",
           "descricao": "A listagem de um cadastro de apoio, com Disciplinas de exemplo: pesquisar, abrir para editar, inativar e reativar. É a forma das dez tabelas básicas do sistema e da busca de Horários, Turmas e Períodos de inscrição.",
           "usa": [
@@ -12587,6 +12654,7 @@
           "nome": "Nova disciplina",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /disciplina — painel Novo de sharedservices/tipo-basico-form/tipo-basico-form.component.html e paginas/cadastros-parametros/disciplina/disciplina.component.ts:16-37; D/entities/extensao/Disciplina.java (lido em 15/10/2026)",
           "descricao": "O formulário de um cadastro de apoio, com a disciplina de exemplo: poucos campos, uma ação de salvar e a volta para a lista com o registro novo. Serve aos dez cadastros básicos e, com campos próprios, a Horários, Turmas e Períodos de inscrição.",
           "usa": [
@@ -12677,6 +12745,7 @@
           "nome": "Calendário acadêmico",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "lancamento",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /calendario_academico — paginas/calendario-academico/ (regime/, atividade-academica/, feriado/); D/entities/extensao/Calendarioacademico.java e repositórios vazios de calendário, regime, atividade e feriado (lido em 15/10/2026)",
           "descricao": "Um registro com sublistas: os dados do calendário em cima e, em abas, os regimes, as atividades e os feriados, cada um incluído por diálogo. É a forma de Cursos (reconhecimentos), Tipos de regime, Prédios e salas, Disciplinas do curso e Disciplinas oferecidas (horários).",
           "usa": [
@@ -12791,6 +12860,7 @@
           "nome": "Ficha do aluno",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /aluno — paginas/aluno/aluno.component.html e .ts, paginas/pessoa/ (endereço, telefone, busca por CPF); D/entities/academico/Pessoa.java, Cpf.java, W/PessoaRest.java, W/AlunoRest.java (lido em 15/10/2026)",
           "descricao": "A ficha de uma pessoa: cabeçalho com foto, matrícula e curso, e o cadastro em abas (dados pessoais, documentos, contatos, escolaridade, documentos digitalizados). É a forma das fichas de aluno, aluno especial, professor, funcionário e interessado.",
           "usa": [
@@ -12928,6 +12998,7 @@
           "nome": "Disciplinas do aluno",
           "perfil": "Secretaria acadêmica",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /alunodisciplinaoferecida — paginas/alunodisciplinaoferecida/alunodisciplinaoferecida.component.html e .ts; W/AlunoRest.java:517-597, D/services/AlunoService.java:91-133 (lido em 15/10/2026)",
           "descricao": "Uma lista que pertence a um aluno: as disciplinas em que ele está inscrito, por regime, com a situação de cada uma e a inclusão por diálogo. É a forma de Histórico de situação, Estágio supervisionado, Isenções e Troca de turma.",
           "usa": [
@@ -13048,6 +13119,7 @@
           "nome": "Lançamento de notas",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "lancamento",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /nota — paginas/nota/nota.component.html e .ts:40-150, sharedservices/filters/disciplinaoferecidaturma/; W/AlunoRest.java:640-671, D/services/AlunoService.java:249-269, D/services/formula/ (lido em 15/10/2026)",
           "descricao": "Uma grade de lançamento: os alunos de uma turma nas linhas, as provas da fórmula nas colunas, e a coluna da prova escolhida editável, com salvar em lote. É a forma do lançamento de faltas, em que as colunas são os horários de aula do dia.",
           "usa": [
@@ -13171,6 +13243,7 @@
           "nome": "Cálculo acadêmico",
           "perfil": "Secretaria acadêmica",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /calculoacademico — paginas/calculo-academico/ (calculo-curso/, disciplina, turma, aluno); D/services/calculoacademico/CalculosAcademicosBuilder.java, D/services/AlunoService.java:249-411, W/CalculoAcademicoRest.java (lido em 15/10/2026)",
           "descricao": "Escolher em massa e disparar um processamento no servidor: as opções do cálculo, o recorte (curso, disciplina oferecida, turma ou aluno) e a seleção em lote. O andamento chega pelas notificações.",
           "usa": [
@@ -13290,6 +13363,7 @@
           "nome": "Datas de prova",
           "perfil": "Secretaria acadêmica",
           "padrao": "listagem-crud",
+          "variante": "cadastro",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /dataprova — paginas/dataprova/ (detail/detail.component.ts:40-75), sharedservices/filters/calendarioregimecurso/; D/entities/extensao/Dataprova.java, RepositorioDataprova.java (lido em 15/10/2026)",
           "descricao": "Uma sublista de uma disciplina oferecida, achada por filtro em cascata (calendário, regime, curso, disciplina): as datas de prova, com inclusão por diálogo. É a forma de Provas especiais, Disciplina oferecida × alunos e Planos de ensino.",
           "usa": [
@@ -13386,6 +13460,7 @@
           "nome": "Envio de e-mail",
           "perfil": "Secretaria acadêmica",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "extensao-frontend (Angular 5 + Materialize), rota /envioemail — paginas/envio-email/ (filtros/), sharedservices/email/email.component.ts; W/MensagemRest.java, D/services/message/ (senders/EmailService.java, SmsService.java, filterhandler/), D/services/LogmensagemService.java (lido em 15/10/2026)",
           "descricao": "Comunicação em massa: montar os destinatários por grupos (alunos de um curso, de uma turma, entrada manual), escrever a mensagem e enviar. É a forma do Envio de SMS e do Relacionamento com interessados.",
           "usa": [
@@ -13663,6 +13738,7 @@
           "nome": "Painel",
           "perfil": "Gestão comercial da captação",
           "padrao": "painel-indicadores",
+          "variante": "visao-geral",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /dashboard — pages/dashboard-novo/ (soma-alunos-list, soma-alunos-card, tabela-dashboard, header-filter, utils.ts); selecao-service DashboardEndpoint.java e RepositoryDashboardAbstract.java (lido em 20/10/2026)",
           "descricao": "A visão do semestre: alunos por modalidade comparados ao mesmo semestre do ano anterior, evadidos, recebido e a receber, e a tabela por unidade ou polo que abre os cursos de cada uma.",
           "usa": [
@@ -13804,6 +13880,7 @@
           "nome": "Financeiro",
           "perfil": "Gestão comercial da captação",
           "padrao": "painel-indicadores",
+          "variante": "analise",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /financeiro — pages/financeiro/ (header-filter-financeiro, cards-financeiro-list, tabela-financeiro, financeiro.service.ts); selecao-service FinanceiroEndpoint.java e RepositoryFinanceiroAbstract.java (lido em 20/10/2026)",
           "descricao": "O mês em dinheiro: alunos pagantes, faturado, recebido e a receber, no total e por modalidade, a tabela por unidade que abre os cursos com o ticket médio, e os relatórios que o servidor gera.",
           "usa": [
@@ -13960,6 +14037,7 @@
           "nome": "Captação",
           "perfil": "Gestão comercial da captação",
           "padrao": "painel-indicadores",
+          "variante": "analise",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /captacao/:periodoletivo/:modalidade e /captacao-pos-graduacao — pages/captacao/ (captacao.component, breadcrumb-captacao, captacao.service.ts), pages/processo-seletivo/ (cópia da pós), shared/components/card/card-chart-captacao; selecao-service CaptacaoEndpoint.java, RepositoryCaptacaoAbstract.java e RepositoryCaptacaoAcademico.java (lido em 20/10/2026)",
           "descricao": "O processo seletivo por situação do candidato (matriculado, aprovado, confirmado, pendente), por modalidade e por unidade ou polo. É a forma da captação de graduação e da de pós-graduação, que é cópia dela.",
           "usa": [
@@ -14163,6 +14241,7 @@
           "nome": "Captação · detalhe",
           "perfil": "Gestão comercial da captação",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /captacao (diálogo) — pages/captacao/views/modal-captacao/ (modal-captacao.component, table-captacao.component.ts); selecao-service CaptacaoEndpoint.java (/tabela/cursos e /tabela/unidades) e RepositoryCaptacaoAbstract.java (lido em 20/10/2026)",
           "descricao": "Uma modalidade aberta em tabela cruzada, situação por turno, por curso e por unidade. Era o diálogo de 90% × 80% que o cartão e a unidade abrem.",
           "usa": [
@@ -14292,6 +14371,7 @@
           "nome": "Rematrícula",
           "perfil": "Gestão comercial da captação",
           "padrao": "painel-indicadores",
+          "variante": "analise",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /rematricula/:periodoletivo/:modalidade — pages/rematricula/ (rematricula.component, breadcrumb-rematricula), shared/components/card/card-chart-rematricula e card-kpi; selecao-service RematriculaEndpoint.java e RepositoryRematriculaAbstract.java (lido em 20/10/2026)",
           "descricao": "O andamento da rematrícula dos veteranos por situação, no geral e por unidade ou polo, com o que entrou nesta semana e os boletos pagos.",
           "usa": [
@@ -14438,6 +14518,7 @@
           "nome": "Metas",
           "perfil": "Gestão comercial da captação",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /metas — pages/meta/ (meta.component, filter-meta, table-meta, chart-meta, switch-comparativo); selecao-service MetaEndpoint.java, RepositoryMetaAbstract.java, MetasDTO.java e CandidatosService.java (lido em 20/10/2026)",
           "descricao": "Meta × realizado da captação por curso ou por unidade: base, realizado no período de comparação, realizado, meta, diferença e alcance, com o total e as inscrições por semana.",
           "usa": [
@@ -14619,6 +14700,7 @@
           "nome": "Análise de metas",
           "perfil": "Gestão comercial da captação",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /analise-metas — pages/analise-meta/ (analise-meta.component, filter-btn, spline-columned-goals, column-comparison-chart); selecao-service EvolucaoCaptacaoEndpoint.java, EvolucaoCaptacaoService.java, RepositoryMetaAbstract.java e TaxaConversaoDTO.java (lido em 20/10/2026)",
           "descricao": "Onde se concentram inscritos e matriculados, por curso ou por unidade, e a conversão de cada um, numa tabela em ordem de matriculados com o acumulado.",
           "usa": [
@@ -14746,6 +14828,7 @@
           "nome": "Bolsa social",
           "perfil": "Gestão comercial da captação",
           "padrao": "painel-indicadores",
+          "variante": "analise",
           "origem": "captacao-frontend (Angular 9 + Angular Material + Highcharts), rota /bolsa-social — pages/bolsa-social/ (bolsa-social.component, chart-bolsa.component.ts); selecao-service BolsaSocialEndpoint.java e RepositoryBolsaSocialAbstract.java (lido em 20/10/2026)",
           "descricao": "A distribuição dos alunos com bolsa social por modalidade e por percentual da bolsa (40%, 50% e 100%), e a planilha de candidatos a bolsa.",
           "usa": [
@@ -14972,6 +15055,7 @@
           "nome": "Captação",
           "perfil": "Gestão de polos EAD",
           "padrao": "painel-indicadores",
+          "variante": "analise",
           "origem": "gestaodepolos-frontend (Angular 10 + Angular Material + Highcharts), rota /captacao — pages/captacao/ (captacao.component), pages/home/, components/charts/ (piramide, pie, line), components/modal/candidatos-matriculados e export; ServiceCandidatosPorSituacao.java, ServiceEvolucaoMatricula.java, Queries.java; gestaodepolos-backend (Spring Boot), ramo master (lido em 21/10/2026)",
           "descricao": "A captação EAD do período nos polos: inscritos, aprovados e matriculados por polo, os matriculados por forma de ingresso, por curso e por semana. É a forma de painel de indicadores do sistema.",
           "usa": [
@@ -15128,6 +15212,7 @@
           "nome": "Financeiro",
           "perfil": "Gestão de polos EAD",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "gestaodepolos-frontend (Angular 10 + Angular Material + Highcharts), rota /financeiro — pages/financeiro/ (financeiro.component), components/modal/aluno-inadimplencia e export, services/export.service.ts; ServiceReceitaRepassePorAluno.java, ServiceReceitaRepassePorCurso.java, ServiceInadimplenciaPorCurso.java, Queries.java FINANCEIROALUNO; gestaodepolos-backend (Spring Boot), ramo master (lido em 21/10/2026)",
           "descricao": "O dinheiro do mês nos polos: pagantes, recebido, repasse de cada polo pela faixa de pagantes, e a inadimplência do semestre por curso, que abre os alunos. É a forma de relatório com tabelas que abrem; o Acadêmico usa a mesma.",
           "usa": [
@@ -15281,6 +15366,7 @@
           "nome": "Ficha financeira",
           "perfil": "Gestão de polos EAD",
           "padrao": "consulta-relatorio",
+          "variante": "ficha",
           "origem": "gestaodepolos-frontend (Angular 10 + Angular Material + Highcharts), rota /ficha-financeira — pages/ficha/ (ficha.component), components/component/ficha-financeira, components/modal/ficha-financeiro-vencidos e ficha-financeiro-acordo; ControllerFichaFinanceiraDoAluno.java, ServiceSomatorioFichaFinanceira.java, Queries.java FICHA_FINANCEIRA_*; gestaodepolos-backend (Spring Boot), ramo master (lido em 21/10/2026)",
           "descricao": "Os alunos de um curso num polo, com mensalidades pagas e vencidas, acordos e valor vencido, e a ficha de cada um aberta na própria linha. É a forma de lista que abre o registro.",
           "usa": [
@@ -15544,6 +15630,7 @@
           "nome": "Turmas compartilhadas",
           "perfil": "Coordenação de EAD",
           "padrao": "painel-indicadores",
+          "variante": "analise",
           "origem": "turmas-compartilhadas-frontend (Angular 9 + Angular Material), ramo feat/modalidade-ajustes-frontend-20260424, rota /analise — pages/analise/ (analise.component, table-analise-one), shared/components/kpi e box, shared/services/analise.service.ts; turmas-compartilhadas-backend (Spring Boot + JPA), ramo feat/modalidade-ajustes-apresentacao-20260424 — IndicadoresController.java, TurmaMoodleService.java, TurmaMoodleRepository.java, TurmasCompartilhadasRepository.java, TurmasSiguRepository.java (lidos em 21/10/2026)",
           "descricao": "As turmas AVA do período, com três contadores, a tabela que abre as turmas SIGU de cada uma e a criação de turma AVA. É a forma de painel leve com tabela que abre.",
           "usa": [
@@ -15710,6 +15797,7 @@
           "nome": "Cadastro de turma AVA",
           "perfil": "Coordenação de EAD",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "turmas-compartilhadas-frontend (Angular 9 + Angular Material), ramo feat/modalidade-ajustes-frontend-20260424, rota /cadastro — pages/cadastro/ (cadastro.component, table-cadastro-one e two), pages/cadastro/modals/ (nova-disciplina, share-disciplina), shared/modals/ (edit-ava-discipline, remove-shared-disciplina, alert-dialog), shared/services/cadastro.service.ts e basics.service.ts; turmas-compartilhadas-backend (Spring Boot + JPA), ramo feat/modalidade-ajustes-apresentacao-20260424 — TurmasCompartilhadasController.java, TurmasCompartilhadasService.java (compartilharTurma, isDiaSemanaIguais, removerTurmaCompartilhada), TurmaMoodleService.java (updateTurmaMoodle), TurmasSiguRepository.java (lidos em 21/10/2026)",
           "descricao": "Uma turma AVA aberta: professor, horário e unidades, as turmas SIGU que estão nela, e as três ações do cadastro: renomear, compartilhar uma turma SIGU e remover. É a forma de registro com lista dependente e diálogos.",
           "usa": [
@@ -15869,6 +15957,7 @@
           "nome": "Balanço",
           "perfil": "Coordenação de EAD",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "turmas-compartilhadas-frontend (Angular 9 + Angular Material), ramo feat/modalidade-ajustes-frontend-20260424, rota /balanco — pages/balanco/ (balanco.component, table-balanco-one), shared/components/see-more-table-professor-dialog e photo-profile, shared/services/balanco.service.ts; turmas-compartilhadas-backend (Spring Boot + JPA), ramo feat/modalidade-ajustes-apresentacao-20260424 — AnaliseTurmasController.java, AnaliseTurmaRepository.java, ExportFileService.java (lidos em 21/10/2026)",
           "descricao": "Todas as disciplinas do período, turmas AVA e turmas SIGU isoladas, em ordem de alunos, com unidades, cursos, professor e migração para o Moodle. É a forma de listagem de consulta com destaque.",
           "usa": [
@@ -16161,6 +16250,7 @@
           "nome": "Processos",
           "perfil": "URD (Unidade de Registro de Diplomas)",
           "padrao": "listagem-crud",
+          "variante": "fila",
           "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /controledeexpedicao — paginas/controledeexpedicao/ (controledeexpedicao.component), paginas/processo-table/ (processo-table.component), paginas/expedicao/ (expedicao.component, a visão da unidade), paginas/expedicao/processo.service.ts; diploma-backend (Spring Boot) — ResourceProcesso.java (countProcessos), RepositoryProcessovw.java, ProcessoService.java ; paginas/controleprorrogacao/ (os pedidos de prazo, que eram tela própria); paginas/cadastro-dados-aluno/ (lidos em 27/10 e 25/11/2026)",
           "descricao": "Os processos de diploma, do que a unidade ainda não expediu ao deferido pela URD, com o prazo que falta, os pedidos de prazo e o Novo processo. A URD vê os de todas as unidades; a unidade, só os dela.",
           "usa": [
@@ -16176,6 +16266,7 @@
             "ucam-prazo",
             "ucam-segmented",
             "ucam-select",
+            "ucam-stat",
             "ucam-text-field"
           ],
           "problemas": [
@@ -16192,7 +16283,8 @@
             "O número do processo tem coluna própria, e o nome do aluno é o link que abre o processo em página, com trilha de volta: o diálogo de 80% sai. O CPF fica no processo.",
             "Visão da unidade (Expedição, rota /expedicao): a mesma tabela só com os processos da unidade em uso, o recorte Sem expedição na frente e Novo processo como primário, que abre a aba Dados do processo. Prorrogações (rota /controledeprorrogacao): os recortes são Solicitado e Concluído, e a coluna Prazo diz também os dias pedidos.",
             "Deferido não tem prazo, e o andamento do diploma (sem diploma, registrado, publicado) fica no processo e na criação de lote, não numa coluna que muda de sentido.",
-            "Desde 27/11/2026 a fila é uma só para a URD e para a unidade. A Expedição da unidade e o Controle de prorrogação eram a mesma forma de fila: a primeira virou o recorte Sem expedição, com Expedir na linha; o segundo, o recorte Pedem prazo, com a decisão na linha. Dados do aluno é o Novo processo."
+            "Desde 27/11/2026 a fila é uma só para a URD e para a unidade. A Expedição da unidade e o Controle de prorrogação eram a mesma forma de fila: a primeira virou o recorte Sem expedição, com Expedir na linha; o segundo, o recorte Pedem prazo, com a decisão na linha. Dados do aluno é o Novo processo.",
+            "Tela-modelo da variante Fila de trabalho (ADR-096): A fileira de três indicadores abre a tela com o que vence, o que pede prazo e o que não foi expedido; cada número é link para o recorte que o mostra. Prazo apertado é recorte próprio, somado à situação."
           ],
           "regras_negocio": [
             {
@@ -16291,7 +16383,7 @@
               "decide": "Coordenação da URD (registro de diplomas)"
             }
           ],
-          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Processos</h2><span class='ucam-viewbar__meta'>15 processos de 5 unidades</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><a class='ucam-btn ucam-btn--primary' href='#/templates/diploma/dados-aluno' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Novo processo</a></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:situacao' data-filtra-alvo='pc-tabela' role='group' aria-label='Situação do processo'><button type='button' aria-pressed='true' data-valor=''>Todos <span class='ucam-segmented__contagem'>15</span></button><button type='button' aria-pressed='false' data-valor='semexp'>Sem expedição <span class='ucam-segmented__contagem'>3</span></button><button type='button' aria-pressed='false' data-valor='expedido'>Expedidos <span class='ucam-segmented__contagem'>5</span></button><button type='button' aria-pressed='false' data-valor='analise'>Em análise <span class='ucam-segmented__contagem'>3</span></button><button type='button' aria-pressed='false' data-valor='exigencia'>Em exigência <span class='ucam-segmented__contagem'>2</span></button><button type='button' aria-pressed='false' data-valor='deferido'>Deferidos <span class='ucam-segmented__contagem'>2</span></button><button type='button' aria-pressed='false' data-valor='prazo'>Pedem prazo <span class='ucam-segmented__contagem'>2</span></button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='pc-b'>Pesquisar processo</label><input class='ucam-input' id='pc-b' type='search' data-filtra='texto' data-filtra-alvo='pc-tabela' placeholder='Nome, CPF ou número do processo' aria-controls='pc-vazio' aria-describedby='pc-eco'></div><div class='ucam-field'><label class='ucam-field__label' for='pc-u'>Unidade</label><select class='ucam-select' id='pc-u' data-filtra='coluna:Unidade'><option value='' selected>Todas</option><option value='Centro'>Centro</option><option value='Tijuca'>Tijuca</option><option value='Niterói'>Niterói</option><option value='Campos'>Campos</option><option value='Nova Friburgo'>Nova Friburgo</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='pc-d'>Vence em</label><select class='ucam-select' id='pc-d'><option selected>Até 120 dias (padrão)</option><option>Até 60 dias</option><option>Até 30 dias</option><option>Qualquer prazo</option></select></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='pc-tabela'><caption class='ucam-sr-only'>Processos de diploma expedidos pelas unidades, com o prazo que falta e a situação na URD. O nome do aluno abre o processo.</caption><thead><tr><th scope='col' class='th--min'>Processo</th><th scope='col'>Aluno</th><th scope='col' class='th--min'>Unidade</th><th scope='col' class='th--min'>Expedição</th><th scope='col' class='th--min'>Prazo</th><th scope='col' class='th--min'>Situação</th><th scope='col' class='th--acoes'><span class='ucam-sr-only'>Ação</span></th></tr></thead><tbody><tr data-situacao='semexp'><td style='white-space:nowrap'><span class='ucam-sr-only'>Sem número</span>—</td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Beatriz Almeida Rocha</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'>118 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem expedição</span></td><td class='td--acoes' style='padding-block:0'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Expedido' data-linha-tom='neutral' data-linha-situacao='expedido' data-linha-msg='Processo de {nome} expedido para a URD.' data-confirmar data-confirmar-corpo='O processo de Beatriz Almeida Rocha vai para a URD e sai da mão da unidade. Correção, a partir daqui, só por exigência da URD.' data-confirmar-rotulo='Expedir' data-confirmar-tom='primary'>Expedir</button></td></tr><tr data-situacao='semexp'><td style='white-space:nowrap'><span class='ucam-sr-only'>Sem número</span>—</td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Caio Henrique Barros</a></th><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 15 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem expedição</span></td><td class='td--acoes' style='padding-block:0'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Expedido' data-linha-tom='neutral' data-linha-situacao='expedido' data-linha-msg='Processo de {nome} expedido para a URD.' data-confirmar data-confirmar-corpo='O processo de Caio Henrique Barros vai para a URD e sai da mão da unidade. Correção, a partir daqui, só por exigência da URD.' data-confirmar-rotulo='Expedir' data-confirmar-tom='primary'>Expedir</button></td></tr><tr data-situacao='semexp'><td style='white-space:nowrap'><span class='ucam-sr-only'>Sem número</span>—</td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Débora Lins Carvalho</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--vencido'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>venceu há 4 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem expedição</span></td><td class='td--acoes' style='padding-block:0'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Expedido' data-linha-tom='neutral' data-linha-situacao='expedido' data-linha-msg='Processo de {nome} expedido para a URD.' data-confirmar data-confirmar-corpo='O processo de Débora Lins Carvalho vai para a URD e sai da mão da unidade. Correção, a partir daqui, só por exigência da URD.' data-confirmar-rotulo='Expedir' data-confirmar-tom='primary'>Expedir</button></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>047.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Mariana Castro Lopes</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>20/10/2026</td><td style='white-space:nowrap'>112 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>052.0511.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Rafael Teixeira Nunes</a></th><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>19/10/2026</td><td style='white-space:nowrap'>98 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>031.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Juliana Prado Moreira</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>14/10/2026</td><td style='white-space:nowrap'>63 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>058.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Bruno Henrique Sales</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>09/10/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 18 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>019.0111.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Letícia Andrade Faria</a></th><td style='white-space:nowrap'>Campos</td><td style='white-space:nowrap'>02/10/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--vencido'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>venceu há 4 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='analise prazo'><td style='white-space:nowrap'><span class='ucam-id'>044.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Camila Ribeiro Torres</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>28/09/2026</td><td style='white-space:nowrap'>71 dias · pede +30</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td><td class='td--acoes' style='padding-block:0'><span class='ucam-cluster'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' aria-label='Dar +30 dias ao prazo de Camila Ribeiro Torres' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo +30 dias' data-linha-tom='success' data-linha-situacao='analise' data-linha-msg='Prazo de {nome} prorrogado em 30 dias.' data-confirmar data-confirmar-corpo='A unidade pediu 30 dias a mais para o processo de Camila Ribeiro Torres. O prazo cresce e a decisão fica no histórico do processo.' data-confirmar-rotulo='Dar +30 dias' data-confirmar-tom='primary'>+30 dias</button><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' aria-label='Recusar o pedido de prazo de Camila Ribeiro Torres' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo recusado' data-linha-tom='neutral' data-linha-situacao='analise' data-linha-msg='Pedido de prazo de {nome} recusado. O prazo continua o mesmo.' data-confirmar data-confirmar-corpo='O pedido de 30 dias de Camila Ribeiro Torres é recusado e o prazo continua o mesmo. A unidade vê a decisão no processo.' data-confirmar-rotulo='Recusar' data-confirmar-tom='primary'>Recusar</button></span></td></tr><tr data-situacao='analise'><td style='white-space:nowrap'><span class='ucam-id'>027.0511.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Diego Martins Rocha</a></th><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>25/09/2026</td><td style='white-space:nowrap'>35 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td><td class='td--acoes'></td></tr><tr data-situacao='analise'><td style='white-space:nowrap'><span class='ucam-id'>036.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Patrícia Gomes Viana</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>22/09/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 12 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td><td class='td--acoes'></td></tr><tr data-situacao='exigencia prazo'><td style='white-space:nowrap'><span class='ucam-id'>015.0911.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Thiago Barros Lima</a></th><td style='white-space:nowrap'>Nova Friburgo</td><td style='white-space:nowrap'>15/09/2026</td><td style='white-space:nowrap'>54 dias · pede +45</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--warning' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em exigência</span></td><td class='td--acoes' style='padding-block:0'><span class='ucam-cluster'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' aria-label='Dar +45 dias ao prazo de Thiago Barros Lima' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo +45 dias' data-linha-tom='success' data-linha-situacao='exigencia' data-linha-msg='Prazo de {nome} prorrogado em 45 dias.' data-confirmar data-confirmar-corpo='A unidade pediu 45 dias a mais para o processo de Thiago Barros Lima. O prazo cresce e a decisão fica no histórico do processo.' data-confirmar-rotulo='Dar +45 dias' data-confirmar-tom='primary'>+45 dias</button><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' aria-label='Recusar o pedido de prazo de Thiago Barros Lima' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo recusado' data-linha-tom='neutral' data-linha-situacao='exigencia' data-linha-msg='Pedido de prazo de {nome} recusado. O prazo continua o mesmo.' data-confirmar data-confirmar-corpo='O pedido de 45 dias de Thiago Barros Lima é recusado e o prazo continua o mesmo. A unidade vê a decisão no processo.' data-confirmar-rotulo='Recusar' data-confirmar-tom='primary'>Recusar</button></span></td></tr><tr data-situacao='exigencia'><td style='white-space:nowrap'><span class='ucam-id'>039.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Aline Ferreira Duarte</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>11/09/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 9 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--warning' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em exigência</span></td><td class='td--acoes'></td></tr><tr data-situacao='deferido'><td style='white-space:nowrap'><span class='ucam-id'>022.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Gustavo Lemos Pires</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>26/08/2026</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Deferido</span></td><td class='td--acoes'></td></tr><tr data-situacao='deferido'><td style='white-space:nowrap'><span class='ucam-id'>011.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Renata Souza Campos</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>20/08/2026</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Deferido</span></td><td class='td--acoes'></td></tr></tbody></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>15 processos · 6 vencem em até 20 dias ou já venceram · 2 pedem prazo</p></div><div class='ucam-empty' id='pc-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum processo encontrado</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou ao recorte escolhido. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='pc-eco' role='status'></p><p class='ucam-section__hint'>O prazo conta os dias desde a expedição pela unidade, somados os dias de prorrogação deferidos. Até 20 dias o prazo vira marcador; deferido não tem prazo.</p></div></div>",
+          "preview": "<div class='ucam-viewbar'><div class='ucam-viewbar__fileira'><h2 class='ucam-viewbar__titulo'>Processos</h2><span class='ucam-viewbar__meta'>15 processos de 5 unidades</span><span class='ucam-viewbar__folga'></span><div class='ucam-viewbar__acoes'><a class='ucam-btn ucam-btn--primary' href='#/templates/diploma/dados-aluno' data-fluxo='a'><svg class='ic' aria-hidden='true'><use href='#i-plus'/></svg> Novo processo</a></div></div><div class='ucam-viewbar__fileira'><div class='ucam-segmented' data-filtra='dado:situacao' data-filtra-alvo='pc-tabela' role='group' aria-label='Situação do processo'><button type='button' aria-pressed='true' data-valor=''>Todos <span class='ucam-segmented__contagem'>15</span></button><button type='button' aria-pressed='false' data-valor='semexp'>Sem expedição <span class='ucam-segmented__contagem'>3</span></button><button type='button' aria-pressed='false' data-valor='expedido'>Expedidos <span class='ucam-segmented__contagem'>5</span></button><button type='button' aria-pressed='false' data-valor='analise'>Em análise <span class='ucam-segmented__contagem'>3</span></button><button type='button' aria-pressed='false' data-valor='exigencia'>Em exigência <span class='ucam-segmented__contagem'>2</span></button><button type='button' aria-pressed='false' data-valor='deferido'>Deferidos <span class='ucam-segmented__contagem'>2</span></button><button type='button' aria-pressed='false' data-valor='prazo'>Pedem prazo <span class='ucam-segmented__contagem'>2</span></button><button type='button' aria-pressed='false' data-valor='aperto'>Prazo apertado <span class='ucam-segmented__contagem'>6</span></button></div><span class='ucam-viewbar__folga'></span></div></div><div class='ucam-corpo'><div class='ucam-stack ucam-stack--lg'><div class='ucam-stats ucam-stats--cartoes'><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Prazo apertado</span><span class='ucam-stat__value'>6</span><span class='ucam-stat__meta'><a class='ucam-link' href='#/templates/diploma/processos' data-recorte='aperto'>vencem em até 20 dias ou venceram</a></span></div></div><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-calendar'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Pedem prazo</span><span class='ucam-stat__value'>2</span><span class='ucam-stat__meta'><a class='ucam-link' href='#/templates/diploma/processos' data-recorte='prazo'>esperam a decisão da URD</a></span></div></div><div class='ucam-stat ucam-stat--figura'><span class='ucam-stat__figura' aria-hidden='true'><svg class='ic' aria-hidden='true'><use href='#i-send'/></svg></span><div class='ucam-stat__corpo'><span class='ucam-stat__label'>Sem expedição</span><span class='ucam-stat__value'>3</span><span class='ucam-stat__meta'><a class='ucam-link' href='#/templates/diploma/processos' data-recorte='semexp'>ainda não foram para a URD</a></span></div></div></div><div class='ucam-toolbar ucam-toolbar--compacta'><div class='ucam-field ucam-field--grow'><label class='ucam-field__label' for='pc-b'>Pesquisar processo</label><input class='ucam-input' id='pc-b' type='search' data-filtra='texto' data-filtra-alvo='pc-tabela' placeholder='Nome, CPF ou número do processo' aria-controls='pc-vazio' aria-describedby='pc-eco'></div><div class='ucam-field'><label class='ucam-field__label' for='pc-u'>Unidade</label><select class='ucam-select' id='pc-u' data-filtra='coluna:Unidade'><option value='' selected>Todas</option><option value='Centro'>Centro</option><option value='Tijuca'>Tijuca</option><option value='Niterói'>Niterói</option><option value='Campos'>Campos</option><option value='Nova Friburgo'>Nova Friburgo</option></select></div><div class='ucam-field'><label class='ucam-field__label' for='pc-d'>Vence em</label><select class='ucam-select' id='pc-d'><option selected>Até 120 dias (padrão)</option><option>Até 60 dias</option><option>Até 30 dias</option><option>Qualquer prazo</option></select></div></div><div class='ucam-card' style='padding:0;overflow:clip'><div class='ucam-table-wrap'><table class='ucam-table ucam-table--compact' id='pc-tabela'><caption class='ucam-sr-only'>Processos de diploma expedidos pelas unidades, com o prazo que falta e a situação na URD. O nome do aluno abre o processo.</caption><thead><tr><th scope='col' class='th--min'>Processo</th><th scope='col'>Aluno</th><th scope='col' class='th--min'>Unidade</th><th scope='col' class='th--min'>Expedição</th><th scope='col' class='th--min'>Prazo</th><th scope='col' class='th--min'>Situação</th><th scope='col' class='th--acoes'><span class='ucam-sr-only'>Ação</span></th></tr></thead><tbody><tr data-situacao='semexp'><td style='white-space:nowrap'><span class='ucam-sr-only'>Sem número</span>—</td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Beatriz Almeida Rocha</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'>118 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem expedição</span></td><td class='td--acoes' style='padding-block:0'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Expedido' data-linha-tom='neutral' data-linha-situacao='expedido' data-linha-msg='Processo de {nome} expedido para a URD.' data-confirmar data-confirmar-corpo='O processo de Beatriz Almeida Rocha vai para a URD e sai da mão da unidade. Correção, a partir daqui, só por exigência da URD.' data-confirmar-rotulo='Expedir' data-confirmar-tom='primary'>Expedir</button></td></tr><tr data-situacao='semexp aperto'><td style='white-space:nowrap'><span class='ucam-sr-only'>Sem número</span>—</td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Caio Henrique Barros</a></th><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 15 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem expedição</span></td><td class='td--acoes' style='padding-block:0'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Expedido' data-linha-tom='neutral' data-linha-situacao='expedido' data-linha-msg='Processo de {nome} expedido para a URD.' data-confirmar data-confirmar-corpo='O processo de Caio Henrique Barros vai para a URD e sai da mão da unidade. Correção, a partir daqui, só por exigência da URD.' data-confirmar-rotulo='Expedir' data-confirmar-tom='primary'>Expedir</button></td></tr><tr data-situacao='semexp aperto'><td style='white-space:nowrap'><span class='ucam-sr-only'>Sem número</span>—</td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Débora Lins Carvalho</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--vencido'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>venceu há 4 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Sem expedição</span></td><td class='td--acoes' style='padding-block:0'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Expedido' data-linha-tom='neutral' data-linha-situacao='expedido' data-linha-msg='Processo de {nome} expedido para a URD.' data-confirmar data-confirmar-corpo='O processo de Débora Lins Carvalho vai para a URD e sai da mão da unidade. Correção, a partir daqui, só por exigência da URD.' data-confirmar-rotulo='Expedir' data-confirmar-tom='primary'>Expedir</button></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>047.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Mariana Castro Lopes</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>20/10/2026</td><td style='white-space:nowrap'>112 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>052.0511.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Rafael Teixeira Nunes</a></th><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>19/10/2026</td><td style='white-space:nowrap'>98 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido'><td style='white-space:nowrap'><span class='ucam-id'>031.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Juliana Prado Moreira</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>14/10/2026</td><td style='white-space:nowrap'>63 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido aperto'><td style='white-space:nowrap'><span class='ucam-id'>058.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Bruno Henrique Sales</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>09/10/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 18 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='expedido aperto'><td style='white-space:nowrap'><span class='ucam-id'>019.0111.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Letícia Andrade Faria</a></th><td style='white-space:nowrap'>Campos</td><td style='white-space:nowrap'>02/10/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--vencido'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>venceu há 4 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Expedido</span></td><td class='td--acoes'></td></tr><tr data-situacao='analise prazo'><td style='white-space:nowrap'><span class='ucam-id'>044.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Camila Ribeiro Torres</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>28/09/2026</td><td style='white-space:nowrap'>71 dias · pede +30</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td><td class='td--acoes' style='padding-block:0'><span class='ucam-cluster'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' aria-label='Dar +30 dias ao prazo de Camila Ribeiro Torres' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo +30 dias' data-linha-tom='success' data-linha-situacao='analise' data-linha-msg='Prazo de {nome} prorrogado em 30 dias.' data-confirmar data-confirmar-corpo='A unidade pediu 30 dias a mais para o processo de Camila Ribeiro Torres. O prazo cresce e a decisão fica no histórico do processo.' data-confirmar-rotulo='Dar +30 dias' data-confirmar-tom='primary'>+30 dias</button><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' aria-label='Recusar o pedido de prazo de Camila Ribeiro Torres' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo recusado' data-linha-tom='neutral' data-linha-situacao='analise' data-linha-msg='Pedido de prazo de {nome} recusado. O prazo continua o mesmo.' data-confirmar data-confirmar-corpo='O pedido de 30 dias de Camila Ribeiro Torres é recusado e o prazo continua o mesmo. A unidade vê a decisão no processo.' data-confirmar-rotulo='Recusar' data-confirmar-tom='primary'>Recusar</button></span></td></tr><tr data-situacao='analise'><td style='white-space:nowrap'><span class='ucam-id'>027.0511.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Diego Martins Rocha</a></th><td style='white-space:nowrap'>Tijuca</td><td style='white-space:nowrap'>25/09/2026</td><td style='white-space:nowrap'>35 dias</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td><td class='td--acoes'></td></tr><tr data-situacao='analise aperto'><td style='white-space:nowrap'><span class='ucam-id'>036.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Patrícia Gomes Viana</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>22/09/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 12 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--neutral' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em análise</span></td><td class='td--acoes'></td></tr><tr data-situacao='exigencia prazo'><td style='white-space:nowrap'><span class='ucam-id'>015.0911.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Thiago Barros Lima</a></th><td style='white-space:nowrap'>Nova Friburgo</td><td style='white-space:nowrap'>15/09/2026</td><td style='white-space:nowrap'>54 dias · pede +45</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--warning' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em exigência</span></td><td class='td--acoes' style='padding-block:0'><span class='ucam-cluster'><button class='ucam-btn ucam-btn--secondary ucam-btn--sm' type='button' aria-label='Dar +45 dias ao prazo de Thiago Barros Lima' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo +45 dias' data-linha-tom='success' data-linha-situacao='exigencia' data-linha-msg='Prazo de {nome} prorrogado em 45 dias.' data-confirmar data-confirmar-corpo='A unidade pediu 45 dias a mais para o processo de Thiago Barros Lima. O prazo cresce e a decisão fica no histórico do processo.' data-confirmar-rotulo='Dar +45 dias' data-confirmar-tom='primary'>+45 dias</button><button class='ucam-btn ucam-btn--ghost ucam-btn--sm' type='button' aria-label='Recusar o pedido de prazo de Thiago Barros Lima' data-fluxo='c' data-acao='linha-marcar' data-linha-selo='Prazo recusado' data-linha-tom='neutral' data-linha-situacao='exigencia' data-linha-msg='Pedido de prazo de {nome} recusado. O prazo continua o mesmo.' data-confirmar data-confirmar-corpo='O pedido de 45 dias de Thiago Barros Lima é recusado e o prazo continua o mesmo. A unidade vê a decisão no processo.' data-confirmar-rotulo='Recusar' data-confirmar-tom='primary'>Recusar</button></span></td></tr><tr data-situacao='exigencia aperto'><td style='white-space:nowrap'><span class='ucam-id'>039.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Aline Ferreira Duarte</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>11/09/2026</td><td style='white-space:nowrap'><span class='ucam-prazo ucam-prazo--proximo'><svg class='ic' aria-hidden='true'><use href='#i-clock'/></svg>vence em 9 dias</span></td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--warning' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Em exigência</span></td><td class='td--acoes'></td></tr><tr data-situacao='deferido'><td style='white-space:nowrap'><span class='ucam-id'>022.0311.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Gustavo Lemos Pires</a></th><td style='white-space:nowrap'>Centro</td><td style='white-space:nowrap'>26/08/2026</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Deferido</span></td><td class='td--acoes'></td></tr><tr data-situacao='deferido'><td style='white-space:nowrap'><span class='ucam-id'>011.0711.2026</span></td><th scope='row' style='white-space:nowrap'><a class='ucam-link' href='#/templates/diploma/processo' data-fluxo='a'>Renata Souza Campos</a></th><td style='white-space:nowrap'>Niterói</td><td style='white-space:nowrap'>20/08/2026</td><td style='white-space:nowrap'>—</td><td style='white-space:nowrap'><span class='ucam-badge ucam-badge--success' data-selo><span class='ucam-badge__ponto' aria-hidden='true'></span>Deferido</span></td><td class='td--acoes'></td></tr></tbody></table></div><p class='ucam-pagination__range' role='status' style='padding:var(--ucam-space-inset-sm)'>15 processos · 6 vencem em até 20 dias ou já venceram · 2 pedem prazo</p></div><div class='ucam-empty' id='pc-vazio' data-filtra-vazio hidden><svg class='ic' aria-hidden='true'><use href='#i-search'/></svg><p class='ucam-empty__title'>Nenhum processo encontrado</p><p class='ucam-empty__description'>Nada corresponde ao que você pesquisou ou ao recorte escolhido. Tente outro termo ou limpe a busca.</p><button class='ucam-btn ucam-btn--secondary' type='button' data-fluxo='c' data-acao='limpar-busca'><svg class='ic' aria-hidden='true'><use href='#i-x'/></svg> Limpar busca</button></div><p class='ucam-sr-only' id='pc-eco' role='status'></p><p class='ucam-section__hint'>O prazo conta os dias desde a expedição pela unidade, somados os dias de prorrogação deferidos. Até 20 dias o prazo vira marcador; deferido não tem prazo.</p></div></div>",
           "codigo": "<ucam-app-shell systemName=\"Registro de diplomas\" shellLayout=\"lateral\">\n  <ucam-page-header variante=\"barra\" title=\"Processos\" [description]=\"total() + ' processos de ' + unidades() + ' unidades'\">\n    <ucam-button variant=\"primary\" iconStart=\"plus\" routerLink=\"/cadastrodadosaluno\">Novo processo</ucam-button>\n  </ucam-page-header>\n  <ucam-segmented ariaLabel=\"Situação do processo\" [items]=\"situacoes()\" [(value)]=\"situacao\" />\n\n  <ucam-text-field label=\"Pesquisar processo\" type=\"search\" placeholder=\"Nome, CPF ou número do processo\" [(value)]=\"termo\" />\n  <ucam-select label=\"Unidade\" [options]=\"unidadesOpcoes()\" [(value)]=\"unidade\" />\n  <ucam-select label=\"Vence em\" [options]=\"janelas\" [(value)]=\"dias\" />\n\n  <ucam-data-table density=\"compact\" caption=\"Processos de diploma expedidos\" [columns]=\"colunas\" [rows]=\"processos()\" emptyReason=\"no-results\" />\n</ucam-app-shell>\n\n// situacoes: Todos, Sem expedição, Expedidos, Em análise, Em exigência, Deferidos, Pedem prazo — cada uma com count (na unidade, só os dela)\n// colunas: Processo (ucam-id), Aluno (link para o processo), Unidade, Expedido em, Prazo (<ucam-prazo [date]=\"p.vencimento\" [warnAt]=\"20\" />), Situação (ucam-badge), ações Expedir (sem expedição) e Dar +N dias / Recusar (pedem prazo)",
           "shell": {
             "largura": "larga",
@@ -16312,7 +16404,7 @@
                 "efeito": "Abre o processo do aluno."
               },
               {
-                "rotulo": "Situação do processo (7 recortes)",
+                "rotulo": "Situação do processo (8 recortes)",
                 "classe": "c",
                 "efeito": "Recorta a fila pela situação; a contagem de cada recorte é a das linhas."
               },
@@ -16345,6 +16437,11 @@
                 "rotulo": "Recusar (linha)",
                 "classe": "c",
                 "efeito": "Pede confirmação; o pedido é recusado e o prazo continua o mesmo."
+              },
+              {
+                "rotulo": "Indicadores de atenção (3 links)",
+                "classe": "c",
+                "efeito": "Aplica o recorte da barra que mostra aquelas linhas."
               }
             ],
             "chega_de": [
@@ -16557,6 +16654,7 @@
           "nome": "Diploma digital",
           "perfil": "URD (Unidade de Registro de Diplomas)",
           "padrao": "listagem-crud",
+          "variante": "fila",
           "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /registro/pesquisa — paginas/registro/registro/ (registro.component, data-table), paginas/registro/shared/modal/confirmation-modal, paginas/registro/informativo/, paginas/registro/services/registro-diploma.service.ts; integracao-diploma-digital-backend (Spring Boot) — IntegracaoEndpoint.java (diploma-aluno, chancela, registrar), DigitalDegreeExceptionHandler.java, ChancelaDTO.java, IntegracaoURDRepositorio.java (lidos em 27/10/2026)",
           "descricao": "Os diplomas registrados no livro num dia, com a ação de enviar cada um ao serviço de diploma digital e a situação da assinatura. É a forma de lista com ação por linha e confirmação; a segunda via pede a chancela antes de enviar.",
           "usa": [
@@ -16695,6 +16793,7 @@
           "nome": "Novo lote",
           "perfil": "URD (Unidade de Registro de Diplomas)",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /criacaolote — paginas/lote-diploma/geracao-lote-diploma/ (criacao-lote-diploma.component, criar-lote-diploma-dialog, confirma-criacao-lote-diploma-dialog, criacao-lote-diploma.service.ts); paginas/relatorio/assinatura/ e paginas/relatorio/devolucao/ (rotas /relatorioenvioassinatura e /relatoriodevolucao); diploma-backend (Spring Boot) — DiplomaService.java (criarNovoLote, getSequenciaLoteDiploma), ResourceLoteDiploma.java, RepositoryDiplomavw.java (lidos em 27/10/2026)",
           "descricao": "Os diplomas registrados, recortados por terem ou não lote, com a seleção que vira um lote novo para publicação. É a forma de lista com seleção e ação em lote, com o primário no cabeçalho; os dois ofícios (envio para assinatura e devolução) são a mesma forma.",
           "usa": [
@@ -16838,6 +16937,7 @@
           "nome": "Lotes",
           "perfil": "URD (Unidade de Registro de Diplomas)",
           "padrao": "listagem-crud",
+          "variante": "fila",
           "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /listarlote — paginas/lote-diploma/controle-lote-diploma/ (listar-lote-diploma.component, view-lote-diploma-dialog, expedir-lote-diploma-dialog, publicar-lote-diploma-dialog, listar-lote-diploma.service.ts); diploma-backend (Spring Boot) — DiplomaService.java (expedirLotediploma, getTextoAvisoRegistro, publicarLotediploma, cancelarLoteDiploma, cancelarDiplomaEmLoteDiploma), ResourceLoteDiploma.java, EstadoLoteDiplomaEnum.java (lidos em 27/10/2026)",
           "descricao": "Os lotes de diploma com a situação, a faixa de registros e a ação de cada passo (expedir, publicar, baixar o Diário Oficial), e a linha que abre os diplomas, o aviso de registro ou a publicação. É a forma de lista com linha que abre e ação por situação.",
           "usa": [
@@ -17008,6 +17108,7 @@
           "nome": "Livro de registro",
           "perfil": "URD (Unidade de Registro de Diplomas)",
           "padrao": "consulta-relatorio",
+          "variante": "par",
           "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /livroderegistros — paginas/livro-de-registros/ (livro-de-registros.component, page/page.component, print-page/page.component), livro-de-registros.module.ts; diploma-backend (Spring Boot) — ResourceLivroRegistro.java, HelperLivroRegistro.java, RepositoryDiploma.java (buscaDiplomaPorLivro), DiplomaService.java (criarNovoDiploma) (lidos em 27/10/2026)",
           "descricao": "O livro de registro de diplomas de um ano, uma folha por registro, com a linha que abre a folha inteira e a impressão do livro. É a forma de consulta de registro oficial com documento para impressão.",
           "usa": [
@@ -17127,6 +17228,7 @@
           "nome": "Validar diploma",
           "perfil": "Público (sem login)",
           "padrao": "formulario-entidade",
+          "variante": "acesso",
           "origem": "consulta-diploma-frontend (Angular 9 + ucam-material), rota '' e /processo/:numeroprocesso/registro/:numeroregistro — diploma/desktop/ e diploma/mobile/ (header, body, footer), app.service.ts, app.router.ts; diploma-backend (Spring Boot) — ResourceDiploma.java (getDiplomaParaVisualizacao, atualizaConteudoDiploma), RepositoryDiploma.java (buscaDiplomaExterno) (lidos em 27/10/2026)",
           "descricao": "A porta pública da validação: dois números do verso do diploma e uma ação só, Validar diploma. É a forma de consulta pública curta, sem a moldura do sistema; o link do QR code abre a página já preenchida.",
           "usa": [
@@ -17251,6 +17353,7 @@
           "nome": "Diploma validado",
           "perfil": "Público (sem login)",
           "padrao": "consulta-relatorio",
+          "variante": "ficha",
           "origem": "consulta-diploma-frontend (Angular 9 + ucam-material), rota '' (resultado) — diploma/desktop/body/ (body.component), diploma-generator.ts, diploma/mobile/ (botão de visualização); diploma-backend (Spring Boot) — ResourceDiploma.java (getDiplomaParaVisualizacao, atualizaConteudoDiploma), RepositoryDiploma.java (buscaDiplomaExterno) (lidos em 27/10/2026)",
           "descricao": "O resultado da validação pública: a situação em palavra, o nome e o curso, os números e as datas do registro e da publicação, a frente do diploma em texto e o download da publicação no Diário Oficial. É a forma de ficha de resultado de consulta pública.",
           "usa": [
@@ -17379,6 +17482,7 @@
           "nome": "Novo processo",
           "perfil": "Secretaria da unidade",
           "padrao": "formulario-entidade",
+          "variante": "secoes",
           "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /cadastrodadosaluno — paginas/cadastro-dados-aluno/ (cadastro-dados-aluno.component); diploma-backend — ResourceProcesso.java, ProcessoService.java (lidos em 25/11/2026)",
           "descricao": "O cadastro que gera o processo de diploma: os dados do aluno como saem impressos e os do curso, com a colação que abre o prazo.",
           "usa": [
@@ -17454,6 +17558,7 @@
           "nome": "Ofícios",
           "perfil": "URD (Unidade de Registro de Diplomas)",
           "padrao": "listagem-crud",
+          "variante": "lote",
           "origem": "diploma-frontend (SERD, Angular 6 + Angular Material), rota /relatorioenvioassinatura — paginas/relatorio/assinatura/relatorio-envio-assinatura/ (component e service: /api/processo/search/findProcessoSemDiploma); rota /relatoriodevolucao — paginas/relatorio/devolucao/relatorio-de-devolucao/ (component e service: findProcessoPublicadoPorUnidade, findProcessoPublicadoPorUnidadeAndDataPublicacao) (lidos em 25/11/2026)",
           "descricao": "Os dois ofícios da URD numa tela: o de envio para assinatura, com os processos deferidos sem diploma, e o de devolução, com os diplomas publicados de uma unidade. Marca os processos e gera o ofício com eles.",
           "usa": [

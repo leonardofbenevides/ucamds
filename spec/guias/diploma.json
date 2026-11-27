@@ -6,16 +6,30 @@
   },
   "telas": {
     "processos": {
-      "objetivo": "Ver os processos de diploma que as unidades expediram, quanto prazo falta em cada um e abrir o próximo para analisar.",
-      "quem": "Equipe da URD.",
+      "objetivo": "Ver os processos de diploma, do que a unidade ainda não expediu ao deferido, quanto prazo falta em cada um e o que pede uma decisão.",
+      "quem": "Equipe da URD, que vê todas as unidades, e a secretaria de cada unidade, que vê só os processos dela.",
       "tarefas": [
         {
           "titulo": "Achar o processo que precisa de você",
           "passos": [
-            "O recorte no alto separa os processos pela situação: Expedidos, Em análise, Em exigência e Deferidos. O número de cada um diz quantos há.",
+            "O recorte no alto separa os processos pela situação: Sem expedição, Expedidos, Em análise, Em exigência, Deferidos e Pedem prazo. O número de cada um diz quantos há.",
             "Filtre pela unidade ou pelo prazo (até 120, 60 ou 30 dias) para ver primeiro o que vence antes.",
             "Digite o número do processo ou o nome do aluno na pesquisa.",
             "Clique no nome do aluno para abrir o processo."
+          ]
+        },
+        {
+          "titulo": "Abrir um processo novo e expedir",
+          "passos": [
+            "Clique em Novo processo, preencha os dados do aluno e do curso e clique em Gerar processo.",
+            "O processo aparece em Sem expedição. Passe o ponteiro na linha e clique em Expedir; a confirmação diz que ele vai para a URD."
+          ]
+        },
+        {
+          "titulo": "Decidir um pedido de prazo",
+          "passos": [
+            "No recorte Pedem prazo, a coluna Prazo diz quantos dias faltam e quantos a unidade pediu.",
+            "Passe o ponteiro na linha e clique no botão com os dias para dar o prazo, ou em Recusar. A decisão fica no histórico do processo."
           ]
         }
       ],
@@ -154,6 +168,42 @@
             "Abaixo estão o nome, o curso, os números do processo e do registro, o livro e a folha e as datas.",
             "Ao lado, a frente do diploma em texto, como foi impressa.",
             "Clique em Baixar a publicação para ter a página do Diário Oficial, ou em Validar outro diploma para começar de novo."
+          ]
+        }
+      ]
+    },
+    "dados-aluno": {
+      "objetivo": "Abrir o processo de diploma de um formando, com os dados como saem impressos no diploma.",
+      "quem": "A secretaria da unidade.",
+      "tarefas": [
+        {
+          "titulo": "Gerar o processo",
+          "passos": [
+            "Em Processos, clique em Novo processo.",
+            "Preencha os dados do aluno exatamente como estão no documento de identidade.",
+            "Preencha o curso, a conclusão e a colação de grau; a colação abre o prazo de expedição.",
+            "Clique em Gerar processo. Você volta para a fila, com o processo novo em Sem expedição."
+          ]
+        }
+      ]
+    },
+    "oficios": {
+      "objetivo": "Gerar os ofícios da URD: o que leva os diplomas para assinatura e o que devolve os diplomas publicados à unidade.",
+      "quem": "Equipe da URD.",
+      "tarefas": [
+        {
+          "titulo": "Gerar o ofício de envio para assinatura",
+          "passos": [
+            "Na aba Envio para assinatura, preencha o número do ofício, o destinatário e o cargo.",
+            "Marque na lista os processos que vão no ofício. Só aparecem os deferidos sem diploma.",
+            "Na barra que aparece no pé da janela, clique em Gerar ofício e confirme. O ofício baixa em PDF."
+          ]
+        },
+        {
+          "titulo": "Gerar o ofício de devolução",
+          "passos": [
+            "Na aba Devolução, escolha a unidade e a data da publicação no Diário Oficial, e preencha edição, seção, página e os dados do ofício.",
+            "Marque os diplomas que voltam à unidade e clique em Gerar ofício na barra do pé."
           ]
         }
       ]

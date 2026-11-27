@@ -511,6 +511,30 @@ if (semRegras.length) {
   falha('templates.json', `${semRegras.length} telas sem "regras_negocio" — diga o que a tela supõe do negócio e quem decide: ${semRegras.join(', ')}`);
 }
 
+/* ------------------------------------------ 4c''. variante do padrão (ADR-096) --- */
+// 27/11/2026: "as telas estão muito iguais". A Listagem juntava cadastro,
+// fila, lote e trilha num esqueleto só. O padrão com variantes exige que a
+// tela diga qual é a sua, porque é a variante que decide o esqueleto.
+for (const p of patterns) {
+  const ids = new Set();
+  for (const v of p.variantes ?? []) {
+    if (!v.id || !v.nome || !v.quando) falha('patterns/patterns.json', `variante de "${p.id}" sem id, nome ou quando`);
+    if (!v.estrutura?.length) falha('patterns/patterns.json', `variante "${p.id}/${v.id}" sem estrutura — o esqueleto é o que a separa das outras`);
+    if (ids.has(v.id)) falha('patterns/patterns.json', `variante repetida em "${p.id}": ${v.id}`);
+    ids.add(v.id);
+  }
+}
+const variantesDe = Object.fromEntries(patterns.map((p) => [p.id, new Set((p.variantes ?? []).map((v) => v.id))]));
+for (const projeto of templates.projetos ?? []) {
+  for (const t of projeto.templates ?? []) {
+    const onde = `templates.json (${projeto.id}/${t.id})`;
+    const vs = variantesDe[t.padrao];
+    if (!vs) continue;
+    if (vs.size && !t.variante) falha(onde, `o padrão "${t.padrao}" tem variantes (${[...vs].join(', ')}) e a tela não diz qual é a sua`);
+    else if (t.variante && !vs.has(t.variante)) falha(onde, `variante "${t.variante}" não existe em "${t.padrao}"${vs.size ? ` — use ${[...vs].join(', ')}` : ', que não tem variantes'}`);
+  }
+}
+
 /* ------------------------------------------- 4d. a MARCAÇÃO dos templates --- */
 // O bloco acima olha o campo "codigo" — o exemplo em Angular que o
 // desenvolvedor copia. Ninguém olhava o campo "preview", que é a TELA: o HTML

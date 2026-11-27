@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { padraoPorId, componentes } from '../../spec/spec';
+import { padraoPorId, componentes, telas } from '../../spec/spec';
 import { PageHeaderComponent } from '../../docs/page-header.component';
 import { NestaPaginaComponent, type Ancora } from '../../docs/nesta-pagina.component';
 import { TextoComponent } from '../../docs/texto.component';
@@ -42,6 +42,34 @@ import { TextoComponent } from '../../docs/texto.component';
           </section>
         }
 
+        @if (p.variantes?.length) {
+          <section id="variantes">
+            <h2>Variantes</h2>
+            <p>Cada variante tem o seu esqueleto. A tela diz qual é a sua, e é a variante que decide o que vai acima da tabela e onde fica a ação.</p>
+            @for (v of variantes(); track v.id) {
+              <h3 [id]="'variante-' + v.id">{{ v.nome }} <span class="small muted">{{ v.telas.length }} {{ v.telas.length === 1 ? 'tela' : 'telas' }}</span></h3>
+              <p><ucam-t [t]="v.quando" /></p>
+              <ol class="steps">
+                @for (e of v.estrutura; track e) {
+                  <li><ucam-t [t]="e" /></li>
+                }
+              </ol>
+              @if (v.regras?.length) {
+                <ul class="list">
+                  @for (r of v.regras; track r) {
+                    <li><ucam-t [t]="r" /></li>
+                  }
+                </ul>
+              }
+              <div class="chips">
+                @for (t of v.telas; track t.rota) {
+                  <a class="chip" [routerLink]="t.rota">{{ t.nome }} · {{ t.sistema }}</a>
+                }
+              </div>
+            }
+          </section>
+        }
+
         <section id="regras">
           <h2>Regras</h2>
           <ul class="list">
@@ -78,6 +106,19 @@ export default class PadraoPage {
 
   protected readonly padrao = computed(() => padraoPorId(this.id()));
 
+  /** Cada variante com as telas que a declaram (ADR-096): a regra e o exemplo juntos. */
+  protected readonly variantes = computed(() => {
+    const p = this.padrao();
+    return (p?.variantes ?? []).map((v) => ({
+      ...v,
+      telas: telas.flatMap((proj) =>
+        proj.templates
+          .filter((t) => t.padrao === p!.id && t.variante === v.id)
+          .map((t) => ({ nome: t.nome, sistema: proj.nome, rota: `/telas/${proj.id}/${t.id}` })),
+      ),
+    }));
+  });
+
   /**
    * O padrão declara seletores (`ucam-pagination`). Alguns já têm contrato,
    * outros não — e a diferença precisa aparecer: um chip que não linka é a
@@ -99,6 +140,7 @@ export default class PadraoPage {
     const p = this.padrao();
     return [
       ...(p?.estrutura?.length ? [{ id: 'estrutura', rotulo: 'Estrutura' }] : []),
+      ...(p?.variantes?.length ? [{ id: 'variantes', rotulo: 'Variantes' }] : []),
       { id: 'regras', rotulo: 'Regras' },
       { id: 'usa', rotulo: 'Componentes que usa' },
       { id: 'evidencia', rotulo: 'Evidência' },

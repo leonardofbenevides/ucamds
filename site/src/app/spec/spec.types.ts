@@ -213,6 +213,17 @@ export interface Padrao {
   regras: string[];
   usa: string[];
   evidencia: string;
+  /** As formas do padrão, cada uma com esqueleto próprio (ADR-096). */
+  variantes?: VariantePadrao[];
+}
+
+export interface VariantePadrao {
+  id: string;
+  nome: string;
+  /** A tarefa que pede esta variante, e não outra. */
+  quando: string;
+  estrutura: string[];
+  regras?: string[];
 }
 
 /* ------------------------------------------------------------- decisões --- */
@@ -810,6 +821,8 @@ export interface Tela {
    */
   perfil?: string;
   padrao: string;
+  /** A variante do padrão que dá o esqueleto da tela (ADR-096). */
+  variante?: string;
   origem: string;
   descricao: string;
   usa: string[];

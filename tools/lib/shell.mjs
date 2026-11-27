@@ -8369,7 +8369,11 @@ ${FN_ANUNCIA}
     var r = e.target.closest && e.target.closest('[data-recorte]');
     if (r) {
       e.preventDefault();
-      var b = document.querySelector('[data-cenario] button[data-valor="' + r.getAttribute('data-recorte') + '"]');
+      // 27/11/2026 (ADR-096): a faixa de atenção da fila de trabalho leva ao
+      // recorte da barra (.ucam-segmented[data-filtra]), não só ao de natureza.
+      var v = r.getAttribute('data-recorte');
+      var b = document.querySelector('[data-cenario] button[data-valor="' + v + '"]') ||
+        document.querySelector('.ucam-segmented[data-filtra] button[data-valor="' + v + '"]');
       if (b) { b.click(); b.focus(); }
       return;
     }
