@@ -99,6 +99,12 @@
       "obrigatorio": true
     },
     {
+      "parte": "row-group",
+      "obrigatorio": false,
+      "descricao": "Linhas agrupadas por dia, da variante Trilha de registro (ADR-096, 27/11/2026). Um <tbody> por grupo, aberto por uma linha com um só <th scope=\"rowgroup\" colspan> que cobre a tabela: o nome do grupo (\"Hoje\", \"14/09/2026\") em peso de rótulo e, em secundária, a data e quantos registros. Sem fundo cinza: separa pelo respiro e pelo peso. A linha do grupo não é registro: não filtra, não conta em \"x de y\", não ganha realce de ponteiro, e some quando o filtro esvazia o grupo. Tabela agrupada não tem menu de coluna para ordenar: a ordem é o tempo, e reordenar por outra coluna desfaria os grupos.",
+      "classe": "ucam-table__grupo"
+    },
+    {
       "parte": "row",
       "obrigatorio": true,
       "descricao": "A linha. Escolhida (aria-selected=true) tem um sinal de superfície e um de tipografia: fundo branco com um shape sólido de 4px na borda ESQUERDA (a de entrada, desde 28/09/2026 — o mesmo lado do destaque da caixa de entrada), de ponta a ponta da altura, e a primeira célula de dado em peso de ação; quem carrega a cor além do shape é a caixa de marcação marcada. Sem tarja na entrada (ADR-046) e sem barra de estado por linha (ADR-027)."

@@ -100,7 +100,8 @@
             "Totais do período acima da lista quando há valor (entradas, saídas, saldo)"
           ],
           "regras": [
-            "Sem ação na linha e sem primário: a trilha não se edita. Correção é um lançamento novo, que aparece na própria trilha."
+            "Sem ação na linha e sem primário: a trilha não se edita. Correção é um lançamento novo, que aparece na própria trilha.",
+            "Um <tbody> por dia, aberto pela linha do grupo (.ucam-table__grupo, th scope=\"rowgroup\"); a tabela agrupada não ganha menu de coluna, porque reordenar desfaria os dias. Quem procura alguém usa o filtro Quem fez. O dia que o filtro esvazia sai com o seu cabeçalho."
           ]
         }
       ]

@@ -2419,6 +2419,9 @@ export const estadoScript = `
   function colunasMenuMontar() {
     Array.prototype.forEach.call(document.querySelectorAll('table.ucam-table'), function (tabela) {
       if (tabela.closest('[data-sem-menu], .ucam-grafico__tabela')) return;
+      // Tabela agrupada por dia (trilha, ADR-096): a ordem é o tempo, e
+      // ordenar só reordenaria o primeiro grupo. Sem menu, sem "Ordenar por".
+      if (tabela.querySelector('tbody > tr.ucam-table__grupo')) return;
       if (!tabela.tHead || !tabela.tBodies[0] || tabela.tBodies[0].rows.length < 2) return;
       var agrupada = tabela.tHead.rows.length > 1;
       colunasFolhas(tabela).forEach(function (th, k) {
@@ -5663,8 +5666,27 @@ ${FN_ANUNCIA}
 
   function itens(alvo) {
     if (!alvo) return [];
-    if (alvo.tagName === 'TABLE') return alvo.tBodies[0] ? Array.prototype.slice.call(alvo.tBodies[0].rows) : [];
+    // TODOS os corpos: a trilha (ADR-096) põe um <tbody> por dia. A linha que
+    // abre o dia (.ucam-table__grupo) não é registro: não filtra, não conta.
+    if (alvo.tagName === 'TABLE') {
+      var rows = [];
+      Array.prototype.forEach.call(alvo.tBodies, function (tb) {
+        Array.prototype.forEach.call(tb.rows, function (tr) { if (!tr.classList.contains('ucam-table__grupo')) rows.push(tr); });
+      });
+      return rows;
+    }
     return Array.prototype.filter.call(alvo.children, function (n) { return n.nodeType === 1; });
+  }
+
+  // O dia que o filtro esvaziou sai com o seu cabeçalho: "Ontem" sozinho diz
+  // que ontem não houve nada, e houve, só não passa no filtro.
+  function gruposVazios(alvo) {
+    if (alvo.tagName !== 'TABLE') return;
+    Array.prototype.forEach.call(alvo.tBodies, function (tb) {
+      var cab = tb.querySelector('tr.ucam-table__grupo');
+      if (!cab) return;
+      cab.hidden = !Array.prototype.some.call(tb.rows, function (tr) { return tr !== cab && !tr.hidden; });
+    });
   }
 
   // A coluna é achada pelo TEXTO do cabeçalho, não pelo índice: mexer na ordem
@@ -5743,6 +5765,7 @@ ${FN_ANUNCIA}
       else item.setAttribute('data-filtrado-fora', '');
       if (ok) vistos++;
     });
+    gruposVazios(alvo);
     // Seção que ficou sem nenhum item sai junto: um título de grupo sozinho
     // diz que o grupo está vazio, e ele não está — está filtrado.
     // Uma seção que HOSPEDA o próprio filtro não pode se esconder: sumiria
@@ -8943,6 +8966,8 @@ export const tabelaScript = `
     // tBodies, não querySelectorAll: a subtabela da linha de detalhe rotula
     // as próprias células, com os próprios nomes.
     Array.prototype.forEach.call(tabela.tBodies, function (tb) { Array.prototype.forEach.call(tb.rows, function (tr) {
+      // A linha que abre o dia (trilha) cobre a tabela: não é célula de coluna.
+      if (tr.classList.contains('ucam-table__grupo')) return;
       Array.prototype.forEach.call(tr.children, function (td, i) {
         if (nomes[i] && !td.hasAttribute('data-label')) td.setAttribute('data-label', nomes[i]);
       });

@@ -165,9 +165,9 @@
         {
           "titulo": "Procurar um registro",
           "passos": [
-            "Use as abas para ver só Acesso (entrada, bloqueio), Permissão (grupos e menus) ou Conta (criação, cartão).",
-            "Digite o nome da pessoa, a ação ou a origem na busca.",
-            "Clique no título de uma coluna para ordenar.",
+            "Os registros vêm agrupados por dia, o mais recente em cima. Escolha o período: Hoje, 7 dias ou 30 dias.",
+            "Use as abas para ver só Acesso (entrada, bloqueio), Permissão (grupos e menus) ou Conta (criação, cartão), e Quem fez para ver só uma pessoa ou o sistema.",
+            "Digite a ação, a origem ou um nome na busca.",
             "Exportar baixa a trilha visível em CSV."
           ]
         }

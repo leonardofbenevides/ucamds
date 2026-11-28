@@ -3426,6 +3426,27 @@ ${contentorAbaixo('tabela-empilhada', 'tabela')} {
   border-inline-start: 1px solid var(--ucam-color-border-subtle);
 }
 
+/* LINHAS AGRUPADAS POR DIA (ADR-096, variante Trilha de registro). Cada dia
+ * é um <tbody>, aberto por uma linha com um só <th scope="rowgroup"> que
+ * cobre a tabela: o nome do dia em tinta primária e peso de rótulo, a data e
+ * a contagem em secundária. Sem fundo cinza (a régua do claro): quem separa
+ * o dia é o respiro em cima e o peso, não uma faixa. A linha não é registro,
+ * então não ganha o realce nem o traço do ponteiro. */
+.ucam-table tbody tr.ucam-table__grupo > th {
+  padding-block: var(--ucam-space-inset-md) var(--ucam-space-inset-sm);
+  font-size: var(--ucam-typography-body-sm-font-size);
+  font-weight: var(--ucam-typography-action-font-weight);
+  color: var(--ucam-color-text-primary);
+  text-align: start;
+}
+.ucam-table tbody tr.ucam-table__grupo > th .td--apoio {
+  display: inline;
+  font-weight: var(--ucam-typography-body-font-weight);
+  color: var(--ucam-color-text-secondary);
+}
+.ucam-table tbody tr.ucam-table__grupo:hover { background-image: none; }
+.ucam-table.ucam-table tbody tr.ucam-table__grupo:hover > th::after { content: none; }
+
 /* 2. CABEÇALHO EM DOIS ANDARES. A fileira de cima (.ucam-table__grupos) só
  * nomeia grupos de colunas; quem rotula o dado continua sendo a de baixo, e é
  * por ela que o leitor de tela anuncia a célula (headers/id na marcação).
