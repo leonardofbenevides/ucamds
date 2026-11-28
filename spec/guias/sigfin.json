@@ -281,7 +281,8 @@
             "Ajuste as chaves abaixo: incluir formandos, incluir alunos sem bolsa, só os ainda não calculados.",
             "Clique em Calcular. A tabela mostra cada curso com a quantidade de mensalidades e o valor total.",
             "Clique na seta da linha para conferir aluno por aluno.",
-            "Marque os cursos certos e clique em Salvar mensalidades, na barra que aparece."
+            "Marque os cursos certos. A barra no pé da janela soma as mensalidades e o valor do que está marcado.",
+            "Clique em Salvar, no alto ou na barra. A confirmação repete os números, diz o que fica de fora e por quê; confirme em Salvar mensalidades."
           ]
         }
       ],

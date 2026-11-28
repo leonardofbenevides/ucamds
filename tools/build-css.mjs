@@ -10056,6 +10056,10 @@ dialog.ucam-dialog:not([open]) { display: none; }
  * vira o único filho e a coluna de três partes desaba numa só. */
 .ucam-dialog__form { display: contents; }
 
+/* A prévia do lote (ADR-096) vem antes da frase: primeiro os números do que
+ * vai acontecer, depois o que isso quer dizer. */
+.ucam-dialog__body .ucam-dialog__previa { margin-block-end: var(--ucam-space-stack-md); }
+
 .ucam-dialog__texto {
   margin: 0;
   font-size: var(--ucam-typography-body-sm-font-size);
@@ -11055,7 +11059,13 @@ ${contentorAbaixo('indicadores-empilhados', 'indicadores')} {
 .ucam-lote__contagem {
   margin: 0;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  /* Quem cede quando falta largura é a CONTAGEM, não a fileira. Presa numa
+   * linha (nowrap), a contagem com a soma do lote (ADR-096) passava do teto
+   * da barra a 1024px, e quem descia de linha era o "Limpar", sozinho, numa
+   * pílula de duas alturas. Com base de 14rem ela divide a linha com as
+   * ações e quebra por dentro, nos pontos médios: número e unidade vêm
+   * presos por espaço inseparável do script. */
+  flex: 1 1 14rem;
 }
 
 .ucam-lote__acoes {
@@ -16058,6 +16068,12 @@ ${acima('nav-fixa')} {
   inset-inline-start: calc(var(--ucam-lado, 0px) + (100vw - var(--ucam-lado, 0px)) / 2);
   translate: -50% 0;
   margin: 0;
+  /* max-content, não fit-content: fixa com só o início no MEIO da área, a
+   * largura disponível do encolher-para-caber é do meio à borda direita da
+   * janela (uns 560px a 1440), e a barra com a soma do lote ("· 284
+   * mensalidades · R$ 269.339,60") quebrava em duas linhas com metade da
+   * área sobrando. O teto abaixo continua valendo. */
+  inline-size: max-content;
   max-inline-size: calc(100vw - var(--ucam-lado, 0px) - 2rem);
 }
 .ucam-main:has(.ucam-lote:not([hidden])) { padding-block-end: 5.5rem; }

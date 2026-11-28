@@ -6199,6 +6199,24 @@ ${FN_ANUNCIA}
         : plural;
       var participio = barra.getAttribute('data-lote-participio') || 'selecionada';
       alvo.textContent = n + ' ' + nome + ' ' + participio + (n === 1 ? '' : 's');
+      /* A SOMA DO QUE ESTÁ MARCADO (ADR-096, variante Operação em lote).
+       * Cada linha diz quanto pesa (data-lote-qtd, data-lote-valor) e a barra
+       * diz o nome da quantidade (data-lote-soma="mensalidades"). O total
+       * selecionado morava em caixa alta no rodapé da tabela e saía de vista
+       * quando ela rolava; na barra ele anda com a seleção, e é o mesmo número
+       * que a confirmação vai repetir. */
+      var somaNome = barra.getAttribute('data-lote-soma');
+      if (somaNome && n) {
+        var qtd = 0, valor = 0, temValor = false;
+        elegiveis(tabela).forEach(function (c) {
+          if (!c.checked) return;
+          var tr = c.closest('tr');
+          qtd += parseInt(tr.getAttribute('data-lote-qtd') || '0', 10);
+          if (tr.hasAttribute('data-lote-valor')) { temValor = true; valor += parseFloat(tr.getAttribute('data-lote-valor')); }
+        });
+        alvo.textContent += ' · ' + qtd.toLocaleString('pt-BR') + ' ' + somaNome +
+          (temValor ? ' · ' + valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '');
+      }
     }
     barra.hidden = n === 0;
     primario(tabela, barra, n);
@@ -6784,9 +6802,81 @@ export const confirmaScript = `
       }
     }
 
+    /* A PRÉVIA DO LOTE (ADR-096, variante Operação em lote). Antes de aplicar
+     * a muitos, a confirmação diz o efeito com os números das linhas
+     * marcadas: quantas entram e quanto pesam, quantas ficam de fora e por
+     * quê (o selo de cada uma), e quem é avisado. "Salvar mensalidades?" sem
+     * número pedia à pessoa que lembrasse do que marcou três telas acima. */
+    var previa = null;
+    if (botao.hasAttribute('data-lote-previa')) {
+      var barraP = botao.closest('.ucam-lote');
+      var tabP = barraP && barraP.parentElement.querySelector('table');
+      var marcP = tabP ? Array.prototype.filter.call(tabP.querySelectorAll('tbody .td--selecao input'), function (c) { return c.checked && !c.closest('[hidden]'); }) : [];
+      if (marcP.length) {
+        var soP = botao.getAttribute('data-lote-so');
+        var entram = [], fora = [];
+        marcP.forEach(function (c) {
+          var tr = c.closest('tr');
+          var tok = (tr.getAttribute('data-situacao') || '').split(' ');
+          (soP && !soP.split(' ').some(function (x) { return tok.indexOf(x) >= 0; }) ? fora : entram).push(tr);
+        });
+        var plural = barraP.getAttribute('data-lote-nome') || 'itens';
+        var singular = barraP.getAttribute('data-lote-singular') || plural.replace(/s$/, '');
+        var conta = function (k) { return k + ' ' + (k === 1 ? singular : plural); };
+        var nomeDe = function (tr) {
+          var cel = tr.querySelector('th[scope="row"]');
+          return cel ? (cel.firstChild && cel.firstChild.nodeType === 3 ? cel.firstChild.textContent : cel.textContent).trim() : '';
+        };
+        var lista = function (xs) { return xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' e ' + xs[xs.length - 1]; };
+        var pares = [];
+        if (entram.length) {
+          var qtdP = 0, valP = 0, temV = false;
+          entram.forEach(function (tr) {
+            qtdP += parseInt(tr.getAttribute('data-lote-qtd') || '0', 10);
+            if (tr.hasAttribute('data-lote-valor')) { temV = true; valP += parseFloat(tr.getAttribute('data-lote-valor')); }
+          });
+          var somaP = barraP.getAttribute('data-lote-soma');
+          pares.push(['Entram', conta(entram.length) + (somaP && qtdP ? ' · ' + qtdP.toLocaleString('pt-BR') + ' ' + somaP : '')]);
+          if (temV) pares.push(['Valor', valP.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })]);
+        }
+        if (fora.length) {
+          pares.push(['Ficam de fora', conta(fora.length) + ': ' + lista(fora.map(function (tr) {
+            var selo = tr.querySelector('[data-selo]');
+            return nomeDe(tr) + (selo ? ' (' + selo.textContent.trim().toLowerCase() + ')' : '');
+          })), 'warning']);
+        }
+        if (entram.length && botao.hasAttribute('data-lote-avisa')) pares.push(['Quem é avisado', botao.getAttribute('data-lote-avisa')]);
+        previa = { entram: entram.length, pares: pares, titulo: (botao.getAttribute('data-confirmar-titulo') || '').replace('{n}', entram.length).replace('{nome}', entram.length === 1 ? singular : plural) };
+      }
+    }
+
     var d = monta();
-    d.querySelector('.ucam-dialog__title').textContent = texto.titulo || (botao.getAttribute('aria-label') || botao.textContent.trim()) + '?';
+    d.querySelector('.ucam-dialog__title').textContent = (previa && previa.titulo) || texto.titulo || (botao.getAttribute('aria-label') || botao.textContent.trim()) + '?';
     d.querySelector('.ucam-dialog__texto').textContent = texto.corpo;
+    var dlVelha = d.querySelector('.ucam-dialog__previa');
+    if (dlVelha) dlVelha.remove();
+    if (previa) {
+      var dl = document.createElement('dl');
+      dl.className = 'ucam-descricao ucam-descricao--1 ucam-dialog__previa';
+      previa.pares.forEach(function (p) {
+        var par = document.createElement('div'); par.className = 'ucam-descricao__par';
+        var dt = document.createElement('dt'); dt.className = 'ucam-descricao__rotulo'; dt.textContent = p[0];
+        var dd = document.createElement('dd'); dd.className = 'ucam-descricao__valor' + (p[2] ? ' ucam-descricao__valor--' + p[2] : ''); dd.textContent = p[1];
+        par.appendChild(dt); par.appendChild(dd); dl.appendChild(par);
+      });
+      d.querySelector('.ucam-dialog__body').insertBefore(dl, d.querySelector('.ucam-dialog__texto'));
+      // Nada do que foi marcado entra: o diálogo vira aviso, sem o botão de
+      // aplicar, como a barreira das sem decisão da isenção.
+      if (!previa.entram) {
+        d.querySelector('.ucam-dialog__title').textContent = 'Nenhum dos marcados entra';
+        d.querySelector('.ucam-dialog__texto').textContent = 'Nada foi aplicado. Marque na lista os que podem entrar.';
+        var okN = d.querySelector('[data-confirmar-ok]'); okN.hidden = true;
+        var canN = d.querySelector('[data-cancelar]'); canN.textContent = 'Voltar';
+        d.onclose = function () { d.onclose = null; okN.hidden = false; canN.textContent = 'Cancelar'; devolveFoco(retorno, botao.closest('section') || botao.closest('main')); };
+        d.showModal(); canN.focus();
+        return;
+      }
+    }
     var rotuloOk = texto.rotulo;
     // Finalizar nomeia os números: o resumo da tabela ([data-totais]) abre o corpo.
     // Com documento pedido, o mesmo botão é "Enviar pedido ao candidato" e diz o que acontece.

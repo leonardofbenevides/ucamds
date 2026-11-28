@@ -85,7 +85,8 @@
           ],
           "regras": [
             "O que já passou pela operação não pode entrar de novo, e a barra diz quantos ficaram de fora e por quê.",
-            "Operação irreversível confirma nomeando o efeito; irreversível não é destrutivo, então o botão é primário (boas práticas do dialog.json)."
+            "Operação irreversível confirma nomeando o efeito; irreversível não é destrutivo, então o botão é primário (boas práticas do dialog.json).",
+            "Os números da prévia saem das linhas marcadas (data-lote-qtd, data-lote-valor), os mesmos que a barra soma enquanto a pessoa marca: o que se confirma é o que se via. Se nada do que foi marcado pode entrar, a prévia vira aviso, sem o botão de aplicar."
           ]
         },
         {
